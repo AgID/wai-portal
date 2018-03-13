@@ -152,7 +152,8 @@ ARG INSTALL_PHPREDIS=false
 ENV INSTALL_PHPREDIS ${INSTALL_PHPREDIS}
 RUN if [ ${INSTALL_PHPREDIS} = true ]; then \
     # Install Php Redis extension
-    apt-get install php-redis && \
+    apt-get update && \
+    apt-get install -y --force-yes php-redis && \
     phpenmod redis \
 ;fi
 
