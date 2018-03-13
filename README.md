@@ -11,7 +11,8 @@
 - docker
 
 #### Getting started
-```php
+```
+export APP_ENV=local
 composer install
 bin/phing build
 ```
@@ -27,7 +28,7 @@ Login with `root` / `matomo`
 
 
 #### Available tasks
-```php
+```
 bin/phing test          # perform tests
 bin/phing ws            # enter workspace container
 bin/phing clean         # delete containers and data
