@@ -7,7 +7,7 @@ require 'recipe/common.php';
 set('application', 'Analytics Italia');
 
 // Project repository
-set('repository', 'git@bitbucket.org:pdavide/analytics-italia.git');
+set('repository', 'git@github.com:teamdigitale/piwik-onboarding.git');
 
 // Shared files/dirs between deploys 
 set('shared_files', []);
