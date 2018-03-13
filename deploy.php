@@ -1,0 +1,105 @@
+<?php
+namespace Deployer;
+
+require 'recipe/common.php';
+
+// Project name
+set('application', 'Analytics Italia');
+
+// Project repository
+set('repository', 'git@bitbucket.org:pdavide/analytics-italia.git');
+
+// Shared files/dirs between deploys 
+set('shared_files', []);
+set('shared_dirs', ['env', 'containers/data']);
+
+// Writable dirs by web server 
+set('writable_dirs', [
+    'bootstrap/cache',
+    'containers/data',
+    'storage',
+    'storage/app',
+    'storage/app/public',
+    'storage/framework',
+    'storage/framework/cache',
+    'storage/framework/sessions',
+    'storage/framework/views',
+    'storage/logs',
+]);
+
+set('default_stage', 'staging');
+set('allow_anonymous_stats', false);
+set('git_tty', true);
+set('composer_options', '{{composer_action}} --verbose --prefer-dist --no-progress --no-interaction --optimize-autoloader');
+
+if (file_exists('hosts.yml')) {
+    // Hosts
+    inventory('hosts.yml');
+} else {
+    $host_staging = getenv('HOST_STAGING');
+    $host_staging_user = getenv('HOST_STAGING_USER');
+    $host_staging_deploy_path = getenv('HOST_STAGING_DEPLOY_PATH');
+    $host_production = getenv('HOST_PRODUCTION');
+    $host_production_user = getenv('HOST_PRODUCTION_USER');
+    $host_production_deploy_path = getenv('HOST_PRODUCTION_DEPLOY_PATH');
+
+    // Host staging
+    host($host_staging)
+        ->user($host_staging_user)
+        ->set('http_user', $host_staging_user)
+        ->set('env', [
+            'APP_ENV' => 'staging',
+        ])
+        ->set('deploy_path', $host_staging_deploy_path)
+        ->forwardAgent(true)
+        ->multiplexing(true)
+        ->addSshOption('UserKnownHostsFile', '/dev/null')
+        ->addSshOption('StrictHostKeyChecking', 'no')
+        ->stage('staging');
+
+    // Host production
+    host($host_production)
+        ->user($host_production_user)
+        ->set('http_user', $host_production_user)
+        ->set('env', [
+            'APP_ENV' => 'staging',
+        ])
+        ->set('deploy_path', $host_production_deploy_path)
+        ->forwardAgent(true)
+        ->multiplexing(true)
+        ->addSshOption('UserKnownHostsFile', '/dev/null')
+        ->addSshOption('StrictHostKeyChecking', 'no')
+        ->stage('production');
+}
+
+/**
+ * Helper tasks
+ */
+desc('Build app');
+task('build', function () {
+    $output = run('if [ -f {{deploy_path}}/current/bin/phing ]; then cd {{deploy_path}}/current; bin/phing build -Dhostname={{hostname}}; fi', ['tty' => true]);
+    writeln('<info>' . $output . '</info>');
+});
+
+// Tasks
+
+desc('Deploy Analytics Italia');
+task('deploy', [
+    'deploy:info',
+    'deploy:prepare',
+    'deploy:lock',
+    'deploy:release',
+    'deploy:update_code',
+    'deploy:shared',
+    'deploy:writable',
+    'deploy:vendors',
+    'deploy:clear_paths',
+    'deploy:symlink',
+    'build',
+    'deploy:unlock',
+    'cleanup',
+    'success'
+]);
+
+// [Optional] If deploy fails automatically unlock.
+after('deploy:failed', 'deploy:unlock');

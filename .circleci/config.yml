@@ -1,0 +1,137 @@
+# PHP CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-php/ for more details
+#
+version: 2
+jobs:
+  build_and_test:
+    docker:
+      # specify the version you desire here
+      - image: circleci/php:7.1-cli
+
+    environment:
+      - APP_ENV: "testing"
+
+    steps:
+      - checkout
+
+      - restore_cache:
+          keys:
+          - v1-php-{{ checksum "composer.json" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-php-
+
+      - restore_cache:
+          keys:
+          - v1-node-{{ checksum "package.json" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-node-
+
+      - run:
+          name: Install php dependencies
+          command: composer install -n --ignore-platform-reqs
+
+      - run:
+          name: Install node version defined in .node-version
+          command: |
+            git clone https://github.com/nodenv/node-build.git ../node-build
+            sudo ../node-build/install.sh
+            sudo node-build $(cat .node-version) /usr/local
+
+      - run:
+          name: Install node dependencies
+          command: npm install
+
+      - save_cache:
+          paths:
+            - ./vendor
+          key: v1-php-{{ checksum "composer.json" }}
+
+      - save_cache:
+          paths:
+            - ./node_modules
+          key: v1-node-{{ checksum "package.json" }}
+
+      - setup_remote_docker
+
+      # build
+      - run: bin/phing build
+
+      # test
+      - run: bin/phing test
+
+  deploy-staging:
+    docker:
+      # specify the version you desire here
+      - image: circleci/php:7.1-cli
+
+    environment:
+      - APP_ENV: "staging"
+
+    steps:
+      - checkout
+
+      - restore_cache:
+          keys:
+          - v1-php-{{ checksum "composer.json" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-php-
+
+      - run:
+          name: Install php dependencies
+          command: composer install -n --ignore-platform-reqs
+
+      # build
+      - run: bin/dep -vvv deploy staging
+
+  deploy-production:
+    docker:
+      # specify the version you desire here
+      - image: circleci/php:7.1-cli
+
+    environment:
+      - APP_ENV: "production"
+
+    steps:
+      - checkout
+
+      - restore_cache:
+          keys:
+          - v1-php-{{ checksum "composer.json" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-php-
+
+      - run:
+          name: Install php dependencies
+          command: composer install -n --ignore-platform-reqs
+
+      # build
+      - run: bin/dep -vvv deploy production
+
+workflows:
+  version: 2
+  build-test-deploy-staging:
+    jobs:
+      - build_and_test:
+          filters:
+            branches:
+              only:
+                - develop
+      - deploy-staging:
+          requires:
+            - build_and_test
+
+  build-test-deploy-production:
+    jobs:
+      - build_and_test:
+          filters:
+            branches:
+              only:
+                - master
+      - hold:
+          type: approval
+          requires:
+            - build_and_test
+      - deploy-production:
+          requires:
+            - hold

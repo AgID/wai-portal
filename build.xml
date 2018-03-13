@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Analytics Italia" default="build">
+
+    <!-- Loads properties from the environment with the 'env' as prefix -->
+    <property environment="env"/>
+    <!-- Property APP_ENV defaults to "local" -->
+    <if>
+        <not><isset property="env.APP_ENV"/></not>
+        <then>
+            <property name="env.APP_ENV" value="local"/>
+        </then>
+    </if>
+    <!-- Load properties from file -->
+    <if>
+        <available file="env/build.properties" type="file" property="ignored"/>
+        <then>
+            <property file="env/build.properties"/>
+        </then>
+    </if>
+
+    <!-- Target: clear -->
+    <target name="clear" depends="clean">
+    </target>
+
+    <!-- Target: clean -->
+    <target name="clean">
+        <echo msg="Cleaning environment..."/>
+        <!-- Set Docker .env file according to current environment -->
+        <echo message="Setting containers environment..."/>
+        <copy file="env/env-containers-${env.APP_ENV}" tofile="containers/.env" overwrite="true"/>
+        <echo msg="Deleting containers..."/>
+        <!-- Stopping and deleting running containers -->
+        <if>
+            <available file="containers" type="dir" property="ignored"/>
+            <then>
+                <echo msg="Stopping Docker containers currently running..."/>
+                <exec command="docker-compose down -v" dir="containers" passthru="true" checkreturn="true"/>
+            </then>
+        </if>
+        <!-- Delete containers data directory -->
+        <echo msg="Deleting containers data directory...."/>
+        <delete dir="containers/data" includeemptydirs="true" quiet="true"/>
+        <delete dir="containers/application/data" includeemptydirs="true" quiet="true"/>
+        <!-- Delete testing db file -->
+        <echo msg="Deleting testing database file...."/>
+        <delete file="database/testing.sqlite" quiet="true"/>
+        <!-- Delete containers logs directory -->
+        <echo msg="Deleting containers logs directory...."/>
+        <delete quiet="true">
+            <fileset dir="containers/logs">
+                <include name="*"/>
+            </fileset>
+            <fileset dir="containers/logs/nginx">
+                <include name="*"/>
+                <exclude name=".gitkeep"/>
+            </fileset>
+        </delete>
+        <!-- Delete node_modules directory -->
+        <echo msg="Deleting node_modules directory...."/>
+        <delete dir="node_modules" includeemptydirs="true" quiet="true"/>
+        <!-- Delete environment files -->
+        <echo msg="Deleting environment files...."/>
+        <delete file=".env" quiet="true"/>
+        <delete file="containers/.env" quiet="true"/>
+        <delete quiet="true">
+            <fileset dir=".">
+                <include name=".env.dusk.*"/>
+            </fileset>
+        </delete>
+    </target>
+
+    <!-- Target: clean -->
+    <target name="clean-deep" depends="clean">
+        <echo msg="Cleaning environment..."/>
+        <!-- Set Docker .env file according to current environment -->
+        <echo message="Setting containers environment..."/>
+        <copy file="env/env-containers-${env.APP_ENV}" tofile="containers/.env" overwrite="true"/>
+        <echo msg="Deleting images..."/>
+        <!-- Stopping and deleting running containers and images -->
+        <if>
+            <available file="containers" type="dir" property="ignored"/>
+            <then>
+                <echo msg="Stopping Docker containers currently running..."/>
+                <exec command="docker-compose down --rmi 'all' -v" dir="containers" passthru="true" checkreturn="true"/>
+            </then>
+        </if>
+    </target>
+
+    <!-- Target: prepare -->
+    <target name="prepare">
+        <echo msg="Preparing ${env.APP_ENV} environment..."/>
+        <!-- Set Docker .env file according to current environment -->
+        <echo message="Setting containers environment..."/>
+        <copy file="env/env-containers-${env.APP_ENV}" tofile="containers/.env" overwrite="true"/>
+        <if>
+            <isset property="hostname"/>
+            <then>
+                <!-- Set hostname -->
+                <echo message="Setting hostname to ${hostname}..."/>
+                <replaceregexp file="env/env-laravel-${env.APP_ENV}" match="{{hostname}}" replace="${hostname}"/>
+            </then>
+        </if>
+        <!-- Set Laravel .env file according to current environment -->
+        <echo message="Setting Laravel environment..."/>
+        <copy file="env/env-laravel-${env.APP_ENV}" tofile=".env" overwrite="true"/>
+        <if>
+            <or>
+                <equals arg1="${env.APP_ENV}" arg2="local"/>
+                <equals arg1="${env.APP_ENV}" arg2="testing"/>
+            </or>
+            <then>
+                <!-- Create a copy of xdebug.ini -->
+                <echo message="Copying xdebug.ini files..."/>
+                <copy file="containers/php-fpm/xdebug.template.ini" tofile="containers/php-fpm/xdebug.ini" overwrite="true"/>
+                <copy file="containers/workspace/xdebug.template.ini" tofile="containers/workspace/xdebug.ini" overwrite="true"/>
+                <!-- Set value of xdebug ide key to configured xdebug ide key -->
+                <echo message="Setting XDEBUG IDE KEY to ${XDEBUG_IDEKEY} ..."/>
+                <replaceregexp file="containers/php-fpm/xdebug.ini" match="xdebug.idekey=(\S*)" replace="xdebug.idekey=${XDEBUG_IDEKEY}"/>
+                <replaceregexp file="containers/workspace/xdebug.ini" match="xdebug.idekey=(\S*)" replace="xdebug.idekey=${XDEBUG_IDEKEY}"/>
+                <!-- Set XDEBUG remote host -->
+                <echo message="Setting XDEBUG remote host to ${XDEBUG_REMOTE_HOST} ..."/>
+                <replaceregexp file="containers/php-fpm/xdebug.ini" match="xdebug.remote_host=(\S*)" replace="xdebug.remote_host=${XDEBUG_REMOTE_HOST}"/>
+                <replaceregexp file="containers/workspace/xdebug.ini" match="xdebug.remote_host=(\S*)" replace="xdebug.remote_host=${XDEBUG_REMOTE_HOST}"/>
+                <!-- Set dusk .env file according to current environment -->
+                <echo msg="Setting Laravel Dusk .env file according to current environment..."/>
+                <copy file="env/env-dusk-${env.APP_ENV}" tofile=".env.dusk.${env.APP_ENV}" overwrite="true"/>
+            </then>
+        </if>
+        <!-- Set a new application key -->
+        <echo msg="Setting a new application secret key..."/>
+        <exec command="php artisan key:generate" passthru="true" checkreturn="true"/>
+        <!-- Install node modules -->
+        <echo msg="Installing node modules..."/>
+        <exec command="npm install" passthru="true" checkreturn="true"/>
+        <!-- Run laravel mix -->
+        <echo msg="Compiling assets with Laravel Mix..."/>
+        <if>
+            <or>
+                <equals arg1="${env.APP_ENV}" arg2="local"/>
+                <equals arg1="${env.APP_ENV}" arg2="testing"/>
+            </or>
+            <then>
+                <exec command="npm run dev" passthru="true" checkreturn="true"/>
+            </then>
+            <else>
+                <exec command="npm run prod" passthru="true" checkreturn="true"/>
+            </else>
+        </if>
+        <!--
+          If in testing environment copy application files in a location for
+          being included in the application container. This is necessary because
+          CircleCI doesn't support volume mount from docker host.
+        -->
+        <if>
+            <equals arg1="${env.APP_ENV}" arg2="testing"/>
+            <then>
+                <echo msg="Copying application files..."/>
+                <copy todir="containers/application/data">
+                    <fileset dir=".">
+                        <exclude name="containers/**"/>
+                    </fileset>
+                </copy>
+                <copy todir="containers/application/logs">
+                    <fileset dir="containers/logs">
+                    </fileset>
+                </copy>
+            </then>
+        </if>
+    </target>
+
+    <!-- Target: build (default) -->
+    <target name="build" depends="prepare, stop">
+        <echo msg="Building..."/>
+        <!-- Start containers -->
+        <echo msg="Starting Docker containers..."/>
+        <exec command="docker-compose up -d nginx mariadb redis mailhog workspace matomo" dir="containers" passthru="true" checkreturn="true"/>
+        <!-- Wait for mariadb container to start gracefully -->
+        <echo msg="Waiting for database container to start gracefully..."/>
+        <retry retryDelay="5" retryCount="12">
+            <exec command="docker-compose exec mariadb mysql -u root -proot default -e 'select 1'" dir="containers" checkreturn="true"/>
+        </retry>
+        <!-- Install Matomo database -->
+        <echo msg="Installing Matomo database..."/>
+        <exec command="docker-compose exec mariadb bash /opt/install_matomo_db.sh" dir="containers" checkreturn="true"/>
+        <!-- Run migrations -->
+        <echo msg="Running database migrations..."/>
+        <exec command="docker-compose exec workspace php artisan migrate" dir="containers" passthru="true" checkreturn="true"/>
+        <echo msg="Migrations done"/>
+        <!-- Create roles -->
+        <echo msg="Creating application roles..."/>
+        <exec command="docker-compose exec workspace php artisan app:create-roles" dir="containers" passthru="true" checkreturn="true"/>
+        <echo msg="Roles created"/>
+        <!-- Clear sessions and caches -->
+        <echo msg="Clearing sessions and caches..."/>
+        <exec command="docker-compose exec workspace php artisan view:clear" dir="containers" passthru="true" checkreturn="true"/>
+        <exec command="docker-compose exec workspace php artisan route:clear" dir="containers" passthru="true" checkreturn="true"/>
+        <exec command="docker-compose exec workspace php artisan config:clear" dir="containers" passthru="true" checkreturn="true"/>
+        <exec command="docker-compose exec workspace php artisan cache:clear" dir="containers" passthru="true" checkreturn="true"/>
+        <exec command="docker-compose exec workspace php artisan clear-compiled" dir="containers" passthru="true" checkreturn="true"/>
+        <!-- Populate IPA list -->
+        <echo msg="Populating IPA list..."/>
+        <exec command="docker-compose exec workspace php artisan app:update-ipa" dir="containers" passthru="true" checkreturn="true"/>
+        <echo msg="Deleting sessions..."/>
+        <delete>
+            <fileset dir="storage/framework/sessions">
+                <include name="*"/>
+            </fileset>
+        </delete>
+        <echo msg="Analytics Italia up and running!"/>
+    </target>
+
+    <!-- Target: build -->
+    <target name="test">
+        <echo msg="Testing..."/>
+        <!-- Check if we are in the right environment -->
+        <if>
+            <not>
+                <or>
+                    <equals arg1="${env.APP_ENV}" arg2="local"/>
+                    <equals arg1="${env.APP_ENV}" arg2="testing"/>
+                </or>
+            </not>
+            <then>
+                <fail message="Testing not allowed in environments other than local or testing"/>
+            </then>
+        </if>
+        <!-- Set permissions -->
+        <echo msg="Setting permissions..."/>
+        <exec command="docker-compose exec workspace bash -c 'rm -f /var/www/database/testing.sqlite; touch /var/www/database/testing.sqlite'" dir="containers"/>
+        <exec command="docker-compose exec php-fpm chown -R www-data:1000 storage" dir="containers" passthru="true" checkreturn="true"/>
+        <exec command="docker-compose exec php-fpm chown -R www-data:1000 database" dir="containers" passthru="true" checkreturn="true"/>
+        <!-- Execute phpunit to run unit tests -->
+        <echo msg="Running unit tests [PHPUnit]..."/>
+        <exec command="docker-compose exec workspace bin/phpunit --coverage-html coverage" dir="containers" passthru="true" checkreturn="true"/>
+        <!-- Execute dusk to run browser tests -->
+        <echo msg="Running browser tests [Laravel Dusk]..."/>
+        <exec command="docker-compose exec workspace php artisan dusk" dir="containers" passthru="true" checkreturn="true"/>
+    </target>
+
+    <!-- Target: stop -->
+    <target name="stop">
+        <echo msg="Stopping..."/>
+        <!-- Stop running containers -->
+        <if>
+            <available file="containers" type="dir" property="ignored"/>
+            <then>
+                <echo msg="Stopping Docker containers currently running..."/>
+                <exec command="docker-compose stop" dir="containers" passthru="true" checkreturn="true"/>
+                <echo msg="Analytics Italia stopped!"/>
+            </then>
+        </if>
+    </target>
+
+    <!-- Target: start -->
+    <target name="start">
+        <echo msg="Starting..."/>
+        <!-- Start containers -->
+        <if>
+            <available file="containers" type="dir" property="ignored"/>
+            <then>
+                <echo msg="Starting Docker containers..."/>
+                <exec command="docker-compose up -d nginx mariadb redis mailhog workspace" dir="containers" passthru="true" checkreturn="true"/>
+                <echo msg="Analytics Italia up and running!"/>
+            </then>
+        </if>
+    </target>
+
+    <!-- Target: enter workspace -->
+    <target name="ws">
+        <if>
+            <available file="containers" type="dir" property="ignored"/>
+            <then>
+                <echo msg="Entering into the workspace..."/>
+                <exec command="docker-compose exec workspace bash" dir="containers" passthru="true"/>
+            </then>
+        </if>
+    </target>
+
+    <!-- Target: start phpMyAdmin -->
+    <target name="pma">
+        <if>
+            <available file="containers" type="dir" property="ignored"/>
+            <then>
+                <echo msg="Running phpMyAdmin..."/>
+                <exec command="docker-compose up -d phpmyadmin" dir="containers" passthru="true"/>
+            </then>
+        </if>
+    </target>
+
+</project>

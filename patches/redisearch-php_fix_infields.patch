@@ -1,0 +1,19 @@
+diff --git a/src/Query/Builder.php b/src/Query/Builder.php
+index 6beea2e..a073d0a 100644
+--- a/src/Query/Builder.php
++++ b/src/Query/Builder.php
+@@ -48,13 +48,13 @@ public function limit(int $offset, int $pageSize = 10): BuilderInterface
+
+     public function inFields(int $number, array $fields): BuilderInterface
+     {
+-        $this->inFields = "INFIELDS $number {implode(' ', $fields)}";
++        $this->inFields = "INFIELDS $number ".implode(' ', $fields);
+         return $this;
+     }
+
+     public function inKeys(int $number, array $keys): BuilderInterface
+     {
+-        $this->inKeys = "INKEYS $number {implode(' ', $keys)}";
++        $this->inKeys = "INKEYS $number ".implode(' ', $keys);
+         return $this;
+     }
