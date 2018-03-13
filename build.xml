@@ -103,16 +103,16 @@
         <!-- Set Laravel .env file according to current environment -->
         <echo message="Setting Laravel environment..."/>
         <copy file="env/env-laravel-${env.APP_ENV}" tofile=".env" overwrite="true"/>
+        <!-- Create a copy of xdebug.ini -->
+        <echo message="Copying xdebug.ini files..."/>
+        <copy file="containers/php-fpm/xdebug.template.ini" tofile="containers/php-fpm/xdebug.ini" overwrite="true"/>
+        <copy file="containers/workspace/xdebug.template.ini" tofile="containers/workspace/xdebug.ini" overwrite="true"/>
         <if>
             <or>
                 <equals arg1="${env.APP_ENV}" arg2="local"/>
                 <equals arg1="${env.APP_ENV}" arg2="testing"/>
             </or>
             <then>
-                <!-- Create a copy of xdebug.ini -->
-                <echo message="Copying xdebug.ini files..."/>
-                <copy file="containers/php-fpm/xdebug.template.ini" tofile="containers/php-fpm/xdebug.ini" overwrite="true"/>
-                <copy file="containers/workspace/xdebug.template.ini" tofile="containers/workspace/xdebug.ini" overwrite="true"/>
                 <!-- Set value of xdebug ide key to configured xdebug ide key -->
                 <echo message="Setting XDEBUG IDE KEY to ${XDEBUG_IDEKEY} ..."/>
                 <replaceregexp file="containers/php-fpm/xdebug.ini" match="xdebug.idekey=(\S*)" replace="xdebug.idekey=${XDEBUG_IDEKEY}"/>
