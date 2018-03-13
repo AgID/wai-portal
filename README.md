@@ -17,9 +17,13 @@ bin/phing build
 ```
 
 #### Containers port open on localhost
-- web (nginx) => port 80 and 443
-- mail (mailhog) => port 8025
-- analytics service (matomo) => port 8090 and 9443
+- web (nginx) => port 80/http and 443/https
+- mail (mailhog) => port 8025/http
+- analytics service (matomo) => port 8090/http and 9443/https
+- phpMyAdmin => port 8080/http (not started automatically)
+
+#### Matomo container
+Login with `root` / `matomo`
 
 
 #### Available tasks
