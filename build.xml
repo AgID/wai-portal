@@ -180,16 +180,27 @@
             <exec command="docker-compose exec mariadb mysql -u root -proot default -e 'select 1'" dir="containers" checkreturn="true"/>
         </retry>
         <!-- Install Matomo database -->
-        <echo msg="Installing Matomo database..."/>
-        <exec command="docker-compose exec mariadb bash /opt/install_matomo_db.sh" dir="containers" checkreturn="true"/>
+        <exec command="docker-compose exec mariadb mysql -u root -proot matomo -e 'select 1'" dir="containers" returnProperty="checkMatomo"/>
+        <if>
+            <equals arg1="${checkMatomo}" arg2="1"/>
+            <then>
+                <echo msg="Installing Matomo database..."/>
+                <exec command="docker-compose exec mariadb bash /opt/install_matomo_db.sh" dir="containers" checkreturn="true"/>
+            </then>
+        </if>
         <!-- Run migrations -->
         <echo msg="Running database migrations..."/>
         <exec command="docker-compose exec workspace php artisan migrate" dir="containers" passthru="true" checkreturn="true"/>
         <echo msg="Migrations done"/>
         <!-- Create roles -->
-        <echo msg="Creating application roles..."/>
-        <exec command="docker-compose exec workspace php artisan app:create-roles" dir="containers" passthru="true" checkreturn="true"/>
-        <echo msg="Roles created"/>
+        <exec command="docker-compose exec mariadb mysql -u root -proot default -e 'select * from roles where id=1'" dir="containers" returnProperty="checkRoles"/>
+        <if>
+            <equals arg1="${checkRoles}" arg2="1"/>
+            <then>
+                <echo msg="Creating application roles..."/>
+                <exec command="docker-compose exec workspace php artisan app:create-roles" dir="containers" passthru="true" checkreturn="true"/>
+            </then>
+        </if>
         <!-- Clear sessions and caches -->
         <echo msg="Clearing sessions and caches..."/>
         <exec command="docker-compose exec workspace php artisan view:clear" dir="containers" passthru="true" checkreturn="true"/>
