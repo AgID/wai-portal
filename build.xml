@@ -191,11 +191,10 @@
         <!-- Run migrations -->
         <echo msg="Running database migrations..."/>
         <exec command="docker-compose exec workspace php artisan migrate" dir="containers" passthru="true" checkreturn="true"/>
-        <echo msg="Migrations done"/>
         <!-- Create roles -->
-        <exec command="docker-compose exec mariadb mysql -u root -proot default -e 'select * from abilities where id=1'" dir="containers" returnProperty="checkRoles"/>
+        <exec command="docker-compose exec mariadb mysql -u root -proot default -e 'select * from abilities where id=1'" dir="containers" outputProperty="checkRoles"/>
         <if>
-            <not><equals arg1="${checkRoles}" arg2="0"/></not>
+            <equals arg1="${checkRoles}" arg2=""/>
             <then>
                 <echo msg="Creating application roles..."/>
                 <exec command="docker-compose exec workspace php artisan app:create-roles" dir="containers" passthru="true" checkreturn="true"/>
