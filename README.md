@@ -1,5 +1,7 @@
 # Analytics Italia (working title)
 
+[![CircleCI](https://img.shields.io/circleci/project/github/teamdigitale/piwik-onboarding.svg?colorB=0066cc)](https://circleci.com/gh/teamdigitale/piwik-onboarding)
+
 ## Development
 
 ### Local environment
