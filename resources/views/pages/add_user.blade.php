@@ -41,13 +41,13 @@
       <div class="Form-field {{ $errors->has('role') ? 'is-invalid' : '' }}">
         @if ($errors->has('role'))
         <div class="Alert Alert--error Alert--withBg u-padding-r-top u-padding-r-bottom u-padding-r-right">
-        <p id="error-name" class="u-text-p u-padding-r-bottom">{{ $errors->first('name') }}</p>
+        <p id="error-name" class="u-text-p u-padding-r-bottom">{{ $errors->first('role') }}</p>
         @endif
         <label class="Form-label is-required" for="role">Ruolo <small>(vedi descrizione)</small>{{-- //TODO: put message in lang file --}}</label>
         <select class="Form-input" id="role" name="role" aria-required="true" required>
           <option value="" selected disabled>seleziona</option>
           <option value="reader" {{ old('role') == 'reader' ? "selected" : "" }}>{{ __('auth.roles.reader') }}</option>
-          <option value="manager {{ old('role') == 'manager' ? "selected" : "" }}">{{ __('auth.roles.manager') }}</option>
+          <option value="manager" {{ old('role') == 'manager' ? "selected" : "" }}>{{ __('auth.roles.manager') }}</option>
           <option value="admin" {{ old('role') == 'admin' ? "selected" : "" }}>{{ __('auth.roles.admin') }}</option>
         </select>
         @if ($errors->has('role'))</div>@endif
