@@ -93,6 +93,14 @@
         <echo message="Setting containers environment..."/>
         <copy file="env/env-containers-${env.APP_ENV}" tofile="containers/.env" overwrite="true"/>
         <if>
+            <isset property="SPID_SP_PRIVATE_KEY"/>
+            <then>
+                <!-- Set hostname -->
+                <echo message="Setting SPID SP private key..."/>
+                <replaceregexp file="config/spid-auth.php" match="{{SPID_SP_PRIVATE_KEY}}" replace="${SPID_SP_PRIVATE_KEY}"/>
+            </then>
+        </if>
+        <if>
             <isset property="hostname"/>
             <then>
                 <!-- Set hostname -->
