@@ -19,7 +19,7 @@ composer install
 bin/phing build
 ```
 
-#### Containers port open on localhost
+#### Ports open on localhost
 - web (nginx) => port 80/http and 443/https
 - mail (mailhog) => port 8025/http
 - analytics service (matomo) => port 8090/http and 9443/https
