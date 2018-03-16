@@ -29,5 +29,6 @@
         <env name="CACHE_DRIVER" value="array"/>
         <env name="SESSION_DRIVER" value="array"/>
         <env name="QUEUE_DRIVER" value="sync"/>
+        <env name="LOG_CHANNEL" value="testing"/>
     </php>
 </phpunit>

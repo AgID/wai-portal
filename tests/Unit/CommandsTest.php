@@ -5,6 +5,7 @@ namespace Tests\Unit;
 use App\Models\PublicAdministration;
 use App\Models\User;
 use App\Models\Website;
+use Carbon\Carbon;
 use Ehann\RediSearch\Index;
 use Ehann\RediSearch\Redis\RedisClient;
 use Exception;
@@ -17,6 +18,42 @@ class CommandsTest extends TestCase
     use RefreshDatabase;
 
     /**
+     * Models required by this test
+     */
+    protected $user, $user_pending, $website, $website_pending;
+
+    /**
+     * Test setUp
+     */
+    protected function setUp()
+    {
+        parent::setUp();
+        $this->user = factory(User::class)->states('pending')->create();
+        $this->user_pending = factory(User::class)->states('pending')->create();
+        $this->user->publicAdministration()->associate(factory(PublicAdministration::class)->create());
+        $this->user_pending->publicAdministration()->associate(factory(PublicAdministration::class)->create());
+        $this->user->save();
+        $this->user_pending->save();
+        $this->website = factory(Website::class)->make();
+        $this->website_pending = factory(Website::class)->make();
+        $this->user->publicAdministration->websites()->save($this->website);
+        $this->user_pending->publicAdministration->websites()->save($this->website_pending);
+        $this->user->publicAdministration->save();
+        $this->user_pending->publicAdministration->save();
+    }
+
+    /**
+     * Test tearDown
+     */
+    protected function tearDown()
+    {
+        if (isset($this->website->analytics_id)) {
+            $this->app->make('analytics-service')->deleteSite($this->website->analytics_id);
+            $this->app->make('analytics-service')->deleteUser($this->user->email);
+        }
+    }
+
+    /**
      * Test CheckPendingWebsite class
      *
      * @return void
@@ -24,22 +61,8 @@ class CommandsTest extends TestCase
      */
     public function testCheckPendingWebsites()
     {
-        $this->assertDatabaseMissing('users', [
-            'status' => 'pending'
-        ]);
-        $this->assertDatabaseMissing('public_administrations', [
-            'status' => 'pending'
-        ]);
-        $this->assertDatabaseMissing('websites', [
-            'status' => 'pending'
-        ]);
-        $user = factory(User::class)->states('pending')->create();
-        $user->publicAdministration()->associate(factory(PublicAdministration::class)->create());
-        $user->save();
-        $website = factory(Website::class)->make();
-        $user->publicAdministration->websites()->save($website);
-        $user->publicAdministration->save();
         $this->artisan('app:check-websites');
+
         $this->assertDatabaseHas('users', [
             'status' => 'pending'
         ]);
@@ -49,9 +72,11 @@ class CommandsTest extends TestCase
         $this->assertDatabaseHas('websites', [
             'status' => 'pending'
         ]);
-        $analyticsId = $this->app->make('analytics-service')->registerSite('Sito istituzionale', $website->url, $user->publicAdministration->name);
-        $website->analytics_id = $analyticsId;
-        $website->save();
+
+        $analyticsId = $this->app->make('analytics-service')->registerSite('Sito istituzionale', $this->website->url, $this->user->publicAdministration->name);
+        $this->website->analytics_id = $analyticsId;
+        $this->website->save();
+
         $client = new TrackingClient(['base_uri' => config('analytics-service.api_base_uri')]);
         $client->request('GET', '/piwik.php', [
             'query' => [
@@ -60,7 +85,12 @@ class CommandsTest extends TestCase
             ],
             'verify' => false
         ]);
+
+        $this->website_pending->created_at = Carbon::now()->subDays(16);
+        $this->website_pending->save();
+
         $this->artisan('app:check-websites');
+
         $this->assertDatabaseHas('websites', [
             'status' => 'active'
         ]);
@@ -70,8 +100,12 @@ class CommandsTest extends TestCase
         $this->assertDatabaseHas('websites', [
             'status' => 'active'
         ]);
-        $this->app->make('analytics-service')->deleteSite($analyticsId);
-        $this->app->make('analytics-service')->deleteUser($user->email);
+        $this->assertDatabaseMissing('public_administrations', [
+            'status' => 'pending'
+        ]);
+        $this->assertDatabaseMissing('websites', [
+            'status' => 'pending'
+        ]);
     }
 
     /**

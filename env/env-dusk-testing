@@ -4,7 +4,7 @@ APP_KEY=base64:Y8vwgOYYxwd/2wR5unhAsB4wsBQvG4eT+etGi0MkFbQ=
 APP_DEBUG=false
 APP_URL=https://nginx
 
-LOG_CHANNEL=stack
+LOG_CHANNEL=testing
 
 DB_CONNECTION=sqlite_testing
 DB_HOST=
