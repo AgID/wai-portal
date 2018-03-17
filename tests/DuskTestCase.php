@@ -28,6 +28,7 @@ abstract class DuskTestCase extends BaseTestCase
     {
         static::useChromedriver('/usr/local/bin/chromedriver');
         static::startChromeDriver();
+        touch(storage_path('logs/testing.log'));
     }
 
     /**
