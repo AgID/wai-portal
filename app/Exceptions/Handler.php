@@ -4,8 +4,9 @@ namespace App\Exceptions;
 
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 
 class Handler extends ExceptionHandler
 {
@@ -51,7 +52,9 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-        if ($exception instanceof NotFoundHttpException || $exception instanceof ModelNotFoundException) {
+        if ($exception instanceof NotFoundHttpException ||
+            $exception instanceof ModelNotFoundException ||
+            $exception instanceof MethodNotAllowedHttpException) {
             return response()->view('pages.404', ['not_found_path' => request()->path()]);
         }
 
