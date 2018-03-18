@@ -30,6 +30,7 @@ set('writable_dirs', [
 set('default_stage', 'staging');
 set('allow_anonymous_stats', false);
 set('git_tty', true);
+set('cleanup_use_sudo', true);
 set('composer_options', '{{composer_action}} --verbose --prefer-dist --no-progress --no-interaction --optimize-autoloader');
 
 if (file_exists('hosts.yml')) {
