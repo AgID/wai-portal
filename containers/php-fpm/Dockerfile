@@ -8,7 +8,7 @@
 # See: https://github.com/Laradock/php-fpm
 #
 
-FROM laradock/php-fpm:1.4-71
+FROM laradock/php-fpm:2.0-71
 
 LABEL maintainer="Davide Porrovecchio <davide.porrovecchio@agid.gov.it>"
 
