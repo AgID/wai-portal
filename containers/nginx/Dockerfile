@@ -1,6 +1,6 @@
 FROM nginx:stable-alpine
 
-MAINTAINER Davide Porrovecchio <davide.porrovecchio@agid.gov.it>
+LABEL maintainer="Davide Porrovecchio <davide.porrovecchio@agid.gov.it>"
 
 ADD nginx.conf /etc/nginx/
 

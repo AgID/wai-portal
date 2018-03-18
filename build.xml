@@ -242,9 +242,10 @@
         </if>
         <!-- Set permissions -->
         <echo msg="Setting permissions..."/>
-        <exec command="docker-compose exec workspace bash -c 'rm -f /var/www/database/testing.sqlite; touch /var/www/database/testing.sqlite'" dir="containers"/>
-        <exec command="docker-compose exec php-fpm chown -R www-data:1000 storage" dir="containers" passthru="true" checkreturn="true"/>
-        <exec command="docker-compose exec php-fpm chown -R www-data:1000 database" dir="containers" passthru="true" checkreturn="true"/>
+        <exec command="docker-compose exec workspace bash -c 'rm -f database/testing.sqlite; touch database/testing.sqlite'" dir="containers"/>
+        <exec command="docker-compose exec workspace bash -c 'touch storage/logs/testing.log'" dir="containers"/>
+        <exec command="docker-compose exec php-fpm chown -R www-data:www-data storage" dir="containers" passthru="true" checkreturn="true"/>
+        <exec command="docker-compose exec php-fpm chown -R www-data:www-data database" dir="containers" passthru="true" checkreturn="true"/>
         <!-- Execute phpunit to run unit tests -->
         <echo msg="Running unit tests [PHPUnit]..."/>
         <exec command="docker-compose exec workspace bin/phpunit --coverage-html coverage" dir="containers" passthru="true" checkreturn="true"/>

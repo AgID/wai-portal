@@ -1,6 +1,6 @@
 FROM tianon/true
 
-MAINTAINER Davide Porrovecchio <davide.porrovecchio@agid.gov.it>
+LABEL maintainer="Davide Porrovecchio <davide.porrovecchio@agid.gov.it>"
 
 ADD data /var/www
 ADD logs /var/log

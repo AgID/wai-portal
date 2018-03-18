@@ -43,7 +43,7 @@ return [
 
         'testing' => [
             'driver' => 'single',
-            'path' => env('LOG_TESTING_PATH', storage_path('logs/testing.log')),
+            'path' => storage_path('logs/testing.log'),
             'level' => 'debug',
         ],
 

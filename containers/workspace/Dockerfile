@@ -10,7 +10,7 @@
 
 FROM laradock/workspace:2.0-71
 
-MAINTAINER Davide Porrovecchio <davide.porrovecchio@agid.gov.it>
+LABEL maintainer="Davide Porrovecchio <davide.porrovecchio@agid.gov.it>"
 
 # Remove Faillog and Lastlog to reduce the size of the final image.
 RUN rm /var/log/lastlog /var/log/faillog

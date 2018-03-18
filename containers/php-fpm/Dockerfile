@@ -10,7 +10,7 @@
 
 FROM laradock/php-fpm:1.4-71
 
-MAINTAINER Davide Porrovecchio <davide.porrovecchio@agid.gov.it>
+LABEL maintainer="Davide Porrovecchio <davide.porrovecchio@agid.gov.it>"
 
 #
 #--------------------------------------------------------------------------
@@ -85,6 +85,7 @@ COPY ./php.ini /usr/local/etc/php/php.ini
 #RUN rm -r /var/lib/apt/lists/*
 
 RUN usermod -u 1000 www-data
+RUN groupmod -g 1000 www-data
 
 WORKDIR /var/www
 
