@@ -5,6 +5,7 @@ APP_DEBUG=false
 APP_URL=https://nginx
 
 LOG_CHANNEL=testing
+LOG_TESTING_PATH=/var/www/storage/logs/testing.log
 
 DB_CONNECTION=sqlite_testing
 DB_HOST=

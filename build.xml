@@ -48,11 +48,9 @@
         <echo msg="Deleting containers logs directory...."/>
         <delete quiet="true">
             <fileset dir="containers/logs">
+                <include name="**/*.log"/>
+                <include name="*.log"/>
                 <include name="*"/>
-            </fileset>
-            <fileset dir="containers/logs/nginx">
-                <include name="*"/>
-                <exclude name=".gitkeep"/>
             </fileset>
         </delete>
         <!-- Delete node_modules directory -->
