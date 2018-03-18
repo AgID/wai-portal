@@ -13,4 +13,14 @@ class HomeController extends Controller
     {
         return view('pages.home');
     }
+
+    /**
+     * Show the application faqs.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function faq()
+    {
+        return view('pages.faq');
+    }
 }

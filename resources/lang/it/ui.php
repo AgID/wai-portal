@@ -41,6 +41,17 @@ return [
     'cookiebar_privacy_policy' => 'Privacy policy',
 
     'pages' => [
+        'home' => [
+            'title' => 'Home'
+        ],
+        '404' => [
+            'title' => 'Pagina non trovata',
+            'return_home' => 'Ritorna alla pagina iniziale.',
+            'not_found' => 'La pagina :page non esiste.'
+        ],
+        'faq' => [
+            'title' => 'Domande frequenti'
+        ],
         'dashboard' => [
             'title' => 'Dashboard',
             'websites' => 'Siti web',

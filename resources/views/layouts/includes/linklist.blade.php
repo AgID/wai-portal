@@ -11,7 +11,7 @@
 	<li data-megamenu-class="Megamenu-item @if ($item['url'] == url(request()->path())) is-current @endif">
 		<a href="{{ $item['url'] }}" class="@if ($item['url'] == url(request()->path())) is-current u-textWeight-700 @endif Linklist-link"
       data-megamenu-class="@if ($item['url'] == url(request()->path())) is-current @endif">
-			{{ $item['title'] }}
+			{{ __('ui.pages.'.$item['name'].'.title') }}
 		</a>
     @isset ($item['subitems'])
       @include('layouts.includes.linklist', ['internal' => true, 'items' => $item['subitems']])

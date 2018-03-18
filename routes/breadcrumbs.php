@@ -5,6 +5,12 @@ Breadcrumbs::register('home', function ($breadcrumbs) {
     $breadcrumbs->push(__('ui.site_title'), route('home', [], false));
 });
 
+// Analytics Italia > FAQs
+Breadcrumbs::register('faq', function ($breadcrumbs) {
+    $breadcrumbs->parent('home');
+    $breadcrumbs->push(__('ui.pages.faq.title'), route('faq', [], false));
+});
+
 // Analytics Italia > Dashboard
 Breadcrumbs::register('dashboard', function ($breadcrumbs) {
     $breadcrumbs->parent('home');
@@ -75,4 +81,10 @@ Breadcrumbs::register('auth-verify', function ($breadcrumbs) {
 Breadcrumbs::register('auth-register', function ($breadcrumbs) {
     $breadcrumbs->parent('home');
     $breadcrumbs->push(__('ui.pages.auth-register.title'), route('auth-register', [], false));
+});
+
+// Analytics Italia > 404
+Breadcrumbs::register('errors.404', function ($breadcrumbs) {
+    $breadcrumbs->parent('home');
+    $breadcrumbs->push(__('ui.pages.404.title'));
 });

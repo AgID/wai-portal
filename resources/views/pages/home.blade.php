@@ -1,6 +1,6 @@
 @extends('layouts.default')
 
-@section('title', 'Home')
+@section('title', __('ui.pages.home.title'))
 
 @section('content')
     Home Page

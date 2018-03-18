@@ -25,6 +25,11 @@ Route::get('/privacy', [
     'uses' => 'HomeController@home'
 ]);
 
+Route::get('/faq', [
+    'as' => 'faq',
+    'uses' => 'HomeController@faq'
+]);
+
 /**
  * Authentication related routes
  */

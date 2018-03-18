@@ -10,8 +10,10 @@ site:
   pill: alpha
 
   menu_items:
-    - title: Dashboard
+    - name: dashboard
       url: /dashboard
+    - name: faq
+      url: /faq
 
   network_links:
     trasformazione_digitale:
