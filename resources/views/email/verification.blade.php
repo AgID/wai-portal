@@ -2,7 +2,7 @@
 # Account creato
 
 Ciao {{ $user->name }} {{ $user->familyName }},
-grazie per esserti registrato su Analytics Italia!
+grazie per esserti registrato su {{ config('app.name') }}!
 
 Per completare la tua iscrizione è necessaria la conferma del tuo indirizzo
 email.
@@ -10,9 +10,6 @@ email.
 @component('mail::button', ['url' => route('auth-do_verify', $user->verificationToken)])
 Conferma indirizzo email
 @endcomponent
-
-Grazie,<br>
-Il team di {{ config('app.name') }}
 @endcomponent
 
 {{-- //TODO: put message in lang file --}}
