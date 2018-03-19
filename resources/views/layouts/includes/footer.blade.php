@@ -16,21 +16,6 @@
         <span class="Footer-logo-separator--partner"></span>
         <span class="Partner-name">{{ __('ui.partner_full') }}</span>
       </a>
-      {{--<p class="u-padding-bottom-l" style="opacity: 0.5">{{ __('ui.in_collaboration_with') }}</p>
-      <div class="Grid">
-        <div class="u-inlineBlock">
-          <a href="{{ $site['partner_link'] }}" class="u-linkClean">
-            <img class="u-padding-top-xxs u-padding-right-xs" src="{{ asset($site['gov_logo']) }}" alt="" style="height: 4em; max-width: 100%">
-            <img class="u-padding-top-xxs u-padding-right-xxs" src="{{ asset($site['partner_logo']) }}" alt="" style="height: 4em; max-width: 100%">
-          </a>
-        </div>
-        <div class="Grid-cell u-size1of12 u-padding-left-none team-bar"></div>
-        <p class="Grid-cell u-size5of12 Footer-siteName u-padding-left-xs u-text-r-xs">
-          <a href="{{ $site['partner_link'] }}" class="u-color-white u-linkClean">
-            {{ strtoupper(__('ui.partner_full')) }}
-          </a>
-        </p>
-      </div>--}}
     </div>
 
     <div class="Social Grid-cell u-lg-sizeFull u-flex u-flexJustifyEnd u-textRight u-padding-r-bottom u-flexAlignSelfEnd">
