@@ -1,15 +1,15 @@
 @component('mail::message')
-# Account creato
+  # Account creato
 
-Ciao {{ $user->name }} {{ $user->familyName }},
-grazie per esserti registrato su {{ config('app.name') }}!
+  Ciao {{ $user->name }} {{ $user->familyName }},
+  grazie per esserti registrato su {{ config('app.name') }}!
 
-Per completare la tua iscrizione è necessaria la conferma del tuo indirizzo
-email.
+  Per completare la tua iscrizione è necessaria la conferma del tuo indirizzo
+  email.
 
-@component('mail::button', ['url' => route('auth-do_verify', $user->verificationToken)])
-Conferma indirizzo email
-@endcomponent
+  @component('mail::button', ['url' => route('auth-do_verify', $user->verificationToken)])
+  Conferma indirizzo email
+  @endcomponent
 @endcomponent
 
 {{-- //TODO: put message in lang file --}}

@@ -36,6 +36,15 @@
                  url("{{ asset('toolkit/assets/80f3eca6.woff') }}") format("woff"),
                  url("{{ asset('toolkit/assets/cf91165a.svg') }}") format("svg");
         }
+        table {
+          border-collapse:separate;
+        }
+        .ExternalClass p, .ExternalClass span, .ExternalClass font, .ExternalClass td {
+          line-height: 100%;
+        }
+        .ExternalClass {
+          width: 100%;
+        }
         @include('email.templates.html.font-icon')
     </style>
     <table class="wrapper" style="box-sizing: content-box" width="100%" cellpadding="0" cellspacing="0">
@@ -44,11 +53,9 @@
                 <table class="content" width="100%" cellpadding="0" cellspacing="0">
                     @include('email.templates.html.header')
 
-                    <!-- Email Body -->
                     <tr>
                         <td class="body" width="100%" cellpadding="0" cellspacing="0">
                             <table class="u-padding-r-all inner-body" align="center" width="570" cellpadding="0" cellspacing="0">
-                                <!-- Body content -->
                                 <tr>
                                     <td class="content-cell">
                                         <div class="Prose">
