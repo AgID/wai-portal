@@ -34,6 +34,7 @@ class RegisterTest extends DuskTestCase
                     ->assertPathIs('/register')
                     ->assertSee('Registrazione')
                     ->type('email', 'nome.cognome@example.com')
+                    ->click('label[for="accept_terms"]')
                     ->press('REGISTRA')
                     ->assertSee("Una email di verifica è stata inviata all'indirizzo");
             $verificationToken = $this->getVerificationToken(1);
