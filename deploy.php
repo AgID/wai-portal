@@ -9,11 +9,11 @@ set('application', 'Analytics Italia');
 // Project repository
 set('repository', 'git@github.com:teamdigitale/piwik-onboarding.git');
 
-// Shared files/dirs between deploys 
+// Shared files/dirs between deploys
 set('shared_files', []);
 set('shared_dirs', ['env', 'containers/data']);
 
-// Writable dirs by web server 
+// Writable dirs by web server
 set('writable_dirs', [
     'bootstrap/cache',
     'containers/data',
@@ -78,7 +78,7 @@ if (file_exists('hosts.yml')) {
  */
 desc('Build app');
 task('build', function () {
-    $output = run('if [ -f {{deploy_path}}/current/bin/phing ]; then cd {{deploy_path}}/current; bin/phing build -Dhostname={{hostname}}; fi', ['tty' => true]);
+    $output = run('if [ -f {{deploy_path}}/current/bin/phing ]; then cd {{deploy_path}}/current; bin/phing build -DHOSTNAME={{hostname}}; fi', ['tty' => true]);
     writeln('<info>' . $output . '</info>');
 });
 
