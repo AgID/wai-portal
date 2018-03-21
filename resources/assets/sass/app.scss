@@ -52,7 +52,7 @@
       vertical-align: middle;
 
       @media screen and (max-width: 767px) {
-        font-size: 1rem;
+        display: none;
       }
     }
 
@@ -74,8 +74,8 @@
   }
 
   .Header-institutional {
-    padding-bottom: 1.6rem;
-    padding-top: 1.6rem;
+    padding-bottom: 0.8rem;
+    padding-top: 0.8rem;
   }
 
   .Header-spid {

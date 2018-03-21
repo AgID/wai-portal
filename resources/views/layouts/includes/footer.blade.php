@@ -1,7 +1,7 @@
 <footer class="Footer">
   <div class="Grid Grid--withGutter">
     <div class="Footer-logo-container--owner Grid-cell u-md-size1of2 u-lg-size5of12 u-padding-r-bottom">
-      <a href="{{ $site['owner_link'] }}" class="u-linkClean u-text-r-m u-inlineBlock u-color-white" title="{{ __('ui.owner_full') }}">
+      <a href="{{ $site['owner_link'] }}" class="u-linkClean u-text-sm-s u-text-md-m u-text-lg-m u-inlineBlock u-color-white" title="{{ __('ui.owner_full') }}">
         <img class="Footer-logo u-padding-all-none" src="{{ asset($site['owner_logo']) }}" alt="{{ __('ui.owner_full') }}">
         <span class="Footer-logo-separator"></span>
         <span class="Owner-name">{{ __('ui.owner_full') }}</span>
