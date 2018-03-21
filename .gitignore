@@ -4,8 +4,7 @@
 /bin
 /containers/data
 /containers/application/data
-/containers/logs/**/*log
-/containers/logs/**/messages
+/containers/logs/**/*
 /containers/.env
 /containers/**/xdebug.ini
 /packages
