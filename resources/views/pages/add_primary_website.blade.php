@@ -37,6 +37,13 @@
       <input class="Form-input is-disabled" id="pec" name="pec" aria-required="true" required readonly>
     </div>
   </fieldset>
+  <fieldset class="Form-field Form-field--choose Grid-cell">
+    <legend class="Form-legend is-required">Condizioni del servizio</legend>
+    <label class="Form-label Form-label--block" for="accept_terms">
+      <input type="checkbox" class="Form-input" id="accept_terms" name="accept_terms" aria-required="true" required>
+      <span class="Form-fieldIcon" role="presentation"></span>Accetto le condizioni del servizio
+    </label>
+  </fieldset>
   <input type="hidden" name="ipa_code" value=""/>
   <div class="Form-field Grid-cell u-textRight">
     <button type="submit" class="Button Button--default u-text-xs">Invia{{-- //TODO: put message in lang file --}}</button>

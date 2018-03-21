@@ -29,7 +29,8 @@ class RegisterController extends Controller
     public function register(Request $request)
     {
         $request->validate([
-            'email' => 'required|unique:users|email'
+            'email' => 'required|unique:users|email',
+            'accept_terms' => 'required'
         ]);
         $SPIDUser = session()->get('spid_user');
         $user =  User::create([

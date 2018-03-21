@@ -55,7 +55,8 @@ class WebsiteController extends Controller
             'name' => 'required',
             'site' => 'required',
             'type' => 'required',
-            'ipa_code' => 'required|exists:public_administrations'
+            'ipa_code' => 'required|exists:public_administrations',
+            'accept_terms' => 'required'
         ]);
 
         $publicAdministration = PublicAdministration::findByIPACode($validatedData['ipa_code']);

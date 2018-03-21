@@ -42,7 +42,8 @@ class PublicAdministrationController extends Controller
             'name' => 'required',
             'site' => 'required',
             'pec' => 'email|nullable',
-            'ipa_code' => 'required|unique:public_administrations'
+            'ipa_code' => 'required|unique:public_administrations',
+            'accept_terms' => 'required'
         ]);
 
         $redis = Redis::connection('ipaindex');
