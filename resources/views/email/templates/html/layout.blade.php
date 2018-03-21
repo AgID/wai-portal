@@ -39,6 +39,9 @@
         table {
           border-collapse:separate;
         }
+        code {
+          word-break: break-all;
+        }
         .ExternalClass p, .ExternalClass span, .ExternalClass font, .ExternalClass td {
           line-height: 100%;
         }
