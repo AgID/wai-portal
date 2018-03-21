@@ -1,20 +1,33 @@
+# dependencies
 /node_modules
-/public/storage
 /vendor
 /bin
+
+# docker data
 /containers/data
 /containers/application/data
 /containers/logs/**/*
 /containers/.env
 /containers/**/xdebug.ini
-/packages
+
+# testing
 /coverage
 /database/testing.sqlite
+
+# related to local development
+TODO
 .php_cs.cache
+.idea
+
+# generated files
 .env
 .env.dusk.*
-.idea
+/public/storage
+/public/css/app.css
+/public/js/app.js
+
+# ignored for security reasons
 build.properties
 /hosts.yml
 /ssh_keys
-TODO
+
