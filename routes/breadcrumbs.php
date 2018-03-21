@@ -78,6 +78,12 @@ Breadcrumbs::register('auth-verify', function ($breadcrumbs) {
 });
 
 // Analytics Italia > SPID Login
+Breadcrumbs::register('auth-do_verify', function ($breadcrumbs) {
+    $breadcrumbs->parent('home');
+    $breadcrumbs->push(__('ui.pages.auth-verify.title'), route('auth-verify', [], false));
+});
+
+// Analytics Italia > SPID Login
 Breadcrumbs::register('auth-register', function ($breadcrumbs) {
     $breadcrumbs->parent('home');
     $breadcrumbs->push(__('ui.pages.auth-register.title'), route('auth-register', [], false));
