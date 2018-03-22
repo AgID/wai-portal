@@ -26,6 +26,14 @@
     @media screen and (max-width: 767px) {
       width: 15% !important;
     }
+
+    img {
+      @media screen and (max-width: 350px) {
+        height: 3.5rem;
+        width: 3.5rem;
+        vertical-align: inherit !important;
+      }
+    }
   }
 
   .Header-titleLink {
