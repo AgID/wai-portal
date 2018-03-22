@@ -706,12 +706,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/italia/spid-laravel.git",
-                "reference": "c882f60c90813b2f55f6da94b77057605b6050d4"
+                "reference": "d8404f0e3521fd707df7017c00ea55582d45ef76"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/italia/spid-laravel/zipball/c882f60c90813b2f55f6da94b77057605b6050d4",
-                "reference": "c882f60c90813b2f55f6da94b77057605b6050d4",
+                "url": "https://api.github.com/repos/italia/spid-laravel/zipball/d8404f0e3521fd707df7017c00ea55582d45ef76",
+                "reference": "d8404f0e3521fd707df7017c00ea55582d45ef76",
                 "shasum": ""
             },
             "require": {
@@ -737,7 +737,7 @@
                 },
                 "patches": {
                     "onelogin/php-saml": {
-                        "Compatibility with SPID": "https://cdn.rawgit.com/italia/spid-laravel/master/patches/php-saml-remove_mcrypt-spid.patch"
+                        "Compatibility with SPID": "https://rawgit.com/italia/spid-laravel/master/patches/php-saml-remove_mcrypt-spid.patch"
                     }
                 }
             },
@@ -763,7 +763,7 @@
                 "laravel",
                 "laravel 5"
             ],
-            "time": "2018-03-21T09:00:03+00:00"
+            "time": "2018-03-21T21:36:23+00:00"
         },
         {
             "name": "jakub-onderka/php-console-color",
@@ -3453,16 +3453,16 @@
         },
         {
             "name": "friendsofphp/php-cs-fixer",
-            "version": "v2.11.0",
+            "version": "v2.11.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/FriendsOfPHP/PHP-CS-Fixer.git",
-                "reference": "2ac8defbe07599b79005cca764bfffe7aeac0bf2"
+                "reference": "ad94441c17b8ef096e517acccdbf3238af8a2da8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FriendsOfPHP/PHP-CS-Fixer/zipball/2ac8defbe07599b79005cca764bfffe7aeac0bf2",
-                "reference": "2ac8defbe07599b79005cca764bfffe7aeac0bf2",
+                "url": "https://api.github.com/repos/FriendsOfPHP/PHP-CS-Fixer/zipball/ad94441c17b8ef096e517acccdbf3238af8a2da8",
+                "reference": "ad94441c17b8ef096e517acccdbf3238af8a2da8",
                 "shasum": ""
             },
             "require": {
@@ -3543,7 +3543,7 @@
                 }
             ],
             "description": "A tool to automatically fix PHP code style",
-            "time": "2018-03-20T18:11:36+00:00"
+            "time": "2018-03-21T17:41:26+00:00"
         },
         {
             "name": "fzaninotto/faker",
@@ -3877,16 +3877,16 @@
         },
         {
             "name": "nunomaduro/collision",
-            "version": "v2.0.1",
+            "version": "v2.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nunomaduro/collision.git",
-                "reference": "e60011a179d97f33ee394865b1cec472247df3b9"
+                "reference": "245958b02c6a9edf24627380f368333ac5413a51"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nunomaduro/collision/zipball/e60011a179d97f33ee394865b1cec472247df3b9",
-                "reference": "e60011a179d97f33ee394865b1cec472247df3b9",
+                "url": "https://api.github.com/repos/nunomaduro/collision/zipball/245958b02c6a9edf24627380f368333ac5413a51",
+                "reference": "245958b02c6a9edf24627380f368333ac5413a51",
                 "shasum": ""
             },
             "require": {
@@ -3935,7 +3935,7 @@
                 "php",
                 "symfony"
             ],
-            "time": "2018-03-20T21:27:23+00:00"
+            "time": "2018-03-21T20:11:24+00:00"
         },
         {
             "name": "phar-io/manifest",

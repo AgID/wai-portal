@@ -63,7 +63,7 @@ if (file_exists('hosts.yml')) {
         ->user($host_production_user)
         ->set('http_user', $host_production_user)
         ->set('env', [
-            'APP_ENV' => 'staging',
+            'APP_ENV' => 'production',
         ])
         ->set('deploy_path', $host_production_deploy_path)
         ->forwardAgent(true)
@@ -74,10 +74,19 @@ if (file_exists('hosts.yml')) {
 }
 
 /**
- * Helper tasks
+ * Copy build.properties file tasks
+ */
+desc('Copy build.properties file');
+task('deploy:copy_properties', function () {
+    $output = run('if [ -f {{deploy_path}}/properties/build.properties ]; then cp -v {{deploy_path}}/properties/build.properties {{deploy_path}}/shared/env/build.properties; fi');
+    writeln('<info>' . $output . '</info>');
+});
+
+/**
+ * Build tasks
  */
 desc('Build app');
-task('build', function () {
+task('deploy:build', function () {
     $output = run('if [ -f {{deploy_path}}/current/bin/phing ]; then cd {{deploy_path}}/current; bin/phing build -DHOSTNAME={{hostname}}; fi', ['tty' => true]);
     writeln('<info>' . $output . '</info>');
 });
@@ -96,7 +105,8 @@ task('deploy', [
     'deploy:vendors',
     'deploy:clear_paths',
     'deploy:symlink',
-    'build',
+    'deploy:copy_properties',
+    'deploy:build',
     'deploy:unlock',
     'cleanup',
     'success'

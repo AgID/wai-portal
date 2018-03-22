@@ -89,26 +89,44 @@
         <echo msg="Preparing ${env.APP_ENV} environment..."/>
         <!-- Set Docker .env file according to current environment -->
         <echo message="Setting containers environment..."/>
-        <copy file="env/env-containers-${env.APP_ENV}" tofile="containers/.env" overwrite="true"/>
-        <if>
-            <isset property="SPID_SP_PRIVATE_KEY"/>
-            <then>
-                <!-- Set SPID private key -->
-                <echo message="Setting SPID SP private key..."/>
-                <replaceregexp file="config/spid-auth.php" match="{{SPID_SP_PRIVATE_KEY}}" replace="${SPID_SP_PRIVATE_KEY}"/>
-            </then>
-        </if>
-        <if>
-            <isset property="HOSTNAME"/>
-            <then>
-                <!-- Set hostname -->
-                <echo message="Setting hostname to ${HOSTNAME}..."/>
-                <replaceregexp file="env/env-laravel-${env.APP_ENV}" match="{{HOSTNAME}}" replace="${HOSTNAME}"/>
-            </then>
-        </if>
+        <copy file="env/env-containers-${env.APP_ENV}" tofile="containers/.env" overwrite="true">
+            <filterchain>
+                <replacetokens>
+                    <token key="MARIADB_DATABASE" value="${MARIADB_DATABASE}" />
+                    <token key="MARIADB_USER" value="${MARIADB_USER}" />
+                    <token key="MARIADB_PASSWORD" value="${MARIADB_PASSWORD}" />
+                    <token key="MARIADB_ROOT_PASSWORD" value="${MARIADB_ROOT_PASSWORD}" />
+                </replacetokens>
+            </filterchain>
+        </copy>
         <!-- Set Laravel .env file according to current environment -->
         <echo message="Setting Laravel environment..."/>
-        <copy file="env/env-laravel-${env.APP_ENV}" tofile=".env" overwrite="true"/>
+        <copy file="env/env-laravel-${env.APP_ENV}" tofile=".env" overwrite="true">
+            <filterchain>
+                <replacetokens>
+                    <token key="HOSTNAME" value="${HOSTNAME}" />
+                    <token key="MARIADB_DATABASE" value="${MARIADB_DATABASE}" />
+                    <token key="MARIADB_USER" value="${MARIADB_USER}" />
+                    <token key="MARIADB_PASSWORD" value="${MARIADB_PASSWORD}" />
+                    <token key="MAIL_HOST" value="${MAIL_HOST}" />
+                    <token key="MAIL_PORT" value="${MAIL_PORT}" />
+                    <token key="MAIL_USERNAME" value="${MAIL_USERNAME}" />
+                    <token key="MAIL_PASSWORD" value="${MAIL_PASSWORD}" />
+                    <token key="MAIL_ENCRYPTION" value="${MAIL_ENCRYPTION}" />
+                    <token key="PEC_HOST" value="${PEC_HOST}" />
+                    <token key="PEC_PORT" value="${PEC_PORT}" />
+                    <token key="PEC_USERNAME" value="${PEC_USERNAME}" />
+                    <token key="PEC_PASSWORD" value="${PEC_PASSWORD}" />
+                    <token key="PEC_ENCRYPTION" value="${PEC_ENCRYPTION}" />
+                    <token key="SPID_SP_PRIVATE_KEY" value="${SPID_SP_PRIVATE_KEY}" />
+                    <token key="SPID_SP_CERTIFICATE" value="${SPID_SP_CERTIFICATE}" />
+                    <token key="ANALYTICS_ADMIN_TOKEN" value="${ANALYTICS_ADMIN_TOKEN}" />
+                    <token key="ANALYTICS_API_BASE_URL" value="${ANALYTICS_API_BASE_URL}" />
+                    <token key="ANALYTICS_API_SSL_VERIFY" value="${ANALYTICS_API_SSL_VERIFY}" />
+                    <token key="ANALYTICS_PUBLIC_URL" value="${ANALYTICS_PUBLIC_URL}" />
+                </replacetokens>
+            </filterchain>
+        </copy>
         <!-- Create a copy of xdebug.ini -->
         <echo message="Copying xdebug.ini files..."/>
         <copy file="containers/php-fpm/xdebug.template.ini" tofile="containers/php-fpm/xdebug.ini" overwrite="true"/>
