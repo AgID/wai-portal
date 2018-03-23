@@ -1,4 +1,4 @@
-APP_NAME="Analytics Italia"
+APP_NAME="Web Analytics Italia"
 APP_ENV=local
 APP_KEY=
 APP_DEBUG=true

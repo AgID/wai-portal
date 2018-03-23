@@ -16,7 +16,7 @@ return [
     'owner_full' => "Agenzia per l'Italia Digitale",
     'partner_short' => 'Team Digitale',
     'partner_full' => 'Team per la Trasformazione Digitale',
-    'site_title' => 'Analytics Italia',
+    'site_title' => 'Web Analytics Italia',
     'site_subtitle' => 'I dati dei siti web della PA',
     'header_link_trasformazione' => 'Piano Triennale',
     'header_link_developers' => 'Developers',
