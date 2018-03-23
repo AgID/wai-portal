@@ -116,6 +116,11 @@ services:
     matomo:
       build:
         context: ./matomo
+        args:
+          - DB_PASSWORD=${MARIADB_ROOT_PASSWORD}
+          - MATOMO_ROOT_USER=${MATOMO_ROOT_USER}
+          - MATOMO_ROOT_PASSWORD=${MATOMO_ROOT_PASSWORD}
+          - MATOMO_ROOT_APIKEY=${MATOMO_ROOT_APIKEY}
       networks:
         - backend
 

@@ -3,7 +3,7 @@
 [database]
 host = "mariadb"
 username = "root"
-password = "root"
+password = "@DB_PASSWORD@"
 dbname = "matomo"
 
 [General]
