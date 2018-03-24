@@ -150,7 +150,26 @@
                 <replaceregexp file="containers/workspace/xdebug.ini" match="xdebug.remote_host=(\S*)" replace="xdebug.remote_host=${XDEBUG_REMOTE_HOST}"/>
                 <!-- Set dusk .env file according to current environment -->
                 <echo msg="Setting Laravel Dusk .env file according to current environment..."/>
-                <copy file="env/env-dusk-${env.APP_ENV}" tofile=".env.dusk.${env.APP_ENV}" overwrite="true"/>
+                <copy file="env/env-dusk-${env.APP_ENV}" tofile=".env.dusk.${env.APP_ENV}" overwrite="true">
+                    <filterchain>
+                        <replacetokens>
+                            <token key="MAIL_HOST" value="${MAIL_HOST}" />
+                            <token key="MAIL_PORT" value="${MAIL_PORT}" />
+                            <token key="MAIL_USERNAME" value="${MAIL_USERNAME}" />
+                            <token key="MAIL_PASSWORD" value="${MAIL_PASSWORD}" />
+                            <token key="MAIL_ENCRYPTION" value="${MAIL_ENCRYPTION}" />
+                            <token key="PEC_HOST" value="${PEC_HOST}" />
+                            <token key="PEC_PORT" value="${PEC_PORT}" />
+                            <token key="PEC_USERNAME" value="${PEC_USERNAME}" />
+                            <token key="PEC_PASSWORD" value="${PEC_PASSWORD}" />
+                            <token key="PEC_ENCRYPTION" value="${PEC_ENCRYPTION}" />
+                            <token key="ANALYTICS_ADMIN_TOKEN" value="${MATOMO_ROOT_APIKEY}" />
+                            <token key="ANALYTICS_API_BASE_URL" value="${ANALYTICS_API_BASE_URL}" />
+                            <token key="ANALYTICS_API_SSL_VERIFY" value="${ANALYTICS_API_SSL_VERIFY}" />
+                            <token key="ANALYTICS_PUBLIC_URL" value="${ANALYTICS_PUBLIC_URL}" />
+                        </replacetokens>
+                    </filterchain>
+                </copy>
             </then>
         </if>
         <!-- Set a new application key -->
@@ -204,7 +223,7 @@
         <!-- Wait for mariadb container to start gracefully -->
         <echo msg="Waiting for database container to start gracefully..."/>
         <retry retryDelay="5" retryCount="12">
-            <exec command="docker-compose exec mariadb mysql -u root -p${MARIADB_ROOT_PASSWORD} default -e 'select 1'" dir="containers" checkreturn="true"/>
+            <exec command="docker-compose exec mariadb mysql -u root -p${MARIADB_ROOT_PASSWORD} ${MARIADB_DATABASE} -e 'select 1'" dir="containers" checkreturn="true"/>
         </retry>
         <!-- Install Matomo database -->
         <exec command="docker-compose exec mariadb mysql -u root -p${MARIADB_ROOT_PASSWORD} matomo -e 'select 1'" dir="containers" returnProperty="checkMatomo"/>
