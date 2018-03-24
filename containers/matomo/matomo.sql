@@ -546,7 +546,7 @@ CREATE TABLE `site` (
 --
 
 INSERT INTO `site` (`idsite`, `name`, `main_url`, `ts_created`, `ecommerce`, `sitesearch`, `sitesearch_keyword_parameters`, `sitesearch_category_parameters`, `timezone`, `currency`, `exclude_unknown_urls`, `excluded_ips`, `excluded_parameters`, `excluded_user_agents`, `group`, `type`, `keep_url_fragment`) VALUES
-(1, 'Analytics Italia', 'http://localhost', '2018-02-16 22:41:54', 0, 1, '', '', 'Europe/Rome', 'EUR', 0, '', '', '', '', 'website', 0);
+(1, 'Web Analytics Italia', 'http://localhost', '2018-02-16 22:41:54', 0, 1, '', '', 'Europe/Rome', 'EUR', 0, '', '', '', '', 'website', 0);
 
 -- --------------------------------------------------------
 

@@ -19,7 +19,7 @@ class CreateRoles extends Command
      *
      * @var string
      */
-    protected $description = 'Create roles for Analytics Italia';
+    protected $description = 'Create roles for Web Analytics Italia';
 
     /**
      * Create a new command instance.
@@ -47,6 +47,6 @@ class CreateRoles extends Command
         Bouncer::allow('manager')->to('read-analytics');
         Bouncer::allow('reader')->to('read-analytics');
         Bouncer::allow('registered')->to('do-nothing');
-        $this->info('Created roles for Analytics Italia');
+        $this->info('Created roles for Web Analytics Italia');
     }
 }

@@ -19,7 +19,7 @@ class UpdateIPAList extends Command
      *
      * @var string
      */
-    protected $description = 'Update IPA list for Analytics Italia';
+    protected $description = 'Update IPA list for Web Analytics Italia';
 
     /**
      * Create a new command instance.

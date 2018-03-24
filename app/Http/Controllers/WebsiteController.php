@@ -27,7 +27,7 @@ class WebsiteController extends Controller
                 'actions' => 'Azioni'
             ],
             'source' => route('websites-data-json'),
-            'caption' => 'Elenco dei siti web abilitati su Analytics Italia' //TODO: set title in lang file
+            'caption' => 'Elenco dei siti web abilitati su Web Analytics Italia' //TODO: set title in lang file
         ];
 
         return view('pages.websites')->with($datatable);
@@ -77,7 +77,7 @@ class WebsiteController extends Controller
 
         logger()->info('User '.auth()->user()->getInfo().' added a new website ['.$validatedData['site'].'] as '.$validatedData['type'].' website of "'.$publicAdministration->name.'"');
 
-        return redirect(route('dashboard'))->withMessage(['success' => 'Il sito è stato aggiunto al progetto Analytics Italia']); //TODO: put message in lang file
+        return redirect(route('dashboard'))->withMessage(['success' => 'Il sito è stato aggiunto al progetto Web Analytics Italia']); //TODO: put message in lang file
     }
 
     /**

@@ -4,7 +4,7 @@ namespace Deployer;
 require 'recipe/common.php';
 
 // Project name
-set('application', 'Analytics Italia');
+set('application', 'Web Analytics Italia');
 
 // Project repository
 set('repository', 'git@github.com:teamdigitale/piwik-onboarding.git');
@@ -93,7 +93,7 @@ task('deploy:build', function () {
 
 // Tasks
 
-desc('Deploy Analytics Italia');
+desc('Deploy Web Analytics Italia');
 task('deploy', [
     'deploy:info',
     'deploy:prepare',

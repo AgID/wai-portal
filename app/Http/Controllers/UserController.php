@@ -28,7 +28,7 @@ class UserController extends Controller
                 'actions' => 'Azioni'
             ],
             'source' => route('users-data-json'),
-            'caption' => 'Elenco degli utenti web abilitati su Analytics Italia' //TODO: set title in lang file
+            'caption' => 'Elenco degli utenti web abilitati su Web Analytics Italia' //TODO: set title in lang file
         ];
 
         return view('pages.users')->with($datatable);
@@ -76,7 +76,7 @@ class UserController extends Controller
 
         logger()->info('User '.auth()->user()->getInfo().' added a new user ['.$validatedData['email'].'] as '.$validatedData['role'].' for "'.auth()->user()->publicAdministration->name.'"');
 
-        return redirect(route('dashboard'))->withMessage(['success' => 'Il nuovo utente è stato invitato al progetto Analytics Italia']); //TODO: put message in lang file
+        return redirect(route('dashboard'))->withMessage(['success' => 'Il nuovo utente è stato invitato al progetto Web Analytics Italia']); //TODO: put message in lang file
     }
 
     /**

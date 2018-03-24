@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="Analytics Italia" default="build">
+<project name="Web Analytics Italia" default="build">
 
     <!-- Loads properties from the environment with the 'env' as prefix -->
     <property environment="env"/>
@@ -265,7 +265,7 @@
                 <include name="*"/>
             </fileset>
         </delete>
-        <echo msg="Analytics Italia up and running!"/>
+        <echo msg="Web Analytics Italia up and running!"/>
     </target>
 
     <!-- Target: build -->
@@ -306,7 +306,7 @@
             <then>
                 <echo msg="Stopping Docker containers currently running..."/>
                 <exec command="docker-compose stop" dir="containers" passthru="true" checkreturn="true"/>
-                <echo msg="Analytics Italia stopped!"/>
+                <echo msg="Web Analytics Italia stopped!"/>
             </then>
         </if>
     </target>
@@ -320,7 +320,7 @@
             <then>
                 <echo msg="Starting Docker containers..."/>
                 <exec command="docker-compose up -d nginx mariadb redis mailhog workspace" dir="containers" passthru="true" checkreturn="true"/>
-                <echo msg="Analytics Italia up and running!"/>
+                <echo msg="Web Analytics Italia up and running!"/>
             </then>
         </if>
     </target>

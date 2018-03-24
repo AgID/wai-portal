@@ -8,7 +8,7 @@
 
 return [
       'sp_entity_id' => 'https://spid.agid.gov.it/analytics',
-      'sp_service_name' => 'Analytics Italia Service',
+      'sp_service_name' => 'Web Analytics Italia Service',
       'sp_organization_name' => 'AGID',
       'sp_organization_display_name' => "Agenzia per l'Italia digitale",
       'sp_organization_url' => 'https://www.agid.gov.it',

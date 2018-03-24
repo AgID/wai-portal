@@ -19,7 +19,7 @@ class CheckPendingWebsites extends Command
      *
      * @var string
      */
-    protected $description = 'Check for pending Websites registered in Analytics Italia';
+    protected $description = 'Check for pending Websites registered in Web Analytics Italia';
 
     /**
      * Create a new command instance.
