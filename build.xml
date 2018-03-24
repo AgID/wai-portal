@@ -211,7 +211,7 @@
                     </fileset>
                 </copy>
                 <property name="MARIADB_DATABASE" value="default"/>
-                <property name="MARIADB_ROOT_PASSWORD" value="local"/>
+                <property name="MARIADB_ROOT_PASSWORD" value="root"/>
             </then>
         </if>
     </target>
