@@ -210,6 +210,8 @@
                     <fileset dir="containers/logs">
                     </fileset>
                 </copy>
+                <property name="MARIADB_DATABASE" value="default"/>
+                <property name="MARIADB_ROOT_PASSWORD" value="local"/>
             </then>
         </if>
     </target>
@@ -223,10 +225,10 @@
         <!-- Wait for mariadb container to start gracefully -->
         <echo msg="Waiting for database container to start gracefully..."/>
         <retry retryDelay="5" retryCount="12">
-            <exec command="docker-compose exec mariadb mysql -u root -p${MARIADB_ROOT_PASSWORD} ${MARIADB_DATABASE} -e 'select 1'" dir="containers" checkreturn="true"/>
+            <exec command="docker-compose exec mariadb mysql -u root -p${MARIADB_ROOT_PASSWORD} ${MARIADB_DATABASE} -e 'select 1;'" dir="containers" checkreturn="true"/>
         </retry>
         <!-- Install Matomo database -->
-        <exec command="docker-compose exec mariadb mysql -u root -p${MARIADB_ROOT_PASSWORD} matomo -e 'select 1'" dir="containers" returnProperty="checkMatomo"/>
+        <exec command="docker-compose exec mariadb mysql -u root -p${MARIADB_ROOT_PASSWORD} matomo -e 'select 1';" dir="containers" returnProperty="checkMatomo"/>
         <if>
             <not><equals arg1="${checkMatomo}" arg2="0"/></not>
             <then>
@@ -239,7 +241,7 @@
         <echo msg="Running database migrations..."/>
         <exec command="docker-compose exec workspace php artisan migrate" dir="containers" passthru="true" checkreturn="true"/>
         <!-- Create roles -->
-        <exec command="docker-compose exec mariadb mysql -u root -proot default -e 'select * from abilities where id=1'" dir="containers" outputProperty="checkRoles"/>
+        <exec command="docker-compose exec mariadb mysql -u root -p${MARIADB_ROOT_PASSWORD} ${MARIADB_DATABASE} -e 'select * from abilities where id=1'" dir="containers" outputProperty="checkRoles"/>
         <if>
             <equals arg1="${checkRoles}" arg2=""/>
             <then>
@@ -289,7 +291,7 @@
         <exec command="docker-compose exec php-fpm chown -R www-data:www-data database" dir="containers" passthru="true" checkreturn="true"/>
         <!-- Execute phpunit to run unit tests -->
         <echo msg="Running unit tests [PHPUnit]..."/>
-        <exec command="docker-compose exec workspace bin/phpunit --coverage-html coverage" dir="containers" passthru="true" checkreturn="true"/>
+        <exec command="docker-compose exec workspace bin/phpunit" dir="containers" passthru="true" checkreturn="true"/>
         <!-- Execute dusk to run browser tests -->
         <echo msg="Running browser tests [Laravel Dusk]..."/>
         <exec command="docker-compose exec workspace php artisan dusk" dir="containers" passthru="true" checkreturn="true"/>

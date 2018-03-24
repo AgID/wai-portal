@@ -63,11 +63,11 @@ REDIS_PORT=6379
 
 ### MARIADB ############################################################################################################
 
-MARIADB_DATABASE=@MARIADB_DATABASE@
-MARIADB_USER=@MARIADB_USER@
-MARIADB_PASSWORD=@MARIADB_PASSWORD@
+MARIADB_DATABASE=default
+MARIADB_USER=default
+MARIADB_PASSWORD=secret
 MARIADB_PORT=3306
-MARIADB_ROOT_PASSWORD=@MARIADB_ROOT_PASSWORD@
+MARIADB_ROOT_PASSWORD=root
 
 ### PHP MY ADMIN #######################################################################################################
 
@@ -75,8 +75,8 @@ PMA_PORT=8080
 
 ### MATOMO #############################################################################################################
 
-MATOMO_ROOT_USER=@MATOMO_ROOT_USER@
-MATOMO_ROOT_PASSWORD=@MATOMO_ROOT_PASSWORD@
-MATOMO_ROOT_APIKEY=@MATOMO_ROOT_APIKEY@
+MATOMO_ROOT_USER=root
+MATOMO_ROOT_PASSWORD=matomo
+MATOMO_ROOT_APIKEY=d300edfad46f2723f0df5b5b5877033b
 
 ########################################################################################################################
