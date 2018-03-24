@@ -6,5 +6,5 @@ mysql -u root -p@DB_PASSWORD@ matomo -e "UPDATE user SET login = '@MATOMO_ROOT_U
 mysql -u root -p@DB_PASSWORD@ matomo -e "UPDATE user SET password = '$hashed_password' WHERE superuser_access = 1;"
 mysql -u root -p@DB_PASSWORD@ matomo -e "UPDATE user SET token_auth = '@MATOMO_ROOT_APIKEY@' WHERE superuser_access = 1;"
 rm /opt/matomo.sql
-#rm /opt/install_matomo_db.sh
+rm /opt/install_matomo_db.sh
 rm /opt/*.html
