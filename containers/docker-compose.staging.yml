@@ -1,0 +1,11 @@
+version: "2"
+
+services:
+
+### Applications Code Container #############################
+
+    application:
+      image: tianon/true
+      volumes:
+        - ../:/var/www
+        - ./logs:/var/log

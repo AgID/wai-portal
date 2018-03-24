@@ -11,7 +11,7 @@ set('repository', 'git@github.com:teamdigitale/piwik-onboarding.git');
 
 // Shared files/dirs between deploys
 set('shared_files', []);
-set('shared_dirs', ['env', 'containers/data']);
+set('shared_dirs', ['containers/data']);
 
 // Writable dirs by web server
 set('writable_dirs', [
@@ -78,7 +78,7 @@ if (file_exists('hosts.yml')) {
  */
 desc('Copy build.properties file');
 task('deploy:copy_properties', function () {
-    $output = run('if [ -f {{deploy_path}}/properties/build.properties ]; then cp -v {{deploy_path}}/properties/build.properties {{deploy_path}}/shared/env/build.properties; fi');
+    $output = run('if [ -f {{deploy_path}}/properties/build.properties ]; then cp -v {{deploy_path}}/properties/build.properties {{deploy_path}}/current/env/build.properties; fi');
     writeln('<info>' . $output . '</info>');
 });
 
