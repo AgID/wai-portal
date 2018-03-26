@@ -221,7 +221,7 @@
         <echo msg="Building..."/>
         <!-- Start containers -->
         <echo msg="Starting Docker containers..."/>
-        <exec command="docker-compose up -d nginx mariadb redis mailhog workspace matomo" dir="containers" passthru="true" checkreturn="true"/>
+        <exec command="docker-compose up -d nginx mariadb redis mailhog workspace matomo queue-worker" dir="containers" passthru="true" checkreturn="true"/>
         <!-- Wait for mariadb container to start gracefully -->
         <echo msg="Waiting for database container to start gracefully..."/>
         <retry retryDelay="5" retryCount="12">
@@ -268,7 +268,7 @@
         <echo msg="Web Analytics Italia up and running!"/>
     </target>
 
-    <!-- Target: build -->
+    <!-- Target: test -->
     <target name="test">
         <echo msg="Testing..."/>
         <!-- Check if we are in the right environment -->
