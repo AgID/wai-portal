@@ -10,8 +10,10 @@ class SPIDEventSubscriber
 {
     /**
      * Handle SPID login events.
+     * @param LoginEvent $event
      */
     public function onSPIDLogin(LoginEvent $event) {
+        auth()->logout();
         $SPIDUser = $event->getSPIDUser();
         $user = User::findByFiscalNumber($SPIDUser->fiscalNumber);
         if (isset($user) && $user->status != 'invited') {
@@ -23,6 +25,7 @@ class SPIDEventSubscriber
 
     /**
      * Handle SPID logout events.
+     * @param LogoutEvent $event
      */
     public function onSPIDLogout(LogoutEvent $event) {
         if (auth()->check()) {
@@ -30,15 +33,14 @@ class SPIDEventSubscriber
 
             logger()->info('User '.$user->getInfo().' logged out.');
 
-            auth()->logout();
-            session()->save();
+            session()->invalidate();
         }
     }
 
     /**
      * Register the listeners for the subscriber.
      *
-     * @param  Illuminate\Events\Dispatcher $events
+     * @param  \Illuminate\Events\Dispatcher $events
      */
     public function subscribe($events)
     {

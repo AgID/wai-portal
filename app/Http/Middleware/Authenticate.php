@@ -21,7 +21,7 @@ class Authenticate
         } elseif (in_array(auth()->user()->status, ['inactive', 'invited'])) {
             return redirect(route('auth-verify'));
         } elseif (auth()->user()->status == 'suspended') {
-            abort(403);// TODO: redirect somewhere
+            abort(403);// TODO: redirect somewhere and explain user status
         }
         return $next($request);
     }

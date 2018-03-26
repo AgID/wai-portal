@@ -9,7 +9,7 @@
         @include('layouts.includes.network')
         <div class="Prose u-background-grey-15 u-layout-r-withGutter u-padding-r-top u-padding-bottom-xxl u-posRelative">
             @include('layouts.includes.breadcrumbs', ['breadcrumbs' => Breadcrumbs::generate()])
-            <div id="main" style="min-height: 50vh">{{-- //TODO: rmove inline style --}}
+            <div id="main" style="min-height: 50vh">{{-- //TODO: remove inline style --}}
                 @include('layouts.includes.alert')
                 <h1 class="u-text-h1">@yield('title')</h1>
                 @yield('content')

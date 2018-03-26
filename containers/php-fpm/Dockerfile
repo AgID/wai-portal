@@ -41,6 +41,7 @@ LABEL maintainer="Davide Porrovecchio <davide.porrovecchio@agid.gov.it>"
 ARG INSTALL_XDEBUG=false
 RUN if [ ${INSTALL_XDEBUG} = true ]; then \
     # Install the xdebug extension
+    pecl channel-update pecl.php.net && \
     pecl install xdebug && \
     docker-php-ext-enable xdebug \
 ;fi
@@ -55,9 +56,10 @@ COPY ./xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
 ARG INSTALL_PHPREDIS=false
 RUN if [ ${INSTALL_PHPREDIS} = true ]; then \
     # Install Php Redis Extension
-    printf "\n" | pecl install -o -f redis \
-    &&  rm -rf /tmp/pear \
-    &&  docker-php-ext-enable redis \
+    pecl channel-update pecl.php.net && \
+    printf "\n" | pecl install -o -f redis && \
+    rm -rf /tmp/pear && \
+    docker-php-ext-enable redis \
 ;fi
 
 #####################################
