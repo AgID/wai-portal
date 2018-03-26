@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Jobs\SendVerificationEmail;
 use App\Models\VerificationToken;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class VerificationController extends Controller
 {
@@ -38,10 +39,10 @@ class VerificationController extends Controller
      */
     public function verifyToken(Request $request, $token = null)
     {
-        $tokenInput = $token ?: $request->input('token');
+        $token = $token ?: $request->input('token');
 
-        $token = VerificationToken::where('token', $tokenInput)->firstOrFail();
-        $user = $token->user;
+        $verificationToken = VerificationToken::where('token', Hash::make($token))->firstOrFail(); //TODO: send a better response when token is not found
+        $user = $verificationToken->user;
 
         if (!in_array($user->status, ['inactive', 'invited'])) {
             return redirect(route('home'))

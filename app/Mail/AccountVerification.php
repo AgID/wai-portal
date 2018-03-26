@@ -7,20 +7,33 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class VerificationEmail extends Mailable
+class AccountVerification extends Mailable
 {
     use Queueable, SerializesModels;
 
+    /**
+     * The user this mail will be sent to.
+     *
+     * @var User
+     */
     protected $user;
+
+    /**
+     * The token user for account verification
+     *
+     * @var string
+     */
+    protected $token;
 
     /**
      * Create a new message instance.
      *
-     * @return void
+     * @param User $user
      */
-    public function __construct(User $user)
+    public function __construct(User $user, string $token)
     {
         $this->user = $user;
+        $this->token = $token;
     }
 
     /**
@@ -34,6 +47,9 @@ class VerificationEmail extends Mailable
         //TODO: make sender configurable
         return $this->from('noreply@analytics.italia.it')
                     ->subject('Please verify your email') //TODO: string in lang file
-                    ->markdown('email.verification')->with(['user' => $this->user]);
+                    ->markdown('email.verification')->with([
+                        'user' => $this->user,
+                        'token' => $this->token
+                    ]);
     }
 }

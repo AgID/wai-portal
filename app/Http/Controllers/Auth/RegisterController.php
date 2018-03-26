@@ -6,7 +6,7 @@ use App\Models\User;
 use App\Jobs\SendVerificationEmail;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Italia\SPIDAuth\SPIDUser;
+use Illuminate\Support\Facades\Hash;
 
 class RegisterController extends Controller
 {
@@ -32,6 +32,7 @@ class RegisterController extends Controller
             'email' => 'required|unique:users|email',
             'accept_terms' => 'required'
         ]);
+
         $SPIDUser = session()->get('spid_user');
         $user =  User::create([
             'spidCode' => $SPIDUser->spidCode,
@@ -41,15 +42,18 @@ class RegisterController extends Controller
             'email' => $request->email,
             'status' => 'inactive'
         ]);
+
+        $token = hash_hmac('sha256', str_random(40), config('app.key'));
         $user->verificationToken()->create([
-            'token' => bin2hex(random_bytes(32))
+            'token' => Hash::make($token)
         ]);
+
         $user->assign('registered');
         auth()->login($user);
 
         logger()->info('New user registered: '.$user->getInfo()); //TODO: notify me!
 
-        dispatch(new SendVerificationEmail($user));
+        dispatch(new SendVerificationEmail($user, $token));
 
         return redirect(route('home'))
                ->withMessage(['info' => "Una email di verifica è stata inviata all'indirizzo ".$user->email]); //TODO: put message in lang file

@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Mail\VerificationEmail;
+use App\Mail\AccountVerification;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
@@ -15,7 +15,19 @@ class SendVerificationEmail implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    /**
+     * The user this mail will be sent to.
+     *
+     * @var User
+     */
     protected $user;
+
+    /**
+     * The token user for account verification
+     *
+     * @var string
+     */
+    protected $token;
 
     /**
      * Create a new job instance.
@@ -23,9 +35,10 @@ class SendVerificationEmail implements ShouldQueue
      * @param  User  $user
      * @return void
      */
-    public function __construct(User $user)
+    public function __construct(User $user, string $token)
     {
         $this->user = $user;
+        $this->token = $token;
     }
 
     /**
@@ -35,7 +48,7 @@ class SendVerificationEmail implements ShouldQueue
      */
     public function handle()
     {
-        $email = new VerificationEmail($this->user);
+        $email = new AccountVerification($this->user, $this->token);
         Mail::to($this->user->email)->send($email);
 
         logger()->info('Activation mail sent to '.$this->user->getInfo());
