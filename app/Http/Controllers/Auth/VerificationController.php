@@ -40,16 +40,19 @@ class VerificationController extends Controller
     public function verifyToken(Request $request, $token = null)
     {
         $token = $token ?: $request->input('token');
+        $user = auth()->user();
+        $verificationToken = $user->verificationToken->token;
 
-        $verificationToken = VerificationToken::where('token', Hash::make($token))->firstOrFail(); //TODO: send a better response when token is not found
-        $user = $verificationToken->user;
+        if (!Hash::check($token, $verificationToken)) {
+            return back()->withMessage(['warning' => 'Il codice di verifica inserito non è valido']); //TODO: put message in lang file
+        }
 
         if (!in_array($user->status, ['inactive', 'invited'])) {
             return redirect(route('home'))
                    ->withMessage(['info' => "L'indirizzo email è già stato verificato"]); //TODO: put message in lang file
         }
 
-        if($user->status == 'invited') {
+        if ($user->status == 'invited') {
             $SPIDUser = session()->get('spid_user');
 
             if ($user->fiscalNumber != $SPIDUser->fiscalNumber) {

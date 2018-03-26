@@ -111,7 +111,7 @@ abstract class DuskTestCase extends BaseTestCase
     public function getVerificationToken(int $userId) {
         $verificationToken = '';
         $this->browse(function (Browser $browser) use ($userId, &$verificationToken) {
-            $response = $browser->visit('/_test/_get_user_verification_token/'.$userId);
+            $response = $browser->visit('/_test/_get_new_user_verification_token/'.$userId);
             $verificationToken = strip_tags($response->driver->getPageSource());
         });
         return $verificationToken;
