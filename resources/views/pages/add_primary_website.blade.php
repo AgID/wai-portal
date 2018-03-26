@@ -25,7 +25,7 @@
       <p id="error-name" class="u-text-p u-padding-r-bottom">{{ $errors->first('name') }}</p>
       @endif
       <label class="Form-label is-required" for="name">Nome della pubblica amministrazione di appartenenza{{-- //TODO: put message in lang file --}}</label>
-      <input class="Form-input autocomplete" id="name" name="name" aria-required="true" required>
+      <input class="Form-input autocomplete" id="name" name="name" aria-required="true" required/>
       @if ($errors->has('name'))</div>@endif
     </div>
     <div class="Form-field">
@@ -40,7 +40,7 @@
   <fieldset class="Form-field Form-field--choose Grid-cell">
     <legend class="Form-legend is-required">Condizioni del servizio</legend>
     <label class="Form-label Form-label--block" for="accept_terms">
-      <input type="checkbox" class="Form-input" id="accept_terms" name="accept_terms" aria-required="true" required>
+      <input type="checkbox" class="Form-input" id="accept_terms" name="accept_terms" aria-required="true" required/>
       <span class="Form-fieldIcon" role="presentation"></span>Accetto le condizioni del servizio
     </label>
   </fieldset>

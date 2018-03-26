@@ -25,7 +25,7 @@
         <p id="error-email" class="u-text-p u-padding-r-bottom">{{ $errors->first('email') }}</p>
         @endif
         <label class="Form-label is-required" for="email">Indirizzo email istituzionale{{-- //TODO: put message in lang file --}}</label>
-        <input class="Form-input" id="email" name="email" type="email" aria-required="true" value="{{ old('email') }}" required>
+        <input class="Form-input" id="email" name="email" type="email" aria-required="true" value="{{ old('email') }}" required/>
         <p class="Form-message">Es. nome.cognome@agid.gov.it{{-- //TODO: put message in lang file --}}</p>
         @if ($errors->has('email'))</div>@endif
       </div>
@@ -35,7 +35,7 @@
         <p id="error-name" class="u-text-p u-padding-r-bottom">{{ $errors->first('fiscalNumber') }}</p>
         @endif
         <label class="Form-label is-required" for="fiscalNumber">Codice fiscale{{-- //TODO: put message in lang file --}}</label>
-        <input class="Form-input" id="fiscalNumber" name="fiscalNumber" aria-required="true" value="{{ old('fiscalNumber') }}" required>
+        <input class="Form-input" id="fiscalNumber" name="fiscalNumber" aria-required="true" value="{{ old('fiscalNumber') }}" required/>
         @if ($errors->has('fiscalNumber'))</div>@endif
       </div>
       <div class="Form-field {{ $errors->has('role') ? 'is-invalid' : '' }}">
@@ -44,7 +44,7 @@
         <p id="error-name" class="u-text-p u-padding-r-bottom">{{ $errors->first('role') }}</p>
         @endif
         <label class="Form-label is-required" for="role">Ruolo <small>(vedi descrizione)</small>{{-- //TODO: put message in lang file --}}</label>
-        <select class="Form-input" id="role" name="role" aria-required="true" required>
+        <select class="Form-input" id="role" name="role" aria-required="true" required/>
           <option value="" selected disabled>seleziona</option>
           <option value="reader" {{ old('role') == 'reader' ? "selected" : "" }}>{{ __('auth.roles.reader') }}</option>
           <option value="manager" {{ old('role') == 'manager' ? "selected" : "" }}>{{ __('auth.roles.manager') }}</option>

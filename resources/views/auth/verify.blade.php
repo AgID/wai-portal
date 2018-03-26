@@ -10,7 +10,7 @@
   <fieldset class="Form-fieldset">
     <div class="Form-field">
       <label class="Form-label is-required" for="token">Codice di verifica{{-- //TODO: put message in lang file --}}</label>
-      <input class="Form-input" id="token" name="token" aria-required="true" required>
+      <input class="Form-input" id="token" name="token" aria-required="true" required/>
       <p class="Form-message">Il codice di verfica ricevuto all'indirizzo {{ auth()->user()->email }}{{-- //TODO: put message in lang file --}}</p>
     </div>
   </fieldset>

@@ -29,7 +29,7 @@
       <p id="error-name" class="u-text-p u-padding-r-bottom">{{ $errors->first('site') }}</p>
       @endif
       <label class="Form-label is-required" for="site">Dominio del sito web{{-- //TODO: put message in lang file --}}</label>
-      <input class="Form-input" id="site" name="site" aria-required="true" value="{{ old('site') }}" required>
+      <input class="Form-input" id="site" name="site" aria-required="true" value="{{ old('site') }}" required/>
       @if ($errors->has('site'))</div>@endif
     </div>
     <div class="Form-field {{ $errors->has('type') ? 'is-invalid' : '' }}">
@@ -38,7 +38,7 @@
       <p id="error-name" class="u-text-p u-padding-r-bottom">{{ $errors->first('type') }}</p>
       @endif
       <label class="Form-label is-required" for="type">Tipologia{{-- //TODO: put message in lang file --}}</label>
-      <select class="Form-input" id="type" name="type" aria-required="true" required>
+      <select class="Form-input" id="type" name="type" aria-required="true" required/>
         <option value="">seleziona</option>
         <option value="secondary" {{ old('type') == 'secondary' ? "selected" : "" }}>{{ __('ui.website.secondary') }}</option>
         <option value="webapp" {{ old('type') == 'webapp' ? "selected" : "" }}>{{ __('ui.website.webapp') }}</option>
@@ -50,7 +50,7 @@
   <fieldset class="Form-field Form-field--choose Grid-cell">
     <legend class="Form-legend is-required">Condizioni del servizio</legend>
     <label class="Form-label Form-label--block" for="accept_terms">
-      <input type="checkbox" class="Form-input" id="accept_terms" name="accept_terms" aria-required="true" required>
+      <input type="checkbox" class="Form-input" id="accept_terms" name="accept_terms" aria-required="true" required/>
       <span class="Form-fieldIcon" role="presentation"></span>Accetto le condizioni del servizio
     </label>
   </fieldset>

@@ -12,7 +12,7 @@
   </div>
   @else
   <div class="Alert Alert--error Alert--withIcon u-margin-r-bottom" role="alert">
-      <p>
+      <p class="u-text-p">
           È necessario correggere alcuni errori prima di poter inviare il modulo.
           {{-- //TODO: put message in lang file --}}
       </p>
@@ -25,7 +25,7 @@
       <p id="error-email" class="u-text-p u-padding-r-bottom">{{ $errors->first('email') }}</p>
       @endif
       <label class="Form-label is-required" for="email">Indirizzo email istituzionale{{-- //TODO: put message in lang file --}}</label>
-      <input class="Form-input" id="email" name="email" type="email" aria-required="true" value="{{ old('email') }}" required>
+      <input class="Form-input" id="email" name="email" type="email" aria-required="true" value="{{ old('email') }}" required/>
       <p class="Form-message">Es. nome.cognome@agid.gov.it{{-- //TODO: put message in lang file --}}</p>
       @if ($errors->has('email'))</div>@endif
     </div>
@@ -33,7 +33,7 @@
   <fieldset class="Form-field Form-field--choose Grid-cell">
     <legend class="Form-legend is-required">Condizioni del servizio</legend>
     <label class="Form-label Form-label--block" for="accept_terms">
-      <input type="checkbox" class="Form-input" id="accept_terms" name="accept_terms" aria-required="true" required>
+      <input type="checkbox" class="Form-input" id="accept_terms" name="accept_terms" aria-required="true" required/>
       <span class="Form-fieldIcon" role="presentation"></span>Accetto le condizioni del servizio
     </label>
   </fieldset>
