@@ -18,7 +18,7 @@
         "laravel-mix": "^1.0",
         "lodash": "^4.17.4",
         "popper.js": "^1.13.0",
-        "stylelint": "^9.1.1",
+        "stylelint": "^8.3.0",
         "stylelint-config-standard": "^18.2.0",
         "stylelint-webpack-plugin": "^0.10.3"
     }
