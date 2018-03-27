@@ -12,6 +12,7 @@
 
 # testing
 /coverage
+clover.xml
 /database/testing.sqlite
 
 # related to local development

@@ -79,7 +79,7 @@
             <available file="containers" type="dir" property="ignored"/>
             <then>
                 <echo msg="Stopping Docker containers currently running..."/>
-                <exec command="docker-compose down --rmi 'all' -v" dir="containers" passthru="true" checkreturn="true"/>
+                <exec command="docker-compose down --rmi 'local' -v" dir="containers" passthru="true" checkreturn="true"/>
             </then>
         </if>
     </target>
