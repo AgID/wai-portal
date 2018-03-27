@@ -12,10 +12,10 @@
   </div>
   @else
   <div class="Alert Alert--error Alert--withIcon u-margin-r-bottom" role="alert">
-      <p class="u-text-p">
-          È necessario correggere alcuni errori prima di poter inviare il modulo.
-          {{-- //TODO: put message in lang file --}}
-      </p>
+    <p class="u-text-p">
+      È necessario correggere alcuni errori prima di poter inviare il modulo.
+      {{-- //TODO: put message in lang file --}}
+    </p>
   </div>
   @endif
   <fieldset class="Form-fieldset">

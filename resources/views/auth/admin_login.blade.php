@@ -18,7 +18,11 @@
     <div class="Form-field Grid-cell u-textCenter">
       <button type="submit" class="Button Button--default u-text-xs submit">Accedi{{-- //TODO: put message in lang file --}}</button>
       <br>
-      <div class="Prose"><a href="{{ route('admin-password_forgot', [], false) }}"><small>Password dimenticata?</small></a></div>
+      <div class="Prose">
+        <a href="{{ route('admin-password_forgot', [], false) }}">
+          <small>Password dimenticata?</small>
+        </a>
+      </div>
     </div>
   </form>
 @endsection
