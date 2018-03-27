@@ -38,7 +38,7 @@ class CheckPendingWebsites extends Command
      */
     public function handle()
     {
-        ProcessPendingWebsites::dispatch();
+        dispatch(new ProcessPendingWebsites())->onConnection('sync');
         $this->info('Pending websites checked');
     }
 }

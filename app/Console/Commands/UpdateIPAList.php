@@ -38,7 +38,7 @@ class UpdateIPAList extends Command
      */
     public function handle()
     {
-        ProcessIPAList::dispatch();
+        dispatch(new ProcessIPAList())->onConnection('sync');
         $this->info('IPA list updated');
     }
 }

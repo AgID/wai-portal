@@ -5,7 +5,6 @@ namespace Tests\Unit;
 use App\Models\PublicAdministration;
 use App\Models\User;
 use App\Models\Website;
-use Carbon\Carbon;
 use Ehann\RediSearch\Index;
 use Ehann\RediSearch\Redis\RedisClient;
 use Exception;
@@ -86,7 +85,7 @@ class CommandsTest extends TestCase
             'verify' => false
         ]);
 
-        $this->website_pending->created_at = Carbon::now()->subDays(16);
+        $this->website_pending->created_at = now()->subDays(16);
         $this->website_pending->save();
 
         $this->artisan('app:check-websites');
