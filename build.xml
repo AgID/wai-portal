@@ -249,6 +249,8 @@
                 <exec command="docker-compose exec workspace php artisan app:create-roles" dir="containers" passthru="true" checkreturn="true"/>
             </then>
         </if>
+        <echo msg="Seeding database..."/>
+        <exec command="docker-compose exec workspace php artisan db:seed" dir="containers" passthru="true" checkreturn="true"/>
         <!-- Clear sessions and caches -->
         <echo msg="Clearing sessions and caches..."/>
         <exec command="docker-compose exec workspace php artisan view:clear" dir="containers" passthru="true" checkreturn="true"/>
