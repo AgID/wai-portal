@@ -18,4 +18,7 @@
   	@endisset
 	</li>
   @endforeach
+  @can('access-backoffice')
+    @include('layouts.includes.admin_menu')
+  @endcan
 </ul>

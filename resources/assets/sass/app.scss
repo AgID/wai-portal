@@ -229,6 +229,19 @@
   .Megamenu-item.is-current {
     border-bottom: 0.2rem solid currentColor;
   }
+
+  .Megamenu-item--admin {
+    .Megamenu-subnavGroup > li {
+      padding-top: 0.4rem !important;
+      padding-bottom: 0.8rem !important;
+    }
+
+    .Megamenu-subnavGroup > li > a {
+      text-transform: none !important;
+      font-weight: inherit !important;
+      font-size: inherit !important;
+    }
+  }
 }
 
 /* Footer
@@ -381,6 +394,16 @@ code {
   speak: none;
   text-transform: none;
   content: " \1f59d";
+}
+
+.u-posAbsoluteRight {
+  position: absolute;
+  right: 0;
+}
+
+.Linklist li {
+  border-top: none !important;
+  border-bottom: 0.1rem solid currentColor !important;
 }
 
 /* Headings
