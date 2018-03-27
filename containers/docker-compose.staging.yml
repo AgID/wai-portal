@@ -9,3 +9,15 @@ services:
       volumes:
         - ../:/var/www
         - ./logs:/var/log
+
+### Networks Setup ############################################
+
+networks:
+  frontend:
+    driver: "bridge"
+    driver_opts:
+      com.docker.network.driver.mtu: 1400
+  backend:
+    driver: "bridge"
+    driver_opts:
+      com.docker.network.driver.mtu: 1400
