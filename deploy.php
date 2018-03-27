@@ -78,7 +78,7 @@ if (file_exists('hosts.yml')) {
  */
 desc('Copy build.properties file');
 task('deploy:copy_properties', function () {
-    $output = run('if [ -f {{deploy_path}}/properties/build.properties ]; then cp -v {{deploy_path}}/properties/build.properties {{deploy_path}}/current/env/build.properties; fi');
+    $output = run('cp -v {{deploy_path}}/properties/build.properties {{deploy_path}}/current/env/build.properties');
     writeln('<info>' . $output . '</info>');
 });
 
@@ -87,7 +87,7 @@ task('deploy:copy_properties', function () {
  */
 desc('Build app');
 task('deploy:build', function () {
-    $output = run('if [ -f {{deploy_path}}/current/bin/phing ]; then cd {{deploy_path}}/current; bin/phing build -DHOSTNAME={{hostname}}; fi', ['tty' => true]);
+    $output = run('if [ -f {{deploy_path}}/current/bin/phing ]; then cd {{deploy_path}}/current; bin/phing build; fi', ['tty' => true]);
     writeln('<info>' . $output . '</info>');
 });
 
