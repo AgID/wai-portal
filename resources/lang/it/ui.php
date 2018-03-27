@@ -49,6 +49,18 @@ return [
             'return_home' => 'Ritorna alla pagina iniziale.',
             'not_found' => 'La pagina :page non esiste.'
         ],
+        'admin-login' => [
+            'title' => 'Accesso amministratori'
+        ],
+        'admin-dashboard' => [
+            'title' => 'Dashboard amministrativa'
+        ],
+        'admin-password_forgot' => [
+            'title' => 'Password dimenticata'
+        ],
+        'admin-password_reset' => [
+            'title' => 'Reset della password'
+        ],
         'faq' => [
             'title' => 'Domande frequenti'
         ],

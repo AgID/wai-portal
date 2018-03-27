@@ -30,6 +30,36 @@ Route::get('/faq', [
     'uses' => 'HomeController@faq'
 ]);
 
+Route::get('/admin/login', [
+    'as' => 'admin-login',
+    'uses' => 'Auth\AdminAuthController@showLoginForm'
+]);
+
+Route::post('/admin/login', [
+    'as' => 'admin-do_login',
+    'uses' => 'Auth\AdminAuthController@login'
+]);
+
+Route::get('/admin/password-forgot', [
+    'as' => 'admin-password_forgot',
+    'uses' => 'Auth\AdminAuthController@showPasswordForgotForm'
+]);
+
+Route::post('/admin/password-forgot', [
+    'as' => 'admin-send_reset_password',
+    'uses' => 'Auth\AdminAuthController@sendPasswordForgotEmail'
+])->middleware('throttle:5,1');
+
+Route::get('/admin/password-reset/{token?}', [
+    'as' => 'admin-password_reset',
+    'uses' => 'Auth\AdminAuthController@showPasswordResetForm'
+]);
+
+Route::post('/admin/password-reset', [
+    'as' => 'admin-do_password_reset',
+    'uses' => 'Auth\AdminAuthController@passwordReset'
+])->middleware('throttle:5,1');
+
 /**
  * Authentication related routes
  */
@@ -46,12 +76,6 @@ Route::prefix('/register')->middleware(['spid.auth', 'guest'])->group(function()
         'uses' => 'Auth\RegisterController@register'
     ]);
 });
-
-/** Public route to allow token verification from application form or email link */
-//Route::get('/verify/token/{token?}', [
-//    'as' => 'auth-do_verify',
-//    'uses' => 'Auth\VerificationController@verifyToken'
-//]);
 
 /** Both SPID and application authentication: this is the default for registered users */
 Route::prefix('/verify')->middleware('spid.auth')->group(function() {
@@ -147,6 +171,25 @@ Route::middleware(['spid.auth', 'auth'])->group(function() {
         Route::get('/login', [
             'as' => 'analytics-service-login',
             'uses' => 'AnalyticsController@login'
+        ]);
+    });
+});
+
+/**
+ * Admin-only application routes
+ */
+Route::middleware(['admin-auth'])->group(function() {
+    Route::prefix('/admin')->group(function() {
+        Route::get('/', [
+            'as' => 'admin-dashboard',
+            'uses' => 'AdminController@dashboard'
+        ]);
+    });
+
+    Route::prefix('/admin')->group(function() {
+        Route::get('/logout', [
+            'as' => 'admin-logout',
+            'uses' => 'Auth\AdminAuthController@logout'
         ]);
     });
 });

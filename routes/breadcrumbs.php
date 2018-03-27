@@ -11,6 +11,30 @@ Breadcrumbs::register('faq', function ($breadcrumbs) {
     $breadcrumbs->push(__('ui.pages.faq.title'), route('faq', [], false));
 });
 
+// Web Analytics Italia > Accesso amministratori
+Breadcrumbs::register('admin-login', function ($breadcrumbs) {
+    $breadcrumbs->parent('home');
+    $breadcrumbs->push(__('ui.pages.admin-login.title'), route('admin-login', [], false));
+});
+
+// Web Analytics Italia > Password dimenticata
+Breadcrumbs::register('admin-password_forgot', function ($breadcrumbs) {
+    $breadcrumbs->parent('home');
+    $breadcrumbs->push(__('ui.pages.admin-password_forgot.title'), route('admin-password_forgot', [], false));
+});
+
+// Web Analytics Italia > Reset della password
+Breadcrumbs::register('admin-password_reset', function ($breadcrumbs) {
+    $breadcrumbs->parent('home');
+    $breadcrumbs->push(__('ui.pages.admin-password_reset.title'), route('admin-password_reset', [], false));
+});
+
+// Web Analytics Italia > Dashboard amministrativa
+Breadcrumbs::register('admin-dashboard', function ($breadcrumbs) {
+    $breadcrumbs->parent('home');
+    $breadcrumbs->push(__('ui.pages.admin-dashboard.title'), route('admin-dashboard', [], false));
+});
+
 // Web Analytics Italia > Dashboard
 Breadcrumbs::register('dashboard', function ($breadcrumbs) {
     $breadcrumbs->parent('home');

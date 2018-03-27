@@ -39,6 +39,7 @@ class CreateRoles extends Command
     public function handle()
     {
         Bouncer::allow('super-admin')->everything();
+        Bouncer::allow('super-admin')->to('access-backoffice');
         Bouncer::allow('admin')->to('manage-users');
         Bouncer::allow('admin')->to('manage-sites');
         Bouncer::allow('admin')->to('manage-analytics');

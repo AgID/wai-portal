@@ -20,6 +20,7 @@ class CreateUsersTable extends Migration
             $table->string('familyName')->nullable();
             $table->string('fiscalNumber');
             $table->string('email')->unique();
+            $table->string('password')->nullable();
             $table->integer('public_administration_id')->unsigned()->nullable();
             $table->foreign('public_administration_id')->references('id')->on('public_administrations');
             $table->enum('status', ['invited', 'inactive', 'pending', 'active', 'suspended']);

@@ -50,6 +50,16 @@ class User extends Authenticatable
     }
 
     /**
+     * The password reset token.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\Relation.
+     */
+    public function passwordResetToken()
+    {
+        return $this->hasOne(PasswordResetToken::class);
+    }
+
+    /**
      * Find a User instance by Fiscal Number.
      *
      * @param string Fiscal Number.

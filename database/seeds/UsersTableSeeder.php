@@ -1,6 +1,8 @@
 <?php
 
+use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
 
 class UsersTableSeeder extends Seeder
@@ -10,16 +12,16 @@ class UsersTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('users')->truncate();
         DB::table('users')->insert([
-            'spidCode' => 'TEST0123456789',
             'name' => 'Nome',
             'familyName' => 'Cognome',
             'fiscalNumber' => 'FSCLNB17A01H501X',
             'email' => 'nome.cognome@example.com',
-            'status' => 'pending',
+            'password' => Hash::make('password'),
+            'status' => 'active',
             'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
             'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
         ]);
+        User::findByFiscalNumber('FSCLNB17A01H501X')->assign('super-admin');
     }
 }
