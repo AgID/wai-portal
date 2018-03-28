@@ -249,8 +249,15 @@
                 <exec command="docker-compose exec workspace php artisan app:create-roles" dir="containers" passthru="true" checkreturn="true"/>
             </then>
         </if>
-        <echo msg="Seeding database..."/>
-        <exec command="docker-compose exec workspace php artisan db:seed" dir="containers" passthru="true" checkreturn="true"/>
+        <!-- Database seed -->
+        <exec command="docker-compose exec mariadb mysql -u root -p${MARIADB_ROOT_PASSWORD} ${MARIADB_DATABASE} -e 'select * from users where id=1'" dir="containers" outputProperty="checkDBseed"/>
+        <if>
+            <equals arg1="${checkDBseed}" arg2=""/>
+            <then>
+                <echo msg="Seeding database..."/>
+                <exec command="docker-compose exec workspace php artisan db:seed" dir="containers" passthru="true" checkreturn="true"/>
+            </then>
+        </if>
         <!-- Clear sessions and caches -->
         <echo msg="Clearing sessions and caches..."/>
         <exec command="docker-compose exec workspace php artisan view:clear" dir="containers" passthru="true" checkreturn="true"/>
