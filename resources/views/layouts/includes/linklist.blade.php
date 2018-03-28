@@ -19,6 +19,6 @@
 	</li>
   @endforeach
   @can('access-backoffice')
-    @include('layouts.includes.admin_menu')
+    @include('partials.admin_menu')
   @endcan
 </ul>
