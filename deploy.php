@@ -83,11 +83,13 @@ task('deploy:copy_properties', function () {
 });
 
 /**
- * Copy nginx application.conf file tasks
+ * Copy nginx conf file tasks
  */
-desc('Copy build.properties file');
+desc('Copy nginx conf file');
 task('deploy:copy_nginx_application_conf', function () {
     $output = run('cp -v {{deploy_path}}/confs/nginx_application.conf {{deploy_path}}/current/containers/nginx/conf/application.conf');
+    writeln('<info>' . $output . '</info>');
+    $output = run('cp -v {{deploy_path}}/confs/nginx_matomo.conf {{deploy_path}}/current/containers/nginx/conf/matomo.conf');
     writeln('<info>' . $output . '</info>');
 });
 
