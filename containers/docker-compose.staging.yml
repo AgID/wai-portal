@@ -14,6 +14,7 @@ services:
 
     nginx:
       volumes:
+        - /etc/letsencrypt:/etc/letsencrypt
         - /var/letsencrypt:/var/letsencrypt
         - /etc/ssl/certs:/etc/ssl/certs
 
