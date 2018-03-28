@@ -10,6 +10,13 @@ services:
         - ../:/var/www
         - ./logs:/var/log
 
+### NGINX Server Container ##################################
+
+    nginx:
+      volumes:
+        - /var/letsencrypt:/var/letsencrypt
+        - /etc/ssl/certs:/etc/ssl/certs
+
 ### Networks Setup ############################################
 
 networks:

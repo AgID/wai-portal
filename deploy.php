@@ -83,6 +83,15 @@ task('deploy:copy_properties', function () {
 });
 
 /**
+ * Copy nginx application.conf file tasks
+ */
+desc('Copy build.properties file');
+task('deploy:copy_nginx_application_conf', function () {
+    $output = run('cp -v {{deploy_path}}/confs/nginx_application.conf {{deploy_path}}/current/containers/nginx/conf/application.conf');
+    writeln('<info>' . $output . '</info>');
+});
+
+/**
  * Build tasks
  */
 desc('Build app');
@@ -106,6 +115,7 @@ task('deploy', [
     'deploy:clear_paths',
     'deploy:symlink',
     'deploy:copy_properties',
+    'deploy:copy_nginx_application_conf',
     'deploy:build',
     'deploy:unlock',
     'cleanup',
