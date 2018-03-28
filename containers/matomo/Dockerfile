@@ -33,7 +33,7 @@ ARG MATOMO_ROOT_USER
 RUN sed -i -e s/@MATOMO_ROOT_USER@/${MATOMO_ROOT_USER}/g /opt/install_matomo_db.sh
 
 ARG MATOMO_ROOT_PASSWORD
-RUN sed -i -e s/@MATOMO_ROOT_PASSWORD@/${MATOMO_ROOT_PASSWORD}/g /opt/install_matomo_db.sh
+RUN sed -i -e s#@MATOMO_ROOT_PASSWORD@#${MATOMO_ROOT_PASSWORD}#g /opt/install_matomo_db.sh
 
 ARG MATOMO_ROOT_APIKEY
 RUN sed -i -e s/@MATOMO_ROOT_APIKEY@/${MATOMO_ROOT_APIKEY}/g /opt/install_matomo_db.sh
