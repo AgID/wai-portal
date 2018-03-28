@@ -28,7 +28,10 @@ TODO
 /public/js/app.js
 
 # ignored for security reasons
-build.properties
+/env/build.properties
+/env/build.properties.staging
+/containers/nginx/conf/application.staging.conf
+/containers/nginx/conf/matomo.staging.conf
 /hosts.yml
 /ssh_keys
 

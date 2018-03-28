@@ -102,6 +102,17 @@ task('deploy:build', function () {
     writeln('<info>' . $output . '</info>');
 });
 
+/**
+ * Clear data
+ */
+desc('Clear data');
+task('deploy:clean-deep', function () {
+    $output = run('if [ -d {{deploy_path}}/shared/containers/data ]; then cd {{deploy_path}}/shared/containers/data; sudo rm -Rf *; fi');
+    writeln('<info>' . $output . '</info>');
+    $output = run('if [ -f {{deploy_path}}/current/bin/phing ]; then cd {{deploy_path}}/current; bin/phing clean-deep; fi', ['tty' => true]);
+    writeln('<info>' . $output . '</info>');
+});
+
 // Tasks
 
 desc('Deploy Web Analytics Italia');

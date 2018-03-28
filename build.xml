@@ -89,6 +89,13 @@
         <echo msg="Preparing ${env.APP_ENV} environment..."/>
         <!-- Set Docker .env file according to current environment -->
         <echo message="Setting containers environment..."/>
+        <php function="md5" returnProperty="HASHED_MATOMO_ROOT_PASSWORD">
+            <param value="${MATOMO_ROOT_PASSWORD}"/>
+        </php>
+        <php function="password_hash" returnProperty="HASHED_MATOMO_ROOT_PASSWORD">
+            <param value="${HASHED_MATOMO_ROOT_PASSWORD}"/>
+            <param value="1"/>
+        </php>
         <copy file="env/env-containers-${env.APP_ENV}" tofile="containers/.env" overwrite="true">
             <filterchain>
                 <replacetokens>
@@ -97,7 +104,7 @@
                     <token key="MARIADB_PASSWORD" value="${MARIADB_PASSWORD}" />
                     <token key="MARIADB_ROOT_PASSWORD" value="${MARIADB_ROOT_PASSWORD}" />
                     <token key="MATOMO_ROOT_USER" value="${MATOMO_ROOT_USER}" />
-                    <token key="MATOMO_ROOT_PASSWORD" value="${MATOMO_ROOT_PASSWORD}" />
+                    <token key="MATOMO_ROOT_PASSWORD" value="${HASHED_MATOMO_ROOT_PASSWORD}" />
                     <token key="MATOMO_ROOT_APIKEY" value="${MATOMO_ROOT_APIKEY}" />
                 </replacetokens>
             </filterchain>
@@ -174,7 +181,7 @@
         </if>
         <!-- Set a new application key -->
         <echo msg="Setting a new application secret key..."/>
-        <exec command="php artisan key:generate" passthru="true" checkreturn="true"/>
+        <exec command="php artisan key:generate" checkreturn="true"/>
         <!-- Install node modules -->
         <echo msg="Installing node modules..."/>
         <exec command="npm install" passthru="true" checkreturn="true"/>
