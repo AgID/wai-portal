@@ -23,6 +23,12 @@ Breadcrumbs::register('admin-password_forgot', function ($breadcrumbs) {
     $breadcrumbs->push(__('ui.pages.admin-password_forgot.title'), route('admin-password_forgot', [], false));
 });
 
+// Web Analytics Italia > Cambio della password
+Breadcrumbs::register('admin-password_change', function ($breadcrumbs) {
+    $breadcrumbs->parent('home');
+    $breadcrumbs->push(__('ui.pages.admin-password_change.title'), route('admin-password_change', [], false));
+});
+
 // Web Analytics Italia > Reset della password
 Breadcrumbs::register('admin-password_reset', function ($breadcrumbs) {
     $breadcrumbs->parent('home');

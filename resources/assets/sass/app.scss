@@ -231,6 +231,12 @@
   }
 
   .Megamenu-item--admin {
+    & > a {
+      border-top-left-radius: 0.8rem;
+      border-top-right-radius: 0.8rem;
+      background-color: #0059b3 !important;
+    }
+
     .Megamenu-subnavGroup > li {
       padding-top: 0.4rem !important;
       padding-bottom: 0.8rem !important;

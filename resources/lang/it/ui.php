@@ -61,6 +61,9 @@ return [
         'admin-password_reset' => [
             'title' => 'Reset della password'
         ],
+        'admin-password_change' => [
+            'title' => 'Cambio della password'
+        ],
         'faq' => [
             'title' => 'Domande frequenti'
         ],

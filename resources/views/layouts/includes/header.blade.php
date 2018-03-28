@@ -68,7 +68,21 @@
             </ul>
         </div>
         @else
+        @can('access-backoffice')
+        <button class="spid-user" aria-controls="spid-user-options" aria-haspopup="true" role="button">
+          <span class="agid-spid-enter-text">{{ auth()->user()->name }} {{ auth()->user()->familyName }}</span>
+        </button>
+        <div id="spid-user-options" class="u-borderShadow-m u-background-white spid-user-options" role="menu" aria-hidden="true">
+          <span class="Icon-drop-down Dropdown-arrow u-color-white"></span>
+          <ul class="Linklist">
+            <li><a href="#" class="u-color-50 u-padding-r-all u-block u-linkClean">Profilo</a></li>
+            <li><a href="{{ route('admin-password_change') }}" class="u-color-50 u-padding-r-all u-block u-linkClean">Cambio password</a></li>
+            <li><a href="{{ route('admin-logout') }}" class="u-color-50 u-padding-r-all u-block u-linkClean">Disconnetti</a></li>
+          </ul>
+        </div>
+        @else
         @include('spid-auth::spid-button', ['size' => 'm'])
+        @endcan
         @endif
       </div>
 

@@ -10,7 +10,6 @@ use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Password;
 use Illuminate\Validation\ValidationException;
 
 class AdminAuthController extends Controller
@@ -62,7 +61,7 @@ class AdminAuthController extends Controller
 
         $this->incrementLoginAttempts($request);
 
-        return back()->withMessage(['error' => __('auth.failed')]);//$this->sendFailedLoginResponse($request);
+        return back()->withMessage(['error' => __('auth.failed')])->withInput();
     }
 
     /**
@@ -75,20 +74,6 @@ class AdminAuthController extends Controller
     {
         $this->clearLoginAttempts($request);
         return redirect()->intended(route('admin-dashboard', [], false));
-    }
-
-    /**
-     * Get the failed login response instance.
-     *
-     * @return void
-     *
-     * @throws ValidationException
-     */
-    protected function sendFailedLoginResponse()
-    {
-        throw ValidationException::withMessages([
-            $this->username() => [trans('auth.failed')],
-        ]);
     }
 
     /**
@@ -183,11 +168,11 @@ class AdminAuthController extends Controller
         $user = User::where('email', $validatedData['email'])->first();
 
         if (empty($user)) {
-            return back()->withMessage(['error' => "L'indirizzo email inserito non è valido oppure il codice è scaduto o errato."]); //TODO: put message in lang file
+            return back()->withMessage(['error' => "L'indirizzo email inserito non è valido oppure il codice è scaduto o errato."])->withInput();; //TODO: put message in lang file
         }
 
         if (empty($user->passwordResetToken) || !Hash::check($validatedData['token'], $user->passwordResetToken->token)) {
-            return back()->withMessage(['error' => "L'indirizzo email inserito non è valido oppure il codice è scaduto o errato."]); //TODO: put message in lang file
+            return back()->withMessage(['error' => "L'indirizzo email inserito non è valido oppure il codice è scaduto o errato."])->withInput();; //TODO: put message in lang file
         }
 
         $user->password = Hash::make($validatedData['password']);
@@ -198,7 +183,42 @@ class AdminAuthController extends Controller
 
         auth()->login($user);
 
-        return redirect()->route('admin-dashboard')->withMessage(['success' => trans(Password::PASSWORD_RESET)]);
+        return redirect()->route('admin-dashboard')->withMessage(['success' => __('auth.password.reset')]);
+    }
+
+    /**
+     * Display the password change view.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function showPasswordChangeForm()
+    {
+        return view('auth.admin_password_change');
+    }
+
+    /**
+     * Change the user's password.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+     */
+    public function passwordChange(Request $request)
+    {
+        $validatedData = $request->validate([
+            'password' => [
+                'required',
+                'confirmed',
+                'min:8',
+                'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*(_|[^\w])).+$/'
+            ]
+        ]);
+
+        $user = auth()->user();
+
+        $user->password = Hash::make($validatedData['password']);
+        $user->save();
+
+        return redirect()->route('admin-dashboard')->withMessage(['success' => __('auth.password.changed')]);
     }
 
     /**

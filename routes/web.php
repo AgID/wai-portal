@@ -30,32 +30,32 @@ Route::get('/faq', [
     'uses' => 'HomeController@faq'
 ]);
 
-Route::get('/admin/login', [
+Route::get('/admin/user/login', [
     'as' => 'admin-login',
     'uses' => 'Auth\AdminAuthController@showLoginForm'
 ]);
 
-Route::post('/admin/login', [
+Route::post('/admin/user/login', [
     'as' => 'admin-do_login',
     'uses' => 'Auth\AdminAuthController@login'
 ]);
 
-Route::get('/admin/password-forgot', [
+Route::get('/admin/user/password-forgot', [
     'as' => 'admin-password_forgot',
     'uses' => 'Auth\AdminAuthController@showPasswordForgotForm'
 ]);
 
-Route::post('/admin/password-forgot', [
+Route::post('/admin/user/password-forgot', [
     'as' => 'admin-send_reset_password',
     'uses' => 'Auth\AdminAuthController@sendPasswordForgotEmail'
 ])->middleware('throttle:5,1');
 
-Route::get('/admin/password-reset/{token?}', [
+Route::get('/admin/user/password-reset/{token?}', [
     'as' => 'admin-password_reset',
     'uses' => 'Auth\AdminAuthController@showPasswordResetForm'
 ]);
 
-Route::post('/admin/password-reset', [
+Route::post('/admin/user/password-reset', [
     'as' => 'admin-do_password_reset',
     'uses' => 'Auth\AdminAuthController@passwordReset'
 ])->middleware('throttle:5,1');
@@ -184,12 +184,20 @@ Route::middleware(['admin-auth'])->group(function() {
             'as' => 'admin-dashboard',
             'uses' => 'AdminController@dashboard'
         ]);
-    });
 
-    Route::prefix('/admin')->group(function() {
-        Route::get('/logout', [
+        Route::get('/user/logout', [
             'as' => 'admin-logout',
             'uses' => 'Auth\AdminAuthController@logout'
+        ]);
+
+        Route::get('/user/change-password', [
+            'as' => 'admin-password_change',
+            'uses' => 'Auth\AdminAuthController@showPasswordChangeForm'
+        ]);
+
+        Route::post('/user/change-password', [
+            'as' => 'admin-do_password_change',
+            'uses' => 'Auth\AdminAuthController@passwordChange'
         ]);
     });
 });
