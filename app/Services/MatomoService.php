@@ -183,7 +183,7 @@ class MatomoService implements AnalyticsServiceContract
             'method' => 'MultiSites.getOne',
             'idSite' => $idSite,
             'period' => 'range',
-            'date' => "$from,today"
+            'date' => "$from," . now()->format('Y-m-d')
         ];
         $response = $this->apiCall($params);
         if (isset($response['nb_visits'])) {
