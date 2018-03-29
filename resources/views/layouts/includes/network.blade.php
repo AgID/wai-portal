@@ -9,12 +9,12 @@
     <nav>
       <ul class="Linklist Linklist--padded u-layout-prose u-text-r-xs">
       @foreach ($site['network_links'] as $link)
-        <li class="{{ $link['class'] or '' }}">
-          {{ $item['li_markup_pre'] or '' }}
+        <li class="{{ $link['class'] ?? '' }}">
+          {{ $item['li_markup_pre'] ?? '' }}
           <a href="{{ $link['url'] }}" class="Linklist-link">
             {{ __('ui.'.$link['title']) }}
           </a>
-          {{ $item['li_markup_post'] or '' }}
+          {{ $item['li_markup_post'] ?? '' }}
         </li>
       @endforeach
       </ul>
