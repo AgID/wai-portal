@@ -1,0 +1,84 @@
+# Build properties file
+# ^^^^^^^^^^^^^^^^^^^^^
+#
+# This property file is need for phing to build the project.
+# Adjust your settings and copy this file to env/build.properties.
+
+# Hostname
+# --------
+HOSTNAME=localhost
+
+# SPID Service Provider
+# ---------------------
+
+# Leave blank to use default key and certificate from
+# SPID Laravel package (https://github.com/italia/spid-laravel).
+# Refer to https://github.com/italia/spid-metadata-signer for
+# key and certificate generation.
+
+SPID_SP_PRIVATE_KEY=
+SPID_SP_CERTIFICATE=
+
+# Database settings
+# -----------------
+
+MARIADB_DATABASE=default
+MARIADB_USER=default
+MARIADB_PASSWORD=secret
+MARIADB_ROOT_PASSWORD=root
+
+# Mail settings
+# ------------
+
+MAIL_HOST=mailhog
+MAIL_PORT=1025
+MAIL_USERNAME=null
+MAIL_PASSWORD=null
+MAIL_ENCRYPTION=null
+
+# PEC settings
+# ------------
+
+PEC_HOST=mailhog
+PEC_PORT=1025
+PEC_USERNAME=null
+PEC_PASSWORD=null
+PEC_ENCRYPTION=null
+
+# Matomo credentials
+# ------------------
+
+# Matomo super user name
+MATOMO_ROOT_USER=admin
+
+# Matomo super user password
+MATOMO_ROOT_PASSWORD=admin
+
+# Matomo super user API Key, put any MD5 hash.
+MATOMO_ROOT_APIKEY=8aa23f3ca5903d451d1ff8eb947c7a8f
+
+# Analytics Service URLs
+# ----------------------
+
+# Analytics Service API are called from other docker containers,
+# so you want to specify the URL relative to the backend network scope
+# which resolves domain names according to docker-compose defined services.
+ANALYTICS_API_BASE_URL=https://nginx:9443
+
+# Set to false if using self-signed SSL certificates.
+ANALYTICS_API_SSL_VERIFY=false
+
+# The public URL for your Analytics Service.
+ANALYTICS_PUBLIC_URL=https://localhost:9443
+
+# Debugging
+# ---------
+
+# Set your XDebug IDE key, if needed.
+XDEBUG_IDEKEY=
+
+# Use docker.for.win.localhost if Docker host is Windows OS,
+# use docker.for.mac.localhost if Docker host is Mac OS,
+# check the IP address of docker0 and adjust DOCKER_HOST_IP value
+# in your env-containers-* file to use dockerhost, if Docker host is Linux OS.
+XDEBUG_REMOTE_HOST=docker.for.mac.localhost
