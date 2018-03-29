@@ -5,7 +5,7 @@ LABEL maintainer="Davide Porrovecchio <davide.porrovecchio@agid.gov.it>"
 RUN apk --update --no-cache add \
     curl gnupg php7
 
-ENV PIWIK_VERSION 3.3.0
+ARG PIWIK_VERSION=3.4.0
 
 RUN curl -fsSL -o piwik.tar.gz \
       "https://builds.piwik.org/piwik-${PIWIK_VERSION}.tar.gz" \
