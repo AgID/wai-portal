@@ -521,16 +521,16 @@
         },
         {
             "name": "guzzlehttp/guzzle",
-            "version": "6.3.0",
+            "version": "6.3.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/guzzle.git",
-                "reference": "f4db5a78a5ea468d4831de7f0bf9d9415e348699"
+                "reference": "68d0ea14d5a3f42a20e87632a5f84931e2709c90"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/f4db5a78a5ea468d4831de7f0bf9d9415e348699",
-                "reference": "f4db5a78a5ea468d4831de7f0bf9d9415e348699",
+                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/68d0ea14d5a3f42a20e87632a5f84931e2709c90",
+                "reference": "68d0ea14d5a3f42a20e87632a5f84931e2709c90",
                 "shasum": ""
             },
             "require": {
@@ -540,7 +540,7 @@
             },
             "require-dev": {
                 "ext-curl": "*",
-                "phpunit/phpunit": "^4.0 || ^5.0",
+                "phpunit/phpunit": "^4.8.35 || ^5.7 || ^6.4",
                 "psr/log": "^1.0"
             },
             "suggest": {
@@ -549,7 +549,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "6.2-dev"
+                    "dev-master": "6.3-dev"
                 }
             },
             "autoload": {
@@ -582,7 +582,7 @@
                 "rest",
                 "web service"
             ],
-            "time": "2017-06-22T18:50:49+00:00"
+            "time": "2018-03-26T16:33:04+00:00"
         },
         {
             "name": "guzzlehttp/promises",
@@ -706,12 +706,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/italia/spid-laravel.git",
-                "reference": "c9dd170e13685ac24f47a495b7f93eecf36052e2"
+                "reference": "68d3b306c10053e051cb000d1c97f98e2e446dc3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/italia/spid-laravel/zipball/c9dd170e13685ac24f47a495b7f93eecf36052e2",
-                "reference": "c9dd170e13685ac24f47a495b7f93eecf36052e2",
+                "url": "https://api.github.com/repos/italia/spid-laravel/zipball/68d3b306c10053e051cb000d1c97f98e2e446dc3",
+                "reference": "68d3b306c10053e051cb000d1c97f98e2e446dc3",
                 "shasum": ""
             },
             "require": {
@@ -764,7 +764,7 @@
                 "laravel",
                 "laravel 5"
             ],
-            "time": "2018-03-24T14:30:13+00:00"
+            "time": "2018-03-29T13:48:13+00:00"
         },
         {
             "name": "jakub-onderka/php-console-color",
@@ -855,16 +855,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v5.6.12",
+            "version": "v5.6.14",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "82d8165d1ea86bdd81ddfa1db9343fa19e7d1450"
+                "reference": "fba33e59fd43661933e9cecb84dfb0a64c5323ce"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/82d8165d1ea86bdd81ddfa1db9343fa19e7d1450",
-                "reference": "82d8165d1ea86bdd81ddfa1db9343fa19e7d1450",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/fba33e59fd43661933e9cecb84dfb0a64c5323ce",
+                "reference": "fba33e59fd43661933e9cecb84dfb0a64c5323ce",
                 "shasum": ""
             },
             "require": {
@@ -989,7 +989,7 @@
                 "framework",
                 "laravel"
             ],
-            "time": "2018-03-14T17:29:38+00:00"
+            "time": "2018-03-28T14:17:03+00:00"
         },
         {
             "name": "laravel/tinker",
@@ -2924,16 +2924,16 @@
         },
         {
             "name": "yajra/laravel-datatables-fractal",
-            "version": "v1.1.1",
+            "version": "v1.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/yajra/laravel-datatables-fractal.git",
-                "reference": "eb4458027db0c9a2ff036907e2af17ec68a0df98"
+                "reference": "823182d5a58f5526dd32dfecab3cbc1d63ab0e7b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yajra/laravel-datatables-fractal/zipball/eb4458027db0c9a2ff036907e2af17ec68a0df98",
-                "reference": "eb4458027db0c9a2ff036907e2af17ec68a0df98",
+                "url": "https://api.github.com/repos/yajra/laravel-datatables-fractal/zipball/823182d5a58f5526dd32dfecab3cbc1d63ab0e7b",
+                "reference": "823182d5a58f5526dd32dfecab3cbc1d63ab0e7b",
                 "shasum": ""
             },
             "require": {
@@ -2978,20 +2978,20 @@
                 "fractal",
                 "laravel"
             ],
-            "time": "2017-12-26T05:54:54+00:00"
+            "time": "2018-03-28T15:57:27+00:00"
         },
         {
             "name": "yajra/laravel-datatables-oracle",
-            "version": "v8.4.1",
+            "version": "v8.4.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/yajra/laravel-datatables.git",
-                "reference": "cb052ed2608c266b1f942e1f845b8275696cd798"
+                "reference": "eab6cc583ae778d056c5caf21b70db803d956e14"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yajra/laravel-datatables/zipball/cb052ed2608c266b1f942e1f845b8275696cd798",
-                "reference": "cb052ed2608c266b1f942e1f845b8275696cd798",
+                "url": "https://api.github.com/repos/yajra/laravel-datatables/zipball/eab6cc583ae778d056c5caf21b70db803d956e14",
+                "reference": "eab6cc583ae778d056c5caf21b70db803d956e14",
                 "shasum": ""
             },
             "require": {
@@ -3007,6 +3007,7 @@
             },
             "suggest": {
                 "yajra/laravel-datatables-buttons": "Plugin for server-side exporting of dataTable.",
+                "yajra/laravel-datatables-editor": "Plugin to use Datatables Editor (requires a license).",
                 "yajra/laravel-datatables-fractal": "Plugin for server-side response using Fractal.",
                 "yajra/laravel-datatables-html": "Plugin for server-side HTML builder of dataTable."
             },
@@ -3048,7 +3049,7 @@
                 "jquery",
                 "laravel"
             ],
-            "time": "2018-02-16T08:22:10+00:00"
+            "time": "2018-03-28T16:31:13+00:00"
         }
     ],
     "packages-dev": [
@@ -3646,16 +3647,16 @@
         },
         {
             "name": "laravel/dusk",
-            "version": "v3.0.4",
+            "version": "v3.0.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/dusk.git",
-                "reference": "df287183e521d761141352b59ec106a45a87f1b0"
+                "reference": "660e079526c0c0178ccb29c8e03a9674be9c0e98"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/dusk/zipball/df287183e521d761141352b59ec106a45a87f1b0",
-                "reference": "df287183e521d761141352b59ec106a45a87f1b0",
+                "url": "https://api.github.com/repos/laravel/dusk/zipball/660e079526c0c0178ccb29c8e03a9674be9c0e98",
+                "reference": "660e079526c0c0178ccb29c8e03a9674be9c0e98",
                 "shasum": ""
             },
             "require": {
@@ -3703,7 +3704,7 @@
                 "testing",
                 "webdriver"
             ],
-            "time": "2018-03-07T16:24:19+00:00"
+            "time": "2018-03-25T16:22:21+00:00"
         },
         {
             "name": "maximebf/debugbar",
@@ -4650,16 +4651,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "7.0.2",
+            "version": "7.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "e2f8aa21bc54b6ba218bdd4f9e0dac1e9bc3b4e9"
+                "reference": "536f4d853c12d8189963435088e8ff7c0daeab2e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/e2f8aa21bc54b6ba218bdd4f9e0dac1e9bc3b4e9",
-                "reference": "e2f8aa21bc54b6ba218bdd4f9e0dac1e9bc3b4e9",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/536f4d853c12d8189963435088e8ff7c0daeab2e",
+                "reference": "536f4d853c12d8189963435088e8ff7c0daeab2e",
                 "shasum": ""
             },
             "require": {
@@ -4673,7 +4674,7 @@
                 "phar-io/version": "^1.0",
                 "php": "^7.1",
                 "phpspec/prophecy": "^1.7",
-                "phpunit/php-code-coverage": "^6.0",
+                "phpunit/php-code-coverage": "^6.0.1",
                 "phpunit/php-file-iterator": "^1.4.3",
                 "phpunit/php-text-template": "^1.2.1",
                 "phpunit/php-timer": "^2.0",
@@ -4726,7 +4727,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2018-02-26T07:03:12+00:00"
+            "time": "2018-03-26T07:36:48+00:00"
         },
         {
             "name": "phpunit/phpunit-mock-objects",
