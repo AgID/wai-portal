@@ -119,7 +119,7 @@ Breadcrumbs::register('auth-register', function ($breadcrumbs) {
     $breadcrumbs->push(__('ui.pages.auth-register.title'), route('auth-register', [], false));
 });
 
-// Web Analytics Italia > 404
+// Web Analytics Italia > Error 404
 Breadcrumbs::register('errors.404', function ($breadcrumbs) {
     $breadcrumbs->parent('home');
     $breadcrumbs->push(__('ui.pages.404.title'));

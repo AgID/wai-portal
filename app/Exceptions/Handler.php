@@ -7,6 +7,7 @@ use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
+use Illuminate\Session\TokenMismatchException;
 
 class Handler extends ExceptionHandler
 {
@@ -55,7 +56,11 @@ class Handler extends ExceptionHandler
         if ($exception instanceof NotFoundHttpException ||
             $exception instanceof ModelNotFoundException ||
             $exception instanceof MethodNotAllowedHttpException) {
-            return response()->view('pages.404', ['not_found_path' => request()->path()]);
+            return response()->view('errors.404', ['not_found_path' => request()->path()]);
+        }
+
+        if ($exception instanceof TokenMismatchException) {
+            return redirect()->home()->withMessage(['warning' => __('ui.session_expired')]);
         }
 
         return parent::render($request, $exception);

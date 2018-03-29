@@ -39,6 +39,8 @@ return [
     'cookiebar_msg' => 'Questo sito utilizza cookie tecnici, analytics e di terze parti. Proseguendo nella navigazione accetti l’utilizzo dei cookie.',
     'cookiebar_accept' => 'Accetto',
     'cookiebar_privacy_policy' => 'Privacy policy',
+    'session_expired' => 'La sessione è scaduta per inattività.',
+    'return_home' => 'Ritorna alla pagina iniziale.',
 
     'pages' => [
         'home' => [
@@ -46,8 +48,15 @@ return [
         ],
         '404' => [
             'title' => 'Pagina non trovata',
-            'return_home' => 'Ritorna alla pagina iniziale.',
             'not_found' => 'La pagina :page non esiste.'
+        ],
+        '429' => [
+            'title' => 'Troppe richieste',
+            'description' => 'Spiacenti, sono pervenute troppe richieste.'
+        ],
+        '500' => [
+            'title' => "Errore dell'applicazione",
+            'description' => "Si è verificato un errore inaspettato.\nSe dovesse ripetersi ti preghiamo di contattarci."
         ],
         'admin-login' => [
             'title' => 'Accesso amministratori'
