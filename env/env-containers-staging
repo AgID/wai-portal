@@ -18,7 +18,7 @@ COMPOSE_FILE=docker-compose.yml:docker-compose.staging.yml
 ### Docker Host IP #####################################################################################################
 # Enter your Docker Host IP (will be appended to /etc/hosts). Default is `10.0.75.1`
 
-DOCKER_HOST_IP=10.0.75.1
+DOCKER_HOST_IP=172.17.0.1
 
 ########################################################################################################################
 
