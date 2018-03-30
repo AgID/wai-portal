@@ -368,8 +368,8 @@
   margin-bottom: 1em;
 }
 
-/* Utilities
-  ========== */
+/* Utilities and overrides
+  ======================== */
 
 .hide-focus :focus,
 .hide-focus :focus:focus {
@@ -415,6 +415,10 @@ code {
 .Linklist li {
   border-top: none !important;
   border-bottom: 0.1rem solid currentColor !important;
+}
+
+.Accordion--default .Accordion-link:hover {
+  text-decoration: none !important;
 }
 
 /* Headings

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Symfony\Component\Yaml\Yaml;
+
 class HomeController extends Controller
 {
     /**
@@ -21,6 +23,7 @@ class HomeController extends Controller
      */
     public function faq()
     {
-        return view('pages.faq');
+        $faqs = Yaml::parseFile(resource_path('views/pages/faqs.yml'));
+        return view('pages.faq')->with('faqs', $faqs);
     }
 }
