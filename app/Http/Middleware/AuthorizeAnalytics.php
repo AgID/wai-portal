@@ -23,7 +23,7 @@ class AuthorizeAnalytics
 
             logger()->info('User '.auth()->user()->getInfo().' requested an unauthorized resource.');
 
-            abort(403, 'Unauthorized.'); //TODO: customize error pages
+            abort(403);
         }
         return $next($request);
     }
