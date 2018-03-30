@@ -1,0 +1,13 @@
+diff --git a/src/Illuminate/Queue/RedisQueue.php b/src/Illuminate/Queue/RedisQueue.php
+index 7bda32fb8..a4d9499b6 100644
+--- a/src/Illuminate/Queue/RedisQueue.php
++++ b/src/Illuminate/Queue/RedisQueue.php
+@@ -229,7 +229,7 @@ class RedisQueue extends Queue implements QueueContract
+     {
+         $rawBody = $this->getConnection()->blpop($queue, $this->blockFor);
+
+-        if (! empty($rawBody)) {
++        if (! is_null($rawBody)) {
+             $payload = json_decode($rawBody[1], true);
+
+             $payload['attempts']++;

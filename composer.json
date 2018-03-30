@@ -61,6 +61,9 @@
         "patches": {
             "ethanhann/redisearch-php": {
                 "Fix in inFields method": "patches/redisearch-php_fix_infields.patch"
+            },
+            "laravel/framework": {
+                "Fix redis queue": "patches/laravel-redis_queue.patch"
             }
         }
     },
