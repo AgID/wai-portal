@@ -21,8 +21,7 @@ class VerificationController extends Controller
             return redirect()->guest(route('auth-register'))
                              ->withMessage(['warning' => "Prima di usare l'applicazione è necessario completare la registrazione"]); //TODO: put message in lang file
         } else {
-            $user = auth()->user();
-            if ($user->status != 'inactive') {
+            if (!in_array(auth()->user()->status, ['inactive', 'invited'])) {
                 return redirect(route('home'))->withMessage(['info' => "L'indirizzo email è già stato verificato"]); //TODO: put message in lang file
             }
         }
@@ -44,7 +43,7 @@ class VerificationController extends Controller
         $verificationToken = $user->verificationToken->token;
 
         if (!Hash::check($token, $verificationToken)) {
-            return back()->withMessage(['warning' => 'Il codice di verifica inserito non è valido']); //TODO: put message in lang file
+            return back()->withMessage(['warning' => "Il codice di verifica inserito non è valido per l'utente " . $user->name . ' ' . $user->familyName .'.']); //TODO: put message in lang file
         }
 
         if (!in_array($user->status, ['inactive', 'invited'])) {
@@ -106,11 +105,20 @@ class VerificationController extends Controller
                              ->withMessage(['warning' => "Prima di usare l'applicazione è necessario completare la registrazione"]); //TODO: put message in lang file
         } else {
             $user = auth()->user();
-            if ($user->status != 'inactive') {
+            if (!in_array($user->status, ['inactive', 'invited'])) {
                 return redirect(route('home'))->withMessage(['info' => "L'indirizzo email è già stato verificato"]); //TODO: put message in lang file
             }
 
-            dispatch(new SendVerificationEmail($user));
+            if (!empty($user->verificationToken)) {
+                $user->verificationToken->delete();
+            }
+
+            $token = hash_hmac('sha256', str_random(40), config('app.key'));
+            $user->verificationToken()->create([
+                'token' => Hash::make($token)
+            ]);
+
+            dispatch(new SendVerificationEmail($user, $token));
 
             return redirect(route('home'))
                    ->withMessage(['info' => "Una nuova email di verifica è stata inviata all'indirizzo ".$user->email]); //TODO: put message in lang file

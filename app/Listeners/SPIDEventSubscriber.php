@@ -16,7 +16,7 @@ class SPIDEventSubscriber
         auth()->logout();
         $SPIDUser = $event->getSPIDUser();
         $user = User::findByFiscalNumber($SPIDUser->fiscalNumber);
-        if (isset($user) && $user->status != 'invited') {
+        if (isset($user)) {
             auth()->login($user);
 
             logger()->info('User '.$user->getInfo().' logged in.');

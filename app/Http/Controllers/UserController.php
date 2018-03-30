@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Transformers\UserTransformer;
 use App\Jobs\SendVerificationEmail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Yajra\Datatables\Datatables;
 
 class UserController extends Controller
@@ -62,17 +63,23 @@ class UserController extends Controller
             'role' => 'required|exists:roles,name',
         ]);
 
-        $user = User::create([
+        $user = new User;
+        $user->fill([
             'fiscalNumber' => $validatedData['fiscalNumber'],
             'email' => $validatedData['email'],
-            'public_administration_id' => auth()->user()->publicAdministration->id,
             'status' => 'invited'
         ]);
+        $user->publicAdministration()->associate(auth()->user()->publicAdministration);
+        $user->save();
+
+        $token = hash_hmac('sha256', str_random(40), config('app.key'));
         $user->verificationToken()->create([
-            'token' => bin2hex(random_bytes(32))
+            'token' => Hash::make($token)
         ]);
+
         $user->assign($validatedData['role']);
-        dispatch(new SendVerificationEmail($user));
+
+        dispatch(new SendVerificationEmail($user, $token));
 
         logger()->info('User '.auth()->user()->getInfo().' added a new user ['.$validatedData['email'].'] as '.$validatedData['role'].' for "'.auth()->user()->publicAdministration->name.'"');
 

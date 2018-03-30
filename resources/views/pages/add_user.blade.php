@@ -26,7 +26,7 @@
         @endif
         <label class="Form-label is-required" for="email">Indirizzo email istituzionale{{-- //TODO: put message in lang file --}}</label>
         <input class="Form-input" id="email" name="email" type="email" aria-required="true" value="{{ old('email') }}" required>
-        <p class="Form-message">Es. nome.cognome@agid.gov.it{{-- //TODO: put message in lang file --}}</p>
+        <p class="Form-message">Inserisci la mail di lavoro fornita dalla tua PA (es. nome.cognome@agid.gov.it).{{-- //TODO: put message in lang file --}}</p>
         @if ($errors->has('email'))</div>@endif
       </div>
       <div class="Form-field {{ $errors->has('fiscalNumber') ? 'is-invalid' : '' }}">

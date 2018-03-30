@@ -84,7 +84,7 @@ return [
     ],
     'string' => ':attribute deve essere una stringa.',
     'timezone' => ':attribute deve essere una zona valida.',
-    'unique' => ':attribute è stato già utilizzato.',
+    'unique' => ':attribute già utilizzato.',
     'uploaded' => ':attribute non è stato caricato.',
     'url' => 'Il formato del campo :attribute non è valido.',
 
@@ -119,9 +119,10 @@ return [
     'attributes' => [
         'name' => 'nome',
         'username' => 'nome utente',
-        'first_name' => 'nome',
-        'last_name' => 'cognome',
+        'familyName' => 'cognome',
+        'fiscalNumber' => 'codice fiscale',
         'password_confirmation' => 'conferma password',
+        'email' => 'indirizzo email',
         'city' => 'città',
         'country' => 'paese',
         'address' => 'indirizzo',
