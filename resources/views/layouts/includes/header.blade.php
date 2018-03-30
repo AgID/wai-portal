@@ -52,30 +52,33 @@
         </h1>
       </div>
 
-      <div class="Header-spid Grid-cell u-text-xs u-lg-flexOrderLast u-md-flexOrderLast">
+      <div class="Header-auth Grid-cell u-text-xs u-lg-flexOrderLast u-md-flexOrderLast">
         @if (app()->make('SPIDAuth')->isAuthenticated())
-        <button class="spid-user" aria-controls="spid-user-options" aria-haspopup="true" role="button">
-          <span aria-hidden="true" class="agid-spid-enter-icon">
+        <button class="auth-user" aria-controls="auth-user-options" aria-haspopup="true" role="button">
+          <span aria-hidden="true" class="auth-icon">
             <img aria-hidden="true" src="/vendor/spid-auth/img/spid-ico-circle-bb.svg" onerror="this.src='/vendor/spid-auth/img/spid-ico-circle-bb.png'; this.onerror=null;" alt="Accesso SPID">
           </span>
-          <span class="agid-spid-enter-text">{{ app()->make('SPIDAuth')->getSPIDUser()->name }} {{ app()->make('SPIDAuth')->getSPIDUser()->familyName }}</span>
+          <span class="auth-text">{{ app()->make('SPIDAuth')->getSPIDUser()->name }} {{ app()->make('SPIDAuth')->getSPIDUser()->familyName }}</span>
         </button>
-        <div id="spid-user-options" class="u-borderShadow-m u-background-white spid-user-options" role="menu" aria-hidden="true">
+        <div id="auth-user-options" class="u-borderShadow-m u-background-white auth-user-options" role="menu" aria-hidden="true">
             <span class="Icon-drop-down Dropdown-arrow u-color-white"></span>
             <ul class="Linklist">
-                <li><a href="#" class="u-color-50 u-padding-r-all u-block u-linkClean">Profilo</a></li>
+                <li><a href="{{ route('user-profile') }}" class="u-color-50 u-padding-r-all u-block u-linkClean">Profilo</a></li>
                 <li><a href="{{ route('spid-auth_logout') }}" class="u-color-50 u-padding-r-all u-block u-linkClean">Disconnetti</a></li>
             </ul>
         </div>
         @else
         @can('access-backoffice')
-        <button class="spid-user" aria-controls="spid-user-options" aria-haspopup="true" role="button">
-          <span class="agid-spid-enter-text">{{ auth()->user()->name }} {{ auth()->user()->familyName }}</span>
+        <button class="auth-user" aria-controls="auth-user-options" aria-haspopup="true" role="button">
+          <span aria-hidden="true" class="auth-icon">
+              <span class="auth-icon-text">{{ substr(auth()->user()->name, 0, 1) }}{{ substr(auth()->user()->familyName, 0, 1) }}</span>
+          </span>
+          <span class="auth-text">{{ auth()->user()->name }} {{ auth()->user()->familyName }}</span>
         </button>
-        <div id="spid-user-options" class="u-borderShadow-m u-background-white spid-user-options" role="menu" aria-hidden="true">
+        <div id="auth-user-options" class="u-borderShadow-m u-background-white auth-user-options" role="menu" aria-hidden="true">
           <span class="Icon-drop-down Dropdown-arrow u-color-white"></span>
           <ul class="Linklist">
-            <li><a href="#" class="u-color-50 u-padding-r-all u-block u-linkClean">Profilo</a></li>
+            <li><a href="{{ route('user-profile') }}" class="u-color-50 u-padding-r-all u-block u-linkClean">Profilo</a></li>
             <li><a href="{{ route('admin-password_change') }}" class="u-color-50 u-padding-r-all u-block u-linkClean">Cambio password</a></li>
             <li><a href="{{ route('admin-logout') }}" class="u-color-50 u-padding-r-all u-block u-linkClean">Disconnetti</a></li>
           </ul>
@@ -106,9 +109,9 @@
 @push('scripts')
   <script type="text/javascript">
   $('document').ready(function() {
-    var dropdown = $('#spid-user-options');
+    var dropdown = $('#auth-user-options');
 
-    $('.spid-user').click(function(e) {
+    $('.auth-user').click(function(e) {
         if (dropdown.is(':visible')) {
             dropdown.hide();
             dropdown.attr("aria-hidden", "true");

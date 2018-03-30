@@ -46,18 +46,6 @@ return [
         'home' => [
             'title' => 'Home'
         ],
-        '404' => [
-            'title' => 'Pagina non trovata',
-            'not_found' => 'La pagina :page non esiste.'
-        ],
-        '429' => [
-            'title' => 'Troppe richieste',
-            'description' => 'Spiacenti, sono pervenute troppe richieste.'
-        ],
-        '500' => [
-            'title' => "Errore dell'applicazione",
-            'description' => "Si è verificato un errore inaspettato.\nSe dovesse ripetersi ti preghiamo di contattarci."
-        ],
         'admin-login' => [
             'title' => 'Accesso amministratori'
         ],
@@ -102,6 +90,9 @@ return [
         'website-javascript-snippet' => [
             'title' => 'Snippet di codice Javascript'
         ],
+        'profile' => [
+            'title' => 'Profilo utente'
+        ],
         'privacy' => [
             'title' => 'Privacy'
         ],
@@ -114,6 +105,18 @@ return [
         'users' => [
             'title' => 'Utenti',
             'add_user' => 'aggiungi utente'
+        ],
+        '404' => [
+            'title' => 'Pagina non trovata',
+            'not_found' => 'La pagina :page non esiste.'
+        ],
+        '429' => [
+            'title' => 'Troppe richieste',
+            'description' => 'Spiacenti, sono pervenute troppe richieste.'
+        ],
+        '500' => [
+            'title' => "Errore dell'applicazione",
+            'description' => "Si è verificato un errore inaspettato.\nSe dovesse ripetersi ti preghiamo di contattarci."
         ]
     ],
 

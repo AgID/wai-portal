@@ -86,11 +86,12 @@
     padding-top: 0.8rem;
   }
 
-  .Header-spid {
+  .Header-auth {
     margin-top: 0.4rem !important;
     text-align: right !important;
     flex-basis: auto !important;
     display: block !important;
+    position: relative;
 
     @media screen and (min-width: 1366px) {
       width: 33.33333% !important;
@@ -111,7 +112,7 @@
       border-radius: 6px;
       border: 0.2rem solid #fff;
 
-      .agid-spid-enter-icon {
+      .auth-icon {
         margin: 0 -0.4em 0 0;
         padding: 0.6em 0.8em 0.5em;
         border-right: rgba(255, 255, 255, 0.1) 0.1em solid;
@@ -123,9 +124,15 @@
           height: 29px;
           border: 0;
         }
+
+        .auth-icon-text {
+          padding: 0.43em 0;
+          display: block;
+          font-size: 1.15em;
+        }
       }
 
-      .agid-spid-enter-text {
+      .auth-text {
         padding: 0.95em 1em 0.85em;
         font-size: 1.15em;
         text-align: center;
@@ -134,33 +141,36 @@
       }
     }
 
-    @media screen and (max-width: 767px) {
-      button {
-        .agid-spid-enter-icon {
-          margin: 0;
-          border: 0;
-        }
-
-        .agid-spid-enter-text {
-          display: none;
-        }
-      }
-    }
-
-    .spid-user-options {
+    .auth-user-options {
       display: none;
       position: absolute;
       background-color: #fff;
       padding: 10px;
       z-index: 2000;
       margin-top: 16px;
-      margin-right: 3rem;
-      right: 10.4rem;
+      right: 0;
       border-radius: 5px;
       box-shadow: 0 10px 40px -5px #858585;
 
       li {
         border: 0 !important;
+      }
+    }
+
+    @media screen and (max-width: 767px) {
+      button {
+        .auth-icon {
+          margin: 0;
+          border: 0;
+        }
+
+        .auth-text {
+          display: none;
+        }
+      }
+
+      .auth-user-options {
+        right: -2em;
       }
     }
   }

@@ -95,6 +95,12 @@ Breadcrumbs::register('register', function ($breadcrumbs) {
     $breadcrumbs->push(__('ui.pages.register.title'), route('register', [], false));
 });
 
+// Web Analytics Italia > User profile
+Breadcrumbs::register('user-profile', function ($breadcrumbs) {
+    $breadcrumbs->parent('home');
+    $breadcrumbs->push(__('ui.pages.profile.title'), route('user-profile', [], false));
+});
+
 // Web Analytics Italia > SPID Login
 Breadcrumbs::register('spid-auth_login', function ($breadcrumbs) {
     $breadcrumbs->parent('home');

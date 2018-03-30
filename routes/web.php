@@ -77,7 +77,7 @@ Route::prefix('/register')->middleware(['spid.auth', 'guest'])->group(function()
     ]);
 });
 
-/** Both SPID and application authentication: this is the default for registered users */
+/** Only SPID authentication */
 Route::prefix('/verify')->middleware('spid.auth')->group(function() {
     Route::get('/', [
         'as' => 'auth-verify',
@@ -96,7 +96,7 @@ Route::prefix('/verify')->middleware('spid.auth')->group(function() {
 });
 
 /**
- * Registered-only application routes
+ * Application routes
  */
 
 /** Both SPID and application authentication: this is the default for registered users */
@@ -174,6 +174,17 @@ Route::middleware(['spid.auth', 'auth'])->group(function() {
         ]);
     });
 });
+
+/**
+ * Registered application routes (both SPID or admin)
+ */
+Route::middleware(['auth'])->group(function() {
+    Route::get('/user/profile', [
+        'as' => 'user-profile',
+        'uses' => 'Auth\UserAuthController@profile'
+    ]);
+});
+
 
 /**
  * Admin-only application routes

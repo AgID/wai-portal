@@ -7,5 +7,5 @@
 @section('title', __('ui.pages.spid-auth_login.title'))
 
 @section('page-content')
-<div class="agid-spid-enter-button" aria-live="polite" data-size="l"></div>
+@include('spid-auth::spid-button', ['size' => 'l'])
 @endsection
