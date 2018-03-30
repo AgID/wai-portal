@@ -44,7 +44,8 @@ class MatomoService implements AnalyticsServiceContract
             'urls' => $url,
             'group' => $group,
             'timezone' => 'Europe/Rome',
-            'currency' => 'EUR'
+            'currency' => 'EUR',
+            //'excludeUnknownUrls' => true //TODO: enable in production!
         ];
         return $this->apiCall($params)['value'];
     }
