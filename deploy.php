@@ -7,7 +7,7 @@ require 'recipe/common.php';
 set('application', 'Web Analytics Italia');
 
 // Project repository
-set('repository', 'git@github.com:teamdigitale/piwik-onboarding.git');
+set('repository', 'git@github.com:teamdigitale/webanalytics-onboarding.git');
 
 // Shared files/dirs between deploys
 set('shared_files', []);
