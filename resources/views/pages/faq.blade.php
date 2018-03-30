@@ -9,7 +9,7 @@
             <h2 class="Accordion-header js-fr-accordion__header fr-accordion__header" id="accordion-header-{{ $loop->iteration }}">
                 <span class="Accordion-link u-linkClean">
                     {{ $faq['question'] }}
-                    <a class="u-color-50 u-textClean u-margin-left-m u-text-xxs" href="#faq-{{ $loop->iteration }}">
+                    <a class="u-color-50 u-textClean u-margin-left-m u-text-s" href="#faq-{{ $loop->iteration }}">
                         <span class="Icon Icon-link"></span>
                     </a>
                 </span>
