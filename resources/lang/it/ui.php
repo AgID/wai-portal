@@ -106,6 +106,10 @@ return [
             'title' => 'Utenti',
             'add_user' => 'aggiungi utente'
         ],
+        '403' => [
+            'title' => 'Accesso negato',
+            'description' => 'Non hai le autorizzazioni necessarie per accedere alla pagina.'
+        ],
         '404' => [
             'title' => 'Pagina non trovata',
             'not_found' => 'La pagina :page non esiste.'
