@@ -159,12 +159,14 @@
 
     @media screen and (max-width: 767px) {
       button {
-        .auth-icon {
+        .auth-icon,
+        .agid-spid-enter-icon {
           margin: 0;
           border: 0;
         }
 
-        .auth-text {
+        .auth-text,
+        .agid-spid-enter-text {
           display: none;
         }
       }
