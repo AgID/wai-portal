@@ -63,8 +63,8 @@
         <div id="auth-user-options" class="u-borderShadow-m u-background-white auth-user-options" role="menu" aria-hidden="true">
             <span class="Icon-drop-down Dropdown-arrow u-color-white"></span>
             <ul class="Linklist">
-                <li><a href="{{ route('user-profile') }}" class="u-color-50 u-padding-r-all u-block u-linkClean">Profilo</a></li>
-                <li><a href="{{ route('spid-auth_logout') }}" class="u-color-50 u-padding-r-all u-block u-linkClean">Disconnetti</a></li>
+                <li><a href="{{ route('user-profile', [], false) }}" class="u-color-50 u-padding-r-all u-block u-linkClean">Profilo</a></li>
+                <li><a href="{{ route('spid-auth_logout', [], false) }}" class="u-color-50 u-padding-r-all u-block u-linkClean">Disconnetti</a></li>
             </ul>
         </div>
         @else
@@ -78,9 +78,9 @@
         <div id="auth-user-options" class="u-borderShadow-m u-background-white auth-user-options" role="menu" aria-hidden="true">
           <span class="Icon-drop-down Dropdown-arrow u-color-white"></span>
           <ul class="Linklist">
-            <li><a href="{{ route('user-profile') }}" class="u-color-50 u-padding-r-all u-block u-linkClean">Profilo</a></li>
-            <li><a href="{{ route('admin-password_change') }}" class="u-color-50 u-padding-r-all u-block u-linkClean">Cambio password</a></li>
-            <li><a href="{{ route('admin-logout') }}" class="u-color-50 u-padding-r-all u-block u-linkClean">Disconnetti</a></li>
+            <li><a href="{{ route('user-profile', [], false) }}" class="u-color-50 u-padding-r-all u-block u-linkClean">Profilo</a></li>
+            <li><a href="{{ route('admin-password_change', [], false) }}" class="u-color-50 u-padding-r-all u-block u-linkClean">Cambio password</a></li>
+            <li><a href="{{ route('admin-logout', [], false) }}" class="u-color-50 u-padding-r-all u-block u-linkClean">Disconnetti</a></li>
           </ul>
         </div>
         @else

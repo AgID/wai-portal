@@ -4,7 +4,7 @@
 
 @section('content')
   <div class="Prose u-layout-prose"><p>Se non riesci ad accedere al tuo account amministrativo, puoi richiedere un reset della password inserendo il tuo indirizzo email nel modulo presente in questa pagina.</p></div>
-  <form class="Form Form--spaced u-text-r-xs" method="post" action="{{ route('admin-send_reset_password') }}">
+  <form class="Form Form--spaced u-text-r-xs" method="post" action="{{ route('admin-send_reset_password', [], false) }}">
     @csrf
     <fieldset class="Form-fieldset">
       <div class="Form-field {{ $errors->has('email') ? 'is-invalid' : '' }}">

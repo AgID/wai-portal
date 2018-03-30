@@ -3,7 +3,7 @@
 @section('title', __('ui.pages.add-primary-website.title'))
 
 @section('content')
-<form class="Form Form--spaced u-text-r-xs" method="post" action="{{ route('public-administrations-store') }}">
+<form class="Form Form--spaced u-text-r-xs" method="post" action="{{ route('public-administrations-store', [], false) }}">
   @csrf
   @if ($errors->isEmpty())
     <div class="Prose Alert Alert--info">

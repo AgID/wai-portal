@@ -6,7 +6,7 @@
 {{-- //TODO: put message in lang file --}}
 {{-- //TODO: allow to change email address --}}
 {{-- //TODO: allow to resend mail --}}
-<form class="Form Form--spaced u-text-r-xs" method="get" action="{{ route('auth-do_verify') }}">
+<form class="Form Form--spaced u-text-r-xs" method="get" action="{{ route('auth-do_verify', [], false) }}">
   <fieldset class="Form-fieldset">
     <div class="Form-field">
       <label class="Form-label is-required" for="token">Codice di verifica{{-- //TODO: put message in lang file --}}</label>

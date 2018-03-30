@@ -3,7 +3,7 @@
   <div class="Offcanvas-content u-background-white">
     <div class="Offcanvas-toggleContainer u-background-50 u-jsHidden">
       <a class="Hamburger-toggleContainer u-block u-color-white u-padding-bottom-xxl u-padding-left-s u-padding-top-xxl js-fr-offcanvas-close"
-        aria-controls="menu" aria-label="{{ __('ui.navigation_menu_esc') }}" title="{{ __('ui.navigation_menu_esc') }}" href="#">
+        aria-controls="menu" aria-label="{{ __('ui.navigation_menu_esc') }}" href="#">
         <span class="Hamburger-toggle is-active" aria-hidden="true"></span>
       </a>
     </div>

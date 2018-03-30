@@ -3,7 +3,7 @@
 @section('title', __('ui.pages.admin-login.title'))
 
 @section('content')
-  <form class="Form Form--spaced u-text-r-xs" method="post" action="{{ route('admin-do_login') }}">
+  <form class="Form Form--spaced u-text-r-xs" method="post" action="{{ route('admin-do_login', [], false) }}">
     @csrf
     <fieldset class="Form-fieldset">
       <div class="Form-field">

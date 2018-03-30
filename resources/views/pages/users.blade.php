@@ -7,7 +7,7 @@
     @can('manage-users')
     @include('partials.link_button', [
         'label' => __('ui.pages.users.add_user'),
-        'href' => route('users-create')
+        'href' => route('users-create', [], false)
     ])
     @endcan
 @endsection

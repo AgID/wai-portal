@@ -4,6 +4,6 @@
   </p>
   <p>
     <button class="Button Button--default u-text-r-xxs js-cookieBarAccept u-inlineBlock u-margin-r-all">{{ __('ui.cookiebar_accept') }}</button>
-    <a href="{{ route('privacy') }}" class="u-text-r-xs u-color-teal-50">{{ __('ui.cookiebar_privacy_policy') }}</a>
+    <a href="{{ route('privacy', [], false) }}" class="u-text-r-xs u-color-teal-50">{{ __('ui.cookiebar_privacy_policy') }}</a>
   </p>
 </div>

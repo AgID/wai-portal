@@ -6,10 +6,10 @@
     @include('partials.user_info')
     @include('partials.link_button', [
         'label' => __('ui.pages.dashboard.websites'),
-        'href' => route('websites-index')
+        'href' => route('websites-index', [], false)
     ])
     @include('partials.link_button', [
         'label' => __('ui.pages.dashboard.users'),
-        'href' => route('users-index')
+        'href' => route('users-index', [], false)
     ])
 @endsection
