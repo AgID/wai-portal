@@ -3,5 +3,5 @@
 @section('title', __('ui.pages.admin-dashboard.title'))
 
 @section('content')
-Admin dashboard
+    Admin dashboard
 @endsection

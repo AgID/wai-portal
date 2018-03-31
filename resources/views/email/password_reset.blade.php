@@ -1,25 +1,25 @@
 @component('mail::message')
-  # Reset della password
+    # Reset della password
 
-  Ciao {{ $user->name }} {{ $user->familyName }},
-  ci è pervenuta una richiesta di reset della tua password su {{ config('app.name') }}.
+    Ciao {{ $user->name }} {{ $user->familyName }},
+    ci è pervenuta una richiesta di reset della tua password su {{ config('app.name') }}.
 
-  Se sei stato tu a fare la richiesta perché non riesci ad accedere,
-  usa il bottone per andare alla pagina di reset della password.
+    Se sei stato tu a fare la richiesta perché non riesci ad accedere,
+    usa il bottone per andare alla pagina di reset della password.
 
-  @component('mail::button', ['url' => route('admin-password_reset', $token)])
-    Reimposta password
-  @endcomponent
+    @component('mail::button', ['url' => route('admin-password_reset', $token)])
+        Reimposta password
+    @endcomponent
 
-  Se non riesci a confermare cliccando sul bottone,
-  puoi visitare la pagina [{{ url('/admin/password-reset') }}]({{ url('/admin/password-reset') }})
-  ed inserire il seguente codice:
-  `{!! $token !!}`
+    Se non riesci a confermare cliccando sul bottone,
+    puoi visitare la pagina [{{ url('/admin/password-reset') }}]({{ url('/admin/password-reset') }})
+    ed inserire il seguente codice:
+    `{!! $token !!}`
 
-  **È possibile effettura il reset della password entro un'ora dalla richiesta
-  (fino alle {{ $user->passwordResetToken->created_at->addHour()->format('H:i:s') }} del {{ $user->passwordResetToken->created_at->addHour()->format('d/m/Y') }})**
+    **È possibile effettura il reset della password entro un'ora dalla richiesta
+    (fino alle {{ $user->passwordResetToken->created_at->addHour()->format('H:i:s') }} del {{ $user->passwordResetToken->created_at->addHour()->format('d/m/Y') }})**
 
-  **Se non sei stato tu a richiedere il reset la password, puoi ignorare questo messaggio email.**
+    **Se non sei stato tu a richiedere il reset la password, puoi ignorare questo messaggio email.**
 @endcomponent
 
 {{-- //TODO: put message in lang file --}}

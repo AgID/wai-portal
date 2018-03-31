@@ -21,9 +21,9 @@
 @include('layouts.includes.scrolltop')
 
 <div class="u-background-95">
-  <div class="u-layout-wide u-layoutCenter u-layout-r-withGutter u-hiddenPrint">
-    @include('layouts.includes.footer')
-  </div>
+    <div class="u-layout-wide u-layoutCenter u-layout-r-withGutter u-hiddenPrint">
+        @include('layouts.includes.footer')
+    </div>
 </div>
 
 @include('layouts.includes.scripts')
