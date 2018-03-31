@@ -5,9 +5,9 @@
 @section('content')
     @include('partials.datatable')
     @can('manage-sites')
-    @include('partials.link_button', [
-        'label' => __('ui.pages.websites.add_site'),
-        'href' => route('websites-create', [], false)
-    ])
+        @include('partials.link_button', [
+            'label' => __('ui.pages.websites.add_site'),
+            'href' => route('websites-create', [], false)
+        ])
     @endcan
 @endsection

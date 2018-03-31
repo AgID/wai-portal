@@ -3,7 +3,7 @@
     <thead>
     <tr>
         @foreach ($columns as $column)
-        <th scope="col">{{ $column }}</th>
+            <th scope="col">{{ $column }}</th>
         @endforeach
         <th scope="col"></th>
     </tr>
@@ -19,7 +19,7 @@
     <script type="text/javascript" src="//cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript" src="//cdn.datatables.net/responsive/2.2.1/js/dataTables.responsive.min.js"></script>
     <script type="text/javascript">
-        $(function() {
+        $(function () {
             $('.Datatable').DataTable({
                 ajax: '{{ $source }}',
                 responsive: {
@@ -35,8 +35,8 @@
                         @if ($columnName == 'actions')
                         render: function (actions) {
                             return actions.map(function (action) {
-                                    return '<a href="'+action.link+'" role="button" class="Button Button--default Button--shadow Button--round u-padding-top-xxs u-padding-bottom-xxs u-margin-right-s u-text-r-xxs">'+action.label+'</a>';
-                                }).join('');
+                                return '<a href="' + action.link + '" role="button" class="Button Button--default Button--shadow Button--round u-padding-top-xxs u-padding-bottom-xxs u-margin-right-s u-text-r-xxs">' + action.label + '</a>';
+                            }).join('');
                         }
                         @endif
                     },
