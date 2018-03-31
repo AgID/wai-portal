@@ -65,6 +65,20 @@ class Website extends Model
             return null;
         }
         return (int)app()->make('analytics-service')
-                    ->getTotalVisits($this->analytics_id, $this->created_at->format('Y-m-d'));
+                    ->getSiteTotalVisits($this->analytics_id, $this->created_at->format('Y-m-d'));
+    }
+
+    /**
+     * Get last month visits for this Website via AnalyticsService
+     *
+     * return int
+     */
+    public function getLastMonthVisits()
+    {
+        if (!$this->analytics_id) {
+            return null;
+        }
+        return (int)app()->make('analytics-service')
+            ->getSiteLastMonthVisits($this->analytics_id);
     }
 }

@@ -18,7 +18,7 @@ class WebsiteTransformer extends TransformerAbstract
             'type' => __('ui.website.'.$website->type),
             'added_at' => $website->created_at->format('d/m/Y'),
             'status' => __('ui.website.'.$website->status),
-            'total_visits' => $website->getTotalVisits(),
+            'last_month_visits' => $website->getLastMonthVisits(),
             'actions' => [
                 [
                     'link' => route('website-javascript-snippet', ['website' => $website->slug], false),

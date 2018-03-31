@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Contracts\AnalyticsService as AnalyticsServiceContract;
 use App\Exceptions\AnalyticsServiceException;
 use GuzzleHttp\Client as APIClient;
-use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Exception\GuzzleException;
 
 class MatomoService implements AnalyticsServiceContract
 {
@@ -178,13 +178,37 @@ class MatomoService implements AnalyticsServiceContract
      * @return int
      * @throws AnalyticsServiceException
      */
-    public function getTotalVisits(string $idSite, string $from)
+    public function getSiteTotalVisits(string $idSite, string $from)
     {
         $params = [
-            'method' => 'MultiSites.getOne',
+            'method' => 'VisitsSummary.get',
             'idSite' => $idSite,
             'period' => 'range',
-            'date' => "$from," . now()->format('Y-m-d')
+            'date' => $from . ',' . now()->format('Y-m-d')
+        ];
+        $response = $this->apiCall($params);
+        if (isset($response['nb_visits'])) {
+            return $response['nb_visits'];
+        } else {
+            return 0;
+        }
+    }
+
+    /**
+     * Get the number of visits for a specified site
+     * registered last month in the Analytics Service.
+     *
+     * @param  string $idSite
+     * @return int
+     * @throws AnalyticsServiceException
+     */
+    public function getSiteLastMonthVisits(string $idSite)
+    {
+        $params = [
+            'method' => 'VisitsSummary.get',
+            'idSite' => $idSite,
+            'period' => 'month',
+            'date' => 'yesterday'
         ];
         $response = $this->apiCall($params);
         if (isset($response['nb_visits'])) {
@@ -203,8 +227,8 @@ class MatomoService implements AnalyticsServiceContract
      */
     protected function apiCall(array $params)
     {
-        $client = new APIClient(['base_uri' => $this->serviceBaseUri]);
         try {
+            $client = new APIClient(['base_uri' => $this->serviceBaseUri]);
             $res = $client->request('GET', 'index.php', [
                 'query' => array_merge($params, [
                     'module' => 'API',
@@ -213,7 +237,7 @@ class MatomoService implements AnalyticsServiceContract
                 ]),
                 'verify' => $this->SSLVerify
             ]);
-        } catch (RequestException $exception) {
+        } catch (GuzzleException $exception) {
             throw new AnalyticsServiceException($exception->getMessage());
         }
         return json_decode($res->getBody(), true);
