@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "33ba545e52f09eb476ff51bc8b5c1cd5",
+    "content-hash": "d2a3f88b20bf2a512c7a0452aec1e6c8",
     "packages": [
         {
             "name": "cweagans/composer-patches",
@@ -962,6 +962,9 @@
             "extra": {
                 "branch-alias": {
                     "dev-master": "5.6-dev"
+                },
+                "patches_applied": {
+                    "Fix redis queue": "patches/laravel-redis_queue.patch"
                 }
             },
             "autoload": {
