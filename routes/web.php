@@ -40,6 +40,11 @@ Route::post('/admin/user/login', [
     'uses' => 'Auth\AdminAuthController@login'
 ]);
 
+Route::get('/admin/user/logout', [
+    'as' => 'admin-logout',
+    'uses' => 'Auth\AdminAuthController@logout'
+]);
+
 Route::get('/admin/user/password-forgot', [
     'as' => 'admin-password_forgot',
     'uses' => 'Auth\AdminAuthController@showPasswordForgotForm'
@@ -194,11 +199,6 @@ Route::middleware(['admin-auth'])->group(function() {
         Route::get('/', [
             'as' => 'admin-dashboard',
             'uses' => 'AdminController@dashboard'
-        ]);
-
-        Route::get('/user/logout', [
-            'as' => 'admin-logout',
-            'uses' => 'Auth\AdminAuthController@logout'
         ]);
 
         Route::get('/user/change-password', [
