@@ -61,7 +61,7 @@ class AdminAuthController extends Controller
 
         $this->incrementLoginAttempts($request);
 
-        return back()->withMessage(['error' => __('auth.failed')])->withInput();
+        return redirect()->route('admin-login')->withMessage(['error' => __('auth.failed')])->withInput();
     }
 
     /**
@@ -170,11 +170,11 @@ class AdminAuthController extends Controller
         $user = User::where('email', $validatedData['email'])->first();
 
         if (empty($user)) {
-            return back()->withMessage(['error' => "L'indirizzo email inserito non è valido oppure il codice è scaduto o errato."])->withInput();; //TODO: put message in lang file
+            return redirect()->route('admin-password_reset')->withMessage(['error' => "L'indirizzo email inserito non è valido oppure il codice è scaduto o errato."])->withInput();; //TODO: put message in lang file
         }
 
         if (empty($user->passwordResetToken) || !Hash::check($validatedData['token'], $user->passwordResetToken->token)) {
-            return back()->withMessage(['error' => "L'indirizzo email inserito non è valido oppure il codice è scaduto o errato."])->withInput();; //TODO: put message in lang file
+            return redirect()->route('admin-password_reset')->withMessage(['error' => "L'indirizzo email inserito non è valido oppure il codice è scaduto o errato."])->withInput();; //TODO: put message in lang file
         }
 
         $user->password = Hash::make($validatedData['password']);

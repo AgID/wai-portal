@@ -43,7 +43,7 @@ class VerificationController extends Controller
         $verificationToken = $user->verificationToken->token;
 
         if (!Hash::check($token, $verificationToken)) {
-            return back()->withMessage(['warning' => "Il codice di verifica inserito non è valido per l'utente " . $user->name . ' ' . $user->familyName .'.']); //TODO: put message in lang file
+            return redirect()->route('auth-verify')->withMessage(['warning' => "Il codice di verifica inserito non è valido per l'utente " . $user->name . ' ' . $user->familyName .'.']); //TODO: put message in lang file
         }
 
         if (!in_array($user->status, ['inactive', 'invited'])) {
