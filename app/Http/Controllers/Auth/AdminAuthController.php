@@ -26,7 +26,7 @@ class AdminAuthController extends Controller
      */
     public function showLoginForm()
     {
-        if (auth()->check() && auth()->user()->can('access-backoffice')) {
+        if (auth()->check() && auth()->user()->can('access-admin-area')) {
             return redirect()->route('admin-dashboard');
         }
 
@@ -83,8 +83,10 @@ class AdminAuthController extends Controller
      */
     public function logout()
     {
-        auth()->logout();
-        session()->invalidate();
+        if (auth()->check() && auth()->user()->can('access-admin-area')) {
+            auth()->logout();
+            session()->invalidate();
+        }
         return redirect()->home();
     }
 
@@ -110,7 +112,7 @@ class AdminAuthController extends Controller
         $email = $request->input('email');
 
         $user = User::where('email', $email)->first();
-        if (empty($user) || $user->cant('access-backoffice') || $user->status != 'active') {
+        if (empty($user) || $user->cant('access-admin-area') || $user->status != 'active') {
             return redirect()->home()->withMessage(['info' => "Se l'indirizzo email inserito corrisponde ad un account amministrativo registrato e attivo, riceverai e breve un messaggio con le istruzioni per il reset della password."]);
         }
 

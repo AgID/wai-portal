@@ -17,7 +17,7 @@ class AdminAuthenticate
     {
         if (!auth()->check()) {
             return redirect()->guest(route('admin-login'));
-        } elseif (!$request->user()->can('access-backoffice')) {
+        } elseif (!$request->user()->can('access-admin-area')) {
             abort(403);
         } elseif (auth()->user()->status == 'suspended') {
             abort(403);

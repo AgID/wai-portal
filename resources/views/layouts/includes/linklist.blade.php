@@ -17,7 +17,7 @@
         @endisset
     </li>
 @endforeach
-@can('access-backoffice')
+@can('access-admin-area')
     @include('partials.admin_menu')
 @endcan
 </ul>
