@@ -11,7 +11,7 @@ set('repository', 'git@github.com:teamdigitale/webanalytics-onboarding.git');
 
 // Shared files/dirs between deploys
 set('shared_files', []);
-set('shared_dirs', ['containers/data']);
+set('shared_dirs', ['containers/data', 'storage']);
 
 // Writable dirs by web server
 set('writable_dirs', [
