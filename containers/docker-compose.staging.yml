@@ -8,6 +8,7 @@ services:
       image: tianon/true
       volumes:
         - ../:/var/www
+        - ../storage:/var/www/storage
         - ./logs:/var/log
 
 ### NGINX Server Container ##################################
