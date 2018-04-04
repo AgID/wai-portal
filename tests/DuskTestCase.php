@@ -54,7 +54,6 @@ abstract class DuskTestCase extends BaseTestCase
     protected function setUp()
     {
         parent::setUp();
-//        $this->artisan('migrate:refresh');
         $this->artisan('app:create-roles');
         $this->browse(function (Browser $browser) {
             $browser->visit(new Home)->press('ACCETTO');

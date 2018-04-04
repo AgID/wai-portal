@@ -21,6 +21,10 @@ class AdminAuthenticate
             abort(403);
         } elseif (auth()->user()->status == 'suspended') {
             abort(403);
+        } elseif (is_null(auth()->user()->password)
+                    && !$request->routeIs('admin-password_change')
+                    && !$request->routeIs('admin-do_password_change')) {
+            return redirect()->route('admin-password_change');
         }
         return $next($request);
     }

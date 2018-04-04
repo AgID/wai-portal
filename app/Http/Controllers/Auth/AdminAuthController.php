@@ -44,7 +44,7 @@ class AdminAuthController extends Controller
     public function login(Request $request)
     {
         $request->validate([
-            'email' => 'required|string',
+            'email' => 'required|email',
             'password' => 'required|string',
         ]);
 
@@ -113,7 +113,7 @@ class AdminAuthController extends Controller
 
         $user = User::where('email', $email)->first();
         if (empty($user) || $user->cant('access-admin-area') || $user->status != 'active') {
-            return redirect()->home()->withMessage(['info' => "Se l'indirizzo email inserito corrisponde ad un account amministrativo registrato e attivo, riceverai e breve un messaggio con le istruzioni per il reset della password."]);
+            return redirect()->home()->withMessage(['info' => "Se l'indirizzo email inserito corrisponde ad un'utenza amministrativa registrata e attiva, riceverai e breve un messaggio con le istruzioni per il reset della password."]);
         }
 
         if (!empty($user->passwordResetToken)) {
@@ -131,7 +131,7 @@ class AdminAuthController extends Controller
         dispatch(new SendPasswordResetEmail($user, $token));
         dispatch(new ClearPasswordResetToken($user->passwordResetToken))->delay(now()->addHour());
 
-        return redirect()->home()->withMessage(['info' => "Se l'indirizzo email inserito corrisponde ad un account amministrativo registrato e attivo, riceverai e breve un messaggio con le istruzioni per il reset della password."]);
+        return redirect()->home()->withMessage(['info' => "Se l'indirizzo email inserito corrisponde ad un'utenza amministrativa registrata e attiva, riceverai e breve un messaggio con le istruzioni per il reset della password."]);
     }
 
     /**
@@ -170,11 +170,11 @@ class AdminAuthController extends Controller
         $user = User::where('email', $validatedData['email'])->first();
 
         if (empty($user)) {
-            return redirect()->route('admin-password_reset')->withMessage(['error' => "L'indirizzo email inserito non è valido oppure il codice è scaduto o errato."])->withInput();; //TODO: put message in lang file
+            return redirect()->route('admin-password_reset')->withMessage(['error' => "L'indirizzo email inserito non corrisponde ad un'utenza oppure il codice è scaduto o errato."])->withInput();; //TODO: put message in lang file
         }
 
         if (empty($user->passwordResetToken) || !Hash::check($validatedData['token'], $user->passwordResetToken->token)) {
-            return redirect()->route('admin-password_reset')->withMessage(['error' => "L'indirizzo email inserito non è valido oppure il codice è scaduto o errato."])->withInput();; //TODO: put message in lang file
+            return redirect()->route('admin-password_reset')->withMessage(['error' => "L'indirizzo email inserito non corrisponde ad un'utenza oppure il codice è scaduto o errato."])->withInput();; //TODO: put message in lang file
         }
 
         $user->password = Hash::make($validatedData['password']);

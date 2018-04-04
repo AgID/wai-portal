@@ -13,7 +13,7 @@ class Dashboard extends Page
      */
     public function url()
     {
-        return '/admin/dashboard';
+        return '/dashboard';
     }
 
     /**

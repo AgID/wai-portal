@@ -12,7 +12,7 @@
             </label>
             <input class="Form-input" id="token" name="token" aria-required="true" required/>
             <p class="Form-message">
-                Il codice di verfica ricevuto all'indirizzo {{ auth()->user()->email }}{{-- //TODO: put message in lang file --}}
+                Il codice di verifica ricevuto all'indirizzo {{ auth()->user()->email }}{{-- //TODO: put message in lang file --}}
             </p>
         </div>
     </fieldset>

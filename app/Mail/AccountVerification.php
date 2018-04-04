@@ -45,7 +45,11 @@ class AccountVerification extends Mailable
     public function build()
     {
         if ($this->user->status == 'invited') {
-            $mailTemplate =  "email.invited_verification";
+            if ($this->user->can('access-admin-area')) {
+                $mailTemplate =  "email.admin_invited_verification";
+            } else {
+                $mailTemplate =  "email.invited_verification";
+            }
         } else {
             $mailTemplate =  "email.verification";
         }

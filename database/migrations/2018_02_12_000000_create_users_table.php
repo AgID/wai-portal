@@ -18,7 +18,7 @@ class CreateUsersTable extends Migration
             $table->string('spidCode')->unique()->nullable();
             $table->string('name')->nullable();
             $table->string('familyName')->nullable();
-            $table->string('fiscalNumber');
+            $table->string('fiscalNumber')->nullable();
             $table->string('email')->unique();
             $table->string('password')->nullable();
             $table->integer('public_administration_id')->unsigned()->nullable();

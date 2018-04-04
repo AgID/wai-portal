@@ -3,10 +3,8 @@
 namespace Tests\Browser;
 
 use App\Models\User;
-
 use Tests\DuskTestCase;
 use Tests\Browser\Pages\Dashboard;
-
 use Laravel\Dusk\Browser;
 
 class LoggedInVisitTest extends DuskTestCase

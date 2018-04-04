@@ -7,7 +7,7 @@ use Closure;
 class Authenticate
 {
     /**
-     * Handle an incoming request.
+     * Handle an incoming request. User is already authenticated with SPID.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Closure  $next

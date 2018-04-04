@@ -36,7 +36,8 @@ return [
         'manager' => 'gestore',
         'manager_description' => "Può leggere e gestire i dati analytics per i siti web della sua pubblica amministrazione.",
         'admin' => 'amministratore',
-        'admin_description' => "Può gestire gli utenti, i siti e i dati analytics per la sua pubblica amministrazione."
+        'admin_description' => "Può gestire gli utenti, i siti e i dati analytics per la sua pubblica amministrazione.",
+        'super-admin' => 'amministratore della piattaforma'
     ],
     'password' => [
         'reset' => 'La password è stata reimpostata.',

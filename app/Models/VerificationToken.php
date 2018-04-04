@@ -30,17 +30,7 @@ class VerificationToken extends Model
     ];
 
     /**
-     * Get the route key for the model.
-     *
-     * @return string
-     */
-    public function getRouteKeyName()
-    {
-        return 'token';
-    }
-
-    /**
-     * The owner if this verification token.
+     * The owner of this verification token.
      *
      * @return \Illuminate\Database\Eloquent\Relations\Relation.
      */

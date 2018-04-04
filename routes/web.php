@@ -30,44 +30,66 @@ Route::get('/faq', [
     'uses' => 'HomeController@faq'
 ]);
 
-Route::get('/admin/user/login', [
-    'as' => 'admin-login',
-    'uses' => 'Auth\AdminAuthController@showLoginForm'
-]);
-
-Route::post('/admin/user/login', [
-    'as' => 'admin-do_login',
-    'uses' => 'Auth\AdminAuthController@login'
-]);
-
-Route::get('/admin/user/logout', [
-    'as' => 'admin-logout',
-    'uses' => 'Auth\AdminAuthController@logout'
-]);
-
-Route::get('/admin/user/password-forgot', [
-    'as' => 'admin-password_forgot',
-    'uses' => 'Auth\AdminAuthController@showPasswordForgotForm'
-]);
-
-Route::post('/admin/user/password-forgot', [
-    'as' => 'admin-send_reset_password',
-    'uses' => 'Auth\AdminAuthController@sendPasswordForgotEmail'
-])->middleware('throttle:5,1');
-
-Route::get('/admin/user/password-reset/{token?}', [
-    'as' => 'admin-password_reset',
-    'uses' => 'Auth\AdminAuthController@showPasswordResetForm'
-]);
-
-Route::post('/admin/user/password-reset', [
-    'as' => 'admin-do_password_reset',
-    'uses' => 'Auth\AdminAuthController@passwordReset'
-])->middleware('throttle:5,1');
-
 /**
  * Authentication related routes
  */
+
+Route::prefix('/admin/user')->group(function() {
+    Route::get('/login', [
+        'as' => 'admin-login',
+        'uses' => 'Auth\AdminAuthController@showLoginForm'
+    ]);
+
+    Route::post('/login', [
+        'as' => 'admin-do_login',
+        'uses' => 'Auth\AdminAuthController@login'
+    ]);
+
+    Route::get('/logout', [
+        'as' => 'admin-logout',
+        'uses' => 'Auth\AdminAuthController@logout'
+    ]);
+
+    Route::get('/password-forgot', [
+        'as' => 'admin-password_forgot',
+        'uses' => 'Auth\AdminAuthController@showPasswordForgotForm'
+    ]);
+
+    Route::post('/password-forgot', [
+        'as' => 'admin-send_reset_password',
+        'uses' => 'Auth\AdminAuthController@sendPasswordForgotEmail'
+    ])->middleware('throttle:5,1');
+
+    Route::get('/password-reset/{token?}', [
+        'as' => 'admin-password_reset',
+        'uses' => 'Auth\AdminAuthController@showPasswordResetForm'
+    ]);
+
+    Route::post('/password-reset', [
+        'as' => 'admin-do_password_reset',
+        'uses' => 'Auth\AdminAuthController@passwordReset'
+    ])->middleware('throttle:5,1');
+
+    Route::get('/verify', [
+        'as' => 'admin-verify',
+        'uses' => 'Auth\AdminVerificationController@verify'
+    ]);
+
+    Route::get('/verify/token/{email?}/{token?}', [
+        'as' => 'admin-do_verify',
+        'uses' => 'Auth\AdminVerificationController@verifyToken'
+    ])->middleware('throttle:5,1');
+
+    Route::get('/verify/resend', [
+        'as' => 'admin-verify_resend',
+        'uses' => 'Auth\AdminVerificationController@showResendForm'
+    ]);
+
+    Route::post('/verify/resend', [
+        'as' => 'admin-do_verify_resend',
+        'uses' => 'Auth\AdminVerificationController@resend'
+    ])->middleware('throttle:5,1');
+});
 
 /** Only SPID authentication without application authentication */
 Route::prefix('/register')->middleware(['spid.auth', 'guest'])->group(function() {
@@ -83,7 +105,7 @@ Route::prefix('/register')->middleware(['spid.auth', 'guest'])->group(function()
 });
 
 /** Only SPID authentication */
-Route::prefix('/verify')->middleware('spid.auth')->group(function() {
+Route::prefix('/user/verify')->middleware('spid.auth')->group(function() {
     Route::get('/', [
         'as' => 'auth-verify',
         'uses' => 'Auth\VerificationController@verify'
@@ -196,9 +218,23 @@ Route::middleware(['auth'])->group(function() {
  */
 Route::middleware(['admin-auth'])->group(function() {
     Route::prefix('/admin')->group(function() {
-        Route::get('/', [
+        Route::get('/', function (){
+            return redirect()->route('admin-dashboard');
+        });
+
+        Route::get('/dashboard', [
             'as' => 'admin-dashboard',
             'uses' => 'AdminController@dashboard'
+        ]);
+
+        Route::get('/add-user', [
+            'as' => 'admin-add-user',
+            'uses' => 'AdminUserController@create'
+        ]);
+
+        Route::post('/add-user', [
+            'as' => 'admin-store-user',
+            'uses' => 'AdminUserController@store'
         ]);
 
         Route::get('/user/change-password', [

@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Jobs\SendVerificationEmail;
-use App\Models\VerificationToken;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -19,10 +18,10 @@ class VerificationController extends Controller
     {
         if (!auth()->check()) {
             return redirect()->guest(route('auth-register'))
-                             ->withMessage(['warning' => "Prima di usare l'applicazione è necessario completare la registrazione"]); //TODO: put message in lang file
+                             ->withMessage(['warning' => "Prima di usare l'applicazione è necessario completare la registrazione."]); //TODO: put message in lang file
         } else {
             if (!in_array(auth()->user()->status, ['inactive', 'invited'])) {
-                return redirect(route('home'))->withMessage(['info' => "L'indirizzo email è già stato verificato"]); //TODO: put message in lang file
+                return redirect(route('home'))->withMessage(['info' => "L'indirizzo email è già stato verificato."]); //TODO: put message in lang file
             }
         }
 
@@ -39,16 +38,20 @@ class VerificationController extends Controller
     public function verifyToken(Request $request, $token = null)
     {
         $token = $token ?: $request->input('token');
-        $user = auth()->user();
-        $verificationToken = $user->verificationToken->token;
 
-        if (!Hash::check($token, $verificationToken)) {
-            return redirect()->route('auth-verify')->withMessage(['warning' => "Il codice di verifica inserito non è valido per l'utente " . $user->name . ' ' . $user->familyName .'.']); //TODO: put message in lang file
-        }
+        validator(['token' => $token], [
+            'token' => 'required|string'
+        ])->validate();
+
+        $user = auth()->user();
 
         if (!in_array($user->status, ['inactive', 'invited'])) {
             return redirect(route('home'))
-                   ->withMessage(['info' => "L'indirizzo email è già stato verificato"]); //TODO: put message in lang file
+                ->withMessage(['info' => "L'indirizzo email è già stato verificato"]); //TODO: put message in lang file
+        }
+
+        if (empty($user->verificationToken) || !Hash::check($token, $user->verificationToken->token)) {
+            return redirect()->route('auth-verify')->withMessage(['warning' => "Il codice di verifica inserito non è valido per l'utente " . $user->name . ' ' . $user->familyName .'.']); //TODO: put message in lang file
         }
 
         if ($user->status == 'invited') {
@@ -82,7 +85,7 @@ class VerificationController extends Controller
 
         $user->save();
 
-        logger()->info('User '.$user->getInfo().' confirmed email address.'); //TODO: notify me!
+        logger()->info('User '.$user->getInfo().' confirmed email address after email address verification.'); //TODO: notify me!
 
         if (!auth()->check()) {
             auth()->login($user);

@@ -4,7 +4,6 @@ namespace Tests\Browser;
 
 use Tests\DuskTestCase;
 use Tests\Browser\Pages\Home;
-
 use Laravel\Dusk\Browser;
 
 class RegisterTest extends DuskTestCase
@@ -30,23 +29,25 @@ class RegisterTest extends DuskTestCase
         $this->injectFakeSpidSession();
         $this->browse(function (Browser $browser) {
             $browser->visit(new Home)
-                    ->clickLink('Dashboard')
-                    ->assertPathIs('/register')
-                    ->assertSee('Registrazione')
-                    ->type('email', 'nome.cognome@example.com')
-                    ->click('label[for="accept_terms"]')
-                    ->press('REGISTRA')
-                    ->assertSee("Una email di verifica è stata inviata all'indirizzo");
-            $verificationToken = $this->getVerificationToken(1);
+                ->clickLink('Dashboard')
+                ->assertPathIs('/register')
+                ->assertSee('Registrazione')
+                ->type('email', 'nome.cognome@example.com')
+                ->click('label[for="accept_terms"]')
+                ->press('REGISTRA')
+                ->assertSee("Una email di verifica è stata inviata all'indirizzo");
+        });
+        $verificationToken = $this->getVerificationToken(1);
+        $this->browse(function (Browser $browser) use ($verificationToken) {
             $browser->visit(new Home)
                     ->clickLink('Dashboard')
-                    ->assertPathIs('/verify')
+                    ->assertPathIs('/user/verify')
                     ->assertSee('Verifica indirizzo email')
                     ->type('token', $verificationToken)
                     ->press('CONFERMA')
                     ->waitForText("L'indirizzo email è stato verificato correttamente.")
-                    ->assertSee("L'indirizzo email è stato verificato correttamente.");
-            $browser->visit('/verify')
+                    ->assertSee("L'indirizzo email è stato verificato correttamente.")
+                    ->visit('/user/verify')
                     ->waitForText("L'indirizzo email è già stato verificato")
                     ->assertSee("L'indirizzo email è già stato verificato");
         });

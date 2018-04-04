@@ -13,7 +13,7 @@ e la conferma del tuo indirizzo email.
 @endcomponent
 
 Se non riesci a confermare cliccando sul bottone,
-puoi visitare la pagina [{{ url('/verify') }}]({{ url('/verify') }})
+puoi visitare la pagina [{{ url('/user/verify') }}]({{ url('/user/verify') }})
 ed inserire il seguente codice di verifica:
 `{!! $token !!}`
 @endcomponent

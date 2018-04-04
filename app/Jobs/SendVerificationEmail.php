@@ -33,6 +33,7 @@ class SendVerificationEmail implements ShouldQueue
      * Create a new job instance.
      *
      * @param  User  $user
+     * @param  string $token
      * @return void
      */
     public function __construct(User $user, string $token)

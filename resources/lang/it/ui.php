@@ -46,21 +46,6 @@ return [
         'home' => [
             'title' => 'Home'
         ],
-        'admin-login' => [
-            'title' => 'Accesso amministratori'
-        ],
-        'admin-dashboard' => [
-            'title' => 'Dashboard amministrativa'
-        ],
-        'admin-password_forgot' => [
-            'title' => 'Password dimenticata'
-        ],
-        'admin-password_reset' => [
-            'title' => 'Reset della password'
-        ],
-        'admin-password_change' => [
-            'title' => 'Cambio della password'
-        ],
         'faq' => [
             'title' => 'Domande frequenti'
         ],
@@ -105,6 +90,30 @@ return [
         'users' => [
             'title' => 'Utenti',
             'add_user' => 'aggiungi utente'
+        ],
+        'admin-login' => [
+            'title' => 'Accesso amministratori'
+        ],
+        'admin-dashboard' => [
+            'title' => 'Dashboard amministrativa'
+        ],
+        'admin-password_forgot' => [
+            'title' => 'Password dimenticata'
+        ],
+        'admin-password_reset' => [
+            'title' => 'Reset della password'
+        ],
+        'admin-password_change' => [
+            'title' => 'Cambio della password'
+        ],
+        'admin-add-user' => [
+            'title' => 'Nuovo utente amministratore'
+        ],
+        'admin-verify' => [
+            'title' => 'Verifica indirizzo email'
+        ],
+        'admin-verify_resend' => [
+            'title' => 'Invio nuova mail di verifica'
         ],
         '403' => [
             'title' => 'Accesso negato',

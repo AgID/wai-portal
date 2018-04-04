@@ -11,36 +11,6 @@ Breadcrumbs::register('faq', function ($breadcrumbs) {
     $breadcrumbs->push(__('ui.pages.faq.title'), route('faq', [], false));
 });
 
-// Web Analytics Italia > Accesso amministratori
-Breadcrumbs::register('admin-login', function ($breadcrumbs) {
-    $breadcrumbs->parent('home');
-    $breadcrumbs->push(__('ui.pages.admin-login.title'), route('admin-login', [], false));
-});
-
-// Web Analytics Italia > Password dimenticata
-Breadcrumbs::register('admin-password_forgot', function ($breadcrumbs) {
-    $breadcrumbs->parent('home');
-    $breadcrumbs->push(__('ui.pages.admin-password_forgot.title'), route('admin-password_forgot', [], false));
-});
-
-// Web Analytics Italia > Cambio della password
-Breadcrumbs::register('admin-password_change', function ($breadcrumbs) {
-    $breadcrumbs->parent('home');
-    $breadcrumbs->push(__('ui.pages.admin-password_change.title'), route('admin-password_change', [], false));
-});
-
-// Web Analytics Italia > Reset della password
-Breadcrumbs::register('admin-password_reset', function ($breadcrumbs) {
-    $breadcrumbs->parent('home');
-    $breadcrumbs->push(__('ui.pages.admin-password_reset.title'), route('admin-password_reset', [], false));
-});
-
-// Web Analytics Italia > Dashboard amministrativa
-Breadcrumbs::register('admin-dashboard', function ($breadcrumbs) {
-    $breadcrumbs->parent('home');
-    $breadcrumbs->push(__('ui.pages.admin-dashboard.title'), route('admin-dashboard', [], false));
-});
-
 // Web Analytics Italia > Dashboard
 Breadcrumbs::register('dashboard', function ($breadcrumbs) {
     $breadcrumbs->parent('home');
@@ -89,12 +59,6 @@ Breadcrumbs::register('privacy', function ($breadcrumbs) {
     $breadcrumbs->push(__('ui.pages.privacy.title'), route('privacy', [], false));
 });
 
-// Web Analytics Italia > Register
-Breadcrumbs::register('register', function ($breadcrumbs) {
-    $breadcrumbs->parent('home');
-    $breadcrumbs->push(__('ui.pages.register.title'), route('register', [], false));
-});
-
 // Web Analytics Italia > User profile
 Breadcrumbs::register('user-profile', function ($breadcrumbs) {
     $breadcrumbs->parent('home');
@@ -107,22 +71,64 @@ Breadcrumbs::register('spid-auth_login', function ($breadcrumbs) {
     $breadcrumbs->push(__('ui.pages.spid-auth_login.title'), route('spid-auth_login', [], false));
 });
 
-// Web Analytics Italia > SPID Login
+// Web Analytics Italia > Email verification
 Breadcrumbs::register('auth-verify', function ($breadcrumbs) {
     $breadcrumbs->parent('home');
     $breadcrumbs->push(__('ui.pages.auth-verify.title'), route('auth-verify', [], false));
 });
 
-// Web Analytics Italia > SPID Login
-Breadcrumbs::register('auth-do_verify', function ($breadcrumbs) {
-    $breadcrumbs->parent('home');
-    $breadcrumbs->push(__('ui.pages.auth-verify.title'), route('auth-verify', [], false));
-});
-
-// Web Analytics Italia > SPID Login
+// Web Analytics Italia > Register
 Breadcrumbs::register('auth-register', function ($breadcrumbs) {
     $breadcrumbs->parent('home');
     $breadcrumbs->push(__('ui.pages.auth-register.title'), route('auth-register', [], false));
+});
+
+// Web Analytics Italia > Admin login
+Breadcrumbs::register('admin-login', function ($breadcrumbs) {
+    $breadcrumbs->parent('home');
+    $breadcrumbs->push(__('ui.pages.admin-login.title'), route('admin-login', [], false));
+});
+
+// Web Analytics Italia > Admin forgot password
+Breadcrumbs::register('admin-password_forgot', function ($breadcrumbs) {
+    $breadcrumbs->parent('home');
+    $breadcrumbs->push(__('ui.pages.admin-password_forgot.title'), route('admin-password_forgot', [], false));
+});
+
+// Web Analytics Italia > Admin password change
+Breadcrumbs::register('admin-password_change', function ($breadcrumbs) {
+    $breadcrumbs->parent('home');
+    $breadcrumbs->push(__('ui.pages.admin-password_change.title'), route('admin-password_change', [], false));
+});
+
+// Web Analytics Italia > Admin password reset
+Breadcrumbs::register('admin-password_reset', function ($breadcrumbs) {
+    $breadcrumbs->parent('home');
+    $breadcrumbs->push(__('ui.pages.admin-password_reset.title'), route('admin-password_reset', [], false));
+});
+
+// Web Analytics Italia > Admin dashboard
+Breadcrumbs::register('admin-dashboard', function ($breadcrumbs) {
+    $breadcrumbs->parent('home');
+    $breadcrumbs->push(__('ui.pages.admin-dashboard.title'), route('admin-dashboard', [], false));
+});
+
+// Web Analytics Italia > Admin dashboard > Add user
+Breadcrumbs::register('admin-add-user', function ($breadcrumbs) {
+    $breadcrumbs->parent('admin-dashboard');
+    $breadcrumbs->push(__('ui.pages.admin-add-user.title'), route('admin-add-user', [], false));
+});
+
+// Web Analytics Italia > Admin email verification
+Breadcrumbs::register('admin-verify', function ($breadcrumbs) {
+    $breadcrumbs->parent('home');
+    $breadcrumbs->push(__('ui.pages.admin-verify.title'), route('admin-verify', [], false));
+});
+
+// Web Analytics Italia > Admin email verification resend
+Breadcrumbs::register('admin-verify_resend', function ($breadcrumbs) {
+    $breadcrumbs->parent('home');
+    $breadcrumbs->push(__('ui.pages.admin-verify_resend.title'), route('admin-verify_resend', [], false));
 });
 
 // Web Analytics Italia > Error 404
