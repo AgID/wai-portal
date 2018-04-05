@@ -10,7 +10,6 @@
 
   .Header-title {
     line-height: 0.1 !important;
-    width: 33.33334% !important;
     min-height: 4.8rem;
 
     @media screen and (max-width: 767px) {
@@ -423,6 +422,17 @@ code {
   text-decoration: none !important;
 }
 
+table {
+  a,
+  a:visited {
+    color: #06c;
+  }
+}
+
+.Button--default {
+  color: #004a4d !important;
+}
+
 /* Headings
   =========== */
 
@@ -479,6 +489,8 @@ code {
   =========== */
 
 .Datatable.responsive {
+  width: 100% !important;
+
   span.dtr-data {
     margin-left: 1.5rem;
   }
@@ -497,5 +509,23 @@ code {
 
   &.dataTable tbody td {
     padding: 8px 18px;
+  }
+}
+
+.dataTables_wrapper .dataTables_paginate.paging_simple_numbers {
+  .paginate_button {
+    min-width: 1em !important;
+    padding: 0.1em 0.5em !important;
+    color: #00264d !important;
+    border: none !important;
+    border-radius: unset !important;
+
+    &:hover,
+    &:active,
+    &.current,
+    &.current:hover {
+      color: #fff !important;
+      background: #00264d !important;
+    }
   }
 }

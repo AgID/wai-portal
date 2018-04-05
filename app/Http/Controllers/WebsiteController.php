@@ -23,7 +23,7 @@ class WebsiteController extends Controller
                 'type' => 'Tipo',
                 'added_at' => 'Iscritto dal',
                 'status' => 'Stato',
-                'last_month_visits' => 'Visite ultimo mese',
+                'last_month_visits' => 'Visite',
                 'actions' => 'Azioni'
             ],
             'source' => route('websites-data-json'),
