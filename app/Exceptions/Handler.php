@@ -60,9 +60,17 @@ class Handler extends ExceptionHandler
             return response()->view('errors.404', ['not_found_path' => request()->path()]);
         }
 
-        if ($exception instanceof HttpException && $exception->getStatusCode() == 403) {
+        if ($exception instanceof HttpException) {
             $user = auth()->check() ? 'User '.auth()->user()->getInfo() : 'Anonymous user';
-            logger()->warning($user.' requested an unauthorized resource [' . $request->url() . '].');
+            $statusCode = $exception->getStatusCode();
+            switch($statusCode) {
+                case 403:
+                    logger()->warning($user.' requested an unauthorized resource [' . $request->url() . '].');
+                    break;
+                default:
+                    logger()->warning('A server error (status code: ' . $statusCode . ') occurred [' . $request->url() . ' visited by ' . $user . '].');
+                    // TODO: notify me!
+            }
         }
 
         if ($exception instanceof TokenMismatchException) {
