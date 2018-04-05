@@ -29,17 +29,6 @@ class User extends Authenticatable
     ];
 
     /**
-     * The attributes that should be mutated to dates.
-     *
-     * @var array
-     */
-    protected $dates = [
-        'created_at',
-        'updated_at',
-        'deleted_at'
-    ];
-
-    /**
      * The verification token used in email verification.
      *
      * @return \Illuminate\Database\Eloquent\Relations\Relation.
