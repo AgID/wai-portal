@@ -15,23 +15,13 @@ class Website extends Model
      * @var array
      */
     protected $fillable = [
-        'public_administration_id',
+        'name',
         'url',
         'type',
+        'public_administration_id',
         'analytics_id',
         'slug',
         'status'
-    ];
-
-    /**
-     * The attributes that should be mutated to dates.
-     *
-     * @var array
-     */
-    protected $dates = [
-        'created_at',
-        'updated_at',
-        'deleted_at'
     ];
 
     /**

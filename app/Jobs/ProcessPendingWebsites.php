@@ -27,7 +27,7 @@ class ProcessPendingWebsites implements ShouldQueue
             if ($website->getTotalVisits() > 0) {
                 $analyticsService = app()->make('analytics-service');
 
-                logger()->info('New website activated ['.$website->url.']'); //TODO: notify me and the user!
+                logger()->info('New website "'. $website->name .'" activated ['.$website->url.']'); //TODO: notify me and the user!
 
                 $website->status = 'active';
                 $website->save();
@@ -64,11 +64,11 @@ class ProcessPendingWebsites implements ShouldQueue
                     $pendingUser->publicAdministration()->dissociate();
                     $pendingUser->save();
                     $website->publicAdministration->forceDelete();
-                    logger()->info('Website ['.$website->url.'] was deleted as not activated within 15 days'); //TODO: notify me and the user!
+                    logger()->info('Website "'. $website->name .'" ['.$website->url.'] was deleted as not activated within 15 days'); //TODO: notify me and the user!
                     logger()->info('Public administration ['.$website->publicAdministration->name.'] was deleted as not activated within 15 days');
                 } else {
                     $website->forceDelete();
-                    logger()->info('Website ['.$website->url.'] was deleted as not activated within 15 days'); //TODO: notify me and the user!
+                    logger()->info('Website "'. $website->name .'" ['.$website->url.'] was deleted as not activated within 15 days'); //TODO: notify me and the user!
                 }
             }
         });

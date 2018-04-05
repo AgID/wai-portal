@@ -1,9 +1,9 @@
 @extends('layouts.default')
 
-@section('title', __('ui.pages.add-primary-website.title'))
+@section('title', __('ui.pages.websites.add-primary.title'))
 
 @section('content')
-    <form class="Form Form--spaced u-text-r-xs" method="post" action="{{ route('public-administrations-store', [], false) }}">
+    <form class="Form Form--spaced u-text-r-xs" method="post" action="{{ route('websites-store-primary', [], false) }}">
         @csrf
         @if ($errors->isEmpty())
             <div class="Prose Alert Alert--info">
@@ -23,29 +23,29 @@
                 Informazioni della pubblica amministrazione{{-- //TODO: put message in lang file --}}
             </legend>
             <div class="Form-field">
-                @if ($errors->has('name'))
+                @if ($errors->has('public_administration_name'))
                 <div class="Alert Alert--error Alert--withBg u-padding-r-top u-padding-r-bottom u-padding-r-right">
-                    <p id="error-name" class="u-text-p u-padding-r-bottom">{{ $errors->first('name') }}</p>
+                    <p class="u-text-p u-padding-r-bottom">{{ $errors->first('public_administration_name') }}</p>
                 @endif
-                    <label class="Form-label is-required" for="name">
+                    <label class="Form-label is-required" for="public_administration_name">
                         Nome della pubblica amministrazione di appartenenza{{-- //TODO: put message in lang file --}}
                     </label>
-                    <input class="Form-input autocomplete" id="name" name="name" aria-required="true" required/>
-                @if ($errors->has('name'))
+                    <input class="Form-input autocomplete" id="public_administration_name" name="public_administration_name" aria-required="true" value="{{ old('public_administration_name') }}" required/>
+                @if ($errors->has('public_administration_name'))
                 </div>
                 @endif
             </div>
             <div class="Form-field">
-                <label class="Form-label is-required" for="site">
+                <label class="Form-label is-required" for="url">
                     Sito web istituzionale{{-- //TODO: put message in lang file --}}
                 </label>
-                <input class="Form-input is-disabled" id="site" name="site" aria-required="true" required readonly>
+                <input class="Form-input is-disabled" id="url" name="url" aria-required="true" value="{{ old('url') }}" required readonly>
             </div>
             <div class="Form-field">
                 <label class="Form-label is-required" for="pec">
                     Casella PEC istituzionale{{-- //TODO: put message in lang file --}}
                 </label>
-                <input class="Form-input is-disabled" id="pec" name="pec" aria-required="true" required readonly>
+                <input class="Form-input is-disabled" id="pec" name="pec" aria-required="true" value="{{ old('pec') }}" required readonly>
             </div>
         </fieldset>
         <fieldset class="Form-field Form-field--choose Grid-cell">
@@ -58,14 +58,13 @@
                 Accetto le condizioni del servizio
             </label>
         </fieldset>
-        <input type="hidden" name="ipa_code" value=""/>
+        <input type="hidden" name="ipa_code" value="{{ old('ipa_code') }}"/>
         <div class="Form-field Grid-cell u-textRight">
             <button type="submit" class="Button Button--default u-text-xs">
                 Invia{{-- //TODO: put message in lang file --}}
             </button>
         </div>
     </form>
-
 @endsection
 
 @push('styles')
@@ -81,9 +80,9 @@
             }
         });
         new autoComplete({
-            selector: 'input[name="name"]',
+            selector: 'input[name="public_administration_name"]',
             ipa_code: 'input[name="ipa_code"]',
-            site: 'input[name="site"]',
+            url: 'input[name="url"]',
             pec: 'input[name="pec"]',
             minChars: 3,
             source: function (term, suggest) {
@@ -114,7 +113,7 @@
                 return [
                     '<div class="autocomplete-suggestion"',
                     'data-ipa_code="' + item.ipa_code + '"',
-                    'data-site="' + item.site + '"',
+                    'data-url="' + item.site + '"',
                     'data-pec="' + (item.pec || '') + '"',
                     'data-val="' + item.name + '">',
                     item.name.replace(re, "<b>$1</b>") + ' - ' + item.city.replace(re, "<b>$1</b>") + ' (' + item.county + ')',
@@ -123,12 +122,12 @@
             },
             onSelect: function (e, term, item) {
                 $(this.ipa_code).val(item.getAttribute('data-ipa_code'));
-                $(this.site).val(item.getAttribute('data-site'));
+                $(this.url).val(item.getAttribute('data-url'));
                 $(this.pec).val(item.getAttribute('data-pec'));
             },
             resetInfo: function () {
                 $(this.ipa_code).val('');
-                $(this.site).val('');
+                $(this.url).val('');
                 $(this.pec).val('');
             }
         });

@@ -12,17 +12,9 @@ class DashboardController extends Controller
     public function index()
     {
         if (empty(auth()->user()->getWebsites())) {
-            return redirect(route('add-primary-website'));
+            return redirect(route('websites-add-primary'));
         }
 
         return view('pages.dashboard');
-    }
-
-    public function addPrimaryWebsite()
-    {
-        if (!empty(auth()->user()->getWebsites())) {
-            return redirect(route('dashboard'));
-        }
-        return view('pages.add_primary_website');
     }
 }

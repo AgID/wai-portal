@@ -15,10 +15,11 @@ class CreateWebsitesTable extends Migration
     {
         Schema::create('websites', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('public_administration_id')->unsigned()->index();
-            $table->foreign('public_administration_id')->references('id')->on('public_administrations')->onDelete('cascade');
+            $table->string('name');
             $table->string('url');
             $table->string('type'); //TODO: define enum
+            $table->integer('public_administration_id')->unsigned()->index();
+            $table->foreign('public_administration_id')->references('id')->on('public_administrations')->onDelete('cascade');
             $table->string('analytics_id')->nullable();
             $table->string('slug')->unique();
             $table->enum('status', ['pending', 'active', 'suspended']);

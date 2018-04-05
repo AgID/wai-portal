@@ -1,9 +1,9 @@
 @extends('layouts.default')
 
-@section('title', __('ui.pages.add-website.title'))
+@section('title', __('ui.pages.websites.add.title'))
 
 @section('content')
-    <form class="Form Form--spaced u-text-r-xs" method="post" action="{{ route('websites-store', [], false) }}">
+    <form class="Form Form--spaced u-text-r-xs" method="post" action="{{ route('websites-update', [], false) }}">
         @csrf
         @if ($errors->isEmpty())
             <div class="Prose Alert Alert--info">
@@ -27,23 +27,39 @@
                 </label>
                 <input class="Form-input is-disabled" id="name" name="name" value="{{ auth()->user()->publicAdministration->name }}" aria-required="true" required readonly>
             </div>
-            <div class="Form-field {{ $errors->has('site') ? 'is-invalid' : '' }}">
-                @if ($errors->has('site'))
-                <div class="Alert Alert--error Alert--withBg u-padding-r-top u-padding-r-bottom u-padding-r-right">
-                    <p id="error-name" class="u-text-p u-padding-r-bottom">{{ $errors->first('site') }}</p>
+            <div class="Form-field {{ $errors->has('name') ? 'is-invalid' : '' }}">
+                @if ($errors->has('name'))
+                    <div class="Alert Alert--error Alert--withBg u-padding-r-top u-padding-r-bottom u-padding-r-right">
+                        <p class="u-text-p u-padding-r-bottom">{{ $errors->first('name') }}</p>
+                        @endif
+                        <label class="Form-label is-required" for="name">
+                            Nome del sito web{{-- //TODO: put message in lang file --}}
+                        </label>
+                        <input class="Form-input" id="name" name="name" aria-required="true" value="{{ old('name') }}" required/>
+                        @if ($errors->has('name'))
+                    </div>
                 @endif
-                    <label class="Form-label is-required" for="site">
-                        Dominio del sito web{{-- //TODO: put message in lang file --}}
+            </div>
+            <div class="Form-field {{ $errors->has('url') ? 'is-invalid' : '' }}">
+                @if ($errors->has('url'))
+                <div class="Alert Alert--error Alert--withBg u-padding-r-top u-padding-r-bottom u-padding-r-right">
+                    <p class="u-text-p u-padding-r-bottom">{{ $errors->first('url') }}</p>
+                @endif
+                    <label class="Form-label is-required" for="url">
+                        Indirizzo del sito web{{-- //TODO: put message in lang file --}}
                     </label>
-                    <input class="Form-input" id="site" name="site" aria-required="true" value="{{ old('site') }}" required/>
-                @if ($errors->has('site'))
+                    <input class="Form-input" id="url" name="url" aria-required="true" value="{{ old('url') }}" required/>
+                    <p class="Form-message">
+                        Inserisci l'indirizzo del sito completo del protocollo <code>http://</code> o <code>https://</code> (es. https://www.agid.gov.it).{{-- //TODO: put message in lang file --}}
+                    </p>
+                @if ($errors->has('url'))
                 </div>
                 @endif
             </div>
             <div class="Form-field {{ $errors->has('type') ? 'is-invalid' : '' }}">
                 @if ($errors->has('type'))
                 <div class="Alert Alert--error Alert--withBg u-padding-r-top u-padding-r-bottom u-padding-r-right">
-                    <p id="error-name" class="u-text-p u-padding-r-bottom">{{ $errors->first('type') }}</p>
+                    <p class="u-text-p u-padding-r-bottom">{{ $errors->first('type') }}</p>
                 @endif
                     <label class="Form-label is-required" for="type">
                         Tipologia{{-- //TODO: put message in lang file --}}
@@ -59,20 +75,10 @@
                 @endif
             </div>
         </fieldset>
-        <fieldset class="Form-field Form-field--choose Grid-cell">
-            <legend class="Form-legend is-required">Condizioni del servizio</legend>
-            <label class="Form-label Form-label--block" for="accept_terms">
-                <input type="checkbox" class="Form-input" id="accept_terms" name="accept_terms" aria-required="true" required/>
-                <span class="Form-fieldIcon" role="presentation"></span>
-                Accetto le condizioni del servizio
-            </label>
-        </fieldset>
-        <input type="hidden" name="ipa_code" value="{{ auth()->user()->publicAdministration->ipa_code }}"/>
         <div class="Form-field Grid-cell u-textRight">
             <button type="submit" class="Button Button--default u-text-xs">
                 Invia{{-- //TODO: put message in lang file --}}
             </button>
         </div>
     </form>
-
 @endsection

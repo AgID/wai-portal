@@ -1,6 +1,6 @@
 @extends('layouts.default')
 
-@section('title', __('ui.pages.website-javascript-snippet.title'))
+@section('title', __('ui.pages.websites.javascript-snippet.title'))
 
 @section('content')
     <pre><code>{{ $javascriptSnippet }}</code></pre>

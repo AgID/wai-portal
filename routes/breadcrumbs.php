@@ -20,25 +20,31 @@ Breadcrumbs::register('dashboard', function ($breadcrumbs) {
 // Web Analytics Italia > Dashboard > Websites
 Breadcrumbs::register('websites-index', function ($breadcrumbs) {
     $breadcrumbs->parent('dashboard');
-    $breadcrumbs->push(__('ui.pages.websites.title'), route('websites-index', [], false));
+    $breadcrumbs->push(__('ui.pages.websites.index.title'), route('websites-index', [], false));
 });
 
-// Web Analytics Italia > Dashboard > Add primary website
-Breadcrumbs::register('add-primary-website', function ($breadcrumbs) {
-    $breadcrumbs->parent('dashboard');
-    $breadcrumbs->push(__('ui.pages.add-primary-website.title'), route('add-primary-website', [], false));
-});
-
-// Web Analytics Italia > Dashboard > Add website
-Breadcrumbs::register('websites-create', function ($breadcrumbs) {
+// Web Analytics Italia > Dashboard > Websites > Add primary website
+Breadcrumbs::register('websites-add-primary', function ($breadcrumbs) {
     $breadcrumbs->parent('websites-index');
-    $breadcrumbs->push(__('ui.pages.add-website.title'), route('websites-create', [], false));
+    $breadcrumbs->push(__('ui.pages.websites.add-primary.title'), route('websites-add-primary', [], false));
+});
+
+// Web Analytics Italia > Dashboard > Websites > Add website
+Breadcrumbs::register('websites-add', function ($breadcrumbs) {
+    $breadcrumbs->parent('websites-index');
+    $breadcrumbs->push(__('ui.pages.websites.add.title'), route('websites-add', [], false));
+});
+
+// Web Analytics Italia > Dashboard > Websites > Edit website
+Breadcrumbs::register('websites-edit', function ($breadcrumbs, $website) {
+    $breadcrumbs->parent('websites-index');
+    $breadcrumbs->push(__('ui.pages.websites.edit.title'), route('websites-edit', ['website' => $website], false));
 });
 
 // Web Analytics Italia > Dashboard > Websites > Javascript snippet
 Breadcrumbs::register('website-javascript-snippet', function ($breadcrumbs, $website) {
     $breadcrumbs->parent('websites-index');
-    $breadcrumbs->push(__('ui.pages.website-javascript-snippet.title'), route('website-javascript-snippet', $website, false));
+    $breadcrumbs->push(__('ui.pages.websites.javascript-snippet.title'), route('website-javascript-snippet', ['website' => $website], false));
 });
 
 // Web Analytics Italia > Dashboard > Users
@@ -47,7 +53,7 @@ Breadcrumbs::register('users-index', function ($breadcrumbs) {
     $breadcrumbs->push(__('ui.pages.users.title'), route('users-index', [], false));
 });
 
-// Web Analytics Italia > Dashboard > Add user
+// Web Analytics Italia > Dashboard > Users > Add user
 Breadcrumbs::register('users-create', function ($breadcrumbs) {
     $breadcrumbs->parent('users-index');
     $breadcrumbs->push(__('ui.pages.add-user.title'), route('users-create', [], false));

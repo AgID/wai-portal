@@ -51,6 +51,27 @@ class MatomoService implements AnalyticsServiceContract
     }
 
     /**
+     * Updated an existing site in the Analytics Service.
+     *
+     * @param  string $idSite
+     * @param  string $siteName
+     * @param  string $url
+     * @param  string $group
+     * @return int
+     * @throws AnalyticsServiceException
+     */
+    public function updateSite(string $idSite, string $siteName, string $url, string $group)
+    {
+        $params = [
+            'method' => 'SitesManager.updateSite',
+            'idSite' => $idSite,
+            'siteName' => $siteName,
+            'urls' => $url
+        ];
+        return $this->apiCall($params);
+    }
+
+    /**
      * Get Javascript code snippet for a specified site
      * registered in the Analytics Service.
      *

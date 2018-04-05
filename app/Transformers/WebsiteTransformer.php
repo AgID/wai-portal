@@ -21,8 +21,8 @@ class WebsiteTransformer extends TransformerAbstract
             'last_month_visits' => $website->getLastMonthVisits(),
             'actions' => [
                 [
-                    'link' => route('website-javascript-snippet', ['website' => $website->slug], false),
-                    'label' => __('ui.pages.websites.view_javascript_snippet')
+                    'link' => route('website-javascript-snippet', ['website' => $website], false),
+                    'label' => __('ui.pages.websites.index.view_javascript_snippet')
                 ]
             ],
             'control' => ''
@@ -31,7 +31,14 @@ class WebsiteTransformer extends TransformerAbstract
         if ($website->status != 'pending') {
             $data['actions'][] = [
                 'link' => route('analytics-service-login', [], false),
-                'label' => __('ui.pages.websites.go_to_analytics_service')
+                'label' => __('ui.pages.websites.index.go_to_analytics_service')
+            ];
+        }
+
+        if (($website->status == 'pending' || auth()->user()->can('manage-sites')) && $website->type != 'primary') {
+            $data['actions'][] = [
+                'link' => route('websites-edit', ['website' => $website], false),
+                'label' => __('ui.pages.websites.index.edit_website')
             ];
         }
 

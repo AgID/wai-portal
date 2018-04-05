@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -139,40 +141,52 @@ Route::middleware(['spid.auth', 'auth'])->group(function() {
             'uses' => 'SearchIPAListController@search'
         ]);
 
-        Route::post('/public-administrations', [
-            'as' => 'public-administrations-store',
-            'uses' => 'PublicAdministrationController@store'
-        ]);
+        Route::prefix('/websites')->group(function() {
+            Route::get('/', [
+                'as' => 'websites-index',
+                'uses' => 'WebsiteController@index'
+            ])->middleware('authorize.analytics:read-analytics');
 
-        Route::get('/add-primary-website', [
-            'as' => 'add-primary-website',
-            'uses' => 'DashboardController@addPrimaryWebsite'
-        ]);
+            Route::get('/add-primary', [
+                'as' => 'websites-add-primary',
+                'uses' => 'WebsiteController@createPrimary'
+            ]);
 
-        Route::get('/websites', [
-            'as' => 'websites-index',
-            'uses' => 'WebsiteController@index'
-        ])->middleware('authorize.analytics:read-analytics');
+            Route::post('/store-primary', [
+                'as' => 'websites-store-primary',
+                'uses' => 'WebsiteController@storePrimary'
+            ]);
 
-        Route::get('/websites/{website}/javascript-snippet', [
-            'as' => 'website-javascript-snippet',
-            'uses' => 'WebsiteController@showJavascriptSnippet'
-        ])->middleware('authorize.analytics:read-analytics');
+            Route::get('/add', [
+                'as' => 'websites-add',
+                'uses' => 'WebsiteController@create'
+            ])->middleware('authorize.analytics:manage-sites');
 
-        Route::get('/websites/data', [
-            'as' => 'websites-data-json',
-            'uses' => 'WebsiteController@dataJson'
-        ])->middleware('authorize.analytics:read-analytics');
+            Route::post('/store', [
+                'as' => 'websites-store',
+                'uses' => 'WebsiteController@store'
+            ])->middleware('authorize.analytics:manage-sites');
 
-        Route::get('/websites/add-website', [
-            'as' => 'websites-create',
-            'uses' => 'WebsiteController@create'
-        ])->middleware('authorize.analytics:manage-sites');
+            Route::get('/{website}/edit', [
+                'as' => 'websites-edit',
+                'uses' => 'WebsiteController@edit'
+            ])->middleware('authorize.analytics:manage-sites');
 
-        Route::post('/websites', [
-            'as' => 'websites-store',
-            'uses' => 'WebsiteController@store'
-        ])->middleware('authorize.analytics:manage-sites');
+            Route::post('/{website}/update', [
+                'as' => 'websites-update',
+                'uses' => 'WebsiteController@update'
+            ])->middleware('authorize.analytics:manage-sites');
+
+            Route::get('/{website}/javascript-snippet', [
+                'as' => 'website-javascript-snippet',
+                'uses' => 'WebsiteController@showJavascriptSnippet'
+            ])->middleware('authorize.analytics:read-analytics');
+
+            Route::get('/data', [
+                'as' => 'websites-data-json',
+                'uses' => 'WebsiteController@dataJson'
+            ])->middleware('authorize.analytics:read-analytics');
+        });
 
         Route::get('/users', [
             'as' => 'users-index',

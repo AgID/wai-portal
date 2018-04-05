@@ -55,25 +55,31 @@ return [
             'users' => 'Utenti'
         ],
         'websites' => [
-            'title' => 'Siti web tracciati',
-            'view_javascript_snippet' => 'vedi snippet JS',
-            'go_to_analytics_service' => 'vai agli analytics',
-            'add_site' => 'aggiungi sito'
-        ],
-        'add-primary-website' => [
-            'title' => 'Sito istituzionale'
-        ],
-        'add-website' => [
-            'title' => 'Nuovo sito'
+            'index' => [
+                'title' => 'Siti web tracciati',
+                'view_javascript_snippet' => 'vedi snippet JS',
+                'go_to_analytics_service' => 'vai agli analytics',
+                'add_website' => 'aggiungi sito',
+                'edit_website' => 'modifica sito'
+            ],
+            'add-primary' => [
+                'title' => 'Sito istituzionale'
+            ],
+            'add' => [
+                'title' => 'Nuovo sito'
+            ],
+            'edit' => [
+                'title' => 'Modifica sito'
+            ],
+            'javascript-snippet' => [
+                'title' => 'Snippet di codice Javascript'
+            ]
         ],
         'add-user' => [
             'title' => 'Nuovo utente'
         ],
         'spid-auth_login' => [
             'title' => 'Accesso con SPID'
-        ],
-        'website-javascript-snippet' => [
-            'title' => 'Snippet di codice Javascript'
         ],
         'profile' => [
             'title' => 'Profilo utente'
