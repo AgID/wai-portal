@@ -62,7 +62,7 @@ class Handler extends ExceptionHandler
 
         if ($exception instanceof HttpException && $exception->getStatusCode() == 403) {
             $user = auth()->check() ? 'User '.auth()->user()->getInfo() : 'Anonymous user';
-            logger()->info($user.' requested an unauthorized resource [' . $request->url() . '].');
+            logger()->warning($user.' requested an unauthorized resource [' . $request->url() . '].');
         }
 
         if ($exception instanceof TokenMismatchException) {
