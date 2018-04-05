@@ -16,14 +16,19 @@ class AuthorizeAnalytics
      */
     public function handle($request, Closure $next, string $action)
     {
-        if (!$request->user()->can($action) ||
-                ($request->route('website') &&
-                    $request->user()->publicAdministration !=
-                    $request->route('website')->publicAdministration)) {
-
-            logger()->info('User '.auth()->user()->getInfo().' requested an unauthorized resource.');
-
-            abort(403);
+        $unauthorized = false;
+        if (!$request->user()->can($action)) {
+            $unauthorized = true;
+        }
+        if ($request->route('website')) {
+            if ($request->user()->publicAdministration != $request->route('website')->publicAdministration) {
+                $unauthorized = true;
+            } elseif ($request->route('website')->status == 'pending') {
+                $unauthorized = false;
+            }
+        }
+        if ($unauthorized) {
+            abort(403, __('ui.pages.403.description'));
         }
         return $next($request);
     }
