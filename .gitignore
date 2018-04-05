@@ -1,7 +1,8 @@
 # dependencies
 /node_modules
 /vendor
-/bin
+/bin/*
+!/bin/app
 
 # docker data
 /containers/data
