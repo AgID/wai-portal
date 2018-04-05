@@ -5,6 +5,7 @@ namespace App\Exceptions;
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Illuminate\Session\TokenMismatchException;
@@ -57,6 +58,11 @@ class Handler extends ExceptionHandler
             $exception instanceof ModelNotFoundException ||
             $exception instanceof MethodNotAllowedHttpException) {
             return response()->view('errors.404', ['not_found_path' => request()->path()]);
+        }
+
+        if ($exception instanceof HttpException && $exception->getStatusCode() == 403) {
+            $user = auth()->check() ? 'User '.auth()->user()->getInfo() : 'Anonymous user';
+            logger()->info($user.' requested an unauthorized resource [' . $request->url() . '].');
         }
 
         if ($exception instanceof TokenMismatchException) {
