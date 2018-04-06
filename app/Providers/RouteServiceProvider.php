@@ -42,7 +42,7 @@ class RouteServiceProvider extends ServiceProvider
         if (!$this->app->environment('production')) {
             $this->mapTestingRoutes();
         }
-        if (!$this->app->environment('staging')) {
+        if ($this->app->environment('staging')) {
             $this->mapStagingRoutes();
         }
     }
