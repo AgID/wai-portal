@@ -57,7 +57,7 @@
                     <button class="auth-user" aria-controls="auth-user-options" aria-haspopup="true" role="button">
                         <span aria-hidden="true" class="auth-icon">
                             <img class="u-hidden u-md-inline u-lg-inline" aria-hidden="true" src="/vendor/spid-auth/img/spid-ico-circle-bb.svg" onerror="this.src='/vendor/spid-auth/img/spid-ico-circle-bb.png'; this.onerror=null;" alt="Accesso SPID">
-                            <span class="u-md-hidden u-lg-hidden auth-icon-text">{{ substr(auth()->user()->name, 0, 1) }}{{ substr(auth()->user()->familyName, 0, 1) }}</span>
+                            <span class="u-md-hidden u-lg-hidden auth-icon-text">{{ substr(app()->make('SPIDAuth')->getSPIDUser()->name, 0, 1) }}{{ substr(app()->make('SPIDAuth')->getSPIDUser()->familyName, 0, 1) }}</span>
                         </span>
                         <span class="auth-text">{{ app()->make('SPIDAuth')->getSPIDUser()->name }} {{ app()->make('SPIDAuth')->getSPIDUser()->familyName }}</span>
                     </button>
