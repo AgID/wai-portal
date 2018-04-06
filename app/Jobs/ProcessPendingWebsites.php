@@ -9,6 +9,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Silber\Bouncer\BouncerFacade as Bouncer;
 
 class ProcessPendingWebsites implements ShouldQueue
 {
@@ -45,6 +46,7 @@ class ProcessPendingWebsites implements ShouldQueue
                         $pendingUser->status = 'active';
                         $pendingUser->save();
                         $pendingUser->roles()->detach();
+                        Bouncer::scope()->to($pendingUser->publicAdministration->id);
                         $pendingUser->assign('admin');
                         $analyticsService->registerUser($pendingUser->email, $pendingUser->analytics_password, $pendingUser->email);
 
