@@ -29,7 +29,8 @@ class UserController extends Controller
                 'actions' => 'Azioni'
             ],
             'source' => route('users-data-json'),
-            'caption' => 'Elenco degli utenti web abilitati su Web Analytics Italia' //TODO: set title in lang file
+            'caption' => 'Elenco degli utenti web abilitati su Web Analytics Italia', //TODO: set title in lang file
+            'columnsOrder' => [['added_at', 'asc'], ['name', 'asc']]
         ];
 
         return view('pages.users')->with($datatable);

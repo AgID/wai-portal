@@ -25,11 +25,12 @@ class WebsiteController extends Controller
                 'type' => 'Tipo',
                 'added_at' => 'Iscritto dal',
                 'status' => 'Stato',
-                'last_month_visits' => 'Visite',
+                'last_month_visits' => 'Visite*',
                 'actions' => 'Azioni'
             ],
             'source' => route('websites-data-json'),
             'caption' => 'Elenco dei siti web abilitati su Web Analytics Italia', //TODO: set title in lang file
+            'footer' => '*Il numero di visite si riferisce agli ultimi 30 giorni.',
             'columnsOrder' => [['added_at', 'asc'], ['last_month_visits', 'desc']]
         ];
 

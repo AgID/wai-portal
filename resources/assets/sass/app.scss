@@ -523,20 +523,28 @@ table {
   }
 }
 
-.dataTables_wrapper .dataTables_paginate.paging_simple_numbers {
-  .paginate_button {
-    min-width: 1em !important;
-    padding: 0.1em 0.5em !important;
-    color: #00264d !important;
-    border: none !important;
-    border-radius: unset !important;
+.dataTables_wrapper {
+  .dataTables_filter {
+    input {
+      border: 1px solid #ccc;
+    }
+  }
 
-    &:hover,
-    &:active,
-    &.current,
-    &.current:hover {
-      color: #fff !important;
-      background: #00264d !important;
+  .dataTables_paginate.paging_simple_numbers {
+    .paginate_button {
+      min-width: 1em !important;
+      padding: 0.1em 0.5em !important;
+      color: #00264d !important;
+      border: none !important;
+      border-radius: unset !important;
+
+      &:hover,
+      &:active,
+      &.current,
+      &.current:hover {
+        color: #fff !important;
+        background: #00264d !important;
+      }
     }
   }
 }

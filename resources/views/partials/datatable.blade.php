@@ -8,6 +8,14 @@
         <th scope="col"></th>
     </tr>
     </thead>
+    <tfoot>
+    <tr>
+        <th class="u-text-xxs u-textWeight-200 u-textLeft u-textBreak" style="white-space: normal;">{{ $footer ?? '' }}</th>
+        @foreach ($columns as $column)
+            <th></th>
+        @endforeach
+    </tr>
+    </tfoot>
 </table>
 
 @push('styles')
