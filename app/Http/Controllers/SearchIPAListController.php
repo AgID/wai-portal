@@ -34,7 +34,7 @@ class SearchIPAListController extends Controller
                     ->getDocuments();
             } catch (Exception $e) {
                 // RediSearch returned an error, probably malformed query or index not found.
-                // Please notify me!
+                // TODO: Please notify me!
                 if (!app()->environment('testing')) {
                     logger()->error($e);
                 }
