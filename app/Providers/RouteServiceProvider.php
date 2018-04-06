@@ -42,6 +42,9 @@ class RouteServiceProvider extends ServiceProvider
         if (!$this->app->environment('production')) {
             $this->mapTestingRoutes();
         }
+        if (!$this->app->environment('staging')) {
+            $this->mapStagingRoutes();
+        }
     }
 
     /**
@@ -59,9 +62,9 @@ class RouteServiceProvider extends ServiceProvider
     }
 
     /**
-     * Define the "web" routes for the application.
+     * Define the "testing" routes for the application.
      *
-     * These routes all receive session state, CSRF protection, etc.
+     * These routes are only for testing purposes.
      *
      * @return void
      */
@@ -70,6 +73,20 @@ class RouteServiceProvider extends ServiceProvider
         Route::middleware('web')
             ->namespace($this->namespace)
             ->group(base_path('routes/testing.php'));
+    }
+
+    /**
+     * Define the "staging" routes for the application.
+     *
+     * These routes are only for testing purposes.
+     *
+     * @return void
+     */
+    protected function mapStagingRoutes()
+    {
+        Route::middleware('web')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/staging.php'));
     }
 
     /**
