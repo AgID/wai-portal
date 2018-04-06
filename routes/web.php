@@ -145,7 +145,7 @@ Route::middleware(['spid.auth', 'auth'])->group(function() {
             Route::get('/', [
                 'as' => 'websites-index',
                 'uses' => 'WebsiteController@index'
-            ])->middleware('authorize.analytics:read-analytics');
+            ]);
 
             Route::get('/add-primary', [
                 'as' => 'websites-add-primary',
@@ -185,7 +185,7 @@ Route::middleware(['spid.auth', 'auth'])->group(function() {
             Route::get('/data', [
                 'as' => 'websites-data-json',
                 'uses' => 'WebsiteController@dataJson'
-            ])->middleware('authorize.analytics:read-analytics');
+            ]);
         });
 
         Route::get('/users', [
