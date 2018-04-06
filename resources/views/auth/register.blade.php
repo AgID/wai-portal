@@ -20,7 +20,7 @@
         <div class="Form-field {{ $errors->has('email') ? 'is-invalid' : '' }}">
             @if ($errors->has('email'))
             <div class="Alert Alert--error Alert--withBg u-padding-r-top u-padding-r-bottom u-padding-r-right">
-                <p id="error-email" class="u-text-p u-padding-r-bottom">{{ $errors->first('email') }}</p>
+                <p class="u-text-p u-padding-r-bottom">{{ $errors->first('email') }}</p>
             @endif
                 <label class="Form-label is-required" for="email">
                     Indirizzo email istituzionale{{-- //TODO: put message in lang file --}}

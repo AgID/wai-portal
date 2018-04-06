@@ -24,7 +24,7 @@
             <div class="Form-field {{ $errors->has('name') ? 'is-invalid' : '' }}">
                 @if ($errors->has('name'))
                 <div class="Alert Alert--error Alert--withBg u-padding-r-top u-padding-r-bottom u-padding-r-right">
-                    <p id="error-name" class="u-text-p u-padding-r-bottom">{{ $errors->first('name') }}</p>
+                    <p class="u-text-p u-padding-r-bottom">{{ $errors->first('name') }}</p>
                 @endif
                     <label class="Form-label is-required" for="name">
                         Nome{{-- //TODO: put message in lang file --}}
@@ -37,7 +37,7 @@
             <div class="Form-field {{ $errors->has('familyName') ? 'is-invalid' : '' }}">
                 @if ($errors->has('familyName'))
                     <div class="Alert Alert--error Alert--withBg u-padding-r-top u-padding-r-bottom u-padding-r-right">
-                        <p id="error-familyName" class="u-text-p u-padding-r-bottom">{{ $errors->first('familyName') }}</p>
+                        <p class="u-text-p u-padding-r-bottom">{{ $errors->first('familyName') }}</p>
                         @endif
                         <label class="Form-label is-required" for="familyName">
                             Cognome{{-- //TODO: put message in lang file --}}
@@ -50,7 +50,7 @@
             <div class="Form-field {{ $errors->has('email') ? 'is-invalid' : '' }}">
                 @if ($errors->has('email'))
                     <div class="Alert Alert--error Alert--withBg u-padding-r-top u-padding-r-bottom u-padding-r-right">
-                        <p id="error-email" class="u-text-p u-padding-r-bottom">{{ $errors->first('email') }}</p>
+                        <p class="u-text-p u-padding-r-bottom">{{ $errors->first('email') }}</p>
                         @endif
                         <label class="Form-label is-required" for="email">
                             Indirizzo email istituzionale{{-- //TODO: put message in lang file --}}

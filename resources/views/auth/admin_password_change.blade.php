@@ -9,7 +9,7 @@
             <div class="Form-field {{ $errors->has('password') ? 'is-invalid' : '' }}">
                 @if ($errors->has('password'))
                 <div class="Alert Alert--error Alert--withBg u-padding-r-top u-padding-r-bottom u-padding-r-right">
-                    <p id="error-password" class="u-text-p u-padding-r-bottom">{{ $errors->first('password') }}</p>
+                    <p class="u-text-p u-padding-r-bottom">{{ $errors->first('password') }}</p>
                 @endif
                     <label class="Form-label is-required" for="password">
                         Nuova password{{-- //TODO: put message in lang file --}}
@@ -25,7 +25,7 @@
             <div class="Form-field {{ $errors->has('password') ? 'is-invalid' : '' }}">
                 @if ($errors->has('password'))
                 <div class="Alert Alert--error Alert--withBg u-padding-r-top u-padding-r-bottom u-padding-r-right">
-                    <p id="error-password_confirmation" class="u-text-p u-padding-r-bottom">{{ $errors->first('password_confirmation') }}</p>
+                    <pclass="u-text-p u-padding-r-bottom">{{ $errors->first('password_confirmation') }}</p>
                 @endif
                     <label class="Form-label is-required" for="password_confirmation">
                         Conferma password{{-- //TODO: put message in lang file --}}
