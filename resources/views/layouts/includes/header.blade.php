@@ -32,7 +32,7 @@
     </div>
 
     <div class="Header-navbar u-background-50 u-text-r-xxl">
-        <div class="u-layout-wide Grid Grid--alignMiddle u-layoutCenter">
+        <div class="u-layout-wide Grid Grid--alignMiddle u-layoutCenter u-flexNoWrap">
             <div class="Header-logo Grid-cell" aria-hidden="true">
                 <a href="{{ url('/') }}" tabindex="-1" class="u-linkClean">
                     <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iNzguMTg3IiB3aWR0aD0iOTcuMzg3IiB2aWV3Qm94PSIwIDAgOTEuMzAwMDAyIDczLjMwMDAwMiI+PGcgZmlsbD0iI2ZmZiI+PHBhdGggZD0iTTMxLjc5OSA3MS45VjE1LjdoMTUuMVY3MmgtMTUuMXpNOTEuMDk5IDI4LjVoLTEzLjh2MjMuMWMwIDIuMy4xIDMuOC4yIDQuOC4xLjkuNSAxLjcgMS4yIDIuNHMxLjggMSAzLjMgMWw4LjYtLjIuNyAxMmMtNSAxLjEtOC45IDEuNy0xMS41IDEuNy02LjggMC0xMS40LTEuNS0xMy44LTQuNi0yLjUtMy0zLjctOC42LTMuNy0xNi44VjBoMTUuMXYxNS42aDEzLjh2MTIuOXpNOS4wOTkgMzIuOGMtMi42IDAtNC44LS45LTYuNS0yLjdzLTIuNi00LTIuNi02LjYuOS00LjggMi41LTYuNmMxLjctMS44IDMuOS0yLjYgNi41LTIuNnM0LjguOSA2LjUgMi43IDIuNSA0IDIuNSA2LjctLjggNC44LTIuNSA2LjZjLTEuNiAxLjYtMy43IDIuNS02LjQgMi41eiIvPjwvZz48L3N2Zz4=" alt="{{ __('ui.site_title') }}">
@@ -52,11 +52,12 @@
                 </h1>
             </div>
 
-            <div class="Header-auth Grid-cell u-text-xs u-lg-flexOrderLast u-md-flexOrderLast">
+            <div class="Header-auth Grid-cell u-text-xs u-lg-flexOrderLast u-md-flexOrderLast u-flexExpandLeft u-md-flexExpandRight">
                 @if (app()->make('SPIDAuth')->isAuthenticated())
                     <button class="auth-user" aria-controls="auth-user-options" aria-haspopup="true" role="button">
                         <span aria-hidden="true" class="auth-icon">
-                            <img aria-hidden="true" src="/vendor/spid-auth/img/spid-ico-circle-bb.svg" onerror="this.src='/vendor/spid-auth/img/spid-ico-circle-bb.png'; this.onerror=null;" alt="Accesso SPID">
+                            <img class="u-hidden u-md-inline u-lg-inline" aria-hidden="true" src="/vendor/spid-auth/img/spid-ico-circle-bb.svg" onerror="this.src='/vendor/spid-auth/img/spid-ico-circle-bb.png'; this.onerror=null;" alt="Accesso SPID">
+                            <span class="u-md-hidden u-lg-hidden auth-icon-text">{{ substr(auth()->user()->name, 0, 1) }}{{ substr(auth()->user()->familyName, 0, 1) }}</span>
                         </span>
                         <span class="auth-text">{{ app()->make('SPIDAuth')->getSPIDUser()->name }} {{ app()->make('SPIDAuth')->getSPIDUser()->familyName }}</span>
                     </button>
@@ -89,7 +90,7 @@
                 @endif
             </div>
 
-            <div class="Header-toggle Grid-cell u-flex u-flexAlignItemsCenter u-flexJustifyCenter u-flexGrow1">
+            <div class="Header-toggle Grid-cell u-flex u-flexAlignItemsCenter u-flexJustifyCenter u-lg-flexGrow1">
                 <a class="Hamburger-toggleContainer js-fr-offcanvas-open u-nojsDisplayInlineBlock u-lg-hidden u-md-hidden" href="#menu" aria-controls="menu" aria-label="{{ __('ui.toggle_menu_label') }}" title="{{ __('ui.toggle_menu_label') }}">
                     <span class="Hamburger-toggle" role="presentation"></span>
                     <span class="Header-toggleText" role="presentation">Menu</span>
