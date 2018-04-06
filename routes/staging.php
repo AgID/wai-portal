@@ -33,6 +33,11 @@ Route::get('/_fake_spid_login', function () {
     return redirect()->home();
 });
 
+Route::get('/_fake_spid_logout', function () {
+    session()->invalidate();
+    return redirect()->home();
+});
+
 Route::get('/_reset_all', function () {
     session()->invalidate();
     $session_files = Storage::disk('sessions')->files('/');
