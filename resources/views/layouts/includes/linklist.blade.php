@@ -18,6 +18,6 @@
     </li>
 @endforeach
 @can('access-admin-area')
-    @include('partials.admin_menu')
+    @include('layouts.includes.admin_menu')
 @endcan
 </ul>

@@ -433,6 +433,17 @@ table {
   color: #004a4d !important;
 }
 
+.Label--publicAdministration {
+  background-color: #00264d;
+  border-bottom-right-radius: 8px;
+  border-bottom-left-radius: 8px;
+  color: white;
+  float: right;
+  padding: 0.5em 1em;
+  position: relative;
+  z-index: 1;
+}
+
 /* Headings
   =========== */
 
