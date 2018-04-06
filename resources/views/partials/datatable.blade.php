@@ -49,6 +49,13 @@
                         orderable: false
                     }
                 ],
+                order: [
+                    @foreach ($columnsOrder as $columnOrder)
+                    [
+                        {{ array_search($columnOrder[0], array_keys($columns)) }}, '{{ $columnOrder[1] }}'
+                    ],
+                    @endforeach
+                ],
                 language: {
                     url: "//cdn.datatables.net/plug-ins/1.10.16/i18n/Italian.json"
                 }
