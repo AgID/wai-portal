@@ -7,7 +7,7 @@
         @include('layouts.includes.header')
         @include('layouts.includes.offcanvas')
         @include('layouts.includes.network')
-        @include('layouts.includes.public_administration_name')
+        @include('layouts.includes.public_administration_label')
         <div class="Prose u-background-grey-15 u-layout-r-withGutter u-padding-r-top u-padding-bottom-xxl u-posRelative">
             @include('layouts.includes.breadcrumbs', ['breadcrumbs' => Breadcrumbs::generate()])
             <div id="main" style="min-height: 50vh">{{-- //TODO: remove inline style --}}
