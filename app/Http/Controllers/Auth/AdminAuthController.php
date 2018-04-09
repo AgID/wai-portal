@@ -91,6 +91,16 @@ class AdminAuthController extends Controller
     }
 
     /**
+     * Show the profile page.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function profile()
+    {
+        return view('auth.admin_profile')->with(['user' => auth()->user()]);
+    }
+
+    /**
      * Display the password reset form.
      *
      * @return \Illuminate\View\View

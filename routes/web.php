@@ -130,6 +130,11 @@ Route::prefix('/user/verify')->middleware('spid.auth')->group(function() {
 
 /** Both SPID and application authentication: this is the default for registered users */
 Route::middleware(['spid.auth', 'auth'])->group(function() {
+    Route::get('/user/profile', [
+        'as' => 'user_profile',
+        'uses' => 'Auth\UserAuthController@profile'
+    ]);
+
     Route::prefix('/dashboard')->group(function() {
         Route::get('/', [
             'as' => 'dashboard',
@@ -217,17 +222,6 @@ Route::middleware(['spid.auth', 'auth'])->group(function() {
 });
 
 /**
- * Registered application routes (both SPID or admin)
- */
-Route::middleware(['auth'])->group(function() {
-    Route::get('/user/profile', [
-        'as' => 'user-profile',
-        'uses' => 'Auth\UserAuthController@profile'
-    ]);
-});
-
-
-/**
  * Admin-only application routes
  */
 Route::middleware(['admin-auth'])->group(function() {
@@ -249,6 +243,11 @@ Route::middleware(['admin-auth'])->group(function() {
         Route::post('/add-user', [
             'as' => 'admin-store-user',
             'uses' => 'AdminUserController@store'
+        ]);
+
+        Route::get('/user/profile', [
+            'as' => 'admin-user_profile',
+            'uses' => 'Auth\AdminAuthController@profile'
         ]);
 
         Route::get('/user/change-password', [

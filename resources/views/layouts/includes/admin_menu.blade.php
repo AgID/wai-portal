@@ -3,6 +3,13 @@
         <li>
             <a href="{{ route('admin-dashboard', [], false) }}">
                 Dashboard amministrativa
+                {{--TODO: put string in lang file--}}
+            </a>
+        </li>
+        <li>
+            <a href="{{ route('admin-add-user', [], false) }}">
+                Aggiungi utente amministratore
+                {{--TODO: put string in lang file--}}
             </a>
         </li>
     </ul>

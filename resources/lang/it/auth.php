@@ -23,7 +23,7 @@ return [
         'pending' => 'in attesa',
         'pending_description' => "L'utenza non è ancora associata a nessuna PA.",
         'active' => 'attivo',
-        'active_description' => "L'utenza è attiva ed associata ad una PA.",
+        'active_description' => "L'utenza è attiva.",
         'suspended' => 'sospeso',
         'suspended_description' => "L'utenza è sospesa."
     ],
@@ -37,7 +37,8 @@ return [
         'manager_description' => "Può leggere e gestire i dati analytics per i siti web della sua pubblica amministrazione.",
         'admin' => 'amministratore',
         'admin_description' => "Può gestire gli utenti, i siti e i dati analytics per la sua pubblica amministrazione.",
-        'super-admin' => 'amministratore della piattaforma'
+        'super-admin' => 'amministratore della piattaforma',
+        'super-admin_description' => 'Può amministrare la piattaforma ' . config('app.name') . '.'
     ],
     'password' => [
         'reset' => 'La password è stata reimpostata.',

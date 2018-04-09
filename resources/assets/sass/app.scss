@@ -248,15 +248,19 @@
       background-color: #0059b3 !important;
     }
 
-    .Megamenu-subnavGroup > li {
-      padding-top: 0.4rem !important;
-      padding-bottom: 0.8rem !important;
-    }
+    .Megamenu-subnavGroup {
+      display: block !important;
 
-    .Megamenu-subnavGroup > li > a {
-      text-transform: none !important;
-      font-weight: inherit !important;
-      font-size: inherit !important;
+      & > li {
+        padding-top: 0.4rem !important;
+        padding-bottom: 0.8rem !important;
+      }
+
+      & > li > a {
+        text-transform: none !important;
+        font-weight: inherit !important;
+        font-size: inherit !important;
+      }
     }
   }
 }

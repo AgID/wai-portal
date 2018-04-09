@@ -66,9 +66,9 @@ Breadcrumbs::register('privacy', function ($breadcrumbs) {
 });
 
 // Web Analytics Italia > User profile
-Breadcrumbs::register('user-profile', function ($breadcrumbs) {
+Breadcrumbs::register('user_profile', function ($breadcrumbs) {
     $breadcrumbs->parent('home');
-    $breadcrumbs->push(__('ui.pages.profile.title'), route('user-profile', [], false));
+    $breadcrumbs->push(__('ui.pages.profile.title'), route('user_profile', [], false));
 });
 
 // Web Analytics Italia > SPID Login
@@ -93,6 +93,12 @@ Breadcrumbs::register('auth-register', function ($breadcrumbs) {
 Breadcrumbs::register('admin-login', function ($breadcrumbs) {
     $breadcrumbs->parent('home');
     $breadcrumbs->push(__('ui.pages.admin-login.title'), route('admin-login', [], false));
+});
+
+// Web Analytics Italia > Admin User profile
+Breadcrumbs::register('admin-user_profile', function ($breadcrumbs) {
+    $breadcrumbs->parent('home');
+    $breadcrumbs->push(__('ui.pages.admin-user_profile.title'), route('admin-user_profile', [], false));
 });
 
 // Web Analytics Italia > Admin forgot password

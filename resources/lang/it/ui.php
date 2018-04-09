@@ -103,6 +103,9 @@ return [
         'admin-dashboard' => [
             'title' => 'Dashboard amministrativa'
         ],
+        'admin-user_profile' => [
+            'title' => 'Profilo utente amministratore'
+        ],
         'admin-password_forgot' => [
             'title' => 'Password dimenticata'
         ],
