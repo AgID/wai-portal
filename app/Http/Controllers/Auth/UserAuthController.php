@@ -21,6 +21,6 @@ class UserAuthController extends Controller
      */
     public function profile()
     {
-        return view('auth.profile');
+        return view('auth.profile')->with(['user' => auth()->user()]);
     }
 }
