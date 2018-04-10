@@ -20,6 +20,7 @@ use GuzzleHttp\Client as TrackingClient;
 */
 
 Route::get('/_fake_spid_login', function () {
+    session()->invalidate();
     $SPIDUser = new SPIDUser([
         "mobilePhone" => ["+390000000000"],
         "familyName" => ["Rossi"],
