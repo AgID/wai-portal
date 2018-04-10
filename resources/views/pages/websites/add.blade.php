@@ -3,7 +3,7 @@
 @section('title', __('ui.pages.websites.add.title'))
 
 @section('content')
-    <form class="Form Form--spaced u-text-r-xs" method="post" action="{{ route('websites-update', [], false) }}">
+    <form class="Form Form--spaced u-text-r-xs" method="post" action="{{ route('websites-store', [], false) }}">
         @csrf
         @if ($errors->isEmpty())
             <div class="Prose Alert Alert--info">
