@@ -11,6 +11,18 @@ Breadcrumbs::register('faq', function ($breadcrumbs) {
     $breadcrumbs->push(__('ui.pages.faq.title'), route('faq', [], false));
 });
 
+// Web Analytics Italia > Privacy
+Breadcrumbs::register('privacy', function ($breadcrumbs) {
+    $breadcrumbs->parent('home');
+    $breadcrumbs->push(__('ui.pages.privacy.title'), route('privacy', [], false));
+});
+
+// Web Analytics Italia > Legal Notes
+Breadcrumbs::register('legal-notes', function ($breadcrumbs) {
+    $breadcrumbs->parent('home');
+    $breadcrumbs->push(__('ui.pages.legal-notes.title'), route('legal-notes', [], false));
+});
+
 // Web Analytics Italia > Dashboard
 Breadcrumbs::register('dashboard', function ($breadcrumbs) {
     $breadcrumbs->parent('home');
@@ -63,12 +75,6 @@ Breadcrumbs::register('users-create', function ($breadcrumbs) {
 Breadcrumbs::register('users-edit', function ($breadcrumbs, $user) {
     $breadcrumbs->parent('users-index');
     $breadcrumbs->push(__('ui.pages.users.edit.title'), route('users-edit', ['user' => $user], false));
-});
-
-// Web Analytics Italia > Privacy
-Breadcrumbs::register('privacy', function ($breadcrumbs) {
-    $breadcrumbs->parent('home');
-    $breadcrumbs->push(__('ui.pages.privacy.title'), route('privacy', [], false));
 });
 
 // Web Analytics Italia > User profile

@@ -24,7 +24,12 @@ Route::get('/', [
 
 Route::get('/privacy', [
     'as' => 'privacy',
-    'uses' => 'HomeController@home'
+    'uses' => 'HomeController@privacy'
+]);
+
+Route::get('/legal-notes', [
+    'as' => 'legal-notes',
+    'uses' => 'HomeController@legalNotes'
 ]);
 
 Route::get('/faq', [

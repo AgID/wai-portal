@@ -46,7 +46,7 @@ site:
       url: '/privacy'
     legal_notes:
       title: footer_link_legal_notes
-      url: '/note-legali'
+      url: '/legal-notes'
 
   social:
     twitter:

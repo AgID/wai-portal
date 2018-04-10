@@ -26,4 +26,24 @@ class HomeController extends Controller
         $faqs = Yaml::parseFile(resource_path('views/pages/faqs.yml'));
         return view('pages.faq')->with('faqs', $faqs);
     }
+
+    /**
+     * Show the application privacy info.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function privacy()
+    {
+        return view('pages.privacy');
+    }
+
+    /**
+     * Show the application legal notes.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function legalNotes()
+    {
+        return view('pages.legal_notes');
+    }
 }

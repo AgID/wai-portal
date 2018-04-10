@@ -49,6 +49,12 @@ return [
         'faq' => [
             'title' => 'Domande frequenti'
         ],
+        'privacy' => [
+            'title' => 'Privacy'
+        ],
+        'legal-notes' => [
+            'title' => 'Note legali'
+        ],
         'dashboard' => [
             'title' => 'Dashboard',
             'websites' => 'Siti web',
@@ -93,9 +99,6 @@ return [
         ],
         'profile' => [
             'title' => 'Profilo utente'
-        ],
-        'privacy' => [
-            'title' => 'Privacy'
         ],
         'auth-register' => [
             'title' => 'Registrazione'
