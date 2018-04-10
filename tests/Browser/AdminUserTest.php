@@ -29,7 +29,7 @@ class AdminUserTest extends DuskTestCase
                     ->assertPathIs('/admin/dashboard')
                     ->assertSee('Dashboard amministrativa')
                     ->assertSee('Area amministrativa')
-                    ->visit('/admin/add-user')
+                    ->visit('/admin/users/add')
                     ->assertSee('Nuovo utente amministratore')
                     ->type('name', 'Nome')
                     ->type('familyName', 'Cognome')
