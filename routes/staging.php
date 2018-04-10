@@ -25,7 +25,7 @@ Route::get('/_fake_spid_login', function () {
         "familyName" => ["Rossi"],
         "name" => ["Mario"],
         "spidCode" => ["TEST1234567890"],
-        "fiscalNumber" => ["FSCLNB17A01H501X"],
+        "fiscalNumber" => ["FSCLNB17A01H501W"],
         "email" => ["mail@example.com"]
     ]);
     session(['spid_sessionIndex' => 'fake-session-index']);
