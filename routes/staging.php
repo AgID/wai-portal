@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
 use Italia\SPIDAuth\SPIDUser;
 use GuzzleHttp\Client as TrackingClient;
+use Silber\Bouncer\BouncerFacade as Bouncer;
 
 /*
 |--------------------------------------------------------------------------
@@ -45,8 +46,9 @@ Route::get('/_reset_all', function () {
     $session_files = array_diff($session_files, ['.gitignore']);
     Storage::disk('sessions')->delete($session_files);
     Artisan::call('migrate:fresh');
-    Artisan::call('db:seed');
+    Bouncer::scope()->to(null);
     Artisan::call('app:create-roles');
+    Artisan::call('db:seed');
     return redirect()->home()->withMessage(['info' => "L'istanza di " . config('app.name') . " è stata ripristinata allo stato iniziale."]);
 });
 
