@@ -55,7 +55,7 @@ class WebsiteController extends Controller
     {
         $validator = validator($request->all(), [
             'public_administration_name' => 'required',
-            'url' => 'required',
+            'url' => 'required|unique:websites',
             'pec' => 'email|nullable',
             'ipa_code' => 'required|unique:public_administrations',
             'accept_terms' => 'required'
@@ -134,7 +134,7 @@ class WebsiteController extends Controller
     {
         $validatedData = $request->validate([
             'name' => 'required',
-            'url' => 'required|url',
+            'url' => 'required|url|unique:websites',
             'type' => 'required|in:secondary,webapp,testing'
         ]);
 
@@ -196,7 +196,11 @@ class WebsiteController extends Controller
     {
         $validatedData = $request->validate([
             'name' => 'required',
-            'url' => 'required|url',
+            'url' => [
+                'required',
+                Rule::unique('websites')->ignore($website->id),
+                'url'
+            ],
             'type' => 'required|in:secondary,webapp,testing'
         ]);
 
