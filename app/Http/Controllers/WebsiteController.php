@@ -112,7 +112,7 @@ class WebsiteController extends Controller
 
         logger()->info('User '.auth()->user()->getInfo().' added a new website ['.$pa['site'].'] as primary website of "'.$publicAdministration->name.'"');
 
-        return redirect(route('dashboard'))->withMessage(['success' => 'Il sito è stato aggiunto al progetto Web Analytics Italia.']); //TODO: put message in lang file
+        return redirect(route('websites-index'))->withMessage(['success' => 'Il sito è stato aggiunto al progetto Web Analytics Italia.']); //TODO: put message in lang file
     }
 
     /**

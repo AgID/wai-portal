@@ -19,7 +19,7 @@
         @endif
         <fieldset class="Form-fieldset">
             <legend class="Form-legend">
-                Informazioni sul nuovo utente{{-- //TODO: put message in lang file --}}
+                Informazioni dell'utente{{-- //TODO: put message in lang file --}}
             </legend>
             <div class="Form-field {{ $errors->has('name') ? 'is-invalid' : '' }}">
                 @if ($errors->has('name'))
