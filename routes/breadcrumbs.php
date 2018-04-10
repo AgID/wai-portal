@@ -50,13 +50,19 @@ Breadcrumbs::register('website-javascript-snippet', function ($breadcrumbs, $web
 // Web Analytics Italia > Dashboard > Users
 Breadcrumbs::register('users-index', function ($breadcrumbs) {
     $breadcrumbs->parent('dashboard');
-    $breadcrumbs->push(__('ui.pages.users.title'), route('users-index', [], false));
+    $breadcrumbs->push(__('ui.pages.users.index.title'), route('users-index', [], false));
 });
 
 // Web Analytics Italia > Dashboard > Users > Add user
 Breadcrumbs::register('users-create', function ($breadcrumbs) {
     $breadcrumbs->parent('users-index');
-    $breadcrumbs->push(__('ui.pages.add-user.title'), route('users-create', [], false));
+    $breadcrumbs->push(__('ui.pages.users.add.title'), route('users-create', [], false));
+});
+
+// Web Analytics Italia > Dashboard > Users > Add user
+Breadcrumbs::register('users-edit', function ($breadcrumbs, $user) {
+    $breadcrumbs->parent('users-index');
+    $breadcrumbs->push(__('ui.pages.users.edit.title'), route('users-edit', ['user' => $user], false));
 });
 
 // Web Analytics Italia > Privacy

@@ -193,25 +193,37 @@ Route::middleware(['spid.auth', 'auth'])->group(function() {
             ]);
         });
 
-        Route::get('/users', [
-            'as' => 'users-index',
-            'uses' => 'UserController@index'
-        ])->middleware('authorize.analytics:read-analytics');
+        Route::prefix('/users')->group(function() {
+            Route::get('/', [
+                'as' => 'users-index',
+                'uses' => 'UserController@index'
+            ])->middleware('authorize.analytics:read-analytics');
 
-        Route::get('/users/data', [
-            'as' => 'users-data-json',
-            'uses' => 'UserController@dataJson'
-        ])->middleware('authorize.analytics:read-analytics');
+            Route::get('/data', [
+                'as' => 'users-data-json',
+                'uses' => 'UserController@dataJson'
+            ])->middleware('authorize.analytics:read-analytics');
 
-        Route::get('/users/add-user', [
-            'as' => 'users-create',
-            'uses' => 'UserController@create'
-        ])->middleware('authorize.analytics:manage-users');
+            Route::get('/add', [
+                'as' => 'users-create',
+                'uses' => 'UserController@create'
+            ])->middleware('authorize.analytics:manage-users');
 
-        Route::post('/users', [
-            'as' => 'users-store',
-            'uses' => 'UserController@store'
-        ])->middleware('authorize.analytics:manage-users');
+            Route::post('/store', [
+                'as' => 'users-store',
+                'uses' => 'UserController@store'
+            ])->middleware('authorize.analytics:manage-users');
+
+            Route::get('/{user}/edit', [
+                'as' => 'users-edit',
+                'uses' => 'UserController@edit'
+            ])->middleware('authorize.analytics:manage-users');
+
+            Route::post('/{user}/update', [
+                'as' => 'users-update',
+                'uses' => 'UserController@update'
+            ])->middleware('authorize.analytics:manage-users');
+        });
     });
     Route::prefix('/analytics-service')->group(function() {
         Route::get('/login', [
@@ -235,27 +247,27 @@ Route::middleware(['admin-auth'])->group(function() {
             'uses' => 'AdminController@dashboard'
         ]);
 
-        Route::get('/user/add', [
+        Route::get('/users/add', [
             'as' => 'admin-user_add',
             'uses' => 'AdminUserController@create'
         ]);
 
-        Route::post('/user/add', [
+        Route::post('/users/store', [
             'as' => 'admin-user_store',
             'uses' => 'AdminUserController@store'
         ]);
 
-        Route::get('/user/{user}/show', [
+        Route::get('/users/{user}/show', [
             'as' => 'admin-user_show',
             'uses' => 'AdminUserController@show'
         ]);
 
-        Route::get('/user/{user}/edit', [
+        Route::get('/users/{user}/edit', [
             'as' => 'admin-user_edit',
             'uses' => 'AdminUserController@edit'
         ]);
 
-        Route::post('/user/{user}/update', [
+        Route::post('/users/{user}/update', [
             'as' => 'admin-user_update',
             'uses' => 'AdminUserController@update'
         ]);

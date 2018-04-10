@@ -1,9 +1,9 @@
 @extends('layouts.default')
 
-@section('title', __('ui.pages.add-user.title'))
+@section('title', __('ui.pages.users.add.title'))
 
 @section('content')
-    <form class="Form Form--spaced u-text-r-xs" method="post" action="{{ route('users-store', [], false) }}">
+    <form class="Form Form--spaced u-text-r-xs" method="post" action="{{ route('users-update', ['user' => $user], false) }}">
         @csrf
         @if ($errors->isEmpty())
             <div class="Prose Alert Alert--info">
@@ -19,8 +19,34 @@
         @endif
         <fieldset class="Form-fieldset">
             <legend class="Form-legend">
-                Informazioni sul nuovo utente{{-- //TODO: put message in lang file --}}
+                Informazioni dell'utente{{-- //TODO: put message in lang file --}}
             </legend>
+            <div class="Form-field {{ $errors->has('name') ? 'is-invalid' : '' }}">
+                @if ($errors->has('name'))
+                    <div class="Alert Alert--error Alert--withBg u-padding-r-top u-padding-r-bottom u-padding-r-right">
+                        <p class="u-text-p u-padding-r-bottom">{{ $errors->first('name') }}</p>
+                        @endif
+                        <label class="Form-label is-required" for="name">
+                            Nome{{-- //TODO: put message in lang file --}}
+                        </label>
+                        <input class="Form-input" id="name" name="name" type="text" aria-required="true" value="{{ $user->name }}" required readonly>
+                        @if ($errors->has('name'))
+                    </div>
+                @endif
+            </div>
+            <div class="Form-field {{ $errors->has('familyName') ? 'is-invalid' : '' }}">
+                @if ($errors->has('familyName'))
+                    <div class="Alert Alert--error Alert--withBg u-padding-r-top u-padding-r-bottom u-padding-r-right">
+                        <p class="u-text-p u-padding-r-bottom">{{ $errors->first('familyName') }}</p>
+                        @endif
+                        <label class="Form-label is-required" for="familyName">
+                            Cognome{{-- //TODO: put message in lang file --}}
+                        </label>
+                        <input class="Form-input" id="familyName" name="familyName" type="text" aria-required="true" value="{{ $user->familyName }}" required readonly>
+                        @if ($errors->has('familyName'))
+                    </div>
+                @endif
+            </div>
             <div class="Form-field {{ $errors->has('email') ? 'is-invalid' : '' }}">
                 @if ($errors->has('email'))
                 <div class="Alert Alert--error Alert--withBg u-padding-r-top u-padding-r-bottom u-padding-r-right">
@@ -29,24 +55,11 @@
                     <label class="Form-label is-required" for="email">
                         Indirizzo email istituzionale{{-- //TODO: put message in lang file --}}
                     </label>
-                    <input class="Form-input" id="email" name="email" type="email" aria-required="true" value="{{ old('email') }}" required>
+                    <input class="Form-input" id="email" name="email" type="email" aria-required="true" value="{{ $user->email }}" required readonly>
                     <p class="Form-message">
                         Inserisci la mail di lavoro fornita dalla tua PA (es. nome.cognome@agid.gov.it).{{-- //TODO: put message in lang file --}}
                     </p>
                 @if ($errors->has('email'))
-                </div>
-                @endif
-            </div>
-            <div class="Form-field {{ $errors->has('fiscalNumber') ? 'is-invalid' : '' }}">
-                @if ($errors->has('fiscalNumber'))
-                <div class="Alert Alert--error Alert--withBg u-padding-r-top u-padding-r-bottom u-padding-r-right">
-                    <p class="u-text-p u-padding-r-bottom">{{ $errors->first('fiscalNumber') }}</p>
-                @endif
-                    <label class="Form-label is-required" for="fiscalNumber">
-                        Codice fiscale{{-- //TODO: put message in lang file --}}
-                    </label>
-                    <input class="Form-input" id="fiscalNumber" name="fiscalNumber" aria-required="true" value="{{ old('fiscalNumber') }}" required>
-                @if ($errors->has('fiscalNumber'))
                 </div>
                 @endif
             </div>
@@ -61,9 +74,9 @@
                     </label>
                     <select class="Form-input" id="role" name="role" aria-required="true" required>
                         <option value="" selected disabled>seleziona</option>{{-- //TODO: put message in lang file --}}
-                        <option value="reader" {{ old('role') == 'reader' ? "selected" : "" }}>{{ __('auth.roles.reader') }}</option>
-                        <option value="manager" {{ old('role') == 'manager' ? "selected" : "" }}>{{ __('auth.roles.manager') }}</option>
-                        <option value="admin" {{ old('role') == 'admin' ? "selected" : "" }}>{{ __('auth.roles.admin') }}</option>
+                        <option value="reader" {{ old('role') ?? $user->roles()->first()->name == 'reader' ? "selected" : "" }}>{{ __('auth.roles.reader') }}</option>
+                        <option value="manager" {{ old('role') ?? $user->roles()->first()->name == 'manager' ? "selected" : "" }}>{{ __('auth.roles.manager') }}</option>
+                        <option value="admin" {{ old('role') ?? $user->roles()->first()->name == 'admin' ? "selected" : "" }}>{{ __('auth.roles.admin') }}</option>
                     </select>
                 @if ($errors->has('role'))
                 </div>

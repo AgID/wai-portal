@@ -33,7 +33,7 @@ class UserController extends Controller
             'columnsOrder' => [['added_at', 'asc'], ['name', 'asc']]
         ];
 
-        return view('pages.users')->with($datatable);
+        return view('pages.users.index')->with($datatable);
     }
 
     /**
@@ -43,7 +43,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        return view('pages.add_user');
+        return view('pages.users.add');
     }
 
     /**
@@ -84,7 +84,7 @@ class UserController extends Controller
 
         logger()->info('User '.auth()->user()->getInfo().' added a new user ['.$validatedData['email'].'] as '.$validatedData['role'].' for "'.auth()->user()->publicAdministration->name.'"');
 
-        return redirect(route('dashboard'))->withMessage(['success' => 'Il nuovo utente è stato invitato al progetto Web Analytics Italia']); //TODO: put message in lang file
+        return redirect(route('users-index'))->withMessage(['success' => 'Il nuovo utente è stato invitato al progetto Web Analytics Italia']); //TODO: put message in lang file
     }
 
     /**
@@ -93,7 +93,7 @@ class UserController extends Controller
      * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(User $user)
     {
         //
     }
@@ -101,24 +101,50 @@ class UserController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int $id
+     * @param User $user
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(User $user)
     {
-        //
+        return view('pages.users.edit')->with(['user' => $user]);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request $request
-     * @param  int $id
+     * @param User $user
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, User $user)
     {
-        //
+        $validator = validator($request->all(), [
+            'role' => 'required|exists:roles,name'
+        ]);
+
+        $validator->after(function ($validator) use ($user, $request) {
+            $publicAdministration = $user->publicAdministration;
+            $lastAdministrator = $publicAdministration->users()->whereHas('roles', function ($query) {
+                $query->where('name', 'admin');
+            })->count() == 1;
+            if ($user->roles()->first()->name == 'admin' && $request->input('role') != 'admin' && $lastAdministrator) {
+                $validator->errors()->add('role', 'Deve restare almeno un utente amministratore per ogni PA.'); //TODO: put error message in lang file
+            }
+        });
+
+        if ($validator->fails()) {
+            return redirect()->route('users-edit', ['user' => $user])
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        $user->save();
+
+        $user->assign($request->input('role'));
+
+        logger()->info('User '.auth()->user()->getInfo().' updated user ' . $user->getInfo());
+
+        return redirect(route('users-index'))->withMessage(['success' => "L'utente ". $user->getInfo() ." è stato modificato."]); //TODO: put message in lang file
     }
 
     /**

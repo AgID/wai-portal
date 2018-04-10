@@ -75,8 +75,18 @@ return [
                 'title' => 'Snippet di codice Javascript'
             ]
         ],
-        'add-user' => [
-            'title' => 'Nuovo utente'
+        'users' => [
+            'index' => [
+                'title' => 'Utenti',
+                'add_user' => 'aggiungi utente',
+                'edit_user' => 'modifica utente'
+            ],
+            'add' => [
+                'title' => 'Nuovo utente'
+            ],
+            'edit' => [
+                'title' => 'Modifica utente'
+            ]
         ],
         'spid-auth_login' => [
             'title' => 'Accesso con SPID'
@@ -92,10 +102,6 @@ return [
         ],
         'auth-verify' => [
             'title' => 'Verifica indirizzo email'
-        ],
-        'users' => [
-            'title' => 'Utenti',
-            'add_user' => 'aggiungi utente'
         ],
         'admin-login' => [
             'title' => 'Accesso amministratori'

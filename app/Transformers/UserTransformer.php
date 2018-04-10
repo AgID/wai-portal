@@ -24,6 +24,13 @@ class UserTransformer extends TransformerAbstract
             'control' => ''
         ];
 
+        if (auth()->user()->can('manage-users')) {
+            $data['actions'][] = [
+                'link' => route('users-edit', ['user' => $user], false),
+                'label' => __('ui.pages.users.index.edit_user')
+            ];
+        }
+
         return $data;
     }
 }
