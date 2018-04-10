@@ -7,7 +7,7 @@
             </a>
         </li>
         <li>
-            <a href="{{ route('admin-add-user', [], false) }}">
+            <a href="{{ route('admin-user_add', [], false) }}">
                 Aggiungi utente amministratore
                 {{--TODO: put string in lang file--}}
             </a>

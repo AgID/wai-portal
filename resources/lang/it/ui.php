@@ -103,8 +103,12 @@ return [
         'admin-dashboard' => [
             'title' => 'Dashboard amministrativa'
         ],
-        'admin-user_profile' => [
-            'title' => 'Profilo utente amministratore'
+        'admin-user_show' => [
+            'title' => 'Profilo utente amministratore',
+            'update' => 'Modifica'
+        ],
+        'admin-user_edit' => [
+            'title' => 'Modifica utente amministratore'
         ],
         'admin-password_forgot' => [
             'title' => 'Password dimenticata'
@@ -115,7 +119,7 @@ return [
         'admin-password_change' => [
             'title' => 'Cambio della password'
         ],
-        'admin-add-user' => [
+        'admin-user_add' => [
             'title' => 'Nuovo utente amministratore'
         ],
         'admin-verify' => [

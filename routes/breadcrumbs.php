@@ -96,9 +96,15 @@ Breadcrumbs::register('admin-login', function ($breadcrumbs) {
 });
 
 // Web Analytics Italia > Admin User profile
-Breadcrumbs::register('admin-user_profile', function ($breadcrumbs) {
+Breadcrumbs::register('admin-user_show', function ($breadcrumbs, $user) {
     $breadcrumbs->parent('home');
-    $breadcrumbs->push(__('ui.pages.admin-user_profile.title'), route('admin-user_profile', [], false));
+    $breadcrumbs->push(__('ui.pages.admin-user_show.title'), route('admin-user_show', ['user' => $user], false));
+});
+
+// Web Analytics Italia > Admin User profile edit
+Breadcrumbs::register('admin-user_edit', function ($breadcrumbs, $user) {
+    $breadcrumbs->parent('home');
+    $breadcrumbs->push(__('ui.pages.admin-user_edit.title'), route('admin-user_edit', ['user' => $user], false));
 });
 
 // Web Analytics Italia > Admin forgot password
@@ -126,9 +132,9 @@ Breadcrumbs::register('admin-dashboard', function ($breadcrumbs) {
 });
 
 // Web Analytics Italia > Admin dashboard > Add user
-Breadcrumbs::register('admin-add-user', function ($breadcrumbs) {
+Breadcrumbs::register('admin-user_add', function ($breadcrumbs) {
     $breadcrumbs->parent('admin-dashboard');
-    $breadcrumbs->push(__('ui.pages.admin-add-user.title'), route('admin-add-user', [], false));
+    $breadcrumbs->push(__('ui.pages.admin-user_add.title'), route('admin-user_add', [], false));
 });
 
 // Web Analytics Italia > Admin email verification

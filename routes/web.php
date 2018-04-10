@@ -235,19 +235,29 @@ Route::middleware(['admin-auth'])->group(function() {
             'uses' => 'AdminController@dashboard'
         ]);
 
-        Route::get('/add-user', [
-            'as' => 'admin-add-user',
+        Route::get('/user/add', [
+            'as' => 'admin-user_add',
             'uses' => 'AdminUserController@create'
         ]);
 
-        Route::post('/add-user', [
-            'as' => 'admin-store-user',
+        Route::post('/user/add', [
+            'as' => 'admin-user_store',
             'uses' => 'AdminUserController@store'
         ]);
 
-        Route::get('/user/profile', [
-            'as' => 'admin-user_profile',
-            'uses' => 'Auth\AdminAuthController@profile'
+        Route::get('/user/{user}/show', [
+            'as' => 'admin-user_show',
+            'uses' => 'AdminUserController@show'
+        ]);
+
+        Route::get('/user/{user}/edit', [
+            'as' => 'admin-user_edit',
+            'uses' => 'AdminUserController@edit'
+        ]);
+
+        Route::post('/user/{user}/update', [
+            'as' => 'admin-user_update',
+            'uses' => 'AdminUserController@update'
         ]);
 
         Route::get('/user/change-password', [

@@ -1,9 +1,9 @@
 @extends('layouts.default')
 
-@section('title', __('ui.pages.admin-add-user.title'))
+@section('title', __('ui.pages.admin-user_add.title'))
 
 @section('content')
-    <form class="Form Form--spaced u-text-r-xs" method="post" action="{{ route('admin-store-user', [], false) }}">
+    <form class="Form Form--spaced u-text-r-xs" method="post" action="{{ route('admin-user_store', [], false) }}">
         @csrf
         @if ($errors->isEmpty())
             <div class="Prose Alert Alert--info">

@@ -7,18 +7,19 @@ use App\Transformers\UserTransformer;
 use App\Jobs\SendVerificationEmail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 use Yajra\Datatables\Datatables;
 
 class AdminUserController extends Controller
 {
     /**
-     * Show the form for creating a new resource.
+     * Show the form for creating a new user.
      *
      * @return \Illuminate\Http\Response
      */
     public function create()
     {
-        return view('pages.admin.add_user');
+        return view('pages.admin.user.add');
     }
 
     /**
@@ -61,37 +62,56 @@ class AdminUserController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Show the profile page.
      *
-     * @param  int $id
+     * @param User $user
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(User $user)
     {
-        //
+        return view('pages.admin.user.show')->with(['user' => $user]);
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Show the profile edit form.
      *
-     * @param  int $id
+     * @param User $user
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(User $user)
     {
-        //
+        return view('pages.admin.user.edit')->with(['user' => $user]);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request $request
-     * @param  int $id
+     * @param User $user
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, User $user)
     {
-        //
+        $validatedData = $request->validate([
+            'name' => 'required',
+            'familyName' => 'required',
+            'email' => [
+                'required',
+                Rule::unique('users')->ignore($user->id),
+                'email'
+            ]
+        ]);
+
+        $user->fill([
+            'name' => $validatedData['name'],
+            'familyName' => $validatedData['familyName'],
+            'email' => $validatedData['email']
+        ]);
+        $user->save();
+
+        logger()->info('User '.auth()->user()->getInfo().' updated administrator ' . $user->getInfo());
+
+        return redirect(route('admin-dashboard'))->withMessage(['success' => "L'utente amministratore ". $user->getInfo() ." è stato modificato."]); //TODO: put message in lang file
     }
 
     /**
