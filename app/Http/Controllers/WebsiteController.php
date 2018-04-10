@@ -41,7 +41,7 @@ class WebsiteController extends Controller
     public function createPrimary()
     {
         if (!empty(auth()->user()->getWebsites())) {
-            return redirect(route('websites-index'));
+            return redirect()->route('websites-index');
         }
         return view('pages.websites.add_primary');
     }
@@ -72,7 +72,7 @@ class WebsiteController extends Controller
         });
 
         if ($validator->fails()) {
-            return redirect(route('websites-add-primary'))
+            return redirect()->route('websites-add-primary')
                 ->withErrors($validator)
                 ->withInput();
         }
@@ -112,7 +112,7 @@ class WebsiteController extends Controller
 
         logger()->info('User '.auth()->user()->getInfo().' added a new website ['.$pa['site'].'] as primary website of "'.$publicAdministration->name.'"');
 
-        return redirect(route('websites-index'))->withMessage(['success' => 'Il sito è stato aggiunto al progetto Web Analytics Italia.']); //TODO: put message in lang file
+        return redirect()->route('websites-index')->withMessage(['success' => 'Il sito è stato aggiunto al progetto Web Analytics Italia.']); //TODO: put message in lang file
     }
 
     /**
@@ -158,7 +158,7 @@ class WebsiteController extends Controller
 
         logger()->info('User '.auth()->user()->getInfo().' added a new website "'. $validatedData['name'] .'" ['.$validatedData['url'].'] as '.$validatedData['type'].' website of "'.$publicAdministration->name.'"');
 
-        return redirect(route('websites-index'))->withMessage(['success' => 'Il sito è stato aggiunto al progetto Web Analytics Italia.']); //TODO: put message in lang file
+        return redirect()->route('websites-index')->withMessage(['success' => 'Il sito è stato aggiunto al progetto Web Analytics Italia.']); //TODO: put message in lang file
     }
 
     /**
@@ -221,7 +221,7 @@ class WebsiteController extends Controller
 
         logger()->info('User '.auth()->user()->getInfo().' updated website "'. $validatedData['name'] .'" ['.$validatedData['url'].'] as '.$validatedData['type'].' website of "'.$website->publicAdministration->name.'"');
 
-        return redirect(route('websites-index'))->withMessage(['success' => 'Il sito "'. $validatedData['name'] .'" è stato modificato.']); //TODO: put message in lang file
+        return redirect()->route('websites-index')->withMessage(['success' => 'Il sito "'. $validatedData['name'] .'" è stato modificato.']); //TODO: put message in lang file
     }
 
     /**

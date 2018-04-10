@@ -21,7 +21,7 @@ class VerificationController extends Controller
                              ->withMessage(['warning' => "Prima di usare l'applicazione è necessario completare la registrazione."]); //TODO: put message in lang file
         } else {
             if (!in_array(auth()->user()->status, ['inactive', 'invited'])) {
-                return redirect(route('home'))->withMessage(['info' => "L'indirizzo email è già stato verificato."]); //TODO: put message in lang file
+                return redirect()->home()->withMessage(['info' => "L'indirizzo email è già stato verificato."]); //TODO: put message in lang file
             }
         }
 
@@ -46,7 +46,7 @@ class VerificationController extends Controller
         $user = auth()->user();
 
         if (!in_array($user->status, ['inactive', 'invited'])) {
-            return redirect(route('home'))
+            return redirect()->home()
                 ->withMessage(['info' => "L'indirizzo email è già stato verificato"]); //TODO: put message in lang file
         }
 
@@ -92,7 +92,7 @@ class VerificationController extends Controller
             logger()->info('User '.$user->getInfo().' logged in.');
         }
 
-    	return redirect(route('home'))
+    	return redirect()->home()
                ->withMessage(['success' => "L'indirizzo email è stato verificato correttamente."]); //TODO: put message in lang file
     }
 
@@ -109,7 +109,7 @@ class VerificationController extends Controller
         } else {
             $user = auth()->user();
             if (!in_array($user->status, ['inactive', 'invited'])) {
-                return redirect(route('home'))->withMessage(['info' => "L'indirizzo email è già stato verificato"]); //TODO: put message in lang file
+                return redirect()->home()->withMessage(['info' => "L'indirizzo email è già stato verificato"]); //TODO: put message in lang file
             }
 
             if (!empty($user->verificationToken)) {
@@ -123,7 +123,7 @@ class VerificationController extends Controller
 
             dispatch(new SendVerificationEmail($user, $token));
 
-            return redirect(route('home'))
+            return redirect()->home()
                    ->withMessage(['info' => "Una nuova email di verifica è stata inviata all'indirizzo ".$user->email]); //TODO: put message in lang file
         }
     }

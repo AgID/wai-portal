@@ -55,7 +55,7 @@ class RegisterController extends Controller
 
         dispatch(new SendVerificationEmail($user, $token));
 
-        return redirect(route('home'))
+        return redirect()->home()
                ->withMessage(['info' => "Una email di verifica è stata inviata all'indirizzo ".$user->email]); //TODO: put message in lang file
     }
 }

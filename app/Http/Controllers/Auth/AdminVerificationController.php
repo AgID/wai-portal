@@ -18,7 +18,7 @@ class AdminVerificationController extends Controller
     public function verify()
     {
         if (auth()->check() && auth()->user()->status != 'invited') {
-            return redirect(route('home'))->withMessage(['info' => "L'indirizzo email è già stato verificato."]); //TODO: put message in lang file
+            return redirect()->home()->withMessage(['info' => "L'indirizzo email è già stato verificato."]); //TODO: put message in lang file
         }
 
     	return view('auth.admin_verify');
@@ -48,7 +48,7 @@ class AdminVerificationController extends Controller
         }
 
         if ($user->status != 'invited') {
-            return redirect(route('admin-dashboard'))
+            return redirect()->route('admin-dashboard')
                 ->withMessage(['info' => "L'indirizzo email è già stato verificato"]); //TODO: put message in lang file
         }
 
@@ -66,7 +66,7 @@ class AdminVerificationController extends Controller
             logger()->info('User '.$user->getInfo().' logged in after email address verification.');
         }
 
-    	return redirect(route('admin-password_change'))
+    	return redirect()->route('admin-password_change')
                ->withMessage(['success' => "L'indirizzo email è stato verificato correttamente."]); //TODO: put message in lang file
     }
 
@@ -79,7 +79,7 @@ class AdminVerificationController extends Controller
     public function showResendForm()
     {
         if (auth()->check() && auth()->user()->status != 'invited') {
-            return redirect(route('home'))->withMessage(['info' => "L'indirizzo email è già stato verificato."]); //TODO: put message in lang file
+            return redirect()->home()->withMessage(['info' => "L'indirizzo email è già stato verificato."]); //TODO: put message in lang file
         }
 
         return view('auth.admin_resend');
@@ -114,7 +114,7 @@ class AdminVerificationController extends Controller
 
         dispatch(new SendVerificationEmail($user, $token));
 
-        return redirect(route('home'))
+        return redirect()->home()
                ->withMessage(['info' => "Se l'indirizzo email inserito corrisponde ad un'utenza amministrativa, riceverai e breve un messaggio con un nuovo codice di verifica."]); //TODO: put message in lang file
     }
 }

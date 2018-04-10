@@ -84,7 +84,7 @@ class UserController extends Controller
 
         logger()->info('User '.auth()->user()->getInfo().' added a new user ['.$validatedData['email'].'] as '.$validatedData['role'].' for "'.auth()->user()->publicAdministration->name.'"');
 
-        return redirect(route('users-index'))->withMessage(['success' => 'Il nuovo utente è stato invitato al progetto Web Analytics Italia']); //TODO: put message in lang file
+        return redirect()->route('users-index')->withMessage(['success' => 'Il nuovo utente è stato invitato al progetto Web Analytics Italia']); //TODO: put message in lang file
     }
 
     /**
@@ -144,7 +144,7 @@ class UserController extends Controller
 
         logger()->info('User '.auth()->user()->getInfo().' updated user ' . $user->getInfo());
 
-        return redirect(route('users-index'))->withMessage(['success' => "L'utente ". $user->getInfo() ." è stato modificato."]); //TODO: put message in lang file
+        return redirect()->route('users-index')->withMessage(['success' => "L'utente ". $user->getInfo() ." è stato modificato."]); //TODO: put message in lang file
     }
 
     /**

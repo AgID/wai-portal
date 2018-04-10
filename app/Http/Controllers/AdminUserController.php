@@ -58,7 +58,7 @@ class AdminUserController extends Controller
 
         logger()->info('User '.auth()->user()->getInfo().' added a new user ['.$validatedData['email'].'] as super-admin.');
 
-        return redirect(route('admin-dashboard'))->withMessage(['success' => 'Il nuovo utente è stato invitato come amministratore al progetto Web Analytics Italia.']); //TODO: put message in lang file
+        return redirect()->route('admin-dashboard')->withMessage(['success' => 'Il nuovo utente è stato invitato come amministratore al progetto Web Analytics Italia.']); //TODO: put message in lang file
     }
 
     /**
@@ -111,7 +111,7 @@ class AdminUserController extends Controller
 
         logger()->info('User '.auth()->user()->getInfo().' updated administrator ' . $user->getInfo());
 
-        return redirect(route('admin-dashboard'))->withMessage(['success' => "L'utente amministratore ". $user->getInfo() ." è stato modificato."]); //TODO: put message in lang file
+        return redirect()->route('admin-dashboard')->withMessage(['success' => "L'utente amministratore ". $user->getInfo() ." è stato modificato."]); //TODO: put message in lang file
     }
 
     /**
