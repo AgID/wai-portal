@@ -29,7 +29,7 @@
                         <label class="Form-label is-required" for="name">
                             Nome{{-- //TODO: put message in lang file --}}
                         </label>
-                        <input class="Form-input" id="name" name="name" type="text" aria-required="true" value="{{ $user->name }}" required readonly>
+                        <input class="Form-input is-disabled" id="name" name="name" type="text" aria-required="true" value="{{ $user->name }}" required readonly>
                         @if ($errors->has('name'))
                     </div>
                 @endif
@@ -42,7 +42,7 @@
                         <label class="Form-label is-required" for="familyName">
                             Cognome{{-- //TODO: put message in lang file --}}
                         </label>
-                        <input class="Form-input" id="familyName" name="familyName" type="text" aria-required="true" value="{{ $user->familyName }}" required readonly>
+                        <input class="Form-input is-disabled" id="familyName" name="familyName" type="text" aria-required="true" value="{{ $user->familyName }}" required readonly>
                         @if ($errors->has('familyName'))
                     </div>
                 @endif
