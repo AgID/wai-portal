@@ -8,6 +8,10 @@ $factory->define(PublicAdministration::class, function (Faker $faker) {
         'ipa_code' => str_random(5),
         'name' => $faker->company,
         'pec_address' => $faker->unique()->safeEmail,
+        'city' => $faker->city,
+        'county' => $faker->stateAbbr,
+        'region' => $faker->state,
+        'type' => 'secondary',
         'status' => 'pending'
     ];
 });
