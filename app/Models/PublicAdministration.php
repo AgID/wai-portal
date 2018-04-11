@@ -18,6 +18,10 @@ class PublicAdministration extends Model
         'ipa_code',
         'name',
         'pec_address',
+        'city',
+        'county',
+        'region',
+        'type',
         'status'
     ];
 

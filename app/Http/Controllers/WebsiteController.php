@@ -83,6 +83,10 @@ class WebsiteController extends Controller
             'ipa_code' => $pa['ipa_code'],
             'name' => $pa['name'],
             'pec_address' => isset($pa['pec']) ? $pa['pec'] : null,
+            'city' => $pa['city'],
+            'county' => $pa['county'],
+            'region' => $pa['region'],
+            'type' => $pa['type'],
             'status' => 'pending'
         ]);
 

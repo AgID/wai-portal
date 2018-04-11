@@ -45,10 +45,12 @@ class ProcessIPAList implements ShouldQueue
         try {
             $IPAIndex->addTextField('ipa_code', 1.0, true)
                 ->addTextField('name', 1.0, true)
+                ->addTextField('site')
+                ->addTextField('pec')
                 ->addTextField('city', 0.5)
-                ->addTextField('county', 0.5)
-                ->addTextField('site', 0.5)
-                ->addTextField('pec', 0.5)
+                ->addTextField('county')
+                ->addTextField('region')
+                ->addTextField('type')
                 ->create();
         } catch (Exception $e) {
             // Index already exists, it's ok!
@@ -61,10 +63,12 @@ class ProcessIPAList implements ShouldQueue
             $amministrazione = $IPAIndex->makeDocument($data[0]);
             $amministrazione->ipa_code->setValue($data[0]);
             $amministrazione->name->setValue($data[1]);
-            $amministrazione->city->setValue($data[2]);
-            $amministrazione->county->setValue($data[6]);
             $amministrazione->site->setValue($data[8]);
             $amministrazione->pec->setValue(null);
+            $amministrazione->city->setValue($data[2]);
+            $amministrazione->county->setValue($data[6]);
+            $amministrazione->region->setValue($data[7]);
+            $amministrazione->type->setValue($data[11]);
             for ($i = 16; $i <= 24; $i = $i+2) {
                 if (strtolower($data[$i+1]) == 'pec') {
                     $amministrazione->pec->setValue($data[$i]);

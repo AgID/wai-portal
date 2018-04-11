@@ -18,6 +18,10 @@ class CreatePublicAdministrationsTable extends Migration
             $table->string('ipa_code')->unique();
             $table->string('name');
             $table->string('pec_address')->nullable();
+            $table->string('city');
+            $table->string('county');
+            $table->string('region');
+            $table->string('type');
             $table->enum('status', ['pending', 'active', 'suspended']);
             $table->timestamps();
             $table->softDeletes();
