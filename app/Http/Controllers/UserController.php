@@ -8,6 +8,7 @@ use App\Jobs\SendVerificationEmail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Yajra\Datatables\Datatables;
+use CodiceFiscale\Checker;
 
 class UserController extends Controller
 {
@@ -59,7 +60,12 @@ class UserController extends Controller
             'fiscalNumber' => [
                 'required',
                 'unique:users',
-                'regex:/^(?:(?:[B-DF-HJ-NP-TV-Z]|[AEIOU])[AEIOU][AEIOUX]|[B-DF-HJ-NP-TV-Z]{2}[A-Z]){2}[\dLMNP-V]{2}(?:[A-EHLMPR-T](?:[04LQ][1-9MNP-V]|[1256LMRS][\dLMNP-V])|[DHPS][37PT][0L]|[ACELMRT][37PT][01LM])(?:[A-MZ][1-9MNP-V][\dLMNP-V]{2}|[A-M][0L](?:[1-9MNP-V][\dLMNP-V]|[0L][1-9MNP-V]))[A-Z]$/'
+                function($attribute, $value, $fail) {
+                    $chk = new Checker();
+                    if (!$chk->isFormallyCorrect($value)) {
+                        return $fail('Il codice fiscale non è formalmente valido.');
+                    }
+                }
             ],
             'role' => 'required|exists:roles,name',
         ]);

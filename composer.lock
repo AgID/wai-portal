@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "33ba545e52f09eb476ff51bc8b5c1cd5",
+    "content-hash": "970f0a79b01c29faa540d3b0d1e50e64",
     "packages": [
         {
             "name": "cweagans/composer-patches",
@@ -2872,6 +2872,50 @@
             "description": "CssToInlineStyles is a class that enables you to convert HTML-pages/files into HTML-pages/files with inline styles. This is very useful when you're sending emails.",
             "homepage": "https://github.com/tijsverkoyen/CssToInlineStyles",
             "time": "2017-11-27T11:13:29+00:00"
+        },
+        {
+            "name": "usu/codice-fiscale",
+            "version": "v1.0.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/andreausu/CodiceFiscale.git",
+                "reference": "92a9a9accd388744813043683cff5652838956dc"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/andreausu/CodiceFiscale/zipball/92a9a9accd388744813043683cff5652838956dc",
+                "reference": "92a9a9accd388744813043683cff5652838956dc",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "@stable"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "CodiceFiscale": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Andrea Usuelli",
+                    "email": "andrea.usuelli@gmail.com"
+                }
+            ],
+            "description": "A library to calculate and check the validity of the italian fiscal code (codice fiscale)",
+            "homepage": "http://andreausu.github.com/CodiceFiscale",
+            "keywords": [
+                "codice fiscale",
+                "php"
+            ],
+            "time": "2014-11-29T09:49:24+00:00"
         },
         {
             "name": "vlucas/phpdotenv",

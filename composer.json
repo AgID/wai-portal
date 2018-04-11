@@ -22,6 +22,7 @@
         "league/fractal": "^0.17.0",
         "silber/bouncer": "v1.0.0-rc.1",
         "symfony/yaml": "^4.0",
+        "usu/codice-fiscale": "^1.0",
         "yajra/laravel-datatables-fractal": "^1.0",
         "yajra/laravel-datatables-oracle": "^8.4"
     },
