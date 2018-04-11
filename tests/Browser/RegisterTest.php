@@ -48,8 +48,8 @@ class RegisterTest extends DuskTestCase
                     ->waitForText("L'indirizzo email è stato verificato correttamente.")
                     ->assertSee("L'indirizzo email è stato verificato correttamente.")
                     ->visit('/user/verify')
-                    ->waitForText("L'indirizzo email è già stato verificato")
-                    ->assertSee("L'indirizzo email è già stato verificato");
+                    ->waitForText("L'indirizzo email dell'utente")
+                    ->assertSee("è già stato verificato.");
         });
     }
 }

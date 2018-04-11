@@ -21,7 +21,7 @@ class VerificationController extends Controller
                              ->withMessage(['warning' => "Prima di usare l'applicazione è necessario completare la registrazione."]); //TODO: put message in lang file
         } else {
             if (!in_array(auth()->user()->status, ['inactive', 'invited'])) {
-                return redirect()->home()->withMessage(['info' => "L'indirizzo email è già stato verificato."]); //TODO: put message in lang file
+                return redirect()->home()->withMessage(['info' => "L'indirizzo email dell'utente " . auth()->user()->getInfo() . " è già stato verificato."]); //TODO: put message in lang file
             }
         }
 
@@ -47,7 +47,7 @@ class VerificationController extends Controller
 
         if (!in_array($user->status, ['inactive', 'invited'])) {
             return redirect()->home()
-                ->withMessage(['info' => "L'indirizzo email è già stato verificato"]); //TODO: put message in lang file
+                ->withMessage(['info' => "L'indirizzo email dell'utente " . $request->user()->getInfo() . " è già stato verificato."]); //TODO: put message in lang file
         }
 
         if (empty($user->verificationToken) || !Hash::check($token, $user->verificationToken->token)) {
@@ -109,7 +109,7 @@ class VerificationController extends Controller
         } else {
             $user = auth()->user();
             if (!in_array($user->status, ['inactive', 'invited'])) {
-                return redirect()->home()->withMessage(['info' => "L'indirizzo email è già stato verificato"]); //TODO: put message in lang file
+                return redirect()->home()->withMessage(['info' => "L'indirizzo email dell'utente " . auth()->user()->getInfo() . " è già stato verificato."]); //TODO: put message in lang file
             }
 
             if (!empty($user->verificationToken)) {
