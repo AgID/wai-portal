@@ -140,7 +140,7 @@ class WebsiteController extends Controller
         $validatedData = $request->validate([
             'name' => 'required',
             'url' => 'required|url|unique:websites',
-            'type' => 'required|in:secondary,webapp,testing'
+            'type' => 'required|in:primary,secondary,webapp,testing'
         ]);
 
         $publicAdministration = auth()->user()->publicAdministration;
