@@ -9,7 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Support\Facades\Storage;
 use Ehann\RediSearch\Index;
-use Ehann\RediSearch\Redis\RedisClient;
+use Ehann\RediSearch\Redis\PhpRedisAdapter;
 use Carbon\Carbon;
 use Exception;
 
@@ -21,7 +21,6 @@ class ProcessIPAList implements ShouldQueue
      * Execute the job.
      *
      * @return void
-     * @throws \Ehann\RediSearch\Exceptions\InvalidRedisClientClassException
      */
     public function handle()
     {
@@ -39,8 +38,7 @@ class ProcessIPAList implements ShouldQueue
             Storage::put($fileName, $IPAResource);
         }
 
-        $clientClassName = config('database.redis.client') == 'phpredis' ? 'Redis' : 'Predis\Client';
-        $IPAIndex = new Index(new RedisClient($clientClassName, config('database.redis.ipaindex.host'), config('database.redis.ipaindex.port'), config('database.redis.ipaindex.database')), 'IPAIndex');
+        $IPAIndex = new Index((new PhpRedisAdapter)->connect(config('database.redis.ipaindex.host'), config('database.redis.ipaindex.port'), config('database.redis.ipaindex.database')), 'IPAIndex');
 
         try {
             $IPAIndex->addTextField('ipa_code', 1.0, true)
@@ -60,22 +58,24 @@ class ProcessIPAList implements ShouldQueue
         // Drop header row
         fgetcsv($handle, 0, "\t");
         while (($data = fgetcsv($handle, 0, "\t")) !== false) {
-            $amministrazione = $IPAIndex->makeDocument($data[0]);
-            $amministrazione->ipa_code->setValue($data[0]);
-            $amministrazione->name->setValue($data[1]);
-            $amministrazione->site->setValue($data[8]);
-            $amministrazione->pec->setValue(null);
-            $amministrazione->city->setValue($data[2]);
-            $amministrazione->county->setValue($data[6]);
-            $amministrazione->region->setValue($data[7]);
-            $amministrazione->type->setValue($data[11]);
-            for ($i = 16; $i <= 24; $i = $i+2) {
-                if (strtolower($data[$i+1]) == 'pec') {
-                    $amministrazione->pec->setValue($data[$i]);
-                    break;
+            try {
+                $amministrazione = $IPAIndex->makeDocument($data[0]);
+                $amministrazione->ipa_code->setValue($data[0]);
+                $amministrazione->name->setValue($data[1]);
+                $amministrazione->site->setValue($data[8]);
+                $amministrazione->pec->setValue(null);
+                $amministrazione->city->setValue($data[2]);
+                $amministrazione->county->setValue($data[6]);
+                $amministrazione->region->setValue($data[7]);
+                $amministrazione->type->setValue($data[11]);
+                for ($i = 16; $i <= 24; $i = $i+2) {
+                    if (strtolower($data[$i+1]) == 'pec') {
+                        $amministrazione->pec->setValue($data[$i]);
+                        break;
+                    }
                 }
-            }
-            $IPAIndex->replace($amministrazione);
+                $IPAIndex->replace($amministrazione);
+            } catch (Exception $e) {}
         }
         logger()->info('Completed import of IPA list from http://www.indicepa.gov.it');
     }

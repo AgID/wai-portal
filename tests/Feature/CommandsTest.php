@@ -6,7 +6,7 @@ use App\Models\PublicAdministration;
 use App\Models\User;
 use App\Models\Website;
 use Ehann\RediSearch\Index;
-use Ehann\RediSearch\Redis\RedisClient;
+use Ehann\RediSearch\Redis\PhpRedisAdapter;
 use Exception;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use GuzzleHttp\Client as TrackingClient;
@@ -141,8 +141,7 @@ class CommandsTest extends TestCase
     public function testUpdateIPAList()
     {
         $user = factory(User::class)->states('active')->create();
-        $clientClassName = config('database.redis.client') == 'phpredis' ? 'Redis' : 'Predis\Client';
-        $IPAIndex = new Index(new RedisClient($clientClassName, config('database.redis.ipaindex.host'), config('database.redis.ipaindex.port'), config('database.redis.ipaindex.database')), 'IPAIndex');
+        $IPAIndex = new Index((new PhpRedisAdapter)->connect(config('database.redis.ipaindex.host'), config('database.redis.ipaindex.port'), config('database.redis.ipaindex.database')), 'IPAIndex');
         try {
             $IPAIndex->drop();
         } catch (Exception $e) {

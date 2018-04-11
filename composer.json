@@ -13,7 +13,7 @@
     "require": {
         "php": ">=7.1.3",
         "davejamesmiller/laravel-breadcrumbs": "^5.0",
-        "ethanhann/redisearch-php": "^0.9.0",
+        "ethanhann/redisearch-php": "^0.10.0",
         "fideloper/proxy": "^4.0",
         "guzzlehttp/guzzle": "^6.3",
         "italia/spid-laravel": "dev-master",
@@ -58,12 +58,7 @@
             "dont-discover": [
             ]
         },
-        "enable-patching": "true",
-        "patches": {
-            "ethanhann/redisearch-php": {
-                "Fix in inFields method": "patches/redisearch-php_fix_infields.patch"
-            }
-        }
+        "enable-patching": "true"
     },
     "scripts": {
         "post-autoload-dump": [
