@@ -702,12 +702,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/italia/spid-laravel.git",
-                "reference": "ea725c9bd6184dac78ee29bf73cab3580282af8d"
+                "reference": "8b715900d873ed527f79a8cae702e1ceaf9bab23"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/italia/spid-laravel/zipball/ea725c9bd6184dac78ee29bf73cab3580282af8d",
-                "reference": "ea725c9bd6184dac78ee29bf73cab3580282af8d",
+                "url": "https://api.github.com/repos/italia/spid-laravel/zipball/8b715900d873ed527f79a8cae702e1ceaf9bab23",
+                "reference": "8b715900d873ed527f79a8cae702e1ceaf9bab23",
                 "shasum": ""
             },
             "require": {
@@ -760,7 +760,7 @@
                 "laravel",
                 "laravel 5"
             ],
-            "time": "2018-04-11T16:23:41+00:00"
+            "time": "2018-04-12T15:40:55+00:00"
         },
         {
             "name": "jakub-onderka/php-console-color",
