@@ -5,8 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\PublicAdministration;
 use App\Models\Website;
 use App\Transformers\WebsiteTransformer;
+use Ehann\RediSearch\Index;
+use Ehann\RediSearch\Redis\PhpRedisAdapter;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Redis;
 use Illuminate\Validation\Rule;
 use Yajra\Datatables\Datatables;
 use Silber\Bouncer\BouncerFacade as Bouncer;
@@ -62,8 +63,14 @@ class WebsiteController extends Controller
             'accept_terms' => 'required'
         ]);
 
-        $redis = Redis::connection('ipaindex');
-        $pa = $redis->command('hgetall', [$request->input('ipa_code')]);
+        $IPAIndex = new Index((new PhpRedisAdapter)->connect(config('database.redis.ipaindex.host'), config('database.redis.ipaindex.port'), config('database.redis.ipaindex.database')), 'IPAIndex');
+
+        $result = $IPAIndex->inFields(1, ['ipa_code'])
+            ->search($request->input('ipa_code'))
+            ->getDocuments();
+
+
+        $pa = empty($result) ? null : $result[0];
 
         $validator->after(function ($validator) use ($pa) {
             if (empty($pa)) {
@@ -77,20 +84,18 @@ class WebsiteController extends Controller
                 ->withInput();
         }
 
-        $pa = $redis->command('hgetall', [$request->input('ipa_code')]);
-
         $publicAdministration = PublicAdministration::make([
-            'ipa_code' => $pa['ipa_code'],
-            'name' => $pa['name'],
-            'pec_address' => isset($pa['pec']) ? $pa['pec'] : null,
-            'city' => $pa['city'],
-            'county' => $pa['county'],
-            'region' => $pa['region'],
-            'type' => $pa['type'],
+            'ipa_code' => $pa->ipa_code,
+            'name' => $pa->name,
+            'pec_address' => $pa->pec ?? null,
+            'city' => $pa->city,
+            'county' => $pa->county,
+            'region' => $pa->region,
+            'type' => $pa->type,
             'status' => 'pending'
         ]);
 
-        $analyticsId = app()->make('analytics-service')->registerSite('Sito istituzionale', $pa['site'], $publicAdministration->name); //TODO: put string in lang file
+        $analyticsId = app()->make('analytics-service')->registerSite('Sito istituzionale', $pa->site, $publicAdministration->name); //TODO: put string in lang file
 
         if (empty($analyticsId)) {
             abort(500, 'Il servizio Analytics non è disponibile'); //TODO: put error message in lang file
@@ -100,11 +105,11 @@ class WebsiteController extends Controller
 
         Website::create([
             'name' => 'Sito istituzionale', //TODO: put in lang file
-            'url' => $pa['site'],
+            'url' => $pa->site,
             'type' => 'primary',
             'public_administration_id' => $publicAdministration->id,
             'analytics_id' => $analyticsId,
-            'slug' => str_slug($pa['site']),
+            'slug' => str_slug($pa->site),
             'status' => 'pending'
         ]);
 
@@ -114,7 +119,7 @@ class WebsiteController extends Controller
         Bouncer::scope()->to($publicAdministration->id);
         $request->user()->assign('reader');
 
-        logger()->info('User '.auth()->user()->getInfo().' added a new website ['.$pa['site'].'] as primary website of "'.$publicAdministration->name.'"');
+        logger()->info('User '.auth()->user()->getInfo().' added a new website ['.$pa->site.'] as primary website of "'.$publicAdministration->name.'"');
 
         return redirect()->route('websites-index')->withMessage(['success' => 'Il sito è stato aggiunto al progetto Web Analytics Italia.']); //TODO: put message in lang file
     }
@@ -137,26 +142,47 @@ class WebsiteController extends Controller
      */
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
+        $validator = validator($request->all(), [
             'name' => 'required',
             'url' => 'required|url|unique:websites',
             'type' => 'required|in:primary,secondary,webapp,testing'
         ]);
 
+        $IPAIndex = new Index((new PhpRedisAdapter)->connect(config('database.redis.ipaindex.host'), config('database.redis.ipaindex.port'), config('database.redis.ipaindex.database')), 'IPAIndex');
+
+        $domain = parse_url($request->input('url'), PHP_URL_HOST);
+        $result = $IPAIndex->inFields(1, ['site'])
+            ->search(str_replace([':', '-', '@'], ['\:', '\-', '\@'], $domain))
+            ->getDocuments();
+
+        $sameUrlInOtherPA = !empty($result) && $domain == $result[0]->site;
+
+        $validator->after(function ($validator) use ($sameUrlInOtherPA) {
+            if ($sameUrlInOtherPA) {
+                $validator->errors()->add('url', "L'indirizzo inserito appartiene ad un'altra PA."); //TODO: put error message in lang file
+            }
+        });
+
+        if ($validator->fails()) {
+            return redirect()->route('websites-add')
+                ->withErrors($validator)
+                ->withInput();
+        }
+
         $publicAdministration = auth()->user()->publicAdministration;
-        $analyticsId = app()->make('analytics-service')->registerSite($validatedData['name'].' ['.$validatedData['type'].']', $validatedData['url'], $publicAdministration->name); //TODO: put string in lang file
+        $analyticsId = app()->make('analytics-service')->registerSite($request->input('name').' ['.$request->input('type').']', $request->input('url'), $publicAdministration->name); //TODO: put string in lang file
 
         if (empty($analyticsId)) {
             abort(500, 'Il servizio Analytics non è disponibile'); //TODO: put error message in lang file
         }
 
         Website::create([
-            'name' => $validatedData['name'],
-            'url' => $validatedData['url'],
-            'type' => $validatedData['type'],
+            'name' => $request->input('name'),
+            'url' => $request->input('url'),
+            'type' => $request->input('type'),
             'public_administration_id' => $publicAdministration->id,
             'analytics_id' => $analyticsId,
-            'slug' => str_slug($validatedData['url']),
+            'slug' => str_slug($request->input('url')),
             'status' => 'pending'
         ]);
 
