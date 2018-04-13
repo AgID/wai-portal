@@ -89,6 +89,12 @@ Breadcrumbs::register('spid-auth_login', function ($breadcrumbs) {
     $breadcrumbs->push(__('ui.pages.spid-auth_login.title'), route('spid-auth_login', [], false));
 });
 
+// Web Analytics Italia > SPID Login
+Breadcrumbs::register('spid-auth_acs', function ($breadcrumbs) {
+    $breadcrumbs->parent('home');
+    $breadcrumbs->push(__('ui.pages.spid-auth_login.title'), route('spid-auth_login', [], false));
+});
+
 // Web Analytics Italia > Email verification
 Breadcrumbs::register('auth-verify', function ($breadcrumbs) {
     $breadcrumbs->parent('home');
