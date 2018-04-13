@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "97701e9836fb4edd692430b8f7c03fce",
+    "content-hash": "ec0d6b64dca0a1ac0678e092431ca069",
     "packages": [
         {
             "name": "cweagans/composer-patches",
@@ -417,16 +417,16 @@
         },
         {
             "name": "ethanhann/redisearch-php",
-            "version": "0.10.1",
+            "version": "1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ethanhann/redisearch-php.git",
-                "reference": "e01d1101689b3ae9e78cba2de1526647cdab3290"
+                "reference": "811435739aa0a2a83151653a9d217ff661fd71ce"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ethanhann/redisearch-php/zipball/e01d1101689b3ae9e78cba2de1526647cdab3290",
-                "reference": "e01d1101689b3ae9e78cba2de1526647cdab3290",
+                "url": "https://api.github.com/repos/ethanhann/redisearch-php/zipball/811435739aa0a2a83151653a9d217ff661fd71ce",
+                "reference": "811435739aa0a2a83151653a9d217ff661fd71ce",
                 "shasum": ""
             },
             "require": {
@@ -459,7 +459,7 @@
                     "email": "ethanhann@gmail.com"
                 }
             ],
-            "time": "2018-04-10T02:34:36+00:00"
+            "time": "2018-04-12T02:44:23+00:00"
         },
         {
             "name": "fideloper/proxy",
@@ -702,12 +702,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/italia/spid-laravel.git",
-                "reference": "9029ab74d304278b584ed3d3c20ba6444a476846"
+                "reference": "a4cba2c881fb609bfe6cea1ae979228b63be1f27"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/italia/spid-laravel/zipball/9029ab74d304278b584ed3d3c20ba6444a476846",
-                "reference": "9029ab74d304278b584ed3d3c20ba6444a476846",
+                "url": "https://api.github.com/repos/italia/spid-laravel/zipball/a4cba2c881fb609bfe6cea1ae979228b63be1f27",
+                "reference": "a4cba2c881fb609bfe6cea1ae979228b63be1f27",
                 "shasum": ""
             },
             "require": {
@@ -760,7 +760,7 @@
                 "laravel",
                 "laravel 5"
             ],
-            "time": "2018-04-13T18:34:34+00:00"
+            "time": "2018-04-13T20:31:02+00:00"
         },
         {
             "name": "jakub-onderka/php-console-color",
@@ -3847,7 +3847,7 @@
             ],
             "authors": [
                 {
-                    "name": "Pádraic Brady",
+                    "name": "Padraic Brady",
                     "email": "padraic.brady@gmail.com",
                     "homepage": "http://blog.astrumfutura.com"
                 },
