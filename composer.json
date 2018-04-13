@@ -16,7 +16,7 @@
         "ethanhann/redisearch-php": "^0.10.0",
         "fideloper/proxy": "^4.0",
         "guzzlehttp/guzzle": "^6.3",
-        "italia/spid-laravel": "dev-master",
+        "italia/spid-laravel": "dev-idp-test",
         "laravel/framework": "5.6.*",
         "laravel/tinker": "^1.0",
         "league/fractal": "^0.17.0",
