@@ -20,26 +20,6 @@ use Silber\Bouncer\BouncerFacade as Bouncer;
 |
 */
 
-Route::get('/_fake_spid_login', function () {
-    session()->invalidate();
-    $SPIDUser = new SPIDUser([
-        "mobilePhone" => ["+390000000000"],
-        "familyName" => ["Rossi"],
-        "name" => ["Mario"],
-        "spidCode" => ["TEST1234567890"],
-        "fiscalNumber" => ["FSCLNB17A01H501W"],
-        "email" => ["mail@example.com"]
-    ]);
-    session(['spid_sessionIndex' => 'fake-session-index']);
-    session(['spid_user' => $SPIDUser]);
-    return redirect()->home();
-});
-
-Route::get('/_fake_spid_logout', function () {
-    session()->invalidate();
-    return redirect()->home();
-});
-
 Route::get('/_reset_all', function () {
     session()->invalidate();
     $session_files = Storage::disk('sessions')->files('/');
