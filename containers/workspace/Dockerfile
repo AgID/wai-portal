@@ -8,7 +8,7 @@
 # See: https://github.com/Laradock/workspace
 #
 
-FROM laradock/workspace:2.0-71
+FROM laradock/workspace:2.2-71
 
 LABEL maintainer="Davide Porrovecchio <davide.porrovecchio@agid.gov.it>"
 
