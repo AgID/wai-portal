@@ -14,4 +14,16 @@ class VerifyCsrfToken extends Middleware
     protected $except = [
         '/spid/*'
     ];
+
+    /**
+     * Override method to remove the CSRF token from the response cookies.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Symfony\Component\HttpFoundation\Response  $response
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    protected function addCookieToResponse($request, $response)
+    {
+        return $response;
+    }
 }
