@@ -7,7 +7,7 @@
  */
 
 return [
-      'sp_entity_id' => 'https://spid.agid.gov.it/webanalytics',
+      'sp_entity_id' => 'https://spid.agid.gov.it',
       'sp_service_name' => 'Web Analytics Italia Service',
       'sp_organization_name' => 'AGID',
       'sp_organization_display_name' => "Agenzia per l'Italia digitale",
