@@ -5,10 +5,11 @@ namespace App\Exceptions;
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Session\TokenMismatchException;
+use Italia\SPIDAuth\Exceptions\SPIDLoginException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
-use Illuminate\Session\TokenMismatchException;
 
 class Handler extends ExceptionHandler
 {
@@ -75,6 +76,10 @@ class Handler extends ExceptionHandler
 
         if ($exception instanceof TokenMismatchException) {
             return redirect()->home()->withMessage(['warning' => __('ui.session_expired')]);
+        }
+
+        if ($exception instanceof SPIDLoginException) {
+            return redirect()->home()->withMessage(['error' => __('auth.spid_failed')]);
         }
 
         return parent::render($request, $exception);

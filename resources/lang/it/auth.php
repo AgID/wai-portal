@@ -14,6 +14,7 @@ return [
     */
 
     'failed' => 'Le credenziali inserite non sono corrette.',
+    'spid_failed' => "L'accesso con SPID è fallito.",
     'throttle' => 'Troppi tentativi di login. È possibile riprovare fra :seconds secondi.',
     'status' => [
         'info' => "Lo stato dell'utenza è:",
