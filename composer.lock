@@ -3226,16 +3226,16 @@
         },
         {
             "name": "deployer/dist",
-            "version": "v6.1.0",
+            "version": "v6.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/deployphp/distribution.git",
-                "reference": "f03783df78e03db362b53d164b3b6c29b87ac2a9"
+                "reference": "fb5b78f24a4c025f44f52ce74ddd53af639061d9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/deployphp/distribution/zipball/f03783df78e03db362b53d164b3b6c29b87ac2a9",
-                "reference": "f03783df78e03db362b53d164b3b6c29b87ac2a9",
+                "url": "https://api.github.com/repos/deployphp/distribution/zipball/fb5b78f24a4c025f44f52ce74ddd53af639061d9",
+                "reference": "fb5b78f24a4c025f44f52ce74ddd53af639061d9",
                 "shasum": ""
             },
             "bin": [
@@ -3254,7 +3254,7 @@
             ],
             "description": "Deployer Phar Distribution",
             "homepage": "https://deployer.org",
-            "time": "2018-04-02T15:43:08+00:00"
+            "time": "2018-04-21T03:52:25+00:00"
         },
         {
             "name": "doctrine/annotations",
