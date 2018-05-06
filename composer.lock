@@ -1,7 +1,7 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
     "content-hash": "ec0d6b64dca0a1ac0678e092431ca069",
@@ -52,16 +52,16 @@
         },
         {
             "name": "davejamesmiller/laravel-breadcrumbs",
-            "version": "5.0.0",
+            "version": "5.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/davejamesmiller/laravel-breadcrumbs.git",
-                "reference": "590cb313d783460bdac4d3a801c83e6ecf561eb7"
+                "reference": "2a02abfeca13acba6d528f4fcd385570452308f7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/davejamesmiller/laravel-breadcrumbs/zipball/590cb313d783460bdac4d3a801c83e6ecf561eb7",
-                "reference": "590cb313d783460bdac4d3a801c83e6ecf561eb7",
+                "url": "https://api.github.com/repos/davejamesmiller/laravel-breadcrumbs/zipball/2a02abfeca13acba6d528f4fcd385570452308f7",
+                "reference": "2a02abfeca13acba6d528f4fcd385570452308f7",
                 "shasum": ""
             },
             "require": {
@@ -107,7 +107,7 @@
             "keywords": [
                 "laravel"
             ],
-            "time": "2018-02-10T19:00:08+00:00"
+            "time": "2018-05-05T19:30:03+00:00"
         },
         {
             "name": "dnoegel/php-xdg-base-dir",
