@@ -1,4 +1,4 @@
-<section class="Network Offcanvas Offcanvas--left Offcanvas--modal js-fr-offcanvas fr-offcanvas--left u-jsVisibilityHidden u-nojsDisplayNone u-hiddenPrint is-ready" id="network">
+<section class="Network Offcanvas Offcanvas--left Offcanvas--modal js-fr-offcanvas fr-offcanvas--left u-jsVisibilityHidden u-nojsDisplayNone u-hiddenPrint" id="network">
     <h2 class="u-hiddenVisually">{{ __('ui.navigation_network_menu_label') }}</h2>
     <div class="Offcanvas-content u-background-white">
         <div class="Offcanvas-toggleContainer u-background-50 u-jsHidden">
