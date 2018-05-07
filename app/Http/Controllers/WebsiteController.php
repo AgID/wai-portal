@@ -6,7 +6,7 @@ use App\Models\PublicAdministration;
 use App\Models\Website;
 use App\Transformers\WebsiteTransformer;
 use Ehann\RediSearch\Index;
-use Ehann\RediSearch\Redis\PhpRedisAdapter;
+use Ehann\RedisRaw\PhpRedisAdapter;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Yajra\Datatables\Datatables;

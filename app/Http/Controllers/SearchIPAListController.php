@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Ehann\RediSearch\Index;
-use Ehann\RediSearch\Redis\PhpRedisAdapter;
+use Ehann\RedisRaw\PhpRedisAdapter;
 use Exception;
 
 class SearchIPAListController extends Controller

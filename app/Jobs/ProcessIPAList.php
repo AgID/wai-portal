@@ -9,7 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Support\Facades\Storage;
 use Ehann\RediSearch\Index;
-use Ehann\RediSearch\Redis\PhpRedisAdapter;
+use Ehann\RedisRaw\PhpRedisAdapter;
 use Carbon\Carbon;
 use Exception;
 

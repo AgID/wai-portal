@@ -6,7 +6,7 @@ use App\Models\PublicAdministration;
 use App\Models\User;
 use App\Models\Website;
 use Ehann\RediSearch\Index;
-use Ehann\RediSearch\Redis\PhpRedisAdapter;
+use Ehann\RedisRaw\PhpRedisAdapter;
 use Exception;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use GuzzleHttp\Client as TrackingClient;
