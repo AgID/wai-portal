@@ -9,11 +9,6 @@ ARG PIWIK_VERSION=3.4.0
 
 RUN curl -fsSL -o piwik.tar.gz \
       "https://builds.piwik.org/piwik-${PIWIK_VERSION}.tar.gz" \
- && curl -fsSL -o piwik.tar.gz.asc \
-      "https://builds.piwik.org/piwik-${PIWIK_VERSION}.tar.gz.asc" \
- && export GNUPGHOME="$(mktemp -d)" \
- && gpg --keyserver ipv4.pool.sks-keyservers.net --recv-keys 814E346FA01A20DBB04B6807B5DBD5925590A237 \
- && gpg --batch --verify piwik.tar.gz.asc piwik.tar.gz \
  && mkdir /opt \
  && tar -xzf piwik.tar.gz -C /opt \
  && rm piwik.tar.gz
