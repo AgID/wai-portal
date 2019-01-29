@@ -13,7 +13,7 @@ RUN curl -fsSL -o piwik.tar.gz \
  && tar -xzf piwik.tar.gz -C /opt \
  && rm piwik.tar.gz
 
-RUN curl -fsSL -o /opt/piwik/misc/GeoIPCity.dat.gz http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz \
+RUN curl -fsSL -o /opt/piwik/misc/GeoIPCity.dat.gz https://geolite.maxmind.com/download/geoip/database/GeoLite2-City.tar.gz \
  && gunzip /opt/piwik/misc/GeoIPCity.dat.gz
 
 COPY ./matomo.sql /opt/matomo.sql
