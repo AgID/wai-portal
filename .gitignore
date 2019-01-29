@@ -36,4 +36,4 @@ TODO
 /containers/nginx/conf/matomo.staging.conf
 /hosts.yml
 /ssh_keys
-
+/spid_cert
