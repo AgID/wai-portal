@@ -76,5 +76,6 @@ PMA_PORT=8080
 MATOMO_ROOT_USER=@MATOMO_ROOT_USER@
 MATOMO_ROOT_PASSWORD=@MATOMO_ROOT_PASSWORD@
 MATOMO_ROOT_APIKEY=@MATOMO_ROOT_APIKEY@
+MATOMO_VERSION=3.8.1
 
 ########################################################################################################################
