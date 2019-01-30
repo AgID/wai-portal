@@ -110,6 +110,10 @@ jobs:
 
 workflows:
   version: 2
+  build-test:
+    jobs:
+      - build_and_test
+
   build-test-deploy-staging:
     jobs:
       - build_and_test:
