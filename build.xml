@@ -94,7 +94,7 @@
         </php>
         <php function="password_hash" returnProperty="HASHED_MATOMO_ROOT_PASSWORD">
             <param value="${HASHED_MATOMO_ROOT_PASSWORD}"/>
-            <param value="1"/>
+            <param value="1"/> <!-- PHP constant PASSWORD_BCRYPT is 1 -->
         </php>
         <copy file="env/env-containers-${env.APP_ENV}" tofile="containers/.env" overwrite="true">
             <filterchain>
@@ -241,7 +241,7 @@
             <then>
                 <echo msg="Installing Matomo database..."/>
                 <exec command="docker-compose exec mariadb bash /opt/install_matomo_db.sh" dir="containers" checkreturn="true"/>
-                <exec command="docker-compose exec php-fpm chown -R www-data:www-data /opt/piwik" dir="containers" passthru="true" checkreturn="true"/>
+                <exec command="docker-compose exec php-fpm chown -R www-data:www-data /opt/matomo" dir="containers" passthru="true" checkreturn="true"/>
             </then>
         </if>
         <!-- Run migrations -->
