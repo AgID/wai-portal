@@ -158,6 +158,17 @@ services:
         - frontend
         - backend
 
+### SPID Test Environment #####################################
+
+    spid-testenv:
+      image: italia/spid-testenv2
+      volumes:
+        - ./spid-testenv/conf:/app/conf
+      ports:
+        - "${SPID_TESTENV_PORT}:8088"
+      networks:
+        - frontend
+
 ### Networks Setup ############################################
 
 networks:
