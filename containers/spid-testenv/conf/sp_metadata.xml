@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+
+<md:EntityDescriptor
+    xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata"
+    xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
+    entityID="https://spid.agid.gov.it">
+
+    <md:SPSSODescriptor
+        protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol"
+        AuthnRequestsSigned="true"
+        WantAssertionsSigned="true">
+
+        <md:KeyDescriptor use="signing">
+            <ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+                <ds:X509Data>
+                    <ds:X509Certificate>MIICajCCAdOgAwIBAgIBADANBgkqhkiG9w0BAQsFADBSMQswCQYDVQQGEwJpdDELMAkGA1UECAwCUk0xDTALBgNVBAoMBEFHSUQxJzAlBgNVBAMMHmh0dHBzOi8vd2ViYW5hbHl0aWNzLml0YWxpYS5pdDAeFw0xOTAxMzExNzI4MThaFw0yMDAxMzExNzI4MThaMFIxCzAJBgNVBAYTAml0MQswCQYDVQQIDAJSTTENMAsGA1UECgwEQUdJRDEnMCUGA1UEAwweaHR0cHM6Ly93ZWJhbmFseXRpY3MuaXRhbGlhLml0MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDsbpiDQMxxZt2exojbwAmag6OhfGfNguq0yt8eDho1q8S/cwBOQBCuPm7nagQFPZu6kXagsBd4NnbzUHTajo7PW5hPlu6ANGELgt4aCPxqB63EFjDr+HFeCYjNKjX0cG4Z6qdr6QpaAzeeMB1Z6sPHqIDfALNutT9TG2Ze7pfylQIDAQABo1AwTjAdBgNVHQ4EFgQUeUfdMs78bmoiKg4wypF4ZSoZsREwHwYDVR0jBBgwFoAUeUfdMs78bmoiKg4wypF4ZSoZsREwDAYDVR0TBAUwAwEB/zANBgkqhkiG9w0BAQsFAAOBgQDh/yiKTSgWhwmvAo20aI/P5/kg5/WreKdA4DGYKr63w0fnUULyvcSg5yMuPA5e1OOhx8tkYN+KHa4G3mN8yuzHnudLpmncsKNiA+X8iGTnzmP9bgQoL8mpjRouKGDuXkufsn+1gw/qUsr9W/hpo9YWyqznznQpItsxMmQ2qc/04w==</ds:X509Certificate>
+                </ds:X509Data>
+            </ds:KeyInfo>
+        </md:KeyDescriptor>
+
+        <md:KeyDescriptor use="encryption">
+            <ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+                <ds:X509Data>
+                    <ds:X509Certificate>MIICajCCAdOgAwIBAgIBADANBgkqhkiG9w0BAQsFADBSMQswCQYDVQQGEwJpdDELMAkGA1UECAwCUk0xDTALBgNVBAoMBEFHSUQxJzAlBgNVBAMMHmh0dHBzOi8vd2ViYW5hbHl0aWNzLml0YWxpYS5pdDAeFw0xOTAxMzExNzI4MThaFw0yMDAxMzExNzI4MThaMFIxCzAJBgNVBAYTAml0MQswCQYDVQQIDAJSTTENMAsGA1UECgwEQUdJRDEnMCUGA1UEAwweaHR0cHM6Ly93ZWJhbmFseXRpY3MuaXRhbGlhLml0MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDsbpiDQMxxZt2exojbwAmag6OhfGfNguq0yt8eDho1q8S/cwBOQBCuPm7nagQFPZu6kXagsBd4NnbzUHTajo7PW5hPlu6ANGELgt4aCPxqB63EFjDr+HFeCYjNKjX0cG4Z6qdr6QpaAzeeMB1Z6sPHqIDfALNutT9TG2Ze7pfylQIDAQABo1AwTjAdBgNVHQ4EFgQUeUfdMs78bmoiKg4wypF4ZSoZsREwHwYDVR0jBBgwFoAUeUfdMs78bmoiKg4wypF4ZSoZsREwDAYDVR0TBAUwAwEB/zANBgkqhkiG9w0BAQsFAAOBgQDh/yiKTSgWhwmvAo20aI/P5/kg5/WreKdA4DGYKr63w0fnUULyvcSg5yMuPA5e1OOhx8tkYN+KHa4G3mN8yuzHnudLpmncsKNiA+X8iGTnzmP9bgQoL8mpjRouKGDuXkufsn+1gw/qUsr9W/hpo9YWyqznznQpItsxMmQ2qc/04w==</ds:X509Certificate>
+                </ds:X509Data>
+            </ds:KeyInfo>
+        </md:KeyDescriptor>
+
+        <md:SingleLogoutService
+            Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
+            Location="https://localhost/spid/logout" />
+
+        <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</md:NameIDFormat>
+
+        <md:AssertionConsumerService
+            Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
+            Location="https://localhost/spid/acs"
+            index="0"
+            isDefault="true" />
+
+        <md:AttributeConsumingService index="1">
+            <md:ServiceName xml:lang="it">Web Analytics Italia</md:ServiceName>
+            <md:ServiceDescription xml:lang="it">I dati dei siti web della PA</md:ServiceDescription>
+            <md:RequestedAttribute Name="name" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:basic"/>
+            <md:RequestedAttribute Name="fiscalNumber" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:basic"/>
+            <md:RequestedAttribute Name="familyName" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:basic"/>
+            <md:RequestedAttribute Name="spidCode" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:basic"/>
+        </md:AttributeConsumingService>
+
+    </md:SPSSODescriptor>
+
+    <md:Organization>
+        <md:OrganizationName xml:lang="it">Web Analytics Italia</md:OrganizationName>
+        <md:OrganizationDisplayName xml:lang="it">Web Analytics Italia</md:OrganizationDisplayName>
+        <md:OrganizationURL xml:lang="it">https://webanalytics.italia.it/</md:OrganizationURL>
+    </md:Organization>
+
+</md:EntityDescriptor>
