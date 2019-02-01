@@ -21,6 +21,7 @@ clover.xml
 TODO
 .php_cs.cache
 .idea
+.DS_Store
 
 # generated files
 .env
