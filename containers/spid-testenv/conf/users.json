@@ -1,0 +1,62 @@
+{
+    "davide": {
+        "sp": null,
+        "attrs": {
+            "gender": "M",
+            "dateOfBirth": "1975-01-01",
+            "familyName": "Test",
+            "companyName": "Agenzia per l'Italia Digitale",
+            "spidCode": "00b6d30a-db63-22f5-3208-193d5a955ed5",
+            "registeredOffice": "Via Liszt 21 - 00144 Roma",
+            "name": "Davide",
+            "fiscalNumber": "TINIT-WNZXOY28M28A156E",
+            "email": "davide@example.com"
+        },
+        "pwd": "davide"
+    },
+    "daniela": {
+        "sp": null,
+        "attrs": {
+            "gender": "F",
+            "dateOfBirth": "1975-01-01",
+            "familyName": "Test",
+            "companyName": "Agenzia per l'Italia Digitale",
+            "spidCode": "cb407528-e5c2-566a-1ab2-90110247119b",
+            "registeredOffice": "Via Liszt 21 - 00144 Roma",
+            "name": "Daniela",
+            "fiscalNumber": "TINIT-PFVEKZ70B31F663V",
+            "email": "daniela@example.com"
+        },
+        "pwd": "daniela"
+    },
+    "luca": {
+        "sp": null,
+        "attrs": {
+            "gender": "M",
+            "dateOfBirth": "1975-01-01",
+            "familyName": "Test",
+            "companyName": "Agenzia per l'Italia Digitale",
+            "spidCode": "cb407528-e5c2-566a-1ab2-9011fff7119b",
+            "registeredOffice": "Via Liszt 21 - 00144 Roma",
+            "name": "Luca",
+            "fiscalNumber": "TINIT-TREGHJ70Z31F987V",
+            "email": "luca@example.com"
+        },
+        "pwd": "luca"
+    },
+    "claudio": {
+        "sp": null,
+        "attrs": {
+            "gender": "M",
+            "dateOfBirth": "1975-01-01",
+            "familyName": "Test",
+            "companyName": "Agenzia per l'Italia Digitale",
+            "spidCode": "cb407528-e5c2-566a-1ab2-9011aaa7119b",
+            "registeredOffice": "Via Liszt 21 - 00144 Roma",
+            "name": "Claudio",
+            "fiscalNumber": "TINIT-YRHKDI70H31F663V",
+            "email": "claudio@example.com"
+        },
+        "pwd": "claudio"
+    }
+}
