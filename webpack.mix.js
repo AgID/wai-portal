@@ -28,6 +28,8 @@ mix.js('resources/js/app.js', 'public/js')
     .sass('resources/sass/app.scss', 'public/css')
     .extract();
 
+mix.copyDirectory('resources/images', 'public/images');
+
 if (!mix.inProduction()) {
     mix.webpackConfig({
         devtool: 'source-map'
