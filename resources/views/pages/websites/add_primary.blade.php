@@ -67,12 +67,7 @@
     </form>
 @endsection
 
-@push('styles')
-    <link media="all" rel="stylesheet" href="{{ asset('/css/auto-complete.css') }}">
-    @endpush
-
-    @push('scripts')
-    <script type="text/javascript" src="{{ asset('/js/auto-complete.min.js') }}"></script>
+@push('scripts')
     <script type="text/javascript">
         $('input[name="name"]').keypress(function (event) {
             if (event.keyCode == 13) {
