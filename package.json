@@ -3,23 +3,31 @@
     "scripts": {
         "dev": "npm run development",
         "development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
-        "watch": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --watch --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+        "watch": "npm run development -- --watch",
         "watch-poll": "npm run watch -- --watch-poll",
         "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js",
         "prod": "npm run production",
         "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
     },
     "devDependencies": {
-        "axios": "^0.17",
-        "cross-env": "^5.1",
+        "axios": "^0.18",
+        "babel-eslint": "^10.0.1",
+        "cross-env": "^5.2.0",
         "eslint": "^4.18.1",
-        "eslint-loader": "^2.0.0",
+        "eslint-loader": "^2.1.2",
+        "eslint-plugin-vue": "^5.2.2",
         "jquery": "^3.2",
-        "laravel-mix": "^1.0",
-        "lodash": "^4.17.4",
-        "popper.js": "^1.13.0",
-        "stylelint": "^8.3.0",
+        "laravel-mix": "^4.0.7",
+        "laravel-mix-eslint-config": "^0.1.7",
+        "laravel-mix-stylelint": "^0.2.0",
+        "lodash": "^4.17.11",
+        "popper.js": "^1.14.7",
+        "resolve-url-loader": "^2.3.1",
+        "sass": "^1.17.2",
+        "sass-loader": "^7.1.0",
+        "stylelint": "^9.10.1",
         "stylelint-config-standard": "^18.2.0",
-        "stylelint-webpack-plugin": "^0.10.3"
+        "stylelint-webpack-plugin": "^0.10.5",
+        "vue-template-compiler": "^2.6.9"
     }
 }
