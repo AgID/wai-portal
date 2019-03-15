@@ -9,6 +9,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Support\Str;
 use Silber\Bouncer\BouncerFacade as Bouncer;
 
 class ProcessPendingWebsites implements ShouldQueue
@@ -42,7 +43,7 @@ class ProcessPendingWebsites implements ShouldQueue
                     $pendingUser = $website->publicAdministration->users()->where('status', 'pending')->first();
 
                     if ($pendingUser) {
-                        $pendingUser->analytics_password = str_random(20);
+                        $pendingUser->analytics_password = Str::random(20);
                         $pendingUser->status = 'active';
                         $pendingUser->save();
                         $pendingUser->roles()->detach();

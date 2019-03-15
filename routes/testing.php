@@ -3,6 +3,7 @@
 use App\Models\User;
 
 use Italia\SPIDAuth\SPIDUser;
+use Illuminate\Support\Str;
 
 /*
 |--------------------------------------------------------------------------
@@ -45,7 +46,7 @@ Route::get('/_test/_assign_role/{userId}/{role}', function ($userId, $role) {
 
 Route::get('/_test/_get_new_user_verification_token/{userId}', function ($userId) {
     $user = User::find($userId);
-    $token = hash_hmac('sha256', str_random(40), config('app.key'));
+    $token = hash_hmac('sha256', Str::random(40), config('app.key'));
     if (!empty($user->verificationToken)) {
         $user->verificationToken->delete();
     }

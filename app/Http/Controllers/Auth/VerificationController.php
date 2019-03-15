@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Jobs\SendVerificationEmail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class VerificationController extends Controller
 {
@@ -67,7 +68,7 @@ class VerificationController extends Controller
                 'name' => $SPIDUser->name,
                 'familyName' => $SPIDUser->familyName,
                 'status' => 'active',
-                'analytics_password' => str_random(20)
+                'analytics_password' => Str::random(20)
             ]);
 
             $analyticsService = app()->make('analytics-service');
@@ -116,7 +117,7 @@ class VerificationController extends Controller
                 $user->verificationToken->delete();
             }
 
-            $token = hash_hmac('sha256', str_random(40), config('app.key'));
+            $token = hash_hmac('sha256', Str::random(40), config('app.key'));
             $user->verificationToken()->create([
                 'token' => Hash::make($token)
             ]);

@@ -7,6 +7,7 @@ use App\Jobs\SendVerificationEmail;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class AdminVerificationController extends Controller
 {
@@ -107,7 +108,7 @@ class AdminVerificationController extends Controller
             $user->verificationToken->delete();
         }
 
-        $token = hash_hmac('sha256', str_random(40), config('app.key'));
+        $token = hash_hmac('sha256', Str::random(40), config('app.key'));
         $user->verificationToken()->create([
             'token' => Hash::make($token)
         ]);

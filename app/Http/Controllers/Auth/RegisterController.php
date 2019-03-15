@@ -7,6 +7,7 @@ use App\Jobs\SendVerificationEmail;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class RegisterController extends Controller
 {
@@ -43,7 +44,7 @@ class RegisterController extends Controller
             'status' => 'inactive'
         ]);
 
-        $token = hash_hmac('sha256', str_random(40), config('app.key'));
+        $token = hash_hmac('sha256', Str::random(40), config('app.key'));
         $user->verificationToken()->create([
             'token' => Hash::make($token)
         ]);

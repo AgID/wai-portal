@@ -10,6 +10,7 @@ use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
 class AdminAuthController extends Controller
@@ -120,7 +121,7 @@ class AdminAuthController extends Controller
             $user->passwordResetToken->delete();
         }
 
-        $token = hash_hmac('sha256', str_random(40), config('app.key'));
+        $token = hash_hmac('sha256', Str::random(40), config('app.key'));
         $user->passwordResetToken()->create([
             'token' => Hash::make($token),
             'created_at' => now()

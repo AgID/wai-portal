@@ -2,10 +2,11 @@
 
 use App\Models\User;
 use Faker\Generator as Faker;
+use Illuminate\Support\Str;
 
 $factory->define(User::class, function (Faker $faker) {
     return [
-        'spidCode' => str_random(14),
+        'spidCode' => Str::random(14),
         'name' => $faker->firstName,
         'familyName' => $faker->lastName,
         'fiscalNumber' => $faker->taxId(),
