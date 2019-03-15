@@ -1,5 +1,6 @@
 let mix = require('laravel-mix');
-let StyleLintPlugin = require('stylelint-webpack-plugin');
+require('laravel-mix-eslint-config');
+require('laravel-mix-stylelint');
 
 /*
  |--------------------------------------------------------------------------
@@ -12,22 +13,27 @@ let StyleLintPlugin = require('stylelint-webpack-plugin');
  |
  */
 
-mix.js('resources/assets/js/app.js', 'public/js')
-   .sass('resources/assets/sass/app.scss', 'public/css');
+mix.js('resources/js/app.js', 'public/js')
+    .stylelint({ files: ['resources/**/*.s?(a|c)ss']})
+    .eslint({
+        enforce: 'pre',
+        test: /\.js$/,
+        exclude: ['node_modules', 'containers'],
+        loader: 'eslint-loader',
+        options: {
+            fix: false,
+            cache: false,
+        }
+    })
+    .sass('resources/sass/app.scss', 'public/css')
+    .extract();
 
-mix.webpackConfig({
-    module: {
-        rules: [
-            {
-                test: /\.js$/,
-                exclude: [/node_modules/, /containers/],
-                loader: 'eslint-loader',
-            }
-        ]
-    },
-    plugins: [
-        new StyleLintPlugin({
-            files: ['resources/**/*.s?(a|c)ss']
-        }),
-    ]
-});
+if (!mix.inProduction()) {
+    mix.webpackConfig({
+        devtool: 'source-map'
+    })
+    .sourceMaps();
+} else {
+    mix.version();
+    mix.disableNotifications();
+}
