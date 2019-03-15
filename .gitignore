@@ -27,8 +27,9 @@ TODO
 .env
 .env.dusk.*
 /public/storage
-/public/css/app.css
-/public/js/app.js
+/public/css
+/public/js
+/public/images
 
 # ignored for security reasons
 /env/build.properties
