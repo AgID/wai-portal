@@ -1,20 +1,9 @@
-# PHP CircleCI 2.0 configuration file
-#
-# Check https://circleci.com/docs/2.0/language-php/ for more details
-#
-version: 2
-jobs:
-  build_and_test:
-    docker:
-      # specify the version you desire here
-      - image: circleci/php:7.1-cli
+version: 2.1
 
-    environment:
-      - APP_ENV: "testing"
-
+commands:
+  restore_all_caches:
+    description: Restore php and javascript dependencies
     steps:
-      - checkout
-
       - restore_cache:
           keys:
           - v1-php-{{ checksum "composer.json" }}
@@ -27,10 +16,25 @@ jobs:
           # fallback to using the latest cache if no exact match is found
           - v1-node-
 
+  composer:
+    description: Ensure all php dependencies are installed
+    steps:
       - run:
-          name: Install php dependencies
-          command: composer install -n --ignore-platform-reqs
+          name: Run composer install
+          command: composer install -n --ignore-platform-reqs --no-progress
 
+  php-cs-fixer:
+    description: Ensure php code follows style rules
+    steps:
+      - run:
+          name: Run php-cs-fixer (future mode)
+          command: |
+            PHP_CS_FIXER_FUTURE_MODE=1
+            bin/php-cs-fixer fix --dry-run || (echo "Coding standards are not respected. Run PHP-CS-Fixer to fix." && exit 1)
+
+  npm:
+    description: Ensure all javascript dependencies are installed
+    steps:
       - run:
           name: Install node version defined in .node-version
           command: |
@@ -39,9 +43,12 @@ jobs:
             sudo node-build $(cat .node-version) /usr/local
 
       - run:
-          name: Install node dependencies
-          command: npm install
+          name: Install npm dependencies
+          command: npm install --silent
 
+  save_all_caches:
+    description: Save php and javascript dependencies
+    steps:
       - save_cache:
           paths:
             - ./vendor
@@ -52,90 +59,31 @@ jobs:
             - ./node_modules
           key: v1-node-{{ checksum "package.json" }}
 
+jobs:
+  build_and_test:
+    docker:
+      - image: circleci/php:7.2-cli
+    environment:
+      - APP_ENV: "testing"
+    steps:
+      - checkout
+      - restore_all_caches
+      - composer
+      - php-cs-fixer
+      - npm
+      - save_all_caches
       - setup_remote_docker
-
       # build
-      - run: bin/phing build
-
+      - run:
+          name: Run build task
+          command: bin/phing build
       # test
-      - run: bin/phing test
-
-  # deploy-staging:
-  #   docker:
-  #     # specify the version you desire here
-  #     - image: circleci/php:7.1-cli
-
-  #   environment:
-  #     - APP_ENV: "staging"
-
-  #   steps:
-  #     - checkout
-
-  #     - restore_cache:
-  #         keys:
-  #         - v1-php-{{ checksum "composer.json" }}
-  #         # fallback to using the latest cache if no exact match is found
-  #         - v1-php-
-
-  #     - run:
-  #         name: Install php dependencies
-  #         command: composer install -n --ignore-platform-reqs
-
-  #     # build
-  #     - run: bin/dep -vvv deploy staging
-
-  # deploy-production:
-  #   docker:
-  #     # specify the version you desire here
-  #     - image: circleci/php:7.1-cli
-
-  #   environment:
-  #     - APP_ENV: "production"
-
-  #   steps:
-  #     - checkout
-
-  #     - restore_cache:
-  #         keys:
-  #         - v1-php-{{ checksum "composer.json" }}
-  #         # fallback to using the latest cache if no exact match is found
-  #         - v1-php-
-
-  #     - run:
-  #         name: Install php dependencies
-  #         command: composer install -n --ignore-platform-reqs
-
-  #     # build
-  #     - run: bin/dep -vvv deploy production
+      - run:
+          name: Run phpunit and dusk tests
+          command: bin/phing test
 
 workflows:
   version: 2
-  build-test:
+  build_and_test:
     jobs:
       - build_and_test
-
-  # build-test-deploy-staging:
-  #   jobs:
-  #     - build_and_test:
-  #         filters:
-  #           branches:
-  #             only:
-  #               - develop
-  #     - deploy-staging:
-  #         requires:
-  #           - build_and_test
-
-  # build-test-deploy-production:
-  #   jobs:
-  #     - build_and_test:
-  #         filters:
-  #           branches:
-  #             only:
-  #               - master
-  #     - hold:
-  #         type: approval
-  #         requires:
-  #           - build_and_test
-  #     - deploy-production:
-  #         requires:
-  #           - hold
