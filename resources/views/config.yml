@@ -2,11 +2,11 @@ site:
   theme_color: "#0066cc"
   css_theme: t-Pac
   owner_link: http://www.agid.gov.it
-  owner_logo: /img/agid-logo.svg
+  owner_logo: /images/agid-logo.svg
   partner_link: https://teamdigitale.governo.it
   privacy_link: https://developers.italia.it/it/privacy-policy
-  gov_logo: /img/governo.svg
-  partner_logo: /img/dt-logo.svg
+  gov_logo: /images/governo.svg
+  partner_logo: /images/dt-logo.svg
   pill: alpha
 
   menu_items:

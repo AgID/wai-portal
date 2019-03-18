@@ -4,16 +4,10 @@ namespace App\Providers;
 
 use App\Services\MatomoService;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Contracts\Support\DeferrableProvider;
 
-class AnalyticsServiceProvider extends ServiceProvider
+class AnalyticsServiceProvider extends ServiceProvider implements DeferrableProvider
 {
-    /**
-     * Indicates if loading of the provider is deferred.
-     *
-     * @var bool
-     */
-    protected $defer = true;
-
     /**
      * Bootstrap any application services.
      *

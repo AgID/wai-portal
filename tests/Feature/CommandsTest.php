@@ -24,7 +24,7 @@ class CommandsTest extends TestCase
     /**
      * Test setUp
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->user = factory(User::class)->states('pending')->create();
@@ -44,7 +44,7 @@ class CommandsTest extends TestCase
     /**
      * Test tearDown
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         if (isset($this->website->analytics_id)) {
             $this->app->make('analytics-service')->deleteSite($this->website->analytics_id);

@@ -8,6 +8,7 @@ use App\Transformers\WebsiteTransformer;
 use Ehann\RediSearch\Index;
 use Ehann\RedisRaw\PhpRedisAdapter;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Yajra\Datatables\Datatables;
 use Silber\Bouncer\BouncerFacade as Bouncer;
@@ -109,7 +110,7 @@ class WebsiteController extends Controller
             'type' => 'primary',
             'public_administration_id' => $publicAdministration->id,
             'analytics_id' => $analyticsId,
-            'slug' => str_slug($pa->site),
+            'slug' => Str::slug($pa->site),
             'status' => 'pending'
         ]);
 
@@ -182,7 +183,7 @@ class WebsiteController extends Controller
             'type' => $request->input('type'),
             'public_administration_id' => $publicAdministration->id,
             'analytics_id' => $analyticsId,
-            'slug' => str_slug($request->input('url')),
+            'slug' => Str::slug($request->input('url')),
             'status' => 'pending'
         ]);
 
@@ -245,7 +246,7 @@ class WebsiteController extends Controller
             'name' => $validatedData['name'],
             'url' => $validatedData['url'],
             'type' => $validatedData['type'],
-            'slug' => str_slug($validatedData['url']),
+            'slug' => Str::slug($validatedData['url']),
         ]);
         $website->save();
 

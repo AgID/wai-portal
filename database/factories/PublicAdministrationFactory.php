@@ -2,10 +2,11 @@
 
 use App\Models\PublicAdministration;
 use Faker\Generator as Faker;
+use Illuminate\Support\Str;
 
 $factory->define(PublicAdministration::class, function (Faker $faker) {
     return [
-        'ipa_code' => str_random(5),
+        'ipa_code' => Str::random(5),
         'name' => $faker->company,
         'pec_address' => $faker->unique()->safeEmail,
         'city' => $faker->city,
