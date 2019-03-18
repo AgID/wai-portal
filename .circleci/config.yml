@@ -60,53 +60,53 @@ jobs:
       # test
       - run: bin/phing test
 
-  deploy-staging:
-    docker:
-      # specify the version you desire here
-      - image: circleci/php:7.1-cli
+  # deploy-staging:
+  #   docker:
+  #     # specify the version you desire here
+  #     - image: circleci/php:7.1-cli
 
-    environment:
-      - APP_ENV: "staging"
+  #   environment:
+  #     - APP_ENV: "staging"
 
-    steps:
-      - checkout
+  #   steps:
+  #     - checkout
 
-      - restore_cache:
-          keys:
-          - v1-php-{{ checksum "composer.json" }}
-          # fallback to using the latest cache if no exact match is found
-          - v1-php-
+  #     - restore_cache:
+  #         keys:
+  #         - v1-php-{{ checksum "composer.json" }}
+  #         # fallback to using the latest cache if no exact match is found
+  #         - v1-php-
 
-      - run:
-          name: Install php dependencies
-          command: composer install -n --ignore-platform-reqs
+  #     - run:
+  #         name: Install php dependencies
+  #         command: composer install -n --ignore-platform-reqs
 
-      # build
-      - run: bin/dep -vvv deploy staging
+  #     # build
+  #     - run: bin/dep -vvv deploy staging
 
-  deploy-production:
-    docker:
-      # specify the version you desire here
-      - image: circleci/php:7.1-cli
+  # deploy-production:
+  #   docker:
+  #     # specify the version you desire here
+  #     - image: circleci/php:7.1-cli
 
-    environment:
-      - APP_ENV: "production"
+  #   environment:
+  #     - APP_ENV: "production"
 
-    steps:
-      - checkout
+  #   steps:
+  #     - checkout
 
-      - restore_cache:
-          keys:
-          - v1-php-{{ checksum "composer.json" }}
-          # fallback to using the latest cache if no exact match is found
-          - v1-php-
+  #     - restore_cache:
+  #         keys:
+  #         - v1-php-{{ checksum "composer.json" }}
+  #         # fallback to using the latest cache if no exact match is found
+  #         - v1-php-
 
-      - run:
-          name: Install php dependencies
-          command: composer install -n --ignore-platform-reqs
+  #     - run:
+  #         name: Install php dependencies
+  #         command: composer install -n --ignore-platform-reqs
 
-      # build
-      - run: bin/dep -vvv deploy production
+  #     # build
+  #     - run: bin/dep -vvv deploy production
 
 workflows:
   version: 2
@@ -114,28 +114,28 @@ workflows:
     jobs:
       - build_and_test
 
-  build-test-deploy-staging:
-    jobs:
-      - build_and_test:
-          filters:
-            branches:
-              only:
-                - develop
-      - deploy-staging:
-          requires:
-            - build_and_test
+  # build-test-deploy-staging:
+  #   jobs:
+  #     - build_and_test:
+  #         filters:
+  #           branches:
+  #             only:
+  #               - develop
+  #     - deploy-staging:
+  #         requires:
+  #           - build_and_test
 
-  build-test-deploy-production:
-    jobs:
-      - build_and_test:
-          filters:
-            branches:
-              only:
-                - master
-      - hold:
-          type: approval
-          requires:
-            - build_and_test
-      - deploy-production:
-          requires:
-            - hold
+  # build-test-deploy-production:
+  #   jobs:
+  #     - build_and_test:
+  #         filters:
+  #           branches:
+  #             only:
+  #               - master
+  #     - hold:
+  #         type: approval
+  #         requires:
+  #           - build_and_test
+  #     - deploy-production:
+  #         requires:
+  #           - hold
