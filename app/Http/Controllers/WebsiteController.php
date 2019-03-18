@@ -10,8 +10,8 @@ use Ehann\RedisRaw\PhpRedisAdapter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
-use Yajra\Datatables\Datatables;
 use Silber\Bouncer\BouncerFacade as Bouncer;
+use Yajra\Datatables\Datatables;
 
 class WebsiteController extends Controller
 {
@@ -29,12 +29,12 @@ class WebsiteController extends Controller
                 'added_at' => 'Iscritto dal',
                 'status' => 'Stato',
                 'last_month_visits' => 'Visite*',
-                'actions' => 'Azioni'
+                'actions' => 'Azioni',
             ],
             'source' => route('websites-data-json'),
             'caption' => 'Elenco dei siti web abilitati su Web Analytics Italia', //TODO: set title in lang file
             'footer' => '*Il numero di visite si riferisce agli ultimi 30 giorni.',
-            'columnsOrder' => [['added_at', 'asc'], ['last_month_visits', 'desc']]
+            'columnsOrder' => [['added_at', 'asc'], ['last_month_visits', 'desc']],
         ];
 
         return view('pages.websites.index')->with($datatable);
@@ -45,13 +45,15 @@ class WebsiteController extends Controller
         if (!empty(auth()->user()->getWebsites())) {
             return redirect()->route('websites-index');
         }
+
         return view('pages.websites.add_primary');
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\Response
      */
     public function storePrimary(Request $request)
@@ -61,15 +63,14 @@ class WebsiteController extends Controller
             'url' => 'required|unique:websites',
             'pec' => 'email|nullable',
             'ipa_code' => 'required|unique:public_administrations',
-            'accept_terms' => 'required'
+            'accept_terms' => 'required',
         ]);
 
-        $IPAIndex = new Index((new PhpRedisAdapter)->connect(config('database.redis.ipaindex.host'), config('database.redis.ipaindex.port'), config('database.redis.ipaindex.database')), 'IPAIndex');
+        $IPAIndex = new Index((new PhpRedisAdapter())->connect(config('database.redis.ipaindex.host'), config('database.redis.ipaindex.port'), config('database.redis.ipaindex.database')), 'IPAIndex');
 
         $result = $IPAIndex->inFields(1, ['ipa_code'])
             ->search($request->input('ipa_code'))
             ->getDocuments();
-
 
         $pa = empty($result) ? null : $result[0];
 
@@ -93,7 +94,7 @@ class WebsiteController extends Controller
             'county' => $pa->county,
             'region' => $pa->region,
             'type' => $pa->type,
-            'status' => 'pending'
+            'status' => 'pending',
         ]);
 
         $analyticsId = app()->make('analytics-service')->registerSite('Sito istituzionale', $pa->site, $publicAdministration->name); //TODO: put string in lang file
@@ -111,7 +112,7 @@ class WebsiteController extends Controller
             'public_administration_id' => $publicAdministration->id,
             'analytics_id' => $analyticsId,
             'slug' => Str::slug($pa->site),
-            'status' => 'pending'
+            'status' => 'pending',
         ]);
 
         $publicAdministration->users()->save($request->user());
@@ -120,7 +121,7 @@ class WebsiteController extends Controller
         Bouncer::scope()->to($publicAdministration->id);
         $request->user()->assign('reader');
 
-        logger()->info('User '.auth()->user()->getInfo().' added a new website ['.$pa->site.'] as primary website of "'.$publicAdministration->name.'"');
+        logger()->info('User ' . auth()->user()->getInfo() . ' added a new website [' . $pa->site . '] as primary website of "' . $publicAdministration->name . '"');
 
         return redirect()->route('websites-index')->withMessage(['success' => 'Il sito è stato aggiunto al progetto Web Analytics Italia.']); //TODO: put message in lang file
     }
@@ -138,7 +139,8 @@ class WebsiteController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -146,10 +148,10 @@ class WebsiteController extends Controller
         $validator = validator($request->all(), [
             'name' => 'required',
             'url' => 'required|url|unique:websites',
-            'type' => 'required|in:primary,secondary,webapp,testing'
+            'type' => 'required|in:primary,secondary,webapp,testing',
         ]);
 
-        $IPAIndex = new Index((new PhpRedisAdapter)->connect(config('database.redis.ipaindex.host'), config('database.redis.ipaindex.port'), config('database.redis.ipaindex.database')), 'IPAIndex');
+        $IPAIndex = new Index((new PhpRedisAdapter())->connect(config('database.redis.ipaindex.host'), config('database.redis.ipaindex.port'), config('database.redis.ipaindex.database')), 'IPAIndex');
 
         $domain = parse_url($request->input('url'), PHP_URL_HOST);
         $result = $IPAIndex->inFields(1, ['site'])
@@ -171,7 +173,7 @@ class WebsiteController extends Controller
         }
 
         $publicAdministration = auth()->user()->publicAdministration;
-        $analyticsId = app()->make('analytics-service')->registerSite($request->input('name').' ['.$request->input('type').']', $request->input('url'), $publicAdministration->name); //TODO: put string in lang file
+        $analyticsId = app()->make('analytics-service')->registerSite($request->input('name') . ' [' . $request->input('type') . ']', $request->input('url'), $publicAdministration->name); //TODO: put string in lang file
 
         if (empty($analyticsId)) {
             abort(500, 'Il servizio Analytics non è disponibile'); //TODO: put error message in lang file
@@ -184,10 +186,10 @@ class WebsiteController extends Controller
             'public_administration_id' => $publicAdministration->id,
             'analytics_id' => $analyticsId,
             'slug' => Str::slug($request->input('url')),
-            'status' => 'pending'
+            'status' => 'pending',
         ]);
 
-        logger()->info('User '.auth()->user()->getInfo().' added a new website "'. $validatedData['name'] .'" ['.$validatedData['url'].'] as '.$validatedData['type'].' website of "'.$publicAdministration->name.'"');
+        logger()->info('User ' . auth()->user()->getInfo() . ' added a new website "' . $validatedData['name'] . '" [' . $validatedData['url'] . '] as ' . $validatedData['type'] . ' website of "' . $publicAdministration->name . '"');
 
         return redirect()->route('websites-index')->withMessage(['success' => 'Il sito è stato aggiunto al progetto Web Analytics Italia.']); //TODO: put message in lang file
     }
@@ -195,7 +197,8 @@ class WebsiteController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int $id
+     * @param int $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -207,21 +210,24 @@ class WebsiteController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param Website $website
+     *
      * @return \Illuminate\Http\Response
      */
     public function edit(Website $website)
     {
-        if ($website->type == 'primary') {
+        if ('primary' == $website->type) {
             abort(403, 'Non è permesso effettuare modifiche al sito istituzionale.');
         }
+
         return view('pages.websites.edit')->with(['website' => $website]);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param \Illuminate\Http\Request $request
      * @param Website $website
+     *
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Website $website)
@@ -231,12 +237,12 @@ class WebsiteController extends Controller
             'url' => [
                 'required',
                 Rule::unique('websites')->ignore($website->id),
-                'url'
+                'url',
             ],
-            'type' => 'required|in:secondary,webapp,testing'
+            'type' => 'required|in:secondary,webapp,testing',
         ]);
 
-        $updated = app()->make('analytics-service')->updateSite($website->analytics_id, $validatedData['name'].' ['.$validatedData['type'].']', $validatedData['url'], $website->publicAdministration->name); //TODO: put string in lang file
+        $updated = app()->make('analytics-service')->updateSite($website->analytics_id, $validatedData['name'] . ' [' . $validatedData['type'] . ']', $validatedData['url'], $website->publicAdministration->name); //TODO: put string in lang file
 
         if (!$updated) {
             abort(500, 'Il servizio Analytics non è disponibile'); //TODO: put error message in lang file
@@ -250,15 +256,16 @@ class WebsiteController extends Controller
         ]);
         $website->save();
 
-        logger()->info('User '.auth()->user()->getInfo().' updated website "'. $validatedData['name'] .'" ['.$validatedData['url'].'] as '.$validatedData['type'].' website of "'.$website->publicAdministration->name.'"');
+        logger()->info('User ' . auth()->user()->getInfo() . ' updated website "' . $validatedData['name'] . '" [' . $validatedData['url'] . '] as ' . $validatedData['type'] . ' website of "' . $website->publicAdministration->name . '"');
 
-        return redirect()->route('websites-index')->withMessage(['success' => 'Il sito "'. $validatedData['name'] .'" è stato modificato.']); //TODO: put message in lang file
+        return redirect()->route('websites-index')->withMessage(['success' => 'Il sito "' . $validatedData['name'] . '" è stato modificato.']); //TODO: put message in lang file
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int $id
+     * @param int $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
@@ -268,28 +275,31 @@ class WebsiteController extends Controller
 
     /**
      * Get all websites of the specified Public Administration
-     * in JSON format (to be consumed by Datatables)
+     * in JSON format (to be consumed by Datatables).
+     *
+     * @throws \Exception
      *
      * @return \Illuminate\Http\Response
-     * @throws \Exception
      */
     public function dataJson()
     {
         return Datatables::of(auth()->user()->getWebsites())
-                ->setTransformer(new WebsiteTransformer)
+                ->setTransformer(new WebsiteTransformer())
                 ->make(true);
     }
 
     /**
      * Get Javascript snippet for the specified Website
-     * of the specified Public Administration
+     * of the specified Public Administration.
      *
-     * @param  Website $website
+     * @param Website $website
+     *
      * @return $this
      */
     public function showJavascriptSnippet(Website $website)
     {
         $javascriptSnippet = app()->make('analytics-service')->getJavascriptSnippet($website->analytics_id);
+
         return view('pages.websites.javascript_snippet')->with(['javascriptSnippet' => trim($javascriptSnippet)]);
     }
 }

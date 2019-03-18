@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Http\Controllers\Controller;
 use App\Jobs\ClearPasswordResetToken;
 use App\Jobs\SendPasswordResetEmail;
 use App\Models\User;
-use App\Http\Controllers\Controller;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Http\Request;
@@ -37,10 +37,11 @@ class AdminAuthController extends Controller
     /**
      * Handle a login request to the application.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response|void
+     * @param \Illuminate\Http\Request $request
      *
      * @throws ValidationException
+     *
+     * @return \Illuminate\Http\Response|void
      */
     public function login(Request $request)
     {
@@ -51,6 +52,7 @@ class AdminAuthController extends Controller
 
         if ($this->hasTooManyLoginAttempts($request)) {
             $this->fireLockoutEvent($request);
+
             return $this->sendLockoutResponse($request);
         }
 
@@ -66,18 +68,6 @@ class AdminAuthController extends Controller
     }
 
     /**
-     * Send the response after the user was authenticated.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    protected function sendLoginResponse(Request $request)
-    {
-        $this->clearLoginAttempts($request);
-        return redirect()->intended(route('admin-dashboard', [], false));
-    }
-
-    /**
      * Log the user out of the application.
      *
      * @return \Illuminate\Http\Response
@@ -88,6 +78,7 @@ class AdminAuthController extends Controller
             auth()->logout();
             session()->invalidate();
         }
+
         return redirect()->home();
     }
 
@@ -104,7 +95,8 @@ class AdminAuthController extends Controller
     /**
      * Send a reset link to the given user.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\RedirectResponse
      */
     public function sendPasswordForgotEmail(Request $request)
@@ -113,7 +105,7 @@ class AdminAuthController extends Controller
         $email = $request->input('email');
 
         $user = User::where('email', $email)->first();
-        if (empty($user) || $user->cant('access-admin-area') || $user->status != 'active') {
+        if (empty($user) || $user->cant('access-admin-area') || 'active' != $user->status) {
             return redirect()->home()->withMessage(['info' => "Se l'indirizzo email inserito corrisponde ad un'utenza amministrativa registrata e attiva, riceverai e breve un messaggio con le istruzioni per il reset della password."]);
         }
 
@@ -124,7 +116,7 @@ class AdminAuthController extends Controller
         $token = hash_hmac('sha256', Str::random(40), config('app.key'));
         $user->passwordResetToken()->create([
             'token' => Hash::make($token),
-            'created_at' => now()
+            'created_at' => now(),
         ]);
 
         $user->load('passwordResetToken');
@@ -138,8 +130,9 @@ class AdminAuthController extends Controller
     /**
      * Display the password reset view for the given token.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string|null  $token
+     * @param \Illuminate\Http\Request $request
+     * @param string|null $token
+     *
      * @return \Illuminate\View\View
      */
     public function showPasswordResetForm(Request $request, $token = null)
@@ -152,7 +145,8 @@ class AdminAuthController extends Controller
     /**
      * Reset the given user's password.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
      */
     public function passwordReset(Request $request)
@@ -164,18 +158,18 @@ class AdminAuthController extends Controller
                 'required',
                 'confirmed',
                 'min:8',
-                'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*(_|[^\w])).+$/'
-            ]
+                'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*(_|[^\w])).+$/',
+            ],
         ]);
 
         $user = User::where('email', $validatedData['email'])->first();
 
         if (empty($user)) {
-            return redirect()->route('admin-password_reset')->withMessage(['error' => "L'indirizzo email inserito non corrisponde ad un'utenza oppure il codice è scaduto o errato."])->withInput();; //TODO: put message in lang file
+            return redirect()->route('admin-password_reset')->withMessage(['error' => "L'indirizzo email inserito non corrisponde ad un'utenza oppure il codice è scaduto o errato."])->withInput(); //TODO: put message in lang file
         }
 
         if (empty($user->passwordResetToken) || !Hash::check($validatedData['token'], $user->passwordResetToken->token)) {
-            return redirect()->route('admin-password_reset')->withMessage(['error' => "L'indirizzo email inserito non corrisponde ad un'utenza oppure il codice è scaduto o errato."])->withInput();; //TODO: put message in lang file
+            return redirect()->route('admin-password_reset')->withMessage(['error' => "L'indirizzo email inserito non corrisponde ad un'utenza oppure il codice è scaduto o errato."])->withInput(); //TODO: put message in lang file
         }
 
         $user->password = Hash::make($validatedData['password']);
@@ -202,7 +196,8 @@ class AdminAuthController extends Controller
     /**
      * Change the user's password.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
      */
     public function passwordChange(Request $request)
@@ -212,8 +207,8 @@ class AdminAuthController extends Controller
                 'required',
                 'confirmed',
                 'min:8',
-                'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*(_|[^\w])).+$/'
-            ]
+                'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*(_|[^\w])).+$/',
+            ],
         ]);
 
         $user = auth()->user();
@@ -232,5 +227,19 @@ class AdminAuthController extends Controller
     public function username()
     {
         return 'email';
+    }
+
+    /**
+     * Send the response after the user was authenticated.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    protected function sendLoginResponse(Request $request)
+    {
+        $this->clearLoginAttempts($request);
+
+        return redirect()->intended(route('admin-dashboard', [], false));
     }
 }

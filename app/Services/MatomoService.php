@@ -30,11 +30,13 @@ class MatomoService implements AnalyticsServiceContract
     /**
      * Register a new site in the Analytics Service.
      *
-     * @param  string $siteName
-     * @param  string $url
-     * @param  string $group
-     * @return int
+     * @param string $siteName
+     * @param string $url
+     * @param string $group
+     *
      * @throws AnalyticsServiceException
+     *
+     * @return int
      */
     public function registerSite(string $siteName, string $url, string $group)
     {
@@ -47,18 +49,21 @@ class MatomoService implements AnalyticsServiceContract
             'currency' => 'EUR',
             //'excludeUnknownUrls' => true //TODO: enable in production!
         ];
+
         return $this->apiCall($params)['value'];
     }
 
     /**
      * Updated an existing site in the Analytics Service.
      *
-     * @param  string $idSite
-     * @param  string $siteName
-     * @param  string $url
-     * @param  string $group
-     * @return int
+     * @param string $idSite
+     * @param string $siteName
+     * @param string $url
+     * @param string $group
+     *
      * @throws AnalyticsServiceException
+     *
+     * @return int
      */
     public function updateSite(string $idSite, string $siteName, string $url, string $group)
     {
@@ -66,8 +71,9 @@ class MatomoService implements AnalyticsServiceContract
             'method' => 'SitesManager.updateSite',
             'idSite' => $idSite,
             'siteName' => $siteName,
-            'urls' => $url
+            'urls' => $url,
         ];
+
         return $this->apiCall($params);
     }
 
@@ -75,43 +81,51 @@ class MatomoService implements AnalyticsServiceContract
      * Get Javascript code snippet for a specified site
      * registered in the Analytics Service.
      *
-     * @param  string $idSite
-     * @return string
+     * @param string $idSite
+     *
      * @throws AnalyticsServiceException
+     *
+     * @return string
      */
     public function getJavascriptSnippet(string $idSite)
     {
         $params = [
             'method' => 'SitesManager.getJavascriptTag',
-            'idSite' => $idSite
+            'idSite' => $idSite,
         ];
+
         return $this->apiCall($params)['value'];
     }
 
     /**
      * Delete a given site in the Analytics Service.
      *
-     * @param  string $idSite
-     * @return void
+     * @param string $idSite
+     *
      * @throws AnalyticsServiceException
+     *
+     * @return void
      */
     public function deleteSite(string $idSite)
     {
         $params = [
             'method' => 'SitesManager.deleteSite',
-            'idSite' => $idSite
+            'idSite' => $idSite,
         ];
+
         return $this->apiCall($params);
     }
 
     /**
      * Register a new user in the Analytics Service.
      *
-     * @param  string $userLogin
-     * @param  string $password
-     * @param  string $email
-     * @return string
+     * @param string $userLogin
+     * @param string $password
+     * @param string $email
+     *
      * @throws AnalyticsServiceException
+     *
+     * @return string
      */
     public function registerUser(string $userLogin, string $password, string $email)
     {
@@ -119,53 +133,61 @@ class MatomoService implements AnalyticsServiceContract
             'method' => 'UsersManager.addUser',
             'userLogin' => $userLogin,
             'password' => $password,
-            'email' => $email
+            'email' => $email,
         ];
+
         return $this->apiCall($params);
     }
 
     /**
      * Get a specified user in the Analytics Service.
      *
-     * @param  string $email
-     * @return string
+     * @param string $email
+     *
      * @throws AnalyticsServiceException
+     *
+     * @return string
      */
     public function getUserByEmail(string $email)
     {
         $params = [
             'method' => 'UsersManager.getUserByEmail',
-            'userEmail' => $email
+            'userEmail' => $email,
         ];
+
         return $this->apiCall($params);
     }
 
     /**
      * Delete a specified user in the Analytics Service.
      *
-     * @param  string $email
-     * @return string
+     * @param string $email
+     *
      * @throws AnalyticsServiceException
+     *
+     * @return string
      */
     public function deleteUser(string $email)
     {
         $params = [
             'method' => 'UsersManager.deleteUser',
-            'userLogin' => $email
+            'userLogin' => $email,
         ];
+
         return $this->apiCall($params);
     }
 
     /**
      * Login and redirect a specified user in the Analytics Service.
      *
-     * @param  string $userLogin
-     * @param  string $password
+     * @param string $userLogin
+     * @param string $password
+     *
      * @return void
      */
     public function loginAndRedirectUser(string $userLogin, string $password)
     {
-        return redirect($this->servicePublicUrl.'/index.php?module=Login&action=logme&login='.$userLogin.'&password='.md5($password));
+        return redirect($this->servicePublicUrl . '/index.php?module=Login&action=logme&login=' . $userLogin . '&password=' . md5($password));
     }
 
     /**
@@ -175,8 +197,10 @@ class MatomoService implements AnalyticsServiceContract
      * @param string $userLogin
      * @param string $access
      * @param string $idSites
-     * @return string
+     *
      * @throws AnalyticsServiceException
+     *
+     * @return string
      */
     public function setWebsitesAccess(string $userLogin, string $access, string $idSites)
     {
@@ -184,9 +208,9 @@ class MatomoService implements AnalyticsServiceContract
             'method' => 'UsersManager.setUserAccess',
             'userLogin' => $userLogin,
             'access' => $access,
-            'idSites' => $idSites
-
+            'idSites' => $idSites,
         ];
+
         return $this->apiCall($params);
     }
 
@@ -194,10 +218,12 @@ class MatomoService implements AnalyticsServiceContract
      * Get total number of visits for a specified site
      * registered in the Analytics Service.
      *
-     * @param  string $idSite
-     * @param  string $from
-     * @return int
+     * @param string $idSite
+     * @param string $from
+     *
      * @throws AnalyticsServiceException
+     *
+     * @return int
      */
     public function getSiteTotalVisits(string $idSite, string $from)
     {
@@ -205,7 +231,7 @@ class MatomoService implements AnalyticsServiceContract
             'method' => 'VisitsSummary.get',
             'idSite' => $idSite,
             'period' => 'range',
-            'date' => $from . ',' . now()->format('Y-m-d')
+            'date' => $from . ',' . now()->format('Y-m-d'),
         ];
         $response = $this->apiCall($params);
         if (isset($response['nb_visits'])) {
@@ -219,9 +245,11 @@ class MatomoService implements AnalyticsServiceContract
      * Get the number of visits for a specified site
      * registered last month in the Analytics Service.
      *
-     * @param  string $idSite
-     * @return int
+     * @param string $idSite
+     *
      * @throws AnalyticsServiceException
+     *
+     * @return int
      */
     public function getSiteLastMonthVisits(string $idSite)
     {
@@ -229,7 +257,7 @@ class MatomoService implements AnalyticsServiceContract
             'method' => 'VisitsSummary.get',
             'idSite' => $idSite,
             'period' => 'month',
-            'date' => 'yesterday'
+            'date' => 'yesterday',
         ];
         $response = $this->apiCall($params);
         if (isset($response['nb_visits'])) {
@@ -242,9 +270,11 @@ class MatomoService implements AnalyticsServiceContract
     /**
      * Make an API call to Analytics Service.
      *
-     * @param  array $params
-     * @return string
+     * @param array $params
+     *
      * @throws AnalyticsServiceException
+     *
+     * @return string
      */
     protected function apiCall(array $params)
     {
@@ -254,13 +284,14 @@ class MatomoService implements AnalyticsServiceContract
                 'query' => array_merge($params, [
                     'module' => 'API',
                     'format' => 'JSON',
-                    'token_auth' => $this->tokenAuth
+                    'token_auth' => $this->tokenAuth,
                 ]),
-                'verify' => $this->SSLVerify
+                'verify' => $this->SSLVerify,
             ]);
         } catch (GuzzleException $exception) {
             throw new AnalyticsServiceException($exception->getMessage());
         }
+
         return json_decode($res->getBody(), true);
     }
 }

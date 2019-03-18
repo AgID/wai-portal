@@ -10,14 +10,14 @@ $factory->define(Website::class, function (Faker $faker) {
         'url' => $faker->domainName,
         'type' => 'primary',
         'slug' => Str::slug($faker->domainName),
-        'status' => 'pending'
+        'status' => 'pending',
     ];
 });
 
 $factory->state(Website::class, 'active', [
-    'status' => 'active'
+    'status' => 'active',
 ]);
 
 $factory->state(Website::class, 'suspended', [
-    'status' => 'suspended'
+    'status' => 'suspended',
 ]);

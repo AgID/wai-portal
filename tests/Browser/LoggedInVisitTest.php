@@ -3,18 +3,19 @@
 namespace Tests\Browser;
 
 use App\Models\User;
-use Tests\DuskTestCase;
-use Tests\Browser\Pages\Dashboard;
 use Laravel\Dusk\Browser;
+use Tests\Browser\Pages\Dashboard;
+use Tests\DuskTestCase;
 
 class LoggedInVisitTest extends DuskTestCase
 {
     /**
      * A basic browser test example.
      *
-     * @return void
      * @throws \Exception
      * @throws \Throwable
+     *
+     * @return void
      */
     public function testDashboard()
     {
@@ -23,7 +24,7 @@ class LoggedInVisitTest extends DuskTestCase
         $this->injectFakeSpidSession();
         $this->browse(function (Browser $browser) {
             $browser->loginAs(User::find(1))
-                    ->visit(new Dashboard)
+                    ->visit(new Dashboard())
                     ->assertSee('Dashboard');
         });
     }

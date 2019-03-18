@@ -19,7 +19,7 @@ class AccountVerification extends Mailable
     protected $user;
 
     /**
-     * The token user for account verification
+     * The token user for account verification.
      *
      * @var string
      */
@@ -39,26 +39,27 @@ class AccountVerification extends Mailable
     /**
      * Build the message.
      *
-     * @param string The verification token.
+     * @param string the verification token
+     *
      * @return $this
      */
     public function build()
     {
-        if ($this->user->status == 'invited') {
+        if ('invited' == $this->user->status) {
             if ($this->user->can('access-admin-area')) {
-                $mailTemplate =  "email.admin_invited_verification";
+                $mailTemplate = 'email.admin_invited_verification';
             } else {
-                $mailTemplate =  "email.invited_verification";
+                $mailTemplate = 'email.invited_verification';
             }
         } else {
-            $mailTemplate =  "email.verification";
+            $mailTemplate = 'email.verification';
         }
         //TODO: make sender configurable
         return $this->from('noreply@analytics.italia.it')
                     ->subject('Please verify your email') //TODO: string in lang file
                     ->markdown($mailTemplate)->with([
                         'user' => $this->user,
-                        'token' => $this->token
+                        'token' => $this->token,
                     ]);
     }
 }

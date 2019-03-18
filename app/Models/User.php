@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Silber\Bouncer\Database\HasRolesAndAbilities;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Silber\Bouncer\Database\HasRolesAndAbilities;
 
 class User extends Authenticatable
 {
@@ -25,13 +25,13 @@ class User extends Authenticatable
         'fiscalNumber',
         'email',
         'status',
-        'analytics_password'
+        'analytics_password',
     ];
 
     /**
      * The verification token used in email verification.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\Relation.
+     * @return \Illuminate\Database\Eloquent\Relations\Relation
      */
     public function verificationToken()
     {
@@ -41,7 +41,7 @@ class User extends Authenticatable
     /**
      * The password reset token.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\Relation.
+     * @return \Illuminate\Database\Eloquent\Relations\Relation
      */
     public function passwordResetToken()
     {
@@ -51,17 +51,19 @@ class User extends Authenticatable
     /**
      * Find a User instance by Fiscal Number.
      *
-     * @param string Fiscal Number.
-     * @return User|null The User found or null if not found.
+     * @param string fiscal Number
+     *
+     * @return User|null the User found or null if not found
      */
-    public static function findByFiscalNumber(string $fiscalNumber) {
+    public static function findByFiscalNumber(string $fiscalNumber)
+    {
         return User::where('fiscalNumber', $fiscalNumber)->first();
     }
 
     /**
      * The Public Administration this User belongs to.
      *
-     * @return null|\Illuminate\Database\Eloquent\Relations\Relation.
+     * @return \Illuminate\Database\Eloquent\Relations\Relation|null
      */
     public function publicAdministration()
     {
@@ -71,7 +73,7 @@ class User extends Authenticatable
     /**
      * The Websites of the Public Administration this User belongs to.
      *
-     * @return null|\App\Models\Website.
+     * @return \App\Models\Website|null
      */
     public function getWebsites()
     {
@@ -83,12 +85,12 @@ class User extends Authenticatable
     }
 
     /**
-     * Return name, familyName and email of this user in printable format
+     * Return name, familyName and email of this user in printable format.
      *
      * @return string
      */
     public function getInfo()
     {
-        return $this->name.' '.$this->familyName.' ['.$this->email.']';
+        return $this->name . ' ' . $this->familyName . ' [' . $this->email . ']';
     }
 }

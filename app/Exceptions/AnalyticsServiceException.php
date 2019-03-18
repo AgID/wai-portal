@@ -24,6 +24,7 @@ class AnalyticsServiceException extends Exception
     public function render()
     {
         logger()->error($this->getMessage());
+
         return redirect()->home()->withMessage(['error' => 'Il servizio remoto di Analytics non è disponibile. Riprovare successivamente.']); //TODO: put message in lang file
     }
 }

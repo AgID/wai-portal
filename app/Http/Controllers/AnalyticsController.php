@@ -11,7 +11,7 @@ class AnalyticsController extends Controller
      */
     public function login()
     {
-        logger()->info('User '.auth()->user()->getInfo().' logged in the Analytics Service.');
+        logger()->info('User ' . auth()->user()->getInfo() . ' logged in the Analytics Service.');
 
         return app()->make('analytics-service')
                     ->loginAndRedirectUser(auth()->user()->email, auth()->user()->analytics_password);

@@ -19,7 +19,7 @@ class PasswordReset extends Mailable
     protected $user;
 
     /**
-     * The token user for password reset
+     * The token user for password reset.
      *
      * @var string
      */
@@ -48,7 +48,7 @@ class PasswordReset extends Mailable
             ->subject('Password reset requested') //TODO: string in lang file
             ->markdown('email.password_reset')->with([
                 'user' => $this->user,
-                'token' => $this->token
+                'token' => $this->token,
             ]);
     }
 }

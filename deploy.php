@@ -1,4 +1,5 @@
 <?php
+
 namespace Deployer;
 
 require 'recipe/common.php';
@@ -73,7 +74,7 @@ if (file_exists('hosts.yml')) {
         ->stage('production');
 }
 
-/**
+/*
  * Copy build.properties file tasks
  */
 desc('Copy build.properties file');
@@ -82,7 +83,7 @@ task('deploy:copy_properties', function () {
     writeln('<info>' . $output . '</info>');
 });
 
-/**
+/*
  * Copy nginx conf file tasks
  */
 desc('Copy nginx conf file');
@@ -93,7 +94,7 @@ task('deploy:copy_nginx_application_conf', function () {
     writeln('<info>' . $output . '</info>');
 });
 
-/**
+/*
  * Build tasks
  */
 desc('Build app');
@@ -102,7 +103,7 @@ task('deploy:build', function () {
     writeln('<info>' . $output . '</info>');
 });
 
-/**
+/*
  * Clear data
  */
 desc('Clear data');
@@ -132,7 +133,7 @@ task('deploy', [
     'deploy:build',
     'deploy:unlock',
     'cleanup',
-    'success'
+    'success',
 ]);
 
 // [Optional] If deploy fails automatically unlock.

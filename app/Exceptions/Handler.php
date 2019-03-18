@@ -3,13 +3,13 @@
 namespace App\Exceptions;
 
 use Exception;
-use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Session\TokenMismatchException;
 use Italia\SPIDAuth\Exceptions\SPIDLoginException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Handler extends ExceptionHandler
 {
@@ -37,9 +37,11 @@ class Handler extends ExceptionHandler
      *
      * This is a great spot to send exceptions to Sentry, Bugsnag, etc.
      *
-     * @param  Exception $exception
-     * @return void
+     * @param Exception $exception
+     *
      * @throws Exception
+     *
+     * @return void
      */
     public function report(Exception $exception)
     {
@@ -49,8 +51,9 @@ class Handler extends ExceptionHandler
     /**
      * Render an exception into an HTTP response.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  Exception  $exception
+     * @param \Illuminate\Http\Request $request
+     * @param Exception $exception
+     *
      * @return \Illuminate\Http\Response
      */
     public function render($request, Exception $exception)
@@ -62,11 +65,11 @@ class Handler extends ExceptionHandler
         }
 
         if ($exception instanceof HttpException) {
-            $user = auth()->check() ? 'User '.auth()->user()->getInfo() : 'Anonymous user';
+            $user = auth()->check() ? 'User ' . auth()->user()->getInfo() : 'Anonymous user';
             $statusCode = $exception->getStatusCode();
-            switch($statusCode) {
+            switch ($statusCode) {
                 case 403:
-                    logger()->warning($user.' requested an unauthorized resource [' . $request->url() . '].');
+                    logger()->warning($user . ' requested an unauthorized resource [' . $request->url() . '].');
                     break;
                 default:
                     logger()->warning('A server error (status code: ' . $statusCode . ') occurred [' . $request->url() . ' visited by ' . $user . '].');

@@ -11,9 +11,10 @@ use Swift_SmtpTransport;
 class PECMailable extends Mailable
 {
     /**
-     * Override Mailable functionality to support customized mail settings
+     * Override Mailable functionality to support customized mail settings.
      *
-     * @param  MailerContract  $mailer
+     * @param MailerContract $mailer
+     *
      * @return void
      */
     public function send(MailerContract $mailer)

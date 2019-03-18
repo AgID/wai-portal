@@ -11,18 +11,18 @@ $factory->define(User::class, function (Faker $faker) {
         'familyName' => $faker->lastName,
         'fiscalNumber' => $faker->taxId(),
         'email' => $faker->unique()->safeEmail,
-        'status' => 'inactive'
+        'status' => 'inactive',
     ];
 });
 
 $factory->state(User::class, 'pending', [
-    'status' => 'pending'
+    'status' => 'pending',
 ]);
 
 $factory->state(User::class, 'active', [
-    'status' => 'active'
+    'status' => 'active',
 ]);
 
 $factory->state(User::class, 'suspended', [
-    'status' => 'suspended'
+    'status' => 'suspended',
 ]);

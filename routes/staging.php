@@ -1,10 +1,9 @@
 <?php
 
 use App\Models\Website;
+use GuzzleHttp\Client as TrackingClient;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
-use Italia\SPIDAuth\SPIDUser;
-use GuzzleHttp\Client as TrackingClient;
 use Silber\Bouncer\BouncerFacade as Bouncer;
 
 /*
@@ -29,10 +28,11 @@ Route::get('/_reset_all', function () {
     Bouncer::scope()->to(null);
     Artisan::call('app:create-roles');
     Artisan::call('db:seed');
-    return redirect()->home()->withMessage(['info' => "L'istanza di " . config('app.name') . " è stata ripristinata allo stato iniziale."]);
+
+    return redirect()->home()->withMessage(['info' => "L'istanza di " . config('app.name') . ' è stata ripristinata allo stato iniziale.']);
 });
 
-Route::get('/_activate_websites', function() {
+Route::get('/_activate_websites', function () {
     $faker = Faker\Factory::create();
     $client = new TrackingClient(['base_uri' => config('analytics-service.api_base_uri')]);
     $pendingWebsites = Website::where('status', 'pending')->get();
@@ -40,14 +40,15 @@ Route::get('/_activate_websites', function() {
         $client->request('GET', 'piwik.php', [
             'query' => [
                 'rec' => '1',
-                'idsite' => $website->analytics_id
+                'idsite' => $website->analytics_id,
             ],
             'verify' => false,
             'headers' => [
                 'User-Agent' => $faker->userAgent,
-            ]
+            ],
         ]);
     });
     Artisan::call('app:check-websites');
-    return redirect()->home()->withMessage(['success' => "I siti web in attesa sono stati attivati."]);
+
+    return redirect()->home()->withMessage(['success' => 'I siti web in attesa sono stati attivati.']);
 });

@@ -7,18 +7,17 @@ use Illuminate\Database\Eloquent\Model;
 class PasswordResetToken extends Model
 {
     /**
-     * The primary key.
-     *
-     * @var string
-     */
-    protected $primaryKey = 'user_id';
-
-    /**
      * Indicates if the model should be timestamped.
      *
      * @var bool
      */
     public $timestamps = false;
+    /**
+     * The primary key.
+     *
+     * @var string
+     */
+    protected $primaryKey = 'user_id';
 
     /**
      * The attributes that should be mutated to dates.
@@ -34,7 +33,7 @@ class PasswordResetToken extends Model
      */
     protected $fillable = [
         'token',
-        'created_at'
+        'created_at',
     ];
 
     /**
@@ -50,7 +49,7 @@ class PasswordResetToken extends Model
     /**
      * The owner if this password reset token.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\Relation.
+     * @return \Illuminate\Database\Eloquent\Relations\Relation
      */
     public function user()
     {

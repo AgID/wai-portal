@@ -1,9 +1,8 @@
 <?php
 
 use App\Models\User;
-
-use Italia\SPIDAuth\SPIDUser;
 use Illuminate\Support\Str;
+use Italia\SPIDAuth\SPIDUser;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,12 +28,12 @@ Route::get('/_test/_session_get/{key}', function ($key) {
 
 Route::get('/_test/_inject_spid_session', function () {
     $SPIDUser = new SPIDUser([
-        "mobilePhone" => ["+390000000000"],
-        "familyName" => ["Cognome"],
-        "name" => ["Nome"],
-        "spidCode" => ["TEST1234567890"],
-        "fiscalNumber" => ["FSCLNB17A01H501X"],
-        "email" => ["mail@example.com"]
+        'mobilePhone' => ['+390000000000'],
+        'familyName' => ['Cognome'],
+        'name' => ['Nome'],
+        'spidCode' => ['TEST1234567890'],
+        'fiscalNumber' => ['FSCLNB17A01H501X'],
+        'email' => ['mail@example.com'],
     ]);
     session(['spid_sessionIndex' => 'fake-session-index']);
     session(['spid_user' => $SPIDUser]);
@@ -51,7 +50,8 @@ Route::get('/_test/_get_new_user_verification_token/{userId}', function ($userId
         $user->verificationToken->delete();
     }
     $user->verificationToken()->create([
-        'token' => Hash::make($token)
+        'token' => Hash::make($token),
     ]);
+
     return $token;
 });

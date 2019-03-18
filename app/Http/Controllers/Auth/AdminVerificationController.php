@@ -12,24 +12,25 @@ use Illuminate\Support\Str;
 class AdminVerificationController extends Controller
 {
     /**
-     * Display token verification page
+     * Display token verification page.
      *
      * @return \Illuminate\Http\Response
      */
     public function verify()
     {
-        if (auth()->check() && auth()->user()->status != 'invited') {
+        if (auth()->check() && 'invited' != auth()->user()->status) {
             return redirect()->home()->withMessage(['info' => "L'indirizzo email è già stato verificato."]); //TODO: put message in lang file
         }
 
-    	return view('auth.admin_verify');
+        return view('auth.admin_verify');
     }
 
     /**
-     * Perform token verification
+     * Perform token verification.
      *
      * @param Request $request
      * @param $token
+     *
      * @return \Illuminate\Http\Response
      */
     public function verifyToken(Request $request, $email = null, $token = null)
@@ -39,7 +40,7 @@ class AdminVerificationController extends Controller
 
         validator(['email' => $email, 'token' => $token], [
             'email' => 'required|email',
-            'token' => 'required|string'
+            'token' => 'required|string',
         ])->validate();
 
         $user = User::where('email', $email)->first();
@@ -48,7 +49,7 @@ class AdminVerificationController extends Controller
             return redirect()->route('admin-verify')->withMessage(['warning' => "L'indirizzo email inserito non corrisponde ad un'utenza oppure il codice è errato."]); //TODO: put message in lang file
         }
 
-        if ($user->status != 'invited') {
+        if ('invited' != $user->status) {
             return redirect()->route('admin-dashboard')
                 ->withMessage(['info' => "L'indirizzo email è già stato verificato"]); //TODO: put message in lang file
         }
@@ -60,26 +61,27 @@ class AdminVerificationController extends Controller
         $user->status = 'active';
         $user->save();
 
-        logger()->info('User '.$user->getInfo().' confirmed email address.'); //TODO: notify me!
+        logger()->info('User ' . $user->getInfo() . ' confirmed email address.'); //TODO: notify me!
 
         if (!auth()->check()) {
             auth()->login($user);
-            logger()->info('User '.$user->getInfo().' logged in after email address verification.');
+            logger()->info('User ' . $user->getInfo() . ' logged in after email address verification.');
         }
 
-    	return redirect()->route('admin-password_change')
+        return redirect()->route('admin-password_change')
                ->withMessage(['success' => "L'indirizzo email è stato verificato correttamente."]); //TODO: put message in lang file
     }
 
     /**
-     * Show resend confirmation email view
+     * Show resend confirmation email view.
      *
      * @param Request $request
+     *
      * @return \Illuminate\Http\Response
      */
     public function showResendForm()
     {
-        if (auth()->check() && auth()->user()->status != 'invited') {
+        if (auth()->check() && 'invited' != auth()->user()->status) {
             return redirect()->home()->withMessage(['info' => "L'indirizzo email è già stato verificato."]); //TODO: put message in lang file
         }
 
@@ -87,20 +89,21 @@ class AdminVerificationController extends Controller
     }
 
     /**
-     * Resend confirmation email
+     * Resend confirmation email.
      *
      * @param Request $request
+     *
      * @return \Illuminate\Http\Response
      */
     public function resend(Request $request)
     {
         $validatedData = $request->validate([
-            'email' => 'required|email'
+            'email' => 'required|email',
         ]);
 
         $user = User::where('email', $validatedData['email'])->first();
 
-        if (empty($user) || $user->status != 'invited') {
+        if (empty($user) || 'invited' != $user->status) {
             return redirect()->route('home')->withMessage(['info' => "Se l'indirizzo email inserito corrisponde ad un'utenza amministrativa, riceverai e breve un messaggio con un nuovo codice di verifica."]); //TODO: put message in lang file
         }
 
@@ -110,7 +113,7 @@ class AdminVerificationController extends Controller
 
         $token = hash_hmac('sha256', Str::random(40), config('app.key'));
         $user->verificationToken()->create([
-            'token' => Hash::make($token)
+            'token' => Hash::make($token),
         ]);
 
         dispatch(new SendVerificationEmail($user, $token));
