@@ -21,7 +21,7 @@ class Website extends Model
         'public_administration_id',
         'analytics_id',
         'slug',
-        'status'
+        'status',
     ];
 
     /**
@@ -37,7 +37,7 @@ class Website extends Model
     /**
      * The Public Administration this Website belongs to.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\Relation.
+     * @return \Illuminate\Database\Eloquent\Relations\Relation
      */
     public function publicAdministration()
     {
@@ -45,7 +45,7 @@ class Website extends Model
     }
 
     /**
-     * Get total visits for this Website via AnalyticsService
+     * Get total visits for this Website via AnalyticsService.
      *
      * return int
      */
@@ -54,12 +54,13 @@ class Website extends Model
         if (!$this->analytics_id) {
             return null;
         }
-        return (int)app()->make('analytics-service')
+
+        return (int) app()->make('analytics-service')
                     ->getSiteTotalVisits($this->analytics_id, $this->created_at->format('Y-m-d'));
     }
 
     /**
-     * Get last month visits for this Website via AnalyticsService
+     * Get last month visits for this Website via AnalyticsService.
      *
      * return int
      */
@@ -68,7 +69,8 @@ class Website extends Model
         if (!$this->analytics_id) {
             return null;
         }
-        return (int)app()->make('analytics-service')
+
+        return (int) app()->make('analytics-service')
             ->getSiteLastMonthVisits($this->analytics_id);
     }
 }

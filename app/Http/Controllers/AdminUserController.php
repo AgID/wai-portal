@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\SendVerificationEmail;
 use App\Models\User;
 use App\Transformers\UserTransformer;
-use App\Jobs\SendVerificationEmail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -26,7 +26,8 @@ class AdminUserController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -34,14 +35,14 @@ class AdminUserController extends Controller
         $validatedData = $request->validate([
             'name' => 'required',
             'familyName' => 'required',
-            'email' => 'required|unique:users|email'
+            'email' => 'required|unique:users|email',
         ]);
 
-        $user =  User::create([
+        $user = User::create([
             'name' => $validatedData['name'],
             'familyName' => $validatedData['familyName'],
             'email' => $validatedData['email'],
-            'status' => 'invited'
+            'status' => 'invited',
         ]);
 
         $user->assign('super-admin');
@@ -52,12 +53,12 @@ class AdminUserController extends Controller
 
         $token = hash_hmac('sha256', Str::random(40), config('app.key'));
         $user->verificationToken()->create([
-            'token' => Hash::make($token)
+            'token' => Hash::make($token),
         ]);
 
         dispatch(new SendVerificationEmail($user, $token));
 
-        logger()->info('User '.auth()->user()->getInfo().' added a new user ['.$validatedData['email'].'] as super-admin.');
+        logger()->info('User ' . auth()->user()->getInfo() . ' added a new user [' . $validatedData['email'] . '] as super-admin.');
 
         return redirect()->route('admin-dashboard')->withMessage(['success' => 'Il nuovo utente è stato invitato come amministratore al progetto Web Analytics Italia.']); //TODO: put message in lang file
     }
@@ -66,6 +67,7 @@ class AdminUserController extends Controller
      * Show the profile page.
      *
      * @param User $user
+     *
      * @return \Illuminate\Http\Response
      */
     public function show(User $user)
@@ -77,6 +79,7 @@ class AdminUserController extends Controller
      * Show the profile edit form.
      *
      * @param User $user
+     *
      * @return \Illuminate\Http\Response
      */
     public function edit(User $user)
@@ -87,8 +90,9 @@ class AdminUserController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param \Illuminate\Http\Request $request
      * @param User $user
+     *
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, User $user)
@@ -99,26 +103,27 @@ class AdminUserController extends Controller
             'email' => [
                 'required',
                 Rule::unique('users')->ignore($user->id),
-                'email'
-            ]
+                'email',
+            ],
         ]);
 
         $user->fill([
             'name' => $validatedData['name'],
             'familyName' => $validatedData['familyName'],
-            'email' => $validatedData['email']
+            'email' => $validatedData['email'],
         ]);
         $user->save();
 
-        logger()->info('User '.auth()->user()->getInfo().' updated administrator ' . $user->getInfo());
+        logger()->info('User ' . auth()->user()->getInfo() . ' updated administrator ' . $user->getInfo());
 
-        return redirect()->route('admin-dashboard')->withMessage(['success' => "L'utente amministratore ". $user->getInfo() ." è stato modificato."]); //TODO: put message in lang file
+        return redirect()->route('admin-dashboard')->withMessage(['success' => "L'utente amministratore " . $user->getInfo() . ' è stato modificato.']); //TODO: put message in lang file
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int $id
+     * @param int $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
@@ -128,15 +133,16 @@ class AdminUserController extends Controller
 
     /**
      * Get all websites of the specified Public Administration
-     * in JSON format (to be consumed by Datatables)
+     * in JSON format (to be consumed by Datatables).
+     *
+     * @throws \Exception
      *
      * @return \Illuminate\Http\Response
-     * @throws \Exception
      */
     public function dataJson()
     {
         return Datatables::of(auth()->user()->publicAdministration->users)
-            ->setTransformer(new UserTransformer)
+            ->setTransformer(new UserTransformer())
             ->make(true);
     }
 }

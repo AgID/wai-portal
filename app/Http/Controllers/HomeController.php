@@ -24,6 +24,7 @@ class HomeController extends Controller
     public function faq()
     {
         $faqs = Yaml::parseFile(resource_path('views/pages/faqs.yml'));
+
         return view('pages.faq')->with('faqs', $faqs);
     }
 

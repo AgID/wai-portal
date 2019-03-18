@@ -13,14 +13,14 @@ $factory->define(PublicAdministration::class, function (Faker $faker) {
         'county' => $faker->stateAbbr,
         'region' => $faker->state,
         'type' => 'secondary',
-        'status' => 'pending'
+        'status' => 'pending',
     ];
 });
 
 $factory->state(PublicAdministration::class, 'active', [
-    'status' => 'active'
+    'status' => 'active',
 ]);
 
 $factory->state(PublicAdministration::class, 'suspended', [
-    'status' => 'suspended'
+    'status' => 'suspended',
 ]);

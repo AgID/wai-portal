@@ -4,10 +4,10 @@ namespace App\Jobs;
 
 use App\Models\PasswordResetToken;
 use Illuminate\Bus\Queueable;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 
 class ClearPasswordResetToken implements ShouldQueue
 {
@@ -28,12 +28,13 @@ class ClearPasswordResetToken implements ShouldQueue
     /**
      * Execute the job.
      *
-     * @return void
      * @throws \Exception
+     *
+     * @return void
      */
     public function handle()
     {
-        logger()->info("Deleting expired token " . $this->token->token);
+        logger()->info('Deleting expired token ' . $this->token->token);
         $this->token->delete();
     }
 }

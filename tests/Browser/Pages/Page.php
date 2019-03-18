@@ -2,15 +2,16 @@
 
 namespace Tests\Browser\Pages;
 
-use Laravel\Dusk\Page as BasePage;
 use Laravel\Dusk\Browser;
+use Laravel\Dusk\Page as BasePage;
 
 abstract class Page extends BasePage
 {
     /**
      * Assert base tests valid on every page.
      *
-     * @param  Browser  $browser
+     * @param Browser $browser
+     *
      * @return void
      */
     public function assertBase(Browser $browser)
@@ -25,7 +26,6 @@ abstract class Page extends BasePage
         $browser->assertSeeIn('@footer', strtoupper(__('ui.partner_full')));
         $browser->assertSeeLink(__('ui.footer_link_privacy'));
         $browser->assertSeeLink(__('ui.footer_link_legal_notes'));
-
     }
 
     /**
@@ -40,7 +40,7 @@ abstract class Page extends BasePage
             '@header' => '.Header-navbar',
             '@footer' => '.Footer',
             '@spid_login_button' => '.agid-spid-enter',
-            '@spid-idp-test_button' => '.agid-spid-idp-test'
+            '@spid-idp-test_button' => '.agid-spid-idp-test',
         ];
     }
 }

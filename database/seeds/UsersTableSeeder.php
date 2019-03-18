@@ -1,9 +1,9 @@
 <?php
 
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
-use Carbon\Carbon;
 use Silber\Bouncer\BouncerFacade as Bouncer;
 
 class UsersTableSeeder extends Seeder
@@ -21,7 +21,7 @@ class UsersTableSeeder extends Seeder
             'password' => Hash::make('password'),
             'status' => 'active',
             'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-            'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+            'updated_at' => Carbon::now()->format('Y-m-d H:i:s'),
         ]);
         Bouncer::scope()->to(0);
         User::findByFiscalNumber('FSCLNB17A01H501X')->assign('super-admin');

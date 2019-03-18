@@ -2,17 +2,18 @@
 
 namespace Tests\Browser;
 
-use Tests\DuskTestCase;
 use Laravel\Dusk\Browser;
+use Tests\DuskTestCase;
 
 class AdminUserTest extends DuskTestCase
 {
     /**
      * A basic browser test example.
      *
-     * @return void
      * @throws \Exception
      * @throws \Throwable
+     *
+     * @return void
      */
     public function testVisit()
     {

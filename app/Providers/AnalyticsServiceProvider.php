@@ -3,8 +3,8 @@
 namespace App\Providers;
 
 use App\Services\MatomoService;
-use Illuminate\Support\ServiceProvider;
 use Illuminate\Contracts\Support\DeferrableProvider;
+use Illuminate\Support\ServiceProvider;
 
 class AnalyticsServiceProvider extends ServiceProvider implements DeferrableProvider
 {
@@ -15,7 +15,6 @@ class AnalyticsServiceProvider extends ServiceProvider implements DeferrableProv
      */
     public function boot()
     {
-
     }
 
     /**

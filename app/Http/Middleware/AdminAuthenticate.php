@@ -9,8 +9,9 @@ class AdminAuthenticate
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
+     * @param \Illuminate\Http\Request $request
+     * @param \Closure $next
+     *
      * @return mixed
      */
     public function handle($request, Closure $next)
@@ -19,13 +20,14 @@ class AdminAuthenticate
             return redirect()->guest(route('admin-login'));
         } elseif (!$request->user()->can('access-admin-area')) {
             abort(403, __('ui.pages.403.description'));
-        } elseif (auth()->user()->status == 'suspended') {
+        } elseif ('suspended' == auth()->user()->status) {
             abort(403, __('ui.pages.403.description'));
         } elseif (is_null(auth()->user()->password)
                     && !$request->routeIs('admin-password_change')
                     && !$request->routeIs('admin-do_password_change')) {
             return redirect()->route('admin-password_change');
         }
+
         return $next($request);
     }
 }

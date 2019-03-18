@@ -2,23 +2,24 @@
 
 namespace Tests\Browser;
 
-use Tests\DuskTestCase;
-use Tests\Browser\Pages\Home;
 use Laravel\Dusk\Browser;
+use Tests\Browser\Pages\Home;
+use Tests\DuskTestCase;
 
 class AnonymousVisitTest extends DuskTestCase
 {
     /**
      * A basic browser test example.
      *
-     * @return void
      * @throws \Exception
      * @throws \Throwable
+     *
+     * @return void
      */
     public function testVisit()
     {
         $this->browse(function (Browser $browser) {
-            $browser->visit(new Home)
+            $browser->visit(new Home())
                     ->assertSee('Home')
                     ->waitForText('Entra con SPID')
                     ->assertSee('Entra con SPID')

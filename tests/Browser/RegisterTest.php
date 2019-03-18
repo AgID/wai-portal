@@ -2,23 +2,24 @@
 
 namespace Tests\Browser;
 
-use Tests\DuskTestCase;
-use Tests\Browser\Pages\Home;
 use Laravel\Dusk\Browser;
+use Tests\Browser\Pages\Home;
+use Tests\DuskTestCase;
 
 class RegisterTest extends DuskTestCase
 {
     /**
      * A basic browser test example.
      *
-     * @return void
      * @throws \Exception
      * @throws \Throwable
+     *
+     * @return void
      */
     public function testVisit()
     {
         $this->browse(function (Browser $browser) {
-            $browser->visit(new Home)
+            $browser->visit(new Home())
                     ->clickLink('Dashboard')
                     ->assertPathIs('/spid/login')
                     ->waitForText('Entra con SPID')
@@ -28,7 +29,7 @@ class RegisterTest extends DuskTestCase
         });
         $this->injectFakeSpidSession();
         $this->browse(function (Browser $browser) {
-            $browser->visit(new Home)
+            $browser->visit(new Home())
                 ->clickLink('Dashboard')
                 ->assertPathIs('/register')
                 ->assertSee('Registrazione')
@@ -39,7 +40,7 @@ class RegisterTest extends DuskTestCase
         });
         $verificationToken = $this->getVerificationToken(1);
         $this->browse(function (Browser $browser) use ($verificationToken) {
-            $browser->visit(new Home)
+            $browser->visit(new Home())
                     ->clickLink('Dashboard')
                     ->assertPathIs('/user/verify')
                     ->assertSee('Verifica indirizzo email')
@@ -49,7 +50,7 @@ class RegisterTest extends DuskTestCase
                     ->assertSee("L'indirizzo email è stato verificato correttamente.")
                     ->visit('/user/verify')
                     ->waitForText("L'indirizzo email dell'utente")
-                    ->assertSee("è già stato verificato.");
+                    ->assertSee('è già stato verificato.');
         });
     }
 }

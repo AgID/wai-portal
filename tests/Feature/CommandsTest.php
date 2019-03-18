@@ -8,8 +8,8 @@ use App\Models\Website;
 use Ehann\RediSearch\Index;
 use Ehann\RedisRaw\PhpRedisAdapter;
 use Exception;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use GuzzleHttp\Client as TrackingClient;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class CommandsTest extends TestCase
@@ -17,12 +17,15 @@ class CommandsTest extends TestCase
     use RefreshDatabase;
 
     /**
-     * Models required by this test
+     * Models required by this test.
      */
-    protected $user, $user_pending, $website, $website_pending;
+    protected $user;
+    protected $user_pending;
+    protected $website;
+    protected $website_pending;
 
     /**
-     * Test setUp
+     * Test setUp.
      */
     protected function setUp(): void
     {
@@ -42,7 +45,7 @@ class CommandsTest extends TestCase
     }
 
     /**
-     * Test tearDown
+     * Test tearDown.
      */
     protected function tearDown(): void
     {
@@ -53,23 +56,24 @@ class CommandsTest extends TestCase
     }
 
     /**
-     * Test CheckPendingWebsite class
+     * Test CheckPendingWebsite class.
+     *
+     * @throws \Exception
      *
      * @return void
-     * @throws \Exception
      */
     public function testCheckPendingWebsites()
     {
         $this->artisan('app:check-websites');
 
         $this->assertDatabaseHas('users', [
-            'status' => 'pending'
+            'status' => 'pending',
         ]);
         $this->assertDatabaseHas('public_administrations', [
-            'status' => 'pending'
+            'status' => 'pending',
         ]);
         $this->assertDatabaseHas('websites', [
-            'status' => 'pending'
+            'status' => 'pending',
         ]);
 
         $analyticsId = $this->app->make('analytics-service')->registerSite('Sito istituzionale', $this->website->url, $this->user->publicAdministration->name);
@@ -80,9 +84,9 @@ class CommandsTest extends TestCase
         $client->request('GET', '/piwik.php', [
             'query' => [
                 'rec' => '1',
-                'idsite' => $analyticsId
+                'idsite' => $analyticsId,
             ],
-            'verify' => false
+            'verify' => false,
         ]);
 
         $this->website_pending->created_at = now()->subDays(16);
@@ -91,27 +95,28 @@ class CommandsTest extends TestCase
         $this->artisan('app:check-websites');
 
         $this->assertDatabaseHas('websites', [
-            'status' => 'active'
+            'status' => 'active',
         ]);
         $this->assertDatabaseHas('public_administrations', [
-            'status' => 'active'
+            'status' => 'active',
         ]);
         $this->assertDatabaseHas('websites', [
-            'status' => 'active'
+            'status' => 'active',
         ]);
         $this->assertDatabaseMissing('public_administrations', [
-            'status' => 'pending'
+            'status' => 'pending',
         ]);
         $this->assertDatabaseMissing('websites', [
-            'status' => 'pending'
+            'status' => 'pending',
         ]);
     }
 
     /**
-     * Test CreateRoles class
+     * Test CreateRoles class.
+     *
+     * @throws \Exception
      *
      * @return void
-     * @throws \Exception
      */
     public function testCreateRoles()
     {
@@ -120,7 +125,7 @@ class CommandsTest extends TestCase
             'name' => 'reader',
             'name' => 'manager',
             'name' => 'admin',
-            'name' => 'super-admin'
+            'name' => 'super-admin',
         ]);
         $this->artisan('app:create-roles');
         $this->assertDatabaseHas('roles', [
@@ -128,20 +133,21 @@ class CommandsTest extends TestCase
             'name' => 'reader',
             'name' => 'manager',
             'name' => 'admin',
-            'name' => 'super-admin'
+            'name' => 'super-admin',
         ]);
     }
 
     /**
-     * Test UpdateIPAList class
+     * Test UpdateIPAList class.
+     *
+     * @throws \Exception
      *
      * @return void
-     * @throws \Exception
      */
     public function testUpdateIPAList()
     {
         $user = factory(User::class)->states('active')->create();
-        $IPAIndex = new Index((new PhpRedisAdapter)->connect(config('database.redis.ipaindex.host'), config('database.redis.ipaindex.port'), config('database.redis.ipaindex.database')), 'IPAIndex');
+        $IPAIndex = new Index((new PhpRedisAdapter())->connect(config('database.redis.ipaindex.host'), config('database.redis.ipaindex.port'), config('database.redis.ipaindex.database')), 'IPAIndex');
         try {
             $IPAIndex->drop();
         } catch (Exception $e) {

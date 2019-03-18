@@ -8,26 +8,27 @@ use League\Fractal\TransformerAbstract;
 class UserTransformer extends TransformerAbstract
 {
     /**
-    * @param \App\Models\User $user
-    * @return array
-    */
+     * @param \App\Models\User $user
+     *
+     * @return array
+     */
     public function transform(User $user)
     {
         $data = [
             'name' => $user->name,
             'familyName' => $user->familyName,
             'email' => $user->email,
-            'role' => __('auth.roles.'.$user->roles()->first()->name),
+            'role' => __('auth.roles.' . $user->roles()->first()->name),
             'added_at' => $user->created_at->format('d/m/Y'),
-            'status' => __('auth.status.'.$user->status),
+            'status' => __('auth.status.' . $user->status),
             'actions' => [],
-            'control' => ''
+            'control' => '',
         ];
 
         if (auth()->user()->can('manage-users')) {
             $data['actions'][] = [
                 'link' => route('users-edit', ['user' => $user], false),
-                'label' => __('ui.pages.users.index.edit_user')
+                'label' => __('ui.pages.users.index.edit_user'),
             ];
         }
 
