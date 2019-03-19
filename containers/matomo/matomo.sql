@@ -367,6 +367,8 @@ INSERT INTO `option` VALUES
   ('SitesManager_DefaultTimezone','Europe/Rome',0),
   ('UpdateCheck_LastTimeChecked','1548799026',1),
   ('UpdateCheck_LatestVersion','3.9.0',0),
+  ('usercountry.location_provider','geoip2php',0),
+  ('usercountry.switchtoisoregions','1552992886',0),
   ('useridsalt','LP132Cp5xSn89MWX7KRAXjvXNskpOgliC6RgzJTp',1),
   ('UsersManager.lastSeen.matomo','1548799404',1),
   ('version_Actions','3.9.0',1),

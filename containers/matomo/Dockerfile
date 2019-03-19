@@ -7,14 +7,14 @@ RUN mkdir -p /opt/matomo
 ENV MATOMO_VERSION 3.9.0
 
 RUN wget -q -O matomo.tar.gz \
-		"https://builds.matomo.org/matomo-${MATOMO_VERSION}.tar.gz"; \
-	tar -xzf matomo.tar.gz -C /opt/matomo --strip-components=1; \
-	rm matomo.tar.gz;
+        "https://builds.matomo.org/matomo-${MATOMO_VERSION}.tar.gz"; \
+    tar -xzf matomo.tar.gz -C /opt/matomo --strip-components=1; \
+    rm matomo.tar.gz;
 
 RUN wget -q -O GeoIPCity.tar.gz \
-		"https://geolite.maxmind.com/download/geoip/database/GeoLite2-City.tar.gz"; \
-	tar -xf GeoIPCity.tar.gz -C /opt/matomo/misc/ --strip-components=1; \
-	rm -rf GeoIPCity.tar.gz
+        "https://geolite.maxmind.com/download/geoip/database/GeoLite2-City.tar.gz"; \
+    tar -xf GeoIPCity.tar.gz -C /opt/matomo/misc/ --strip-components=1 --wildcards "*.mmdb"; \
+    rm -rf GeoIPCity.tar.gz
 
 COPY ./matomo.sql /opt/matomo.sql
 COPY ./install_matomo_db.sh /opt/install_matomo_db.sh
