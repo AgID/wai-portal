@@ -24,7 +24,7 @@ class CreateUsersTable extends Migration
             $table->integer('public_administration_id')->unsigned()->nullable();
             $table->foreign('public_administration_id')->references('id')->on('public_administrations');
             $table->enum('status', ['invited', 'inactive', 'pending', 'active', 'suspended']);
-            $table->string('analytics_password')->nullable();
+            $table->string('partial_analytics_password')->nullable();
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();

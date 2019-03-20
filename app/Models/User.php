@@ -25,7 +25,7 @@ class User extends Authenticatable
         'fiscalNumber',
         'email',
         'status',
-        'analytics_password',
+        'partial_analytics_password',
     ];
 
     /**
@@ -82,6 +82,16 @@ class User extends Authenticatable
         } else {
             return null;
         }
+    }
+
+    /**
+     * Return calculated password for this User's Analytics Service account.
+     *
+     * @return string
+     */
+    public function getAnalyticsPasswordAttribute()
+    {
+        return md5($this->partial_analytics_password . config('app.salt'));
     }
 
     /**
