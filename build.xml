@@ -111,10 +111,17 @@
         </copy>
         <!-- Set Laravel .env file according to current environment -->
         <echo message="Setting Laravel environment..."/>
+        <php function="random_bytes" returnProperty="APP_SALT">
+            <param value="32"/>
+        </php>
+        <php function="bin2hex" returnProperty="APP_SALT">
+            <param value="${APP_SALT}"/>
+        </php>
         <copy file="env/env-laravel-${env.APP_ENV}" tofile=".env" overwrite="true">
             <filterchain>
                 <replacetokens>
                     <token key="HOSTNAME" value="${HOSTNAME}" />
+                    <token key="APP_SALT" value="${APP_SALT}" />
                     <token key="MARIADB_DATABASE" value="${MARIADB_DATABASE}" />
                     <token key="MARIADB_USER" value="${MARIADB_USER}" />
                     <token key="MARIADB_PASSWORD" value="${MARIADB_PASSWORD}" />

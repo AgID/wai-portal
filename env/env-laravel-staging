@@ -1,6 +1,7 @@
 APP_NAME="Web Analytics Italia"
 APP_ENV=staging
 APP_KEY=
+APP_SALT=@APP_SALT@
 APP_DEBUG=false
 APP_URL=https://@HOSTNAME@
 APP_VERSION=0.1-alpha
