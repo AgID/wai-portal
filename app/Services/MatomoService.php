@@ -185,9 +185,9 @@ class MatomoService implements AnalyticsServiceContract
      *
      * @return void
      */
-    public function loginAndRedirectUser(string $userLogin, string $password)
+    public function loginAndRedirectUser(string $userLogin, string $hashedPassword)
     {
-        return redirect($this->servicePublicUrl . '/index.php?module=Login&action=logme&login=' . $userLogin . '&password=' . md5($password));
+        return redirect($this->servicePublicUrl . '/index.php?module=Login&action=logme&login=' . $userLogin . '&password=' . $hashedPassword);
     }
 
     /**

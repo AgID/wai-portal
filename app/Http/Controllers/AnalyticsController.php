@@ -13,7 +13,9 @@ class AnalyticsController extends Controller
     {
         logger()->info('User ' . auth()->user()->getInfo() . ' logged in the Analytics Service.');
 
+        $hashedPassword = md5(auth()->user()->analytics_password);
+
         return app()->make('analytics-service')
-                    ->loginAndRedirectUser(auth()->user()->email, auth()->user()->analytics_password);
+                    ->loginAndRedirectUser(auth()->user()->email, $hashedPassword);
     }
 }
