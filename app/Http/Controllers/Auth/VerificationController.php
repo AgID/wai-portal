@@ -69,7 +69,7 @@ class VerificationController extends Controller
                 'name' => $SPIDUser->name,
                 'familyName' => $SPIDUser->familyName,
                 'status' => 'active',
-                'analytics_password' => Str::random(20),
+                'partial_analytics_password' => Str::random(rand(32, 48)),
             ]);
 
             $analyticsService = app()->make('analytics-service');

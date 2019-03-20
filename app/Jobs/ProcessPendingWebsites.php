@@ -42,7 +42,7 @@ class ProcessPendingWebsites implements ShouldQueue
                     $pendingUser = $website->publicAdministration->users()->where('status', 'pending')->first();
 
                     if ($pendingUser) {
-                        $pendingUser->analytics_password = Str::random(20);
+                        $pendingUser->partial_analytics_password = Str::random(rand(32, 48));
                         $pendingUser->status = 'active';
                         $pendingUser->save();
                         $pendingUser->roles()->detach();
