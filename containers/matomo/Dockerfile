@@ -4,7 +4,7 @@ LABEL maintainer="Davide Porrovecchio <davide.porrovecchio@agid.gov.it>"
 
 RUN mkdir -p /opt/matomo
 
-ENV MATOMO_VERSION 3.8.1
+ENV MATOMO_VERSION 3.9.0
 
 RUN wget -q -O matomo.tar.gz \
 		"https://builds.matomo.org/matomo-${MATOMO_VERSION}.tar.gz"; \
