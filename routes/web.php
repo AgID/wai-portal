@@ -136,7 +136,7 @@ Route::prefix('/user/verify')->middleware('spid.auth')->group(function () {
 /* Both SPID and application authentication: this is the default for registered users */
 Route::middleware(['spid.auth', 'auth'])->group(function () {
     Route::get('/user/profile', [
-        'as' => 'user_profile',
+        'as' => 'user-profile',
         'uses' => 'Auth\UserAuthController@profile',
     ]);
 
