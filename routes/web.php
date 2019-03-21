@@ -140,7 +140,12 @@ Route::middleware(['spid.auth', 'auth'])->group(function () {
         'uses' => 'Auth\UserAuthController@profile',
     ]);
 
-    Route::prefix('/dashboard')->group(function () {
+    // Route::get('/select-public-administration', [
+    //     'as' => 'select-public-administration',
+    //     'uses' => 'PublicAdministrationController@selectTenant',
+    // ]);
+
+    Route::middleware(['tenant.selected'])->prefix('/dashboard')->group(function () {
         Route::get('/', [
             'as' => 'dashboard',
             'uses' => 'DashboardController@index',

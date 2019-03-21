@@ -61,6 +61,7 @@ class Kernel extends HttpKernel
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+        'tenant.selected' => \App\Http\Middleware\SelectTenant::class,
     ];
 
     /**
@@ -77,6 +78,7 @@ class Kernel extends HttpKernel
         \Illuminate\Session\Middleware\AuthenticateSession::class,
         \Illuminate\Routing\Middleware\SubstituteBindings::class,
         \Illuminate\Auth\Middleware\Authorize::class,
+        \App\Http\Middleware\SelectTenant::class,
         \App\Http\Middleware\ScopeBouncer::class,
         \App\Http\Middleware\AuthorizeAnalytics::class,
     ];
