@@ -65,9 +65,9 @@ class User extends Authenticatable
      *
      * @return \Illuminate\Database\Eloquent\Relations\Relation|null
      */
-    public function publicAdministration()
+    public function publicAdministrations()
     {
-        return $this->belongsTo(PublicAdministration::class);
+        return $this->belongsToMany(PublicAdministration::class);
     }
 
     /**
