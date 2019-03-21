@@ -95,11 +95,11 @@ interface AnalyticsService
      * Login and redirect a specified user in the Analytics Service.
      *
      * @param string $userLogin
-     * @param string $password
+     * @param string $hashedPassword
      *
      * @return void
      */
-    public function loginAndRedirectUser(string $userLogin, string $password);
+    public function loginAndRedirectUser(string $userLogin, string $hashedPassword);
 
     /**
      * Set permissions for a specified user and specified websites

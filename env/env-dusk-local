@@ -1,6 +1,7 @@
 APP_NAME="Web Analytics Italia"
 APP_ENV=local
 APP_KEY=base64:Y8vwgOYYxwd/2wR5unhAsB4wsBQvG4eT+etGi0MkFbQ=
+APP_SALT=f371166ea410af2ff986b78432882e8e3095f77d2511ad2bfaae84faa5a7ff69
 APP_DEBUG=false
 APP_URL=https://nginx
 
