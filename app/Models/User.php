@@ -65,23 +65,9 @@ class User extends Authenticatable
      *
      * @return \Illuminate\Database\Eloquent\Relations\Relation|null
      */
-    public function publicAdministration()
+    public function publicAdministrations()
     {
-        return $this->belongsTo(PublicAdministration::class);
-    }
-
-    /**
-     * The Websites of the Public Administration this User belongs to.
-     *
-     * @return \App\Models\Website|null
-     */
-    public function getWebsites()
-    {
-        if (isset($this->publicAdministration)) {
-            return $this->publicAdministration->websites;
-        } else {
-            return null;
-        }
+        return $this->belongsToMany(PublicAdministration::class);
     }
 
     /**

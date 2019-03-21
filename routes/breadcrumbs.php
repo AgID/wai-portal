@@ -78,9 +78,9 @@ Breadcrumbs::for('users-edit', function ($trail, $user) {
 });
 
 // Web Analytics Italia > User profile
-Breadcrumbs::for('user_profile', function ($trail) {
+Breadcrumbs::for('user-profile', function ($trail) {
     $trail->parent('home');
-    $trail->push(__('ui.pages.profile.title'), route('user_profile', [], false));
+    $trail->push(__('ui.pages.profile.title'), route('user-profile', [], false));
 });
 
 // Web Analytics Italia > SPID Login
@@ -165,10 +165,4 @@ Breadcrumbs::for('admin-verify', function ($trail) {
 Breadcrumbs::for('admin-verify_resend', function ($trail) {
     $trail->parent('home');
     $trail->push(__('ui.pages.admin-verify_resend.title'), route('admin-verify_resend', [], false));
-});
-
-// Web Analytics Italia > Error 404
-Breadcrumbs::for('errors.404', function ($trail) {
-    $trail->parent('home');
-    $trail->push(__('ui.pages.404.title'));
 });

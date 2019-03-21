@@ -1,7 +1,7 @@
-@if (auth()->check() && auth()->user()->status == 'active' && auth()->user()->publicAdministration)
+@if (auth()->check() && auth()->user()->status == 'active' && session()->has('tenant_id'))
     <div class="u-layout-r-withGutter u-cf u-sizeFull u-textCenter u-background-80">
         <div class="Label--publicAdministration u-text-r-xxs u-color-white u-padding-top-xs u-padding-bottom-xs">
-            {{ auth()->user()->publicAdministration->name }}
+            {{ current_public_administration()->name }}
         </div>
     </div>
 @endif

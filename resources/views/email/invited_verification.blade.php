@@ -3,7 +3,7 @@
 
 Ciao,
 sei stato invitato come utente {{ __('auth.roles.'.$user->roles()->first()->name) }}
-per la tua PA ({{ $user->publicAdministration->name }}) su {{ config('app.name') }}!
+per la tua PA ({{ current_public_administration()->name }}) su {{ config('app.name') }}!
 
 Per completare la tua iscrizione è necessario effettuare l'accesso con SPID
 e la conferma del tuo indirizzo email.

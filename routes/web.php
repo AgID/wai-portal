@@ -136,11 +136,16 @@ Route::prefix('/user/verify')->middleware('spid.auth')->group(function () {
 /* Both SPID and application authentication: this is the default for registered users */
 Route::middleware(['spid.auth', 'auth'])->group(function () {
     Route::get('/user/profile', [
-        'as' => 'user_profile',
+        'as' => 'user-profile',
         'uses' => 'Auth\UserAuthController@profile',
     ]);
 
-    Route::prefix('/dashboard')->group(function () {
+    // Route::get('/select-public-administration', [
+    //     'as' => 'select-public-administration',
+    //     'uses' => 'PublicAdministrationController@selectTenant',
+    // ]);
+
+    Route::middleware(['tenant.selected'])->prefix('/dashboard')->group(function () {
         Route::get('/', [
             'as' => 'dashboard',
             'uses' => 'DashboardController@index',

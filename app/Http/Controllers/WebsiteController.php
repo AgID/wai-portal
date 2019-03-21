@@ -42,7 +42,7 @@ class WebsiteController extends Controller
 
     public function createPrimary()
     {
-        if (!empty(auth()->user()->getWebsites())) {
+        if (auth()->user()->publicAdministrations->isNotEmpty()) {
             return redirect()->route('websites-index');
         }
 
@@ -118,6 +118,7 @@ class WebsiteController extends Controller
         $publicAdministration->users()->save($request->user());
 
         $request->user()->roles()->detach();
+        session()->put('tenant_id', $publicAdministration->id);
         Bouncer::scope()->to($publicAdministration->id);
         $request->user()->assign('reader');
 
@@ -172,7 +173,6 @@ class WebsiteController extends Controller
                 ->withInput();
         }
 
-        $publicAdministration = auth()->user()->publicAdministration;
         $analyticsId = app()->make('analytics-service')->registerSite($request->input('name') . ' [' . $request->input('type') . ']', $request->input('url'), $publicAdministration->name); //TODO: put string in lang file
 
         if (empty($analyticsId)) {
@@ -183,7 +183,7 @@ class WebsiteController extends Controller
             'name' => $request->input('name'),
             'url' => $request->input('url'),
             'type' => $request->input('type'),
-            'public_administration_id' => $publicAdministration->id,
+            'public_administration_id' => session('tenant_id'),
             'analytics_id' => $analyticsId,
             'slug' => Str::slug($request->input('url')),
             'status' => 'pending',
@@ -283,7 +283,7 @@ class WebsiteController extends Controller
      */
     public function dataJson()
     {
-        return Datatables::of(auth()->user()->getWebsites())
+        return Datatables::of(current_public_administration()->websites())
                 ->setTransformer(new WebsiteTransformer())
                 ->make(true);
     }
