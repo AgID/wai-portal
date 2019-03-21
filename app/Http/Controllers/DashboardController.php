@@ -11,7 +11,7 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        if (empty(auth()->user()->getWebsites())) {
+        if (auth()->user()->publicAdministrations->isEmpty()) {
             return redirect()->route('websites-add-primary');
         }
 

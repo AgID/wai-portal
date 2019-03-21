@@ -25,7 +25,7 @@
                 <label class="Form-label is-required" for="name">
                     Nome della pubblica amministrazione di appartenenza{{-- //TODO: put message in lang file --}}
                 </label>
-                <input class="Form-input is-disabled" id="name" name="name" value="{{ auth()->user()->publicAdministration->name }}" aria-required="true" required readonly>
+                <input class="Form-input is-disabled" id="name" name="name" value="{{ current_public_administration()->name }}" aria-required="true" required readonly>
             </div>
             <div class="Form-field {{ $errors->has('name') ? 'is-invalid' : '' }}">
                 @if ($errors->has('name'))

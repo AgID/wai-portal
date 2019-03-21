@@ -27,26 +27,27 @@ class ProcessPendingWebsites implements ShouldQueue
         $pendingWebsites->map(function ($website) {
             if ($website->getTotalVisits() > 0) {
                 $analyticsService = app()->make('analytics-service');
+                $publicAdministration = $website->publicAdministration;
 
                 logger()->info('New website "' . $website->name . '" activated [' . $website->url . ']'); //TODO: notify me and the user!
 
                 $website->status = 'active';
                 $website->save();
 
-                if ('pending' == $website->publicAdministration->status) {
-                    $website->publicAdministration->status = 'active';
-                    $website->publicAdministration->save();
+                if ('pending' == $publicAdministration->status) {
+                    $publicAdministration->status = 'active';
+                    $publicAdministration->save();
 
-                    logger()->info('New public administration activated [' . $website->publicAdministration->name . ']'); //TODO: notify me and the user!
+                    logger()->info('New public administration activated [' . $publicAdministration->name . ']'); //TODO: notify me and the user!
 
-                    $pendingUser = $website->publicAdministration->users()->where('status', 'pending')->first();
+                    $pendingUser = $publicAdministration->users()->where('status', 'pending')->first();
 
                     if ($pendingUser) {
                         $pendingUser->partial_analytics_password = Str::random(rand(32, 48));
                         $pendingUser->status = 'active';
                         $pendingUser->save();
                         $pendingUser->roles()->detach();
-                        Bouncer::scope()->to($pendingUser->publicAdministration->id);
+                        Bouncer::scope()->to($publicAdministration->id);
                         $pendingUser->assign('admin');
                         $analyticsService->registerUser($pendingUser->email, $pendingUser->analytics_password, $pendingUser->email);
 
@@ -54,20 +55,22 @@ class ProcessPendingWebsites implements ShouldQueue
                     }
                 }
 
-                foreach ($website->publicAdministration->users as $user) {
+                foreach ($publicAdministration->users as $user) {
                     $access = $user->can('manage-analytics') ? 'admin' : 'view';
                     $analyticsService->setWebsitesAccess($user->email, $access, $website->analytics_id);
 
                     logger()->info('User ' . $user->getInfo() . ' was granted with "' . $access . '" access in the Analytics Service.'); //TODO: notify me and the user!
                 }
             } elseif ($website->created_at->diffInDays(Carbon::now()) > 15) {
-                if ('pending' == $website->publicAdministration->status) {
-                    $pendingUser = $website->publicAdministration->users()->where('status', 'pending')->first();
-                    $pendingUser->publicAdministration()->dissociate();
+                $publicAdministration = $website->publicAdministration;
+
+                if ('pending' == $publicAdministration->status) {
+                    $pendingUser = $publicAdministration->users()->where('status', 'pending')->first();
+                    $pendingUser->publicAdministrations()->detach($publicAdministration->id);
                     $pendingUser->save();
-                    $website->publicAdministration->forceDelete();
+                    $publicAdministration->forceDelete();
                     logger()->info('Website "' . $website->name . '" [' . $website->url . '] was deleted as not activated within 15 days'); //TODO: notify me and the user!
-                    logger()->info('Public administration [' . $website->publicAdministration->name . '] was deleted as not activated within 15 days');
+                    logger()->info('Public administration [' . $publicAdministration->name . '] was deleted as not activated within 15 days');
                 } else {
                     $website->forceDelete();
                     logger()->info('Website "' . $website->name . '" [' . $website->url . '] was deleted as not activated within 15 days'); //TODO: notify me and the user!

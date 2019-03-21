@@ -22,7 +22,7 @@ class AuthorizeAnalytics
             $unauthorized = true;
         }
         if ($request->route('website')) {
-            if ($request->user()->publicAdministration != $request->route('website')->publicAdministration) {
+            if (current_public_administration() != $request->route('website')->publicAdministration) {
                 $unauthorized = true;
             } elseif ('pending' == $request->route('website')->status) {
                 $unauthorized = false;

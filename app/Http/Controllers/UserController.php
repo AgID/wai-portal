@@ -78,7 +78,7 @@ class UserController extends Controller
             'email' => $validatedData['email'],
             'status' => 'invited',
         ]);
-        $user->publicAdministration()->associate(auth()->user()->publicAdministration);
+        $user->publicAdministrations()->attach(session('tenant_id'));
         $user->save();
 
         $token = hash_hmac('sha256', Str::random(40), config('app.key'));
@@ -90,7 +90,7 @@ class UserController extends Controller
 
         dispatch(new SendVerificationEmail($user, $token));
 
-        logger()->info('User ' . auth()->user()->getInfo() . ' added a new user [' . $validatedData['email'] . '] as ' . $validatedData['role'] . ' for "' . auth()->user()->publicAdministration->name . '"');
+        logger()->info('User ' . auth()->user()->getInfo() . ' added a new user [' . $validatedData['email'] . '] as ' . $validatedData['role'] . ' for "' . current_public_administration()->name . '"');
 
         return redirect()->route('users-index')->withMessage(['success' => 'Il nuovo utente è stato invitato al progetto Web Analytics Italia']); //TODO: put message in lang file
     }
@@ -134,8 +134,7 @@ class UserController extends Controller
         ]);
 
         $validator->after(function ($validator) use ($user, $request) {
-            $publicAdministration = $user->publicAdministration;
-            $lastAdministrator = 1 == $publicAdministration->users()->whereHas('roles', function ($query) {
+            $lastAdministrator = 1 == current_public_administration()->users()->whereHas('roles', function ($query) {
                 $query->where('name', 'admin');
             })->count();
             if ('admin' == $user->roles()->first()->name && 'admin' != $request->input('role') && $lastAdministrator) {
@@ -180,7 +179,7 @@ class UserController extends Controller
      */
     public function dataJson()
     {
-        return Datatables::of(auth()->user()->publicAdministration->users)
+        return Datatables::of(current_public_administration()->users)
                 ->setTransformer(new UserTransformer())
                 ->make(true);
     }
