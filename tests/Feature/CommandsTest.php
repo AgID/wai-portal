@@ -21,6 +21,8 @@ class CommandsTest extends TestCase
      */
     protected $user;
     protected $user_pending;
+    protected $publicAdministration;
+    protected $publicAdministration_pending;
     protected $website;
     protected $website_pending;
 
@@ -32,16 +34,18 @@ class CommandsTest extends TestCase
         parent::setUp();
         $this->user = factory(User::class)->states('pending')->create();
         $this->user_pending = factory(User::class)->states('pending')->create();
-        $this->user->publicAdministration()->associate(factory(PublicAdministration::class)->create());
-        $this->user_pending->publicAdministration()->associate(factory(PublicAdministration::class)->create());
+        $this->publicAdministration = factory(PublicAdministration::class)->create();
+        $this->publicAdministration_pending = factory(PublicAdministration::class)->create();
+        $this->user->publicAdministrations()->attach($this->publicAdministration->id);
+        $this->user_pending->publicAdministrations()->attach($this->publicAdministration_pending->id);
         $this->user->save();
         $this->user_pending->save();
         $this->website = factory(Website::class)->make();
         $this->website_pending = factory(Website::class)->make();
-        $this->user->publicAdministration->websites()->save($this->website);
-        $this->user_pending->publicAdministration->websites()->save($this->website_pending);
-        $this->user->publicAdministration->save();
-        $this->user_pending->publicAdministration->save();
+        $this->publicAdministration->websites()->save($this->website);
+        $this->publicAdministration_pending->websites()->save($this->website_pending);
+        $this->publicAdministration->save();
+        $this->publicAdministration_pending->save();
     }
 
     /**
@@ -76,7 +80,7 @@ class CommandsTest extends TestCase
             'status' => 'pending',
         ]);
 
-        $analyticsId = $this->app->make('analytics-service')->registerSite('Sito istituzionale', $this->website->url, $this->user->publicAdministration->name);
+        $analyticsId = $this->app->make('analytics-service')->registerSite('Sito istituzionale', $this->website->url, $this->publicAdministration->name);
         $this->website->analytics_id = $analyticsId;
         $this->website->save();
 
