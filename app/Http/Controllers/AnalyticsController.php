@@ -11,6 +11,10 @@ class AnalyticsController extends Controller
      */
     public function login()
     {
+        if (empty(auth()->user()->partial_analytics_password)) {
+            abort(404);
+        }
+
         logger()->info('User ' . auth()->user()->getInfo() . ' logged in the Analytics Service.');
 
         $hashedPassword = md5(auth()->user()->analytics_password);
