@@ -4,12 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Jobs\SendVerificationEmail;
 use App\Models\User;
-use App\Transformers\UserTransformer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
-use Yajra\Datatables\Datatables;
 
 class AdminUserController extends Controller
 {
@@ -129,20 +127,5 @@ class AdminUserController extends Controller
     public function destroy($id)
     {
         //
-    }
-
-    /**
-     * Get all websites of the specified Public Administration
-     * in JSON format (to be consumed by Datatables).
-     *
-     * @throws \Exception
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function dataJson()
-    {
-        return Datatables::of(auth()->user()->publicAdministration->users)
-            ->setTransformer(new UserTransformer())
-            ->make(true);
     }
 }

@@ -71,20 +71,6 @@ class User extends Authenticatable
     }
 
     /**
-     * The Websites of the Public Administration this User belongs to.
-     *
-     * @return \App\Models\Website|null
-     */
-    public function getWebsites()
-    {
-        if (isset($this->publicAdministration)) {
-            return $this->publicAdministration->websites;
-        } else {
-            return null;
-        }
-    }
-
-    /**
      * Return calculated password for this User's Analytics Service account.
      *
      * @return string
