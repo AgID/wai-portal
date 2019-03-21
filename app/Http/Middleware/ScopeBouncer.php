@@ -35,8 +35,8 @@ class ScopeBouncer
     public function handle($request, Closure $next)
     {
         $tenantId = 0;
-        if ($request->user() && $request->user()->publicAdministration) {
-            $tenantId = $request->user()->publicAdministration->id;
+        if ($request->user() && $request->user()->publicAdministrations->isNotEmpty()) {
+            $tenantId = session('tenant_id');
         }
 
         $this->bouncer->scope()->to($tenantId);
