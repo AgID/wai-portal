@@ -53,13 +53,13 @@
         .ExternalClass {
             width: 100%;
         }
-        @include('email.templates.html.font-icon')
+        @include('mail.templates.html.font-icon')
     </style>
     <table class="wrapper" style="box-sizing: content-box" width="100%" cellpadding="0" cellspacing="0">
         <tr>
             <td align="center">
                 <table class="content" width="100%" cellpadding="0" cellspacing="0">
-                    @include('email.templates.html.header')
+                    @include('mail.templates.html.header')
                     <tr>
                         <td class="body" width="100%" cellpadding="0" cellspacing="0">
                             <table class="u-padding-r-all inner-body" align="center" width="570" cellpadding="0" cellspacing="0">
@@ -70,12 +70,12 @@
                                         </div>
                                     </td>
                                 </tr>
-                                @include('email.templates.html.greetings')
+                                @include('mail.templates.html.greetings')
                             </table>
                         </td>
                     </tr>
-                    @include('email.templates.html.disclaimer')
-                    @include('email.templates.html.footer')
+                    @include('mail.templates.html.disclaimer')
+                    @include('mail.templates.html.footer')
                 </table>
             </td>
         </tr>
