@@ -20,6 +20,8 @@ class UsersTableSeeder extends Seeder
             'email' => 'nome.cognome@example.com',
             'password' => Hash::make('password'),
             'status' => 'active',
+            'email_verified_at' => Carbon::now()->format('Y-m-d H:i:s'),
+            'password_changed_at' => Carbon::now()->format('Y-m-d H:i:s'),
             'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
             'updated_at' => Carbon::now()->format('Y-m-d H:i:s'),
         ]);
