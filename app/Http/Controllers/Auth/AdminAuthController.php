@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Jobs\ClearPasswordResetToken;
 use App\Jobs\SendPasswordResetEmail;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Http\Request;
@@ -28,7 +29,7 @@ class AdminAuthController extends Controller
     public function showLoginForm()
     {
         if (auth()->check() && auth()->user()->can('access-admin-area')) {
-            return redirect()->route('admin-dashboard');
+            return redirect()->intended(route('admin-dashboard'));
         }
 
         return view('auth.admin_login');
@@ -56,7 +57,11 @@ class AdminAuthController extends Controller
             return $this->sendLockoutResponse($request);
         }
 
+        $intendedUrl = session('url.intended');
         session()->invalidate();
+        if ($intendedUrl) {
+            redirect()->setIntendedUrl($intendedUrl);
+        }
 
         if (auth()->attempt($request->only('email', 'password'))) {
             return $this->sendLoginResponse($request);
@@ -214,9 +219,10 @@ class AdminAuthController extends Controller
         $user = auth()->user();
 
         $user->password = Hash::make($validatedData['password']);
+        $user->password_changed_at = Carbon::now();
         $user->save();
 
-        return redirect()->route('admin-dashboard')->withMessage(['success' => __('auth.password.changed')]);
+        return redirect()->intended(route('admin-dashboard'))->withMessage(['success' => __('auth.password.changed')]);
     }
 
     /**
@@ -240,6 +246,6 @@ class AdminAuthController extends Controller
     {
         $this->clearLoginAttempts($request);
 
-        return redirect()->intended(route('admin-dashboard', [], false));
+        return redirect()->intended(route('admin-dashboard'));
     }
 }
