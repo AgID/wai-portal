@@ -16,12 +16,12 @@ class Authenticate
      */
     public function handle($request, Closure $next)
     {
-        if (!auth()->check()) {
-            return redirect()->guest(route('auth-register'))
-                             ->withMessage(['warning' => "Prima di usare l'applicazione è necessario completare la registrazione"]); //TODO: put message in lang file
-        } elseif (in_array(auth()->user()->status, ['inactive', 'invited'])) {
-            return redirect()->route('auth-verify');
-        } elseif ('suspended' == auth()->user()->status) {
+        if (!$request->user()) {
+            return redirect()->route('auth-register')
+                ->withMessage(['warning' => "Prima di usare l'applicazione è necessario completare la registrazione"]); //TODO: put message in lang file
+        }
+
+        if ('suspended' == $request->user()->status) {
             abort(403, "L'utenza è stata sospesa."); // TODO: put in lang file
         }
 
