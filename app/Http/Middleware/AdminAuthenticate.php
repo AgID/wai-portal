@@ -16,16 +16,16 @@ class AdminAuthenticate
      */
     public function handle($request, Closure $next)
     {
-        if (!auth()->check()) {
+        if (!$request->user()) {
             return redirect()->guest(route('admin-login'));
-        } elseif (!$request->user()->can('access-admin-area')) {
-            abort(403, __('ui.pages.403.description'));
-        } elseif ('suspended' == auth()->user()->status) {
-            abort(403, __('ui.pages.403.description'));
-        } elseif (is_null(auth()->user()->password)
-                    && !$request->routeIs('admin-password_change')
-                    && !$request->routeIs('admin-do_password_change')) {
-            return redirect()->route('admin-password_change');
+        }
+
+        if (!$request->user()->can('access-admin-area')) {
+            abort(403);
+        }
+
+        if ('suspended' == $request->user()->status) {
+            abort(403, "L'utenza è stata sospesa."); // TODO: put in lang file
         }
 
         return $next($request);
