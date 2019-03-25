@@ -20,7 +20,7 @@ abstract class DuskTestCase extends BaseTestCase
         parent::setUp();
         $this->artisan('app:create-roles');
         $this->browse(function (Browser $browser) {
-            $browser->visit(new Home())->press('ACCETTO');
+            $browser->visit(new Home())->press('ACCETTO'); // Cookie bar
         });
     }
 
@@ -78,13 +78,27 @@ abstract class DuskTestCase extends BaseTestCase
      */
     public function assignFakeRole(int $userId, string $role)
     {
-        $this->browse(function (Browser $browser) use ($userId, $role) {
-            $browser->visit('/_test/_assign_role/' . $userId . '/' . $role);
-        });
+        $this->get('/_test/_assign_role/' . $userId . '/' . $role);
     }
 
     /**
-     * Get the verification token for the specified user.
+     * Set the password for the specified user.
+     *
+     * @param int $userId
+     * @param string $password
+     *
+     * @throws \Exception
+     * @throws \Throwable
+     *
+     * @return void
+     */
+    public function setPassword(int $userId, string $password)
+    {
+        $this->get('/_test/_set_password/' . $userId . '/' . $password);
+    }
+
+    /**
+     * Get the verification signed url for the specified user.
      *
      * @param int $userId
      *
@@ -93,15 +107,11 @@ abstract class DuskTestCase extends BaseTestCase
      *
      * @return string
      */
-    public function getVerificationToken(int $userId)
+    public function getSignedUrl(int $userId)
     {
-        $verificationToken = '';
-        $this->browse(function (Browser $browser) use ($userId, &$verificationToken) {
-            $response = $browser->visit('/_test/_get_new_user_verification_token/' . $userId);
-            $verificationToken = strip_tags($response->driver->getPageSource());
-        });
+        $responseJson = $this->get('/_test/_get_user_verification_signed_url/' . $userId)->json();
 
-        return $verificationToken;
+        return $responseJson['signed_url'];
     }
 
     /**
