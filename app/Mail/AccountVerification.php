@@ -9,7 +9,8 @@ use Illuminate\Queue\SerializesModels;
 
 class AccountVerification extends Mailable
 {
-    use Queueable, SerializesModels;
+    use Queueable;
+    use SerializesModels;
 
     /**
      * The user this mail will be sent to.
@@ -19,21 +20,21 @@ class AccountVerification extends Mailable
     protected $user;
 
     /**
-     * The token user for account verification.
+     * The signed url user for account verification.
      *
      * @var string
      */
-    protected $token;
+    protected $signedUrl;
 
     /**
      * Create a new message instance.
      *
      * @param User $user
      */
-    public function __construct(User $user, string $token)
+    public function __construct(User $user, string $signedUrl)
     {
         $this->user = $user;
-        $this->token = $token;
+        $this->signedUrl = $signedUrl;
     }
 
     /**
@@ -46,20 +47,20 @@ class AccountVerification extends Mailable
     public function build()
     {
         if ('invited' == $this->user->status) {
-            if ($this->user->can('access-admin-area')) {
-                $mailTemplate = 'email.admin_invited_verification';
+            if ($this->user->isA('super-admin')) {
+                $mailTemplate = 'mail.admin_invited_verification';
             } else {
-                $mailTemplate = 'email.invited_verification';
+                $mailTemplate = 'mail.invited_verification';
             }
         } else {
-            $mailTemplate = 'email.verification';
+            $mailTemplate = 'mail.verification';
         }
         //TODO: make sender configurable
         return $this->from('noreply@analytics.italia.it')
                     ->subject('Please verify your email') //TODO: string in lang file
                     ->markdown($mailTemplate)->with([
                         'user' => $this->user,
-                        'token' => $this->token,
+                        'signedUrl' => $this->signedUrl,
                     ]);
     }
 }
