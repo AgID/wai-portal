@@ -19,7 +19,7 @@ class AdminUserTest extends DuskTestCase
     {
         $this->addFakeUser();
         $mail_address = 'nome.cognome@gov.it';
-        $password = 'Password.1';
+        $newPassword = 'Password.1'; // really?
         $this->browse(function (Browser $browser) use ($mail_address) {
             $browser->visit('/admin')
                     ->assertPathIs('/admin/user/login')
@@ -40,32 +40,35 @@ class AdminUserTest extends DuskTestCase
                     ->visit('/admin/user/logout')
                     ->assertPathIs('/');
         });
-        $verificationToken = $this->getVerificationToken(2);
-        $this->browse(function (Browser $browser) use ($mail_address, $password, $verificationToken) {
-            $browser->visit('/admin/user/verify')
+        $this->setPassword(2, 'randomPassword');
+        $signedUrl = $this->getSignedUrl(2);
+        $this->browse(function (Browser $browser) use ($mail_address, $newPassword, $signedUrl) {
+            $browser->visit($signedUrl)
+                    ->assertPathIs('/admin/user/login')
+                    ->assertSee('Accesso amministratori')
                     ->type('email', $mail_address)
-                    ->type('token', $verificationToken)
-                    ->press('CONFERMA')
+                    ->type('password', 'randomPassword')
+                    ->press('ACCEDI')
                     ->assertPathIs('/admin/user/change-password')
-                    ->assertSee("L'indirizzo email è stato verificato correttamente.")
+                    ->assertSee('La password è scaduta e deve essere cambiata.')
                     ->type('password', 'password')
                     ->type('password_confirmation', 'password')
                     ->press('CAMBIA PASSWORD')
                     ->assertPathIs('/admin/user/change-password')
                     ->assertSee('La password scelta non è sufficientemente complessa.')
-                    ->type('password', $password)
-                    ->type('password_confirmation', $password)
+                    ->type('password', $newPassword)
+                    ->type('password_confirmation', $newPassword)
                     ->press('CAMBIA PASSWORD')
                     ->assertPathIs('/admin/dashboard')
                     ->assertSee('La password è stata cambiata.')
                     ->visit('/admin/user/logout')
                     ->assertPathIs('/');
         });
-        $this->browse(function (Browser $browser) use ($mail_address, $password) {
+        $this->browse(function (Browser $browser) use ($mail_address, $newPassword) {
             $browser->visit('/admin')
                     ->assertPathIs('/admin/user/login')
                     ->type('email', $mail_address)
-                    ->type('password', $password)
+                    ->type('password', $newPassword)
                     ->press('ACCEDI')
                     ->assertPathIs('/admin/dashboard')
                     ->assertSee('Dashboard amministrativa');
