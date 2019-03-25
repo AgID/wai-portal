@@ -3,11 +3,9 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Jobs\SendVerificationEmail;
 use App\Models\User;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 
 class RegisterController extends Controller
 {
@@ -16,7 +14,7 @@ class RegisterController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function showRegistrationForm()
     {
         return view('auth.register');
     }
@@ -45,17 +43,10 @@ class RegisterController extends Controller
             'status' => 'inactive',
         ]);
 
-        $token = hash_hmac('sha256', Str::random(40), config('app.key'));
-        $user->verificationToken()->create([
-            'token' => Hash::make($token),
-        ]);
+        event(new Registered($user));
 
         $user->assign('registered');
         auth()->login($user);
-
-        logger()->info('New user registered: ' . $user->getInfo()); //TODO: notify me!
-
-        dispatch(new SendVerificationEmail($user, $token));
 
         return redirect()->home()
                ->withMessage(['info' => "Una email di verifica è stata inviata all'indirizzo " . $user->email]); //TODO: put message in lang file
