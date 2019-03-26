@@ -29,7 +29,7 @@ class AuthorizeAnalytics
             }
         }
         if ($unauthorized) {
-            abort(403, __('ui.pages.403.description'));
+            abort(403);
         }
 
         return $next($request);

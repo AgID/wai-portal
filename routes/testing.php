@@ -1,7 +1,8 @@
 <?php
 
 use App\Models\User;
-use Illuminate\Support\Str;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Hash;
 use Italia\SPIDAuth\SPIDUser;
 
 /*
@@ -43,15 +44,22 @@ Route::get('/_test/_assign_role/{userId}/{role}', function ($userId, $role) {
     User::find($userId)->assign($role);
 });
 
-Route::get('/_test/_get_new_user_verification_token/{userId}', function ($userId) {
+Route::get('/_test/_set_password/{userId}/{password}', function ($userId, $password) {
     $user = User::find($userId);
-    $token = hash_hmac('sha256', Str::random(40), config('app.key'));
-    if (!empty($user->verificationToken)) {
-        $user->verificationToken->delete();
-    }
-    $user->verificationToken()->create([
-        'token' => Hash::make($token),
-    ]);
+    $user->password = Hash::make($password);
+    $user->save();
+});
 
-    return $token;
+Route::get('/_test/_get_user_verification_signed_url/{userId}', function ($userId) {
+    $user = User::find($userId);
+    $verificationRoute = $user->isA('super-admin')
+        ? 'admin.verification.verify'
+        : 'verification.verify';
+    $signedUrl = URL::temporarySignedRoute(
+        $verificationRoute,
+        Carbon::now()->addMinutes(Config::get('auth.verification.expire', 60)),
+        ['id' => $userId]
+    );
+
+    return response()->json(['signed_url' => $signedUrl]);
 });

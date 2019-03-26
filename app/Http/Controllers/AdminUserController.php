@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Jobs\SendVerificationEmail;
+use App\Events\Auth\Invited;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -36,10 +37,14 @@ class AdminUserController extends Controller
             'email' => 'required|unique:users|email',
         ]);
 
+        $temporaryPassword = Str::random(16);
+
         $user = User::create([
             'name' => $validatedData['name'],
             'familyName' => $validatedData['familyName'],
             'email' => $validatedData['email'],
+            'password' => Hash::make($temporaryPassword),
+            'password_changed_at' => Carbon::now()->subDays(1 + config('auth.password_expiry')),
             'status' => 'invited',
         ]);
 
@@ -49,16 +54,14 @@ class AdminUserController extends Controller
             $user->passwordResetToken->delete();
         }
 
-        $token = hash_hmac('sha256', Str::random(40), config('app.key'));
-        $user->verificationToken()->create([
-            'token' => Hash::make($token),
-        ]);
+        event(new Invited($user, $request->user()));
 
-        dispatch(new SendVerificationEmail($user, $token));
-
-        logger()->info('User ' . auth()->user()->getInfo() . ' added a new user [' . $validatedData['email'] . '] as super-admin.');
-
-        return redirect()->route('admin-dashboard')->withMessage(['success' => 'Il nuovo utente è stato invitato come amministratore al progetto Web Analytics Italia.']); //TODO: put message in lang file
+        return redirect()->route('admin-dashboard')
+            ->withMessages([
+                ['success' => 'Il nuovo utente è stato invitato come amministratore al progetto Web Analytics Italia.'],
+                ['info' => 'Comunica al nuovo utente la sua password temporanea ' . $temporaryPassword . ' usando un canale diverso dalla mail ' . $validatedData['email'] . '.'],
+                ['warning' => 'Attenzione! Questa password non sarà più visualizzata.'],
+            ]); //TODO: put message in lang file
     }
 
     /**

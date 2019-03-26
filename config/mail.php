@@ -116,7 +116,7 @@ return [
         'theme' => 'italia',
 
         'paths' => [
-            resource_path('views/email/templates'),
+            resource_path('views/mail/templates'),
         ],
     ],
 

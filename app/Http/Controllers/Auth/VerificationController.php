@@ -3,130 +3,136 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Jobs\SendVerificationEmail;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Auth\Events\Verified;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 class VerificationController extends Controller
 {
     /**
-     * Display token verification page.
+     * Show the email verification notice.
+     *
+     * @param \Illuminate\Http\Request $request
      *
      * @return \Illuminate\Http\Response
      */
-    public function verify()
+    public function show(Request $request)
     {
-        if (!auth()->check()) {
-            return redirect()->guest(route('auth-register'))
-                             ->withMessage(['warning' => "Prima di usare l'applicazione è necessario completare la registrazione."]); //TODO: put message in lang file
-        } else {
-            if (!in_array(auth()->user()->status, ['inactive', 'invited'])) {
-                return redirect()->home()->withMessage(['info' => "L'indirizzo email dell'utente " . auth()->user()->getInfo() . ' è già stato verificato.']); //TODO: put message in lang file
-            }
+        $user = $request->user();
+
+        if ($user->hasVerifiedEmail()) {
+            return $this->alreadyVerifiedUser($user);
         }
 
-        return view('auth.verify');
+        return view('auth.verify')->with('user', $user);
     }
 
     /**
-     * Perform token verification.
+     * Mark the authenticated user's email address as verified.
      *
-     * @param Request $request
-     * @param $token
+     * @param \Illuminate\Http\Request $request
+     *
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      *
      * @return \Illuminate\Http\Response
      */
-    public function verifyToken(Request $request, $token = null)
+    public function verify(Request $request)
     {
-        $token = $token ?: $request->input('token');
+        $user = $request->user();
 
-        validator(['token' => $token], [
-            'token' => 'required|string',
-        ])->validate();
-
-        $user = auth()->user();
-
-        if (!in_array($user->status, ['inactive', 'invited'])) {
-            return redirect()->home()
-                ->withMessage(['info' => "L'indirizzo email dell'utente " . $request->user()->getInfo() . ' è già stato verificato.']); //TODO: put message in lang file
+        if ($request->route('id') != $user->getKey()) {
+            throw new AuthorizationException();
         }
 
-        if (empty($user->verificationToken) || !Hash::check($token, $user->verificationToken->token)) {
-            return redirect()->route('auth-verify')->withMessage(['warning' => "Il codice di verifica inserito non è valido per l'utente " . $user->name . ' ' . $user->familyName . '.']); //TODO: put message in lang file
+        if ($user->hasVerifiedEmail()) {
+            return $this->alreadyVerifiedUser($user);
         }
 
-        if ('invited' == $user->status) {
-            $SPIDUser = session()->get('spid_user');
+        if ($this->verifyUser($user)) {
+            event(new Verified($user));
+        }
 
-            if ($user->fiscalNumber != $SPIDUser->fiscalNumber) {
-                $request->session()->flash('message', ['warning' => "Il codice fiscale dell'utenza SPID è diverso da quello dell'invito."]);
-                app()->make('SPIDAuth')->logout();
-            }
+        $dashboard = $request->user()->can('access-admin-area') ? '/admin/dashboard' : '/dashboard';
 
-            $user->fill([
-                'spidCode' => $SPIDUser->spidCode,
-                'name' => $SPIDUser->name,
-                'familyName' => $SPIDUser->familyName,
-                'status' => 'active',
-                'partial_analytics_password' => Str::random(rand(32, 48)),
-            ]);
+        return redirect($dashboard)
+            ->withMessage(['success' => "L'indirizzo email è stato verificato correttamente."]); //TODO: put message in lang file
+    }
 
-            $analyticsService = app()->make('analytics-service');
+    /**
+     * Resend the email verification notification.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function resend(Request $request)
+    {
+        $user = $request->user();
 
-            $analyticsService->registerUser($user->email, $user->analytics_password, $user->email);
+        if ($user->hasVerifiedEmail()) {
+            return $this->alreadyVerifiedUser($user);
+        }
 
-            $access = $user->can('manage-analytics') ? 'admin' : 'view';
-            foreach ($user->getWebsites() as $website) {
-                $analyticsService->setWebsitesAccess($user->email, $access, $website->analytics_id);
-            }
-        } else {
-            $user->status = 'pending';
+        $user->sendEmailVerificationNotification();
+
+        return back()->withMessage(['info' => "Una nuova email di verifica è stata inviata all'indirizzo " . $user->email]); //TODO: put message in lang file;
+    }
+
+    /**
+     * Redirect home already verified users.
+     */
+    protected function alreadyVerifiedUser($user)
+    {
+        return redirect()->home()
+            ->withMessage(['info' => "L'indirizzo email dell'utente " . $user->getInfo() . ' è già stato verificato.']); //TODO: put message in lang file
+    }
+
+    /**
+     * Update a verified user.
+     */
+    protected function verifyUser($user)
+    {
+        if ('inactive' == $user->status) {
+            $newStatus = 'pending';
             $user->assign('registered');
         }
 
-        $user->save();
+        if ('invited' == $user->status) {
+            $newStatus = 'active';
 
-        logger()->info('User ' . $user->getInfo() . ' confirmed email address after email address verification.'); //TODO: notify me!
+            if (!$user->isA('super-admin')) {
+                $SPIDUser = session()->get('spid_user');
 
-        if (!auth()->check()) {
-            auth()->login($user);
-            logger()->info('User ' . $user->getInfo() . ' logged in.');
+                if ($user->fiscalNumber != $SPIDUser->fiscalNumber) {
+                    $request->session()->flash('message', ['error' => "Il codice fiscale dell'utenza SPID è diverso da quello dell'invito."]);
+
+                    return app()->make('SPIDAuth')->logout();
+                }
+
+                $user->fill([
+                    'spidCode' => $SPIDUser->spidCode,
+                    'name' => $SPIDUser->name,
+                    'familyName' => $SPIDUser->familyName,
+                    'partial_analytics_password' => Str::random(rand(32, 48)),
+                ]);
+
+                $newStatus = 'active';
+
+                $analyticsService = app()->make('analytics-service');
+
+                $analyticsService->registerUser($user->email, $user->analytics_password, $user->email);
+
+                $access = $user->can('manage-analytics') ? 'admin' : 'view';
+                foreach ($user->getWebsites() as $website) {
+                    $analyticsService->setWebsitesAccess($user->email, $access, $website->analytics_id);
+                }
+            }
         }
 
-        return redirect()->home()
-               ->withMessage(['success' => "L'indirizzo email è stato verificato correttamente."]); //TODO: put message in lang file
-    }
+        $user->status = $newStatus;
+        $user->email_verified_at = $user->freshTimestamp();
 
-    /**
-     * Resend confirmation email.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function resend()
-    {
-        if (!auth()->check()) {
-            return redirect()->guest(route('auth-register'))
-                             ->withMessage(['warning' => "Prima di usare l'applicazione è necessario completare la registrazione"]); //TODO: put message in lang file
-        } else {
-            $user = auth()->user();
-            if (!in_array($user->status, ['inactive', 'invited'])) {
-                return redirect()->home()->withMessage(['info' => "L'indirizzo email dell'utente " . auth()->user()->getInfo() . ' è già stato verificato.']); //TODO: put message in lang file
-            }
-
-            if (!empty($user->verificationToken)) {
-                $user->verificationToken->delete();
-            }
-
-            $token = hash_hmac('sha256', Str::random(40), config('app.key'));
-            $user->verificationToken()->create([
-                'token' => Hash::make($token),
-            ]);
-
-            dispatch(new SendVerificationEmail($user, $token));
-
-            return redirect()->home()
-                   ->withMessage(['info' => "Una nuova email di verifica è stata inviata all'indirizzo " . $user->email]); //TODO: put message in lang file
-        }
+        return $user->save();
     }
 }

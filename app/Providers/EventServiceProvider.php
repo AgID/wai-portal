@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use App\Listeners\EventToLogSubscriber;
+use App\Listeners\SPIDEventSubscriber;
+use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
@@ -11,10 +14,18 @@ class EventServiceProvider extends ServiceProvider
      *
      * @var array
      */
-    protected $listen = [];
+    protected $listen = [
+        \Illuminate\Auth\Events\Registered::class => [
+            SendEmailVerificationNotification::class,
+        ],
+        \App\Events\Auth\Invited::class => [
+            SendEmailVerificationNotification::class,
+        ],
+    ];
 
     protected $subscribe = [
-        'App\Listeners\SPIDEventSubscriber',
+        SPIDEventSubscriber::class,
+        EventToLogSubscriber::class,
     ];
 
     /**

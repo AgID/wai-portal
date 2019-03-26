@@ -18,7 +18,9 @@ class RedirectIfAuthenticated
     public function handle($request, Closure $next, $guard = null)
     {
         if (auth()->guard($guard)->check()) {
-            return redirect('/dashboard');
+            $redirectTo = $request->user()->can('access-admin-area') ? '/admin/dashboard' : '/dashboard';
+
+            return redirect($redirectTo);
         }
 
         return $next($request);

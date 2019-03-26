@@ -2,13 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Jobs\SendVerificationEmail;
 use App\Models\User;
 use App\Transformers\UserTransformer;
-use CodiceFiscale\Checker;
+use CodiceFiscale\Checker as FiscalNumberChecker;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 use Yajra\Datatables\Datatables;
 
 class UserController extends Controller
@@ -63,7 +61,7 @@ class UserController extends Controller
                 'required',
                 'unique:users',
                 function ($attribute, $value, $fail) {
-                    $chk = new Checker();
+                    $chk = new FiscalNumberChecker();
                     if (!$chk->isFormallyCorrect($value)) {
                         return $fail('Il codice fiscale non è formalmente valido.');
                     }
@@ -81,14 +79,9 @@ class UserController extends Controller
         $user->publicAdministrations()->attach(session('tenant_id'));
         $user->save();
 
-        $token = hash_hmac('sha256', Str::random(40), config('app.key'));
-        $user->verificationToken()->create([
-            'token' => Hash::make($token),
-        ]);
-
         $user->assign($validatedData['role']);
 
-        dispatch(new SendVerificationEmail($user, $token));
+        event(new Registered($user));
 
         logger()->info('User ' . auth()->user()->getInfo() . ' added a new user [' . $validatedData['email'] . '] as ' . $validatedData['role'] . ' for "' . current_public_administration()->name . '"');
 

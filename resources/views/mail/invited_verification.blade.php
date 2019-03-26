@@ -8,14 +8,16 @@ per la tua PA ({{ current_public_administration()->name }}) su {{ config('app.na
 Per completare la tua iscrizione è necessario effettuare l'accesso con SPID
 e la conferma del tuo indirizzo email.
 
-@component('mail::button', ['url' => route('auth-do_verify', $token)])
+@component('mail::button', ['url' => $signedUrl])
     Accedi e conferma indirizzo email
 @endcomponent
 
 Se non riesci a confermare cliccando sul bottone,
-puoi visitare la pagina [{{ url('/user/verify') }}]({{ url('/user/verify') }})
-ed inserire il seguente codice di verifica:
-`{!! $token !!}`
+puoi fare copia e incolla di questo link nella barra degli indirizzi del tuo
+browser: `{!! $signedUrl !!}`
+
+**È possibile effettuare la conferma dell'indirizzo email entro un'ora
+dall'invio di questo messaggio.**
 @endcomponent
 
 {{-- //TODO: put message in lang file --}}

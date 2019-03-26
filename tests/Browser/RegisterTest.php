@@ -38,16 +38,10 @@ class RegisterTest extends DuskTestCase
                 ->press('REGISTRA')
                 ->assertSee("Una email di verifica è stata inviata all'indirizzo");
         });
-        $verificationToken = $this->getVerificationToken(1);
-        $this->browse(function (Browser $browser) use ($verificationToken) {
-            $browser->visit(new Home())
-                    ->clickLink('Dashboard')
-                    ->assertPathIs('/user/verify')
-                    ->assertSee('Verifica indirizzo email')
-                    ->type('token', $verificationToken)
-                    ->press('CONFERMA')
-                    ->waitForText("L'indirizzo email è stato verificato correttamente.")
-                    ->assertSee("L'indirizzo email è stato verificato correttamente.")
+        $signedUrl = $this->getSignedUrl(1);
+        $this->browse(function (Browser $browser) use ($signedUrl) {
+            $browser->visit($signedUrl)
+                    ->assertPathIs('/dashboard/websites/add-primary')
                     ->visit('/user/verify')
                     ->waitForText("L'indirizzo email dell'utente")
                     ->assertSee('è già stato verificato.');

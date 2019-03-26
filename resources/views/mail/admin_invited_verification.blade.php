@@ -7,14 +7,16 @@ su {{ config('app.name') }}!
 
 Per completare la tua iscrizione è necessaria la conferma del tuo indirizzo email.
 
-@component('mail::button', ['url' => route('admin-do_verify', ['email' => urlencode($user->email), 'token' => $token])])
+@component('mail::button', ['url' => $signedUrl])
     Conferma indirizzo email
 @endcomponent
 
 Se non riesci a confermare cliccando sul bottone,
-puoi visitare la pagina [{{ url('/admin/user/verify') }}]({{ url('/admin/user/verify') }})
-ed inserire il tuo indirizzo email ed il seguente codice di verifica:
-`{!! $token !!}`
+puoi fare copia e incolla di questo link nella barra degli indirizzi del tuo
+browser: `{!! $signedUrl !!}`
+
+**È possibile effettuare la conferma dell'indirizzo email entro un'ora
+dall'invio di questo messaggio.**
 @endcomponent
 
 {{-- //TODO: put message in lang file --}}

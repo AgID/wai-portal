@@ -2,15 +2,18 @@
 
 namespace App\Models;
 
+use App\Notifications\VerifyEmail;
+use Carbon\Carbon;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Silber\Bouncer\Database\HasRolesAndAbilities;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
-    use Notifiable;
     use HasRolesAndAbilities;
+    use Notifiable;
     use SoftDeletes;
 
     /**
@@ -24,19 +27,11 @@ class User extends Authenticatable
         'familyName',
         'fiscalNumber',
         'email',
+        'password',
         'status',
         'partial_analytics_password',
+        'password_changed_at',
     ];
-
-    /**
-     * The verification token used in email verification.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\Relation
-     */
-    public function verificationToken()
-    {
-        return $this->hasOne(VerificationToken::class);
-    }
 
     /**
      * The password reset token.
@@ -88,5 +83,25 @@ class User extends Authenticatable
     public function getInfo()
     {
         return $this->name . ' ' . $this->familyName . ' [' . $this->email . ']';
+    }
+
+    /**
+     * Send the email verification notification.
+     *
+     * @return void
+     */
+    public function sendEmailVerificationNotification()
+    {
+        $this->notify(new VerifyEmail());
+    }
+
+    /**
+     * Check if the current password is expired.
+     *
+     * @return bool
+     */
+    public function isPasswordExpired()
+    {
+        return Carbon::now()->diffInDays($this->password_changed_at) >= config('auth.password_expiry');
     }
 }

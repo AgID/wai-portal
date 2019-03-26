@@ -95,4 +95,16 @@ return [
         ],
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Passwords expiration
+    |--------------------------------------------------------------------------
+    |
+    | Passwords will expiry and forced to be reset after the number of days
+    | specified with this parameter.
+    |
+    */
+
+    'password_expiry' => env('APP_PASSWORD_EXPIRY', 30),
+
 ];
