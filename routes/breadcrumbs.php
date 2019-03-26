@@ -78,9 +78,9 @@ Breadcrumbs::for('users-edit', function ($trail, $user) {
 });
 
 // Web Analytics Italia > User profile
-Breadcrumbs::for('user-profile', function ($trail) {
+Breadcrumbs::for('user.profile', function ($trail) {
     $trail->parent('home');
-    $trail->push(__('ui.pages.profile.title'), route('user-profile', [], false));
+    $trail->push(__('ui.pages.profile.title'), route('user.profile', [], false));
 });
 
 // Web Analytics Italia > SPID Login
