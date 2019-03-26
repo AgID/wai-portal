@@ -22,7 +22,7 @@
         "laravel-mix-stylelint": "^0.2.0",
         "lodash": "^4.17.11",
         "popper.js": "^1.14.7",
-        "resolve-url-loader": "^2.3.1",
+        "resolve-url-loader": "^3.0.1",
         "sass": "^1.17.2",
         "sass-loader": "^7.1.0",
         "stylelint": "^9.10.1",
