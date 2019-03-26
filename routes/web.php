@@ -103,6 +103,21 @@ Route::middleware('admin.auth')->group(function () {
             'uses' => 'Auth\VerificationController@verify',
         ])->middleware('signed', 'throttle:5,1');
     });
+
+    Route::get('/admin/user/profile', [
+        'as' => 'admin.profile',
+        'uses' => 'Auth\ProfileController@showProfile',
+    ]);
+
+    Route::get('/admin/user/profile/edit', [
+        'as' => 'admin.profile.edit',
+        'uses' => 'Auth\ProfileController@showProfileForm',
+    ]);
+
+    Route::patch('/admin/user/profile', [
+        'as' => 'admin.profile.update',
+        'uses' => 'Auth\ProfileController@update',
+    ]);
 });
 
 /*
@@ -146,6 +161,21 @@ Route::middleware('spid.auth')->group(function () {
             'uses' => 'Auth\VerificationController@verify',
         ])->middleware('signed', 'throttle:5,1');
     });
+
+    Route::get('/user/profile', [
+        'as' => 'user.profile',
+        'uses' => 'Auth\ProfileController@showProfile',
+    ]);
+
+    Route::get('/user/profile/edit', [
+        'as' => 'user.profile.edit',
+        'uses' => 'Auth\ProfileController@showProfileForm',
+    ]);
+
+    Route::patch('/user/profile', [
+        'as' => 'user.profile.update',
+        'uses' => 'Auth\ProfileController@update',
+    ]);
 });
 
 /*
@@ -155,11 +185,6 @@ Route::middleware('spid.auth')->group(function () {
  * This is the default for registered users.
  */
 Route::middleware('spid.auth', 'auth', 'verified')->group(function () {
-    Route::get('/user/profile', [
-        'as' => 'user-profile',
-        'uses' => 'Auth\UserAuthController@profile',
-    ]);
-
     // Route::get('/select-public-administration', [
     //     'as' => 'select-public-administration',
     //     'uses' => 'PublicAdministrationController@selectTenant',
