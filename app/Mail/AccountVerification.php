@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Models\PublicAdministration;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
@@ -17,7 +18,21 @@ class AccountVerification extends Mailable
      *
      * @var User
      */
-    protected $user;
+    public $user;
+
+    /**
+     * The public administration selected for the invitation.
+     *
+     * @var App\Models\PublicAdministration
+     */
+    public $publicAdministration;
+
+    /**
+     * The user issuing the invitation.
+     *
+     * @var App\Models\User
+     */
+    public $invitedBy;
 
     /**
      * The signed url user for account verification.
@@ -31,9 +46,11 @@ class AccountVerification extends Mailable
      *
      * @param User $user
      */
-    public function __construct(User $user, string $signedUrl)
+    public function __construct(User $user, PublicAdministration $publicAdministration = null, User $invitedBy = null, string $signedUrl)
     {
         $this->user = $user;
+        $this->publicAdministration = $publicAdministration;
+        $this->invitedBy = $invitedBy;
         $this->signedUrl = $signedUrl;
     }
 
@@ -60,6 +77,8 @@ class AccountVerification extends Mailable
                     ->subject('Please verify your email') //TODO: string in lang file
                     ->markdown($mailTemplate)->with([
                         'user' => $this->user,
+                        'publicAdministration' => $this->publicAdministration,
+                        'invitedBy' => $this->invitedBy,
                         'signedUrl' => $this->signedUrl,
                     ]);
     }
