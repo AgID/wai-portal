@@ -41,7 +41,7 @@ class VerificationController extends Controller
     {
         $user = $request->user();
 
-        if ($request->route('id') != $user->getKey()) {
+        if (!$user || ($request->route('id') != $user->getKey())) {
             throw new AuthorizationException();
         }
 
@@ -105,7 +105,7 @@ class VerificationController extends Controller
                 $SPIDUser = session()->get('spid_user');
 
                 if ($user->fiscalNumber != $SPIDUser->fiscalNumber) {
-                    $request->session()->flash('message', ['error' => "Il codice fiscale dell'utenza SPID è diverso da quello dell'invito."]);
+                    session()->flash('message', ['error' => "Il codice fiscale dell'utenza SPID è diverso da quello dell'invito."]);
 
                     return app()->make('SPIDAuth')->logout();
                 }
@@ -119,14 +119,15 @@ class VerificationController extends Controller
 
                 $newStatus = 'active';
 
-                $analyticsService = app()->make('analytics-service');
+                // To be moved in user creation
+                // $analyticsService = app()->make('analytics-service');
 
-                $analyticsService->registerUser($user->email, $user->analytics_password, $user->email);
+                // $analyticsService->registerUser($user->email, $user->analytics_password, $user->email);
 
-                $access = $user->can('manage-analytics') ? 'admin' : 'view';
-                foreach ($user->getWebsites() as $website) {
-                    $analyticsService->setWebsitesAccess($user->email, $access, $website->analytics_id);
-                }
+                // $access = $user->can('manage-analytics') ? 'admin' : 'view';
+                // foreach ($user->getWebsites() as $website) {
+                //     $analyticsService->setWebsitesAccess($user->email, $access, $website->analytics_id);
+                // }
             }
         }
 

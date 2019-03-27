@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\Auth\Invited;
 use App\Models\User;
 use App\Transformers\UserTransformer;
 use CodiceFiscale\Checker as FiscalNumberChecker;
-use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Yajra\Datatables\Datatables;
 
@@ -70,18 +70,15 @@ class UserController extends Controller
             'role' => 'required|exists:roles,name',
         ]);
 
-        $user = new User();
-        $user->fill([
+        $user = User::create([
             'fiscalNumber' => $validatedData['fiscalNumber'],
             'email' => $validatedData['email'],
             'status' => 'invited',
         ]);
         $user->publicAdministrations()->attach(session('tenant_id'));
-        $user->save();
-
         $user->assign($validatedData['role']);
 
-        event(new Registered($user));
+        event(new Invited($user, current_public_administration(), $request->user()));
 
         logger()->info('User ' . auth()->user()->getInfo() . ' added a new user [' . $validatedData['email'] . '] as ' . $validatedData['role'] . ' for "' . current_public_administration()->name . '"');
 

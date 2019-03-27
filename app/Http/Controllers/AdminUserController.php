@@ -54,7 +54,7 @@ class AdminUserController extends Controller
             $user->passwordResetToken->delete();
         }
 
-        event(new Invited($user, $request->user()));
+        event(new Invited($user, null, $request->user()));
 
         return redirect()->route('admin-dashboard')
             ->withMessages([

@@ -9,7 +9,7 @@
             "spidCode": "00b6d30a-db63-22f5-3208-193d5a955ed5",
             "registeredOffice": "Via Liszt 21 - 00144 Roma",
             "name": "Davide",
-            "fiscalNumber": "TINIT-WNZXOY28M28A156E",
+            "fiscalNumber": "TINIT-PRRDVD80A01H501G",
             "email": "davide@example.com"
         },
         "pwd": "davide"
@@ -24,7 +24,7 @@
             "spidCode": "cb407528-e5c2-566a-1ab2-90110247119b",
             "registeredOffice": "Via Liszt 21 - 00144 Roma",
             "name": "Daniela",
-            "fiscalNumber": "TINIT-PFVEKZ70B31F663V",
+            "fiscalNumber": "TINIT-ZZIDNL80A41H501P",
             "email": "daniela@example.com"
         },
         "pwd": "daniela"
@@ -39,7 +39,7 @@
             "spidCode": "cb407528-e5c2-566a-1ab2-9011fff7119b",
             "registeredOffice": "Via Liszt 21 - 00144 Roma",
             "name": "Luca",
-            "fiscalNumber": "TINIT-TREGHJ70Z31F987V",
+            "fiscalNumber": "TINIT-LCURGR80A01H501H",
             "email": "luca@example.com"
         },
         "pwd": "luca"
@@ -54,7 +54,7 @@
             "spidCode": "cb407528-e5c2-566a-1ab2-9011aaa7119b",
             "registeredOffice": "Via Liszt 21 - 00144 Roma",
             "name": "Claudio",
-            "fiscalNumber": "TINIT-YRHKDI70H31F663V",
+            "fiscalNumber": "TINIT-CLGCLD80A01H501C",
             "email": "claudio@example.com"
         },
         "pwd": "claudio"
