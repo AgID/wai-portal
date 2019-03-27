@@ -178,6 +178,7 @@ class AdminAuthController extends Controller
         }
 
         $user->password = Hash::make($validatedData['password']);
+        $user->password_changed_at = Carbon::now();
         $user->save();
         $user->passwordResetToken->delete();
 
