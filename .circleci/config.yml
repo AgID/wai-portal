@@ -6,13 +6,13 @@ commands:
     steps:
       - restore_cache:
           keys:
-          - v1-php-{{ checksum "composer.json" }}
+          - v1-php-{{ checksum "composer.lock" }}
           # fallback to using the latest cache if no exact match is found
           - v1-php-
 
       - restore_cache:
           keys:
-          - v1-node-{{ checksum "package.json" }}
+          - v1-node-{{ checksum "package-lock.json" }}
           # fallback to using the latest cache if no exact match is found
           - v1-node-
 
