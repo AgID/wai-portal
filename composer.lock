@@ -3602,16 +3602,16 @@
         },
         {
             "name": "yajra/laravel-datatables-oracle",
-            "version": "v9.0.0",
+            "version": "v9.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/yajra/laravel-datatables.git",
-                "reference": "bbc9943208e121d551fed74ad1084c4e42ccf094"
+                "reference": "0c5764bcb436b2ac4627246fc29970c69314be1e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yajra/laravel-datatables/zipball/bbc9943208e121d551fed74ad1084c4e42ccf094",
-                "reference": "bbc9943208e121d551fed74ad1084c4e42ccf094",
+                "url": "https://api.github.com/repos/yajra/laravel-datatables/zipball/0c5764bcb436b2ac4627246fc29970c69314be1e",
+                "reference": "0c5764bcb436b2ac4627246fc29970c69314be1e",
                 "shasum": ""
             },
             "require": {
@@ -3669,7 +3669,7 @@
                 "jquery",
                 "laravel"
             ],
-            "time": "2019-02-27T03:04:53+00:00"
+            "time": "2019-03-26T05:04:50+00:00"
         }
     ],
     "packages-dev": [
