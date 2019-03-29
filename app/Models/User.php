@@ -5,6 +5,8 @@ namespace App\Models;
 use App\Notifications\VerifyEmail;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -12,6 +14,7 @@ use Silber\Bouncer\Database\HasRolesAndAbilities;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
+    use Notifiable;
     use HasRolesAndAbilities;
     use Notifiable;
     use SoftDeletes;
@@ -24,6 +27,7 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $fillable = [
         'spidCode',
         'name',
+        'uuid',
         'familyName',
         'fiscalNumber',
         'email',
@@ -38,10 +42,15 @@ class User extends Authenticatable implements MustVerifyEmail
      *
      * @return \Illuminate\Database\Eloquent\Relations\Relation
      */
-    public function passwordResetToken()
-    {
-        return $this->hasOne(PasswordResetToken::class);
-    }
+    protected $hidden = [
+        'password',
+        'remember_token',
+        'partial_analytics_password',
+    ];
+
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+    ];
 
     /**
      * Find a User instance by Fiscal Number.
@@ -57,10 +66,25 @@ class User extends Authenticatable implements MustVerifyEmail
 
     /**
      * The Public Administration this User belongs to.
+    public static function findTrashedByFiscalNumber(string $fiscalNumber): ?User
+    {
+        return User::onlyTrashed()->where('fiscalNumber', $fiscalNumber)->first();
+    }
+
      *
      * @return \Illuminate\Database\Eloquent\Relations\Relation|null
      */
-    public function publicAdministrations()
+    public function getRouteKeyName()
+    {
+        return 'uuid';
+    }
+
+    public function passwordResetToken(): HasOne
+    {
+        return $this->hasOne(PasswordResetToken::class);
+    }
+
+    public function publicAdministrations(): BelongsToMany
     {
         return $this->belongsToMany(PublicAdministration::class);
     }
@@ -82,7 +106,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function getInfo()
     {
-        return $this->name . ' ' . $this->familyName . ' [' . $this->email . ']';
+        return (null === $this->name ? '' : $this->name . ' ') . (null === $this->familyName ? '' : $this->familyName . ' ') . '[' . $this->email . ']';
     }
 
     /**

@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Transformers\UserTransformer;
 use CodiceFiscale\Checker as FiscalNumberChecker;
 use Illuminate\Http\Request;
+use Ramsey\Uuid\Uuid;
 use Yajra\Datatables\Datatables;
 
 class UserController extends Controller
@@ -74,6 +75,7 @@ class UserController extends Controller
         $user = User::create([
             'fiscalNumber' => $validatedData['fiscalNumber'],
             'email' => $validatedData['email'],
+            'uuid' => Uuid::uuid4()->toString(),
             'status' => UserStatus::INVITED,
         ]);
         $user->publicAdministrations()->attach(session('tenant_id'));

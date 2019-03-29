@@ -16,12 +16,14 @@ class WebsiteTransformer extends TransformerAbstract
      */
     public function transform(Website $website)
     {
+        $last_month_visit = (int) app()->make('analytics-service')->getSiteLastMonthVisits($website->analytics_id);
+
         $data = [
             'url' => '<a href="http://' . $website->url . '">' . $website->url . '</a>',
             'type' => WebsiteType::getDescription($website->type),
             'added_at' => $website->created_at->format('d/m/Y'),
-            'last_month_visits' => $website->getLastMonthVisits(),
             'status' => WebsiteStatus::getDescription($website->status),
+            'last_month_visits' => $last_month_visit,
             'actions' => [
                 [
                     'link' => route('website-javascript-snippet', ['website' => $website], false),

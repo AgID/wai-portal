@@ -28,8 +28,8 @@ class ProcessPendingWebsites implements ShouldQueue
     {
         $pendingWebsites = Website::where('status', WebsiteStatus::PENDING)->get();
         $pendingWebsites->map(function ($website) {
-            if ($website->getTotalVisits() > 0) {
-                $analyticsService = app()->make('analytics-service');
+            $analyticsService = app()->make('analytics-service');
+            if ($analyticsService->getSiteTotalVisits($website->analytics_id, $website->created_at->format('Y-m-d')) > 0) {
                 $publicAdministration = $website->publicAdministration;
 
                 logger()->info('New website "' . $website->name . '" activated [' . $website->url . ']'); //TODO: notify me and the user!

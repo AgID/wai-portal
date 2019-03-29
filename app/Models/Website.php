@@ -4,6 +4,8 @@ namespace App\Models;
 
 use App\Enums\WebsiteStatus;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Website extends Model
@@ -50,14 +52,9 @@ class Website extends Model
      *
      * return int
      */
-    public function getTotalVisits()
+    public function keywords(): BelongsToMany
     {
-        if (!$this->analytics_id) {
-            return null;
-        }
-
-        return (int) app()->make('analytics-service')
-                    ->getSiteTotalVisits($this->analytics_id, $this->created_at->format('Y-m-d'));
+        return $this->belongsToMany(Keyword::class);
     }
 
     /**
@@ -65,13 +62,17 @@ class Website extends Model
      *
      * return int
      */
-    public function getLastMonthVisits()
+    public function markActive(): bool
     {
-        if (!$this->analytics_id) {
-            return null;
-        }
+        return $this->fill([
+            'status' => WebsiteStatus::ACTIVE,
+        ])->save();
+    }
 
-        return (int) app()->make('analytics-service')
-            ->getSiteLastMonthVisits($this->analytics_id);
+    public function markArchived(): bool
+    {
+        return $this->fill([
+            'status' => WebsiteStatus::ARCHIVED,
+        ])->save();
     }
 }

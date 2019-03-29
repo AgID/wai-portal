@@ -16,11 +16,11 @@ class CreateWebsitesTable extends Migration
         Schema::create('websites', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
-            $table->string('url');
+            $table->string('url')->unique();
             $table->tinyInteger('type')->unsigned();
             $table->integer('public_administration_id')->unsigned()->index();
             $table->foreign('public_administration_id')->references('id')->on('public_administrations')->onDelete('cascade');
-            $table->string('analytics_id')->nullable();
+            $table->integer('analytics_id');
             $table->string('slug')->unique();
             $table->tinyInteger('status')->unsigned();
             $table->timestamps();

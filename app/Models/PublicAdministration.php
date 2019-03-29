@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class PublicAdministration extends Model
@@ -30,9 +32,9 @@ class PublicAdministration extends Model
      *
      * @return string
      */
-    public function getRouteKeyName()
+    public static function findByIPACode(string $ipa_code): ?PublicAdministration
     {
-        return 'ipa_code';
+        return PublicAdministration::where('ipa_code', $ipa_code)->first();
     }
 
     /**
@@ -42,9 +44,13 @@ class PublicAdministration extends Model
      *
      * @return PublicAdministration|null the PublicAdministration found or null if not found
      */
-    public static function findByIPACode(string $ipa_code)
+    public static function findTrashedByIPACode(string $ipa_code): ?PublicAdministration
     {
-        return PublicAdministration::where('ipa_code', $ipa_code)->first();
+        return PublicAdministration::onlyTrashed()->where('ipa_code', $ipa_code)->first();
+    }
+    public function getRouteKeyName(): string
+    {
+        return 'ipa_code';
     }
 
     /**

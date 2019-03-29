@@ -67,9 +67,9 @@ class VerifyEmail extends Notification implements ShouldQueue
     {
         $accountVerificationMail = new AccountVerification(
             $notifiable,
+            $this->verificationUrl($notifiable),
             $this->publicAdministration,
-            $this->invitedBy,
-            $this->verificationUrl($notifiable)
+            $this->invitedBy
         );
 
         return ($accountVerificationMail)->to($notifiable->email);

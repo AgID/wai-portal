@@ -4,7 +4,9 @@ use App\Enums\UserStatus;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Ramsey\Uuid\Uuid;
 use Silber\Bouncer\BouncerFacade as Bouncer;
 
 class UsersTableSeeder extends Seeder
@@ -19,6 +21,7 @@ class UsersTableSeeder extends Seeder
             'familyName' => 'Cognome',
             'fiscalNumber' => 'FSCLNB17A01H501X',
             'email' => 'nome.cognome@example.com',
+            'uuid' => Uuid::uuid4()->toString(),
             'password' => Hash::make('password'),
             'status' => UserStatus::ACTIVE,
             'email_verified_at' => Carbon::now()->format('Y-m-d H:i:s'),

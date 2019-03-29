@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Ramsey\Uuid\Uuid;
 
 class AdminUserController extends Controller
 {
@@ -44,6 +45,7 @@ class AdminUserController extends Controller
             'name' => $validatedData['name'],
             'familyName' => $validatedData['familyName'],
             'email' => $validatedData['email'],
+            'uuid' => Uuid::uuid4()->toString(),
             'password' => Hash::make($temporaryPassword),
             'password_changed_at' => Carbon::now()->subDays(1 + config('auth.password_expiry')),
             'status' => UserStatus::INVITED,
