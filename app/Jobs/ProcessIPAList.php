@@ -4,7 +4,7 @@ namespace App\Jobs;
 
 use Carbon\Carbon;
 use Ehann\RediSearch\Index;
-use Ehann\RedisRaw\PhpRedisAdapter;
+use Ehann\RedisRaw\PredisAdapter;
 use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -39,7 +39,7 @@ class ProcessIPAList implements ShouldQueue
             Storage::put($fileName, $IPAResource);
         }
 
-        $IPAIndex = new Index((new PhpRedisAdapter())->connect(config('database.redis.ipaindex.host'), config('database.redis.ipaindex.port'), config('database.redis.ipaindex.database')), 'IPAIndex');
+        $IPAIndex = new Index((new PredisAdapter())->connect(config('database.redis.ipaindex.host'), config('database.redis.ipaindex.port'), config('database.redis.ipaindex.database')), 'IPAIndex');
 
         try {
             $IPAIndex->addTextField('ipa_code', 1.0, true)

@@ -8,7 +8,7 @@ use App\Models\PublicAdministration;
 use App\Models\Website;
 use App\Transformers\WebsiteTransformer;
 use Ehann\RediSearch\Index;
-use Ehann\RedisRaw\PhpRedisAdapter;
+use Ehann\RedisRaw\PredisAdapter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -68,7 +68,7 @@ class WebsiteController extends Controller
             'accept_terms' => 'required',
         ]);
 
-        $IPAIndex = new Index((new PhpRedisAdapter())->connect(config('database.redis.ipaindex.host'), config('database.redis.ipaindex.port'), config('database.redis.ipaindex.database')), 'IPAIndex');
+        $IPAIndex = new Index((new PredisAdapter())->connect(config('database.redis.ipaindex.host'), config('database.redis.ipaindex.port'), config('database.redis.ipaindex.database')), 'IPAIndex');
 
         $result = $IPAIndex->inFields(1, ['ipa_code'])
             ->search($request->input('ipa_code'))
