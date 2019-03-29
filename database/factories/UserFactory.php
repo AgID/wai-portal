@@ -1,33 +1,47 @@
 <?php
 
+use App\Enums\UserStatus;
 use App\Models\User;
 use Carbon\Carbon;
 use Faker\Generator as Faker;
 use Illuminate\Support\Str;
+use Ramsey\Uuid\Uuid;
 
 $factory->define(User::class, function (Faker $faker) {
+    $faker->addProvider(new \Faker\Provider\it_IT\Person($faker));
+
     return [
         'spidCode' => Str::random(14),
         'name' => $faker->firstName,
         'familyName' => $faker->lastName,
         'fiscalNumber' => $faker->taxId(),
         'email' => $faker->unique()->safeEmail,
+        'uuid' => Uuid::uuid4()->toString(),
+        'partial_analytics_password' => Str::random(rand(32, 48)),
         'password_changed_at' => Carbon::now()->format('Y-m-d H:i:s'),
-        'status' => 'inactive',
+        'status' => UserStatus::INACTIVE,
     ];
 });
 
+$factory->state(User::class, 'invited', [
+    'status' => UserStatus::INVITED,
+]);
+
 $factory->state(User::class, 'pending', [
     'email_verified_at' => Carbon::now()->format('Y-m-d H:i:s'),
-    'status' => 'pending',
+    'status' => UserStatus::PENDING,
 ]);
 
 $factory->state(User::class, 'active', [
     'email_verified_at' => Carbon::now()->format('Y-m-d H:i:s'),
-    'status' => 'active',
+    'status' => UserStatus::ACTIVE,
 ]);
 
 $factory->state(User::class, 'suspended', [
     'email_verified_at' => Carbon::now()->format('Y-m-d H:i:s'),
-    'status' => 'suspended',
+    'status' => UserStatus::SUSPENDED,
+]);
+
+$factory->state(User::class, 'password_expired', [
+    'password_changed_at' => Carbon::now()->subDays(config('auth.password_expiry') + 1),
 ]);

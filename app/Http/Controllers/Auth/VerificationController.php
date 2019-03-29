@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Enums\UserStatus;
 use App\Http\Controllers\Controller;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\Events\Verified;
@@ -93,13 +94,13 @@ class VerificationController extends Controller
      */
     protected function verifyUser($user)
     {
-        if ('inactive' == $user->status) {
-            $newStatus = 'pending';
+        if (UserStatus::INACTIVE == $user->status) {
+            $newStatus = UserStatus::PENDING;
             $user->assign('registered');
         }
 
-        if ('invited' == $user->status) {
-            $newStatus = 'active';
+        if (UserStatus::INVITED == $user->status) {
+            $newStatus = UserStatus::ACTIVE;
 
             if (!$user->isA('super-admin')) {
                 $SPIDUser = session()->get('spid_user');
@@ -117,7 +118,7 @@ class VerificationController extends Controller
                     'partial_analytics_password' => Str::random(rand(32, 48)),
                 ]);
 
-                $newStatus = 'active';
+                $newStatus = UserStatus::ACTIVE;
 
                 // To be moved in user creation
                 // $analyticsService = app()->make('analytics-service');

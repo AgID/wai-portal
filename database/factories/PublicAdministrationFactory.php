@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\PublicAdministrationStatus;
 use App\Models\PublicAdministration;
 use Faker\Generator as Faker;
 use Illuminate\Support\Str;
@@ -13,14 +14,14 @@ $factory->define(PublicAdministration::class, function (Faker $faker) {
         'county' => $faker->stateAbbr,
         'region' => $faker->state,
         'type' => 'secondary',
-        'status' => 'pending',
+        'status' => PublicAdministrationStatus::PENDING,
     ];
 });
 
 $factory->state(PublicAdministration::class, 'active', [
-    'status' => 'active',
+    'status' => PublicAdministrationStatus::ACTIVE,
 ]);
 
 $factory->state(PublicAdministration::class, 'suspended', [
-    'status' => 'suspended',
+    'status' => PublicAdministrationStatus::SUSPENDED,
 ]);

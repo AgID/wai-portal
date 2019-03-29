@@ -2,12 +2,12 @@
     <p class="u-text-p">
         {{ __('auth.status.info') }}
         <a href="#tooltip_status" class="Tooltip-toggle u-textClean u-padding-right-xs u-padding-left-xs u-color-black" data-menu-trigger="tooltip_status">
-            {{ __('auth.status.'.auth()->user()->status) }}
+            {{ \App\Enums\UserStatus::getDescription(auth()->user()->status) }}
         </a>
         <span id="tooltip_status" data-menu class="Tooltip Dropdown-menu u-borderShadow-m u-background-teal-70 u-color-white u-layout-prose u-padding-r-all u-borderRadius-l">
             <span class="Icon-drop-down Dropdown-arrow u-color-teal-70"></span>
             <span class="u-layout-prose u-text-r-xs">
-                {{ __('auth.status.'.auth()->user()->status.'_description') }}
+                {{ __(\App\Enums\UserStatus::getDescription(auth()->user()->status) . '_description') }}
             </span>
         </span>
     </p>

@@ -4,6 +4,9 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
+/**
+ * Websites table creation - migration script.
+ */
 class CreateWebsitesTable extends Migration
 {
     /**
@@ -11,18 +14,18 @@ class CreateWebsitesTable extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::create('websites', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
-            $table->string('url');
-            $table->string('type'); //TODO: define enum
+            $table->string('url')->unique();
+            $table->tinyInteger('type')->unsigned();
             $table->integer('public_administration_id')->unsigned()->index();
             $table->foreign('public_administration_id')->references('id')->on('public_administrations')->onDelete('cascade');
-            $table->string('analytics_id')->nullable();
+            $table->integer('analytics_id');
             $table->string('slug')->unique();
-            $table->enum('status', ['pending', 'active', 'suspended']);
+            $table->tinyInteger('status')->unsigned();
             $table->timestamps();
             $table->softDeletes();
         });
@@ -33,7 +36,7 @@ class CreateWebsitesTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('websites');
     }

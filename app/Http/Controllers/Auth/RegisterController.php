@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Enums\UserStatus;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Ramsey\Uuid\Uuid;
 
 class RegisterController extends Controller
 {
@@ -39,8 +42,10 @@ class RegisterController extends Controller
             'name' => $SPIDUser->name,
             'familyName' => $SPIDUser->familyName,
             'fiscalNumber' => $SPIDUser->fiscalNumber,
+            'uuid' => Uuid::uuid4()->toString(),
             'email' => $request->email,
-            'status' => 'inactive',
+            'status' => UserStatus::INACTIVE,
+            'partial_analytics_password' => Str::random(rand(32, 48)),
         ]);
 
         event(new Registered($user));

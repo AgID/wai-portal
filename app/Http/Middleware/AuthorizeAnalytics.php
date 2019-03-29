@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Enums\WebsiteStatus;
 use Closure;
 
 class AuthorizeAnalytics
@@ -24,7 +25,7 @@ class AuthorizeAnalytics
         if ($request->route('website')) {
             if (current_public_administration() != $request->route('website')->publicAdministration) {
                 $unauthorized = true;
-            } elseif ('pending' == $request->route('website')->status) {
+            } elseif (WebsiteStatus::PENDING == $request->route('website')->status) {
                 $unauthorized = false;
             }
         }

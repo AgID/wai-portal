@@ -12,6 +12,9 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\URL;
 
+/**
+ * User email verification.
+ */
 class VerifyEmail extends Notification implements ShouldQueue
 {
     use Queueable;
@@ -19,24 +22,22 @@ class VerifyEmail extends Notification implements ShouldQueue
     /**
      * The public administration selected for the invitation.
      *
-     * @var App\Models\PublicAdministration
+     * @var \App\Models\PublicAdministration
      */
     public $publicAdministration;
 
     /**
      * The user issuing the invitation.
      *
-     * @var App\Models\User
+     * @var \App\Models\User
      */
     public $invitedBy;
 
     /**
      * Create a new notification instance.
      *
-     * @param PublicAdministration|null $publicAdministration
-     * @param User|null $invitedBy
-     *
-     * @return void
+     * @param PublicAdministration|null $publicAdministration the public administration this user belongs to or null if it is a super-admin
+     * @param User|null $invitedBy the inviting user or null if none
      */
     public function __construct(PublicAdministration $publicAdministration = null, User $invitedBy = null)
     {
@@ -59,20 +60,20 @@ class VerifyEmail extends Notification implements ShouldQueue
     /**
      * Get the mail representation of the notification.
      *
-     * @param mixed $notifiable
+     * @param mixed $notifiable the user
      *
-     * @return App\Mail\AccountVerification
+     * @return \App\Mail\AccountVerification the email
      */
-    public function toMail($notifiable)
+    public function toMail($notifiable): AccountVerification
     {
         $accountVerificationMail = new AccountVerification(
             $notifiable,
+            $this->verificationUrl($notifiable),
             $this->publicAdministration,
-            $this->invitedBy,
-            $this->verificationUrl($notifiable)
+            $this->invitedBy
         );
 
-        return ($accountVerificationMail)->to($notifiable->email);
+        return $accountVerificationMail->to($notifiable->email);
     }
 
     /**
@@ -82,7 +83,7 @@ class VerifyEmail extends Notification implements ShouldQueue
      *
      * @return string
      */
-    protected function verificationUrl($notifiable)
+    protected function verificationUrl($notifiable): string
     {
         $verificationRoute = $notifiable->isA('super-admin')
             ? 'admin.verification.verify'

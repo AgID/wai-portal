@@ -4,6 +4,9 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
+/**
+ * Users table creation - migration script.
+ */
 class CreateUsersTable extends Migration
 {
     /**
@@ -11,19 +14,20 @@ class CreateUsersTable extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
             $table->increments('id');
             $table->string('spidCode')->unique()->nullable();
             $table->string('name')->nullable();
+            $table->string('uuid')->index();
             $table->string('familyName')->nullable();
             $table->string('fiscalNumber')->nullable();
             $table->string('email')->unique();
             $table->string('password')->nullable();
             $table->integer('public_administration_id')->unsigned()->nullable();
             $table->foreign('public_administration_id')->references('id')->on('public_administrations');
-            $table->enum('status', ['invited', 'inactive', 'pending', 'active', 'suspended']);
+            $table->tinyInteger('status')->unsigned();
             $table->string('partial_analytics_password')->nullable();
             $table->timestamp('password_changed_at')->nullable();
             $table->timestamp('email_verified_at')->nullable();
@@ -38,7 +42,7 @@ class CreateUsersTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('users');
     }

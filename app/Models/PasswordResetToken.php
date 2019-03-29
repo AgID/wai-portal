@@ -3,7 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * Password reset token model.
+ */
 class PasswordResetToken extends Model
 {
     /**
@@ -24,12 +28,14 @@ class PasswordResetToken extends Model
      *
      * @var array
      */
-    protected $dates = ['created_at'];
+    protected $dates = [
+        'created_at',
+    ];
 
     /**
      * The attributes that are mass assignable.
      *
-     * @var array
+     * @var array mass assignable attributes
      */
     protected $fillable = [
         'token',
@@ -41,7 +47,7 @@ class PasswordResetToken extends Model
      *
      * @return string
      */
-    public function getRouteKeyName()
+    public function getRouteKeyName(): string
     {
         return 'token';
     }
@@ -49,9 +55,11 @@ class PasswordResetToken extends Model
     /**
      * The owner if this password reset token.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\Relation
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo the relation to the user
+     *
+     * @see \App\Models\User
      */
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }

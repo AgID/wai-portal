@@ -5,13 +5,19 @@ namespace App\Models;
 use App\Notifications\VerifyEmail;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Silber\Bouncer\Database\HasRolesAndAbilities;
 
+/**
+ * User model.
+ */
 class User extends Authenticatable implements MustVerifyEmail
 {
+    use Notifiable;
     use HasRolesAndAbilities;
     use Notifiable;
     use SoftDeletes;
@@ -19,11 +25,12 @@ class User extends Authenticatable implements MustVerifyEmail
     /**
      * The attributes that are mass assignable.
      *
-     * @var array
+     * @var array mass assignable attributes
      */
     protected $fillable = [
         'spidCode',
         'name',
+        'uuid',
         'familyName',
         'fiscalNumber',
         'email',
@@ -34,33 +41,77 @@ class User extends Authenticatable implements MustVerifyEmail
     ];
 
     /**
-     * The password reset token.
+     * The attributes that should be hidden for arrays.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\Relation
+     * @var array serialization hidden attributes
      */
-    public function passwordResetToken()
-    {
-        return $this->hasOne(PasswordResetToken::class);
-    }
+    protected $hidden = [
+        'password',
+        'remember_token',
+        'partial_analytics_password',
+    ];
+
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array attributes to cast
+     */
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+    ];
 
     /**
      * Find a User instance by Fiscal Number.
      *
-     * @param string fiscal Number
+     * @param string $fiscalNumber fiscal Number
      *
-     * @return User|null the User found or null if not found
+     * @return User|null the User or null if not found
      */
-    public static function findByFiscalNumber(string $fiscalNumber)
+    public static function findByFiscalNumber(string $fiscalNumber): ?User
     {
         return User::where('fiscalNumber', $fiscalNumber)->first();
     }
 
     /**
-     * The Public Administration this User belongs to.
+     * Find a deleted User instance by Fiscal Number.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\Relation|null
+     * @param string $fiscalNumber fiscal Number
+     *
+     * @return User|null the User or null if not found
      */
-    public function publicAdministrations()
+    public static function findTrashedByFiscalNumber(string $fiscalNumber): ?User
+    {
+        return User::onlyTrashed()->where('fiscalNumber', $fiscalNumber)->first();
+    }
+
+    /**
+     * Get the route key for the model.
+     *
+     * @return string
+     */
+    public function getRouteKeyName()
+    {
+        return 'uuid';
+    }
+
+    /**
+     * The password reset token.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne the relation with password reset token
+     */
+    public function passwordResetToken(): HasOne
+    {
+        return $this->hasOne(PasswordResetToken::class);
+    }
+
+    /**
+     * The Public Administration this User belongs to, as Eloquent relation.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany the relation with public administrations
+     *
+     * @see \App\Models\PublicAdministration
+     */
+    public function publicAdministrations(): BelongsToMany
     {
         return $this->belongsToMany(PublicAdministration::class);
     }
@@ -68,9 +119,9 @@ class User extends Authenticatable implements MustVerifyEmail
     /**
      * Return calculated password for this User's Analytics Service account.
      *
-     * @return string
+     * @return string The transformed value
      */
-    public function getAnalyticsPasswordAttribute()
+    public function getAnalyticsPasswordAttribute(): string
     {
         return md5($this->partial_analytics_password . config('app.salt'));
     }
@@ -78,17 +129,17 @@ class User extends Authenticatable implements MustVerifyEmail
     /**
      * Return name, familyName and email of this user in printable format.
      *
-     * @return string
+     * @return string the printable user representation
      */
-    public function getInfo()
+    public function getInfo(): string
     {
-        return $this->name . ' ' . $this->familyName . ' [' . $this->email . ']';
+        return (null === $this->name ? '' : $this->name . ' ') . (null === $this->familyName ? '' : $this->familyName . ' ') . '[' . $this->email . ']';
     }
 
     /**
-     * Send the email verification notification.
+     * Configure information for notifications over mail channel.
      *
-     * @return void
+     * @return mixed the user email address or an array containing email and user name/surname
      */
     public function sendEmailVerificationNotification()
     {
@@ -100,7 +151,7 @@ class User extends Authenticatable implements MustVerifyEmail
      *
      * @return bool
      */
-    public function isPasswordExpired()
+    public function isPasswordExpired(): bool
     {
         return Carbon::now()->diffInDays($this->password_changed_at) >= config('auth.password_expiry');
     }

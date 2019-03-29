@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Enums\UserStatus;
 use Closure;
 
 class Authenticate
@@ -21,7 +22,7 @@ class Authenticate
                 ->withMessage(['warning' => "Prima di usare l'applicazione è necessario completare la registrazione"]); //TODO: put message in lang file
         }
 
-        if ('suspended' == $request->user()->status) {
+        if (UserStatus::SUSPENDED == $request->user()->status) {
             abort(403, "L'utenza è stata sospesa."); // TODO: put in lang file
         }
 

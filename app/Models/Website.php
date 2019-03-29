@@ -2,9 +2,15 @@
 
 namespace App\Models;
 
+use App\Enums\WebsiteStatus;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * Website model.
+ */
 class Website extends Model
 {
     use SoftDeletes;
@@ -12,7 +18,7 @@ class Website extends Model
     /**
      * The attributes that are mass assignable.
      *
-     * @var array
+     * @var array mass assignable attributes
      */
     protected $fillable = [
         'name',
@@ -27,9 +33,9 @@ class Website extends Model
     /**
      * Get the route key for the model.
      *
-     * @return string
+     * @return string the DB column name to use for route binding
      */
-    public function getRouteKeyName()
+    public function getRouteKeyName(): string
     {
         return 'slug';
     }
@@ -37,40 +43,48 @@ class Website extends Model
     /**
      * The Public Administration this Website belongs to.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\Relation
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo the relation to the public administration this website belongs to
+     *
+     * @see \App\Models\PublicAdministration
      */
-    public function publicAdministration()
+    public function publicAdministration(): BelongsTo
     {
         return $this->belongsTo(PublicAdministration::class);
     }
 
     /**
-     * Get total visits for this Website via AnalyticsService.
+     * The keywords connected to this website or null if none.
      *
-     * return int
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany the relation to the keywords connected to this website
+     *
+     * @see \App\Models\Keyword
      */
-    public function getTotalVisits()
+    public function keywords(): BelongsToMany
     {
-        if (!$this->analytics_id) {
-            return null;
-        }
-
-        return (int) app()->make('analytics-service')
-                    ->getSiteTotalVisits($this->analytics_id, $this->created_at->format('Y-m-d'));
+        return $this->belongsToMany(Keyword::class);
     }
 
     /**
-     * Get last month visits for this Website via AnalyticsService.
+     * Change website status to active.
      *
-     * return int
+     * @return bool true if operation is successful, false otherwise
      */
-    public function getLastMonthVisits()
+    public function markActive(): bool
     {
-        if (!$this->analytics_id) {
-            return null;
-        }
+        return $this->fill([
+            'status' => WebsiteStatus::ACTIVE,
+        ])->save();
+    }
 
-        return (int) app()->make('analytics-service')
-            ->getSiteLastMonthVisits($this->analytics_id);
+    /**
+     * Change website status to archived.
+     *
+     * @return bool true if operation is successful, false otherwise
+     */
+    public function markArchived(): bool
+    {
+        return $this->fill([
+            'status' => WebsiteStatus::ARCHIVED,
+        ])->save();
     }
 }

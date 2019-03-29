@@ -2,6 +2,8 @@
 
 namespace App\Transformers;
 
+use App\Enums\WebsiteStatus;
+use App\Enums\WebsiteType;
 use App\Models\Website;
 use League\Fractal\TransformerAbstract;
 
@@ -14,12 +16,14 @@ class WebsiteTransformer extends TransformerAbstract
      */
     public function transform(Website $website)
     {
+        $last_month_visit = (int) app()->make('analytics-service')->getSiteLastMonthVisits($website->analytics_id);
+
         $data = [
             'url' => '<a href="http://' . $website->url . '">' . $website->url . '</a>',
-            'type' => __('ui.website.' . $website->type),
+            'type' => WebsiteType::getDescription($website->type),
             'added_at' => $website->created_at->format('d/m/Y'),
-            'status' => __('ui.website.' . $website->status),
-            'last_month_visits' => $website->getLastMonthVisits(),
+            'status' => WebsiteStatus::getDescription($website->status),
+            'last_month_visits' => $last_month_visit,
             'actions' => [
                 [
                     'link' => route('website-javascript-snippet', ['website' => $website], false),
@@ -29,14 +33,14 @@ class WebsiteTransformer extends TransformerAbstract
             'control' => '',
         ];
 
-        if ('pending' != $website->status) {
+        if (WebsiteStatus::PENDING != $website->status) {
             $data['actions'][] = [
                 'link' => route('analytics-service-login', [], false),
                 'label' => __('ui.pages.websites.index.go_to_analytics_service'),
             ];
         }
 
-        if (('pending' == $website->status || auth()->user()->can('manage-sites')) && 'primary' != $website->type) {
+        if ((WebsiteStatus::PENDING == $website->status || auth()->user()->can('manage-sites')) && WebsiteType::PRIMARY != $website->type) {
             $data['actions'][] = [
                 'link' => route('websites-edit', ['website' => $website], false),
                 'label' => __('ui.pages.websites.index.edit_website'),

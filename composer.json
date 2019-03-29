@@ -25,7 +25,8 @@
         "symfony/yaml": "^4.0",
         "usu/codice-fiscale": "^1.0",
         "yajra/laravel-datatables-fractal": "^1.0",
-        "yajra/laravel-datatables-oracle": "~9.0"
+        "yajra/laravel-datatables-oracle": "~9.0",
+        "bensampo/laravel-enum": "^1.17"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.2",

@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Enums\UserStatus;
 use App\Models\PublicAdministration;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
@@ -23,14 +24,14 @@ class AccountVerification extends Mailable
     /**
      * The public administration selected for the invitation.
      *
-     * @var App\Models\PublicAdministration
+     * @var \App\Models\PublicAdministration
      */
     public $publicAdministration;
 
     /**
      * The user issuing the invitation.
      *
-     * @var App\Models\User
+     * @var \App\Models\User
      */
     public $invitedBy;
 
@@ -44,9 +45,12 @@ class AccountVerification extends Mailable
     /**
      * Create a new message instance.
      *
-     * @param User $user
+     * @param User $user the user to activate
+     * @param string $signedUrl ths activation signed URL
+     * @param PublicAdministration|null $publicAdministration the public administration the user belongs to
+     * @param User|null $invitedBy the inviting user or null if none
      */
-    public function __construct(User $user, PublicAdministration $publicAdministration = null, User $invitedBy = null, string $signedUrl)
+    public function __construct(User $user, string $signedUrl, PublicAdministration $publicAdministration = null, User $invitedBy = null)
     {
         $this->user = $user;
         $this->publicAdministration = $publicAdministration;
@@ -59,11 +63,11 @@ class AccountVerification extends Mailable
      *
      * @param string the verification token
      *
-     * @return $this
+     * @return \App\Mail\AccountVerification
      */
-    public function build()
+    public function build(): AccountVerification
     {
-        if ('invited' == $this->user->status) {
+        if (UserStatus::INVITED === $this->user->status) {
             if ($this->user->isA('super-admin')) {
                 $mailTemplate = 'mail.admin_invited_verification';
             } else {
