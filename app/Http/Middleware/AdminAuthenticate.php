@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Enums\UserStatus;
 use Closure;
 
 class AdminAuthenticate
@@ -24,7 +25,7 @@ class AdminAuthenticate
             abort(403);
         }
 
-        if ('suspended' == $request->user()->status) {
+        if (UserStatus::SUSPENDED == $request->user()->status) {
             abort(403, "L'utenza è stata sospesa."); // TODO: put in lang file
         }
 

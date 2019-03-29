@@ -2,6 +2,7 @@
 
 namespace App\Transformers;
 
+use App\Enums\UserStatus;
 use App\Models\User;
 use League\Fractal\TransformerAbstract;
 
@@ -20,7 +21,7 @@ class UserTransformer extends TransformerAbstract
             'email' => $user->email,
             'role' => __('auth.roles.' . $user->roles()->first()->name),
             'added_at' => $user->created_at->format('d/m/Y'),
-            'status' => __('auth.status.' . $user->status),
+            'status' => UserStatus::getDescription($user->status),
             'actions' => [],
             'control' => '',
         ];

@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\WebsiteStatus;
 use App\Models\Website;
 use GuzzleHttp\Client as TrackingClient;
 use Illuminate\Support\Facades\Artisan;
@@ -35,7 +36,7 @@ Route::get('/_reset_all', function () {
 Route::get('/_activate_websites', function () {
     $faker = Faker\Factory::create();
     $client = new TrackingClient(['base_uri' => config('analytics-service.api_base_uri')]);
-    $pendingWebsites = Website::where('status', 'pending')->get();
+    $pendingWebsites = Website::where('status', WebsiteStatus::PENDING)->get();
     $pendingWebsites->map(function ($website) use ($client, $faker) {
         $client->request('GET', 'piwik.php', [
             'query' => [

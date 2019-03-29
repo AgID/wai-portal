@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Enums\UserStatus;
 use App\Http\Controllers\Controller;
 use App\Jobs\SendVerificationEmail;
 use App\Models\User;
@@ -18,7 +19,7 @@ class AdminVerificationController extends Controller
      */
     public function verify()
     {
-        if (auth()->check() && 'invited' != auth()->user()->status) {
+        if (auth()->check() && UserStatus::INVITED != auth()->user()->status) {
             return redirect()->home()->withMessage(['info' => "L'indirizzo email è già stato verificato."]); //TODO: put message in lang file
         }
 
@@ -49,7 +50,7 @@ class AdminVerificationController extends Controller
             return redirect()->route('admin-verify')->withMessage(['warning' => "L'indirizzo email inserito non corrisponde ad un'utenza oppure il codice è errato."]); //TODO: put message in lang file
         }
 
-        if ('invited' != $user->status) {
+        if (UserStatus::INVITED != $user->status) {
             return redirect()->route('admin-dashboard')
                 ->withMessage(['info' => "L'indirizzo email è già stato verificato"]); //TODO: put message in lang file
         }
@@ -58,7 +59,7 @@ class AdminVerificationController extends Controller
             return redirect()->route('admin-verify')->withMessage(['warning' => "L'indirizzo email inserito non corrisponde ad un'utenza oppure il codice è errato."]); //TODO: put message in lang file
         }
 
-        $user->status = 'active';
+        $user->status = UserStatus::ACTIVE;
         $user->save();
 
         logger()->info('User ' . $user->getInfo() . ' confirmed email address.'); //TODO: notify me!
@@ -81,7 +82,7 @@ class AdminVerificationController extends Controller
      */
     public function showResendForm()
     {
-        if (auth()->check() && 'invited' != auth()->user()->status) {
+        if (auth()->check() && UserStatus::INVITED != auth()->user()->status) {
             return redirect()->home()->withMessage(['info' => "L'indirizzo email è già stato verificato."]); //TODO: put message in lang file
         }
 
@@ -103,7 +104,7 @@ class AdminVerificationController extends Controller
 
         $user = User::where('email', $validatedData['email'])->first();
 
-        if (empty($user) || 'invited' != $user->status) {
+        if (empty($user) || UserStatus::INVITED != $user->status) {
             return redirect()->route('home')->withMessage(['info' => "Se l'indirizzo email inserito corrisponde ad un'utenza amministrativa, riceverai e breve un messaggio con un nuovo codice di verifica."]); //TODO: put message in lang file
         }
 

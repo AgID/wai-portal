@@ -2,6 +2,9 @@
 
 namespace Tests\Unit;
 
+use App\Enums\PublicAdministrationStatus;
+use App\Enums\UserStatus;
+use App\Enums\WebsiteStatus;
 use App\Models\PublicAdministration;
 use App\Models\User;
 use App\Models\Website;
@@ -71,13 +74,13 @@ class CommandsTest extends TestCase
         $this->artisan('app:check-websites');
 
         $this->assertDatabaseHas('users', [
-            'status' => 'pending',
+            'status' => UserStatus::PENDING,
         ]);
         $this->assertDatabaseHas('public_administrations', [
-            'status' => 'pending',
+            'status' => PublicAdministrationStatus::PENDING,
         ]);
         $this->assertDatabaseHas('websites', [
-            'status' => 'pending',
+            'status' => WebsiteStatus::PENDING,
         ]);
 
         $analyticsId = $this->app->make('analytics-service')->registerSite('Sito istituzionale', $this->website->url, $this->publicAdministration->name);
@@ -99,19 +102,19 @@ class CommandsTest extends TestCase
         $this->artisan('app:check-websites');
 
         $this->assertDatabaseHas('websites', [
-            'status' => 'active',
+            'status' => WebsiteStatus::ACTIVE,
         ]);
         $this->assertDatabaseHas('public_administrations', [
-            'status' => 'active',
+            'status' => PublicAdministrationStatus::ACTIVE,
         ]);
         $this->assertDatabaseHas('websites', [
-            'status' => 'active',
+            'status' => WebsiteStatus::ACTIVE,
         ]);
         $this->assertDatabaseMissing('public_administrations', [
-            'status' => 'pending',
+            'status' => PublicAdministrationStatus::PENDING,
         ]);
         $this->assertDatabaseMissing('websites', [
-            'status' => 'pending',
+            'status' => WebsiteStatus::PENDING,
         ]);
     }
 

@@ -35,7 +35,7 @@ return [
     'version' => 'versione',
     'skiplink_goto_content' => 'vai ai contenuti',
     'skiplink_goto_navigation' => 'vai alla navigazione del sito',
-    'scrolltop_label' => "torna all'inizio dei contenuti",
+    'scrolltop_label' => 'torna all\'inizio dei contenuti',
     'cookiebar_msg' => 'Questo sito utilizza cookie tecnici, analytics e di terze parti. Proseguendo nella navigazione accetti l’utilizzo dei cookie.',
     'cookiebar_accept' => 'Accetto',
     'cookiebar_privacy_policy' => 'Privacy policy',
@@ -44,21 +44,21 @@ return [
 
     'pages' => [
         'home' => [
-            'title' => 'Home',
+            'title' => 'Home'
         ],
         'faq' => [
-            'title' => 'Domande frequenti',
+            'title' => 'Domande frequenti'
         ],
         'privacy' => [
-            'title' => 'Privacy',
+            'title' => 'Privacy'
         ],
         'legal-notes' => [
-            'title' => 'Note legali',
+            'title' => 'Note legali'
         ],
         'dashboard' => [
             'title' => 'Dashboard',
             'websites' => 'Siti web',
-            'users' => 'Utenti',
+            'users' => 'Utenti'
         ],
         'websites' => [
             'index' => [
@@ -66,97 +66,92 @@ return [
                 'view_javascript_snippet' => 'vedi snippet JS',
                 'go_to_analytics_service' => 'vai agli analytics',
                 'add_website' => 'aggiungi sito',
-                'edit_website' => 'modifica sito',
+                'edit_website' => 'modifica sito'
             ],
             'add-primary' => [
-                'title' => 'Sito istituzionale',
+                'title' => 'Sito istituzionale'
             ],
             'add' => [
-                'title' => 'Nuovo sito',
+                'title' => 'Nuovo sito'
             ],
             'edit' => [
-                'title' => 'Modifica sito',
+                'title' => 'Modifica sito'
             ],
             'javascript-snippet' => [
-                'title' => 'Snippet di codice Javascript',
+                'title' => 'Snippet di codice Javascript'
             ]
         ],
         'users' => [
             'index' => [
                 'title' => 'Utenti',
                 'add_user' => 'aggiungi utente',
-                'edit_user' => 'modifica utente',
+                'edit_user' => 'modifica utente'
             ],
             'add' => [
-                'title' => 'Nuovo utente',
+                'title' => 'Nuovo utente'
             ],
             'edit' => [
-                'title' => 'Modifica utente',
+                'title' => 'Modifica utente'
             ]
         ],
         'spid-auth_login' => [
-            'title' => 'Accesso con SPID',
+            'title' => 'Accesso con SPID'
         ],
         'profile' => [
-            'show' => [
-                'title' => 'Profilo utente',
-            ],
-            'edit' => [
-                'title' => 'Profilo utente',
-            ]
+            'title' => 'Profilo utente'
         ],
         'auth-register' => [
-            'title' => 'Registrazione',
+            'title' => 'Registrazione'
         ],
         'auth-verify' => [
-            'title' => 'Verifica indirizzo email',
+            'title' => 'Verifica indirizzo email'
         ],
         'admin-login' => [
-            'title' => 'Accesso amministratori',
+            'title' => 'Accesso amministratori'
         ],
         'admin-dashboard' => [
-            'title' => 'Dashboard amministrativa',
+            'title' => 'Dashboard amministrativa'
         ],
         'admin-user_show' => [
             'title' => 'Profilo utente amministratore',
             'update' => 'Modifica'
         ],
         'admin-user_edit' => [
-            'title' => 'Modifica utente amministratore',
+            'title' => 'Modifica utente amministratore'
         ],
         'admin-password_forgot' => [
-            'title' => 'Password dimenticata',
+            'title' => 'Password dimenticata'
         ],
         'admin-password_reset' => [
-            'title' => 'Reset della password',
+            'title' => 'Reset della password'
         ],
         'admin-password_change' => [
-            'title' => 'Cambio della password',
+            'title' => 'Cambio della password'
         ],
         'admin-user_add' => [
-            'title' => 'Nuovo utente amministratore',
+            'title' => 'Nuovo utente amministratore'
         ],
         'admin-verify' => [
-            'title' => 'Verifica indirizzo email',
+            'title' => 'Verifica indirizzo email'
         ],
         'admin-verify_resend' => [
-            'title' => 'Invio nuova mail di verifica',
+            'title' => 'Invio nuova mail di verifica'
         ],
         '403' => [
             'title' => 'Accesso negato',
-            'description' => 'Non hai le autorizzazioni necessarie per accedere alla pagina.',
+            'description' => 'Non hai le autorizzazioni necessarie per accedere alla pagina.'
         ],
         '404' => [
             'title' => 'Pagina non trovata',
-            'not_found' => 'La pagina :page non esiste.',
+            'not_found' => 'La pagina :page non esiste.'
         ],
         '429' => [
             'title' => 'Troppe richieste',
-            'description' => 'Spiacenti, sono pervenute troppe richieste.',
+            'description' => 'Spiacenti, sono pervenute troppe richieste.'
         ],
         '500' => [
             'title' => "Errore dell'applicazione",
-            'description' => "Si è verificato un errore inaspettato.\nSe dovesse ripetersi ti preghiamo di contattarci.",
+            'description' => "Si è verificato un errore inaspettato.\nSe dovesse ripetersi ti preghiamo di contattarci."
         ]
     ],
 

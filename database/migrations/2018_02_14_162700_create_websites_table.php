@@ -17,12 +17,12 @@ class CreateWebsitesTable extends Migration
             $table->increments('id');
             $table->string('name');
             $table->string('url');
-            $table->string('type'); //TODO: define enum
+            $table->tinyInteger('type')->unsigned();
             $table->integer('public_administration_id')->unsigned()->index();
             $table->foreign('public_administration_id')->references('id')->on('public_administrations')->onDelete('cascade');
             $table->string('analytics_id')->nullable();
             $table->string('slug')->unique();
-            $table->enum('status', ['pending', 'active', 'suspended']);
+            $table->tinyInteger('status')->unsigned();
             $table->timestamps();
             $table->softDeletes();
         });

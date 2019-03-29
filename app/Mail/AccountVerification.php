@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Enums\UserStatus;
 use App\Models\PublicAdministration;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
@@ -63,7 +64,7 @@ class AccountVerification extends Mailable
      */
     public function build()
     {
-        if ('invited' == $this->user->status) {
+        if (UserStatus::INVITED === $this->user->status) {
             if ($this->user->isA('super-admin')) {
                 $mailTemplate = 'mail.admin_invited_verification';
             } else {

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\UserStatus;
 use App\Events\Auth\Invited;
 use App\Models\User;
 use Carbon\Carbon;
@@ -45,7 +46,7 @@ class AdminUserController extends Controller
             'email' => $validatedData['email'],
             'password' => Hash::make($temporaryPassword),
             'password_changed_at' => Carbon::now()->subDays(1 + config('auth.password_expiry')),
-            'status' => 'invited',
+            'status' => UserStatus::INVITED,
         ]);
 
         $user->assign('super-admin');

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Enums\UserStatus;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
@@ -40,7 +41,7 @@ class RegisterController extends Controller
             'familyName' => $SPIDUser->familyName,
             'fiscalNumber' => $SPIDUser->fiscalNumber,
             'email' => $request->email,
-            'status' => 'inactive',
+            'status' => UserStatus::INACTIVE,
         ]);
 
         event(new Registered($user));

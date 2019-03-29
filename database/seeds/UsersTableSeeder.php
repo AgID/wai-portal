@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\UserStatus;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
@@ -19,7 +20,7 @@ class UsersTableSeeder extends Seeder
             'fiscalNumber' => 'FSCLNB17A01H501X',
             'email' => 'nome.cognome@example.com',
             'password' => Hash::make('password'),
-            'status' => 'active',
+            'status' => UserStatus::ACTIVE,
             'email_verified_at' => Carbon::now()->format('Y-m-d H:i:s'),
             'password_changed_at' => Carbon::now()->format('Y-m-d H:i:s'),
             'created_at' => Carbon::now()->format('Y-m-d H:i:s'),

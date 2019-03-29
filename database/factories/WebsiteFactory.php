@@ -1,5 +1,7 @@
 <?php
 
+use App\Enums\WebsiteStatus;
+use App\Enums\WebsiteType;
 use App\Models\Website;
 use Faker\Generator as Faker;
 use Illuminate\Support\Str;
@@ -8,16 +10,16 @@ $factory->define(Website::class, function (Faker $faker) {
     return [
         'name' => $faker->words(5, true),
         'url' => $faker->domainName,
-        'type' => 'primary',
         'slug' => Str::slug($faker->domainName),
-        'status' => 'pending',
+        'type' => WebsiteType::PRIMARY,
+        'status' => WebsiteStatus::PENDING,
     ];
 });
 
 $factory->state(Website::class, 'active', [
-    'status' => 'active',
+    'status' => WebsiteStatus::ACTIVE,
 ]);
 
-$factory->state(Website::class, 'suspended', [
-    'status' => 'suspended',
+$factory->state(Website::class, 'archived', [
+    'status' => WebsiteStatus::ARCHIVED,
 ]);

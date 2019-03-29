@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\WebsiteStatus;
+use App\Enums\WebsiteType;
 use App\Models\PublicAdministration;
 use App\Models\Website;
 use App\Transformers\WebsiteTransformer;
@@ -94,7 +96,7 @@ class WebsiteController extends Controller
             'county' => $pa->county,
             'region' => $pa->region,
             'type' => $pa->type,
-            'status' => 'pending',
+            'status' => WebsiteStatus::PENDING,
         ]);
 
         $analyticsId = app()->make('analytics-service')->registerSite('Sito istituzionale', $pa->site, $publicAdministration->name); //TODO: put string in lang file
@@ -108,11 +110,11 @@ class WebsiteController extends Controller
         Website::create([
             'name' => 'Sito istituzionale', //TODO: put in lang file
             'url' => $pa->site,
-            'type' => 'primary',
+            'type' => WebsiteType::PRIMARY,
             'public_administration_id' => $publicAdministration->id,
             'analytics_id' => $analyticsId,
             'slug' => Str::slug($pa->site),
-            'status' => 'pending',
+            'status' => WebsiteStatus::PENDING,
         ]);
 
         $publicAdministration->users()->save($request->user());
@@ -186,7 +188,7 @@ class WebsiteController extends Controller
             'public_administration_id' => session('tenant_id'),
             'analytics_id' => $analyticsId,
             'slug' => Str::slug($request->input('url')),
-            'status' => 'pending',
+            'status' => WebsiteStatus::PENDING,
         ]);
 
         logger()->info('User ' . auth()->user()->getInfo() . ' added a new website "' . $validatedData['name'] . '" [' . $validatedData['url'] . '] as ' . $validatedData['type'] . ' website of "' . $publicAdministration->name . '"');

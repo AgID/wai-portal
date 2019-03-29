@@ -2,6 +2,9 @@
 
 namespace App\Jobs;
 
+use App\Enums\PublicAdministrationStatus;
+use App\Enums\UserStatus;
+use App\Enums\WebsiteStatus;
 use App\Models\Website;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
@@ -23,7 +26,7 @@ class ProcessPendingWebsites implements ShouldQueue
      */
     public function handle()
     {
-        $pendingWebsites = Website::where('status', 'pending')->get();
+        $pendingWebsites = Website::where('status', WebsiteStatus::PENDING)->get();
         $pendingWebsites->map(function ($website) {
             if ($website->getTotalVisits() > 0) {
                 $analyticsService = app()->make('analytics-service');
@@ -31,20 +34,20 @@ class ProcessPendingWebsites implements ShouldQueue
 
                 logger()->info('New website "' . $website->name . '" activated [' . $website->url . ']'); //TODO: notify me and the user!
 
-                $website->status = 'active';
+                $website->status = WebsiteStatus::ACTIVE;
                 $website->save();
 
-                if ('pending' == $publicAdministration->status) {
-                    $publicAdministration->status = 'active';
+                if (PublicAdministrationStatus::PENDING == $publicAdministration->status) {
+                    $publicAdministration->status = PublicAdministrationStatus::ACTIVE;
                     $publicAdministration->save();
 
                     logger()->info('New public administration activated [' . $publicAdministration->name . ']'); //TODO: notify me and the user!
 
-                    $pendingUser = $publicAdministration->users()->where('status', 'pending')->first();
+                    $pendingUser = $publicAdministration->users()->where('status', UserStatus::PENDING)->first();
 
                     if ($pendingUser) {
                         $pendingUser->partial_analytics_password = Str::random(rand(32, 48));
-                        $pendingUser->status = 'active';
+                        $pendingUser->status = UserStatus::ACTIVE;
                         $pendingUser->save();
                         $pendingUser->roles()->detach();
                         Bouncer::scope()->to($publicAdministration->id);
@@ -64,8 +67,8 @@ class ProcessPendingWebsites implements ShouldQueue
             } elseif ($website->created_at->diffInDays(Carbon::now()) > 15) {
                 $publicAdministration = $website->publicAdministration;
 
-                if ('pending' == $publicAdministration->status) {
-                    $pendingUser = $publicAdministration->users()->where('status', 'pending')->first();
+                if (PublicAdministrationStatus::PENDING == $publicAdministration->status) {
+                    $pendingUser = $publicAdministration->users()->where('status', UserStatus::PENDING)->first();
                     $pendingUser->publicAdministrations()->detach($publicAdministration->id);
                     $pendingUser->save();
                     $publicAdministration->forceDelete();

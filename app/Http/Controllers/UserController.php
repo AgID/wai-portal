@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\UserStatus;
 use App\Events\Auth\Invited;
 use App\Models\User;
 use App\Transformers\UserTransformer;
@@ -73,7 +74,7 @@ class UserController extends Controller
         $user = User::create([
             'fiscalNumber' => $validatedData['fiscalNumber'],
             'email' => $validatedData['email'],
-            'status' => 'invited',
+            'status' => UserStatus::INVITED,
         ]);
         $user->publicAdministrations()->attach(session('tenant_id'));
         $user->assign($validatedData['role']);

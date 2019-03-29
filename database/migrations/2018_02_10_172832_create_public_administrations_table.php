@@ -22,7 +22,7 @@ class CreatePublicAdministrationsTable extends Migration
             $table->string('county');
             $table->string('region');
             $table->string('type');
-            $table->enum('status', ['pending', 'active', 'suspended']);
+            $table->tinyInteger('status')->unsigned();
             $table->timestamps();
             $table->softDeletes();
         });
