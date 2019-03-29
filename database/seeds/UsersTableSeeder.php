@@ -13,8 +13,10 @@ class UsersTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
+     *
+     * @throws Exception
      */
-    public function run()
+    public function run(): void
     {
         DB::table('users')->insert([
             'name' => 'Nome',

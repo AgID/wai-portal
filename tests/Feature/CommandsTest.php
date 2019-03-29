@@ -168,6 +168,6 @@ class CommandsTest extends TestCase
         $response = $this->actingAs($user)
             ->withSession(['spid_sessionIndex' => 'fake-session-index'])
             ->post(route('search-ipa-list'), ['q' => 'camera']);
-        $response->assertJson([['ipa_code' => 'camera']]);
+        $response->assertJson([['id' => 'camera']]);
     }
 }

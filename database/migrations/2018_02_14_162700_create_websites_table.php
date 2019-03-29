@@ -4,6 +4,9 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
+/**
+ * Websites table creation - migration script.
+ */
 class CreateWebsitesTable extends Migration
 {
     /**
@@ -11,7 +14,7 @@ class CreateWebsitesTable extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::create('websites', function (Blueprint $table) {
             $table->increments('id');
@@ -33,7 +36,7 @@ class CreateWebsitesTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('websites');
     }

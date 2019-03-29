@@ -4,6 +4,9 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
+/**
+ * User - Public Administration pivot table creation - migration script.
+ */
 class CreatePublicAdministrationUserTable extends Migration
 {
     /**
@@ -11,7 +14,7 @@ class CreatePublicAdministrationUserTable extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::create('public_administration_user', function (Blueprint $table) {
             $table->integer('public_administration_id')->unsigned()->index();
@@ -27,7 +30,7 @@ class CreatePublicAdministrationUserTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('public_administration_user');
     }

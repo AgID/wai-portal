@@ -65,7 +65,7 @@
                         Tipologia{{-- //TODO: put message in lang file --}}
                     </label>
                     <select class="Form-input" id="type" name="type" aria-required="true" required/>
-                    <option value="">seleziona</option>{{-- //TODO: put message in lang file --}}
+                    <option value="">seleziona</option>{{-- //TODO: use localized enum --}}
                     <option value="primary" {{ old('type') == 'primary' ? "selected" : "" }}>{{ __('ui.website.primary') }}</option>
                     <option value="secondary" {{ old('type') == 'secondary' ? "selected" : "" }}>{{ __('ui.website.secondary') }}</option>
                     <option value="webapp" {{ old('type') == 'webapp' ? "selected" : "" }}>{{ __('ui.website.webapp') }}</option>
