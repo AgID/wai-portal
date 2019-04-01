@@ -58,7 +58,7 @@ Route::get('/_test/_get_user_verification_signed_url/{userId}', function ($userI
     $signedUrl = URL::temporarySignedRoute(
         $verificationRoute,
         Carbon::now()->addMinutes(Config::get('auth.verification.expire', 60)),
-        ['id' => $userId]
+        ['uuid' => $user->uuid]
     );
 
     return response()->json(['signed_url' => $signedUrl]);

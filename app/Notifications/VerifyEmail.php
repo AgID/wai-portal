@@ -92,7 +92,7 @@ class VerifyEmail extends Notification implements ShouldQueue
         return URL::temporarySignedRoute(
             $verificationRoute,
             Carbon::now()->addMinutes(Config::get('auth.verification.expire', 60)),
-            ['id' => $notifiable->getKey()]
+            ['uuid' => $notifiable->getAttribute($notifiable->getRouteKeyName())]
         );
     }
 }
