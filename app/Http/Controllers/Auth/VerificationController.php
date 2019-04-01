@@ -42,7 +42,7 @@ class VerificationController extends Controller
     {
         $user = $request->user();
 
-        if (!$user || ($request->route('id') != $user->getKey())) {
+        if (!$user || ($request->route('uuid') != $user->getAttribute($user->getRouteKeyName()))) {
             throw new AuthorizationException();
         }
 
