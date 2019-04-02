@@ -18,9 +18,9 @@ class AdminUserTest extends DuskTestCase
     public function testVisit()
     {
         $this->addFakeUser();
-        $mail_address = 'nome.cognome@gov.it';
+        $mailAddress = 'nome.cognome@gov.it';
         $newPassword = 'Password.1'; // really?
-        $this->browse(function (Browser $browser) use ($mail_address) {
+        $this->browse(function (Browser $browser) use ($mailAddress) {
             $browser->visit('/admin')
                     ->assertPathIs('/admin/user/login')
                     ->assertSee('Accesso amministratori')
@@ -34,7 +34,7 @@ class AdminUserTest extends DuskTestCase
                     ->assertSee('Nuovo utente amministratore')
                     ->type('name', 'Nome')
                     ->type('familyName', 'Cognome')
-                    ->type('email', $mail_address)
+                    ->type('email', $mailAddress)
                     ->press('INVIA')
                     ->assertSee('Il nuovo utente è stato invitato come amministratore al progetto Web Analytics Italia.')
                     ->visit('/admin/user/logout')
@@ -42,11 +42,11 @@ class AdminUserTest extends DuskTestCase
         });
         $this->setPassword(2, 'randomPassword');
         $signedUrl = $this->getSignedUrl(2);
-        $this->browse(function (Browser $browser) use ($mail_address, $newPassword, $signedUrl) {
+        $this->browse(function (Browser $browser) use ($mailAddress, $newPassword, $signedUrl) {
             $browser->visit($signedUrl)
                     ->assertPathIs('/admin/user/login')
                     ->assertSee('Accesso amministratori')
-                    ->type('email', $mail_address)
+                    ->type('email', $mailAddress)
                     ->type('password', 'randomPassword')
                     ->press('ACCEDI')
                     ->assertPathIs('/admin/user/change-password')
@@ -64,10 +64,10 @@ class AdminUserTest extends DuskTestCase
                     ->visit('/admin/user/logout')
                     ->assertPathIs('/');
         });
-        $this->browse(function (Browser $browser) use ($mail_address, $newPassword) {
+        $this->browse(function (Browser $browser) use ($mailAddress, $newPassword) {
             $browser->visit('/admin')
                     ->assertPathIs('/admin/user/login')
-                    ->type('email', $mail_address)
+                    ->type('email', $mailAddress)
                     ->type('password', $newPassword)
                     ->press('ACCEDI')
                     ->assertPathIs('/admin/dashboard')

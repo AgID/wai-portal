@@ -42,25 +42,25 @@ class KeywordTest extends TestCase
     {
         $keyword = factory(Keyword::class)->create();
 
-        $searched_keyword = Keyword::where('id', $keyword->id)->first();
+        $searchedKeyword = Keyword::where('id', $keyword->id)->first();
 
-        $searched_keyword->delete();
+        $searchedKeyword->delete();
 
         $this->assertSoftDeleted('keywords', ['id' => $keyword->id]);
 
-        $searched_keyword = Keyword::where('id', $keyword->id)->first();
+        $searchedKeyword = Keyword::where('id', $keyword->id)->first();
 
-        $this->assertNull($searched_keyword);
+        $this->assertNull($searchedKeyword);
 
-        $searched_keyword = Keyword::onlyTrashed()->where('id', $keyword->id)->first();
+        $searchedKeyword = Keyword::onlyTrashed()->where('id', $keyword->id)->first();
 
-        $this->assertNotNull($searched_keyword);
+        $this->assertNotNull($searchedKeyword);
 
-        $searched_keyword->restore();
+        $searchedKeyword->restore();
 
-        $searched_keyword = Keyword::where('id', $keyword->id)->first();
+        $searchedKeyword = Keyword::where('id', $keyword->id)->first();
 
-        $this->assertNotNull($searched_keyword);
+        $this->assertNotNull($searchedKeyword);
     }
 
     /**
@@ -68,41 +68,48 @@ class KeywordTest extends TestCase
      */
     public function testWebsiteRelation(): void
     {
-        $first_keyword = factory(Keyword::class)->create();
-        $second_keyword = factory(Keyword::class)->create();
+        $firstKeyword = factory(Keyword::class)->create();
 
-        $public_administration = factory(PublicAdministration::class)->create();
+        do {
+            $secondKeyword = factory(Keyword::class)->make();
+        } while ($firstKeyword->vocabulary === $secondKeyword->vocabulary && $firstKeyword->id_vocabulary === $secondKeyword->id_vocabulary);
+        $secondKeyword->save();
 
-        $first_website = factory(Website::class)->create([
-            'public_administration_id' => $public_administration->id,
+        $publicAdministration = factory(PublicAdministration::class)->create();
+
+        $firstWebsite = factory(Website::class)->create([
+            'public_administration_id' => $publicAdministration->id,
         ]);
 
-        $second_website = factory(Website::class)->create([
-            'public_administration_id' => $public_administration->id,
-        ]);
+        do {
+            $secondWebsite = factory(Website::class)->make([
+                'public_administration_id' => $publicAdministration->id,
+            ]);
+        } while ($secondWebsite->slug === $firstWebsite->slug);
+        $secondWebsite->save();
 
-        $first_keyword->websites()->sync([$first_website->id, $second_website->id]);
-        $second_keyword->websites()->sync($second_website->id);
+        $firstKeyword->websites()->sync([$firstWebsite->id, $secondWebsite->id]);
+        $secondKeyword->websites()->sync($secondWebsite->id);
 
         $this->assertDatabaseHas('keyword_website', [
-            'keyword_id' => $first_keyword->id,
-            'website_id' => $first_website->id,
+            'keyword_id' => $firstKeyword->id,
+            'website_id' => $firstWebsite->id,
         ]);
 
         $this->assertDatabaseHas('keyword_website', [
-            'keyword_id' => $first_keyword->id,
-            'website_id' => $second_website->id,
+            'keyword_id' => $firstKeyword->id,
+            'website_id' => $secondWebsite->id,
         ]);
 
         $this->assertDatabaseHas('keyword_website', [
-            'keyword_id' => $second_keyword->id,
-            'website_id' => $second_website->id,
+            'keyword_id' => $secondKeyword->id,
+            'website_id' => $secondWebsite->id,
         ]);
 
-        $searched_first_keyword = Keyword::where('id', $first_keyword->id)->first();
-        $searched_second_keyword = Keyword::where('id', $second_keyword->id)->first();
+        $searchedFirstKeyword = Keyword::where('id', $firstKeyword->id)->first();
+        $searchedSecondKeyword = Keyword::where('id', $secondKeyword->id)->first();
 
-        $this->assertCount(2, $searched_first_keyword->websites()->get());
-        $this->assertCount(1, $searched_second_keyword->websites()->get());
+        $this->assertCount(2, $searchedFirstKeyword->websites()->get());
+        $this->assertCount(1, $searchedSecondKeyword->websites()->get());
     }
 }

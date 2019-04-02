@@ -22,10 +22,10 @@ class UserTest extends TestCase
      */
     public function testUserCreation(): void
     {
-        $partial_analytics_password = Str::random(rand(32, 48));
+        $partialAnalyticsPassword = Str::random(rand(32, 48));
 
         $user = factory(User::class)->make([
-            'partial_analytics_password' => $partial_analytics_password,
+            'partial_analytics_password' => $partialAnalyticsPassword,
         ]);
 
         $this->assertDatabaseMissing('users', ['email' => $user->email]);
@@ -34,15 +34,15 @@ class UserTest extends TestCase
 
         $this->assertDatabaseHas('users', ['email' => $user->email]);
 
-        $searched_user = User::findByFiscalNumber($user->fiscalNumber);
+        $searchedUser = User::findByFiscalNumber($user->fiscalNumber);
 
-        $this->assertNotNull($searched_user);
+        $this->assertNotNull($searchedUser);
 
-        $this->assertEquals($user->name . ' ' . $user->familyName . ' [' . $user->email . ']', $searched_user->getInfo());
+        $this->assertEquals($user->name . ' ' . $user->familyName . ' [' . $user->email . ']', $searchedUser->getInfo());
 
-        $analytics_password = md5($partial_analytics_password . config('app.salt'));
+        $analytics_password = md5($partialAnalyticsPassword . config('app.salt'));
 
-        $this->assertEquals($analytics_password, $searched_user->analytics_password);
+        $this->assertEquals($analytics_password, $searchedUser->analytics_password);
     }
 
     /**
@@ -54,25 +54,25 @@ class UserTest extends TestCase
     {
         $user = factory(User::class)->create();
 
-        $searched_user = User::findByFiscalNumber($user->fiscalNumber);
+        $searchedUser = User::findByFiscalNumber($user->fiscalNumber);
 
-        $searched_user->delete();
+        $searchedUser->delete();
 
-        $this->assertSoftDeleted('users', ['id' => $searched_user->id]);
+        $this->assertSoftDeleted('users', ['id' => $searchedUser->id]);
 
-        $searched_user = User::findByFiscalNumber($user->fiscalNumber);
+        $searchedUser = User::findByFiscalNumber($user->fiscalNumber);
 
-        $this->assertNull($searched_user);
+        $this->assertNull($searchedUser);
 
-        $searched_user = User::findTrashedByFiscalNumber($user->fiscalNumber);
+        $searchedUser = User::findTrashedByFiscalNumber($user->fiscalNumber);
 
-        $this->assertNotNull($searched_user);
+        $this->assertNotNull($searchedUser);
 
-        $searched_user->restore();
+        $searchedUser->restore();
 
-        $searched_user = User::findByFiscalNumber($user->fiscalNumber);
+        $searchedUser = User::findByFiscalNumber($user->fiscalNumber);
 
-        $this->assertNotNull($searched_user);
+        $this->assertNotNull($searchedUser);
     }
 
     /**
@@ -80,53 +80,53 @@ class UserTest extends TestCase
      */
     public function testPublicAdministrationRelation(): void
     {
-        $first_user = factory(User::class)->create();
-        $second_user = factory(User::class)->create();
-        $third_user = factory(User::class)->create();
+        $firstUser = factory(User::class)->create();
+        $secondUser = factory(User::class)->create();
+        $thirdUser = factory(User::class)->create();
 
-        $first_pa = factory(PublicAdministration::class)->create();
-        $second_pa = factory(PublicAdministration::class)->create();
-        $third_pa = factory(PublicAdministration::class)->create();
+        $firstPA = factory(PublicAdministration::class)->create();
+        $secondPA = factory(PublicAdministration::class)->create();
+        $thirdPA = factory(PublicAdministration::class)->create();
 
-        $first_user->publicAdministrations()->sync([$first_pa->id, $second_pa->id]);
-        $second_user->publicAdministrations()->sync($third_pa->id);
-        $third_user->publicAdministrations()->sync($third_pa->id);
+        $firstUser->publicAdministrations()->sync([$firstPA->id, $secondPA->id]);
+        $secondUser->publicAdministrations()->sync($thirdPA->id);
+        $thirdUser->publicAdministrations()->sync($thirdPA->id);
 
         $this->assertDatabaseHas('public_administration_user', [
-            'public_administration_id' => $first_pa->id,
-            'user_id' => $first_user->id,
+            'public_administration_id' => $firstPA->id,
+            'user_id' => $firstUser->id,
         ]);
 
         $this->assertDatabaseHas('public_administration_user', [
-            'public_administration_id' => $second_pa->id,
-            'user_id' => $first_user->id,
+            'public_administration_id' => $secondPA->id,
+            'user_id' => $firstUser->id,
         ]);
 
         $this->assertDatabaseHas('public_administration_user', [
-            'public_administration_id' => $third_pa->id,
-            'user_id' => $second_user->id,
+            'public_administration_id' => $thirdPA->id,
+            'user_id' => $secondUser->id,
         ]);
 
         $this->assertDatabaseHas('public_administration_user', [
-            'public_administration_id' => $third_user->id,
-            'user_id' => $third_pa->id,
+            'public_administration_id' => $thirdUser->id,
+            'user_id' => $thirdPA->id,
         ]);
 
-        $searched_first_user = User::findByFiscalNumber($first_user->fiscalNumber);
-        $searched_second_user = User::findByFiscalNumber($second_user->fiscalNumber);
-        $searched_third_user = User::findByFiscalNumber($third_user->fiscalNumber);
+        $searchedFirstUser = User::findByFiscalNumber($firstUser->fiscalNumber);
+        $searchedSecondUser = User::findByFiscalNumber($secondUser->fiscalNumber);
+        $searchedThirdUser = User::findByFiscalNumber($thirdUser->fiscalNumber);
 
-        $this->assertCount(2, $searched_first_user->publicAdministrations()->get());
-        $this->assertCount(1, $searched_second_user->publicAdministrations()->get());
-        $this->assertCount(1, $searched_third_user->publicAdministrations()->get());
+        $this->assertCount(2, $searchedFirstUser->publicAdministrations()->get());
+        $this->assertCount(1, $searchedSecondUser->publicAdministrations()->get());
+        $this->assertCount(1, $searchedThirdUser->publicAdministrations()->get());
 
-        $searched_first_pa = PublicAdministration::findByIPACode($first_pa->ipa_code);
-        $searched_second_pa = PublicAdministration::findByIPACode($second_pa->ipa_code);
-        $searched_third_pa = PublicAdministration::findByIPACode($third_pa->ipa_code);
+        $searchedFirstPA = PublicAdministration::findByIPACode($firstPA->ipa_code);
+        $searchedSecondPA = PublicAdministration::findByIPACode($secondPA->ipa_code);
+        $searchedThirdPA = PublicAdministration::findByIPACode($thirdPA->ipa_code);
 
-        $this->assertCount(1, $searched_first_pa->users()->get());
-        $this->assertCount(1, $searched_second_pa->users()->get());
-        $this->assertCount(2, $searched_third_pa->users()->get());
+        $this->assertCount(1, $searchedFirstPA->users()->get());
+        $this->assertCount(1, $searchedSecondPA->users()->get());
+        $this->assertCount(2, $searchedThirdPA->users()->get());
     }
 
     /**
@@ -151,11 +151,11 @@ class UserTest extends TestCase
             'token' => $token->token,
         ]);
 
-        $searched_user = User::findByFiscalNumber($user->fiscalNumber);
+        $searchedUser = User::findByFiscalNumber($user->fiscalNumber);
 
-        $this->assertTrue($searched_user->passwordResetToken()->exists());
+        $this->assertTrue($searchedUser->passwordResetToken()->exists());
 
-        $this->assertEquals($token->token, $searched_user->passwordResetToken->token);
+        $this->assertEquals($token->token, $searchedUser->passwordResetToken->token);
 
         $this->assertFalse($user->isPasswordExpired());
     }

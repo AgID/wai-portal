@@ -20,15 +20,15 @@ class PublicAdministrationTest extends TestCase
      */
     public function testPublicAdministrationCreation(): void
     {
-        $public_administration = factory(PublicAdministration::class)->make();
+        $publicAdministration = factory(PublicAdministration::class)->make();
 
-        $this->assertDatabaseMissing('public_administrations', ['ipa_code' => $public_administration->ipa_code]);
+        $this->assertDatabaseMissing('public_administrations', ['ipa_code' => $publicAdministration->ipa_code]);
 
-        $public_administration->save();
+        $publicAdministration->save();
 
-        $this->assertDatabaseHas('public_administrations', ['ipa_code' => $public_administration->ipa_code]);
+        $this->assertDatabaseHas('public_administrations', ['ipa_code' => $publicAdministration->ipa_code]);
 
-        $searched_pa = PublicAdministration::findByIPACode($public_administration->ipa_code);
+        $searched_pa = PublicAdministration::findByIPACode($publicAdministration->ipa_code);
 
         $this->assertNotNull($searched_pa);
     }
@@ -40,27 +40,27 @@ class PublicAdministrationTest extends TestCase
      */
     public function testUserSoftDeleteAndRestore(): void
     {
-        $public_administration = factory(PublicAdministration::class)->create();
+        $publicAdministration = factory(PublicAdministration::class)->create();
 
-        $searched_pa = PublicAdministration::findByIPACode($public_administration->ipa_code);
+        $searchedPA = PublicAdministration::findByIPACode($publicAdministration->ipa_code);
 
-        $searched_pa->delete();
+        $searchedPA->delete();
 
-        $this->assertSoftDeleted('public_administrations', ['id' => $searched_pa->id]);
+        $this->assertSoftDeleted('public_administrations', ['id' => $searchedPA->id]);
 
-        $searched_pa = PublicAdministration::findByIPACode($public_administration->ipa_code);
+        $searchedPA = PublicAdministration::findByIPACode($publicAdministration->ipa_code);
 
-        $this->assertNull($searched_pa);
+        $this->assertNull($searchedPA);
 
-        $searched_pa = PublicAdministration::findTrashedByIPACode($public_administration->ipa_code);
+        $searchedPA = PublicAdministration::findTrashedByIPACode($publicAdministration->ipa_code);
 
-        $this->assertNotNull($searched_pa);
+        $this->assertNotNull($searchedPA);
 
-        $searched_pa->restore();
+        $searchedPA->restore();
 
-        $searched_pa = PublicAdministration::findByIPACode($public_administration->ipa_code);
+        $searchedPA = PublicAdministration::findByIPACode($publicAdministration->ipa_code);
 
-        $this->assertNotNull($searched_pa);
+        $this->assertNotNull($searchedPA);
     }
 
     /**
@@ -68,45 +68,45 @@ class PublicAdministrationTest extends TestCase
      */
     public function testUserRelation(): void
     {
-        $first_user = factory(User::class)->create();
-        $second_user = factory(User::class)->create();
-        $third_user = factory(User::class)->create();
+        $firstUser = factory(User::class)->create();
+        $secondUser = factory(User::class)->create();
+        $thirdUser = factory(User::class)->create();
 
-        $first_pa = factory(PublicAdministration::class)->create();
-        $second_pa = factory(PublicAdministration::class)->create();
-        $third_pa = factory(PublicAdministration::class)->create();
+        $firstPA = factory(PublicAdministration::class)->create();
+        $secondPA = factory(PublicAdministration::class)->create();
+        $thirdPA = factory(PublicAdministration::class)->create();
 
-        $first_pa->users()->sync([$first_user->id, $second_user->id]);
-        $second_pa->users()->sync($second_user->id);
-        $third_pa->users()->sync($third_user->id);
+        $firstPA->users()->sync([$firstUser->id, $secondUser->id]);
+        $secondPA->users()->sync($secondUser->id);
+        $thirdPA->users()->sync($thirdUser->id);
 
         $this->assertDatabaseHas('public_administration_user', [
-            'public_administration_id' => $first_pa->id,
-            'user_id' => $first_user->id,
+            'public_administration_id' => $firstPA->id,
+            'user_id' => $firstUser->id,
         ]);
 
         $this->assertDatabaseHas('public_administration_user', [
-            'public_administration_id' => $first_pa->id,
-            'user_id' => $second_user->id,
+            'public_administration_id' => $firstPA->id,
+            'user_id' => $secondUser->id,
         ]);
 
         $this->assertDatabaseHas('public_administration_user', [
-            'public_administration_id' => $second_pa->id,
-            'user_id' => $second_user->id,
+            'public_administration_id' => $secondPA->id,
+            'user_id' => $secondUser->id,
         ]);
 
         $this->assertDatabaseHas('public_administration_user', [
-            'public_administration_id' => $third_pa->id,
-            'user_id' => $third_user->id,
+            'public_administration_id' => $thirdPA->id,
+            'user_id' => $thirdUser->id,
         ]);
 
-        $searched_first_pa = PublicAdministration::findByIPACode($first_pa->ipa_code);
-        $searched_second_pa = PublicAdministration::findByIPACode($second_pa->ipa_code);
-        $searched_third_pa = PublicAdministration::findByIPACode($third_pa->ipa_code);
+        $searchedFirstPA = PublicAdministration::findByIPACode($firstPA->ipa_code);
+        $searchedSecondPA = PublicAdministration::findByIPACode($secondPA->ipa_code);
+        $searchedThirdPA = PublicAdministration::findByIPACode($thirdPA->ipa_code);
 
-        $this->assertCount(2, $searched_first_pa->users()->get());
-        $this->assertCount(1, $searched_second_pa->users()->get());
-        $this->assertCount(1, $searched_third_pa->users()->get());
+        $this->assertCount(2, $searchedFirstPA->users()->get());
+        $this->assertCount(1, $searchedSecondPA->users()->get());
+        $this->assertCount(1, $searchedThirdPA->users()->get());
     }
 
     /**
@@ -114,48 +114,48 @@ class PublicAdministrationTest extends TestCase
      */
     public function testWebsiteRelation(): void
     {
-        $first_pa = factory(PublicAdministration::class)->create();
-        $second_pa = factory(PublicAdministration::class)->create();
+        $firstPA = factory(PublicAdministration::class)->create();
+        $secondPA = factory(PublicAdministration::class)->create();
 
-        $first_website = factory(Website::class)->create([
-            'public_administration_id' => $first_pa->id,
+        $firstWebsite = factory(Website::class)->create([
+            'public_administration_id' => $firstPA->id,
         ]);
 
         do {
-            $second_website = factory(Website::class)->make([
-                'public_administration_id' => $first_pa->id,
+            $secondWebsite = factory(Website::class)->make([
+                'public_administration_id' => $firstPA->id,
             ]);
-        } while ($second_website->slug === $first_website->slug);
+        } while ($secondWebsite->slug === $firstWebsite->slug);
 
-        $second_website->save();
+        $secondWebsite->save();
 
         do {
-            $third_website = factory(Website::class)->make([
-                'public_administration_id' => $second_pa->id,
+            $thirdWebsite = factory(Website::class)->make([
+                'public_administration_id' => $secondPA->id,
             ]);
-        } while ($third_website->slug === $first_website->slug || $third_website->slug === $second_website->slug);
+        } while ($thirdWebsite->slug === $firstWebsite->slug || $thirdWebsite->slug === $secondWebsite->slug);
 
-        $third_website->save();
+        $thirdWebsite->save();
 
         $this->assertDatabaseHas('websites', [
-            'id' => $first_website->id,
-            'public_administration_id' => $first_pa->id,
+            'id' => $firstWebsite->id,
+            'public_administration_id' => $firstPA->id,
         ]);
 
         $this->assertDatabaseHas('websites', [
-            'id' => $second_website->id,
-            'public_administration_id' => $first_pa->id,
+            'id' => $secondWebsite->id,
+            'public_administration_id' => $firstPA->id,
         ]);
 
         $this->assertDatabaseHas('websites', [
-            'id' => $third_website->id,
-            'public_administration_id' => $second_pa->id,
+            'id' => $thirdWebsite->id,
+            'public_administration_id' => $secondPA->id,
         ]);
 
-        $searched_first_pa = PublicAdministration::findByIPACode($first_pa->ipa_code);
-        $searched_second_pa = PublicAdministration::findByIPACode($second_pa->ipa_code);
+        $searchedFirstPA = PublicAdministration::findByIPACode($firstPA->ipa_code);
+        $searchedSecondPA = PublicAdministration::findByIPACode($secondPA->ipa_code);
 
-        $this->assertCount(2, $searched_first_pa->websites()->get());
-        $this->assertCount(1, $searched_second_pa->websites()->get());
+        $this->assertCount(2, $searchedFirstPA->websites()->get());
+        $this->assertCount(1, $searchedSecondPA->websites()->get());
     }
 }
