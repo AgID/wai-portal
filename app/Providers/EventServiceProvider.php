@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
-use App\Events\Auth\Invited;
+use App\Events\Auth\UserInvited;
 use App\Listeners\EventToLogSubscriber;
+use App\Listeners\IPAJobEventsSubscriber;
+use App\Listeners\PublicAdministrationEventsSubscriber;
 use App\Listeners\SendInvitationNotification;
 use App\Listeners\SPIDEventSubscriber;
 use Illuminate\Auth\Events\Registered;
@@ -21,7 +23,7 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
-        Invited::class => [
+        UserInvited::class => [
             SendInvitationNotification::class,
         ],
     ];
@@ -29,6 +31,8 @@ class EventServiceProvider extends ServiceProvider
     protected $subscribe = [
         SPIDEventSubscriber::class,
         EventToLogSubscriber::class,
+        IPAJobEventsSubscriber::class,
+        PublicAdministrationEventsSubscriber::class,
     ];
 
     /**

@@ -27,8 +27,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->job(new ProcessIPAList())->dailyAt('04:00');
-        $schedule->job(new ProcessPendingWebsites())->hourly();
+        $schedule->job(new ProcessIPAList())->dailyAt('06:00')->runInBackground()->onOneServer();
+        $schedule->job(new ProcessPendingWebsites())->hourly()->runInBackground()->onOneServer();
     }
 
     /**

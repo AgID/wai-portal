@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\UserStatus;
-use App\Events\Auth\Invited;
+use App\Events\Auth\UserInvited;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -57,7 +57,7 @@ class AdminUserController extends Controller
             $user->passwordResetToken->delete();
         }
 
-        event(new Invited($user, null, $request->user()));
+        event(new UserInvited($user, null, $request->user()));
 
         return redirect()->route('admin-dashboard')
             ->withMessages([

@@ -41,7 +41,7 @@ class EventToLogSubscriber
         );
 
         $events->listen(
-            'App\Events\Auth\Invited',
+            'App\Events\Auth\UserInvited',
             'App\Listeners\EventToLogSubscriber@onInvited'
         );
 

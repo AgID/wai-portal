@@ -6,7 +6,7 @@ use App\Models\PublicAdministration;
 use App\Models\User;
 use Illuminate\Queue\SerializesModels;
 
-class Invited
+class UserInvited
 {
     use SerializesModels;
 
