@@ -18,6 +18,9 @@ use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
+/**
+ * Custom application commands tests.
+ */
 class CommandsTest extends TestCase
 {
     use RefreshDatabase;
@@ -66,13 +69,13 @@ class CommandsTest extends TestCase
     }
 
     /**
-     * Test CheckPendingWebsite class.
+     * Test check pending website command.
      *
-     * @throws \Exception
-     *
-     * @return void
+     * @throws AnalyticsServiceException
+     * @throws BindingResolutionException
+     * @throws GuzzleException
      */
-    public function testCheckPendingWebsites()
+    public function testCheckPendingWebsites(): void
     {
         $this->artisan('app:check-websites');
 
@@ -122,13 +125,9 @@ class CommandsTest extends TestCase
     }
 
     /**
-     * Test CreateRoles class.
-     *
-     * @throws \Exception
-     *
-     * @return void
+     * Test create roles command.
      */
-    public function testCreateRoles()
+    public function testCreateRoles(): void
     {
         $this->assertDatabaseMissing('roles', [
             'name' => 'registered',
@@ -148,13 +147,9 @@ class CommandsTest extends TestCase
     }
 
     /**
-     * Test UpdateIPAList class.
-     *
-     * @throws \Exception
-     *
-     * @return void
+     * Test update IPA command.
      */
-    public function testUpdateIPAList()
+    public function testUpdateIPAList(): void
     {
         $user = factory(User::class)->states('active')->create();
         $IPAIndex = new Index((new PredisAdapter())->connect(config('database.redis.ipaindex.host'), config('database.redis.ipaindex.port'), config('database.redis.ipaindex.database')), 'IPAIndex');

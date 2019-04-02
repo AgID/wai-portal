@@ -12,12 +12,15 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
+/**
+ * The application event provider.
+ */
 class EventServiceProvider extends ServiceProvider
 {
     /**
-     * The event listener mappings for the application.
+     * The event handler mappings for the application.
      *
-     * @var array
+     * @var array the listeners list
      */
     protected $listen = [
         Registered::class => [
@@ -28,6 +31,11 @@ class EventServiceProvider extends ServiceProvider
         ],
     ];
 
+    /**
+     * The subscriber classes to register.
+     *
+     * @var array the subscribers list
+     */
     protected $subscribe = [
         SPIDEventSubscriber::class,
         EventToLogSubscriber::class,
@@ -37,13 +45,9 @@ class EventServiceProvider extends ServiceProvider
 
     /**
      * Register any events for your application.
-     *
-     * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         parent::boot();
-
-        //
     }
 }

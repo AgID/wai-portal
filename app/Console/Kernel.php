@@ -7,25 +7,17 @@ use App\Jobs\ProcessPendingWebsites;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
+/**
+ * Application command scheduler.
+ */
 class Kernel extends ConsoleKernel
 {
     /**
-     * The Artisan commands provided by your application.
-     *
-     * @var array
-     */
-    protected $commands = [
-        //
-    ];
-
-    /**
      * Define the application's command schedule.
      *
-     * @param \Illuminate\Console\Scheduling\Schedule $schedule
-     *
-     * @return void
+     * @param Schedule $schedule the command scheduler
      */
-    protected function schedule(Schedule $schedule)
+    protected function schedule(Schedule $schedule): void
     {
         $schedule->job(new ProcessIPAList())->dailyAt('06:00')->runInBackground()->onOneServer();
         $schedule->job(new ProcessPendingWebsites())->hourly()->runInBackground()->onOneServer();
@@ -33,10 +25,8 @@ class Kernel extends ConsoleKernel
 
     /**
      * Register the commands for the application.
-     *
-     * @return void
      */
-    protected function commands()
+    protected function commands(): void
     {
         $this->load(__DIR__ . '/Commands');
 
