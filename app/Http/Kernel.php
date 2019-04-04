@@ -42,6 +42,11 @@ class Kernel extends HttpKernel
             'throttle:60,1',
             'bindings',
         ],
+
+        'cron' => [
+            \App\Http\Middleware\CronAuthenticate::class,
+            'bindings',
+        ],
     ];
 
     /**
@@ -65,6 +70,7 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'tenant.selected' => \App\Http\Middleware\SelectTenant::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        'cron.auth' => \App\Http\Middleware\CronAuthenticate::class,
     ];
 
     /**

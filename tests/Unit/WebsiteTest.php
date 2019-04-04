@@ -21,10 +21,10 @@ class WebsiteTest extends TestCase
      */
     public function testWebsiteCreation(): void
     {
-        $public_administration = factory(PublicAdministration::class)->create();
+        $publicAdministration = factory(PublicAdministration::class)->create();
 
         $website = factory(Website::class)->make([
-            'public_administration_id' => $public_administration->id,
+            'public_administration_id' => $publicAdministration->id,
         ]);
 
         $this->assertDatabaseMissing('websites', ['slug' => $website->slug]);
@@ -43,27 +43,27 @@ class WebsiteTest extends TestCase
      */
     public function testWebsiteUpdate(): void
     {
-        $public_administration = factory(PublicAdministration::class)->create();
+        $publicAdministration = factory(PublicAdministration::class)->create();
 
         $website = factory(Website::class)->create([
-            'public_administration_id' => $public_administration->id,
+            'public_administration_id' => $publicAdministration->id,
         ]);
 
-        $searched_website = Website::where('id', $website->id)->first();
+        $searchedWebsite = Website::where('id', $website->id)->first();
 
-        $this->assertEquals(WebsiteStatus::PENDING, $searched_website->status);
+        $this->assertEquals(WebsiteStatus::PENDING, $searchedWebsite->status);
 
-        $searched_website->markActive();
+        $searchedWebsite->markActive();
 
-        $searched_website = Website::where('id', $website->id)->first();
+        $searchedWebsite = Website::where('id', $website->id)->first();
 
-        $this->assertEquals(WebsiteStatus::ACTIVE, $searched_website->status);
+        $this->assertEquals(WebsiteStatus::ACTIVE, $searchedWebsite->status);
 
-        $searched_website->markArchived();
+        $searchedWebsite->markArchived();
 
-        $searched_website = Website::where('id', $website->id)->first();
+        $searchedWebsite = Website::where('id', $website->id)->first();
 
-        $this->assertEquals(WebsiteStatus::ARCHIVED, $searched_website->status);
+        $this->assertEquals(WebsiteStatus::ARCHIVED, $searchedWebsite->status);
     }
 
     /**
@@ -73,31 +73,31 @@ class WebsiteTest extends TestCase
      */
     public function testWebsiteSoftDeleteAndRestore(): void
     {
-        $public_administration = factory(PublicAdministration::class)->create();
+        $publicAdministration = factory(PublicAdministration::class)->create();
 
         $website = factory(Website::class)->create([
-            'public_administration_id' => $public_administration->id,
+            'public_administration_id' => $publicAdministration->id,
         ]);
 
-        $searched_website = Website::where('id', $website->id)->first();
+        $searchedWebsite = Website::where('id', $website->id)->first();
 
-        $searched_website->delete();
+        $searchedWebsite->delete();
 
         $this->assertSoftDeleted('websites', ['id' => $website->id]);
 
-        $searched_website = Website::where('id', $website->id)->first();
+        $searchedWebsite = Website::where('id', $website->id)->first();
 
-        $this->assertNull($searched_website);
+        $this->assertNull($searchedWebsite);
 
-        $searched_website = Website::onlyTrashed()->where('id', $website->id)->first();
+        $searchedWebsite = Website::onlyTrashed()->where('id', $website->id)->first();
 
-        $this->assertNotNull($searched_website);
+        $this->assertNotNull($searchedWebsite);
 
-        $searched_website->restore();
+        $searchedWebsite->restore();
 
-        $searched_website = Website::where('id', $website->id)->first();
+        $searchedWebsite = Website::where('id', $website->id)->first();
 
-        $this->assertNotNull($searched_website);
+        $this->assertNotNull($searchedWebsite);
     }
 
     /**
@@ -105,22 +105,25 @@ class WebsiteTest extends TestCase
      */
     public function testPublicAdministrationRelation(): void
     {
-        $first_pa = factory(PublicAdministration::class)->create();
-        $second_pa = factory(PublicAdministration::class)->create();
+        $firstPA = factory(PublicAdministration::class)->create();
+        $secondPA = factory(PublicAdministration::class)->create();
 
-        $first_website = factory(Website::class)->create([
-            'public_administration_id' => $first_pa->id,
+        $firstWebsite = factory(Website::class)->create([
+            'public_administration_id' => $firstPA->id,
         ]);
 
-        $second_website = factory(Website::class)->create([
-            'public_administration_id' => $second_pa->id,
-        ]);
+        do {
+            $secondWebsite = factory(Website::class)->make([
+                'public_administration_id' => $secondPA->id,
+            ]);
+        } while ($secondWebsite->slug === $firstWebsite->slug);
+        $secondWebsite->save();
 
-        $searched_first_website = Website::where('id', $first_website->id)->first();
-        $searched_second_website = Website::where('id', $second_website->id)->first();
+        $searchedFirstWebsite = Website::where('id', $firstWebsite->id)->first();
+        $searchedSecondWebsite = Website::where('id', $secondWebsite->id)->first();
 
-        $this->assertEquals($first_pa->ipa_code, $searched_first_website->publicAdministration->ipa_code);
-        $this->assertEquals($second_pa->ipa_code, $searched_second_website->publicAdministration->ipa_code);
+        $this->assertEquals($firstPA->ipa_code, $searchedFirstWebsite->publicAdministration->ipa_code);
+        $this->assertEquals($secondPA->ipa_code, $searchedSecondWebsite->publicAdministration->ipa_code);
     }
 
     /**
@@ -128,41 +131,47 @@ class WebsiteTest extends TestCase
      */
     public function testKeywordRelation(): void
     {
-        $first_keyword = factory(Keyword::class)->create();
-        $second_keyword = factory(Keyword::class)->create();
+        $firstKeyword = factory(Keyword::class)->create();
+        do {
+            $secondKeyword = factory(Keyword::class)->make();
+        } while ($firstKeyword->vocabulary === $secondKeyword->vocabulary && $firstKeyword->id_vocabulary === $secondKeyword->id_vocabulary);
+        $secondKeyword->save();
 
-        $public_administration = factory(PublicAdministration::class)->create();
+        $publicAdministration = factory(PublicAdministration::class)->create();
 
-        $first_website = factory(Website::class)->create([
-            'public_administration_id' => $public_administration->id,
+        $firstWebsite = factory(Website::class)->create([
+            'public_administration_id' => $publicAdministration->id,
         ]);
 
-        $second_website = factory(Website::class)->create([
-            'public_administration_id' => $public_administration->id,
-        ]);
+        do {
+            $secondWebsite = factory(Website::class)->make([
+                'public_administration_id' => $publicAdministration->id,
+            ]);
+        } while ($secondWebsite->slug === $firstWebsite->slug);
+        $secondWebsite->save();
 
-        $first_website->keywords()->sync([$first_keyword->id, $second_keyword->id]);
-        $second_website->keywords()->sync($second_keyword->id);
+        $firstWebsite->keywords()->sync([$firstKeyword->id, $secondKeyword->id]);
+        $secondWebsite->keywords()->sync($secondKeyword->id);
 
         $this->assertDatabaseHas('keyword_website', [
-            'keyword_id' => $first_keyword->id,
-            'website_id' => $first_website->id,
+            'keyword_id' => $firstKeyword->id,
+            'website_id' => $firstWebsite->id,
         ]);
 
         $this->assertDatabaseHas('keyword_website', [
-            'keyword_id' => $second_keyword->id,
-            'website_id' => $first_website->id,
+            'keyword_id' => $secondKeyword->id,
+            'website_id' => $firstWebsite->id,
         ]);
 
         $this->assertDatabaseHas('keyword_website', [
-            'keyword_id' => $second_keyword->id,
-            'website_id' => $second_website->id,
+            'keyword_id' => $secondKeyword->id,
+            'website_id' => $secondWebsite->id,
         ]);
 
-        $searched_first_website = Website::where('id', $first_website->id)->first();
-        $searched_second_website = Website::where('id', $second_website->id)->first();
+        $searchedFirstWebsite = Website::where('id', $firstWebsite->id)->first();
+        $searchedSecondWebsite = Website::where('id', $secondWebsite->id)->first();
 
-        $this->assertCount(2, $searched_first_website->keywords()->get());
-        $this->assertCount(1, $searched_second_website->keywords()->get());
+        $this->assertCount(2, $searchedFirstWebsite->keywords()->get());
+        $this->assertCount(1, $searchedSecondWebsite->keywords()->get());
     }
 }

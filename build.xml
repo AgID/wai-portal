@@ -122,6 +122,7 @@
                 <replacetokens>
                     <token key="HOSTNAME" value="${HOSTNAME}" />
                     <token key="APP_SALT" value="${APP_SALT}" />
+                    <token key="CRON_TOKEN" value="${CRON_TOKEN}" />
                     <token key="MARIADB_DATABASE" value="${MARIADB_DATABASE}" />
                     <token key="MARIADB_USER" value="${MARIADB_USER}" />
                     <token key="MARIADB_PASSWORD" value="${MARIADB_PASSWORD}" />

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\UserStatus;
-use App\Events\Auth\Invited;
+use App\Events\Auth\UserInvited;
 use App\Models\User;
 use App\Transformers\UserTransformer;
 use CodiceFiscale\Checker as FiscalNumberChecker;
@@ -81,7 +81,7 @@ class UserController extends Controller
         $user->publicAdministrations()->attach(session('tenant_id'));
         $user->assign($validatedData['role']);
 
-        event(new Invited($user, current_public_administration(), $request->user()));
+        event(new UserInvited($user, current_public_administration(), $request->user()));
 
         logger()->info('User ' . auth()->user()->getInfo() . ' added a new user [' . $validatedData['email'] . '] as ' . $validatedData['role'] . ' for "' . current_public_administration()->name . '"');
 

@@ -31,11 +31,11 @@ class PasswordResetTokenTest extends TestCase
 
         $this->assertDatabaseHas('password_reset_tokens', ['user_id' => $user->id]);
 
-        $searched_token = PasswordResetToken::where('user_id', $user->id)->first();
+        $searchedToken = PasswordResetToken::where('user_id', $user->id)->first();
 
-        $this->assertNotNull($searched_token);
+        $this->assertNotNull($searchedToken);
 
-        $this->assertEquals($token->token, $searched_token->token);
+        $this->assertEquals($token->token, $searchedToken->token);
     }
 
     public function testPasswordResetTokenDelete(): void
@@ -46,12 +46,12 @@ class PasswordResetTokenTest extends TestCase
             'user_id' => $user->id,
         ]);
 
-        $searched_token = PasswordResetToken::where('user_id', $user->id)->first();
+        $searchedToken = PasswordResetToken::where('user_id', $user->id)->first();
 
-        $searched_token->delete();
+        $searchedToken->delete();
 
-        $searched_token = PasswordResetToken::where('user_id', $user->id)->first();
+        $searchedToken = PasswordResetToken::where('user_id', $user->id)->first();
 
-        $this->assertNull($searched_token);
+        $this->assertNull($searchedToken);
     }
 }

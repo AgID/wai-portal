@@ -5,16 +5,22 @@ namespace Tests\Unit;
 use App\Enums\PublicAdministrationStatus;
 use App\Enums\UserStatus;
 use App\Enums\WebsiteStatus;
+use App\Exceptions\AnalyticsServiceException;
 use App\Models\PublicAdministration;
 use App\Models\User;
 use App\Models\Website;
 use Ehann\RediSearch\Index;
-use Ehann\RedisRaw\PhpRedisAdapter;
+use Ehann\RedisRaw\PredisAdapter;
 use Exception;
 use GuzzleHttp\Client as TrackingClient;
+use GuzzleHttp\Exception\GuzzleException;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
+/**
+ * Custom application commands tests.
+ */
 class CommandsTest extends TestCase
 {
     use RefreshDatabase;
@@ -23,11 +29,11 @@ class CommandsTest extends TestCase
      * Models required by this test.
      */
     protected $user;
-    protected $user_pending;
+    protected $userPending;
     protected $publicAdministration;
-    protected $publicAdministration_pending;
+    protected $publicAdministrationPending;
     protected $website;
-    protected $website_pending;
+    protected $websitePending;
 
     /**
      * Test setUp.
@@ -36,19 +42,19 @@ class CommandsTest extends TestCase
     {
         parent::setUp();
         $this->user = factory(User::class)->states('pending')->create();
-        $this->user_pending = factory(User::class)->states('pending')->create();
+        $this->userPending = factory(User::class)->states('pending')->create();
         $this->publicAdministration = factory(PublicAdministration::class)->create();
-        $this->publicAdministration_pending = factory(PublicAdministration::class)->create();
+        $this->publicAdministrationPending = factory(PublicAdministration::class)->create();
         $this->user->publicAdministrations()->attach($this->publicAdministration->id);
-        $this->user_pending->publicAdministrations()->attach($this->publicAdministration_pending->id);
+        $this->userPending->publicAdministrations()->attach($this->publicAdministrationPending->id);
         $this->user->save();
-        $this->user_pending->save();
+        $this->userPending->save();
         $this->website = factory(Website::class)->make();
-        $this->website_pending = factory(Website::class)->make();
+        $this->websitePending = factory(Website::class)->make();
         $this->publicAdministration->websites()->save($this->website);
-        $this->publicAdministration_pending->websites()->save($this->website_pending);
+        $this->publicAdministrationPending->websites()->save($this->websitePending);
         $this->publicAdministration->save();
-        $this->publicAdministration_pending->save();
+        $this->publicAdministrationPending->save();
     }
 
     /**
@@ -63,13 +69,13 @@ class CommandsTest extends TestCase
     }
 
     /**
-     * Test CheckPendingWebsite class.
+     * Test check pending website command.
      *
-     * @throws \Exception
-     *
-     * @return void
+     * @throws AnalyticsServiceException
+     * @throws BindingResolutionException
+     * @throws GuzzleException
      */
-    public function testCheckPendingWebsites()
+    public function testCheckPendingWebsites(): void
     {
         $this->artisan('app:check-websites');
 
@@ -96,8 +102,8 @@ class CommandsTest extends TestCase
             'verify' => false,
         ]);
 
-        $this->website_pending->created_at = now()->subDays(16);
-        $this->website_pending->save();
+        $this->websitePending->created_at = now()->subDays(16);
+        $this->websitePending->save();
 
         $this->artisan('app:check-websites');
 
@@ -119,13 +125,9 @@ class CommandsTest extends TestCase
     }
 
     /**
-     * Test CreateRoles class.
-     *
-     * @throws \Exception
-     *
-     * @return void
+     * Test create roles command.
      */
-    public function testCreateRoles()
+    public function testCreateRoles(): void
     {
         $this->assertDatabaseMissing('roles', [
             'name' => 'registered',
@@ -145,16 +147,12 @@ class CommandsTest extends TestCase
     }
 
     /**
-     * Test UpdateIPAList class.
-     *
-     * @throws \Exception
-     *
-     * @return void
+     * Test update IPA command.
      */
-    public function testUpdateIPAList()
+    public function testUpdateIPAList(): void
     {
         $user = factory(User::class)->states('active')->create();
-        $IPAIndex = new Index((new PhpRedisAdapter())->connect(config('database.redis.ipaindex.host'), config('database.redis.ipaindex.port'), config('database.redis.ipaindex.database')), 'IPAIndex');
+        $IPAIndex = new Index((new PredisAdapter())->connect(config('database.redis.ipaindex.host'), config('database.redis.ipaindex.port'), config('database.redis.ipaindex.database')), 'IPAIndex');
         try {
             $IPAIndex->drop();
         } catch (Exception $e) {

@@ -39,12 +39,27 @@ class RouteServiceProvider extends ServiceProvider
 
         $this->mapWebRoutes();
 
+        $this->mapCronRoutes();
+
         if (!$this->app->environment('production')) {
             $this->mapTestingRoutes();
         }
         if ($this->app->environment('staging')) {
             $this->mapStagingRoutes();
         }
+    }
+
+    /**
+     * Define the "cron" routes for the application.
+     *
+     * This routes are stateless and should be reserved for CronJob tasks submission
+     */
+    public function mapCronRoutes(): void
+    {
+        Route::prefix('cron')
+            ->middleware('cron')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/cron.php'));
     }
 
     /**

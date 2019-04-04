@@ -19,6 +19,11 @@ HOSTNAME=localhost
 SPID_SP_PRIVATE_KEY=
 SPID_SP_CERTIFICATE=
 
+# Cron authentication
+# -------------------
+
+CRON_TOKEN=
+
 # Database settings
 # -----------------
 
