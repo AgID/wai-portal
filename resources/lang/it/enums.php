@@ -2,6 +2,7 @@
 
 use App\Enums\PublicAdministrationStatus;
 use App\Enums\UserStatus;
+use App\Enums\WebsiteAccessType;
 use App\Enums\WebsiteStatus;
 use App\Enums\WebsiteType;
 
@@ -32,6 +33,13 @@ return[
         WebsiteType::SECONDARY => 'informativo o tematico',
         WebsiteType::WEBAPP => 'interattivo o web application',
         WebsiteType::TESTING => 'testing o staging',
+    ],
+
+    WebsiteAccessType::class => [
+        WebsiteAccessType::NO_ACCESS => 'nessun accesso',
+        WebsiteAccessType::VIEW => 'sola lettura',
+        WebsiteAccessType::WRITE => 'gestione analytics',
+        WebsiteAccessType::ADMIN => 'amministratore',
     ],
 
 ];

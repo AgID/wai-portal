@@ -3,11 +3,13 @@
 namespace App\Providers;
 
 use App\Events\Auth\UserInvited;
-use App\Listeners\EventToLogSubscriber;
+use App\Listeners\CheckPendingWebsiteJobsEventsSubscriber;
+use App\Listeners\UserEventsSubscriber;
 use App\Listeners\IPAJobEventsSubscriber;
 use App\Listeners\PublicAdministrationEventsSubscriber;
 use App\Listeners\SendInvitationNotification;
 use App\Listeners\SPIDEventSubscriber;
+use App\Listeners\WebsiteEventsSubscriber;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -38,9 +40,11 @@ class EventServiceProvider extends ServiceProvider
      */
     protected $subscribe = [
         SPIDEventSubscriber::class,
-        EventToLogSubscriber::class,
+        UserEventsSubscriber::class,
         IPAJobEventsSubscriber::class,
         PublicAdministrationEventsSubscriber::class,
+        WebsiteEventsSubscriber::class,
+        CheckPendingWebsiteJobsEventsSubscriber::class,
     ];
 
     /**

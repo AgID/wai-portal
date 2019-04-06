@@ -104,7 +104,7 @@ class AdminVerificationController extends Controller
 
         $user = User::where('email', $validatedData['email'])->first();
 
-        if (empty($user) || !$user->status-is(UserStatus::INVITED)) {
+        if (empty($user) || !$user->status - is(UserStatus::INVITED)) {
             return redirect()->route('home')->withMessage(['info' => "Se l'indirizzo email inserito corrisponde ad un'utenza amministrativa, riceverai e breve un messaggio con un nuovo codice di verifica."]); //TODO: put message in lang file
         }
 

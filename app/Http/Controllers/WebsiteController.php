@@ -5,11 +5,15 @@ namespace App\Http\Controllers;
 use App\Enums\WebsiteAccessType;
 use App\Enums\WebsiteStatus;
 use App\Enums\WebsiteType;
+use App\Exceptions\AnalyticsServiceException;
+use App\Exceptions\CommandErrorException;
+use App\Jobs\ProcessPendingWebsites;
 use App\Models\PublicAdministration;
 use App\Models\Website;
 use App\Transformers\WebsiteTransformer;
 use Ehann\RediSearch\Index;
 use Ehann\RedisRaw\PredisAdapter;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -102,8 +106,8 @@ class WebsiteController extends Controller
 
         $analyticsId = app()->make('analytics-service')->registerSite('Sito istituzionale', $pa->site, $publicAdministration->name); //TODO: put string in lang file
 
-        //TODO: decidere dove spostare
-        app()->make('analytics-service')->setTemporaryWebsiteAccess(auth()->user()->uuid, WebsiteAccessType::VIEW, $analyticsId); //TODO: decidere meglio come fare
+        //TODO: gestire meglio con CRUD siti
+        app()->make('analytics-service')->setWebsiteAccess(auth()->user()->uuid, WebsiteAccessType::VIEW, $analyticsId, config('analytics-service.admin_token'));
 
         if (empty($analyticsId)) {
             abort(500, 'Il servizio Analytics non è disponibile'); //TODO: put error message in lang file
@@ -198,6 +202,35 @@ class WebsiteController extends Controller
         logger()->info('User ' . auth()->user()->getInfo() . ' added a new website "' . $validatedData['name'] . '" [' . $validatedData['url'] . '] as ' . $validatedData['type'] . ' website of "' . $publicAdministration->name . '"');
 
         return redirect()->route('websites-index')->withMessage(['success' => 'Il sito è stato aggiunto al progetto Web Analytics Italia.']); //TODO: put message in lang file
+    }
+
+    public function checkTracking(Website $website)
+    {
+        try {
+            $tokenAuth = current_user_auth_token();
+            $analyticsService = app()->make('analytics-service');
+            if ($website->status->is(WebsiteStatus::PENDING) && ($analyticsService->getLiveVisits($website->analytics_id, 60, $tokenAuth) > 0 || $analyticsService->getSiteTotalVisits($website->analytics_id, $website->created_at->format('Y-m-d'), $tokenAuth) > 0)) {
+                $website->status = WebsiteStatus::ACTIVE;
+            }
+
+            return response()->json([
+                'result' => 'ok',
+                'id' => $website->slug,
+                'status' => $website->status->description,
+            ]);
+        } catch (AnalyticsServiceException | BindingResolutionException $exception) {
+            report($exception);
+            $code = $exception->getCode();
+            $message = 'Internal Server Error';
+            $httpStatusCode = 500;
+        } catch (CommandErrorException $exception) {
+            report($exception);
+            $code = $exception->getCode();
+            $message = 'Bad Request';
+            $httpStatusCode = 400;
+        }
+
+        return response()->json(['result' => 'error', 'message' => $message, 'code' => $code], $httpStatusCode);
     }
 
     /**

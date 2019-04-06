@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Route;
 |
 | Defined routes:
 | - update IPA request route.
-|
+| - Check pending websites request route.
 */
 
 /*
@@ -18,4 +18,12 @@ use Illuminate\Support\Facades\Route;
 Route::get('/updateipa', [
     'as' => 'cron-update_ipa',
     'uses' => 'Cron\CronController@updateIPA',
+]);
+
+/*
+ * Check pending websites request route.
+ */
+Route::get('/checkwebsites', [
+    'as' => 'cron-check_websites',
+    'uses' => 'Cron\CronController@checkPendingWebsites',
 ]);

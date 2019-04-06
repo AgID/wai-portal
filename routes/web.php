@@ -228,6 +228,11 @@ Route::middleware('spid.auth', 'auth', 'verified')->group(function () {
                     'uses' => 'WebsiteController@store',
                 ])->middleware('authorize.analytics:manage-sites');
 
+                Route::get('/{website}/check', [
+                    'as' => 'website-check_tracking',
+                    'uses' => 'WebsiteController@checkTracking',
+                ])->middleware('authorize.analytics:read-analytics');
+
                 Route::get('/{website}/edit', [
                     'as' => 'websites-edit',
                     'uses' => 'WebsiteController@edit',

@@ -47,6 +47,14 @@ class WebsiteTransformer extends TransformerAbstract
             ];
         }
 
+        if ($website->status->is(WebsiteStatus::PENDING) && auth()->user()->can('read-analytics')) {
+            $data['actions'][] = [
+                'link' => route('website-check_tracking', ['website' => $website->slug], false),
+                'label' => __('ui.pages.websites.index.check_tracking'),
+                'type' => 'check_tracking',
+            ];
+        }
+
         if (($website->status->is(WebsiteStatus::PENDING) || auth()->user()->can('manage-sites')) && !$website->type->is(WebsiteType::PRIMARY)) {
             $data['actions'][] = [
                 'link' => route('websites-edit', ['website' => $website], false),
