@@ -19,6 +19,13 @@ class ProcessPendingWebsites implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    protected $tokenAuth;
+
+    public function __construct(string $tokenAuth)
+    {
+        $this->tokenAuth = $tokenAuth;
+    }
+
     /**
      * Execute the job.
      *
@@ -29,7 +36,7 @@ class ProcessPendingWebsites implements ShouldQueue
         $pendingWebsites = Website::where('status', WebsiteStatus::PENDING)->get();
         $pendingWebsites->map(function ($website) {
             $analyticsService = app()->make('analytics-service');
-            if ($analyticsService->getSiteTotalVisits($website->analytics_id, $website->created_at->format('Y-m-d')) > 0) {
+            if ($analyticsService->getSiteTotalVisits($website->analytics_id, $website->created_at->format('Y-m-d'), $this->tokenAuth) > 0) {
                 $publicAdministration = $website->publicAdministration;
 
                 logger()->info('New website "' . $website->name . '" activated [' . $website->url . ']'); //TODO: notify me and the user!
@@ -52,7 +59,7 @@ class ProcessPendingWebsites implements ShouldQueue
                         $pendingUser->roles()->detach();
                         Bouncer::scope()->to($publicAdministration->id);
                         $pendingUser->assign('admin');
-                        $analyticsService->registerUser($pendingUser->email, $pendingUser->analytics_password, $pendingUser->email);
+                        $analyticsService->registerUser($pendingUser->email, $pendingUser->analytics_password, $pendingUser->email, $this->tokenAuth);
 
                         logger()->info('User ' . $pendingUser->getInfo() . ' was activated and registered in the Analytics Service.'); //TODO: notify me and the user!
                     }
@@ -60,7 +67,7 @@ class ProcessPendingWebsites implements ShouldQueue
 
                 foreach ($publicAdministration->users as $user) {
                     $access = $user->can('manage-analytics') ? 'admin' : 'view';
-                    $analyticsService->setWebsitesAccess($user->email, $access, $website->analytics_id);
+                    $analyticsService->setWebsitesAccess($user->email, $access, $website->analytics_id, $this->tokenAuth);
 
                     logger()->info('User ' . $user->getInfo() . ' was granted with "' . $access . '" access in the Analytics Service.'); //TODO: notify me and the user!
                 }

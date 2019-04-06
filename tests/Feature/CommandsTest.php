@@ -63,8 +63,9 @@ class CommandsTest extends TestCase
     protected function tearDown(): void
     {
         if (isset($this->website->analytics_id)) {
-            $this->app->make('analytics-service')->deleteSite($this->website->analytics_id);
-            $this->app->make('analytics-service')->deleteUser($this->user->email);
+            $tokenAuth = config('analytics-service.admin_token');
+            $this->app->make('analytics-service')->deleteSite($this->website->analytics_id, $tokenAuth);
+            $this->app->make('analytics-service')->deleteUser($this->user->email, $tokenAuth);
         }
     }
 

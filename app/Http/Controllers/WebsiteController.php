@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\WebsiteAccessType;
 use App\Enums\WebsiteStatus;
 use App\Enums\WebsiteType;
 use App\Models\PublicAdministration;
@@ -101,6 +102,9 @@ class WebsiteController extends Controller
 
         $analyticsId = app()->make('analytics-service')->registerSite('Sito istituzionale', $pa->site, $publicAdministration->name); //TODO: put string in lang file
 
+        //TODO: decidere dove spostare
+        app()->make('analytics-service')->setTemporaryWebsiteAccess(auth()->user()->uuid, WebsiteAccessType::VIEW, $analyticsId); //TODO: decidere meglio come fare
+
         if (empty($analyticsId)) {
             abort(500, 'Il servizio Analytics non è disponibile'); //TODO: put error message in lang file
         }
@@ -154,7 +158,7 @@ class WebsiteController extends Controller
             'type' => 'required|in:primary,secondary,webapp,testing',
         ]);
 
-        $IPAIndex = new Index((new PhpRedisAdapter())->connect(config('database.redis.ipaindex.host'), config('database.redis.ipaindex.port'), config('database.redis.ipaindex.database')), 'IPAIndex');
+        $IPAIndex = new Index((new PredisAdapter())->connect(config('database.redis.ipaindex.host'), config('database.redis.ipaindex.port'), config('database.redis.ipaindex.database')), 'IPAIndex');
 
         $domain = parse_url($request->input('url'), PHP_URL_HOST);
         $result = $IPAIndex->inFields(1, ['site'])
@@ -244,7 +248,8 @@ class WebsiteController extends Controller
             'type' => 'required|in:secondary,webapp,testing',
         ]);
 
-        $updated = app()->make('analytics-service')->updateSite($website->analytics_id, $validatedData['name'] . ' [' . $validatedData['type'] . ']', $validatedData['url'], $website->publicAdministration->name); //TODO: put string in lang file
+        $tokenAuth = current_user_auth_token();
+        $updated = app()->make('analytics-service')->updateSite($website->analytics_id, $validatedData['name'] . ' [' . $validatedData['type'] . ']', $validatedData['url'], $website->publicAdministration->name, $tokenAuth); //TODO: put string in lang file
 
         if (!$updated) {
             abort(500, 'Il servizio Analytics non è disponibile'); //TODO: put error message in lang file
@@ -286,7 +291,7 @@ class WebsiteController extends Controller
     public function dataJson()
     {
         return Datatables::of(current_public_administration()->websites())
-                ->setTransformer(new WebsiteTransformer())
+                ->setTransformer(new WebsiteTransformer(current_user_auth_token()))
                 ->make(true);
     }
 
@@ -300,7 +305,8 @@ class WebsiteController extends Controller
      */
     public function showJavascriptSnippet(Website $website)
     {
-        $javascriptSnippet = app()->make('analytics-service')->getJavascriptSnippet($website->analytics_id);
+        $tokenAuth = current_user_auth_token();
+        $javascriptSnippet = app()->make('analytics-service')->getJavascriptSnippet($website->analytics_id, $tokenAuth);
 
         return view('pages.websites.javascript_snippet')->with(['javascriptSnippet' => trim($javascriptSnippet)]);
     }

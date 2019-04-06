@@ -4,7 +4,7 @@ namespace App\Exceptions;
 
 use Exception;
 
-class AnalyticsServiceException extends Exception
+class CommandErrorException extends Exception
 {
     /**
      * Report the exception.
@@ -13,7 +13,7 @@ class AnalyticsServiceException extends Exception
      */
     public function report()
     {
-        logger()->error('Analytics Service exception: ' . $this->getMessage());
+        logger()->error('Analytics Service command error: ' . $this->getMessage());
         // TODO: Notify me!!
     }
 
@@ -26,6 +26,6 @@ class AnalyticsServiceException extends Exception
     {
         logger()->error($this->getMessage());
 
-        return redirect()->home()->withMessage(['error' => 'Il servizio remoto di Analytics non è disponibile. Riprovare successivamente.']); //TODO: put message in lang file
+        return redirect()->home()->withMessage(['error' => 'Il comando inviato al servizio di Analytics ha ritornato un errore. Riprovare successivamente.']); //TODO: put message in lang file
     }
 }

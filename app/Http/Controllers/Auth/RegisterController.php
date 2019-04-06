@@ -53,6 +53,9 @@ class RegisterController extends Controller
         $user->assign('registered');
         auth()->login($user);
 
+        //TODO: decidere dove spostare
+        app()->make('analytics-service')->registerTemporaryUser($user->uuid, $user->analytics_password, $user->email);
+
         return redirect()->home()
                ->withMessage(['info' => "Una email di verifica è stata inviata all'indirizzo " . $user->email]); //TODO: put message in lang file
     }

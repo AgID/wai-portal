@@ -9,6 +9,13 @@ use League\Fractal\TransformerAbstract;
 
 class WebsiteTransformer extends TransformerAbstract
 {
+    protected $tokenAuth;
+
+    public function __construct(string $tokenAuth)
+    {
+        $this->tokenAuth = $tokenAuth;
+    }
+
     /**
      * @param \App\Models\Website $website
      *
@@ -16,7 +23,7 @@ class WebsiteTransformer extends TransformerAbstract
      */
     public function transform(Website $website)
     {
-        $last_month_visit = (int) app()->make('analytics-service')->getSiteLastMonthVisits($website->analytics_id);
+        $last_month_visit = (int) app()->make('analytics-service')->getSiteLastMonthVisits($website->analytics_id, $this->tokenAuth);
 
         $data = [
             'url' => '<a href="http://' . $website->url . '">' . $website->url . '</a>',

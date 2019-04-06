@@ -15,3 +15,19 @@ if (!function_exists('current_public_administration')) {
         return null;
     }
 }
+
+if (!function_exists('current_user_auth_token')) {
+    /**
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     *
+     * @return string|null
+     */
+    function current_user_auth_token()
+    {
+        if (auth()->user()) {
+            return app()->make('analytics-service')->getUserAuthToken(auth()->user()->uuid, md5(auth()->user()->analytics_password));
+        }
+
+        return null;
+    }
+}
