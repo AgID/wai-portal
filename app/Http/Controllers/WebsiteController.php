@@ -217,7 +217,7 @@ class WebsiteController extends Controller
      */
     public function edit(Website $website)
     {
-        if ('primary' == $website->type) {
+        if ($website->type->is(WebsiteType::PRIMARY)) {
             abort(403, 'Non è permesso effettuare modifiche al sito istituzionale.');
         }
 

@@ -25,7 +25,7 @@ class AdminAuthenticate
             abort(403);
         }
 
-        if (UserStatus::SUSPENDED == $request->user()->status) {
+        if ($request->user()->status->is(UserStatus::SUSPENDED)) {
             abort(403, "L'utenza è stata sospesa."); // TODO: put in lang file
         }
 

@@ -67,7 +67,7 @@ class AccountVerification extends Mailable
      */
     public function build(): AccountVerification
     {
-        if (UserStatus::INVITED === $this->user->status) {
+        if ($this->user->status->is(UserStatus::INVITED)) {
             if ($this->user->isA('super-admin')) {
                 $mailTemplate = 'mail.admin_invited_verification';
             } else {

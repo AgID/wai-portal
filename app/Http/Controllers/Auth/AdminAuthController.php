@@ -111,7 +111,7 @@ class AdminAuthController extends Controller
         $email = $request->input('email');
 
         $user = User::where('email', $email)->first();
-        if (empty($user) || $user->cant('access-admin-area') || UserStatus::ACTIVE != $user->status) {
+        if (empty($user) || $user->cant('access-admin-area') || !$user->status->is(UserStatus::ACTIVE)) {
             return redirect()->home()->withMessage(['info' => "Se l'indirizzo email inserito corrisponde ad un'utenza amministrativa registrata e attiva, riceverai e breve un messaggio con le istruzioni per il reset della password."]);
         }
 

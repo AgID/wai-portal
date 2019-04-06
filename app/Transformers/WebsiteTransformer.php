@@ -20,9 +20,9 @@ class WebsiteTransformer extends TransformerAbstract
 
         $data = [
             'url' => '<a href="http://' . $website->url . '">' . $website->url . '</a>',
-            'type' => WebsiteType::getDescription($website->type),
+            'type' => $website->type->description,
             'added_at' => $website->created_at->format('d/m/Y'),
-            'status' => WebsiteStatus::getDescription($website->status),
+            'status' => $website->status->description,
             'last_month_visits' => $last_month_visit,
             'actions' => [
                 [
@@ -33,14 +33,14 @@ class WebsiteTransformer extends TransformerAbstract
             'control' => '',
         ];
 
-        if (WebsiteStatus::PENDING != $website->status) {
+        if (!$website->status->is(WebsiteStatus::PENDING)) {
             $data['actions'][] = [
                 'link' => route('analytics-service-login', [], false),
                 'label' => __('ui.pages.websites.index.go_to_analytics_service'),
             ];
         }
 
-        if ((WebsiteStatus::PENDING == $website->status || auth()->user()->can('manage-sites')) && WebsiteType::PRIMARY != $website->type) {
+        if (($website->status->is(WebsiteStatus::PENDING) || auth()->user()->can('manage-sites')) && !$website->type->is(WebsiteType::PRIMARY)) {
             $data['actions'][] = [
                 'link' => route('websites-edit', ['website' => $website], false),
                 'label' => __('ui.pages.websites.index.edit_website'),

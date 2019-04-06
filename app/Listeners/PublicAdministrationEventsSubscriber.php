@@ -20,7 +20,7 @@ class PublicAdministrationEventsSubscriber implements ShouldQueue
     public function onUpdated(PublicAdministrationUpdated $event): void
     {
         $publicAdministration = $event->getPublicAdministration();
-        logger()->info('Public Administration ' . $publicAdministration->name . ' [' . $publicAdministration->ipa_code . '] updated');
+        logger()->info('Public Administration ' . $publicAdministration->getInfo() . ' updated');
     }
 
     /**
@@ -32,7 +32,7 @@ class PublicAdministrationEventsSubscriber implements ShouldQueue
     {
         //TODO: decidere come gestire i cambiamenti del sito istituzionale su IPA
         $publicAdministration = $event->getPublicAdministration();
-        logger()->warning('Public Administration ' . $publicAdministration->name . ' primary website was changed in IPA list [' . $event->getNewURL() . '].');
+        logger()->warning('Public Administration ' . $publicAdministration->getInfo() . ' primary website was changed in IPA list [' . $event->getNewURL() . '].');
     }
 
     /**

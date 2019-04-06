@@ -23,9 +23,9 @@ class AuthorizeAnalytics
             $unauthorized = true;
         }
         if ($request->route('website')) {
-            if (current_public_administration() != $request->route('website')->publicAdministration) {
+            if (current_public_administration()->id !== $request->route('website')->publicAdministration->id) {
                 $unauthorized = true;
-            } elseif (WebsiteStatus::PENDING == $request->route('website')->status) {
+            } elseif ($request->route('website')->status->is(WebsiteStatus::PENDING)) {
                 $unauthorized = false;
             }
         }

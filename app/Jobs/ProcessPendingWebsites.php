@@ -41,7 +41,7 @@ class ProcessPendingWebsites implements ShouldQueue
                     $publicAdministration->status = PublicAdministrationStatus::ACTIVE;
                     $publicAdministration->save();
 
-                    logger()->info('New public administration activated [' . $publicAdministration->name . ']'); //TODO: notify me and the user!
+                    logger()->info('New public administration activated [' . $publicAdministration->getInfo() . ']'); //TODO: notify me and the user!
 
                     $pendingUser = $publicAdministration->users()->where('status', UserStatus::PENDING)->first();
 
@@ -73,7 +73,7 @@ class ProcessPendingWebsites implements ShouldQueue
                     $pendingUser->save();
                     $publicAdministration->forceDelete();
                     logger()->info('Website "' . $website->name . '" [' . $website->url . '] was deleted as not activated within 15 days'); //TODO: notify me and the user!
-                    logger()->info('Public administration [' . $publicAdministration->name . '] was deleted as not activated within 15 days');
+                    logger()->info('Public administration ' . $publicAdministration->getInfo() . ' was deleted as not activated within 15 days');
                 } else {
                     $website->forceDelete();
                     logger()->info('Website "' . $website->name . '" [' . $website->url . '] was deleted as not activated within 15 days'); //TODO: notify me and the user!

@@ -66,9 +66,9 @@
                         </label>
                         <select class="Form-input" id="type" name="type" aria-required="true" required/>
                         <option value="">seleziona</option>{{-- //TODO: use localized enum --}}
-                        <option value="secondary" {{ (old('type') ?? $website->type) == 'secondary' ? "selected" : "" }}>{{ __('ui.website.secondary') }}</option>
-                        <option value="webapp" {{ (old('type') ?? $website->type) == 'webapp' ? "selected" : "" }}>{{ __('ui.website.webapp') }}</option>
-                        <option value="testing" {{ (old('type') ?? $website->type) == 'testing' ? "selected" : "" }}>{{ __('ui.website.testing') }}</option>
+                        <option value="secondary" {{ (old('type') ?? $website->type->is(\App\Enums\WebsiteType::SECONDARY) ? "selected" : "" }}>{{ \App\Enums\WebsiteType::getDescription(\App\Enums\WebsiteType::SECONDARY) }}</option>
+                        <option value="webapp" {{ (old('type') ?? $website->type->is(\App\Enums\WebsiteType::WEBAPP) ? "selected" : "" }}>{{ \App\Enums\WebsiteType::getDescription(\App\Enums\WebsiteType::WEBAPP) }}</option>
+                        <option value="testing" {{ (old('type') ?? $website->type->is(\App\Enums\WebsiteType::TESTING) ? "selected" : "" }}>{{ \App\Enums\WebsiteType::getDescription(\App\Enums\WebsiteType::TESTING) }}</option>
                         </select>
                         @if ($errors->has('type'))
                     </div>

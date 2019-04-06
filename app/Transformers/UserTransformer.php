@@ -21,7 +21,7 @@ class UserTransformer extends TransformerAbstract
             'email' => $user->email,
             'role' => __('auth.roles.' . $user->roles()->first()->name),
             'added_at' => $user->created_at->format('d/m/Y'),
-            'status' => UserStatus::getDescription($user->status),
+            'status' => $user->status->description,
             'actions' => [],
             'control' => '',
         ];

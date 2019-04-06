@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\PublicAdministrationStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -65,6 +66,18 @@ class PublicAdministration extends Model
     }
 
     /**
+     * @param $value
+     *
+     * @throws \BenSampo\Enum\Exceptions\InvalidEnumMemberException
+     *
+     * @return PublicAdministrationStatus
+     */
+    public function getStatusAttribute($value)
+    {
+        return new PublicAdministrationStatus((int) $value);
+    }
+
+    /**
      * The users belonging to this Public Administration.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany the relation to the users belonging to this Public Administration
@@ -86,5 +99,13 @@ class PublicAdministration extends Model
     public function websites(): HasMany
     {
         return $this->hasMany(Website::class);
+    }
+
+    /**
+     * @return string
+     */
+    public function getInfo()
+    {
+        return '"' . $this->name . '" [' . $this->ipa_code . ']';
     }
 }

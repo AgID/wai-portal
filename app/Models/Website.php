@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\WebsiteStatus;
+use App\Enums\WebsiteType;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -41,6 +42,30 @@ class Website extends Model
     }
 
     /**
+     * @param $value
+     *
+     * @throws \BenSampo\Enum\Exceptions\InvalidEnumMemberException
+     *
+     * @return WebsiteStatus
+     */
+    public function getStatusAttribute($value)
+    {
+        return new WebsiteStatus((int) $value);
+    }
+
+    /**
+     * @param $value
+     *
+     * @throws \BenSampo\Enum\Exceptions\InvalidEnumMemberException
+     *
+     * @return WebsiteType
+     */
+    public function getTypeAttribute($value)
+    {
+        return new WebsiteType((int) $value);
+    }
+
+    /**
      * The Public Administration this Website belongs to.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo the relation to the public administration this website belongs to
@@ -62,6 +87,11 @@ class Website extends Model
     public function keywords(): BelongsToMany
     {
         return $this->belongsToMany(Keyword::class);
+    }
+
+    public function getInfo(): string
+    {
+        return '"' . $this->name . '" [' . $this->slug . ']';
     }
 
     /**

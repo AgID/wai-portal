@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\UserStatus;
 use App\Notifications\VerifyEmail;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -95,6 +96,18 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * @param $value
+     *
+     * @throws \BenSampo\Enum\Exceptions\InvalidEnumMemberException
+     *
+     * @return UserStatus
+     */
+    public function getStatusAttribute($value)
+    {
+        return new UserStatus((int) $value);
+    }
+
+    /**
      * The password reset token.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne the relation with password reset token
@@ -124,6 +137,14 @@ class User extends Authenticatable implements MustVerifyEmail
     public function getAnalyticsPasswordAttribute(): string
     {
         return md5($this->partial_analytics_password . config('app.salt'));
+    }
+
+    /**
+     * @return string
+     */
+    public function getFullNameAttribute(): string
+    {
+        return trim((null === $this->name ? '' : $this->name . ' ') . ($this->familyName ?? ''));
     }
 
     /**
