@@ -50,6 +50,43 @@ abstract class DuskTestCase extends BaseTestCase
         $this->artisan('db:seed', ['--class' => 'UsersTableSeeder']);
     }
 
+    public function addFakePublicAdministration()
+    {
+        $responseJson = $this->get('/_test/_create_pa')->json();
+
+        return $responseJson['id'];
+    }
+
+    public function addFakeWebsite(int $publicAdministrationId)
+    {
+        return $this->get('/_test/_create_website/' . $publicAdministrationId)->json();
+    }
+
+    public function createAnalyticsUser($userId)
+    {
+        $this->get('/_test/_create_analytics_user/' . $userId);
+    }
+
+    public function createAnalyticsSite($websiteId)
+    {
+        $this->get('/_test/_create_analytics_site/' . $websiteId);
+    }
+
+    public function grantAnalyticsAccessToWebsite($websiteId, $userId, $access)
+    {
+        $this->get('/_test/_grant_analytics_access_to_site/' . $websiteId . '/' . $userId . '/' . $access);
+    }
+
+    public function deleteAnalyticsUser($userId)
+    {
+        $this->get('/_test/_delete_analytics_user/' . $userId);
+    }
+
+    public function deleteAnalyticsSite($websiteId)
+    {
+        $this->get('/_test/_delete_analytics_site/' . $websiteId);
+    }
+
     /**
      * Inject a SPID session.
      *
@@ -62,6 +99,13 @@ abstract class DuskTestCase extends BaseTestCase
     {
         $this->browse(function (Browser $browser) {
             $browser->visit('/_test/_inject_spid_session');
+        });
+    }
+
+    public function injectFakeTenandID(int $publicAdminiatraionId)
+    {
+        $this->browse(function (Browser $browser) use ($publicAdminiatraionId) {
+            $browser->visit('/_test/_inject_tenant_id/' . $publicAdminiatraionId);
         });
     }
 
@@ -79,6 +123,11 @@ abstract class DuskTestCase extends BaseTestCase
     public function assignFakeRole(int $userId, string $role)
     {
         $this->get('/_test/_assign_role/' . $userId . '/' . $role);
+    }
+
+    public function assignUserToPA(int $userId, int $paId)
+    {
+        $this->get('/_test/_assign_to_pa/' . $paId . '/' . $userId);
     }
 
     /**
