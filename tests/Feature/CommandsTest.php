@@ -5,7 +5,6 @@ namespace Tests\Unit;
 use App\Enums\PublicAdministrationStatus;
 use App\Enums\UserStatus;
 use App\Enums\WebsiteStatus;
-use App\Exceptions\AnalyticsServiceException;
 use App\Models\PublicAdministration;
 use App\Models\User;
 use App\Models\Website;
@@ -13,8 +12,6 @@ use Ehann\RediSearch\Index;
 use Ehann\RedisRaw\PredisAdapter;
 use Exception;
 use GuzzleHttp\Client as TrackingClient;
-use GuzzleHttp\Exception\GuzzleException;
-use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -28,9 +25,10 @@ class CommandsTest extends TestCase
     /**
      * Test check pending website command.
      *
-     * @throws AnalyticsServiceException
-     * @throws BindingResolutionException
-     * @throws GuzzleException
+     * @throws \App\Exceptions\AnalyticsServiceException if unable to connect to the Analytics Service
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException if unable to bind to Analytics Service
+     * @throws \GuzzleHttp\Exception\GuzzleException if unable to inject tracking request
+     * @throws \App\Exceptions\CommandErrorException if Analytics Service command finishes with error
      */
     public function testCheckPendingWebsites(): void
     {

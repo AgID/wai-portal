@@ -4,179 +4,176 @@ namespace App\Contracts;
 
 use App\Exceptions\AnalyticsServiceException;
 use App\Exceptions\CommandErrorException;
+use Illuminate\Http\RedirectResponse;
 
 interface AnalyticsService
 {
     /**
      * Register a new site in the Analytics Service.
      *
-     * @param string $siteName
-     * @param string $url
-     * @param string $group
+     * @param string $siteName the website name
+     * @param string $url the website URL
+     * @param string $group the website group
      *
-     * @throws AnalyticsServiceException
-     * @throws CommandErrorException
+     * @throws CommandErrorException if command is unsuccessful
+     * @throws AnalyticsServiceException if unable to connect the Analytics Service
      *
-     * @return int
+     * @return int the Analytics Service website ID
      */
-    public function registerSite(string $siteName, string $url, string $group);
+    public function registerSite(string $siteName, string $url, string $group): int;
 
     /**
      * Updated an existing site in the Analytics Service.
      *
-     * @param string $idSite
-     * @param string $siteName
-     * @param string $url
-     * @param string $group
-     * @param string $tokenAuth
+     * @param string $idSite the Analytics Service website ID
+     * @param string $siteName the website name
+     * @param string $url the website URL
+     * @param string $group the website group
+     * @param string $tokenAuth the Analytics authentication token
      *
-     * @throws AnalyticsServiceException
-     * @throws CommandErrorException
-     *
-     * @return int
+     * @throws AnalyticsServiceException if unable to connect the Analytics Service
+     * @throws CommandErrorException if command is unsuccessful
      */
-    public function updateSite(string $idSite, string $siteName, string $url, string $group, string $tokenAuth);
+    public function updateSite(string $idSite, string $siteName, string $url, string $group, string $tokenAuth): void;
 
     /**
      * Get Javascript code snippet for a specified site
      * registered in the Analytics Service.
      *
-     * @param string $idSite
-     * @param string $tokenAuth
+     * @param string $idSite the Analytics Service website ID
+     * @param string $tokenAuth the Analytics authentication token
      *
-     * @throws AnalyticsServiceException
-     * @throws CommandErrorException
+     * @throws AnalyticsServiceException if unable to connect the Analytics Service
+     * @throws CommandErrorException if command is unsuccessful
      *
-     * @return string
+     * @return string the site tracking code
      */
-    public function getJavascriptSnippet(string $idSite, string $tokenAuth);
+    public function getJavascriptSnippet(string $idSite, string $tokenAuth): string;
 
     /**
      * Delete a given site in the Analytics Service.
      *
-     * @param string $idSite
-     * @param string $tokenAuth
+     * @param string $idSite the Analytics Service website ID
+     * @param string $tokenAuth the Analytics authentication token
      *
-     * @throws AnalyticsServiceException
-     * @throws CommandErrorException
-     *
-     * @return void
+     * @throws AnalyticsServiceException if unable to connect the Analytics Service
+     * @throws CommandErrorException if command is unsuccessful
      */
-    public function deleteSite(string $idSite, string $tokenAuth);
+    public function deleteSite(string $idSite, string $tokenAuth): void;
 
     /**
      * Register a new user in the Analytics Service.
      *
-     * @param string $userLogin
-     * @param string $password
-     * @param string $email
-     * @param string $tokenAuth
+     * @param string $userLogin the Analytics Service user ID
+     * @param string $password the Analytics Service user password
+     * @param string $email the Analytics Service user email
+     * @param string $tokenAuth the Analytics authentication token
+     * @param string $alias Analytics Service user alias
      *
-     * @throws AnalyticsServiceException
-     * @throws CommandErrorException
-     *
-     * @return string
+     * @throws AnalyticsServiceException if unable to connect the Analytics Service
+     * @throws CommandErrorException if command is unsuccessful
      */
-    public function registerUser(string $userLogin, string $password, string $email, string $tokenAuth, string $alias = '');
+    public function registerUser(string $userLogin, string $password, string $email, string $tokenAuth, string $alias = ''): void;
 
     /**
      * Get a specified user in the Analytics Service.
      *
-     * @param string $email
-     * @param string $tokenAuth
+     * @param string $email the Analytics Service user email
+     * @param string $tokenAuth the Analytics authentication token
      *
-     * @throws AnalyticsServiceException
-     * @throws CommandErrorException
+     * @throws CommandErrorException if command is unsuccessful
+     * @throws AnalyticsServiceException if unable to connect the Analytics Service
      *
-     * @return string
+     * @return array the Analytics Service user
      */
-    public function getUserByEmail(string $email, string $tokenAuth);
+    public function getUserByEmail(string $email, string $tokenAuth): array;
 
     /**
-     * @param string $userLogin
-     * @param string $hashedPassword
+     * @param string $userLogin the Analytics Service user ID
+     * @param string $hashedPassword the MD5 hashed Analytics Service user password
      *
-     * @throws AnalyticsServiceException
-     * @throws CommandErrorException
+     * @throws CommandErrorException if command is unsuccessful
+     * @throws AnalyticsServiceException if unable to connect the Analytics Service
      *
-     * @return string
+     * @return string the Analytics authentication token
      */
-    public function getUserAuthToken(string $userLogin, string $hashedPassword);
+    public function getUserAuthToken(string $userLogin, string $hashedPassword): string;
 
     /**
      * Delete a specified user in the Analytics Service.
      *
-     * @param string $email
-     * @param string $tokenAuth
+     * @param string $userLogin the Analytics Service user ID
+     * @param string $tokenAuth the Analytics authentication token
      *
-     * @throws AnalyticsServiceException
-     * @throws CommandErrorException
-     *
-     * @return string
+     * @throws AnalyticsServiceException if unable to connect the Analytics Service
+     * @throws CommandErrorException if command is unsuccessful
      */
-    public function deleteUser(string $email, string $tokenAuth);
+    public function deleteUser(string $userLogin, string $tokenAuth): void;
 
     /**
      * Login and redirect a specified user in the Analytics Service.
      *
-     * @param string $userLogin
-     * @param string $hashedPassword
+     * @param string $userLogin the Analytics Service user ID
+     * @param string $hashedPassword the MD5 hashed Analytics Service user password
      *
-     * @return void
+     * @return RedirectResponse the Analytics service dashboard
      */
-    public function loginAndRedirectUser(string $userLogin, string $hashedPassword);
+    public function loginAndRedirectUser(string $userLogin, string $hashedPassword): RedirectResponse;
 
     /**
      * Set permissions for a specified user and specified websites
      * in the Analytics Service.
      *
-     * @param string $userLogin
-     * @param string $access
-     * @param string $idSites
-     * @param string $tokenAuth
+     * @param string $userLogin the Analytics Service user ID
+     * @param string $access the Analytics Service access level
+     * @param string $idSites the Analytics Service website ID
+     * @param string $tokenAuth the Analytics authentication token
      *
-     * @throws AnalyticsServiceException
-     * @throws CommandErrorException
+     * @throws AnalyticsServiceException if unable to connect the Analytics Service
+     * @throws CommandErrorException if command is unsuccessful
      *
-     * @return string
+     * @see \App\Enums\WebsiteAccessType
      */
-    public function setWebsitesAccess(string $userLogin, string $access, string $idSites, string $tokenAuth);
+    public function setWebsitesAccess(string $userLogin, string $access, string $idSites, string $tokenAuth): void;
 
     /**
-     * @param string $idSite
-     * @param int $minutes
-     * @param string $tokenAuth
+     * @param string $idSite the Analytics Service website ID
+     * @param int $minutes the minutes period
+     * @param string $tokenAuth the Analytics authentication token
      *
-     * @return int
+     * @throws CommandErrorException if command is unsuccessful
+     * @throws AnalyticsServiceException if unable to connect the Analytics Service
+     *
+     * @return int the live number of website visits
      */
-    public function getLiveVisits(string $idSite, int $minutes, string $tokenAuth);
+    public function getLiveVisits(string $idSite, int $minutes, string $tokenAuth): int;
 
     /**
      * Get total number of visits for a specified site
      * registered in the Analytics Service.
      *
-     * @param string $idSite
-     * @param string $from
-     * @param string $tokenAuth
+     * @param string $idSite the Analytics Service website ID
+     * @param string $from the date range
+     * @param string $tokenAuth the Analytics authentication token
      *
-     * @throws AnalyticsServiceException
-     * @throws CommandErrorException
+     * @throws CommandErrorException if command is unsuccessful
+     * @throws AnalyticsServiceException if unable to connect the Analytics Service
      *
-     * @return int
+     * @return int the total reported website visits
      */
-    public function getSiteTotalVisits(string $idSite, string $from, string $tokenAuth);
+    public function getSiteTotalVisits(string $idSite, string $from, string $tokenAuth): int;
 
     /**
      * Get the number of visits for a specified site
      * registered last month in the Analytics Service.
      *
-     * @param string $idSite
-     * @param string $tokenAuth
+     * @param string $idSite the Analytics Service website ID
+     * @param string $tokenAuth the Analytics authentication token
      *
-     * @throws AnalyticsServiceException
-     * @throws CommandErrorException
+     * @throws CommandErrorException if command is unsuccessful
+     * @throws AnalyticsServiceException if unable to connect the Analytics Service
      *
-     * @return int
+     * @return int the reported website visits from last month
      */
-    public function getSiteLastMonthVisits(string $idSite, string $tokenAuth);
+    public function getSiteLastMonthVisits(string $idSite, string $tokenAuth): int;
 }

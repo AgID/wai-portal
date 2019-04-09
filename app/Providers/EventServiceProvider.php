@@ -4,11 +4,11 @@ namespace App\Providers;
 
 use App\Events\Auth\UserInvited;
 use App\Listeners\CheckPendingWebsiteJobsEventsSubscriber;
-use App\Listeners\UserEventsSubscriber;
 use App\Listeners\IPAJobEventsSubscriber;
 use App\Listeners\PublicAdministrationEventsSubscriber;
 use App\Listeners\SendInvitationNotification;
 use App\Listeners\SPIDEventSubscriber;
+use App\Listeners\UserEventsSubscriber;
 use App\Listeners\WebsiteEventsSubscriber;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;

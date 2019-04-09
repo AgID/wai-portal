@@ -7,13 +7,13 @@ use App\Enums\WebsiteStatus;
 use App\Enums\WebsiteType;
 use App\Exceptions\AnalyticsServiceException;
 use App\Exceptions\CommandErrorException;
-use App\Jobs\ProcessPendingWebsites;
 use App\Models\PublicAdministration;
 use App\Models\Website;
 use App\Transformers\WebsiteTransformer;
 use Ehann\RediSearch\Index;
 use Ehann\RedisRaw\PredisAdapter;
 use Illuminate\Contracts\Container\BindingResolutionException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -204,7 +204,15 @@ class WebsiteController extends Controller
         return redirect()->route('websites-index')->withMessage(['success' => 'Il sito è stato aggiunto al progetto Web Analytics Italia.']); //TODO: put message in lang file
     }
 
-    public function checkTracking(Website $website)
+    /**
+     * Check website tracking status.
+     * NOTE: effective website activation is delayed to scheduled check.
+     *
+     * @param Website $website the website to check
+     *
+     * @return \Illuminate\Http\JsonResponse the JSON response
+     */
+    public function checkTracking(Website $website): JsonResponse
     {
         try {
             $tokenAuth = current_user_auth_token();

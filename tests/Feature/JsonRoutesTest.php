@@ -12,18 +12,48 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Silber\Bouncer\BouncerFacade as Bouncer;
 use Tests\TestCase;
 
+/**
+ * Website controller JSON requests test.
+ */
 class JsonRoutesTest extends TestCase
 {
     use RefreshDatabase;
 
+    /**
+     * The fake calling user.
+     *
+     * @var User the user
+     */
     protected $user;
 
+    /**
+     * The calling user authentication token.
+     *
+     * @var string the authentication token
+     */
     protected $userTokenAuth;
 
+    /**
+     * The selected public administration for the user.
+     *
+     * @var PublicAdministration the public administration
+     */
     protected $publicAdministration;
 
+    /**
+     * The requested website.
+     *
+     * @var Website the website
+     */
     protected $website;
 
+    /**
+     * Pre-test setup.
+     *
+     * @throws \App\Exceptions\AnalyticsServiceException if unable to connect to the Analytics Service
+     * @throws \App\Exceptions\CommandErrorException if command finishes with error
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException if unable to bind to the service
+     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -48,6 +78,13 @@ class JsonRoutesTest extends TestCase
         $this->user->allow('read-analytics');
     }
 
+    /**
+     * Post-test cleanup.
+     *
+     * @throws \App\Exceptions\AnalyticsServiceException if unable to connect to the Analytics Service
+     * @throws \App\Exceptions\CommandErrorException if command finishes with error
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException if unable to bind to the service
+     */
     protected function tearDown(): void
     {
         $tokenAuth = config('analytics-service.admin_token');
@@ -56,7 +93,10 @@ class JsonRoutesTest extends TestCase
         parent::tearDown();
     }
 
-    public function testCheckWebsiteNotActiveRoute()
+    /**
+     * Test website not activated.
+     */
+    public function testCheckWebsiteNotActiveRoute(): void
     {
         $response = $this->actingAs($this->user, 'web')
             ->withSession([
@@ -74,7 +114,12 @@ class JsonRoutesTest extends TestCase
         ]);
     }
 
-    public function testCheckWebsiteActiveRoute()
+    /**
+     * Test website activated.
+     *
+     * @throws \GuzzleHttp\Exception\GuzzleException if unable to inject a tracking request
+     */
+    public function testCheckWebsiteActiveRoute(): void
     {
         $client = new TrackingClient(['base_uri' => config('analytics-service.api_base_uri')]);
         $client->request('GET', 'piwik.php', [
@@ -99,7 +144,10 @@ class JsonRoutesTest extends TestCase
         ]);
     }
 
-    public function testCheckWebsiteFailedRoute()
+    /**
+     * Test fail request due to missing website.
+     */
+    public function testCheckWebsiteFailedRoute(): void
     {
         $website = factory(Website::class)->create([
             'public_administration_id' => $this->publicAdministration->id,

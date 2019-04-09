@@ -7,18 +7,31 @@ use App\Events\User\Contracts\UserEvent;
 use App\Models\User;
 use App\Models\Website;
 
+/**
+ * User website access changed event.
+ */
 class UserWebsiteAccessChanged extends UserEvent
 {
+    /**
+     * The website.
+     *
+     * @var Website the website
+     */
     protected $website;
 
+    /**
+     * The new access level.
+     *
+     * @var WebsiteAccessType the access level
+     */
     protected $accessType;
 
     /**
-     * UserWebsiteAccessChanged constructor.
+     * Event constructor.
      *
-     * @param User $user
-     * @param Website $website
-     * @param WebsiteAccessType $accessType
+     * @param User $user the user
+     * @param Website $website the website
+     * @param WebsiteAccessType $accessType the new access level
      */
     public function __construct(User $user, Website $website, WebsiteAccessType $accessType)
     {
@@ -28,7 +41,9 @@ class UserWebsiteAccessChanged extends UserEvent
     }
 
     /**
-     * @return Website
+     * Get the website.
+     *
+     * @return Website the website
      */
     public function getWebsite(): Website
     {
@@ -36,7 +51,9 @@ class UserWebsiteAccessChanged extends UserEvent
     }
 
     /**
-     * @return WebsiteAccessType
+     * Get the access level.
+     *
+     * @return WebsiteAccessType the access level
      */
     public function getAccessType(): WebsiteAccessType
     {

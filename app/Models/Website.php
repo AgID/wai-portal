@@ -42,23 +42,31 @@ class Website extends Model
     }
 
     /**
-     * @param $value
+     * Website status accessor.
      *
-     * @throws \BenSampo\Enum\Exceptions\InvalidEnumMemberException
+     * @param int $value the database value
      *
-     * @return WebsiteStatus
+     * @throws \BenSampo\Enum\Exceptions\InvalidEnumMemberException if status is not valid
+     *
+     * @return WebsiteStatus the status
+     *
+     * @see \App\Enums\WebsiteStatus
      */
-    public function getStatusAttribute($value)
+    public function getStatusAttribute($value): WebsiteStatus
     {
         return new WebsiteStatus((int) $value);
     }
 
     /**
-     * @param $value
+     * Website type accessor.
      *
-     * @throws \BenSampo\Enum\Exceptions\InvalidEnumMemberException
+     * @param int $value the database value
      *
-     * @return WebsiteType
+     * @throws \BenSampo\Enum\Exceptions\InvalidEnumMemberException if type is not valid
+     *
+     * @return WebsiteType the type
+     *
+     * @see \App\Enums\WebsiteType
      */
     public function getTypeAttribute($value)
     {
@@ -89,6 +97,11 @@ class Website extends Model
         return $this->belongsToMany(Keyword::class);
     }
 
+    /**
+     * Return name and slug of this website in printable format.
+     *
+     * @return string the printable website representation
+     */
     public function getInfo(): string
     {
         return '"' . $this->name . '" [' . $this->slug . ']';

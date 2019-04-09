@@ -25,9 +25,11 @@ class CronController extends Controller
     }
 
     /**
-     * @return JsonResponse
+     * Check pending websites request.
+     *
+     * @return \Illuminate\Http\JsonResponse JSON response with the job submission status
      */
-    public function checkPendingWebsites()
+    public function checkPendingWebsites(): JsonResponse
     {
         dispatch(new ProcessPendingWebsites());
 

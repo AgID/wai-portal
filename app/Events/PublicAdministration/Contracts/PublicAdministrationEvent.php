@@ -5,6 +5,9 @@ namespace App\Events\PublicAdministration\Contracts;
 use App\Models\PublicAdministration;
 use Illuminate\Queue\SerializesModels;
 
+/**
+ * Public Administration event contract.
+ */
 abstract class PublicAdministrationEvent
 {
     use SerializesModels;

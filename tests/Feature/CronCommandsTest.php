@@ -39,6 +39,9 @@ class CronCommandsTest extends TestCase
         Queue::assertNotPushed(ProcessIPAList::class);
     }
 
+    /**
+     * Test pending websites check job route successful dispatching job.
+     */
     public function testCheckWebsitesCron()
     {
         Queue::fake();
@@ -48,6 +51,9 @@ class CronCommandsTest extends TestCase
         Queue::assertPushed(ProcessPendingWebsites::class);
     }
 
+    /**
+     * Test unauthorized access on pending websites check job route blocked.
+     */
     public function testUnauthorizedCheckWebsitesCron(): void
     {
         Queue::fake();

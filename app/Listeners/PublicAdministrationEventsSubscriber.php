@@ -15,13 +15,23 @@ use Illuminate\Events\Dispatcher;
  */
 class PublicAdministrationEventsSubscriber implements ShouldQueue
 {
-    public function onActivated(PublicAdministrationActivated $event)
+    /**
+     * Public administration activated callback.
+     *
+     * @param PublicAdministrationActivated $event the event
+     */
+    public function onActivated(PublicAdministrationActivated $event): void
     {
         $publicAdministration = $event->getPublicAdministration();
         logger()->info('Public Administration ' . $publicAdministration->getInfo() . ' activated');
     }
 
-    public function onActivationFailed(PublicAdministrationActivationFailed $event)
+    /**
+     * Public administration activation failed callback.
+     *
+     * @param PublicAdministrationActivationFailed $event the event
+     */
+    public function onActivationFailed(PublicAdministrationActivationFailed $event): void
     {
         $publicAdministration = $event->getPublicAdministration();
         logger()->error('Public Administration ' . $publicAdministration->getInfo() . ' activation failed: ' . $event->getMessage());
@@ -50,7 +60,12 @@ class PublicAdministrationEventsSubscriber implements ShouldQueue
         logger()->warning('Public Administration ' . $publicAdministration->getInfo() . ' primary website was changed in IPA list [' . $event->getNewURL() . '].');
     }
 
-    public function onPurged(PublicAdministrationPurged $event)
+    /**
+     * Public administration purged callback.
+     *
+     * @param PublicAdministrationPurged $event the event
+     */
+    public function onPurged(PublicAdministrationPurged $event): void
     {
         logger()->info('Public Administration ' . $event->getPublicAdministration() . ' purged');
     }

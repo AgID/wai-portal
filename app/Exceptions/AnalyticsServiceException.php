@@ -3,15 +3,17 @@
 namespace App\Exceptions;
 
 use Exception;
+use Illuminate\Http\Response;
 
+/**
+ * Analytics Service connection exception.
+ */
 class AnalyticsServiceException extends Exception
 {
     /**
      * Report the exception.
-     *
-     * @return void
      */
-    public function report()
+    public function report(): void
     {
         logger()->error('Analytics Service exception: ' . $this->getMessage());
         // TODO: Notify me!!
@@ -20,9 +22,9 @@ class AnalyticsServiceException extends Exception
     /**
      * Render the exception into an HTTP response.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Response the response
      */
-    public function render()
+    public function render(): Response
     {
         logger()->error($this->getMessage());
 

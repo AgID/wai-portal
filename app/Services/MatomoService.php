@@ -7,17 +7,36 @@ use App\Exceptions\AnalyticsServiceException;
 use App\Exceptions\CommandErrorException;
 use GuzzleHttp\Client as APIClient;
 use GuzzleHttp\Exception\GuzzleException;
+use Illuminate\Http\RedirectResponse;
 
+/**
+ * Matomo implementation of Analytics Service.
+ */
 class MatomoService implements AnalyticsServiceContract
 {
+    /**
+     * Local service URL.
+     *
+     * @var string the local URL
+     */
     protected $serviceBaseUri;
+
+    /**
+     * Public service URL.
+     *
+     * @var string the public URL
+     */
     protected $servicePublicUrl;
+
+    /**
+     * SSL verification flag.
+     *
+     * @var bool true to check SSL certificates, false to skip
+     */
     protected $SSLVerify;
 
     /**
-     * Create a new MatomoService instance.
-     *
-     * @return void
+     * Create a new Matomo Service instance.
      */
     public function __construct()
     {
@@ -29,16 +48,16 @@ class MatomoService implements AnalyticsServiceContract
     /**
      * Register a new site in the Analytics Service.
      *
-     * @param string $siteName
-     * @param string $url
-     * @param string $group
+     * @param string $siteName the website name
+     * @param string $url the website URL
+     * @param string $group the website group
      *
-     * @throws AnalyticsServiceException
-     * @throws CommandErrorException
+     * @throws CommandErrorException if command is unsuccessful
+     * @throws AnalyticsServiceException if unable to connect the Analytics Service
      *
-     * @return int
+     * @return int the Analytics Service website ID
      */
-    public function registerSite(string $siteName, string $url, string $group)
+    public function registerSite(string $siteName, string $url, string $group): int
     {
         $params = [
             'method' => 'SitesManager.addSite',
@@ -57,17 +76,16 @@ class MatomoService implements AnalyticsServiceContract
     /**
      * Updated an existing site in the Analytics Service.
      *
-     * @param string $idSite
-     * @param string $siteName
-     * @param string $url
-     * @param string $group
+     * @param string $idSite the Analytics Service website ID
+     * @param string $siteName the website name
+     * @param string $url the website URL
+     * @param string $group the website group
+     * @param string $tokenAuth the Analytics authentication token
      *
-     * @throws AnalyticsServiceException
-     * @throws CommandErrorException
-     *
-     * @return int
+     * @throws AnalyticsServiceException if unable to connect the Analytics Service
+     * @throws CommandErrorException if command is unsuccessful
      */
-    public function updateSite(string $idSite, string $siteName, string $url, string $group, string $tokenAuth)
+    public function updateSite(string $idSite, string $siteName, string $url, string $group, string $tokenAuth): void
     {
         $params = [
             'method' => 'SitesManager.updateSite',
@@ -77,21 +95,22 @@ class MatomoService implements AnalyticsServiceContract
             'token_auth' => $tokenAuth,
         ];
 
-        return $this->apiCall($params);
+        $this->apiCall($params);
     }
 
     /**
      * Get Javascript code snippet for a specified site
      * registered in the Analytics Service.
      *
-     * @param string $idSite
+     * @param string $idSite the Analytics Service website ID
+     * @param string $tokenAuth the Analytics authentication token
      *
-     * @throws AnalyticsServiceException
-     * @throws CommandErrorException
+     * @throws AnalyticsServiceException if unable to connect the Analytics Service
+     * @throws CommandErrorException if command is unsuccessful
      *
-     * @return string
+     * @return string the site tracking code
      */
-    public function getJavascriptSnippet(string $idSite, string $tokenAuth)
+    public function getJavascriptSnippet(string $idSite, string $tokenAuth): string
     {
         $params = [
             'method' => 'SitesManager.getJavascriptTag',
@@ -105,14 +124,13 @@ class MatomoService implements AnalyticsServiceContract
     /**
      * Delete a given site in the Analytics Service.
      *
-     * @param string $idSite
+     * @param string $idSite the Analytics Service website ID
+     * @param string $tokenAuth the Analytics authentication token
      *
-     * @throws AnalyticsServiceException
-     * @throws CommandErrorException
-     *
-     * @return void
+     * @throws AnalyticsServiceException if unable to connect the Analytics Service
+     * @throws CommandErrorException if command is unsuccessful
      */
-    public function deleteSite(string $idSite, string $tokenAuth)
+    public function deleteSite(string $idSite, string $tokenAuth): void
     {
         $params = [
             'method' => 'SitesManager.deleteSite',
@@ -120,22 +138,22 @@ class MatomoService implements AnalyticsServiceContract
             'token_auth' => $tokenAuth,
         ];
 
-        return $this->apiCall($params);
+        $this->apiCall($params);
     }
 
     /**
      * Register a new user in the Analytics Service.
      *
-     * @param string $userLogin
-     * @param string $password
-     * @param string $email
+     * @param string $userLogin the Analytics Service user ID
+     * @param string $password the Analytics Service user password
+     * @param string $email the Analytics Service user email
+     * @param string $tokenAuth the Analytics authentication token
+     * @param string $alias Analytics Service user alias
      *
-     * @throws AnalyticsServiceException
-     * @throws CommandErrorException
-     *
-     * @return string
+     * @throws AnalyticsServiceException if unable to connect the Analytics Service
+     * @throws CommandErrorException if command is unsuccessful
      */
-    public function registerUser(string $userLogin, string $password, string $email, string $tokenAuth, string $alias = '')
+    public function registerUser(string $userLogin, string $password, string $email, string $tokenAuth, string $alias = ''): void
     {
         $params = [
             'method' => 'UsersManager.addUser',
@@ -146,40 +164,21 @@ class MatomoService implements AnalyticsServiceContract
             'token_auth' => $tokenAuth,
         ];
 
-        return $this->apiCall($params);
-    }
-
-    /**
-     * @param string $userLogin
-     * @param string $hashedPassword
-     *
-     * @throws AnalyticsServiceException
-     * @throws CommandErrorException
-     *
-     * @return string
-     */
-    public function getUserAuthToken(string $userLogin, string $hashedPassword)
-    {
-        $params = [
-            'method' => 'UsersManager.getTokenAuth',
-            'userLogin' => $userLogin,
-            'md5Password' => $hashedPassword,
-        ];
-
-        return $this->apiCall($params)['value'];
+        $this->apiCall($params);
     }
 
     /**
      * Get a specified user in the Analytics Service.
      *
-     * @param string $email
+     * @param string $email the Analytics Service user email
+     * @param string $tokenAuth the Analytics authentication token
      *
-     * @throws AnalyticsServiceException
-     * @throws CommandErrorException
+     * @throws CommandErrorException if command is unsuccessful
+     * @throws AnalyticsServiceException if unable to connect the Analytics Service
      *
-     * @return string
+     * @return array the Analytics Service user
      */
-    public function getUserByEmail(string $email, string $tokenAuth)
+    public function getUserByEmail(string $email, string $tokenAuth): array
     {
         $params = [
             'method' => 'UsersManager.getUserByEmail',
@@ -191,16 +190,35 @@ class MatomoService implements AnalyticsServiceContract
     }
 
     /**
+     * @param string $userLogin the Analytics Service user ID
+     * @param string $hashedPassword the MD5 hashed Analytics Service user password
+     *
+     * @throws CommandErrorException if command is unsuccessful
+     * @throws AnalyticsServiceException if unable to connect the Analytics Service
+     *
+     * @return string the Analytics authentication token
+     */
+    public function getUserAuthToken(string $userLogin, string $hashedPassword): string
+    {
+        $params = [
+            'method' => 'UsersManager.getTokenAuth',
+            'userLogin' => $userLogin,
+            'md5Password' => $hashedPassword,
+        ];
+
+        return $this->apiCall($params)['value'];
+    }
+
+    /**
      * Delete a specified user in the Analytics Service.
      *
-     * @param string $userLogin
+     * @param string $userLogin the Analytics Service user ID
+     * @param string $tokenAuth the Analytics authentication token
      *
-     * @throws AnalyticsServiceException
-     * @throws CommandErrorException
-     *
-     * @return string
+     * @throws AnalyticsServiceException if unable to connect the Analytics Service
+     * @throws CommandErrorException if command is unsuccessful
      */
-    public function deleteUser(string $userLogin, string $tokenAuth)
+    public function deleteUser(string $userLogin, string $tokenAuth): void
     {
         $params = [
             'method' => 'UsersManager.deleteUser',
@@ -208,18 +226,18 @@ class MatomoService implements AnalyticsServiceContract
             'token_auth' => $tokenAuth,
         ];
 
-        return $this->apiCall($params);
+        $this->apiCall($params);
     }
 
     /**
      * Login and redirect a specified user in the Analytics Service.
      *
-     * @param string $userLogin
-     * @param string $password
+     * @param string $userLogin the Analytics Service user ID
+     * @param string $hashedPassword the MD5 hashed Analytics Service user password
      *
-     * @return void
+     * @return RedirectResponse the Analytics service dashboard
      */
-    public function loginAndRedirectUser(string $userLogin, string $hashedPassword)
+    public function loginAndRedirectUser(string $userLogin, string $hashedPassword): RedirectResponse
     {
         return redirect($this->servicePublicUrl . '/index.php?module=Login&action=logme&login=' . $userLogin . '&password=' . $hashedPassword);
     }
@@ -228,16 +246,17 @@ class MatomoService implements AnalyticsServiceContract
      * Set permissions for a specified user and specified websites
      * in the Analytics Service.
      *
-     * @param string $userLogin
-     * @param string $access
-     * @param string $idSites
+     * @param string $userLogin the Analytics Service user ID
+     * @param string $access the Analytics Service access level
+     * @param string $idSites the Analytics Service website ID
+     * @param string $tokenAuth the Analytics authentication token
      *
-     * @throws AnalyticsServiceException
-     * @throws CommandErrorException
+     * @throws AnalyticsServiceException if unable to connect the Analytics Service
+     * @throws CommandErrorException if command is unsuccessful
      *
-     * @return string
+     * @see \App\Enums\WebsiteAccessType
      */
-    public function setWebsitesAccess(string $userLogin, string $access, string $idSites, string $tokenAuth)
+    public function setWebsitesAccess(string $userLogin, string $access, string $idSites, string $tokenAuth): void
     {
         $params = [
             'method' => 'UsersManager.setUserAccess',
@@ -247,20 +266,20 @@ class MatomoService implements AnalyticsServiceContract
             'token_auth' => $tokenAuth,
         ];
 
-        return $this->apiCall($params);
+        $this->apiCall($params);
     }
 
     /**
-     * @param string $idSite
-     * @param int $minutes
-     * @param string $tokenAuth
+     * @param string $idSite the Analytics Service website ID
+     * @param int $minutes the minutes period
+     * @param string $tokenAuth the Analytics authentication token
      *
-     * @throws AnalyticsServiceException
-     * @throws CommandErrorException
+     * @throws CommandErrorException if command is unsuccessful
+     * @throws AnalyticsServiceException if unable to connect the Analytics Service
      *
-     * @return int
+     * @return int the live number of website visits
      */
-    public function getLiveVisits(string $idSite, int $minutes, string $tokenAuth)
+    public function getLiveVisits(string $idSite, int $minutes, string $tokenAuth): int
     {
         $params = [
             'method' => 'Live.getCounters',
@@ -280,15 +299,16 @@ class MatomoService implements AnalyticsServiceContract
      * Get total number of visits for a specified site
      * registered in the Analytics Service.
      *
-     * @param string $idSite
-     * @param string $from
+     * @param string $idSite the Analytics Service website ID
+     * @param string $from the date range
+     * @param string $tokenAuth the Analytics authentication token
      *
-     * @throws AnalyticsServiceException
-     * @throws CommandErrorException
+     * @throws CommandErrorException if command is unsuccessful
+     * @throws AnalyticsServiceException if unable to connect the Analytics Service
      *
-     * @return int
+     * @return int the total reported website visits
      */
-    public function getSiteTotalVisits(string $idSite, string $from, string $tokenAuth)
+    public function getSiteTotalVisits(string $idSite, string $from, string $tokenAuth): int
     {
         $params = [
             'method' => 'VisitsSummary.get',
@@ -309,14 +329,15 @@ class MatomoService implements AnalyticsServiceContract
      * Get the number of visits for a specified site
      * registered last month in the Analytics Service.
      *
-     * @param string $idSite
+     * @param string $idSite the Analytics Service website ID
+     * @param string $tokenAuth the Analytics authentication token
      *
-     * @throws AnalyticsServiceException
-     * @throws CommandErrorException
+     * @throws CommandErrorException if command is unsuccessful
+     * @throws AnalyticsServiceException if unable to connect the Analytics Service
      *
-     * @return int
+     * @return int the reported website visits from last month
      */
-    public function getSiteLastMonthVisits(string $idSite, string $tokenAuth)
+    public function getSiteLastMonthVisits(string $idSite, string $tokenAuth): int
     {
         $params = [
             'method' => 'VisitsSummary.get',
@@ -336,14 +357,14 @@ class MatomoService implements AnalyticsServiceContract
     /**
      * Make an API call to Analytics Service.
      *
-     * @param array $params
+     * @param array $params the request parameter
      *
-     * @throws AnalyticsServiceException
-     * @throws CommandErrorException
+     * @throws AnalyticsServiceException if unable to contact the Analytics Service
+     * @throws CommandErrorException if command finishes with error status
      *
-     * @return string
+     * @return array the JSON response
      */
-    protected function apiCall(array $params)
+    protected function apiCall(array $params): array
     {
         try {
             $client = new APIClient(['base_uri' => $this->serviceBaseUri]);

@@ -31,12 +31,23 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Str;
 use Silber\Bouncer\BouncerFacade as Bouncer;
 
+/**
+ * Check pending websites state job.
+ */
 class ProcessPendingWebsites implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    /**
+     * The authentication token to use for Analytics Service.
+     *
+     * @var string the authentication token
+     */
     protected $tokenAuth;
 
+    /**
+     * Job constructor.
+     */
     public function __construct()
     {
         $this->tokenAuth = config('analytics-service.admin_token');
@@ -44,10 +55,8 @@ class ProcessPendingWebsites implements ShouldQueue
 
     /**
      * Execute the job.
-     *
-     * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         $pendingWebsites = Website::where('status', WebsiteStatus::PENDING)->get();
 

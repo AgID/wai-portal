@@ -88,21 +88,25 @@ class User extends Authenticatable implements MustVerifyEmail
     /**
      * Get the route key for the model.
      *
-     * @return string
+     * @return string the route key name
      */
-    public function getRouteKeyName()
+    public function getRouteKeyName(): string
     {
         return 'uuid';
     }
 
     /**
-     * @param $value
+     * User status accessor.
      *
-     * @throws \BenSampo\Enum\Exceptions\InvalidEnumMemberException
+     * @param int $value the database value
      *
-     * @return UserStatus
+     * @throws \BenSampo\Enum\Exceptions\InvalidEnumMemberException if status is not valid
+     *
+     * @return UserStatus the status
+     *
+     * @see \App\Enums\UserStatus
      */
-    public function getStatusAttribute($value)
+    public function getStatusAttribute($value): UserStatus
     {
         return new UserStatus((int) $value);
     }
@@ -140,7 +144,9 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
-     * @return string
+     * User full name accessor.
+     *
+     * @return string the user full name
      */
     public function getFullNameAttribute(): string
     {

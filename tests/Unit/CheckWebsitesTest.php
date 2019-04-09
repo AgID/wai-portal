@@ -21,11 +21,17 @@ use Illuminate\Support\Facades\Event;
 use Silber\Bouncer\BouncerFacade as Bouncer;
 use Tests\TestCase;
 
+/**
+ * Pending websites check job test.
+ */
 class CheckWebsitesTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function testCheckWebsitesCompleted()
+    /**
+     * Test job complete successfully.
+     */
+    public function testCheckWebsitesCompleted(): void
     {
         Event::fake();
 
@@ -35,7 +41,14 @@ class CheckWebsitesTest extends TestCase
         Event::assertDispatched(PendingWebsitesCheckCompleted::class);
     }
 
-    public function testCheckWebsitePurged()
+    /**
+     * Test job complete with purged website.
+     *
+     * @throws \App\Exceptions\AnalyticsServiceException if unable to connect to the Analytics Service
+     * @throws \App\Exceptions\CommandErrorException if command finishes with error
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException if unable to bind to the service
+     */
+    public function testCheckWebsitePurged(): void
     {
         Event::fake();
 
@@ -70,7 +83,14 @@ class CheckWebsitesTest extends TestCase
         ]);
     }
 
-    public function testCheckWebsitePurging()
+    /**
+     * Test job complete with near-to-be-purged website.
+     *
+     * @throws \App\Exceptions\AnalyticsServiceException if unable to connect to the Analytics Service
+     * @throws \App\Exceptions\CommandErrorException if command finishes with error
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException if unable to bind to the service
+     */
+    public function testCheckWebsitePurging(): void
     {
         Event::fake();
 
@@ -103,7 +123,15 @@ class CheckWebsitesTest extends TestCase
         });
     }
 
-    public function testCheckWebsitePrimaryActivated()
+    /**
+     * Test job complete with primary website for public administration activated.
+     *
+     * @throws \App\Exceptions\AnalyticsServiceException if unable to connect to the Analytics Service
+     * @throws \App\Exceptions\CommandErrorException if command finishes with error
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException if unable to bind to the service
+     * @throws \GuzzleHttp\Exception\GuzzleException if unable to inject tracking request
+     */
+    public function testCheckWebsitePrimaryActivated(): void
     {
         Event::fake();
 
@@ -163,7 +191,15 @@ class CheckWebsitesTest extends TestCase
         $this->assertTrue($user->isAn('admin'));
     }
 
-    public function testCheckWebsiteSecondaryActivated()
+    /**
+     * Test job complete with secondary website activated.
+     *
+     * @throws \App\Exceptions\AnalyticsServiceException if unable to connect to the Analytics Service
+     * @throws \App\Exceptions\CommandErrorException if command finishes with error
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException if unable to bind to the service
+     * @throws \GuzzleHttp\Exception\GuzzleException if unable to inject tracking request
+     */
+    public function testCheckWebsiteSecondaryActivated(): void
     {
         Event::fake();
 
@@ -219,7 +255,10 @@ class CheckWebsitesTest extends TestCase
         });
     }
 
-    public function testMissingAnalyticsWebsiteFail()
+    /**
+     * Test job complete with failed website due to missing website into Analytics Service.
+     */
+    public function testMissingAnalyticsWebsiteFail(): void
     {
         Event::fake();
 
@@ -242,7 +281,15 @@ class CheckWebsitesTest extends TestCase
         });
     }
 
-    public function testMissingAnalyticsUserFail()
+    /**
+     * Test job complete with failed website due to missing connected user into Analytics Service.
+     *
+     * @throws \App\Exceptions\AnalyticsServiceException if unable to connect to the Analytics Service
+     * @throws \App\Exceptions\CommandErrorException if command finishes with error
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException if unable to bind to the service
+     * @throws \GuzzleHttp\Exception\GuzzleException if unable to inject tracking request
+     */
+    public function testMissingAnalyticsUserFail(): void
     {
         Event::fake();
 

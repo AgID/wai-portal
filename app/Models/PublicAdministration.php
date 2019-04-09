@@ -66,13 +66,17 @@ class PublicAdministration extends Model
     }
 
     /**
-     * @param $value
+     * Public administration status accessor.
      *
-     * @throws \BenSampo\Enum\Exceptions\InvalidEnumMemberException
+     * @param int $value the database value
      *
-     * @return PublicAdministrationStatus
+     * @throws \BenSampo\Enum\Exceptions\InvalidEnumMemberException if status is not valid
+     *
+     * @return PublicAdministrationStatus the status
+     *
+     * @see \App\Enums\PublicAdministrationStatus
      */
-    public function getStatusAttribute($value)
+    public function getStatusAttribute($value): PublicAdministrationStatus
     {
         return new PublicAdministrationStatus((int) $value);
     }
@@ -102,9 +106,11 @@ class PublicAdministration extends Model
     }
 
     /**
-     * @return string
+     * Return name and IPA code of this public administration in printable format.
+     *
+     * @return string the printable public administration representation
      */
-    public function getInfo()
+    public function getInfo(): string
     {
         return '"' . $this->name . '" [' . $this->ipa_code . ']';
     }
