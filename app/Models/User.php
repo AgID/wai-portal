@@ -4,6 +4,8 @@ namespace App\Models;
 
 use App\Enums\UserStatus;
 use App\Notifications\VerifyEmail;
+use App\Notifications\WebsiteActivatedUserEmail;
+use App\Notifications\WebsitePurgingUserEmail;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -11,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Notifications\Notification;
 use Silber\Bouncer\Database\HasRolesAndAbilities;
 
 /**
@@ -93,6 +96,18 @@ class User extends Authenticatable implements MustVerifyEmail
     public function getRouteKeyName(): string
     {
         return 'uuid';
+    }
+
+    /**
+     * Get recipient for mail notifications.
+     *
+     * @param Notification $notification the notification
+     *
+     * @return array|string the recipient
+     */
+    public function routeNotificationForMail($notification)
+    {
+        return empty($this->full_name) ? $this->email : [$this->email, $this->full_name];
     }
 
     /**
@@ -181,5 +196,25 @@ class User extends Authenticatable implements MustVerifyEmail
     public function isPasswordExpired(): bool
     {
         return Carbon::now()->diffInDays($this->password_changed_at) >= config('auth.password_expiry');
+    }
+
+    /**
+     * Notify website activated.
+     *
+     * @param Website $website the website
+     */
+    public function sendWebsiteActivatedNotification(Website $website): void
+    {
+        $this->notify(new WebsiteActivatedUserEmail($website));
+    }
+
+    /**
+     * Notify website scheduled for purging.
+     *
+     * @param Website $website the website
+     */
+    public function sendWebsitePurgingNotification(Website $website): void
+    {
+        $this->notify(new WebsitePurgingUserEmail($website));
     }
 }

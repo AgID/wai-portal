@@ -3,10 +3,13 @@
 namespace App\Models;
 
 use App\Enums\PublicAdministrationStatus;
+use App\Notifications\WebsiteActivatedPAEmail;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Notifications\Notification;
 
 /**
  * Public Administration model.
@@ -14,6 +17,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class PublicAdministration extends Model
 {
     use SoftDeletes;
+    use Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -66,6 +70,18 @@ class PublicAdministration extends Model
     }
 
     /**
+     * Get recipient for mail notifications.
+     *
+     * @param Notification $notification the notification
+     *
+     * @return array|string the recipient
+     */
+    public function routeNotificationForMail($notification)
+    {
+        return empty(trim($this->name)) ? $this->pec_address : [$this->pec_address, $this->name];
+    }
+
+    /**
      * Public administration status accessor.
      *
      * @param int $value the database value
@@ -113,5 +129,15 @@ class PublicAdministration extends Model
     public function getInfo(): string
     {
         return '"' . $this->name . '" [' . $this->ipa_code . ']';
+    }
+
+    /**
+     * Notify website activated.
+     *
+     * @param Website $website the website
+     */
+    public function sendWebsiteActivatedNotification(Website $website): void
+    {
+        $this->notify(new WebsiteActivatedPAEmail($website));
     }
 }
