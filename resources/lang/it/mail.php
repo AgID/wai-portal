@@ -6,13 +6,19 @@ return [
         'activated' => [
             'user' => [
                 'title' => 'Tracciamento sito web attivo',
-                'subject' => 'Sito web attivo',
+                'subject' => '[Info] - Sito web attivo',
             ],
         ],
         'purging' => [
             'user' => [
                 'title' => 'Sito web in cancellazione',
-                'subject' => 'Avviso rimozione',
+                'subject' => '[Warning] - Avviso rimozione',
+            ],
+        ],
+        'archiving' => [
+            'user' => [
+                'title' => 'Nessna attività rilevata sul sito web',
+                'subject' => '[Warning] - Avviso archiviazione',
             ],
         ],
     ],

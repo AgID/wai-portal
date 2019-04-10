@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Contracts\AnalyticsService as AnalyticsServiceContract;
 use App\Enums\WebsiteAccessType;
+use App\Enums\WebsiteStatus;
 use App\Exceptions\AnalyticsServiceException;
 use App\Exceptions\CommandErrorException;
 use GuzzleHttp\Client as APIClient;
@@ -15,12 +16,26 @@ use Illuminate\Http\RedirectResponse;
  */
 class MatomoService implements AnalyticsServiceContract
 {
+    /**
+     * Map application website access levels into Matomo Service ones.
+     *
+     * @var array the mappings
+     */
     private const ACCESS_LEVELS_MAPPINGS = [
         WebsiteAccessType::NO_ACCESS => 'noaccess',
         WebsiteAccessType::VIEW => 'view',
         WebsiteAccessType::WRITE => 'write',
         WebsiteAccessType::ADMIN => 'admin',
     ];
+
+    /**
+     * @var array
+     */
+    private const ARCHIVE_STATUS_MAPPINGS = [
+        WebsiteStatus::ACTIVE => 'off',
+        WebsiteStatus::ARCHIVED => 'on',
+    ];
+
     /**
      * Local service URL.
      *
@@ -100,6 +115,30 @@ class MatomoService implements AnalyticsServiceContract
             'siteName' => $siteName,
             'urls' => $url,
             'token_auth' => $tokenAuth,
+        ];
+
+        $this->apiCall($params);
+    }
+
+    /**
+     * @param string $idSites
+     * @param int $status
+     * @param string $tokenAuth
+     *
+     * @throws AnalyticsServiceException
+     * @throws CommandErrorException
+     */
+    public function changeArchiveStatus(string $idSites, int $status, string $tokenAuth): void
+    {
+        if (WebsiteStatus::ARCHIVED !== $status && (WebsiteStatus::ACTIVE !== $status)) {
+            throw new CommandErrorException('Invalid parameter for archiving: must be ' . WebsiteStatus::ACTIVE . ' or ' . WebsiteStatus::ARCHIVED . '. Received: ' . $status);
+        }
+
+        $params = [
+            'method' => 'DisableTracking.changeDisableState',
+            'idSites' => $idSites,
+            'token_auth' => $tokenAuth,
+            'disable' => self::ARCHIVE_STATUS_MAPPINGS[$status],
         ];
 
         $this->apiCall($params);
@@ -323,11 +362,8 @@ class MatomoService implements AnalyticsServiceContract
             'token_auth' => $tokenAuth,
         ];
         $response = $this->apiCall($params);
-        if (isset($response['nb_visits'])) {
-            return $response['nb_visits'];
-        } else {
-            return 0;
-        }
+
+        return $response['nb_visits'] ?? 0;
     }
 
     /**
@@ -352,11 +388,8 @@ class MatomoService implements AnalyticsServiceContract
             'token_auth' => $tokenAuth,
         ];
         $response = $this->apiCall($params);
-        if (isset($response['nb_visits'])) {
-            return $response['nb_visits'];
-        } else {
-            return 0;
-        }
+
+        return $response['nb_visits'] ?? 0;
     }
 
     /**

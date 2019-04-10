@@ -30,6 +30,12 @@ CRON_TOKEN=
 PENDING_WEBSITE_WARNING=
 PENDING_WEBSITE_REMOVE=
 
+# Archive websites expirations
+# ----------------------------
+
+ARCHIVING_WEBSITE_WARNING=
+ARCHIVING_WEBSITE_ARCHIVE=
+
 # Database settings
 # -----------------
 

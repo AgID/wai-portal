@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Events\User\Contracts;
+namespace App\Events\User;
 
 use App\Models\User;
 use Illuminate\Queue\SerializesModels;
@@ -8,7 +8,7 @@ use Illuminate\Queue\SerializesModels;
 /**
  * User event contract.
  */
-abstract class UserEvent
+abstract class AbstractUserEvent
 {
     use SerializesModels;
 

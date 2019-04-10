@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Cron;
 use App\Http\Controllers\Controller;
 use App\Jobs\ProcessIPAList;
 use App\Jobs\ProcessPendingWebsites;
+use App\Jobs\ProcessWebsitesMonitoring;
 use Illuminate\Http\JsonResponse;
 
 /**
@@ -34,5 +35,12 @@ class CronController extends Controller
         dispatch(new ProcessPendingWebsites());
 
         return response()->json(['message' => 'Check submitted'], 202);
+    }
+
+    public function monitorWebsiteActivity(): JsonResponse
+    {
+        dispatch(new ProcessWebsitesMonitoring());
+
+        return response()->json(['message' => 'Activity check submitted'], 202);
     }
 }

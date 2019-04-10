@@ -2,13 +2,12 @@
 
 namespace App\Events\User;
 
-use App\Events\User\Contracts\UserEvent;
 use App\Models\User;
 
 /**
  * User activation failed event.
  */
-class UserActivationFailed extends UserEvent
+class UserActivationFailed extends AbstractUserEvent
 {
     /**
      * The error message.

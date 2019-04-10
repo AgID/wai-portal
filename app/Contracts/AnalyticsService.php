@@ -40,6 +40,16 @@ interface AnalyticsService
     public function updateSite(string $idSite, string $siteName, string $url, string $group, string $tokenAuth): void;
 
     /**
+     * @param string $idSites
+     * @param int $status
+     * @param string $tokenAuth
+     *
+     * @throws AnalyticsServiceException if unable to connect the Analytics Service
+     * @throws CommandErrorException if command is unsuccessful
+     */
+    public function changeArchiveStatus(string $idSites, int $status, string $tokenAuth): void;
+
+    /**
      * Get Javascript code snippet for a specified site
      * registered in the Analytics Service.
      *

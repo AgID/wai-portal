@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Events\Auth\UserInvited;
 use App\Listeners\CheckPendingWebsiteJobsEventsSubscriber;
+use App\Listeners\CheckWebsitesMonitoringJobEventsSubscriber;
 use App\Listeners\IPAJobEventsSubscriber;
 use App\Listeners\PublicAdministrationEventsSubscriber;
 use App\Listeners\SendInvitationNotification;
@@ -45,6 +46,7 @@ class EventServiceProvider extends ServiceProvider
         PublicAdministrationEventsSubscriber::class,
         WebsiteEventsSubscriber::class,
         CheckPendingWebsiteJobsEventsSubscriber::class,
+        CheckWebsitesMonitoringJobEventsSubscriber::class,
     ];
 
     /**

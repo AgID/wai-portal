@@ -4,6 +4,7 @@ namespace App\Console;
 
 use App\Jobs\ProcessIPAList;
 use App\Jobs\ProcessPendingWebsites;
+use App\Jobs\ProcessWebsitesMonitoring;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -21,6 +22,7 @@ class Kernel extends ConsoleKernel
     {
         $schedule->job(new ProcessIPAList())->dailyAt('06:00')->runInBackground()->onOneServer();
         $schedule->job(new ProcessPendingWebsites())->hourly()->runInBackground()->onOneServer();
+        $schedule->job(new ProcessWebsitesMonitoring())->monthly()->runInBackground()->onOneServer();
     }
 
     /**
