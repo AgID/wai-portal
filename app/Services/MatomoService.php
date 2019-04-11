@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Contracts\AnalyticsService as AnalyticsServiceContract;
+use App\Enums\WebsiteAccessType;
 use App\Exceptions\AnalyticsServiceException;
 use App\Exceptions\CommandErrorException;
 use GuzzleHttp\Client as APIClient;
@@ -34,6 +35,13 @@ class MatomoService implements AnalyticsServiceContract
      * @var bool true to check SSL certificates, false to skip
      */
     protected $SSLVerify;
+
+    private const ACCESS_LEVELS_MAPPINGS = [
+        WebsiteAccessType::NO_ACCESS => 'noaccess',
+        WebsiteAccessType::VIEW => 'view',
+        WebsiteAccessType::WRITE => 'write',
+        WebsiteAccessType::ADMIN => 'admin',
+    ];
 
     /**
      * Create a new Matomo Service instance.
@@ -148,19 +156,17 @@ class MatomoService implements AnalyticsServiceContract
      * @param string $password the Analytics Service user password
      * @param string $email the Analytics Service user email
      * @param string $tokenAuth the Analytics authentication token
-     * @param string $alias Analytics Service user alias
      *
      * @throws AnalyticsServiceException if unable to connect the Analytics Service
      * @throws CommandErrorException if command is unsuccessful
      */
-    public function registerUser(string $userLogin, string $password, string $email, string $tokenAuth, string $alias = ''): void
+    public function registerUser(string $userLogin, string $password, string $email, string $tokenAuth): void
     {
         $params = [
             'method' => 'UsersManager.addUser',
             'userLogin' => $userLogin,
             'password' => $password,
             'email' => $email,
-            'alias' => $alias,
             'token_auth' => $tokenAuth,
         ];
 
@@ -247,7 +253,7 @@ class MatomoService implements AnalyticsServiceContract
      * in the Analytics Service.
      *
      * @param string $userLogin the Analytics Service user ID
-     * @param string $access the Analytics Service access level
+     * @param int $access the Analytics Service access level
      * @param string $idSites the Analytics Service website ID
      * @param string $tokenAuth the Analytics authentication token
      *
@@ -256,12 +262,12 @@ class MatomoService implements AnalyticsServiceContract
      *
      * @see \App\Enums\WebsiteAccessType
      */
-    public function setWebsitesAccess(string $userLogin, string $access, string $idSites, string $tokenAuth): void
+    public function setWebsiteAccess(string $userLogin, int $access, string $idSites, string $tokenAuth): void
     {
         $params = [
             'method' => 'UsersManager.setUserAccess',
             'userLogin' => $userLogin,
-            'access' => $access,
+            'access' => self::ACCESS_LEVELS_MAPPINGS[$access],
             'idSites' => $idSites,
             'token_auth' => $tokenAuth,
         ];
@@ -308,7 +314,7 @@ class MatomoService implements AnalyticsServiceContract
      *
      * @return int the total reported website visits
      */
-    public function getSiteTotalVisits(string $idSite, string $from, string $tokenAuth): int
+    public function getSiteTotalVisitsFrom(string $idSite, string $from, string $tokenAuth): int
     {
         $params = [
             'method' => 'VisitsSummary.get',

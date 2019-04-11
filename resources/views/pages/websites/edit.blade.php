@@ -66,9 +66,9 @@
                         </label>
                         <select class="Form-input" id="type" name="type" aria-required="true" required/>
                         <option value="">seleziona</option>{{-- //TODO: use localized enum --}}
-                        <option value="secondary" {{ (old('type') ?? $website->type->is(\App\Enums\WebsiteType::SECONDARY) ? "selected" : "" }}>{{ \App\Enums\WebsiteType::getDescription(\App\Enums\WebsiteType::SECONDARY) }}</option>
-                        <option value="webapp" {{ (old('type') ?? $website->type->is(\App\Enums\WebsiteType::WEBAPP) ? "selected" : "" }}>{{ \App\Enums\WebsiteType::getDescription(\App\Enums\WebsiteType::WEBAPP) }}</option>
-                        <option value="testing" {{ (old('type') ?? $website->type->is(\App\Enums\WebsiteType::TESTING) ? "selected" : "" }}>{{ \App\Enums\WebsiteType::getDescription(\App\Enums\WebsiteType::TESTING) }}</option>
+                        <option value="secondary" {{ (old('type') ?? $website->type->is(WebsiteType::SECONDARY) ? "selected" : "" }}>{{ WebsiteType::getDescription(WebsiteType::SECONDARY) }}</option>
+                        <option value="webapp" {{ (old('type') ?? $website->type->is(WebsiteType::WEBAPP) ? "selected" : "" }}>{{ WebsiteType::getDescription(WebsiteType::WEBAPP) }}</option>
+                        <option value="testing" {{ (old('type') ?? $website->type->is(WebsiteType::TESTING) ? "selected" : "" }}>{{ WebsiteType::getDescription(WebsiteType::TESTING) }}</option>
                         </select>
                         @if ($errors->has('type'))
                     </div>

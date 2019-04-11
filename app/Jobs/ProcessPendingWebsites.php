@@ -63,46 +63,21 @@ class ProcessPendingWebsites implements ShouldQueue
         $websites = $pendingWebsites->mapToGroups(function ($website) {
             try {
                 $analyticsService = app()->make('analytics-service');
-                if ($analyticsService->getLiveVisits($website->analytics_id, 60, $this->tokenAuth) > 0 || $analyticsService->getSiteTotalVisits($website->analytics_id, $website->created_at->format('Y-m-d'), $this->tokenAuth) > 0) {
+                if ($analyticsService->getLiveVisits($website->analytics_id, 60, $this->tokenAuth) > 0 || $analyticsService->getSiteTotalVisitsFrom($website->analytics_id, $website->created_at->format('Y-m-d'), $this->tokenAuth) > 0) {
                     $publicAdministration = $website->publicAdministration;
 
                     $website->status = WebsiteStatus::ACTIVE;
-                    if (!$website->save()) {
-                        return [
-                            'failed' => [
-                                'website' => $website->slug,
-                                'reason' => 'Unable to persist state into database',
-                            ],
-                        ];
-                    }
+                    $website->save();
 
                     if ($publicAdministration->status->is(PublicAdministrationStatus::PENDING)) {
                         $publicAdministration->status = PublicAdministrationStatus::ACTIVE;
-                        if (!$publicAdministration->save()) {
-                            event(new PublicAdministrationActivationFailed($publicAdministration, 'Unable to update state into database'));
-
-                            return [
-                                'failed' => [
-                                    'website' => $website->slug,
-                                    'reason' => 'Unable to activate public administration',
-                                ],
-                            ];
-                        }
+                        $publicAdministration->save();
 
                         $pendingUser = $publicAdministration->users()->where('status', UserStatus::PENDING)->first();
                         if ($pendingUser) {
                             $pendingUser->partial_analytics_password = Str::random(rand(32, 48));
                             $pendingUser->status = UserStatus::ACTIVE;
-                            if (!$pendingUser->save()) {
-                                event(new UserActivationFailed($pendingUser, 'Unable to update state into database or Analytics Service'));
-
-                                return [
-                                    'failed' => [
-                                        'website' => $website->slug,
-                                        'reason' => 'Unable to activate admin user',
-                                    ],
-                                ];
-                            }
+                            $pendingUser->save();
 
                             $pendingUser->roles()->detach();
                             Bouncer::scope()->to($publicAdministration->id);
@@ -126,7 +101,7 @@ class ProcessPendingWebsites implements ShouldQueue
                             } else {
                                 $access = WebsiteAccessType::NO_ACCESS;
                             }
-                            $analyticsService->setWebsitesAccess($user->uuid, $access, $website->analytics_id, $this->tokenAuth);
+                            $analyticsService->setWebsiteAccess($user->uuid, $access, $website->analytics_id, $this->tokenAuth);
 
                             event(new UserWebsiteAccessChanged($user, $website, new WebsiteAccessType($access)));
                         } catch (AnalyticsServiceException | InvalidEnumMemberException | CommandErrorException $exception) {
@@ -142,7 +117,7 @@ class ProcessPendingWebsites implements ShouldQueue
                     ];
                 }
 
-                if (10 === $website->created_at->diffInDays(Carbon::now())) {
+                if (config('wai.purge_warning') === $website->created_at->diffInDays(Carbon::now())) {
                     event(new WebsitePurging($website));
 
                     return [
@@ -152,30 +127,19 @@ class ProcessPendingWebsites implements ShouldQueue
                     ];
                 }
 
-                if ($website->created_at->diffInDays(Carbon::now()) > 15) {
+                if ($website->created_at->diffInDays(Carbon::now()) > config('wai.purge_expiry')) {
                     $publicAdministration = $website->publicAdministration;
 
                     if ($publicAdministration->status->is(PublicAdministrationStatus::PENDING)) {
                         $pendingUser = $publicAdministration->users()->where('status', UserStatus::PENDING)->first();
                         if (null !== $pendingUser) {
                             $pendingUser->publicAdministrations()->detach($publicAdministration->id);
-                            if (!$pendingUser->save() || !$publicAdministration->forceDelete()) {
-                                return [
-                                    'failed' => [
-                                        'website' => $website->slug,
-                                        'reason' => 'Unable to purge related public administration',
-                                    ],
-                                ];
-                            }
+                            $pendingUser->save();
+                            $publicAdministration->forceDelete();
                         }
                         event(new PublicAdministrationPurged($publicAdministration->toJson()));
-                    } elseif (!$website->forceDelete()) {
-                        return [
-                            'failed' => [
-                                'website' => $website->slug,
-                                'reason' => 'Unable to purge from database',
-                            ],
-                        ];
+                    } else {
+                        $website->forceDelete();
                     }
 
                     $analyticsService->deleteSite($website->analytics_id, $this->tokenAuth);

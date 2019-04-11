@@ -13,20 +13,20 @@ final class WebsiteAccessType extends Enum implements LocalizedEnum
     /**
      * No access constant.
      */
-    public const NO_ACCESS = 'noaccess';
+    public const NO_ACCESS = 0;
 
     /**
      * Read-only access constant.
      */
-    public const VIEW = 'view';
+    public const VIEW = 1;
 
     /**
      * Manage analytics access constant.
      */
-    public const WRITE = 'write';
+    public const WRITE = 2;
 
     /**
      * Website admin access constant.
      */
-    public const ADMIN = 'admin';
+    public const ADMIN = 3;
 }

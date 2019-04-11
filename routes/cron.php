@@ -16,14 +16,14 @@ use Illuminate\Support\Facades\Route;
  * Update IPA request route.
  */
 Route::get('/updateipa', [
-    'as' => 'cron-update_ipa',
+    'as' => 'cron.ipa.update',
     'uses' => 'Cron\CronController@updateIPA',
 ]);
 
 /*
  * Check pending websites request route.
  */
-Route::get('/checkwebsites', [
-    'as' => 'cron-check_websites',
+Route::get('/checkpendingwebsites', [
+    'as' => 'cron.websites.checkpending',
     'uses' => 'Cron\CronController@checkPendingWebsites',
 ]);

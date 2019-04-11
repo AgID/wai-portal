@@ -63,8 +63,8 @@ class CommandsTest extends TestCase
         $websitePending->analytics_id = $analyticsPendingId;
         $websitePending->save();
 
-        $this->app->make('analytics-service')->registerUser($user->uuid, $user->analytics_password, $user->email, $tokenAuth, $user->full_name);
-        $this->app->make('analytics-service')->registerUser($userPending->uuid, $userPending->analytics_password, $userPending->email, $tokenAuth, $userPending->full_name);
+        $this->app->make('analytics-service')->registerUser($user->uuid, $user->analytics_password, $user->email, $tokenAuth);
+        $this->app->make('analytics-service')->registerUser($userPending->uuid, $userPending->analytics_password, $userPending->email, $tokenAuth);
 
         $this->artisan('app:check-websites');
 
@@ -87,7 +87,7 @@ class CommandsTest extends TestCase
             'verify' => false,
         ]);
 
-        $websitePending->created_at = now()->subDays(16);
+        $websitePending->created_at = now()->subDays(config('wai.purge_expiry') + 1);
         $websitePending->save();
 
         $this->artisan('app:check-websites');

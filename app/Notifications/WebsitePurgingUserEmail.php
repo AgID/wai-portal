@@ -2,14 +2,12 @@
 
 namespace App\Notifications;
 
+use App\Mail\UserWebsitePurging;
 use App\Models\User;
 use App\Models\Website;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Lang;
 
 /**
  * Website scheduled for purging user notification.
@@ -52,17 +50,10 @@ class WebsitePurgingUserEmail extends Notification implements ShouldQueue
      *
      * @param User $notifiable the user
      *
-     * @return MailMessage the mail message
+     * @return UserWebsitePurging the mail message
      */
-    public function toMail($notifiable): MailMessage
+    public function toMail($notifiable): UserWebsitePurging
     {
-        return (new MailMessage())
-            ->from(Config::get('mail.from.address'), Config::get('mail.from.name'))
-            ->subject(Lang::get('mail.website.purging.user.subject'))
-            ->markdown('mail.website_purging_user_email')->with([
-                'locale' => Lang::getLocale(),
-                'fullName' => $notifiable->full_name,
-                'website' => $this->website->name,
-            ]);
+        return (new UserWebsitePurging($notifiable, $this->website))->to($notifiable->email, $notifiable->full_name);
     }
 }

@@ -24,6 +24,12 @@ SPID_SP_CERTIFICATE=
 
 CRON_TOKEN=
 
+# Pending websites expirations
+# ----------------------------
+
+PENDING_WEBSITE_WARNING=
+PENDING_WEBSITE_REMOVE=
+
 # Database settings
 # -----------------
 

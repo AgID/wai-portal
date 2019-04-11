@@ -206,7 +206,6 @@ class WebsiteController extends Controller
 
     /**
      * Check website tracking status.
-     * NOTE: effective website activation is delayed to scheduled check.
      *
      * @param Website $website the website to check
      *
@@ -217,7 +216,7 @@ class WebsiteController extends Controller
         try {
             $tokenAuth = current_user_auth_token();
             $analyticsService = app()->make('analytics-service');
-            if ($website->status->is(WebsiteStatus::PENDING) && ($analyticsService->getLiveVisits($website->analytics_id, 60, $tokenAuth) > 0 || $analyticsService->getSiteTotalVisits($website->analytics_id, $website->created_at->format('Y-m-d'), $tokenAuth) > 0)) {
+            if ($website->status->is(WebsiteStatus::PENDING) && ($analyticsService->getLiveVisits($website->analytics_id, 60, $tokenAuth) > 0 || $analyticsService->getSiteTotalVisitsFrom($website->analytics_id, $website->created_at->format('Y-m-d'), $tokenAuth) > 0)) {
                 $website->status = WebsiteStatus::ACTIVE;
             }
 
@@ -332,7 +331,7 @@ class WebsiteController extends Controller
     public function dataJson()
     {
         return Datatables::of(current_public_administration()->websites())
-                ->setTransformer(new WebsiteTransformer(current_user_auth_token()))
+                ->setTransformer(new WebsiteTransformer())
                 ->make(true);
     }
 

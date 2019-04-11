@@ -29,22 +29,6 @@
     <script type="text/javascript" src="//cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript" src="//cdn.datatables.net/responsive/2.2.1/js/dataTables.responsive.js"></script>
     <script type="text/javascript">
-      function check_tracking (link) {
-        $.ajax({
-          url: link,
-          method: 'GET',
-          success: function (result) {
-            //TODO: usare alert bootstrap
-            alert('Stato sito: ' + result.status)
-          },
-          error: function (xhr, status, error) {
-            //TODO: usare alert bootstrap
-            alert('Richiesta stato website fallita')
-          }
-        })
-      }
-    </script>
-    <script type="text/javascript">
       $(function () {
         $('.Datatable').DataTable({
           ajax: '{{ $source }}',
@@ -62,7 +46,7 @@
                   render: function (actions) {
                     return actions.map(function (action) {
                       if (action.type === 'check_tracking') {
-                        return '<a id="' + action.id + '" role="button" class="Button Button--default Button--shadow Button--round u-padding-top-xxs u-padding-bottom-xxs u-margin-right-s u-text-r-xxs" onclick="check_tracking(\'' + action.link + '\')">' + action.label + '</a>'
+                        return '<a role="button" class="Button Button--default Button--shadow Button--round u-padding-top-xxs u-padding-bottom-xxs u-margin-right-s u-text-r-xxs" onclick="check_tracking(\'' + action.link + '\')">' + action.label + '</a>'
                       } else {
                         return '<a href="' + action.link + '" role="button" class="Button Button--default Button--shadow Button--round u-padding-top-xxs u-padding-bottom-xxs u-margin-right-s u-text-r-xxs">' + action.label + '</a>'
                       }
@@ -86,6 +70,9 @@
           ],
           language: {
             url: '//cdn.datatables.net/plug-ins/1.10.16/i18n/Italian.json'
+          },
+          initComplete: function(settings, json) {
+            datatablesPostInit(json);
           }
         })
       })

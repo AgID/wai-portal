@@ -89,22 +89,4 @@ class WebsiteEventsSubscriber implements ShouldQueue
             'App\Listeners\WebsiteEventsSubscriber@onPurged'
         );
     }
-
-    /**
-     * Get website administrators.
-     *
-     * @param Website $website the website
-     *
-     * @return array the administrators array
-     */
-    public function getAdministrators(Website $website): array
-    {
-        if ($website->publicAdministration->status->is(PublicAdministrationStatus::PENDING)) {
-            return $website->publicAdministration->users()->where('status', UserStatus::PENDING)->get();
-        }
-
-        Bouncer::scope()->to($website->publicAdministration->id);
-
-        return Bouncer::whereIs('admin', $website)->get();
-    }
 }

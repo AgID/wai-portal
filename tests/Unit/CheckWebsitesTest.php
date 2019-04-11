@@ -29,12 +29,19 @@ class CheckWebsitesTest extends TestCase
     use RefreshDatabase;
 
     /**
+     * Setup the test environment.
+     */
+    protected function setUp(): void
+    {
+        parent::setUp();
+        Event::fake();
+    }
+
+    /**
      * Test job complete successfully.
      */
     public function testCheckWebsitesCompleted(): void
     {
-        Event::fake();
-
         $job = new ProcessPendingWebsites();
         $job->handle();
 
@@ -50,14 +57,12 @@ class CheckWebsitesTest extends TestCase
      */
     public function testCheckWebsitePurged(): void
     {
-        Event::fake();
-
         $user = factory(User::class)->state('pending')->create();
         $publicAdministration = factory(PublicAdministration::class)->create();
         $publicAdministration->users()->sync($user->id);
         $website = factory(Website::class)->create([
             'public_administration_id' => $publicAdministration->id,
-            'created_at' => now()->subDays(16),
+            'created_at' => now()->subDays(config('wai.purge_expiry') + 1),
         ]);
 
         $siteID = $this->app->make('analytics-service')->registerSite($website->name, $website->url, $publicAdministration->name);
@@ -92,14 +97,12 @@ class CheckWebsitesTest extends TestCase
      */
     public function testCheckWebsitePurging(): void
     {
-        Event::fake();
-
         $user = factory(User::class)->state('pending')->create();
         $publicAdministration = factory(PublicAdministration::class)->create();
         $publicAdministration->users()->sync($user->id);
         $website = factory(Website::class)->create([
             'public_administration_id' => $publicAdministration->id,
-            'created_at' => now()->subDays(10),
+            'created_at' => now()->subDays(config('wai.purge_warning')),
         ]);
 
         $siteID = $this->app->make('analytics-service')->registerSite($website->name, $website->url, $publicAdministration->name);
@@ -133,8 +136,6 @@ class CheckWebsitesTest extends TestCase
      */
     public function testCheckWebsitePrimaryActivated(): void
     {
-        Event::fake();
-
         $user = factory(User::class)->state('pending')->create();
         $publicAdministration = factory(PublicAdministration::class)->create();
         $publicAdministration->users()->sync($user->id);
@@ -144,7 +145,7 @@ class CheckWebsitesTest extends TestCase
         ]);
 
         $tokenAuth = config('analytics-service.admin_token');
-        $this->app->make('analytics-service')->registerUser($user->uuid, $user->analytics_password, $user->email, $tokenAuth, $user->full_name);
+        $this->app->make('analytics-service')->registerUser($user->uuid, $user->analytics_password, $user->email, $tokenAuth);
         $analyticsId = app()->make('analytics-service')->registerSite('Sito istituzionale', $website->url, $website->publicAdministration->name);
         $website->analytics_id = $analyticsId;
         $website->save();
@@ -201,8 +202,6 @@ class CheckWebsitesTest extends TestCase
      */
     public function testCheckWebsiteSecondaryActivated(): void
     {
-        Event::fake();
-
         $userAdmin = factory(User::class)->state('active')->create();
         $userManage = factory(User::class)->state('active')->create();
         $userRead = factory(User::class)->state('active')->create();
@@ -214,10 +213,10 @@ class CheckWebsitesTest extends TestCase
             'public_administration_id' => $publicAdministration->id,
         ]);
 
-        $this->app->make('analytics-service')->registerUser($userAdmin->uuid, $userAdmin->analytics_password, $userAdmin->email, config('analytics-service.admin_token'), $userAdmin->full_name);
-        $this->app->make('analytics-service')->registerUser($userManage->uuid, $userManage->analytics_password, $userManage->email, config('analytics-service.admin_token'), $userManage->full_name);
-        $this->app->make('analytics-service')->registerUser($userRead->uuid, $userRead->analytics_password, $userRead->email, config('analytics-service.admin_token'), $userRead->full_name);
-        $this->app->make('analytics-service')->registerUser($userNoAccess->uuid, $userNoAccess->analytics_password, $userNoAccess->email, config('analytics-service.admin_token'), $userNoAccess->full_name);
+        $this->app->make('analytics-service')->registerUser($userAdmin->uuid, $userAdmin->analytics_password, $userAdmin->email, config('analytics-service.admin_token'));
+        $this->app->make('analytics-service')->registerUser($userManage->uuid, $userManage->analytics_password, $userManage->email, config('analytics-service.admin_token'));
+        $this->app->make('analytics-service')->registerUser($userRead->uuid, $userRead->analytics_password, $userRead->email, config('analytics-service.admin_token'));
+        $this->app->make('analytics-service')->registerUser($userNoAccess->uuid, $userNoAccess->analytics_password, $userNoAccess->email, config('analytics-service.admin_token'));
         $analyticsId = app()->make('analytics-service')->registerSite('Sito istituzionale', $website->url, $website->publicAdministration->name);
         $website->analytics_id = $analyticsId;
         $website->save();
@@ -260,8 +259,6 @@ class CheckWebsitesTest extends TestCase
      */
     public function testMissingAnalyticsWebsiteFail(): void
     {
-        Event::fake();
-
         $user = factory(User::class)->state('pending')->create();
         $publicAdministration = factory(PublicAdministration::class)->create();
         $publicAdministration->users()->sync($user->id);
@@ -291,8 +288,6 @@ class CheckWebsitesTest extends TestCase
      */
     public function testMissingAnalyticsUserFail(): void
     {
-        Event::fake();
-
         $user = factory(User::class)->state('pending')->create();
         $publicAdministration = factory(PublicAdministration::class)->create();
         $publicAdministration->users()->sync($user->id);

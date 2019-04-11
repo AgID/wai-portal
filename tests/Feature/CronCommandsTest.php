@@ -13,11 +13,20 @@ use Tests\TestCase;
 class CronCommandsTest extends TestCase
 {
     /**
+     * Setup the test environment.
+     */
+    protected function setUp(): void
+    {
+        parent::setUp();
+        Queue::fake();
+    }
+
+
+    /**
      * Test update IPA job route successful dispatching job.
      */
     public function testUpdateIPACron(): void
     {
-        Queue::fake();
         $response = $this->get('/cron/updateipa?token=' . config('cron-auth.cron_token'));
         $response->assertStatus(202);
 
@@ -29,7 +38,6 @@ class CronCommandsTest extends TestCase
      */
     public function testUnauthorizedIPACron(): void
     {
-        Queue::fake();
         $response = $this->get('/cron/updateipa');
         $response->assertForbidden();
         Queue::assertNotPushed(ProcessIPAList::class);
@@ -44,8 +52,7 @@ class CronCommandsTest extends TestCase
      */
     public function testCheckWebsitesCron()
     {
-        Queue::fake();
-        $response = $this->get('/cron/checkwebsites?token=' . config('cron-auth.cron_token'));
+        $response = $this->get('/cron/checkpendingwebsites?token=' . config('cron-auth.cron_token'));
         $response->assertStatus(202);
 
         Queue::assertPushed(ProcessPendingWebsites::class);
@@ -56,12 +63,11 @@ class CronCommandsTest extends TestCase
      */
     public function testUnauthorizedCheckWebsitesCron(): void
     {
-        Queue::fake();
-        $response = $this->get('/cron/checkwebsites');
+        $response = $this->get('/cron/checkpendingwebsites');
         $response->assertForbidden();
         Queue::assertNotPushed(ProcessPendingWebsites::class);
 
-        $response = $this->get('/cron/checkwebsites?token=' . md5('wrong_token'));
+        $response = $this->get('/cron/checkpendingwebsites?token=' . md5('wrong_token'));
         $response->assertForbidden();
         Queue::assertNotPushed(ProcessPendingWebsites::class);
     }

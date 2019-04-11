@@ -69,8 +69,8 @@ class JsonRoutesTest extends TestCase
         $analyticsID = $this->app->make('analytics-service')->registerSite($this->website->name, $this->website->url, $this->publicAdministration->name);
         $this->website->analytics_id = $analyticsID;
         $this->website->save();
-        $this->app->make('analytics-service')->registerUser($this->user->uuid, $this->user->analytics_password, $this->user->email, $tokenAuth, $this->user->full_name);
-        $this->app->make('analytics-service')->setWebsitesAccess($this->user->uuid, WebsiteAccessType::VIEW, $this->website->analytics_id, $tokenAuth);
+        $this->app->make('analytics-service')->registerUser($this->user->uuid, $this->user->analytics_password, $this->user->email, $tokenAuth);
+        $this->app->make('analytics-service')->setWebsiteAccess($this->user->uuid, WebsiteAccessType::VIEW, $this->website->analytics_id, $tokenAuth);
         $this->userTokenAuth = $this->app->make('analytics-service')->getUserAuthToken($this->user->uuid, md5($this->user->analytics_password));
 
         Bouncer::scope()->to($this->publicAdministration->id);

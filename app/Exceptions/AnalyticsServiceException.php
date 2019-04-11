@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use Exception;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
 
 /**
@@ -22,12 +23,10 @@ class AnalyticsServiceException extends Exception
     /**
      * Render the exception into an HTTP response.
      *
-     * @return \Illuminate\Http\Response the response
+     * @return \Illuminate\Http\RedirectResponse the response
      */
-    public function render(): Response
+    public function render(): RedirectResponse
     {
-        logger()->error($this->getMessage());
-
         return redirect()->home()->withMessage(['error' => 'Il servizio remoto di Analytics non è disponibile. Riprovare successivamente.']); //TODO: put message in lang file
     }
 }

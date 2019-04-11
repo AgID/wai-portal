@@ -127,7 +127,7 @@ class VerificationController extends Controller
 
                 // $access = $user->can('manage-analytics') ? 'admin' : 'view';
                 // foreach ($user->getWebsites() as $website) {
-                //     $analyticsService->setWebsitesAccess($user->email, $access, $website->analytics_id);
+                //     $analyticsService->setWebsiteAccess($user->email, $access, $website->analytics_id);
                 // }
             }
         }
