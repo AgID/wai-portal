@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Response;
+use Illuminate\Http\RedirectResponse;
 
 class AnalyticsController extends Controller
 {
@@ -11,9 +11,9 @@ class AnalyticsController extends Controller
      *
      * @throws \Illuminate\Contracts\Container\BindingResolutionException if unable to bind analytics service
      *
-     * @return \Illuminate\Http\Response the server response
+     * @return \Illuminate\Http\RedirectResponse the server response
      */
-    public function login(): Response
+    public function login(): RedirectResponse
     {
         if (empty(auth()->user()->partial_analytics_password)) {
             abort(404);
@@ -24,6 +24,6 @@ class AnalyticsController extends Controller
         $hashedPassword = md5(auth()->user()->analytics_password);
 
         return app()->make('analytics-service')
-                    ->loginAndRedirectUser(auth()->user()->email, $hashedPassword);
+                    ->loginAndRedirectUser(auth()->user()->uuid, $hashedPassword);
     }
 }

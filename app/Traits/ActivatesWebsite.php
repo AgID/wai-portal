@@ -14,7 +14,6 @@ use App\Exceptions\AnalyticsServiceException;
 use App\Exceptions\CommandErrorException;
 use App\Models\Website;
 use BenSampo\Enum\Exceptions\InvalidEnumMemberException;
-use Illuminate\Support\Str;
 use Silber\Bouncer\BouncerFacade as Bouncer;
 
 /**
@@ -64,7 +63,6 @@ trait ActivatesWebsite
 
             $pendingUser = $publicAdministration->users()->where('status', UserStatus::PENDING)->first();
             if ($pendingUser) {
-                $pendingUser->partial_analytics_password = Str::random(rand(32, 48));
                 $pendingUser->status = UserStatus::ACTIVE;
                 $pendingUser->save();
 

@@ -87,7 +87,7 @@ class CommandsTest extends TestCase
             'verify' => false,
         ]);
 
-        $websitePending->created_at = now()->subDays(config('wai.purge_expiry') + 1);
+        $websitePending->created_at = now()->subDays((int) config('wai.purge_expiry') + 1);
         $websitePending->save();
 
         $this->artisan('app:check-websites');
