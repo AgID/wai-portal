@@ -2,15 +2,12 @@
 
 namespace App\Listeners;
 
-use App\Enums\PublicAdministrationStatus;
-use App\Enums\UserStatus;
 use App\Events\Website\WebsiteActivated;
 use App\Events\Website\WebsitePurged;
 use App\Events\Website\WebsitePurging;
 use App\Models\Website;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Events\Dispatcher;
-use Silber\Bouncer\BouncerFacade as Bouncer;
 
 /**
  * Websites related events subscriber.

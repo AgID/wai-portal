@@ -21,7 +21,6 @@ class CronCommandsTest extends TestCase
         Queue::fake();
     }
 
-
     /**
      * Test update IPA job route successful dispatching job.
      */
@@ -50,7 +49,7 @@ class CronCommandsTest extends TestCase
     /**
      * Test pending websites check job route successful dispatching job.
      */
-    public function testCheckWebsitesCron()
+    public function testCheckWebsitesCron(): void
     {
         $response = $this->get('/cron/checkpendingwebsites?token=' . config('cron-auth.cron_token'));
         $response->assertStatus(202);

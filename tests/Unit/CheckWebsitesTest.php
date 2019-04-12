@@ -62,7 +62,7 @@ class CheckWebsitesTest extends TestCase
         $publicAdministration->users()->sync($user->id);
         $website = factory(Website::class)->create([
             'public_administration_id' => $publicAdministration->id,
-            'created_at' => now()->subDays(config('wai.purge_expiry') + 1),
+            'created_at' => now()->subDays((int) config('wai.purge_expiry') + 1),
         ]);
 
         $siteID = $this->app->make('analytics-service')->registerSite($website->name, $website->url, $publicAdministration->name);
@@ -102,7 +102,7 @@ class CheckWebsitesTest extends TestCase
         $publicAdministration->users()->sync($user->id);
         $website = factory(Website::class)->create([
             'public_administration_id' => $publicAdministration->id,
-            'created_at' => now()->subDays(config('wai.purge_warning')),
+            'created_at' => now()->subDays((int) config('wai.purge_warning')),
         ]);
 
         $siteID = $this->app->make('analytics-service')->registerSite($website->name, $website->url, $publicAdministration->name);
@@ -229,7 +229,7 @@ class CheckWebsitesTest extends TestCase
         $userNoAccess->assign('registered');
 
         $client = new TrackingClient(['base_uri' => config('analytics-service.api_base_uri')]);
-        $client->request('GET', '/piwik.php', [
+        $client->request('GET', 'piwik.php', [
             'query' => [
                 'rec' => '1',
                 'idsite' => $analyticsId,
@@ -247,6 +247,8 @@ class CheckWebsitesTest extends TestCase
         $this->app->make('analytics-service')->deleteSite($website->analytics_id, config('analytics-service.admin_token'));
 
         Event::assertDispatched(UserWebsiteAccessChanged::class, function ($event) use ($userAdmin, $userManage, $userRead, $userNoAccess, $website) {
+            logger($event->getUser()->getInfo() . ' ' . $event->getWebsite()->getInfo() . ' ' . $event->getAccessType()->description);
+
             return ($event->getUser()->id === $userAdmin->id && $event->getWebsite()->id === $website->id && $event->getAccessType()->is(WebsiteAccessType::ADMIN))
                 || ($event->getUser()->id === $userManage->id && $event->getWebsite()->id === $website->id && $event->getAccessType()->is(WebsiteAccessType::WRITE))
                 || ($event->getUser()->id === $userRead->id && $event->getWebsite()->id === $website->id && $event->getAccessType()->is(WebsiteAccessType::VIEW))
@@ -301,7 +303,7 @@ class CheckWebsitesTest extends TestCase
         $website->save();
 
         $client = new TrackingClient(['base_uri' => config('analytics-service.api_base_uri')]);
-        $client->request('GET', '/piwik.php', [
+        $client->request('GET', 'piwik.php', [
             'query' => [
                 'rec' => '1',
                 'idsite' => $analyticsId,

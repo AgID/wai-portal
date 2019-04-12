@@ -15,6 +15,12 @@ use Illuminate\Http\RedirectResponse;
  */
 class MatomoService implements AnalyticsServiceContract
 {
+    private const ACCESS_LEVELS_MAPPINGS = [
+        WebsiteAccessType::NO_ACCESS => 'noaccess',
+        WebsiteAccessType::VIEW => 'view',
+        WebsiteAccessType::WRITE => 'write',
+        WebsiteAccessType::ADMIN => 'admin',
+    ];
     /**
      * Local service URL.
      *
@@ -35,13 +41,6 @@ class MatomoService implements AnalyticsServiceContract
      * @var bool true to check SSL certificates, false to skip
      */
     protected $SSLVerify;
-
-    private const ACCESS_LEVELS_MAPPINGS = [
-        WebsiteAccessType::NO_ACCESS => 'noaccess',
-        WebsiteAccessType::VIEW => 'view',
-        WebsiteAccessType::WRITE => 'write',
-        WebsiteAccessType::ADMIN => 'admin',
-    ];
 
     /**
      * Create a new Matomo Service instance.

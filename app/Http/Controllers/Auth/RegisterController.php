@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Enums\UserStatus;
-use App\Enums\WebsiteAccessType;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;

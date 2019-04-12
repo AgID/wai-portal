@@ -4,23 +4,16 @@ namespace App\Jobs;
 
 use App\Enums\PublicAdministrationStatus;
 use App\Enums\UserStatus;
-use App\Enums\WebsiteAccessType;
 use App\Enums\WebsiteStatus;
 use App\Events\Jobs\PendingWebsitesCheckCompleted;
-use App\Events\PublicAdministration\PublicAdministrationActivated;
-use App\Events\PublicAdministration\PublicAdministrationActivationFailed;
 use App\Events\PublicAdministration\PublicAdministrationPurged;
-use App\Events\User\UserActivated;
-use App\Events\User\UserActivationFailed;
-use App\Events\User\UserWebsiteAccessChanged;
-use App\Events\User\UserWebsiteAccessFailed;
 use App\Events\Website\WebsiteActivated;
 use App\Events\Website\WebsitePurged;
 use App\Events\Website\WebsitePurging;
 use App\Exceptions\AnalyticsServiceException;
 use App\Exceptions\CommandErrorException;
 use App\Models\Website;
-use BenSampo\Enum\Exceptions\InvalidEnumMemberException;
+use App\Traits\ActivatesWebsite;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Container\BindingResolutionException;
@@ -28,15 +21,13 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Str;
-use Silber\Bouncer\BouncerFacade as Bouncer;
 
 /**
  * Check pending websites state job.
  */
 class ProcessPendingWebsites implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, ActivatesWebsite;
 
     /**
      * The authentication token to use for Analytics Service.
@@ -63,51 +54,9 @@ class ProcessPendingWebsites implements ShouldQueue
         $websites = $pendingWebsites->mapToGroups(function ($website) {
             try {
                 $analyticsService = app()->make('analytics-service');
-                if ($analyticsService->getLiveVisits($website->analytics_id, 60, $this->tokenAuth) > 0 || $analyticsService->getSiteTotalVisitsFrom($website->analytics_id, $website->created_at->format('Y-m-d'), $this->tokenAuth) > 0) {
-                    $publicAdministration = $website->publicAdministration;
+                if ($this->hasActivated($website, $this->tokenAuth)) {
+                    $this->activate($website, $this->tokenAuth);
 
-                    $website->status = WebsiteStatus::ACTIVE;
-                    $website->save();
-
-                    if ($publicAdministration->status->is(PublicAdministrationStatus::PENDING)) {
-                        $publicAdministration->status = PublicAdministrationStatus::ACTIVE;
-                        $publicAdministration->save();
-
-                        $pendingUser = $publicAdministration->users()->where('status', UserStatus::PENDING)->first();
-                        if ($pendingUser) {
-                            $pendingUser->partial_analytics_password = Str::random(rand(32, 48));
-                            $pendingUser->status = UserStatus::ACTIVE;
-                            $pendingUser->save();
-
-                            $pendingUser->roles()->detach();
-                            Bouncer::scope()->to($publicAdministration->id);
-                            $pendingUser->assign('admin');
-
-                            event(new UserActivated($pendingUser));
-                        }
-
-                        event(new PublicAdministrationActivated($publicAdministration));
-                    }
-
-                    foreach ($publicAdministration->users as $user) {
-                        try {
-                            //TODO: da modificare com l'implementazione dei permessi per sito
-                            if ($user->isAn('admin')) {
-                                $access = WebsiteAccessType::ADMIN;
-                            } elseif ($user->isA('manager')) {
-                                $access = WebsiteAccessType::WRITE;
-                            } elseif ($user->isA('reader')) {
-                                $access = WebsiteAccessType::VIEW;
-                            } else {
-                                $access = WebsiteAccessType::NO_ACCESS;
-                            }
-                            $analyticsService->setWebsiteAccess($user->uuid, $access, $website->analytics_id, $this->tokenAuth);
-
-                            event(new UserWebsiteAccessChanged($user, $website, new WebsiteAccessType($access)));
-                        } catch (AnalyticsServiceException | InvalidEnumMemberException | CommandErrorException $exception) {
-                            event(new UserWebsiteAccessFailed($user, $website, $exception->getMessage()));
-                        }
-                    }
                     event(new WebsiteActivated($website));
 
                     return [
@@ -117,7 +66,7 @@ class ProcessPendingWebsites implements ShouldQueue
                     ];
                 }
 
-                if (config('wai.purge_warning') === $website->created_at->diffInDays(Carbon::now())) {
+                if ((int) config('wai.purge_warning') === $website->created_at->diffInDays(Carbon::now())) {
                     event(new WebsitePurging($website));
 
                     return [
@@ -127,7 +76,7 @@ class ProcessPendingWebsites implements ShouldQueue
                     ];
                 }
 
-                if ($website->created_at->diffInDays(Carbon::now()) > config('wai.purge_expiry')) {
+                if ($website->created_at->diffInDays(Carbon::now()) > (int) config('wai.purge_expiry')) {
                     $publicAdministration = $website->publicAdministration;
 
                     if ($publicAdministration->status->is(PublicAdministrationStatus::PENDING)) {

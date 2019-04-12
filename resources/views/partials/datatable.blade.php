@@ -45,11 +45,7 @@
                   @if ($columnName == 'actions')
                   render: function (actions) {
                     return actions.map(function (action) {
-                      if (action.type === 'check_tracking') {
-                        return '<a role="button" class="Button Button--default Button--shadow Button--round u-padding-top-xxs u-padding-bottom-xxs u-margin-right-s u-text-r-xxs" onclick="check_tracking(\'' + action.link + '\')">' + action.label + '</a>'
-                      } else {
                         return '<a href="' + action.link + '" role="button" class="Button Button--default Button--shadow Button--round u-padding-top-xxs u-padding-bottom-xxs u-margin-right-s u-text-r-xxs">' + action.label + '</a>'
-                      }
                     }).join('')
                   }
                   @endif
@@ -72,6 +68,8 @@
             url: '//cdn.datatables.net/plug-ins/1.10.16/i18n/Italian.json'
           },
           initComplete: function(settings, json) {
+            console.log(settings);
+            console.log(json);
             datatablesPostInit(json);
           }
         })

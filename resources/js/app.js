@@ -1,14 +1,14 @@
 // Legacy script to be removed
-import { check_tracking } from './checkWebsiteTracking'
-
 require('./auto-complete.min');
 
-import './checkWebsiteTracking';
+import * as PendingWebsiteCheck from './checkWebsiteTracking';
 
-function datatablesPostInit (json) {
-  json.actions.forEach(function (action) {
-    if (action.type === 'check_tracking') {
-      check_tracking(document.querySelector('a[href="' + action.link +']'));
-    }
+window.datatablesPostInit = function (json) {
+  json.data.forEach(function (website) {
+    website.actions.forEach(function (action) {
+      if (action.type === 'check_tracking') {
+        PendingWebsiteCheck.initWebsiteCheckButton(document.querySelector('a[href="' + action.link + '"]'));
+      }
+    });
   });
 }

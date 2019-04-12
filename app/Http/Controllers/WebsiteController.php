@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use App\Enums\WebsiteAccessType;
 use App\Enums\WebsiteStatus;
 use App\Enums\WebsiteType;
+use App\Events\Website\WebsiteActivated;
 use App\Exceptions\AnalyticsServiceException;
 use App\Exceptions\CommandErrorException;
 use App\Models\PublicAdministration;
 use App\Models\Website;
+use App\Traits\ActivatesWebsite;
 use App\Transformers\WebsiteTransformer;
 use Ehann\RediSearch\Index;
 use Ehann\RedisRaw\PredisAdapter;
@@ -22,6 +24,8 @@ use Yajra\Datatables\Datatables;
 
 class WebsiteController extends Controller
 {
+    use ActivatesWebsite;
+
     /**
      * Display a listing of the resource.
      *
@@ -215,9 +219,10 @@ class WebsiteController extends Controller
     {
         try {
             $tokenAuth = current_user_auth_token();
-            $analyticsService = app()->make('analytics-service');
-            if ($website->status->is(WebsiteStatus::PENDING) && ($analyticsService->getLiveVisits($website->analytics_id, 60, $tokenAuth) > 0 || $analyticsService->getSiteTotalVisitsFrom($website->analytics_id, $website->created_at->format('Y-m-d'), $tokenAuth) > 0)) {
-                $website->status = WebsiteStatus::ACTIVE;
+            if ($website->status->is(WebsiteStatus::PENDING) && $this->hasActivated($website, $tokenAuth)) {
+                $this->activate($website, $tokenAuth);
+
+                event(new WebsiteActivated($website));
             }
 
             return response()->json([
