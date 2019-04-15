@@ -5,7 +5,6 @@ namespace Tests\Unit;
 use App\Enums\PublicAdministrationStatus;
 use App\Enums\UserStatus;
 use App\Enums\WebsiteStatus;
-use App\Exceptions\AnalyticsServiceException;
 use App\Models\PublicAdministration;
 use App\Models\User;
 use App\Models\Website;
@@ -13,8 +12,6 @@ use Ehann\RediSearch\Index;
 use Ehann\RedisRaw\PredisAdapter;
 use Exception;
 use GuzzleHttp\Client as TrackingClient;
-use GuzzleHttp\Exception\GuzzleException;
-use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -26,57 +23,49 @@ class CommandsTest extends TestCase
     use RefreshDatabase;
 
     /**
-     * Models required by this test.
-     */
-    protected $user;
-    protected $userPending;
-    protected $publicAdministration;
-    protected $publicAdministrationPending;
-    protected $website;
-    protected $websitePending;
-
-    /**
-     * Test setUp.
-     */
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->user = factory(User::class)->states('pending')->create();
-        $this->userPending = factory(User::class)->states('pending')->create();
-        $this->publicAdministration = factory(PublicAdministration::class)->create();
-        $this->publicAdministrationPending = factory(PublicAdministration::class)->create();
-        $this->user->publicAdministrations()->attach($this->publicAdministration->id);
-        $this->userPending->publicAdministrations()->attach($this->publicAdministrationPending->id);
-        $this->user->save();
-        $this->userPending->save();
-        $this->website = factory(Website::class)->make();
-        $this->websitePending = factory(Website::class)->make();
-        $this->publicAdministration->websites()->save($this->website);
-        $this->publicAdministrationPending->websites()->save($this->websitePending);
-        $this->publicAdministration->save();
-        $this->publicAdministrationPending->save();
-    }
-
-    /**
-     * Test tearDown.
-     */
-    protected function tearDown(): void
-    {
-        if (isset($this->website->analytics_id)) {
-            $this->app->make('analytics-service')->deleteSite($this->website->analytics_id);
-            $this->app->make('analytics-service')->deleteUser($this->user->email);
-        }
-    }
-
-    /**
      * Test check pending website command.
      *
-     * @throws AnalyticsServiceException
-     * @throws BindingResolutionException
-     * @throws GuzzleException
+     * @throws \App\Exceptions\AnalyticsServiceException if unable to connect to the Analytics Service
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException if unable to bind to Analytics Service
+     * @throws \GuzzleHttp\Exception\GuzzleException if unable to inject tracking request
+     * @throws \App\Exceptions\CommandErrorException if Analytics Service command finishes with error
      */
     public function testCheckPendingWebsites(): void
     {
+        $tokenAuth = config('analytics-service.admin_token');
+
+        $user = factory(User::class)->states('pending')->create();
+        $userPending = factory(User::class)->states('pending')->create();
+
+        $publicAdministration = factory(PublicAdministration::class)->create();
+        $publicAdministrationPending = factory(PublicAdministration::class)->create();
+
+        $user->publicAdministrations()->attach($publicAdministration->id);
+        $userPending->publicAdministrations()->attach($publicAdministrationPending->id);
+        $user->save();
+        $userPending->save();
+
+        $website = factory(Website::class)->make();
+        do {
+            $websitePending = factory(Website::class)->make();
+        } while ($website->slug === $websitePending->slug);
+
+        $publicAdministration->websites()->save($website);
+        $publicAdministrationPending->websites()->save($websitePending);
+        $publicAdministration->save();
+        $publicAdministrationPending->save();
+
+        $analyticsId = $this->app->make('analytics-service')->registerSite('Sito istituzionale', $website->url, $publicAdministration->name);
+        $website->analytics_id = $analyticsId;
+        $website->save();
+
+        $analyticsPendingId = $this->app->make('analytics-service')->registerSite('Sito istituzionale', $websitePending->url, $publicAdministration->name);
+        $websitePending->analytics_id = $analyticsPendingId;
+        $websitePending->save();
+
+        $this->app->make('analytics-service')->registerUser($user->uuid, $user->analytics_password, $user->email, $tokenAuth);
+        $this->app->make('analytics-service')->registerUser($userPending->uuid, $userPending->analytics_password, $userPending->email, $tokenAuth);
+
         $this->artisan('app:check-websites');
 
         $this->assertDatabaseHas('users', [
@@ -89,12 +78,8 @@ class CommandsTest extends TestCase
             'status' => WebsiteStatus::PENDING,
         ]);
 
-        $analyticsId = $this->app->make('analytics-service')->registerSite('Sito istituzionale', $this->website->url, $this->publicAdministration->name);
-        $this->website->analytics_id = $analyticsId;
-        $this->website->save();
-
         $client = new TrackingClient(['base_uri' => config('analytics-service.api_base_uri')]);
-        $client->request('GET', '/piwik.php', [
+        $client->request('GET', 'piwik.php', [
             'query' => [
                 'rec' => '1',
                 'idsite' => $analyticsId,
@@ -102,10 +87,16 @@ class CommandsTest extends TestCase
             'verify' => false,
         ]);
 
-        $this->websitePending->created_at = now()->subDays(16);
-        $this->websitePending->save();
+        $websitePending->created_at = now()->subDays((int) config('wai.purge_expiry') + 1);
+        $websitePending->save();
 
         $this->artisan('app:check-websites');
+
+        $this->app->make('analytics-service')->deleteUser($user->uuid, $tokenAuth);
+        $this->app->make('analytics-service')->deleteUser($userPending->uuid, $tokenAuth);
+
+        $this->app->make('analytics-service')->deleteSite($website->analytics_id, $tokenAuth);
+        //NOTE: Check pending website job deleted pending website
 
         $this->assertDatabaseHas('websites', [
             'status' => WebsiteStatus::ACTIVE,

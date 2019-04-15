@@ -67,6 +67,7 @@ return [
                 'go_to_analytics_service' => 'vai agli analytics',
                 'add_website' => 'aggiungi sito',
                 'edit_website' => 'modifica sito',
+                'check_tracking' => 'verifica attivazione',
             ],
             'add-primary' => [
                 'title' => 'Sito istituzionale',

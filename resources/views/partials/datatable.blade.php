@@ -29,45 +29,48 @@
     <script type="text/javascript" src="//cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript" src="//cdn.datatables.net/responsive/2.2.1/js/dataTables.responsive.js"></script>
     <script type="text/javascript">
-        $(function () {
-            $('.Datatable').DataTable({
-                ajax: '{{ $source }}',
-                responsive: {
-                    details: {
-                        type: 'column',
-                        target: -1
-                    }
-                },
-                columns: [
-                    @foreach ($columns as $columnName => $column)
-                    {
-                        data: '{{ $columnName }}',
-                        @if ($columnName == 'actions')
-                        render: function (actions) {
-                            return actions.map(function (action) {
-                                return '<a href="' + action.link + '" role="button" class="Button Button--default Button--shadow Button--round u-padding-top-xxs u-padding-bottom-xxs u-margin-right-s u-text-r-xxs">' + action.label + '</a>';
-                            }).join('');
-                        }
-                        @endif
-                    },
-                    @endforeach
-                    {
-                        data: 'control',
-                        className: 'control',
-                        orderable: false
-                    }
-                ],
-                order: [
-                    @foreach ($columnsOrder as $columnOrder)
-                    [
-                        {{ array_search($columnOrder[0], array_keys($columns)) }}, '{{ $columnOrder[1] }}'
-                    ],
-                    @endforeach
-                ],
-                language: {
-                    url: "//cdn.datatables.net/plug-ins/1.10.16/i18n/Italian.json"
-                }
-            });
-        });
+      $(function () {
+        $('.Datatable').DataTable({
+          ajax: '{{ $source }}',
+          responsive: {
+            details: {
+              type: 'column',
+              target: -1
+            }
+          },
+          columns: [
+                  @foreach ($columns as $columnName => $column)
+            {
+              data: '{{ $columnName }}',
+                  @if ($columnName == 'actions')
+                  render: function (actions) {
+                    return actions.map(function (action) {
+                        return '<a href="' + action.link + '" role="button" class="Button Button--default Button--shadow Button--round u-padding-top-xxs u-padding-bottom-xxs u-margin-right-s u-text-r-xxs">' + action.label + '</a>'
+                    }).join('')
+                  }
+                  @endif
+            },
+                  @endforeach
+            {
+              data: 'control',
+              className: 'control',
+              orderable: false
+            }
+          ],
+          order: [
+                  @foreach ($columnsOrder as $columnOrder)
+            [
+                  {{ array_search($columnOrder[0], array_keys($columns)) }}, '{{ $columnOrder[1] }}'
+            ],
+              @endforeach
+          ],
+          language: {
+            url: '//cdn.datatables.net/plug-ins/1.10.16/i18n/Italian.json'
+          },
+          initComplete: function(settings, json) {
+            datatablesPostInit(json);
+          }
+        })
+      })
     </script>
 @endpush

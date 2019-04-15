@@ -2,13 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\WebsiteAccessType;
 use App\Enums\WebsiteStatus;
 use App\Enums\WebsiteType;
+use App\Events\Website\WebsiteActivated;
+use App\Exceptions\AnalyticsServiceException;
+use App\Exceptions\CommandErrorException;
 use App\Models\PublicAdministration;
 use App\Models\Website;
+use App\Traits\ActivatesWebsite;
 use App\Transformers\WebsiteTransformer;
 use Ehann\RediSearch\Index;
 use Ehann\RedisRaw\PredisAdapter;
+use Illuminate\Contracts\Container\BindingResolutionException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -17,6 +24,8 @@ use Yajra\Datatables\Datatables;
 
 class WebsiteController extends Controller
 {
+    use ActivatesWebsite;
+
     /**
      * Display a listing of the resource.
      *
@@ -101,6 +110,9 @@ class WebsiteController extends Controller
 
         $analyticsId = app()->make('analytics-service')->registerSite('Sito istituzionale', $pa->site, $publicAdministration->name); //TODO: put string in lang file
 
+        //TODO: gestire meglio con CRUD siti
+        app()->make('analytics-service')->setWebsiteAccess(auth()->user()->uuid, WebsiteAccessType::VIEW, $analyticsId, config('analytics-service.admin_token'));
+
         if (empty($analyticsId)) {
             abort(500, 'Il servizio Analytics non è disponibile'); //TODO: put error message in lang file
         }
@@ -154,7 +166,7 @@ class WebsiteController extends Controller
             'type' => 'required|in:primary,secondary,webapp,testing',
         ]);
 
-        $IPAIndex = new Index((new PhpRedisAdapter())->connect(config('database.redis.ipaindex.host'), config('database.redis.ipaindex.port'), config('database.redis.ipaindex.database')), 'IPAIndex');
+        $IPAIndex = new Index((new PredisAdapter())->connect(config('database.redis.ipaindex.host'), config('database.redis.ipaindex.port'), config('database.redis.ipaindex.database')), 'IPAIndex');
 
         $domain = parse_url($request->input('url'), PHP_URL_HOST);
         $result = $IPAIndex->inFields(1, ['site'])
@@ -197,6 +209,43 @@ class WebsiteController extends Controller
     }
 
     /**
+     * Check website tracking status.
+     *
+     * @param Website $website the website to check
+     *
+     * @return \Illuminate\Http\JsonResponse the JSON response
+     */
+    public function checkTracking(Website $website): JsonResponse
+    {
+        try {
+            $tokenAuth = current_user_auth_token();
+            if ($website->status->is(WebsiteStatus::PENDING) && $this->hasActivated($website, $tokenAuth)) {
+                $this->activate($website, $tokenAuth);
+
+                event(new WebsiteActivated($website));
+            }
+
+            return response()->json([
+                'result' => 'ok',
+                'id' => $website->slug,
+                'status' => $website->status->description,
+            ]);
+        } catch (AnalyticsServiceException | BindingResolutionException $exception) {
+            report($exception);
+            $code = $exception->getCode();
+            $message = 'Internal Server Error';
+            $httpStatusCode = 500;
+        } catch (CommandErrorException $exception) {
+            report($exception);
+            $code = $exception->getCode();
+            $message = 'Bad Request';
+            $httpStatusCode = 400;
+        }
+
+        return response()->json(['result' => 'error', 'message' => $message, 'code' => $code], $httpStatusCode);
+    }
+
+    /**
      * Display the specified resource.
      *
      * @param int $id
@@ -217,7 +266,7 @@ class WebsiteController extends Controller
      */
     public function edit(Website $website)
     {
-        if ('primary' == $website->type) {
+        if ($website->type->is(WebsiteType::PRIMARY)) {
             abort(403, 'Non è permesso effettuare modifiche al sito istituzionale.');
         }
 
@@ -244,7 +293,8 @@ class WebsiteController extends Controller
             'type' => 'required|in:secondary,webapp,testing',
         ]);
 
-        $updated = app()->make('analytics-service')->updateSite($website->analytics_id, $validatedData['name'] . ' [' . $validatedData['type'] . ']', $validatedData['url'], $website->publicAdministration->name); //TODO: put string in lang file
+        $tokenAuth = current_user_auth_token();
+        $updated = app()->make('analytics-service')->updateSite($website->analytics_id, $validatedData['name'] . ' [' . $validatedData['type'] . ']', $validatedData['url'], $website->publicAdministration->name, $tokenAuth); //TODO: put string in lang file
 
         if (!$updated) {
             abort(500, 'Il servizio Analytics non è disponibile'); //TODO: put error message in lang file
@@ -300,7 +350,8 @@ class WebsiteController extends Controller
      */
     public function showJavascriptSnippet(Website $website)
     {
-        $javascriptSnippet = app()->make('analytics-service')->getJavascriptSnippet($website->analytics_id);
+        $tokenAuth = current_user_auth_token();
+        $javascriptSnippet = app()->make('analytics-service')->getJavascriptSnippet($website->analytics_id, $tokenAuth);
 
         return view('pages.websites.javascript_snippet')->with(['javascriptSnippet' => trim($javascriptSnippet)]);
     }

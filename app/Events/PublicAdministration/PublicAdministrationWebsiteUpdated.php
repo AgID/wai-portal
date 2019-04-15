@@ -2,24 +2,15 @@
 
 namespace App\Events\PublicAdministration;
 
+use App\Events\PublicAdministration\Contracts\PublicAdministrationEvent;
 use App\Models\PublicAdministration;
 use App\Models\Website;
-use Illuminate\Queue\SerializesModels;
 
 /**
  * Public Administration primary website changed event.
  */
-class PublicAdministrationWebsiteUpdated
+class PublicAdministrationWebsiteUpdated extends PublicAdministrationEvent
 {
-    use SerializesModels;
-
-    /**
-     * The changed public administration.
-     *
-     * @var PublicAdministration the public administration reference
-     */
-    protected $publicAdministration;
-
     /**
      * The current primary website.
      *
@@ -43,19 +34,9 @@ class PublicAdministrationWebsiteUpdated
      */
     public function __construct(PublicAdministration $publicAdministration, Website $primaryWebsite, string $newURL)
     {
-        $this->publicAdministration = $publicAdministration;
+        parent::__construct($publicAdministration);
         $this->primaryWebsite = $primaryWebsite;
         $this->newURL = $newURL;
-    }
-
-    /**
-     * Get the changed Public Administration.
-     *
-     * @return PublicAdministration the public administration reference
-     */
-    public function getPublicAdministration(): PublicAdministration
-    {
-        return $this->publicAdministration;
     }
 
     /**

@@ -94,18 +94,18 @@ class VerificationController extends Controller
      */
     protected function verifyUser($user)
     {
-        if (UserStatus::INACTIVE == $user->status) {
+        if ($user->status->is(UserStatus::INACTIVE)) {
             $newStatus = UserStatus::PENDING;
             $user->assign('registered');
         }
 
-        if (UserStatus::INVITED == $user->status) {
+        if ($user->status->is(UserStatus::INVITED)) {
             $newStatus = UserStatus::ACTIVE;
 
             if (!$user->isA('super-admin')) {
                 $SPIDUser = session()->get('spid_user');
 
-                if ($user->fiscalNumber != $SPIDUser->fiscalNumber) {
+                if ($user->fiscalNumber !== $SPIDUser->fiscalNumber) {
                     session()->flash('message', ['error' => "Il codice fiscale dell'utenza SPID è diverso da quello dell'invito."]);
 
                     return app()->make('SPIDAuth')->logout();
@@ -127,7 +127,7 @@ class VerificationController extends Controller
 
                 // $access = $user->can('manage-analytics') ? 'admin' : 'view';
                 // foreach ($user->getWebsites() as $website) {
-                //     $analyticsService->setWebsitesAccess($user->email, $access, $website->analytics_id);
+                //     $analyticsService->setWebsiteAccess($user->email, $access, $website->analytics_id);
                 // }
             }
         }

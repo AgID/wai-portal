@@ -64,11 +64,13 @@
                         <label class="Form-label is-required" for="type">
                             Tipologia{{-- //TODO: put message in lang file --}}
                         </label>
-                        <select class="Form-input" id="type" name="type" aria-required="true" required/>
-                        <option value="">seleziona</option>{{-- //TODO: use localized enum --}}
-                        <option value="secondary" {{ (old('type') ?? $website->type) == 'secondary' ? "selected" : "" }}>{{ __('ui.website.secondary') }}</option>
-                        <option value="webapp" {{ (old('type') ?? $website->type) == 'webapp' ? "selected" : "" }}>{{ __('ui.website.webapp') }}</option>
-                        <option value="testing" {{ (old('type') ?? $website->type) == 'testing' ? "selected" : "" }}>{{ __('ui.website.testing') }}</option>
+                        <select class="Form-input" id="type" name="type" aria-required="true" required>
+                            <option value="">seleziona</option>{{-- //TODO: use localized enum --}}
+                            @foreach(WebsiteType::toSelectArray() as $key => $value)
+                                @if ($key !== WebsiteType::PRIMARY()->value)
+                                    <option value="{{ $key }}" {{ old('type') === $key ? "selected" : "" }}>{{ $value }}</option>
+                                @endif
+                            @endforeach
                         </select>
                         @if ($errors->has('type'))
                     </div>

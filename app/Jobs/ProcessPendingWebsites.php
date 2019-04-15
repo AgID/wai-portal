@@ -5,80 +5,143 @@ namespace App\Jobs;
 use App\Enums\PublicAdministrationStatus;
 use App\Enums\UserStatus;
 use App\Enums\WebsiteStatus;
+use App\Events\Jobs\PendingWebsitesCheckCompleted;
+use App\Events\PublicAdministration\PublicAdministrationPurged;
+use App\Events\Website\WebsiteActivated;
+use App\Events\Website\WebsitePurged;
+use App\Events\Website\WebsitePurging;
+use App\Exceptions\AnalyticsServiceException;
+use App\Exceptions\CommandErrorException;
 use App\Models\Website;
+use App\Traits\ActivatesWebsite;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Str;
-use Silber\Bouncer\BouncerFacade as Bouncer;
 
+/**
+ * Check pending websites state job.
+ */
 class ProcessPendingWebsites implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, ActivatesWebsite;
+
+    /**
+     * The authentication token to use for Analytics Service.
+     *
+     * @var string the authentication token
+     */
+    protected $tokenAuth;
+
+    /**
+     * Job constructor.
+     */
+    public function __construct()
+    {
+        $this->tokenAuth = config('analytics-service.admin_token');
+    }
 
     /**
      * Execute the job.
-     *
-     * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         $pendingWebsites = Website::where('status', WebsiteStatus::PENDING)->get();
-        $pendingWebsites->map(function ($website) {
-            $analyticsService = app()->make('analytics-service');
-            if ($analyticsService->getSiteTotalVisits($website->analytics_id, $website->created_at->format('Y-m-d')) > 0) {
-                $publicAdministration = $website->publicAdministration;
 
-                logger()->info('New website "' . $website->name . '" activated [' . $website->url . ']'); //TODO: notify me and the user!
+        $websites = $pendingWebsites->mapToGroups(function ($website) {
+            try {
+                $analyticsService = app()->make('analytics-service');
+                if ($this->hasActivated($website, $this->tokenAuth)) {
+                    $this->activate($website, $this->tokenAuth);
 
-                $website->status = WebsiteStatus::ACTIVE;
-                $website->save();
+                    event(new WebsiteActivated($website));
 
-                if (PublicAdministrationStatus::PENDING == $publicAdministration->status) {
-                    $publicAdministration->status = PublicAdministrationStatus::ACTIVE;
-                    $publicAdministration->save();
+                    return [
+                        'activated' => [
+                            'website' => $website->slug,
+                        ],
+                    ];
+                }
 
-                    logger()->info('New public administration activated [' . $publicAdministration->name . ']'); //TODO: notify me and the user!
+                if ((int) config('wai.purge_warning') === $website->created_at->diffInDays(Carbon::now())) {
+                    event(new WebsitePurging($website));
 
-                    $pendingUser = $publicAdministration->users()->where('status', UserStatus::PENDING)->first();
+                    return [
+                        'purging' => [
+                            'website' => $website->slug,
+                        ],
+                    ];
+                }
 
-                    if ($pendingUser) {
-                        $pendingUser->partial_analytics_password = Str::random(rand(32, 48));
-                        $pendingUser->status = UserStatus::ACTIVE;
-                        $pendingUser->save();
-                        $pendingUser->roles()->detach();
-                        Bouncer::scope()->to($publicAdministration->id);
-                        $pendingUser->assign('admin');
-                        $analyticsService->registerUser($pendingUser->email, $pendingUser->analytics_password, $pendingUser->email);
+                if ($website->created_at->diffInDays(Carbon::now()) > (int) config('wai.purge_expiry')) {
+                    $publicAdministration = $website->publicAdministration;
 
-                        logger()->info('User ' . $pendingUser->getInfo() . ' was activated and registered in the Analytics Service.'); //TODO: notify me and the user!
+                    if ($publicAdministration->status->is(PublicAdministrationStatus::PENDING)) {
+                        $pendingUser = $publicAdministration->users()->where('status', UserStatus::PENDING)->first();
+                        if (null !== $pendingUser) {
+                            $pendingUser->publicAdministrations()->detach($publicAdministration->id);
+                            $pendingUser->save();
+                            $publicAdministration->forceDelete();
+                        }
+                        event(new PublicAdministrationPurged($publicAdministration->toJson()));
+                    } else {
+                        $website->forceDelete();
                     }
-                }
 
-                foreach ($publicAdministration->users as $user) {
-                    $access = $user->can('manage-analytics') ? 'admin' : 'view';
-                    $analyticsService->setWebsitesAccess($user->email, $access, $website->analytics_id);
+                    $analyticsService->deleteSite($website->analytics_id, $this->tokenAuth);
 
-                    logger()->info('User ' . $user->getInfo() . ' was granted with "' . $access . '" access in the Analytics Service.'); //TODO: notify me and the user!
-                }
-            } elseif ($website->created_at->diffInDays(Carbon::now()) > 15) {
-                $publicAdministration = $website->publicAdministration;
+                    event(new WebsitePurged($website->toJson()));
 
-                if (PublicAdministrationStatus::PENDING == $publicAdministration->status) {
-                    $pendingUser = $publicAdministration->users()->where('status', UserStatus::PENDING)->first();
-                    $pendingUser->publicAdministrations()->detach($publicAdministration->id);
-                    $pendingUser->save();
-                    $publicAdministration->forceDelete();
-                    logger()->info('Website "' . $website->name . '" [' . $website->url . '] was deleted as not activated within 15 days'); //TODO: notify me and the user!
-                    logger()->info('Public administration [' . $publicAdministration->name . '] was deleted as not activated within 15 days');
-                } else {
-                    $website->forceDelete();
-                    logger()->info('Website "' . $website->name . '" [' . $website->url . '] was deleted as not activated within 15 days'); //TODO: notify me and the user!
+                    return [
+                        'purged' => [
+                            'website' => $website->slug,
+                        ],
+                    ];
                 }
+            } catch (BindingResolutionException $exception) {
+                report($exception);
+
+                return [
+                    'failed' => [
+                        'website' => $website->slug,
+                        'reason' => 'Unable to bind to Analytics Service',
+                    ],
+                ];
+            } catch (AnalyticsServiceException $exception) {
+                report($exception);
+
+                return [
+                    'failed' => [
+                        'website' => $website->slug,
+                        'reason' => 'Unable to contact the Analytics Service',
+                    ],
+                ];
+            } catch (CommandErrorException $exception) {
+                report($exception);
+
+                return [
+                    'failed' => [
+                        'website' => $website->slug,
+                        'reason' => 'Invalid command for Analytics Service',
+                    ],
+                ];
             }
+
+            return [
+                'ignored' => [
+                    'website' => $website->slug,
+                ],
+            ];
         });
+
+        event(new PendingWebsitesCheckCompleted(
+            empty($websites->get('activated')) ? [] : $websites->get('activated')->all(),
+            empty($websites->get('purging')) ? [] : $websites->get('purging')->all(),
+            empty($websites->get('purged')) ? [] : $websites->get('purged')->all(),
+            empty($websites->get('failed')) ? [] : $websites->get('failed')->all()
+        ));
     }
 }

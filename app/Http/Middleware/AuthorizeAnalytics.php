@@ -5,16 +5,19 @@ namespace App\Http\Middleware;
 use App\Enums\WebsiteStatus;
 use Closure;
 
+/**
+ * Analytics Service authorization middleware.
+ */
 class AuthorizeAnalytics
 {
     /**
      * Handle an incoming request.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \Closure $next
-     * @param string $action
+     * @param \Illuminate\Http\Request $request the request
+     * @param \Closure $next the next closure
+     * @param string $action the requested analytics action
      *
-     * @return mixed
+     * @return mixed the check result
      */
     public function handle($request, Closure $next, string $action)
     {
@@ -23,9 +26,9 @@ class AuthorizeAnalytics
             $unauthorized = true;
         }
         if ($request->route('website')) {
-            if (current_public_administration() != $request->route('website')->publicAdministration) {
+            if (current_public_administration()->id !== $request->route('website')->publicAdministration->id) {
                 $unauthorized = true;
-            } elseif (WebsiteStatus::PENDING == $request->route('website')->status) {
+            } elseif ($request->route('website')->status->is(WebsiteStatus::PENDING)) {
                 $unauthorized = false;
             }
         }

@@ -5,31 +5,24 @@ namespace App\Console\Commands;
 use App\Jobs\ProcessPendingWebsites;
 use Illuminate\Console\Command;
 
+/**
+ * Check pending websites command.
+ */
 class CheckPendingWebsites extends Command
 {
     /**
      * The name and signature of the console command.
      *
-     * @var string
+     * @var string the command
      */
     protected $signature = 'app:check-websites';
 
     /**
      * The console command description.
      *
-     * @var string
+     * @var string the command description
      */
     protected $description = 'Check for pending Websites registered in Web Analytics Italia';
-
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
 
     /**
      * Execute the console command.

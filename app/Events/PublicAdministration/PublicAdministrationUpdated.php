@@ -2,23 +2,14 @@
 
 namespace App\Events\PublicAdministration;
 
+use App\Events\PublicAdministration\Contracts\PublicAdministrationEvent;
 use App\Models\PublicAdministration;
-use Illuminate\Queue\SerializesModels;
 
 /**
  * Public Administration updated event.
  */
-class PublicAdministrationUpdated
+class PublicAdministrationUpdated extends PublicAdministrationEvent
 {
-    use SerializesModels;
-
-    /**
-     * The changed public administration.
-     *
-     * @var PublicAdministration the public administration reference
-     */
-    protected $publicAdministration;
-
     /**
      * The changes list.
      *
@@ -34,18 +25,8 @@ class PublicAdministrationUpdated
      */
     public function __construct(PublicAdministration $publicAdministration, array $updates)
     {
-        $this->publicAdministration = $publicAdministration;
+        parent::__construct($publicAdministration);
         $this->updates = $updates;
-    }
-
-    /**
-     * Get the changed Public Administration.
-     *
-     * @return PublicAdministration
-     */
-    public function getPublicAdministration(): PublicAdministration
-    {
-        return $this->publicAdministration;
     }
 
     /**

@@ -66,7 +66,8 @@ return [
                 'view_javascript_snippet' => 'vedi snippet JS',
                 'go_to_analytics_service' => 'vai agli analytics',
                 'add_website' => 'aggiungi sito',
-                'edit_website' => 'modifica sito'
+                'edit_website' => 'modifica sito',
+                'check_tracking' => 'check activation',
             ],
             'add-primary' => [
                 'title' => 'Sito istituzionale'

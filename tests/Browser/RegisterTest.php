@@ -8,6 +8,12 @@ use Tests\DuskTestCase;
 
 class RegisterTest extends DuskTestCase
 {
+    protected function tearDown(): void
+    {
+        $this->deleteAnalyticsUser(1);
+        parent::tearDown();
+    }
+
     /**
      * A basic browser test example.
      *

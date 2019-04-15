@@ -51,19 +51,19 @@ class WebsiteTest extends TestCase
 
         $searchedWebsite = Website::where('id', $website->id)->first();
 
-        $this->assertEquals(WebsiteStatus::PENDING, $searchedWebsite->status);
+        $this->assertEquals(WebsiteStatus::PENDING, $searchedWebsite->status->value);
 
         $searchedWebsite->markActive();
 
         $searchedWebsite = Website::where('id', $website->id)->first();
 
-        $this->assertEquals(WebsiteStatus::ACTIVE, $searchedWebsite->status);
+        $this->assertEquals(WebsiteStatus::ACTIVE, $searchedWebsite->status->value);
 
         $searchedWebsite->markArchived();
 
         $searchedWebsite = Website::where('id', $website->id)->first();
 
-        $this->assertEquals(WebsiteStatus::ARCHIVED, $searchedWebsite->status);
+        $this->assertEquals(WebsiteStatus::ARCHIVED, $searchedWebsite->status->value);
     }
 
     /**

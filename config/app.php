@@ -250,6 +250,11 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
+        'PublicAdministrationStatus' => App\Enums\PublicAdministrationStatus::class,
+        'UserStatus' => App\Enums\UserStatus::class,
+        'WebsiteStatus' => App\Enums\WebsiteStatus::class,
+        'WebsiteType' => App\Enums\WebsiteType::class,
+        'WebsiteAccessType' => App\Enums\WebsiteAccessType::class,
 
     ],
 
