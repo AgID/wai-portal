@@ -1,19 +1,22 @@
 const axios = require('axios');
 
-export function check_tracking (link) {
+const check_tracking = (link) => {
   axios.get(link)
-    .then(function (response) {
+    .then((response) => {
       //TODO: usare alert bootstrap
+      //TODO: refresh page/datatable after success
       alert('Stato sito: ' + response.data.status)
     })
-    .catch(function () {
+    .catch(() => {
       //TODO: usare alert bootstrap
       alert('Richiesta stato website fallita')
     });
 }
 
-export function initWebsiteCheckButton (element) {
+const initWebsiteCheckButton = (element) => {
   let href = element.getAttribute('href');
   element.removeAttribute('href');
-  element.onclick = function() { check_tracking(href); };
+  element.onclick = () => check_tracking(href);
 }
+
+export default { initWebsiteCheckButton };
