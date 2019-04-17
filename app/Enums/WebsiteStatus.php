@@ -6,7 +6,7 @@ use BenSampo\Enum\Contracts\LocalizedEnum;
 use BenSampo\Enum\Enum;
 
 /**
- * Website states.
+ * Website status.
  */
 final class WebsiteStatus extends Enum implements LocalizedEnum
 {

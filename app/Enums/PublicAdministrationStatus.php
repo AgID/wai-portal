@@ -6,7 +6,7 @@ use BenSampo\Enum\Contracts\LocalizedEnum;
 use BenSampo\Enum\Enum;
 
 /**
- * Public Administrations states.
+ * Public Administrations status.
  */
 final class PublicAdministrationStatus extends Enum implements LocalizedEnum
 {

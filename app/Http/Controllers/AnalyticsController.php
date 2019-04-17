@@ -11,7 +11,7 @@ class AnalyticsController extends Controller
      *
      * @throws \Illuminate\Contracts\Container\BindingResolutionException if unable to bind analytics service
      *
-     * @return \Illuminate\Http\RedirectResponse the server response
+     * @return RedirectResponse the server redirect response
      */
     public function login(): RedirectResponse
     {
