@@ -59,6 +59,21 @@ commands:
             - ./node_modules
           key: v1-node-{{ checksum "package.json" }}
 
+  store_test_artifacts:
+    description: Save artifacts from tests for debug purposes
+    steps:
+      - store_artifacts:
+          path: tests/Browser/console
+          destination: browser-tests/console
+
+      - store_artifacts:
+          path: tests/Browser/screenshots
+          destination: browser-tests/screenshots
+
+      - store_artifacts:
+          path: clover.xml
+          destination: unit-tests/coverage
+
 jobs:
   build_and_test:
     docker:
@@ -81,6 +96,7 @@ jobs:
       - run:
           name: Run phpunit and dusk tests
           command: bin/phing test
+      - store_test_artifacts
 
 workflows:
   version: 2
