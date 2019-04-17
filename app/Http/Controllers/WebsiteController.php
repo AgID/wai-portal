@@ -35,12 +35,12 @@ class WebsiteController extends Controller
     {
         $datatable = [
             'columns' => [
-                'url' => 'URL',
-                'type' => 'Tipo',
-                'added_at' => 'Iscritto dal',
-                'status' => 'Stato',
-                'last_month_visits' => 'Visite*',
-                'actions' => 'Azioni',
+                ['data' => 'url', 'name' => 'URL'],
+                ['data' => 'type', 'name' => 'Tipo'],
+                ['data' => 'added_at', 'name' => 'Aggiunto il'],
+                ['data' => 'status', 'name' => 'Stato'],
+                ['data' => 'last_month_visits', 'name' => 'Visite*'],
+                ['data' => 'buttons', 'name' => 'Azioni'],
             ],
             'source' => route('websites-data-json'),
             'caption' => 'Elenco dei siti web abilitati su Web Analytics Italia', //TODO: set title in lang file

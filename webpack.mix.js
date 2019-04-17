@@ -13,6 +13,12 @@ require('laravel-mix-stylelint');
  |
  */
 
+mix.webpackConfig({
+    output: {
+        chunkFilename: 'js/chunks/[name].js',
+    }
+});
+
 mix.js('resources/js/app.js', 'public/js')
     .stylelint({ files: ['resources/**/*.s?(a|c)ss']})
     .eslint({
@@ -26,7 +32,10 @@ mix.js('resources/js/app.js', 'public/js')
         }
     })
     .sass('resources/sass/app.scss', 'public/css')
-    .extract();
+    .sass('resources/sass/datatables.scss', 'public/css');
+    // Do not use automatic vendor extraction in this version.
+    // See https://github.com/JeffreyWay/laravel-mix/issues/1914
+    // .extract();
 
 mix.copyDirectory('resources/images', 'public/images');
 

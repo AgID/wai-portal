@@ -1,0 +1,16 @@
+@import "~datatables.net-dt/css/jquery.dataTables.min.css";
+@import "~datatables.net-responsive-dt/css/responsive.dataTables.min.css";
+
+table.Datatable {
+  &.collapsed {
+    td {
+      white-space: normal;
+    }
+
+    .buttons {
+      a[role="button"] {
+        margin-bottom: 1rem;
+      }
+    }
+  }
+}

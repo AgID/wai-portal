@@ -22,13 +22,12 @@ class UserController extends Controller
     {
         $datatable = [
             'columns' => [
-                'name' => 'Nome',
-                'familyName' => 'Cognome',
-                'email' => 'Email',
-                'role' => 'Ruolo',
-                'added_at' => 'Iscritto dal',
-                'status' => 'Stato',
-                'actions' => 'Azioni',
+                ['data' => 'name', 'name' => 'Cognome e nome'],
+                ['data' => 'email', 'name' => 'Email'],
+                ['data' => 'admin', 'name' => 'Amministratore'],
+                ['data' => 'added_at', 'name' => 'Iscritto dal'],
+                ['data' => 'status', 'name' => 'Stato'],
+                ['data' => 'buttons', 'name' => 'Azioni'],
             ],
             'source' => route('users-data-json'),
             'caption' => 'Elenco degli utenti web abilitati su Web Analytics Italia', //TODO: set title in lang file
