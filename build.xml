@@ -350,7 +350,7 @@
             <available file="containers" type="dir" property="ignored"/>
             <then>
                 <echo msg="Starting Docker containers..."/>
-                <exec command="docker-compose up -d nginx mariadb redis mailhog workspace queue-worker" dir="containers" passthru="true" checkreturn="true"/>
+                <exec command="docker-compose up -d nginx mariadb redis mailhog workspace queue-worker spid-testenv" dir="containers" passthru="true" checkreturn="true"/>
                 <echo msg="Web Analytics Italia up and running!"/>
             </then>
         </if>
