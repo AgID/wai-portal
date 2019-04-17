@@ -38,6 +38,7 @@ mix.js('resources/js/app.js', 'public/js')
     // .extract();
 
 mix.copyDirectory('resources/images', 'public/images');
+mix.copyDirectory('resources/js/web-toolkit', 'public/web-toolkit');
 
 if (!mix.inProduction()) {
     mix.webpackConfig({

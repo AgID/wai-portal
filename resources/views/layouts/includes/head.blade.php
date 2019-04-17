@@ -15,7 +15,7 @@
 
     <title>{{ __('ui.site_title') }} - @yield('title')</title>
 
-    <link rel="preload" href="{{ asset('/toolkit/IWT.min.js') }}" as="script">
+    <link rel="preload" href="{{ asset('/web-toolkit/IWT.min.js') }}" as="script">
 
     <script type="text/javascript">
         WebFontConfig = {
@@ -34,9 +34,9 @@
     </script>
 
     <!-- include html5shim per Explorer 8 -->
-    <script src="{{ asset('/toolkit/vendor/modernizr.js') }}"></script>
+    <script src="{{ asset('/web-toolkit/vendor/modernizr.js') }}"></script>
 
-    <link media="all" rel="stylesheet" href="{{ asset('/toolkit/build.css') }}">
+    <link media="all" rel="stylesheet" href="{{ asset('/web-toolkit/build.css') }}">
     <link media="all" rel="stylesheet" href="{{ asset('/css/app.css') }}">
 
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('/icons/apple-touch-icon.png') }}">
