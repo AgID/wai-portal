@@ -10,7 +10,7 @@ use League\Fractal\TransformerAbstract;
 class WebsiteTransformer extends TransformerAbstract
 {
     /**
-     * @param \App\Models\Website $website
+     * @param Website $website
      *
      * @return array
      */
@@ -24,7 +24,7 @@ class WebsiteTransformer extends TransformerAbstract
             'added_at' => $website->created_at->format('d/m/Y'),
             'status' => $website->status->description,
             'last_month_visits' => $last_month_visit,
-            'actions' => [
+            'buttons' => [
                 [
                     'link' => route('website-javascript-snippet', ['website' => $website], false),
                     'label' => __('ui.pages.websites.index.view_javascript_snippet'),
@@ -41,7 +41,7 @@ class WebsiteTransformer extends TransformerAbstract
         }
 
         if ($website->status->is(WebsiteStatus::PENDING) && auth()->user()->can('read-analytics')) {
-            $data['actions'][] = [
+            $data['buttons'][] = [
                 'link' => route('website-check_tracking', ['website' => $website->slug], false),
                 'label' => __('ui.pages.websites.index.check_tracking'),
                 'type' => 'check_tracking',
@@ -49,7 +49,7 @@ class WebsiteTransformer extends TransformerAbstract
         }
 
         if (($website->status->is(WebsiteStatus::PENDING) || auth()->user()->can('manage-sites')) && !$website->type->is(WebsiteType::PRIMARY)) {
-            $data['actions'][] = [
+            $data['buttons'][] = [
                 'link' => route('websites-edit', ['website' => $website], false),
                 'label' => __('ui.pages.websites.index.edit_website'),
             ];
