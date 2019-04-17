@@ -2,13 +2,12 @@
 
 namespace App\Events\PublicAdministration;
 
-use App\Events\PublicAdministration\Contracts\PublicAdministrationEvent;
 use App\Models\PublicAdministration;
 
 /**
  * Public Administration activation failed event.
  */
-class PublicAdministrationActivationFailed extends PublicAdministrationEvent
+class PublicAdministrationActivationFailed extends AbstractPublicAdministrationEvent
 {
     /**
      * The activation error message.

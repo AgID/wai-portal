@@ -73,7 +73,7 @@ class CheckWebsitesTest extends TestCase
         $job->handle();
 
         Event::assertDispatched(PublicAdministrationPurged::class, function ($event) use ($publicAdministration) {
-            return json_decode($event->getPublicAdministration())->ipa_code === $publicAdministration->ipa_code;
+            return json_decode($event->getPublicAdministrationJson())->ipa_code === $publicAdministration->ipa_code;
         });
 
         Event::assertDispatched(PendingWebsitesCheckCompleted::class, function ($event) use ($website) {

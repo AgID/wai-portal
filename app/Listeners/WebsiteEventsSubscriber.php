@@ -63,7 +63,9 @@ class WebsiteEventsSubscriber implements ShouldQueue
      */
     public function onPurged(WebsitePurged $event): void
     {
-        logger()->info('Website ' . $event->getWebsite() . ' purged');
+        $website = json_decode($event->getWebsiteJson());
+        $websiteInfo = '"' . $website->name . '" [' . $website->slug . ']';
+        logger()->info('Website ' . $websiteInfo . ' purged');
     }
 
     /**

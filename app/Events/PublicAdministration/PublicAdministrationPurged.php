@@ -12,16 +12,16 @@ class PublicAdministrationPurged
      *
      * @var string the JSON string
      */
-    protected $publicAdministration;
+    protected $publicAdministrationJson;
 
     /**
      * Event constructor.
      *
-     * @param string $publicAdministration the JSON string of the public administration
+     * @param string $publicAdministrationJson the JSON string of the public administration
      */
-    public function __construct(string $publicAdministration)
+    public function __construct(string $publicAdministrationJson)
     {
-        $this->publicAdministration = $publicAdministration;
+        $this->publicAdministrationJson = $publicAdministrationJson;
     }
 
     /**
@@ -29,8 +29,8 @@ class PublicAdministrationPurged
      *
      * @return string the JSON string
      */
-    public function getPublicAdministration(): string
+    public function getPublicAdministrationJson(): string
     {
-        return $this->publicAdministration;
+        return $this->publicAdministrationJson;
     }
 }

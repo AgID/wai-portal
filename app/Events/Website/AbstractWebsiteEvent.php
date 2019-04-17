@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Events\Website\Contracts;
+namespace App\Events\Website;
 
 use App\Models\Website;
 use Illuminate\Queue\SerializesModels;
@@ -8,7 +8,7 @@ use Illuminate\Queue\SerializesModels;
 /**
  * Website event contract.
  */
-abstract class WebsiteEvent
+abstract class AbstractWebsiteEvent
 {
     use SerializesModels;
 

@@ -67,7 +67,9 @@ class PublicAdministrationEventsSubscriber implements ShouldQueue
      */
     public function onPurged(PublicAdministrationPurged $event): void
     {
-        logger()->info('Public Administration ' . $event->getPublicAdministration() . ' purged');
+        $publicAdministration = json_decode($event->getPublicAdministrationJson());
+        $publicAdministrationInfo = '"' . $publicAdministration->name . '" [' . $publicAdministration->ipa_code . ']';
+        logger()->info('Public Administration ' . $publicAdministrationInfo . ' purged');
     }
 
     /**
