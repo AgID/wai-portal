@@ -2,14 +2,13 @@
 
 namespace App\Events\PublicAdministration;
 
-use App\Events\PublicAdministration\Contracts\PublicAdministrationEvent;
 use App\Models\PublicAdministration;
 use App\Models\Website;
 
 /**
  * Public Administration primary website changed event.
  */
-class PublicAdministrationWebsiteUpdated extends PublicAdministrationEvent
+class PublicAdministrationWebsiteUpdated extends AbstractPublicAdministrationEvent
 {
     /**
      * The current primary website.

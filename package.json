@@ -10,9 +10,14 @@
         "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
     },
     "devDependencies": {
+        "@babel/plugin-syntax-dynamic-import": "^7.2.0",
         "axios": "^0.18",
         "babel-eslint": "^10.0.1",
         "cross-env": "^5.2.0",
+        "datatables.net": "^1.10.19",
+        "datatables.net-dt": "^1.10.19",
+        "datatables.net-responsive": "^2.2.3",
+        "datatables.net-responsive-dt": "^2.2.3",
         "eslint": "^5.16.0",
         "eslint-loader": "^2.1.2",
         "eslint-plugin-vue": "^5.2.2",

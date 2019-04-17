@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Events\PublicAdministration\Contracts;
+namespace App\Events\PublicAdministration;
 
 use App\Models\PublicAdministration;
 use Illuminate\Queue\SerializesModels;
@@ -8,7 +8,7 @@ use Illuminate\Queue\SerializesModels;
 /**
  * Public Administration event contract.
  */
-abstract class PublicAdministrationEvent
+abstract class AbstractPublicAdministrationEvent
 {
     use SerializesModels;
 

@@ -12,16 +12,16 @@ class WebsitePurged
      *
      * @var string the JSON string
      */
-    protected $website;
+    protected $websiteJson;
 
     /**
      * Event constructor.
      *
-     * @param string $website the JSON string of the website
+     * @param string $websiteJson the JSON string of the website
      */
-    public function __construct(string $website)
+    public function __construct(string $websiteJson)
     {
-        $this->website = $website;
+        $this->websiteJson = $websiteJson;
     }
 
     /**
@@ -29,8 +29,8 @@ class WebsitePurged
      *
      * @return string the JSON string
      */
-    public function getWebsite(): string
+    public function getWebsiteJson(): string
     {
-        return $this->website;
+        return $this->websiteJson;
     }
 }

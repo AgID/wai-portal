@@ -21,12 +21,12 @@ class UserTransformer extends TransformerAbstract
             'role' => __('auth.roles.' . $user->roles()->first()->name),
             'added_at' => $user->created_at->format('d/m/Y'),
             'status' => $user->status->description,
-            'actions' => [],
+            'buttons' => [],
             'control' => '',
         ];
 
         if (auth()->user()->can('manage-users')) {
-            $data['actions'][] = [
+            $data['buttons'][] = [
                 'link' => route('users-edit', ['user' => $user], false),
                 'label' => __('ui.pages.users.index.edit_user'),
             ];

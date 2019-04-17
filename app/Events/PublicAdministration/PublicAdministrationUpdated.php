@@ -2,13 +2,12 @@
 
 namespace App\Events\PublicAdministration;
 
-use App\Events\PublicAdministration\Contracts\PublicAdministrationEvent;
 use App\Models\PublicAdministration;
 
 /**
  * Public Administration updated event.
  */
-class PublicAdministrationUpdated extends PublicAdministrationEvent
+class PublicAdministrationUpdated extends AbstractPublicAdministrationEvent
 {
     /**
      * The changes list.

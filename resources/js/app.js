@@ -1,14 +1,16 @@
-import PendingWebsiteCheck from './checkWebsiteTracking';
+/**
+ * Main javascript file.
+ */
+
+import './bootstrap';
+import Datatables from './datatables';
+import CheckWebsiteTracking from './checkWebsiteTracking';
+
+$(document).ready(() => {
+    Datatables.init([
+        (settings, json) => CheckWebsiteTracking.initWebsiteCheckButton(json)
+    ]);
+});
 
 // Legacy script to be removed
 require('./auto-complete.min');
-
-window.datatablesPostInit = (json) => {
-  json.data.map((website) => {
-    website.actions.map((action) => {
-      if (action.type === 'check_tracking') {
-        PendingWebsiteCheck.initWebsiteCheckButton(document.querySelector('a[href="' + action.link + '"]'));
-      }
-    });
-  });
-}
