@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Jobs\ProcessIPAList;
 use App\Jobs\ProcessPendingWebsites;
+use App\Jobs\ProcessWebsitesMonitoring;
 use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
 
@@ -69,5 +70,24 @@ class CronCommandsTest extends TestCase
         $response = $this->get('/cron/checkpendingwebsites?token=' . md5('wrong_token'));
         $response->assertForbidden();
         Queue::assertNotPushed(ProcessPendingWebsites::class);
+    }
+
+    public function testMonitorWebsitesCron(): void
+    {
+        $response = $this->get('/cron/monitorwebsites?token=' . config('cron-auth.cron_token'));
+        $response->assertStatus(202);
+
+        Queue::assertPushed(ProcessWebsitesMonitoring::class);
+    }
+
+    public function testUnauthorizedMonitorWebsitesCron(): void
+    {
+        $response = $this->get('/cron/monitorwebsites');
+        $response->assertForbidden();
+        Queue::assertNotPushed(ProcessWebsitesMonitoring::class);
+
+        $response = $this->get('/cron/monitorwebsites?token=' . md5('wrong_token'));
+        $response->assertForbidden();
+        Queue::assertNotPushed(ProcessWebsitesMonitoring::class);
     }
 }
