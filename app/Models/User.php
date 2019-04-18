@@ -219,6 +219,11 @@ class User extends Authenticatable implements MustVerifyEmail
         $this->notify(new WebsitePurgingUserEmail($website));
     }
 
+    /**
+     * Notify website scheduled for archiving.
+     *
+     * @param Website $website the website
+     */
     public function sendWebsiteArchivingNotification(Website $website): void
     {
         $this->notify(new WebsiteArchivingUserEmail($website));

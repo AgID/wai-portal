@@ -16,23 +16,31 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
+/**
+ * Monitor websites activity job.
+ */
 class ProcessWebsitesMonitoring implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
-     * @var \Illuminate\Config\Repository|mixed
+     * The authentication token to use for Analytics Service.
+     *
+     * @var string the authentication token
      */
     protected $tokenAuth;
 
     /**
-     * ProcessWebsitesMonitoring constructor.
+     * Job constructor.
      */
     public function __construct()
     {
         $this->tokenAuth = config('analytics-service.admin_token');
     }
 
+    /**
+     * Execute the job.
+     */
     public function handle(): void
     {
         $activeWebsites = Website::where('status', WebsiteStatus::ACTIVE)->get();

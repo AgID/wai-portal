@@ -29,7 +29,7 @@ class PendingWebsitesCheckCompleted
     protected $purged;
 
     /**
-     * .The list of websites that will be purged in the next days.
+     * The list of websites that will be purged in the next days.
      * The array follows this schema:
      * array[]
      *  array[]

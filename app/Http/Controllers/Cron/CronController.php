@@ -34,9 +34,14 @@ class CronController extends Controller
     {
         dispatch(new ProcessPendingWebsites());
 
-        return response()->json(['message' => 'Check submitted'], 202);
+        return response()->json(['message' => 'Pending check submitted'], 202);
     }
 
+    /**
+     * Monitor active websites activity request.
+     *
+     * @return \Illuminate\Http\JsonResponse JSON response with the job submission status
+     */
     public function monitorWebsiteActivity(): JsonResponse
     {
         dispatch(new ProcessWebsitesMonitoring());

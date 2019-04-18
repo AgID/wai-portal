@@ -4,11 +4,17 @@ namespace App\Listeners;
 
 use App\Events\Jobs\WebsitesMonitoringCheckCompleted;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Events\Dispatcher;
 
+/**
+ * Monitor websites activity check job related events subscriber.
+ */
 class CheckWebsitesMonitoringJobEventsSubscriber implements ShouldQueue
 {
     /**
-     * @param WebsitesMonitoringCheckCompleted $event
+     * Job completed callback.
+     *
+     * @param WebsitesMonitoringCheckCompleted $event the event
      */
     public function onCompleted(WebsitesMonitoringCheckCompleted $event): void
     {
@@ -16,7 +22,9 @@ class CheckWebsitesMonitoringJobEventsSubscriber implements ShouldQueue
     }
 
     /**
-     * @param $events
+     * Register the listeners for the subscriber.
+     *
+     * @param Dispatcher $events the dispatcher
      */
     public function subscribe($events): void
     {

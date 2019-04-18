@@ -39,6 +39,11 @@ class WebsiteEventsSubscriber implements ShouldQueue
         logger()->info('Website ' . $website->getInfo() . ' activated');
     }
 
+    /**
+     * Website archiving event callback.
+     *
+     * @param WebsiteArchiving $event the event
+     */
     public function onArchiving(WebsiteArchiving $event): void
     {
         $website = $event->getWebsite();
@@ -54,7 +59,9 @@ class WebsiteEventsSubscriber implements ShouldQueue
     }
 
     /**
-     * @param WebsiteArchived $event
+     * Website archived event callback.
+     *
+     * @param WebsiteArchived $event the event
      */
     public function onArchived(WebsiteArchived $event): void
     {
