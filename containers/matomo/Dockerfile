@@ -13,8 +13,10 @@ RUN wget -q -O matomo.tar.gz \
 
 RUN wget -q -O GeoIPCity.tar.gz \
         "https://geolite.maxmind.com/download/geoip/database/GeoLite2-City.tar.gz"; \
-    tar -xf GeoIPCity.tar.gz -C /opt/matomo/misc/ --strip-components=1 --wildcards "*.mmdb"; \
-    rm -rf GeoIPCity.tar.gz
+    mkdir /tmp/geocity; \
+    tar -xf GeoIPCity.tar.gz -C /tmp/geocity/ --strip-components=1; \
+    mv /tmp/geocity/*.mmdb /opt/matomo/misc/; \
+    rm -rf GeoIPCity.tar.gz /tmp/geocity
 
 COPY ./matomo.sql /opt/matomo.sql
 COPY ./install_matomo_db.sh /opt/install_matomo_db.sh
