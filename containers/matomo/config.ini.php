@@ -75,6 +75,7 @@ Plugins[] = "Marketplace"
 Plugins[] = "ProfessionalServices"
 Plugins[] = "UserId"
 Plugins[] = "CustomPiwikJs"
+Plugins[] = "DisableTracking"
 
 [PluginsInstalled]
 PluginsInstalled[] = "Diagnostics"
@@ -139,3 +140,4 @@ PluginsInstalled[] = "Marketplace"
 PluginsInstalled[] = "ProfessionalServices"
 PluginsInstalled[] = "UserId"
 PluginsInstalled[] = "CustomPiwikJs"
+PluginsInstalled[] = "DisableTracking"
