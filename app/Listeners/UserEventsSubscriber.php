@@ -57,7 +57,7 @@ class UserEventsSubscriber
         $user = $event->getUser();
         $website = $event->getWebsite();
         $accessType = $event->getAccessType();
-        logger()->info('Granted "' . WebsiteAccessType::getDescription($accessType) . '" access for website ' . $website->getInfo() . ' to user ' . $user->getInfo());
+        logger()->info('Granted "' . $accessType->description . '" access for website ' . $website->getInfo() . ' to user ' . $user->getInfo());
     }
 
     /**
@@ -94,22 +94,22 @@ class UserEventsSubscriber
         );
 
         $events->listen(
-            'Illuminate\Auth\Events\UserActivated',
-            'App\Listeners\EventToLogSubscriber@onActivated'
+            'App\Events\User\UserActivated',
+            'App\Listeners\UserEventsSubscriber@onActivated'
         );
 
         $events->listen(
-            'Illuminate\Auth\Events\UserActivationFailed',
-            'App\Listeners\EventToLogSubscriber@onActivationFailed'
+            'App\Events\User\UserActivationFailed',
+            'App\Listeners\UserEventsSubscriber@onActivationFailed'
         );
 
         $events->listen(
-            'Illuminate\Auth\Events\UserWebsiteAccessChanged',
+            'App\Events\User\UserWebsiteAccessChanged',
             'App\Listeners\UserEventsSubscriber@onSiteAccessChanged'
         );
 
         $events->listen(
-            'Illuminate\Auth\Events\UserWebsiteAccessFailed',
+            'App\Events\User\UserWebsiteAccessFailed',
             'App\Listeners\UserEventsSubscriber@onSiteAccessChangeFailed'
         );
     }
