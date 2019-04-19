@@ -93,7 +93,6 @@ class CommandsTest extends TestCase
         $this->artisan('app:check-websites');
 
         $this->app->make('analytics-service')->deleteUser($user->uuid, $tokenAuth);
-        $this->app->make('analytics-service')->deleteUser($userPending->uuid, $tokenAuth);
 
         $this->app->make('analytics-service')->deleteSite($website->analytics_id, $tokenAuth);
         //NOTE: Check pending website job deleted pending website
