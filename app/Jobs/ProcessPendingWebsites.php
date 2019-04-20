@@ -83,8 +83,12 @@ class ProcessPendingWebsites implements ShouldQueue
                         $pendingUser = $publicAdministration->users()->where('status', UserStatus::PENDING)->first();
                         if (null !== $pendingUser) {
                             $pendingUser->publicAdministrations()->detach($publicAdministration->id);
-                            $pendingUser->save();
+                            $pendingUser->partial_analytics_password = null;
+
+                            $analyticsService->deleteUser($pendingUser->uuid, $this->tokenAuth);
+
                             $publicAdministration->forceDelete();
+                            $pendingUser->save();
                         }
                         event(new PublicAdministrationPurged($publicAdministration->toJson()));
                     } else {

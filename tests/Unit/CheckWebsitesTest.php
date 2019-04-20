@@ -11,6 +11,7 @@ use App\Events\User\UserActivated;
 use App\Events\User\UserWebsiteAccessChanged;
 use App\Events\User\UserWebsiteAccessFailed;
 use App\Events\Website\WebsitePurging;
+use App\Exceptions\CommandErrorException;
 use App\Jobs\ProcessPendingWebsites;
 use App\Models\PublicAdministration;
 use App\Models\User;
@@ -65,6 +66,7 @@ class CheckWebsitesTest extends TestCase
             'created_at' => now()->subDays((int) config('wai.purge_expiry') + 1),
         ]);
 
+        $this->app->make('analytics-service')->registerUser($user->uuid, $user->analytics_password, $user->email, config('analytics-service.admin_token'));
         $siteID = $this->app->make('analytics-service')->registerSite($website->name, $website->url, $publicAdministration->name);
         $website->analytics_id = $siteID;
         $website->save();
@@ -75,6 +77,12 @@ class CheckWebsitesTest extends TestCase
         Event::assertDispatched(PublicAdministrationPurged::class, function ($event) use ($publicAdministration) {
             return json_decode($event->getPublicAdministrationJson())->ipa_code === $publicAdministration->ipa_code;
         });
+
+        $purgedUser = User::findByFiscalNumber($user->fiscalNumber);
+        $this->assertNull($purgedUser->partial_analytics_password);
+
+        $this->expectException(CommandErrorException::class);
+        $this->app->make('analytics-service')->getUserByEmail($purgedUser->email, config('analytics-service.admin_token'));
 
         Event::assertDispatched(PendingWebsitesCheckCompleted::class, function ($event) use ($website) {
             return in_array(['website' => $website->slug], $event->getPurged(), true)
