@@ -2,14 +2,13 @@
 
 namespace App\Events\User;
 
-use App\Events\User\Contracts\UserEvent;
 use App\Models\User;
 use App\Models\Website;
 
 /**
  * User website access change failed event.
  */
-class UserWebsiteAccessFailed extends UserEvent
+class UserWebsiteAccessFailed extends AbstractUserEvent
 {
     /**
      * The website.

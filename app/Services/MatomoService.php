@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Contracts\AnalyticsService as AnalyticsServiceContract;
 use App\Enums\WebsiteAccessType;
+use App\Enums\WebsiteStatus;
 use App\Exceptions\AnalyticsServiceException;
 use App\Exceptions\CommandErrorException;
 use GuzzleHttp\Client as APIClient;
@@ -15,12 +16,31 @@ use Illuminate\Http\RedirectResponse;
  */
 class MatomoService implements AnalyticsServiceContract
 {
+    /**
+     * Map application website access levels into Matomo Service ones.
+     *
+     * @var array the mappings
+     */
     private const ACCESS_LEVELS_MAPPINGS = [
         WebsiteAccessType::NO_ACCESS => 'noaccess',
         WebsiteAccessType::VIEW => 'view',
         WebsiteAccessType::WRITE => 'write',
         WebsiteAccessType::ADMIN => 'admin',
     ];
+
+    /**
+     * Map application website archiving status into Matomo Service ones.
+     * Boolean logic is inverted because the mapped value is passed to
+     * the `disable` parameter of the `DisableTracking.changeDisableState`
+     * API endpoint.
+     *
+     * @var array the mappings
+     */
+    private const ARCHIVE_STATUS_MAPPINGS = [
+        WebsiteStatus::ACTIVE => 'off',
+        WebsiteStatus::ARCHIVED => 'on',
+    ];
+
     /**
      * Local service URL.
      *
@@ -100,6 +120,34 @@ class MatomoService implements AnalyticsServiceContract
             'siteName' => $siteName,
             'urls' => $url,
             'token_auth' => $tokenAuth,
+        ];
+
+        $this->apiCall($params);
+    }
+
+    /**
+     * Change archive status in the Analytics Service.
+     *
+     * @param string $idSites the Analytics Service website ID
+     * @param int $status the new status
+     * @param string $tokenAuth the Analytics authentication token
+     *
+     * @throws AnalyticsServiceException if unable to connect the Analytics Service
+     * @throws CommandErrorException if command is unsuccessful
+     *
+     * @see \App\Enums\WebsiteStatus
+     */
+    public function changeArchiveStatus(string $idSites, int $status, string $tokenAuth): void
+    {
+        if (WebsiteStatus::ARCHIVED !== $status && WebsiteStatus::ACTIVE !== $status) {
+            throw new CommandErrorException('Invalid parameter for archiving: must be ' . WebsiteStatus::ACTIVE . ' or ' . WebsiteStatus::ARCHIVED . '. Received: ' . $status);
+        }
+
+        $params = [
+            'method' => 'DisableTracking.changeDisableState',
+            'idSites' => $idSites,
+            'token_auth' => $tokenAuth,
+            'disable' => self::ARCHIVE_STATUS_MAPPINGS[$status],
         ];
 
         $this->apiCall($params);
@@ -323,11 +371,8 @@ class MatomoService implements AnalyticsServiceContract
             'token_auth' => $tokenAuth,
         ];
         $response = $this->apiCall($params);
-        if (isset($response['nb_visits'])) {
-            return $response['nb_visits'];
-        } else {
-            return 0;
-        }
+
+        return $response['nb_visits'] ?? 0;
     }
 
     /**
@@ -352,11 +397,33 @@ class MatomoService implements AnalyticsServiceContract
             'token_auth' => $tokenAuth,
         ];
         $response = $this->apiCall($params);
-        if (isset($response['nb_visits'])) {
-            return $response['nb_visits'];
-        } else {
-            return 0;
-        }
+
+        return $response['nb_visits'] ?? 0;
+    }
+
+    /**
+     * Get the daily number of visits for the last requested days.
+     *
+     * @param string $idSite the Analytics Service website ID
+     * @param int $days the requested number of days
+     * @param string $tokenAuth the Analytics authentication token
+     *
+     * @throws CommandErrorException if command is unsuccessful
+     * @throws AnalyticsServiceException if unable to connect the Analytics Service
+     *
+     * @return array the list of days with the number of visits
+     */
+    public function getSiteLastDaysVisits(string $idSite, int $days, string $tokenAuth): array
+    {
+        $params = [
+            'method' => 'VisitsSummary.getVisits',
+            'idSite' => $idSite,
+            'period' => 'day',
+            'date' => 'last' . $days,
+            'token_auth' => $tokenAuth,
+        ];
+
+        return $this->apiCall($params);
     }
 
     /**

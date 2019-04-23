@@ -3,14 +3,13 @@
 namespace App\Events\User;
 
 use App\Enums\WebsiteAccessType;
-use App\Events\User\Contracts\UserEvent;
 use App\Models\User;
 use App\Models\Website;
 
 /**
  * User website access changed event.
  */
-class UserWebsiteAccessChanged extends UserEvent
+class UserWebsiteAccessChanged extends AbstractUserEvent
 {
     /**
      * The website.
