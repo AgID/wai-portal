@@ -18,17 +18,21 @@ class MonitorWebsiteTracking extends Command
     protected $signature = 'app:monitor-activity';
 
     /**
-     * The console command description.
-     *
-     * @var string the command description
+     * Command constructor.
      */
-    protected $description = 'Check that websites registered in Web Analytics Italia have reported activity within the last two(2) months';
+    public function __construct()
+    {
+        $this->description = 'Check that websites registered in Web Analytics Italia have reported activity within the last ' . config('wai.archive_expire') . ' days';
+        parent::__construct();
+    }
+
 
     /**
      * Execute the console command.
      */
     public function handle(): void
     {
+        $this->info('Checking websites activity...');
         dispatch(new ProcessWebsitesMonitoring())->onConnection('sync');
         $this->info('Websites activity checked');
     }

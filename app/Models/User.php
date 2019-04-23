@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\UserStatus;
 use App\Notifications\VerifyEmail;
 use App\Notifications\WebsiteActivatedUserEmail;
+use App\Notifications\WebsiteArchivedUserEmail;
 use App\Notifications\WebsiteArchivingUserEmail;
 use App\Notifications\WebsitePurgingUserEmail;
 use Carbon\Carbon;
@@ -223,9 +224,18 @@ class User extends Authenticatable implements MustVerifyEmail
      * Notify website scheduled for archiving.
      *
      * @param Website $website the website
+     * @param int $daysLeft
      */
-    public function sendWebsiteArchivingNotification(Website $website): void
+    public function sendWebsiteArchivingNotification(Website $website, int $daysLeft): void
     {
-        $this->notify(new WebsiteArchivingUserEmail($website));
+        $this->notify(new WebsiteArchivingUserEmail($website, $daysLeft));
+    }
+
+    /**
+     * @param Website $website
+     */
+    public function sendWebsiteArchivedNotification(Website $website): void
+    {
+        $this->notify(new WebsiteArchivedUserEmail($website));
     }
 }

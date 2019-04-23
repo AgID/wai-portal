@@ -33,24 +33,47 @@ return [
     | Archive website warning
     |--------------------------------------------------------------------------
     |
-    | This value is used to configure the time window (in months) the system
+    | This value is used to configure the time window (in days) the system
     | checks for tracking activity into Analytics Service reports. If there are no
     | visits in this interval, the system sends a notification to warn
     | for scheduled archiving.
     |
     */
-    'archive_warning' => env('ARCHIVING_WEBSITE_WARNING', 2),
+    'archive_warning' => env('ARCHIVING_WEBSITE_WARNING', 60),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Archive website warning notification
+    |--------------------------------------------------------------------------
+    |
+    | This value is used to configure the time interval (in days) the system
+    | starts sending daily notification to warn for scheduled website archiving.
+    |
+    */
+    'archive_warning_daily_notification' => env('ARCHIVING_WEBSITE_DAILY_NOTIFICATION', 3),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Archive website warning notification
+    |--------------------------------------------------------------------------
+    |
+    | This value is used to configure the day of the week (from '0', Sunday, to
+    | '6', Saturday)the system sends notification for scheduled website
+    | archiving when more than 'archive_warning_daily_notification' days left.
+    |
+    */
+    'archive_warning_notification_day' => env('ARCHIVING_WEBSITE_NOTIFICATION_WEEK_DAY', 1),
 
     /*
     |--------------------------------------------------------------------------
     | Archive website termination
     |--------------------------------------------------------------------------
     |
-    | This values is used to configure the time window (in months) the system
+    | This values is used to configure the time window (in days) the system
     | checks for tracking activity into Analytics Service reports. When this
     | limit is reached, the system archive the website.
     |
     */
-    'archive_expiry' => env('ARCHIVING_WEBSITE_ARCHIVE', 3),
+    'archive_expire' => env('ARCHIVING_WEBSITE_ARCHIVE', 90),
 
 ];

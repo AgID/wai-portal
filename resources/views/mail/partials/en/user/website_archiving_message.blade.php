@@ -1,9 +1,9 @@
 Hi {{ $fullName }},
 
-during the past month, we haven't received any data from the {{ $website }}
+we aren't receiving any data from the {{ $website }}
 you registered and successfully activated on the [{{ config('app.name') }}]({{ url('/') }}).
 
-If there will be no changes in the next month it will be automatically archived.
+If there will be no changes in the next {{ $daysLeft }} days, it will be automatically archived.
 
 Please verify that you have the tracking code is included on the website and
 that it is working properly.

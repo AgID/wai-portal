@@ -42,7 +42,7 @@ class CronController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse JSON response with the job submission status
      */
-    public function monitorWebsiteActivity(): JsonResponse
+    public function monitorWebsitesActivity(): JsonResponse
     {
         dispatch(new ProcessWebsitesMonitoring());
 

@@ -33,6 +33,6 @@ Route::get('/checkpendingwebsites', [
  * Check websites activity request route.
  */
 Route::get('/monitorwebsites', [
-    'as' => 'cron-monitor_websites',
-    'uses' => 'Cron\CronController@monitorWebsiteActivity',
+    'as' => 'cron.websites.monitor',
+    'uses' => 'Cron\CronController@monitorWebsitesActivity',
 ]);

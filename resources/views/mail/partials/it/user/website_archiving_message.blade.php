@@ -1,9 +1,9 @@
 Ciao {{ $fullName }},
 
-il mese scorso non abbiamo ricevuto alcun dato dal sito {{ $website }}
-che hai registrato ed attivato su [{{ config('app.name') }}]({{ url('/') }}).
+non stiamo ricevendo alcun dato dal sito {{ $website }} che hai registrato
+ed attivato su [{{ config('app.name') }}]({{ url('/') }}).
 
-Se non ci saranno cambiamenti nel corso del prossimo mese, sarà automaticamente archiviato.
+Se non ci saranno cambiamenti nei prossimi {{ $daysLeft }} giorni, sarà automaticamente archiviato.
 
 Ti preghiamo di verificare di aver incluso il codice di tracciamento nel sito,
 e che stia funzionando correttamente.

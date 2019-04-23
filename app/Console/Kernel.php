@@ -22,7 +22,7 @@ class Kernel extends ConsoleKernel
     {
         $schedule->job(new ProcessIPAList())->dailyAt('06:00')->runInBackground()->onOneServer();
         $schedule->job(new ProcessPendingWebsites())->hourly()->runInBackground()->onOneServer();
-        $schedule->job(new ProcessWebsitesMonitoring())->monthly()->runInBackground()->onOneServer();
+        $schedule->job(new ProcessWebsitesMonitoring())->daily()->runInBackground()->onOneServer();
     }
 
     /**

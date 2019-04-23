@@ -7,7 +7,6 @@ use App\Events\Website\WebsiteArchived;
 use App\Events\Website\WebsiteArchiving;
 use App\Events\Website\WebsitePurged;
 use App\Events\Website\WebsitePurging;
-use App\Models\Website;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Events\Dispatcher;
 
@@ -28,8 +27,10 @@ class WebsiteEventsSubscriber implements ShouldQueue
         //TODO: da testare e verificare per attività "Invio mail e PEC"
 //        $publicAdministration = $website->publicAdministration;
 //        //Notify Website administrators
-//        $users = $this->getAdministrators($website);
+//        $users = $website->getAdministrators($website);
+//
 //        foreach ($users as $user) {
+//            logger()->info('User: ' . $user->getInfo());
 //            $user->sendWebsiteActivatedNotification($website);
 //        }
 //
@@ -50,9 +51,9 @@ class WebsiteEventsSubscriber implements ShouldQueue
 
         //TODO: da testare e verificare per attività "Invio mail e PEC"
 //        //Notify website administrators
-//        $users = $this->getAdministrators($website);
+//        $users = $website->getAdministrators($website);
 //        foreach ($users as $user) {
-//            $user->sendWebsiteArchivingNotification($website);
+//            $user->sendWebsiteArchivingNotification($website, $event->getWebsite());
 //        }
 
         logger()->info('Website ' . $website->getInfo() . ' reported as not active and scheduled for archiving');
@@ -66,7 +67,14 @@ class WebsiteEventsSubscriber implements ShouldQueue
     public function onArchived(WebsiteArchived $event): void
     {
         $website = $event->getWebsite();
-        //TODO: notificare qualcuno?
+
+        //TODO: da testare e verificare per attività "Invio mail e PEC"
+//        //Notify website administrators
+//        $users = $website->getAdministrators($website);
+//        foreach ($users as $user) {
+//            $user->sendWebsiteArchivedNotification($website);
+//        }
+
         logger()->info('Website ' . $website->getInfo() . ' archived due to inactivity');
     }
 
@@ -81,7 +89,7 @@ class WebsiteEventsSubscriber implements ShouldQueue
 
         //TODO: da testare e verificare per attività "Invio mail e PEC"
 //        //Notify Website administrators
-//        $users = $this->getAdministrators($website);
+//        $users = $website->getAdministrators($website);
 //        foreach ($users as $user) {
 //            $user->sendWebsitePurgingNotification($website);
 //        }

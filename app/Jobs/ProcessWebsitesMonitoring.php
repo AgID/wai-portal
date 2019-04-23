@@ -9,6 +9,7 @@ use App\Events\Website\WebsiteArchiving;
 use App\Exceptions\AnalyticsServiceException;
 use App\Exceptions\CommandErrorException;
 use App\Models\Website;
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -49,11 +50,23 @@ class ProcessWebsitesMonitoring implements ShouldQueue
             try {
                 $analyticsService = app()->make('analytics-service');
 
-                $dateWarning = now()->subMonths((int) config('wai.archive_warning'));
-                $dateExpire = now()->subMonths((int) config('wai.archive_expiry'));
+                $daysWarning = (int) config('wai.archive_warning');
+                $daysArchive = (int) config('wai.archive_expire');
+                $daysDailyNotification = (int) config('wai.archive_warning_daily_notification');
+                $notificationDay = (int) config('wai.archive_warning_notification_day');
 
-                if (0 === $analyticsService->getLiveVisits($website->analytics_id, 1440, $this->tokenAuth)) {
-                    if ($dateExpire > $website->created_at && 0 === $analyticsService->getSiteTotalVisitsFrom($website->analytics_id, $dateExpire->toDateString(), $this->tokenAuth)) {
+                // Check:
+                // - visits the last 24 hours
+                // - website created at least 'archive_expire' days before
+                //NOTE: Matomo report contains information for all the requested days, regardless of when the website was created
+                if (0 === $analyticsService->getLiveVisits($website->analytics_id, 1440, $this->tokenAuth) && Carbon::now()->subDays($daysArchive)->greaterThanOrEqualTo($website->created_at)) {
+                    $visits = $analyticsService->getSiteLastDaysVisits($website->analytics_id, $daysArchive, $this->tokenAuth);
+
+                    $filteredVisits = array_filter($visits, function ($visitCount) {
+                        return $visitCount > 0;
+                    });
+
+                    if (empty($filteredVisits)) {
                         $website->status = WebsiteStatus::ARCHIVED;
 
                         $analyticsService->changeArchiveStatus($website->analytics_id, WebsiteStatus::ARCHIVED, $this->tokenAuth);
@@ -68,17 +81,20 @@ class ProcessWebsitesMonitoring implements ShouldQueue
                         ];
                     }
 
-                    if ($dateWarning > $website->created_at && 0 === $analyticsService->getSiteTotalVisitsFrom($website->analytics_id, $dateWarning->toDateString(), $this->tokenAuth)) {
-                        //NOTE: notification will be sent every month (if the difference between warning and
-                        //      expire dates is greater than one month) until the website is archived or
-                        //      it receives Analytics data
-                        event(new WebsiteArchiving($website));
+                    $lastVisit = max(array_keys($filteredVisits));
 
-                        return [
-                            'archiving' => [
-                                'website' => $website->slug,
-                            ],
-                        ];
+                    if (Carbon::now()->subDays($daysWarning)->isAfter($lastVisit)) {
+                        if (Carbon::now()->dayOfWeek === $notificationDay || Carbon::now()->subDays($daysArchive - $daysDailyNotification)->greaterThanOrEqualTo($lastVisit)) {
+                            $daysLeft = $daysArchive - Carbon::now()->diffInDays($lastVisit);
+
+                            event(new WebsiteArchiving($website, $daysLeft));
+
+                            return [
+                                'archiving' => [
+                                    'website' => $website->slug,
+                                ],
+                            ];
+                        }
                     }
                 }
             } catch (BindingResolutionException $exception) {

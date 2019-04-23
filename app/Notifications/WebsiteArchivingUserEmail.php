@@ -23,14 +23,18 @@ class WebsiteArchivingUserEmail extends Notification implements ShouldQueue
      */
     protected $website;
 
+    protected $daysLeft;
+
     /**
      * Notification constructor.
      *
      * @param Website $website the website
+     * @param int $daysLeft
      */
-    public function __construct(Website $website)
+    public function __construct(Website $website, int $daysLeft)
     {
         $this->website = $website;
+        $this->daysLeft = $daysLeft;
     }
 
     /**
@@ -54,6 +58,6 @@ class WebsiteArchivingUserEmail extends Notification implements ShouldQueue
      */
     public function toMail(User $notifiable): UserWebsiteArchiving
     {
-        return (new UserWebsiteArchiving($notifiable, $this->website))->to($notifiable->email, $notifiable->full_name);
+        return (new UserWebsiteArchiving($notifiable, $this->website, $this->daysLeft))->to($notifiable->email, $notifiable->full_name);
     }
 }
