@@ -9,6 +9,9 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Lang;
 
+/**
+ * User mail for website archived notification.
+ */
 class UserWebsiteArchived extends Mailable
 {
     use Queueable;
@@ -25,6 +28,8 @@ class UserWebsiteArchived extends Mailable
     protected $website;
 
     /**
+     * Mail constructor.
+     *
      * @param User $user the user
      * @param Website $website the website
      */
@@ -35,6 +40,8 @@ class UserWebsiteArchived extends Mailable
     }
 
     /**
+     * Build the mail.
+     *
      * @return UserWebsiteArchived the mail
      */
     public function build(): UserWebsiteArchived

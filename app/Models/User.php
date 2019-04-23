@@ -224,7 +224,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * Notify website scheduled for archiving.
      *
      * @param Website $website the website
-     * @param int $daysLeft
+     * @param int $daysLeft the number of days left before automatic archiving
      */
     public function sendWebsiteArchivingNotification(Website $website, int $daysLeft): void
     {
@@ -232,7 +232,9 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
-     * @param Website $website
+     * Notify website archived.
+     *
+     * @param Website $website the website
      */
     public function sendWebsiteArchivedNotification(Website $website): void
     {

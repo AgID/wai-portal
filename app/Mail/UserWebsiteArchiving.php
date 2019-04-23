@@ -25,25 +25,31 @@ class UserWebsiteArchiving extends Mailable
     protected $user;
 
     /**
-     * The activated website.
+     * The scheduled to be archived website.
      *
      * @var Website the website
      */
     protected $website;
 
-    protected $daysSinceLastVisit;
+    /**
+     * The number of days left before archive.
+     *
+     * @var int the number of days left
+     */
+    protected $daysLeft;
 
     /**
      * Mail constructor.
      *
      * @param User $user the user
      * @param Website $website the website
+     * @param int $daysLeft the number of days left
      */
-    public function __construct(User $user, Website $website, int $daysSinceLastVisit)
+    public function __construct(User $user, Website $website, int $daysLeft)
     {
         $this->user = $user;
         $this->website = $website;
-        $this->daysSinceLastVisit = $daysSinceLastVisit;
+        $this->daysLeft = $daysLeft;
     }
 
     /**
@@ -59,7 +65,7 @@ class UserWebsiteArchiving extends Mailable
                 'locale' => Lang::getLocale(),
                 'fullName' => $this->user->full_name,
                 'website' => $this->website->name,
-                'daysLeft' => $this->daysSinceLastVisit,
+                'daysLeft' => $this->daysLeft,
             ]);
     }
 }

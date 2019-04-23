@@ -194,14 +194,16 @@ interface AnalyticsService
     public function getSiteLastMonthVisits(string $idSite, string $tokenAuth): int;
 
     /**
-     * @param $idSite
-     * @param int $days
-     * @param string $tokenAuth
+     * Get the daily number of visits for the last requested days.
      *
-     * @throws CommandErrorException
-     * @throws AnalyticsServiceException
+     * @param string $idSite the Analytics Service website ID
+     * @param int $days the requested number of days
+     * @param string $tokenAuth the Analytics authentication token
      *
-     * @return array
+     * @throws CommandErrorException if command is unsuccessful
+     * @throws AnalyticsServiceException if unable to connect the Analytics Service
+     *
+     * @return array the list of days with the number of visits
      */
     public function getSiteLastDaysVisits(string $idSite, int $days, string $tokenAuth): array;
 }

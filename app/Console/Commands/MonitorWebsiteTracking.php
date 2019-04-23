@@ -26,7 +26,6 @@ class MonitorWebsiteTracking extends Command
         parent::__construct();
     }
 
-
     /**
      * Execute the console command.
      */

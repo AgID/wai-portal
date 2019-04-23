@@ -9,8 +9,19 @@ use App\Models\Website;
  */
 class WebsiteArchiving extends AbstractWebsiteEvent
 {
+    /**
+     * The number of days left before automatic archiving.
+     *
+     * @var int the number of days
+     */
     protected $daysLeft;
 
+    /**
+     * Event constructor.
+     *
+     * @param Website $website the changed website
+     * @param int $daysLeft the number of days left
+     */
     public function __construct(Website $website, int $daysLeft)
     {
         parent::__construct($website);
@@ -18,7 +29,9 @@ class WebsiteArchiving extends AbstractWebsiteEvent
     }
 
     /**
-     * @return int
+     * Get the number of days left before automatic archiving.
+     *
+     * @return int the number of days left
      */
     public function getDaysLeft(): int
     {

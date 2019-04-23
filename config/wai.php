@@ -43,7 +43,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Archive website warning notification
+    | Archive website warning daily notification
     |--------------------------------------------------------------------------
     |
     | This value is used to configure the time interval (in days) the system
@@ -54,7 +54,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Archive website warning notification
+    | Archive website warning weekly notification
     |--------------------------------------------------------------------------
     |
     | This value is used to configure the day of the week (from '0', Sunday, to
@@ -66,7 +66,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Archive website termination
+    | Archive website expire
     |--------------------------------------------------------------------------
     |
     | This values is used to configure the time window (in days) the system
