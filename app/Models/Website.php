@@ -147,6 +147,6 @@ class Website extends Model
 
         Bouncer::scope()->to($this->publicAdministration->id);
 
-        return Bouncer::whereIs('admin', $this)->get();
+        return User::whereIs('admin')->get()->all();
     }
 }
