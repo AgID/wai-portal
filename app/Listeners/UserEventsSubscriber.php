@@ -2,9 +2,9 @@
 
 namespace App\Listeners;
 
-use App\Events\Auth\UserInvited;
 use App\Events\User\UserActivated;
 use App\Events\User\UserActivationFailed;
+use App\Events\User\UserInvited;
 use App\Events\User\UserWebsiteAccessChanged;
 use App\Events\User\UserWebsiteAccessFailed;
 use Illuminate\Auth\Events\Registered;
@@ -33,7 +33,9 @@ class UserEventsSubscriber
      */
     public function onInvited(UserInvited $event): void
     {
-        logger()->info('New user invited: ' . $event->user->getInfo() . ' by ' . $event->invitedBy->getInfo()); //TODO: notify me!
+        $user = $event->getUser();
+        $invitedBy = $event->getInvitedBy();
+        logger()->info('New user invited: ' . $user->getInfo() . ' by ' . $invitedBy->getInfo()); //TODO: notify me!
     }
 
     /**
@@ -68,7 +70,7 @@ class UserEventsSubscriber
      *
      * @param UserWebsiteAccessChanged $event the event
      */
-    public function onSiteAccessChanged(UserWebsiteAccessChanged $event): void
+    public function onWebsiteAccessChanged(UserWebsiteAccessChanged $event): void
     {
         $user = $event->getUser();
         $website = $event->getWebsite();
@@ -81,7 +83,7 @@ class UserEventsSubscriber
      *
      * @param UserWebsiteAccessFailed $event the event
      */
-    public function onSiteAccessChangeFailed(UserWebsiteAccessFailed $event): void
+    public function onWebsiteAccessChangeFailed(UserWebsiteAccessFailed $event): void
     {
         $user = $event->getUser();
         $website = $event->getWebsite();
@@ -102,7 +104,7 @@ class UserEventsSubscriber
         );
 
         $events->listen(
-            'App\Events\Auth\UserInvited',
+            'App\Events\User\UserInvited',
             'App\Listeners\UserEventsSubscriber@onInvited'
         );
 
@@ -123,12 +125,12 @@ class UserEventsSubscriber
 
         $events->listen(
             'App\Events\User\UserWebsiteAccessChanged',
-            'App\Listeners\UserEventsSubscriber@onSiteAccessChanged'
+            'App\Listeners\UserEventsSubscriber@onWebsiteAccessChanged'
         );
 
         $events->listen(
             'App\Events\User\UserWebsiteAccessFailed',
-            'App\Listeners\UserEventsSubscriber@onSiteAccessChangeFailed'
+            'App\Listeners\UserEventsSubscriber@onWebsiteAccessChangeFailed'
         );
     }
 }

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\UserStatus;
-use App\Events\Auth\UserInvited;
+use App\Events\User\UserInvited;
 use App\Models\User;
 use App\Transformers\UserTransformer;
 use CodiceFiscale\Checker as FiscalNumberChecker;
