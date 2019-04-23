@@ -30,6 +30,9 @@ class MatomoService implements AnalyticsServiceContract
 
     /**
      * Map application website archiving status into Matomo Service ones.
+     * Boolean logic is inverted because the mapped value is passed to
+     * the `disable` parameter of the `DisableTracking.changeDisableState`
+     * API endpoint.
      *
      * @var array the mappings
      */
@@ -136,7 +139,7 @@ class MatomoService implements AnalyticsServiceContract
      */
     public function changeArchiveStatus(string $idSites, int $status, string $tokenAuth): void
     {
-        if (WebsiteStatus::ARCHIVED !== $status && (WebsiteStatus::ACTIVE !== $status)) {
+        if (WebsiteStatus::ARCHIVED !== $status && WebsiteStatus::ACTIVE !== $status) {
             throw new CommandErrorException('Invalid parameter for archiving: must be ' . WebsiteStatus::ACTIVE . ' or ' . WebsiteStatus::ARCHIVED . '. Received: ' . $status);
         }
 
@@ -396,6 +399,29 @@ class MatomoService implements AnalyticsServiceContract
         $response = $this->apiCall($params);
 
         return $response['nb_visits'] ?? 0;
+    }
+
+    /**
+     * @param $idSite
+     * @param int $days
+     * @param string $tokenAuth
+     *
+     * @throws CommandErrorException
+     * @throws AnalyticsServiceException
+     *
+     * @return array
+     */
+    public function getSiteLastDaysVisits(string $idSite, int $days, string $tokenAuth): array
+    {
+        $params = [
+            'method' => 'VisitsSummary.getVisits',
+            'idSite' => $idSite,
+            'period' => 'day',
+            'date' => 'last' . $days,
+            'token_auth' => $tokenAuth,
+        ];
+
+        return $this->apiCall($params);
     }
 
     /**

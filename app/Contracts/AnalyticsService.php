@@ -192,4 +192,16 @@ interface AnalyticsService
      * @return int the reported website visits from last month
      */
     public function getSiteLastMonthVisits(string $idSite, string $tokenAuth): int;
+
+    /**
+     * @param $idSite
+     * @param int $days
+     * @param string $tokenAuth
+     *
+     * @throws CommandErrorException
+     * @throws AnalyticsServiceException
+     *
+     * @return array
+     */
+    public function getSiteLastDaysVisits(string $idSite, int $days, string $tokenAuth): array;
 }
