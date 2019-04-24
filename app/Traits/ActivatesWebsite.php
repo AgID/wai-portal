@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use App\Enums\PublicAdministrationStatus;
+use App\Enums\UserRole;
 use App\Enums\UserStatus;
 use App\Enums\WebsiteStatus;
 use App\Events\PublicAdministration\PublicAdministrationActivated;
@@ -39,10 +40,6 @@ trait ActivatesWebsite
      *
      * @param Website $website the website
      * @param string $tokenAuth the authentication token
-     *
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException if unable to bind to the service
-     * @throws \App\Exceptions\AnalyticsServiceException if unable to connect the Analytics Service
-     * @throws \App\Exceptions\CommandErrorException if command is unsuccessful
      */
     public function activate(Website $website, string $tokenAuth): void
     {
@@ -62,7 +59,7 @@ trait ActivatesWebsite
 
                 $pendingUser->roles()->detach();
                 Bouncer::scope()->to($publicAdministration->id);
-                $pendingUser->assign('admin');
+                $pendingUser->assign(UserRole::ADMIN);
 
                 event(new UserActivated($pendingUser));
             }
