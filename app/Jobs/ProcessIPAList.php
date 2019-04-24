@@ -28,6 +28,23 @@ class ProcessIPAList implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
+     * Whether the DB update should be skipped.
+     *
+     * @var bool
+     */
+    protected $skipDatabaseUpdate;
+
+    /**
+     * Job constructor.
+     *
+     * @param bool $skipDatabaseUpdate whether the DB update should be skipped, defaults to false
+     */
+    public function __construct(bool $skipDatabaseUpdate = false)
+    {
+        $this->skipDatabaseUpdate = $skipDatabaseUpdate;
+    }
+
+    /**
      * Execute the job.
      */
     public function handle(): void
@@ -49,6 +66,12 @@ class ProcessIPAList implements ShouldQueue
         }
 
         $ipaIndex = new Index((new PredisAdapter())->connect(config('database.redis.ipaindex.host'), config('database.redis.ipaindex.port'), config('database.redis.ipaindex.database')), 'IPAIndex');
+        try {
+            // Drop the current index as we want a fresh update
+            $ipaIndex->drop();
+        } catch (Exception $e) {
+            // Index already dropped, it's ok!
+        }
 
         try {
             $ipaIndex->addTextField('ipa_code', 2.0, true)
@@ -121,7 +144,7 @@ class ProcessIPAList implements ShouldQueue
                 $indexedPA->type->setValue($retrievedPA['type']);
                 $ipaIndex->replace($indexedPA);
 
-                logger()->info('Public Administration ' . $data[1] . ' [' . $data[0] . '] successfully added to index');
+                logger()->debug('Public Administration ' . $data[1] . ' [' . $data[0] . '] successfully added to index');
             } catch (Exception $exception) {
                 logger()->error('Unable to index Public Administration ' . $data[1] . ' [' . $data[0] . ']: ' . $exception->getMessage());
             }
@@ -135,11 +158,15 @@ class ProcessIPAList implements ShouldQueue
      *
      * @param array $retrievedPA the IPA data for a public administration
      *
-     * @return array the array containing the list of updated data for the public administration,
-     *               empty if none or public administration is not registered
+     * @return array|null the array containing the list of updated data for the public administration,
+     *                    empty if none or public administration is not registered, null if check is skipped
      */
-    private function updateExistingPA(array $retrievedPA): array
+    private function updateExistingPA(array $retrievedPA): ?array
     {
+        if ($this->skipDatabaseUpdate) {
+            return null;
+        }
+
         $existingPA = PublicAdministration::withTrashed()->where('ipa_code', $retrievedPA['ipa_code'])->first();
 
         if (empty($existingPA)) {

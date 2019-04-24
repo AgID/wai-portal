@@ -1,2 +1,2 @@
 #!/bin/bash
-(cd `dirname $0`/../../containers && docker-compose exec workspace php artisan $1)
+(cd `dirname $0`/../../containers && docker-compose exec workspace php artisan $@)

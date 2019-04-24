@@ -289,7 +289,7 @@
         <exec command="docker-compose exec workspace php artisan clear-compiled" dir="containers" passthru="true" checkreturn="true"/>
         <!-- Populate IPA list -->
         <echo msg="Populating IPA list..."/>
-        <exec command="docker-compose exec workspace php artisan app:update-ipa" dir="containers" passthru="true" checkreturn="true"/>
+        <exec command="docker-compose exec workspace php artisan app:update-ipa -S" dir="containers" passthru="true" checkreturn="true"/>
         <echo msg="Deleting sessions..."/>
         <delete>
             <fileset dir="storage/framework/sessions">
@@ -326,6 +326,14 @@
         <!-- Execute dusk to run browser tests -->
         <echo msg="Running browser tests [Laravel Dusk]..."/>
         <exec command="docker-compose exec workspace php artisan dusk" dir="containers" passthru="true" checkreturn="true"/>
+        <!-- Restore the IPA list after tests -->
+        <if>
+            <equals arg1="${env.APP_ENV}" arg2="local"/>
+            <then>
+                <echo msg="Restoring IPA list after tests..."/>
+                <exec command="docker-compose exec workspace php artisan app:update-ipa -S" dir="containers" passthru="true" checkreturn="true"/>
+            </then>
+        </if>
     </target>
 
     <!-- Target: stop -->
