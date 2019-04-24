@@ -16,8 +16,7 @@ class UserTransformer extends TransformerAbstract
     public function transform(User $user)
     {
         $data = [
-            'name' => $user->name,
-            'familyName' => $user->familyName,
+            'name' => implode(' ', [$user->familyName, $user->name]),
             'email' => $user->email,
             'admin' => $user->isAn('admin'),
             'added_at' => $user->created_at->format('d/m/Y'),

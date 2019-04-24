@@ -17,14 +17,12 @@ class WebsiteTransformer extends TransformerAbstract
      */
     public function transform(Website $website)
     {
-        $last_month_visit = (int) app()->make('analytics-service')->getSiteLastMonthVisits($website->analytics_id, current_user_auth_token());
-
         $data = [
             'url' => '<a href="http://' . $website->url . '">' . $website->url . '</a>',
             'type' => $website->type->description,
             'added_at' => $website->created_at->format('d/m/Y'),
             'status' => $website->status->description,
-            'last_month_visits' => $last_month_visit,
+            'last_month_visits' => 'N/A',
             'buttons' => [
                 [
                     'link' => route('website-javascript-snippet', ['website' => $website], false),
@@ -35,17 +33,23 @@ class WebsiteTransformer extends TransformerAbstract
         ];
 
         if (!$website->status->is(WebsiteStatus::PENDING)) {
-            $data['actions'][] = [
+            $data['buttons'][] = [
                 'link' => route('analytics-service-login', [], false),
                 'label' => __('ui.pages.websites.index.go_to_analytics_service'),
             ];
+        }
+
+        if (!$website->status->is(WebsiteStatus::PENDING) && auth()->user()->can(UserPermission::READ_ANALYTICS, $website)) {
+            $data['last_month_visits'] = (int) app()->make('analytics-service')->getSiteLastMonthVisits($website->analytics_id, current_user_auth_token());
         }
 
         if ($website->status->is(WebsiteStatus::PENDING) && auth()->user()->can(UserPermission::READ_ANALYTICS, $website)) {
             $data['buttons'][] = [
                 'link' => route('website-check_tracking', ['website' => $website->slug], false),
                 'label' => __('ui.pages.websites.index.check_tracking'),
-                'type' => 'check_tracking',
+                'dataAttributes' => [
+                    'type' => 'checkTracking',
+                ],
             ];
         }
 

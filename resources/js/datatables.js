@@ -12,11 +12,21 @@ export default (() => {
             if (column.data === 'buttons') {
                 column.render = (buttons) => {
                     return [
-                        '<div class="buttons">',
+                        '<span class="buttons">',
                         buttons.map((button) => {
-                            return '<a href="' + button.link + '" role="button" class="Button Button--default Button--shadow Button--round u-padding-top-xxs u-padding-bottom-xxs u-margin-right-s u-text-r-xxs" title="' + button.label + '">' + button.label + '</a>';
+                            return [
+                                `<a href="${button.link}"`,
+                                'role="button"',
+                                'class="Button Button--default Button--shadow Button--round u-padding-top-xxs u-padding-bottom-xxs u-margin-right-s u-text-r-xxs"',
+                                button.dataAttributes && Object.keys(button.dataAttributes).reduce((dataAttrs, attr) => {
+                                    return [dataAttrs, `data-${attr}="${button.dataAttributes[attr]}"`].join(' ');
+                                }, ''),
+                                `title="${button.label}">`,
+                                button.label,
+                                '</a>'
+                            ].join(' ');
                         }).join(''),
-                        '</div>'
+                        '</span>'
                     ].join('');
                 }
             }
@@ -29,7 +39,7 @@ export default (() => {
             if (column.data === 'checkboxes') {
                 column.render = (checkboxes) => {
                     return [
-                        '<div class="checkboxes">',
+                        '<span class="checkboxes">',
                         checkboxes.map((checkbox, index) => {
                             return [
                                 checkbox.label && '<label>',
@@ -38,13 +48,17 @@ export default (() => {
                                 // 'class="Form-input"',
                                 `name="${checkbox.name}"`,
                                 `id="${checkbox.name}-${index}"`,
+                                `value="${checkbox.value}"`,
+                                checkbox.dataAttributes && Object.keys(checkbox.dataAttributes).reduce((dataAttrs, attr) => {
+                                    return [dataAttrs, `data-${attr}="${checkbox.dataAttributes[attr]}"`].join(' ');
+                                }, ''),
                                 checkbox.disabled ? 'disabled' : '',
                                 checkbox.checked ? 'checked' : '',
                                 '>',
                                 checkbox.label && `${checkbox.label}</label>`
                             ].join(' ');
                         }).join(''),
-                        '</div>'
+                        '</span>'
                     ].join('');
                 }
             }
@@ -57,21 +71,26 @@ export default (() => {
             if (column.data === 'radios') {
                 column.render = (radios) => {
                     return [
-                        '<div class="radios">',
-                        radios.map((radio) => {
+                        '<span class="radios">',
+                        radios.map((radio, index) => {
                             return [
                                 radio.label && '<label>',
                                 '<input',
                                 'type="radio"',
                                 // 'class="Form-input"',
                                 `name="${radio.name}"`,
+                                `id="${radio.name}-${index}"`,
+                                `value="${radio.value}"`,
+                                radio.dataAttributes && Object.keys(radio.dataAttributes).reduce((dataAttrs, attr) => {
+                                    return [dataAttrs, `data-${attr}="${radio.dataAttributes[attr]}"`].join(' ');
+                                }, ''),
                                 radio.disabled ? 'disabled' : '',
                                 radio.checked ? 'checked' : '',
                                 '>',
                                 radio.label && `${radio.label}</label>`
                             ].join(' ');
                         }).join(''),
-                        '</div>'
+                        '</span>'
                     ].join('');
                 }
             }
@@ -94,7 +113,7 @@ export default (() => {
             return;
         }
 
-        await import(/* webpackChunkName: "datatables.net" */ './datatables-imports');
+        await import(/* webpackChunkName: "datatables.net" */ './datatablesImports');
 
         initData($datatable);
         initButtons();
@@ -102,7 +121,7 @@ export default (() => {
         initRadios();
         initOrder();
 
-        $datatable.DataTable({
+        let datatableApi = window.dt = $datatable.DataTable({
             ajax: datatable.source,
             responsive: {
                 details: {
@@ -110,6 +129,7 @@ export default (() => {
                     target: -1
                 }
             },
+            autoWidth: false,
             columns: datatable.columns.concat({
                 defaultContent: '',
                 className: 'control',
@@ -119,9 +139,12 @@ export default (() => {
             language: {
                 url: "//cdn.datatables.net/plug-ins/1.10.18/i18n/Italian.json"
             },
-            initComplete: (settings, json) => {
-                afterInit && afterInit.map((afterInitFunction) => afterInitFunction(settings, json));
+            initComplete: () => {
+                afterInit && afterInit.map((afterInitFunction) => afterInitFunction());
+                datatableApi.responsive.recalc();
             }
+        }).on('responsive-display', () => {
+            afterInit && afterInit.map((afterInitFunction) => afterInitFunction());
         });
     }
 
