@@ -8,6 +8,7 @@ use App\Notifications\WebsiteActivatedUserEmail;
 use App\Notifications\WebsiteArchivedUserEmail;
 use App\Notifications\WebsiteArchivingUserEmail;
 use App\Notifications\WebsitePurgingUserEmail;
+use App\Traits\HasWebsitePermissions;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -25,6 +26,7 @@ class User extends Authenticatable implements MustVerifyEmail
 {
     use Notifiable;
     use HasRolesAndAbilities;
+    use HasWebsitePermissions;
     use Notifiable;
     use SoftDeletes;
 
