@@ -89,6 +89,9 @@ class UserEventsSubscriber
     public function onUpdated(UserUpdated $event): void
     {
         $user = $event->getUser();
+        if ($user->isDirty('email_verified_at') && !empty($user->email_verified_at) && $user->hasAnalyticsServiceAccount()) {
+            $user->updateAnalyticsServiceAccountEmail();
+        }
         if ($user->isDirty('email')) {
             $user->sendEmailVerificationNotification();
         }

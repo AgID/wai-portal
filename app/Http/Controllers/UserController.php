@@ -10,7 +10,6 @@ use App\Models\User;
 use App\Transformers\UserTransformer;
 use App\Transformers\WebsitesPermissionsTransformer;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use Ramsey\Uuid\Uuid;
 use Yajra\Datatables\Datatables;
 
@@ -80,11 +79,10 @@ class UserController extends Controller
             'fiscalNumber' => $request->input('fiscalNumber'),
             'email' => $request->input('email'),
             'status' => UserStatus::INVITED,
-            'partial_analytics_password' => Str::random(rand(32, 48)),
         ]);
         $user->publicAdministrations()->attach($currentPublicAdministration->id);
 
-        $user->registerInAnalyticsService();
+        $user->registerAnalyticsServiceAccount();
 
         $isAdmin = $request->input('isAdmin');
         $websitesEnabled = $request->input('websitesEnabled') ?? [];

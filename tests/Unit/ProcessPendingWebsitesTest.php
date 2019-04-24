@@ -65,7 +65,7 @@ class ProcessPendingWebsitesTest extends TestCase
             'created_at' => now()->subDays((int) config('wai.purge_expiry') + 1),
         ]);
 
-        $this->app->make('analytics-service')->registerUser($user->uuid, $user->analytics_password, $user->email, config('analytics-service.admin_token'));
+        $user->registerAnalyticsServiceAccount();
         $siteID = $this->app->make('analytics-service')->registerSite($website->name, $website->url, $publicAdministration->name);
         $website->analytics_id = $siteID;
         $website->save();
@@ -78,7 +78,7 @@ class ProcessPendingWebsitesTest extends TestCase
         });
 
         $purgedUser = User::findByFiscalNumber($user->fiscalNumber);
-        $this->assertNull($purgedUser->partial_analytics_password);
+        $this->assertFalse($purgedUser->hasAnalyticsServiceAccount());
 
         $this->expectException(CommandErrorException::class);
         $this->app->make('analytics-service')->getUserByEmail($purgedUser->email, config('analytics-service.admin_token'));
@@ -151,8 +151,7 @@ class ProcessPendingWebsitesTest extends TestCase
             'public_administration_id' => $publicAdministration->id,
         ]);
 
-        $tokenAuth = config('analytics-service.admin_token');
-        $this->app->make('analytics-service')->registerUser($user->uuid, $user->analytics_password, $user->email, $tokenAuth);
+        $user->registerAnalyticsServiceAccount();
         $analyticsId = app()->make('analytics-service')->registerSite('Sito istituzionale', $website->url, $website->publicAdministration->name);
         $website->analytics_id = $analyticsId;
         $website->save();
@@ -169,7 +168,7 @@ class ProcessPendingWebsitesTest extends TestCase
         $job = new ProcessPendingWebsites();
         $job->handle();
 
-        $this->app->make('analytics-service')->deleteUser($user->uuid, config('analytics-service.admin_token'));
+        $user->deleteAnalyticsServiceAccount();
         $this->app->make('analytics-service')->deleteSite($website->analytics_id, config('analytics-service.admin_token'));
 
         Event::assertDispatched(UserActivated::class, function ($event) use ($user) {
@@ -212,15 +211,14 @@ class ProcessPendingWebsitesTest extends TestCase
             'public_administration_id' => $publicAdministration->id,
         ]);
 
-        $this->app->make('analytics-service')->registerUser($userAdmin->uuid, $userAdmin->analytics_password, $userAdmin->email, config('analytics-service.admin_token'));
-        $this->app->make('analytics-service')->registerUser($userWrite->uuid, $userWrite->analytics_password, $userWrite->email, config('analytics-service.admin_token'));
-        $this->app->make('analytics-service')->registerUser($userView->uuid, $userView->analytics_password, $userView->email, config('analytics-service.admin_token'));
-        $this->app->make('analytics-service')->registerUser($userNoAccess->uuid, $userNoAccess->analytics_password, $userNoAccess->email, config('analytics-service.admin_token'));
+        $userAdmin->registerAnalyticsServiceAccount();
+        $userWrite->registerAnalyticsServiceAccount();
+        $userView->registerAnalyticsServiceAccount();
+        $userNoAccess->registerAnalyticsServiceAccount();
         $analyticsId = app()->make('analytics-service')->registerSite('Sito istituzionale', $website->url, $website->publicAdministration->name);
         $website->analytics_id = $analyticsId;
         $website->save();
 
-        Bouncer::scope()->to($publicAdministration->id);
         session()->put('tenant_id', $publicAdministration->id);
         $userAdmin->assign('admin');
         $userWrite->setWriteAccessForWebsite($website);
@@ -239,10 +237,10 @@ class ProcessPendingWebsitesTest extends TestCase
         $job = new ProcessPendingWebsites();
         $job->handle();
 
-        $this->app->make('analytics-service')->deleteUser($userAdmin->uuid, config('analytics-service.admin_token'));
-        $this->app->make('analytics-service')->deleteUser($userWrite->uuid, config('analytics-service.admin_token'));
-        $this->app->make('analytics-service')->deleteUser($userView->uuid, config('analytics-service.admin_token'));
-        $this->app->make('analytics-service')->deleteUser($userNoAccess->uuid, config('analytics-service.admin_token'));
+        $userAdmin->deleteAnalyticsServiceAccount();
+        $userWrite->deleteAnalyticsServiceAccount();
+        $userView->deleteAnalyticsServiceAccount();
+        $userNoAccess->deleteAnalyticsServiceAccount();
         $this->app->make('analytics-service')->deleteSite($website->analytics_id, config('analytics-service.admin_token'));
 
         Event::assertDispatched(UserWebsiteAccessChanged::class, function ($event) use ($userAdmin, $userWrite, $userView, $userNoAccess, $website) {

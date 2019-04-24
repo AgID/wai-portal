@@ -106,7 +106,7 @@ class WebsiteController extends Controller
         // This is the first time we know which public administration the
         // current user belongs, so we need to set the tenant id just now.
         session()->put('tenant_id', $publicAdministration->id);
-        $request->user()->registerInAnalyticsService();
+        $request->user()->registerAnalyticsServiceAccount();
         $request->user()->setViewAccessForWebsite($website);
         $request->user()->syncWebsitesPermissionsToAnalyticsService();
 

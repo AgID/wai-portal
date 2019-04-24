@@ -10,6 +10,7 @@ use App\Notifications\WebsiteActivatedUserEmail;
 use App\Notifications\WebsiteArchivedUserEmail;
 use App\Notifications\WebsiteArchivingUserEmail;
 use App\Notifications\WebsitePurgingUserEmail;
+use App\Traits\HasAnalyticsServiceAccount;
 use App\Traits\HasWebsitePermissions;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -29,6 +30,7 @@ class User extends Authenticatable implements MustVerifyEmail
     use Notifiable;
     use HasRolesAndAbilities;
     use HasWebsitePermissions;
+    use HasAnalyticsServiceAccount;
     use Notifiable;
     use SoftDeletes;
 
@@ -253,18 +255,5 @@ class User extends Authenticatable implements MustVerifyEmail
     public function sendWebsiteArchivedNotification(Website $website): void
     {
         $this->notify(new WebsiteArchivedUserEmail($website));
-    }
-
-    /**
-     * Register this user in the Analytics Service.
-     *
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException if unable to bind to the service
-     * @throws \App\Exceptions\AnalyticsServiceException if unable to connect the Analytics Service
-     * @throws \App\Exceptions\CommandErrorException if command is unsuccessful
-     */
-    public function registerInAnalyticsService(): void
-    {
-        $analyticsService = app()->make('analytics-service');
-        $analyticsService->registerUser($this->uuid, $this->analytics_password, $this->email, config('analytics-service.admin_token'));
     }
 }

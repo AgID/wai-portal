@@ -29,7 +29,7 @@ if (!function_exists('current_user_auth_token')) {
     function current_user_auth_token()
     {
         if (auth()->user()) {
-            return app()->make('analytics-service')->getUserAuthToken(auth()->user()->uuid, md5(auth()->user()->analytics_password));
+            return auth()->user()->getAnalyticsServiceAccountTokenAuth();
         }
 
         return null;

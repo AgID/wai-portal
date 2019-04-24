@@ -15,7 +15,7 @@ class AnalyticsController extends Controller
      */
     public function login(): RedirectResponse
     {
-        if (empty(auth()->user()->partial_analytics_password)) {
+        if (!auth()->user()->hasAnalyticsServiceAccount()) {
             abort(404);
         }
 
