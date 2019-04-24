@@ -11,6 +11,7 @@ use App\Exceptions\CommandErrorException;
 use App\Models\PublicAdministration;
 use App\Models\Website;
 use App\Traits\ActivatesWebsite;
+use App\Transformers\UsersPermissionsTransformer;
 use App\Transformers\WebsiteTransformer;
 use Ehann\RediSearch\Index;
 use Ehann\RedisRaw\PredisAdapter;
@@ -338,6 +339,21 @@ class WebsiteController extends Controller
         return Datatables::of(current_public_administration()->websites())
                 ->setTransformer(new WebsiteTransformer())
                 ->make(true);
+    }
+
+    /**
+     * Get all users of the specified Public Administration
+     * in JSON format (to be consumed by Datatables).
+     *
+     * @throws \Exception
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function dataUsersPermissionsJson()
+    {
+        return Datatables::of(current_public_administration()->users)
+            ->setTransformer(new UsersPermissionsTransformer())
+            ->make(true);
     }
 
     /**

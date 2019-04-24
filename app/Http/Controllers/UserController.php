@@ -6,7 +6,7 @@ use App\Enums\UserStatus;
 use App\Events\User\UserInvited;
 use App\Models\User;
 use App\Transformers\UserTransformer;
-use CodiceFiscale\Checker as FiscalNumberChecker;
+use App\Transformers\WebsitesPermissionsTransformer;
 use Illuminate\Http\Request;
 use Ramsey\Uuid\Uuid;
 use Yajra\Datatables\Datatables;
@@ -174,5 +174,20 @@ class UserController extends Controller
         return Datatables::of(current_public_administration()->users)
                 ->setTransformer(new UserTransformer())
                 ->make(true);
+    }
+
+    /**
+     * Get all websites of the specified Public Administration
+     * in JSON format (to be consumed by Datatables).
+     *
+     * @throws \Exception
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function dataWebsitesPermissionsJson()
+    {
+        return Datatables::of(current_public_administration()->websites)
+            ->setTransformer(new WebsitesPermissionsTransformer())
+            ->make(true);
     }
 }

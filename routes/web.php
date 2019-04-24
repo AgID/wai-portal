@@ -224,6 +224,11 @@ Route::middleware('spid.auth', 'auth', 'verified')->group(function () {
                     'uses' => 'WebsiteController@create',
                 ])->middleware('authorize.analytics:' . UserPermission::MANAGE_WEBSITES);
 
+                Route::get('/webistes-data', [
+                    'as' => 'websites.users.permissions.data',
+                    'uses' => 'WebsiteController@dataUsersPermissionsJson',
+                ])->middleware('authorize.analytics:' . UserPermission::MANAGE_WEBSITES);
+
                 Route::post('/store', [
                     'as' => 'websites-store',
                     'uses' => 'WebsiteController@store',
@@ -261,16 +266,21 @@ Route::middleware('spid.auth', 'auth', 'verified')->group(function () {
                 Route::get('/', [
                     'as' => 'users-index',
                     'uses' => 'UserController@index',
-                ])->middleware('authorize.analytics:read-analytics');
+                ]);
 
                 Route::get('/data', [
                     'as' => 'users-data-json',
                     'uses' => 'UserController@dataJson',
-                ])->middleware('authorize.analytics:read-analytics');
+                ]);
 
                 Route::get('/add', [
                     'as' => 'users-create',
                     'uses' => 'UserController@create',
+                ])->middleware('authorize.analytics:' . UserPermission::MANAGE_USERS);
+
+                Route::get('/webistes-data', [
+                    'as' => 'users.websites.permissions.data',
+                    'uses' => 'UserController@dataWebsitesPermissionsJson',
                 ])->middleware('authorize.analytics:' . UserPermission::MANAGE_USERS);
 
                 Route::post('/store', [
