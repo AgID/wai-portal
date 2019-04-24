@@ -69,7 +69,7 @@
                         </ul>
                     </div>
                 @else
-                    @can('access-admin-area')
+                    @can(UserPermission::ACCESS_ADMIN_AREA)
                     <button class="auth-user" aria-controls="auth-user-options" aria-haspopup="true" role="button">
                         <span aria-hidden="true" class="auth-icon">
                             <span class="auth-icon-text">{{ substr(auth()->user()->name, 0, 1) }}{{ substr(auth()->user()->familyName, 0, 1) }}</span>

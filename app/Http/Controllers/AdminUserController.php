@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\UserRole;
 use App\Enums\UserStatus;
 use App\Events\User\UserInvited;
 use App\Models\User;
@@ -51,7 +52,7 @@ class AdminUserController extends Controller
             'status' => UserStatus::INVITED,
         ]);
 
-        $user->assign('super-admin');
+        $user->assign(UserRole::SUPER_ADMIN);
 
         if (!empty($user->passwordResetToken)) {
             $user->passwordResetToken->delete();

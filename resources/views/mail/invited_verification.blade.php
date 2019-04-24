@@ -2,8 +2,8 @@
 # Invito su {{ config('app.name') }}
 
 Ciao,
-sei stato invitato come utente {{ __('auth.roles.'.$user->roles()->first()->name) }}
-per la tua PA ({{ $publicAdministration->name }}) su {{ config('app.name') }}!
+sei stato invitato per la tua PA ({{ $publicAdministration->name }}) su
+{{ config('app.name') }}.
 
 Per completare la tua iscrizione è necessario effettuare l'accesso con SPID
 e la conferma del tuo indirizzo email.

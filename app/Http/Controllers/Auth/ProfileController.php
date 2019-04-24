@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
@@ -47,7 +48,7 @@ class ProfileController extends Controller
         $user->email = $validatedData['email'];
         $user->save();
 
-        $redirectRoute = $user->isA('super-admin') ? 'admin.profile' : 'user.profile';
+        $redirectRoute = $user->isA(UserRole::SUPER_ADMIN) ? 'admin.profile' : 'user.profile';
 
         return redirect()->route($redirectRoute)
             ->withMessage(['success' => "L'indirizzo email è stato modificato correttamente."]); //TODO: put message in lang file

@@ -2,10 +2,10 @@
 # Invito su {{ config('app.name') }}
 
 Ciao,
-sei stato invitato come utente {{ __('auth.roles.'.$user->roles()->first()->name) }}
-su {{ config('app.name') }}!
+sei stato invitato su {{ config('app.name') }}.
 
-Per completare la tua iscrizione è necessaria la conferma del tuo indirizzo email.
+Per completare la tua iscrizione è necessaria la conferma del tuo indirizzo
+email.
 
 @component('mail::button', ['url' => $signedUrl])
     Conferma indirizzo email

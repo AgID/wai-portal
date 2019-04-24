@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Enums\UserPermission;
 use App\Enums\WebsiteAccessType;
 use App\Enums\WebsiteStatus;
 use App\Models\PublicAdministration;
@@ -74,8 +75,7 @@ class JsonRoutesTest extends TestCase
         $this->userTokenAuth = $this->app->make('analytics-service')->getUserAuthToken($this->user->uuid, md5($this->user->analytics_password));
 
         Bouncer::scope()->to($this->publicAdministration->id);
-        $this->user->assign('reader');
-        $this->user->allow('read-analytics');
+        $this->user->allow(UserPermission::READ_ANALYTICS, $this->website);
     }
 
     /**

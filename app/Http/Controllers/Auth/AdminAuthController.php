@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Enums\UserPermission;
 use App\Enums\UserStatus;
 use App\Http\Controllers\Controller;
 use App\Jobs\ClearPasswordResetToken;
@@ -29,7 +30,7 @@ class AdminAuthController extends Controller
      */
     public function showLoginForm()
     {
-        if (auth()->check() && auth()->user()->can('access-admin-area')) {
+        if (auth()->check() && auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)) {
             return redirect()->intended(route('admin-dashboard'));
         }
 
@@ -80,7 +81,7 @@ class AdminAuthController extends Controller
      */
     public function logout()
     {
-        if (auth()->check() && auth()->user()->can('access-admin-area')) {
+        if (auth()->check() && auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)) {
             auth()->logout();
             session()->invalidate();
         }
@@ -111,7 +112,7 @@ class AdminAuthController extends Controller
         $email = $request->input('email');
 
         $user = User::where('email', $email)->first();
-        if (empty($user) || $user->cant('access-admin-area') || !$user->status->is(UserStatus::ACTIVE)) {
+        if (empty($user) || $user->cant(UserPermission::ACCESS_ADMIN_AREA) || !$user->status->is(UserStatus::ACTIVE)) {
             return redirect()->home()->withMessage(['info' => "Se l'indirizzo email inserito corrisponde ad un'utenza amministrativa registrata e attiva, riceverai e breve un messaggio con le istruzioni per il reset della password."]);
         }
 

@@ -18,7 +18,7 @@ abstract class DuskTestCase extends BaseTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->artisan('app:create-roles');
+        $this->artisan('app:init-permissions');
         $this->browse(function (Browser $browser) {
             $browser->visit(new Home())->press('ACCETTO'); // Cookie bar
         });

@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Enums\UserRole;
 use App\Mail\AccountVerification;
 use App\Models\PublicAdministration;
 use App\Models\User;
@@ -85,7 +86,7 @@ class VerifyEmail extends Notification implements ShouldQueue
      */
     protected function verificationUrl($notifiable): string
     {
-        $verificationRoute = $notifiable->isA('super-admin')
+        $verificationRoute = $notifiable->isA(UserRole::SUPER_ADMIN)
             ? 'admin.verification.verify'
             : 'verification.verify';
 

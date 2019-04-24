@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\UserRole;
 use App\Enums\UserStatus;
 use App\Models\User;
 use Carbon\Carbon;
@@ -32,6 +33,6 @@ class UsersTableSeeder extends Seeder
             'updated_at' => Carbon::now()->format('Y-m-d H:i:s'),
         ]);
         Bouncer::scope()->to(0);
-        User::findByFiscalNumber('FSCLNB17A01H501X')->assign('super-admin');
+        User::findByFiscalNumber('FSCLNB17A01H501X')->assign(UserRole::SUPER_ADMIN);
     }
 }

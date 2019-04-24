@@ -17,7 +17,7 @@
         @endisset
     </li>
 @endforeach
-@can('access-admin-area')
+@can(UserPermission::ACCESS_ADMIN_AREA)
     @include('layouts.includes.admin_menu')
 @endcan
 </ul>

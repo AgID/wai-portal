@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\UserRole;
 use App\Models\PublicAdministration;
 use App\Models\User;
 use App\Models\Website;
@@ -113,7 +114,7 @@ Route::get('/_test/_set_password/{userId}/{password}', function ($userId, $passw
 
 Route::get('/_test/_get_user_verification_signed_url/{userId}', function ($userId) {
     $user = User::find($userId);
-    $verificationRoute = $user->isA('super-admin')
+    $verificationRoute = $user->isA(UserRole::SUPER_ADMIN)
         ? 'admin.verification.verify'
         : 'verification.verify';
     $signedUrl = URL::temporarySignedRoute(

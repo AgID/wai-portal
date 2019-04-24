@@ -27,7 +27,7 @@ Route::get('/_reset_all', function () {
     Storage::disk('sessions')->delete($session_files);
     Artisan::call('migrate:fresh');
     Bouncer::scope()->to(null);
-    Artisan::call('app:create-roles');
+    Artisan::call('app:init-permissions');
     Artisan::call('db:seed');
 
     return redirect()->home()->withMessage(['info' => "L'istanza di " . config('app.name') . ' è stata ripristinata allo stato iniziale.']);

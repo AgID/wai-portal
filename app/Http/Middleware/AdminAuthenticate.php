@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Enums\UserPermission;
 use App\Enums\UserStatus;
 use Closure;
 
@@ -24,7 +25,7 @@ class AdminAuthenticate
             return redirect()->guest(route('admin-login'));
         }
 
-        if (!$request->user()->can('access-admin-area')) {
+        if (!$request->user()->can(UserPermission::ACCESS_ADMIN_AREA)) {
             abort(403);
         }
 

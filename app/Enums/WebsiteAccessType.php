@@ -29,4 +29,21 @@ final class WebsiteAccessType extends Enum implements LocalizedEnum
      * Website admin access constant.
      */
     public const ADMIN = 3;
+
+    /**
+     * Map user permissions to website access types.
+     */
+    private const PERMISSIONS_TO_ACCESS_MAPPINGS = [
+        UserPermission::NO_ACCESS => WebsiteAccessType::NO_ACCESS,
+        UserPermission::READ_ANALYTICS => WebsiteAccessType::VIEW,
+        UserPermission::MANAGE_ANALYTICS => WebsiteAccessType::WRITE,
+    ];
+
+    /**
+     * Get the website access type corresponding to the given user permission.
+     */
+    public static function fromUserPermission(string $userPermission): int
+    {
+        return self::PERMISSIONS_TO_ACCESS_MAPPINGS[$userPermission];
+    }
 }

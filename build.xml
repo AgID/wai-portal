@@ -268,7 +268,7 @@
             <equals arg1="${checkRoles}" arg2=""/>
             <then>
                 <echo msg="Creating application roles..."/>
-                <exec command="docker-compose exec workspace php artisan app:create-roles" dir="containers" passthru="true" checkreturn="true"/>
+                <exec command="docker-compose exec workspace php artisan app:init-permissions" dir="containers" passthru="true" checkreturn="true"/>
             </then>
         </if>
         <!-- Database seed -->

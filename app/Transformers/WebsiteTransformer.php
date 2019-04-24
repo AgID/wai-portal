@@ -2,6 +2,7 @@
 
 namespace App\Transformers;
 
+use App\Enums\UserPermission;
 use App\Enums\WebsiteStatus;
 use App\Enums\WebsiteType;
 use App\Models\Website;
@@ -40,7 +41,7 @@ class WebsiteTransformer extends TransformerAbstract
             ];
         }
 
-        if ($website->status->is(WebsiteStatus::PENDING) && auth()->user()->can('read-analytics')) {
+        if ($website->status->is(WebsiteStatus::PENDING) && auth()->user()->can(UserPermission::READ_ANALYTICS, $website)) {
             $data['buttons'][] = [
                 'link' => route('website-check_tracking', ['website' => $website->slug], false),
                 'label' => __('ui.pages.websites.index.check_tracking'),
@@ -48,7 +49,7 @@ class WebsiteTransformer extends TransformerAbstract
             ];
         }
 
-        if (($website->status->is(WebsiteStatus::PENDING) || auth()->user()->can('manage-sites')) && !$website->type->is(WebsiteType::PRIMARY)) {
+        if (($website->status->is(WebsiteStatus::PENDING) || auth()->user()->can(UserPermission::MANAGE_WEBSITES)) && !$website->type->is(WebsiteType::PRIMARY)) {
             $data['buttons'][] = [
                 'link' => route('websites-edit', ['website' => $website], false),
                 'label' => __('ui.pages.websites.index.edit_website'),

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Enums\UserPermission;
+use App\Enums\UserRole;
 use App\Enums\UserStatus;
 use App\Http\Controllers\Controller;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -54,7 +56,7 @@ class VerificationController extends Controller
             event(new Verified($user));
         }
 
-        $dashboard = $request->user()->can('access-admin-area') ? '/admin/dashboard' : '/dashboard';
+        $dashboard = $request->user()->can(UserPermission::ACCESS_ADMIN_AREA) ? '/admin/dashboard' : '/dashboard';
 
         return redirect($dashboard)
             ->withMessage(['success' => "L'indirizzo email è stato verificato correttamente."]); //TODO: put message in lang file
@@ -102,7 +104,7 @@ class VerificationController extends Controller
         if ($user->status->is(UserStatus::INVITED)) {
             $newStatus = UserStatus::ACTIVE;
 
-            if (!$user->isA('super-admin')) {
+            if ($user->isNotA(UserRole::SUPER_ADMIN)) {
                 $SPIDUser = session()->get('spid_user');
 
                 if ($user->fiscalNumber !== $SPIDUser->fiscalNumber) {

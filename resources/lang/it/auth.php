@@ -1,5 +1,8 @@
 <?php
 
+use App\Enums\UserRole;
+use App\Enums\UserPermission;
+
 return [
 
     /*
@@ -30,16 +33,35 @@ return [
     ],
     'roles' => [
         'info' => "Il ruolo dell'utente è:",
-        'registered' => 'registrato',
-        'registered_description' => "Può proporre un nuovo sito web per una nuova pubblica amministrazione.",
-        'reader' => 'lettore',
-        'reader_description' => "Può leggere i dati analytics per i siti web della sua pubblica amministrazione.",
-        'manager' => 'gestore',
-        'manager_description' => "Può leggere e gestire i dati analytics per i siti web della sua pubblica amministrazione.",
-        'admin' => 'amministratore',
-        'admin_description' => "Può gestire gli utenti, i siti e i dati analytics per la sua pubblica amministrazione.",
-        'super-admin' => 'amministratore della piattaforma',
-        'super-admin_description' => 'Può amministrare la piattaforma ' . config('app.name') . '.'
+        UserRole::REGISTERED => [
+            'description' => "Può proporre un nuovo sito web per una nuova pubblica amministrazione.",
+        ],
+        UserRole::ADMIN => [
+            'description' => "Può gestire gli utenti, i siti e i dati analytics per la sua pubblica amministrazione.",
+        ],
+        UserRole::SUPER_ADMIN => [
+            'description' => 'Può amministrare la piattaforma ' . config('app.name') . '.'
+        ],
+    ],
+    'permissions' => [
+        UserPermission::ACCESS_ADMIN_AREA => [
+            'description' => "Può accedere all'area amministrativa della piattaforma.",
+        ],
+        UserPermission::MANAGE_USERS => [
+            'description' => 'Può gestire gli utenti della propria PA.',
+        ],
+        UserPermission::MANAGE_WEBSITES => [
+            'description' => 'Può gestire i siti web della propria PA.',
+        ],
+        UserPermission::MANAGE_ANALYTICS => [
+            'description' => 'Può leggere e gestire i dati analytics di un sito della propria PA.',
+        ],
+        UserPermission::READ_ANALYTICS => [
+            'description' => 'Può solo leggere i dati analytics di un sito della propria PA.',
+        ],
+        UserPermission::DO_NOTHING => [
+            'description' => 'Non può fare nulla finché non effettua la registrazione della propria PA.',
+        ],
     ],
     'password' => [
         'reset' => 'La password è stata reimpostata.',
