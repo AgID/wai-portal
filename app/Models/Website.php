@@ -2,15 +2,12 @@
 
 namespace App\Models;
 
-use App\Enums\PublicAdministrationStatus;
-use App\Enums\UserStatus;
 use App\Enums\WebsiteStatus;
 use App\Enums\WebsiteType;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Silber\Bouncer\BouncerFacade as Bouncer;
 
 /**
  * Website model.
@@ -132,21 +129,5 @@ class Website extends Model
         return $this->fill([
             'status' => WebsiteStatus::ARCHIVED,
         ])->save();
-    }
-
-    /**
-     * Get the website administrators.
-     *
-     * @return array the users list
-     */
-    public function getAdministrators(): array
-    {
-        if ($this->publicAdministration->status->is(PublicAdministrationStatus::PENDING)) {
-            return $this->publicAdministration->users()->where('status', UserStatus::PENDING)->get();
-        }
-
-        Bouncer::scope()->to($this->publicAdministration->id);
-
-        return User::whereIs('admin')->get()->all();
     }
 }
