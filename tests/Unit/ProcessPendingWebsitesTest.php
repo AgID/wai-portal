@@ -9,7 +9,6 @@ use App\Events\PublicAdministration\PublicAdministrationActivated;
 use App\Events\PublicAdministration\PublicAdministrationPurged;
 use App\Events\User\UserActivated;
 use App\Events\User\UserWebsiteAccessChanged;
-use App\Events\User\UserWebsiteAccessFailed;
 use App\Events\Website\WebsitePurging;
 use App\Exceptions\CommandErrorException;
 use App\Jobs\ProcessPendingWebsites;
@@ -25,7 +24,7 @@ use Tests\TestCase;
 /**
  * Pending websites check job test.
  */
-class CheckWebsitesTest extends TestCase
+class ProcessPendingWebsitesTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -177,16 +176,8 @@ class CheckWebsitesTest extends TestCase
             return $event->getUser()->id === $user->id;
         });
 
-        Event::assertDispatched(UserWebsiteAccessChanged::class, function ($event) use ($user) {
-            return $event->getUser()->id === $user->id && $event->getAccessType()->is(WebsiteAccessType::ADMIN);
-        });
-
         Event::assertDispatched(PublicAdministrationActivated::class, function ($event) use ($publicAdministration) {
             return $event->getPublicAdministration()->ipa_code === $publicAdministration->ipa_code;
-        });
-
-        Event::assertDispatched(UserWebsiteAccessChanged::class, function ($event) use ($user, $website) {
-            return $event->getUser()->id === $user->id && $event->getWebsite()->id === $website->id && $event->getAccessType()->is(WebsiteAccessType::ADMIN);
         });
 
         Event::assertDispatched(PendingWebsitesCheckCompleted::class, function ($event) use ($website) {
@@ -211,30 +202,30 @@ class CheckWebsitesTest extends TestCase
     public function testCheckWebsiteSecondaryActivated(): void
     {
         $userAdmin = factory(User::class)->state('active')->create();
-        $userManage = factory(User::class)->state('active')->create();
-        $userRead = factory(User::class)->state('active')->create();
+        $userWrite = factory(User::class)->state('active')->create();
+        $userView = factory(User::class)->state('active')->create();
         $userNoAccess = factory(User::class)->state('active')->create();
         $publicAdministration = factory(PublicAdministration::class)->state('active')->create();
-        $publicAdministration->users()->sync([$userAdmin->id, $userManage->id, $userRead->id, $userNoAccess->id]);
+        $publicAdministration->users()->sync([$userAdmin->id, $userWrite->id, $userView->id, $userNoAccess->id]);
         $website = factory(Website::class)->make([
             'type' => WebsiteType::SECONDARY,
             'public_administration_id' => $publicAdministration->id,
         ]);
 
         $this->app->make('analytics-service')->registerUser($userAdmin->uuid, $userAdmin->analytics_password, $userAdmin->email, config('analytics-service.admin_token'));
-        $this->app->make('analytics-service')->registerUser($userManage->uuid, $userManage->analytics_password, $userManage->email, config('analytics-service.admin_token'));
-        $this->app->make('analytics-service')->registerUser($userRead->uuid, $userRead->analytics_password, $userRead->email, config('analytics-service.admin_token'));
+        $this->app->make('analytics-service')->registerUser($userWrite->uuid, $userWrite->analytics_password, $userWrite->email, config('analytics-service.admin_token'));
+        $this->app->make('analytics-service')->registerUser($userView->uuid, $userView->analytics_password, $userView->email, config('analytics-service.admin_token'));
         $this->app->make('analytics-service')->registerUser($userNoAccess->uuid, $userNoAccess->analytics_password, $userNoAccess->email, config('analytics-service.admin_token'));
         $analyticsId = app()->make('analytics-service')->registerSite('Sito istituzionale', $website->url, $website->publicAdministration->name);
         $website->analytics_id = $analyticsId;
         $website->save();
 
         Bouncer::scope()->to($publicAdministration->id);
-        //TODO: da rivedere con la gestione dei ruoli per sito
+        session()->put('tenant_id', $publicAdministration->id);
         $userAdmin->assign('admin');
-        $userManage->assign('manager');
-        $userRead->assign('reader');
-        $userNoAccess->assign('registered');
+        $userWrite->setWriteAccessForWebsite($website);
+        $userView->setViewAccessForWebsite($website);
+        $userNoAccess->setNoAccessForWebsite($website);
 
         $client = new TrackingClient(['base_uri' => config('analytics-service.api_base_uri')]);
         $client->request('GET', 'piwik.php', [
@@ -249,17 +240,17 @@ class CheckWebsitesTest extends TestCase
         $job->handle();
 
         $this->app->make('analytics-service')->deleteUser($userAdmin->uuid, config('analytics-service.admin_token'));
-        $this->app->make('analytics-service')->deleteUser($userManage->uuid, config('analytics-service.admin_token'));
-        $this->app->make('analytics-service')->deleteUser($userRead->uuid, config('analytics-service.admin_token'));
+        $this->app->make('analytics-service')->deleteUser($userWrite->uuid, config('analytics-service.admin_token'));
+        $this->app->make('analytics-service')->deleteUser($userView->uuid, config('analytics-service.admin_token'));
         $this->app->make('analytics-service')->deleteUser($userNoAccess->uuid, config('analytics-service.admin_token'));
         $this->app->make('analytics-service')->deleteSite($website->analytics_id, config('analytics-service.admin_token'));
 
-        Event::assertDispatched(UserWebsiteAccessChanged::class, function ($event) use ($userAdmin, $userManage, $userRead, $userNoAccess, $website) {
+        Event::assertDispatched(UserWebsiteAccessChanged::class, function ($event) use ($userAdmin, $userWrite, $userView, $userNoAccess, $website) {
             logger($event->getUser()->getInfo() . ' ' . $event->getWebsite()->getInfo() . ' ' . $event->getAccessType()->description);
 
             return ($event->getUser()->id === $userAdmin->id && $event->getWebsite()->id === $website->id && $event->getAccessType()->is(WebsiteAccessType::ADMIN))
-                || ($event->getUser()->id === $userManage->id && $event->getWebsite()->id === $website->id && $event->getAccessType()->is(WebsiteAccessType::WRITE))
-                || ($event->getUser()->id === $userRead->id && $event->getWebsite()->id === $website->id && $event->getAccessType()->is(WebsiteAccessType::VIEW))
+                || ($event->getUser()->id === $userWrite->id && $event->getWebsite()->id === $website->id && $event->getAccessType()->is(WebsiteAccessType::WRITE))
+                || ($event->getUser()->id === $userView->id && $event->getWebsite()->id === $website->id && $event->getAccessType()->is(WebsiteAccessType::VIEW))
                 || ($event->getUser()->id === $userNoAccess->id && $event->getWebsite()->id === $website->id && $event->getAccessType()->is(WebsiteAccessType::NO_ACCESS));
         });
     }
@@ -285,54 +276,6 @@ class CheckWebsitesTest extends TestCase
                 && empty($event->getPurged())
                 && empty($event->getPurging())
                 && empty($event->getActivated());
-        });
-    }
-
-    /**
-     * Test job complete with failed website due to missing connected user into Analytics Service.
-     *
-     * @throws \App\Exceptions\AnalyticsServiceException if unable to connect to the Analytics Service
-     * @throws \App\Exceptions\CommandErrorException if command finishes with error
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException if unable to bind to the service
-     * @throws \GuzzleHttp\Exception\GuzzleException if unable to inject tracking request
-     */
-    public function testMissingAnalyticsUserFail(): void
-    {
-        $user = factory(User::class)->state('pending')->create();
-        $publicAdministration = factory(PublicAdministration::class)->create();
-        $publicAdministration->users()->sync($user->id);
-        $website = factory(Website::class)->create([
-            'type' => WebsiteType::PRIMARY,
-            'public_administration_id' => $publicAdministration->id,
-        ]);
-
-        $analyticsId = app()->make('analytics-service')->registerSite('Sito istituzionale', $website->url, $website->publicAdministration->name);
-        $website->analytics_id = $analyticsId;
-        $website->save();
-
-        $client = new TrackingClient(['base_uri' => config('analytics-service.api_base_uri')]);
-        $client->request('GET', 'piwik.php', [
-            'query' => [
-                'rec' => '1',
-                'idsite' => $analyticsId,
-            ],
-            'verify' => false,
-        ]);
-
-        $job = new ProcessPendingWebsites();
-        $job->handle();
-
-        $this->app->make('analytics-service')->deleteSite($website->analytics_id, config('analytics-service.admin_token'));
-
-        Event::assertDispatched(UserWebsiteAccessFailed::class, function ($event) use ($user) {
-            return $event->getUser()->id === $user->id;
-        });
-
-        Event::assertDispatched(PendingWebsitesCheckCompleted::class, function ($event) use ($website) {
-            return in_array(['website' => $website->slug], $event->getActivated(), true)
-                && empty($event->getPurged())
-                && empty($event->getPurging())
-                && empty($event->getFailed());
         });
     }
 }
