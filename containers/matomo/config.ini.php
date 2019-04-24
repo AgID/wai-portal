@@ -9,8 +9,9 @@ dbname = "matomo"
 [General]
 salt = "01106e8d05b7c61b81cbf572dccc977c"
 trusted_hosts[] = "localhost:9443"
-enable_trusted_host_check=0
+enable_trusted_host_check = 0
 force_ssl = 1
+enable_update_users_email = 0
 
 [Plugins]
 Plugins[] = "CorePluginsAdmin"
