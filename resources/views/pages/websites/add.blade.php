@@ -66,11 +66,24 @@
                     </label>
                     <select class="Form-input" id="type" name="type" aria-required="true" required>
                     <option value="">seleziona</option>{{-- //TODO: use localized enum --}}
-                    @foreach(WebsiteType::toSelectArray() as $key => $value)
-                        <option value="{{ $key }}" {{ old('type') === $key ? "selected" : "" }}>{{ $value }}</option>
+                    @foreach(WebsiteType::toSelectArray() as $value => $label)
+                        <option value="{{ $value }}" {{ old('type') == $value ? "selected" : "" }}>{{ $label }}</option>
                     @endforeach
                     </select>
                 @if ($errors->has('type'))
+                </div>
+                @endif
+            </div>
+            <div class="Form-field {{ $errors->has('usersPermissions') ? 'is-invalid' : '' }}">
+                @if ($errors->has('usersPermissions'))
+                <div class="Alert Alert--error Alert--withBg u-padding-r-top u-padding-r-bottom u-padding-r-right">
+                    <p class="u-text-p u-padding-r-bottom">{{ $errors->first('usersPermissions') }}</p>
+                @endif
+                    <label class="Form-label is-required" for="usersPermissions">
+                        Permessi{{-- //TODO: put message in lang file --}}
+                    </label>
+                    @include('partials.datatable')
+                @if ($errors->has('usersPermissions'))
                 </div>
                 @endif
             </div>

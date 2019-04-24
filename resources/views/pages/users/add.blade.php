@@ -50,22 +50,30 @@
                 </div>
                 @endif
             </div>
-            <div class="Form-field {{ $errors->has('role') ? 'is-invalid' : '' }}">
-                @if ($errors->has('role'))
+            <div class="Form-field Form-field--choose {{ $errors->has('isAdmin') ? 'is-invalid' : '' }}">
+                @if ($errors->has('isAdmin'))
                 <div class="Alert Alert--error Alert--withBg u-padding-r-top u-padding-r-bottom u-padding-r-right">
-                    <p class="u-text-p u-padding-r-bottom">{{ $errors->first('role') }}</p>
+                    <p class="u-text-p u-padding-r-bottom">{{ $errors->first('isAdmin') }}</p>
                 @endif
-                    <label class="Form-label is-required" for="role">
-                        Ruolo
-                        <small>(vedi descrizione)</small>{{-- //TODO: put message in lang file --}}
+                    <legend class="Form-legend">Ruolo</legend>
+                    <label class="Form-label Form-label--block" for="isAdmin">
+                        <input type="checkbox" class="Form-input" name="isAdmin" id="isAdmin" value="1" {{ old('isAdmin') ? 'checked' : '' }}>
+                        <span class="Form-fieldIcon" role="presentation"></span>Amministratore
                     </label>
-                    <select class="Form-input" id="role" name="role" aria-required="true" required>
-                        <option value="" selected disabled>seleziona</option>{{-- //TODO: put message in lang file --}}
-                        <option value="reader" {{ old('role') == 'reader' ? "selected" : "" }}>{{ __('auth.roles.reader') }}</option>
-                        <option value="manager" {{ old('role') == 'manager' ? "selected" : "" }}>{{ __('auth.roles.manager') }}</option>
-                        <option value="admin" {{ old('role') == 'admin' ? "selected" : "" }}>{{ __('auth.roles.admin') }}</option>
-                    </select>
-                @if ($errors->has('role'))
+                @if ($errors->has('isAdmin'))
+                </div>
+                @endif
+            </div>
+            <div class="Form-field {{ $errors->has('websitesPermissions') ? 'is-invalid' : '' }}">
+                @if ($errors->has('websitesPermissions'))
+                <div class="Alert Alert--error Alert--withBg u-padding-r-top u-padding-r-bottom u-padding-r-right">
+                    <p class="u-text-p u-padding-r-bottom">{{ $errors->first('websitesPermissions') }}</p>
+                @endif
+                    <label class="Form-label is-required" for="websitesPermissions">
+                        Permessi{{-- //TODO: put message in lang file --}}
+                    </label>
+                    @include('partials.datatable')
+                @if ($errors->has('websitesPermissions'))
                 </div>
                 @endif
             </div>
@@ -76,15 +84,4 @@
             </button>
         </div>
     </form>
-    <h4 class="u-text-h4 u-border-bottom-xxs">
-        Descrizione dei ruoli{{-- //TODO: put message in lang file --}}
-    </h4>
-    <dl class="DescriptionList">
-        <dt class="DescriptionList-Term">{{ ucfirst(__('auth.roles.reader')) }}</dt>
-        <dd class="DescriptionList-Description">{{ __('auth.roles.reader_description') }}</dd>
-        <dt class="DescriptionList-Term">{{ ucfirst(__('auth.roles.manager')) }}</dt>
-        <dd class="DescriptionList-Description">{{ __('auth.roles.manager_description') }}</dd>
-        <dt class="DescriptionList-Term">{{ ucfirst(__('auth.roles.admin')) }}</dt>
-        <dd class="DescriptionList-Description">{{ __('auth.roles.admin_description') }}</dd>
-    </dl>
 @endsection

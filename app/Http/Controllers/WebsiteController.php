@@ -2,25 +2,28 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\WebsiteAccessType;
+use App\Enums\PublicAdministrationStatus;
+use App\Enums\UserPermission;
+use App\Enums\UserStatus;
 use App\Enums\WebsiteStatus;
 use App\Enums\WebsiteType;
 use App\Events\Website\WebsiteActivated;
+use App\Events\Website\WebsiteAdded;
 use App\Exceptions\AnalyticsServiceException;
 use App\Exceptions\CommandErrorException;
+use App\Http\Requests\StorePrimaryWebsiteRequest;
+use App\Http\Requests\StoreWebsiteRequest;
 use App\Models\PublicAdministration;
 use App\Models\Website;
 use App\Traits\ActivatesWebsite;
 use App\Transformers\UsersPermissionsTransformer;
 use App\Transformers\WebsiteTransformer;
 use Ehann\RediSearch\Index;
-use Ehann\RedisRaw\PredisAdapter;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
-use Silber\Bouncer\BouncerFacade as Bouncer;
 use Yajra\Datatables\Datatables;
 
 class WebsiteController extends Controller
@@ -34,7 +37,7 @@ class WebsiteController extends Controller
      */
     public function index()
     {
-        $datatable = [
+        $websitesDatatable = [
             'columns' => [
                 ['data' => 'url', 'name' => 'URL'],
                 ['data' => 'type', 'name' => 'Tipo'],
@@ -49,7 +52,7 @@ class WebsiteController extends Controller
             'columnsOrder' => [['added_at', 'asc'], ['last_month_visits', 'desc']],
         ];
 
-        return view('pages.websites.index')->with($datatable);
+        return view('pages.websites.index')->with($websitesDatatable);
     }
 
     public function createPrimary()
@@ -64,80 +67,50 @@ class WebsiteController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param StorePrimaryWebsiteRequest $request
      *
      * @return \Illuminate\Http\Response
      */
-    public function storePrimary(Request $request)
+    public function storePrimary(StorePrimaryWebsiteRequest $request)
     {
-        $validator = validator($request->all(), [
-            'public_administration_name' => 'required',
-            'url' => 'required|unique:websites',
-            'pec' => 'email|nullable',
-            'ipa_code' => 'required|unique:public_administrations',
-            'accept_terms' => 'required',
-        ]);
-
-        $IPAIndex = new Index((new PredisAdapter())->connect(config('database.redis.ipaindex.host'), config('database.redis.ipaindex.port'), config('database.redis.ipaindex.database')), 'IPAIndex');
-
-        $result = $IPAIndex->inFields(1, ['ipa_code'])
-            ->search($request->input('ipa_code'))
-            ->getDocuments();
-
-        $pa = empty($result) ? null : $result[0];
-
-        $validator->after(function ($validator) use ($pa) {
-            if (empty($pa)) {
-                $validator->errors()->add('public_administration_name', 'La PA selezionata non esiste'); //TODO: put error message in lang file
-            }
-        });
-
-        if ($validator->fails()) {
-            return redirect()->route('websites-add-primary')
-                ->withErrors($validator)
-                ->withInput();
-        }
-
         $publicAdministration = PublicAdministration::make([
-            'ipa_code' => $pa->ipa_code,
-            'name' => $pa->name,
-            'pec_address' => $pa->pec ?? null,
-            'city' => $pa->city,
-            'county' => $pa->county,
-            'region' => $pa->region,
-            'type' => $pa->type,
-            'status' => WebsiteStatus::PENDING,
+            'ipa_code' => $request->publicAdministration['ipa_code'],
+            'name' => $request->publicAdministration['name'],
+            'pec_address' => $request->publicAdministration['pec'] ?? null,
+            'city' => $request->publicAdministration['city'],
+            'county' => $request->publicAdministration['county'],
+            'region' => $request->publicAdministration['region'],
+            'type' => $request->publicAdministration['type'],
+            'status' => PublicAdministrationStatus::PENDING,
         ]);
 
-        $analyticsId = app()->make('analytics-service')->registerSite('Sito istituzionale', $pa->site, $publicAdministration->name); //TODO: put string in lang file
-
-        //TODO: gestire meglio con CRUD siti
-        app()->make('analytics-service')->setWebsiteAccess(auth()->user()->uuid, WebsiteAccessType::VIEW, $analyticsId, config('analytics-service.admin_token'));
+        $primaryWebsiteURL = $request->publicAdministration['site'];
+        $analyticsId = app()->make('analytics-service')->registerSite('Sito istituzionale', $primaryWebsiteURL, $publicAdministration->name); //TODO: put string in lang file
 
         if (empty($analyticsId)) {
             abort(500, 'Il servizio Analytics non è disponibile'); //TODO: put error message in lang file
         }
 
         $publicAdministration->save();
-
-        Website::create([
+        $website = Website::create([
             'name' => 'Sito istituzionale', //TODO: put in lang file
-            'url' => $pa->site,
+            'url' => $primaryWebsiteURL,
             'type' => WebsiteType::PRIMARY,
             'public_administration_id' => $publicAdministration->id,
             'analytics_id' => $analyticsId,
-            'slug' => Str::slug($pa->site),
+            'slug' => Str::slug($primaryWebsiteURL),
             'status' => WebsiteStatus::PENDING,
         ]);
 
         $publicAdministration->users()->save($request->user());
-
-        $request->user()->roles()->detach();
+        // This is the first time we know which public administration the
+        // current user belongs, so we need to set the tenant id just now.
         session()->put('tenant_id', $publicAdministration->id);
-        Bouncer::scope()->to($publicAdministration->id);
-        $request->user()->assign('reader');
+        $request->user()->registerInAnalyticsService();
+        $request->user()->setViewAccessForWebsite($website);
+        $request->user()->syncWebsitesPermissionsToAnalyticsService();
 
-        logger()->info('User ' . auth()->user()->getInfo() . ' added a new website [' . $pa->site . '] as primary website of "' . $publicAdministration->name . '"');
+        event(new WebsiteAdded($website));
 
         return redirect()->route('websites-index')->withMessage(['success' => 'Il sito è stato aggiunto al progetto Web Analytics Italia.']); //TODO: put message in lang file
     }
@@ -149,44 +122,33 @@ class WebsiteController extends Controller
      */
     public function create()
     {
-        return view('pages.websites.add');
+        $usersPermissionsDatatable = [
+            'columns' => [
+                ['data' => 'name', 'name' => 'Cognome e nome'],
+                ['data' => 'email', 'name' => 'Email'],
+                ['data' => 'added_at', 'name' => 'Iscritto dal'],
+                ['data' => 'status', 'name' => 'Stato'],
+                ['data' => 'checkboxes', 'name' => 'Abilitato'],
+                ['data' => 'radios', 'name' => 'Permessi'],
+            ],
+            'source' => route('websites.users.permissions.data'),
+            'caption' => 'Elenco degli utenti presenti su Web Analytics Italia', //TODO: set title in lang file
+            'columnsOrder' => [['added_at', 'asc']],
+        ];
+
+        return view('pages.websites.add')->with($usersPermissionsDatatable);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param StoreWebsiteRequest $request
      *
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreWebsiteRequest $request)
     {
-        $validator = validator($request->all(), [
-            'name' => 'required',
-            'url' => 'required|url|unique:websites',
-            'type' => 'required|in:primary,secondary,webapp,testing',
-        ]);
-
-        $IPAIndex = new Index((new PredisAdapter())->connect(config('database.redis.ipaindex.host'), config('database.redis.ipaindex.port'), config('database.redis.ipaindex.database')), 'IPAIndex');
-
-        $domain = parse_url($request->input('url'), PHP_URL_HOST);
-        $result = $IPAIndex->inFields(1, ['site'])
-            ->search(str_replace([':', '-', '@'], ['\:', '\-', '\@'], $domain))
-            ->getDocuments();
-
-        $sameUrlInOtherPA = !empty($result) && $domain == $result[0]->site;
-
-        $validator->after(function ($validator) use ($sameUrlInOtherPA) {
-            if ($sameUrlInOtherPA) {
-                $validator->errors()->add('url', "L'indirizzo inserito appartiene ad un'altra PA."); //TODO: put error message in lang file
-            }
-        });
-
-        if ($validator->fails()) {
-            return redirect()->route('websites-add')
-                ->withErrors($validator)
-                ->withInput();
-        }
+        $publicAdministration = current_public_administration();
 
         $analyticsId = app()->make('analytics-service')->registerSite($request->input('name') . ' [' . $request->input('type') . ']', $request->input('url'), $publicAdministration->name); //TODO: put string in lang file
 
@@ -194,17 +156,41 @@ class WebsiteController extends Controller
             abort(500, 'Il servizio Analytics non è disponibile'); //TODO: put error message in lang file
         }
 
-        Website::create([
+        $website = Website::create([
             'name' => $request->input('name'),
             'url' => $request->input('url'),
             'type' => $request->input('type'),
-            'public_administration_id' => session('tenant_id'),
+            'public_administration_id' => $publicAdministration->id,
             'analytics_id' => $analyticsId,
             'slug' => Str::slug($request->input('url')),
             'status' => WebsiteStatus::PENDING,
         ]);
 
-        logger()->info('User ' . auth()->user()->getInfo() . ' added a new website "' . $validatedData['name'] . '" [' . $validatedData['url'] . '] as ' . $validatedData['type'] . ' website of "' . $publicAdministration->name . '"');
+        event(new WebsiteAdded($website));
+
+        $publicAdministration->getAdministrators()->map(function ($administrator) use ($website) {
+            $administrator->setWriteAccessForWebsite($website);
+            $administrator->syncWebsitesPermissionsToAnalyticsService();
+        });
+        $usersEnabled = $request->input('usersEnabled') ?? [];
+        $usersPermissions = $request->input('usersPermissions') ?? [];
+        $publicAdministration->getNotAdministrators()->map(function ($user) use ($website, $usersEnabled, $usersPermissions) {
+            if (!emtpy($usersPermissions[$user->id]) && UserPermission::MANAGE_ANALYTICS === $usersPermissions[$user->id]) {
+                $user->setWriteAccessForWebsite($website);
+            }
+
+            if (!emtpy($usersPermissions[$user->id]) && UserPermission::READ_ANALYTICS === $usersPermissions[$user->id]) {
+                $user->setViewForWebsite($website);
+            }
+
+            if (emtpy($usersEnabled[$user->id])) {
+                $user->setNoAccessForWebsite($website);
+            }
+
+            if ($user->status->is(UserStatus::ACTIVE)) {
+                $user->syncWebsitesPermissionsToAnalyticsService();
+            }
+        });
 
         return redirect()->route('websites-index')->withMessage(['success' => 'Il sito è stato aggiunto al progetto Web Analytics Italia.']); //TODO: put message in lang file
     }
@@ -267,11 +253,25 @@ class WebsiteController extends Controller
      */
     public function edit(Website $website)
     {
+        $usersPermissionsDatatable = [
+            'columns' => [
+                ['data' => 'name', 'name' => 'Cognome e nome'],
+                ['data' => 'email', 'name' => 'Email'],
+                ['data' => 'added_at', 'name' => 'Iscritto dal'],
+                ['data' => 'status', 'name' => 'Stato'],
+                ['data' => 'checkboxes', 'name' => 'Abilitato'],
+                ['data' => 'radios', 'name' => 'Permessi'],
+            ],
+            'source' => route('websites.users.permissions.data'),
+            'caption' => 'Elenco degli utenti presenti su Web Analytics Italia', //TODO: set title in lang file
+            'columnsOrder' => [['added_at', 'asc']],
+        ];
+
         if ($website->type->is(WebsiteType::PRIMARY)) {
             abort(403, 'Non è permesso effettuare modifiche al sito istituzionale.');
         }
 
-        return view('pages.websites.edit')->with(['website' => $website]);
+        return view('pages.websites.edit')->with(['website' => $website])->with($usersPermissionsDatatable);
     }
 
     /**
@@ -337,8 +337,8 @@ class WebsiteController extends Controller
     public function dataJson()
     {
         return Datatables::of(current_public_administration()->websites())
-                ->setTransformer(new WebsiteTransformer())
-                ->make(true);
+            ->setTransformer(new WebsiteTransformer())
+            ->make(true);
     }
 
     /**
