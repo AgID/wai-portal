@@ -4,7 +4,7 @@ LABEL maintainer="Davide Porrovecchio <davide.porrovecchio@agid.gov.it>"
 
 ADD nginx.conf /etc/nginx/
 
-RUN adduser -D -H -u 1000 -s /bin/bash www-data
+RUN adduser -D -H -u 1000 -s /bin/sh -G www-data -g www-data www-data
 
 ADD ./certs/server.crt /var/ssl/
 ADD ./certs/server.key /var/ssl/
