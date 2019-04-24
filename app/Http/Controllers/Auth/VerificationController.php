@@ -123,7 +123,7 @@ class VerificationController extends Controller
             }
         }
 
-        $user->status = $newStatus;
+        $user->status = $newStatus ?? $user->status->value;
         $user->email_verified_at = $user->freshTimestamp();
 
         return $user->save();

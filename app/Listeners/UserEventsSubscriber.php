@@ -5,6 +5,8 @@ namespace App\Listeners;
 use App\Events\User\UserActivated;
 use App\Events\User\UserActivationFailed;
 use App\Events\User\UserInvited;
+use App\Events\User\UserUpdated;
+use App\Events\User\UserUpdating;
 use App\Events\User\UserWebsiteAccessChanged;
 use App\Events\User\UserWebsiteAccessFailed;
 use Illuminate\Auth\Events\Registered;
@@ -36,6 +38,7 @@ class UserEventsSubscriber
         $user = $event->getUser();
         $invitedBy = $event->getInvitedBy();
         logger()->info('New user invited: ' . $user->getInfo() . ' by ' . $invitedBy->getInfo()); //TODO: notify me!
+        //TODO: if the new user is invited as an admin then notify the public administration via PEC
     }
 
     /**
@@ -63,6 +66,32 @@ class UserEventsSubscriber
     {
         $user = $event->getUser();
         logger()->error('User ' . $user->getInfo() . ' activation failed');
+    }
+
+    /**
+     * Handle user updating event.
+     *
+     * @param UserUpdating $event the event
+     */
+    public function onUpdating(UserUpdating $event): void
+    {
+        $user = $event->getUser();
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
+        }
+    }
+
+    /**
+     * Handle user update event.
+     *
+     * @param UserUpdated $event the event
+     */
+    public function onUpdated(UserUpdated $event): void
+    {
+        $user = $event->getUser();
+        if ($user->isDirty('email')) {
+            $user->sendEmailVerificationNotification();
+        }
     }
 
     /**
@@ -121,6 +150,16 @@ class UserEventsSubscriber
         $events->listen(
             'App\Events\User\UserActivationFailed',
             'App\Listeners\UserEventsSubscriber@onActivationFailed'
+        );
+
+        $events->listen(
+            'App\Events\User\UserUpdating',
+            'App\Listeners\UserEventsSubscriber@onUpdating'
+        );
+
+        $events->listen(
+            'App\Events\User\UserUpdated',
+            'App\Listeners\UserEventsSubscriber@onUpdated'
         );
 
         $events->listen(

@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Enums\UserStatus;
+use App\Events\User\UserUpdated;
+use App\Events\User\UserUpdating;
 use App\Notifications\VerifyEmail;
 use App\Notifications\WebsiteActivatedUserEmail;
 use App\Notifications\WebsiteArchivedUserEmail;
@@ -66,6 +68,16 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+    ];
+
+    /**
+     * The event map for the model.
+     *
+     * @var array
+     */
+    protected $dispatchesEvents = [
+        'updating' => UserUpdating::class,
+        'updated' => UserUpdated::class,
     ];
 
     /**
