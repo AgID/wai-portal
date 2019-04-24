@@ -5,11 +5,11 @@ namespace App\Http\Controllers\Auth;
 use App\Enums\UserPermission;
 use App\Enums\UserRole;
 use App\Enums\UserStatus;
+use App\Events\User\UserActivated;
 use App\Http\Controllers\Controller;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 
 class VerificationController extends Controller
 {
@@ -112,25 +112,14 @@ class VerificationController extends Controller
 
                     return app()->make('SPIDAuth')->logout();
                 }
-
                 $user->fill([
                     'spidCode' => $SPIDUser->spidCode,
                     'name' => $SPIDUser->name,
                     'familyName' => $SPIDUser->familyName,
-                    'partial_analytics_password' => Str::random(rand(32, 48)),
                 ]);
-
                 $newStatus = UserStatus::ACTIVE;
 
-                // To be moved in user creation
-                // $analyticsService = app()->make('analytics-service');
-
-                // $analyticsService->registerUser($user->email, $user->analytics_password, $user->email);
-
-                // $access = $user->can('manage-analytics') ? 'admin' : 'view';
-                // foreach ($user->getWebsites() as $website) {
-                //     $analyticsService->setWebsiteAccess($user->email, $access, $website->analytics_id);
-                // }
+                event(new UserActivated($user));
             }
         }
 

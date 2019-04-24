@@ -4,16 +4,10 @@ namespace App\Traits;
 
 use App\Enums\PublicAdministrationStatus;
 use App\Enums\UserStatus;
-use App\Enums\WebsiteAccessType;
 use App\Enums\WebsiteStatus;
 use App\Events\PublicAdministration\PublicAdministrationActivated;
 use App\Events\User\UserActivated;
-use App\Events\User\UserWebsiteAccessChanged;
-use App\Events\User\UserWebsiteAccessFailed;
-use App\Exceptions\AnalyticsServiceException;
-use App\Exceptions\CommandErrorException;
 use App\Models\Website;
-use BenSampo\Enum\Exceptions\InvalidEnumMemberException;
 use Silber\Bouncer\BouncerFacade as Bouncer;
 
 /**
@@ -74,26 +68,6 @@ trait ActivatesWebsite
             }
 
             event(new PublicAdministrationActivated($publicAdministration));
-        }
-
-        foreach ($publicAdministration->users as $user) {
-            try {
-                //TODO: da modificare com l'implementazione dei permessi per sito
-                if ($user->isAn('admin')) {
-                    $access = WebsiteAccessType::ADMIN;
-                } elseif ($user->isA('manager')) {
-                    $access = WebsiteAccessType::WRITE;
-                } elseif ($user->isA('reader')) {
-                    $access = WebsiteAccessType::VIEW;
-                } else {
-                    $access = WebsiteAccessType::NO_ACCESS;
-                }
-                app()->make('analytics-service')->setWebsiteAccess($user->uuid, $access, $website->analytics_id, $tokenAuth);
-
-                event(new UserWebsiteAccessChanged($user, $website, new WebsiteAccessType($access)));
-            } catch (AnalyticsServiceException | InvalidEnumMemberException | CommandErrorException $exception) {
-                event(new UserWebsiteAccessFailed($user, $website, $exception->getMessage()));
-            }
         }
     }
 }
