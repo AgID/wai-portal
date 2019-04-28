@@ -6,9 +6,9 @@
 
 # docker data
 /containers/data
-/containers/application/data
-/containers/logs/**/*
+/containers/logs
 /containers/.env
+/containers/docker-compose.override.yml
 /containers/**/xdebug.ini
 
 # testing
@@ -22,6 +22,7 @@ TODO
 .php_cs.cache
 .idea
 .DS_Store
+.phpunit.result.cache
 
 # generated files
 .env
@@ -33,10 +34,9 @@ TODO
 /public/web-toolkit
 
 # ignored for security reasons
-/env/build.properties
-/env/build.properties.staging
-/containers/nginx/conf/application.staging.conf
-/containers/nginx/conf/matomo.staging.conf
+/env/build.properties.*
+!/env/build.properties.example
+!/env/build.properties.testing
 /hosts.yml
 /ssh_keys
 /spid_cert
