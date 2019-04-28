@@ -12,116 +12,22 @@
     </if>
     <!-- Load properties from file -->
     <if>
-        <available file="env/build.properties" type="file" property="ignored"/>
+        <available file="env/build.properties.${env.APP_ENV}" type="file" property="ignored"/>
         <then>
-            <property file="env/build.properties"/>
+            <property file="env/build.properties.${env.APP_ENV}"/>
         </then>
     </if>
 
-    <!-- Target: clear -->
-    <target name="clear" depends="clean">
-    </target>
-
-    <!-- Target: clean -->
-    <target name="clean">
-        <echo msg="Cleaning environment..."/>
-        <!-- Set Docker .env file according to current environment -->
-        <echo message="Setting containers environment..."/>
-        <copy file="env/env-containers-${env.APP_ENV}" tofile="containers/.env" overwrite="true"/>
-        <echo msg="Deleting containers..."/>
-        <!-- Stopping and deleting running containers -->
-        <if>
-            <available file="containers" type="dir" property="ignored"/>
-            <then>
-                <echo msg="Stopping Docker containers currently running..."/>
-                <exec command="docker-compose down -v" dir="containers" passthru="true" checkreturn="true"/>
-            </then>
-        </if>
-        <!-- Delete containers data directory -->
-        <echo msg="Deleting containers data directory...."/>
-        <delete dir="containers/data" includeemptydirs="true" quiet="true"/>
-        <delete dir="containers/application/data" includeemptydirs="true" quiet="true"/>
-        <!-- Delete testing db file -->
-        <echo msg="Deleting testing database file...."/>
-        <delete file="database/testing.sqlite" quiet="true"/>
-        <!-- Delete containers logs directory -->
-        <echo msg="Deleting containers logs directory...."/>
-        <delete quiet="true">
-            <fileset dir="containers/logs">
-                <include name="**/*.log"/>
-                <include name="*.log"/>
-                <include name="*"/>
-            </fileset>
-        </delete>
-        <!-- Delete node_modules directory -->
-        <echo msg="Deleting node_modules directory...."/>
-        <delete dir="node_modules" includeemptydirs="true" quiet="true"/>
-        <!-- Delete environment files -->
-        <echo msg="Deleting environment files...."/>
-        <delete file=".env" quiet="true"/>
-        <delete file="containers/.env" quiet="true"/>
-        <delete quiet="true">
-            <fileset dir=".">
-                <include name=".env.dusk.*"/>
-            </fileset>
-        </delete>
-    </target>
-
-    <!-- Target: clean -->
-    <target name="clean-deep" depends="clean">
-        <echo msg="Cleaning environment..."/>
-        <!-- Set Docker .env file according to current environment -->
-        <echo message="Setting containers environment..."/>
-        <copy file="env/env-containers-${env.APP_ENV}" tofile="containers/.env" overwrite="true"/>
-        <echo msg="Deleting images..."/>
-        <!-- Stopping and deleting running containers and images -->
-        <if>
-            <available file="containers" type="dir" property="ignored"/>
-            <then>
-                <echo msg="Stopping Docker containers currently running..."/>
-                <exec command="docker-compose down --rmi 'local' -v" dir="containers" passthru="true" checkreturn="true"/>
-            </then>
-        </if>
-    </target>
-
-    <!-- Target: prepare -->
-    <target name="prepare">
-        <echo msg="Preparing ${env.APP_ENV} environment..."/>
-        <!-- Set Docker .env file according to current environment -->
-        <echo message="Setting containers environment..."/>
-        <php function="md5" returnProperty="HASHED_MATOMO_ROOT_PASSWORD">
-            <param value="${MATOMO_ROOT_PASSWORD}"/>
-        </php>
-        <php function="password_hash" returnProperty="HASHED_MATOMO_ROOT_PASSWORD">
-            <param value="${HASHED_MATOMO_ROOT_PASSWORD}"/>
-            <param value="1"/> <!-- PHP constant PASSWORD_BCRYPT is 1 -->
-        </php>
-        <copy file="env/env-containers-${env.APP_ENV}" tofile="containers/.env" overwrite="true">
+    <!-- Target: compile-template -->
+    <target name="compile-template">
+        <copy file="${templateSrc}" tofile="${templateDest}" overwrite="true">
             <filterchain>
                 <replacetokens>
-                    <token key="MARIADB_DATABASE" value="${MARIADB_DATABASE}" />
-                    <token key="MARIADB_USER" value="${MARIADB_USER}" />
-                    <token key="MARIADB_PASSWORD" value="${MARIADB_PASSWORD}" />
-                    <token key="MARIADB_ROOT_PASSWORD" value="${MARIADB_ROOT_PASSWORD}" />
-                    <token key="MATOMO_ROOT_USER" value="${MATOMO_ROOT_USER}" />
-                    <token key="MATOMO_ROOT_PASSWORD" value="${HASHED_MATOMO_ROOT_PASSWORD}" />
-                    <token key="MATOMO_ROOT_APIKEY" value="${MATOMO_ROOT_APIKEY}" />
-                </replacetokens>
-            </filterchain>
-        </copy>
-        <!-- Set Laravel .env file according to current environment -->
-        <echo message="Setting Laravel environment..."/>
-        <php function="random_bytes" returnProperty="APP_SALT">
-            <param value="32"/>
-        </php>
-        <php function="bin2hex" returnProperty="APP_SALT">
-            <param value="${APP_SALT}"/>
-        </php>
-        <copy file="env/env-laravel-${env.APP_ENV}" tofile=".env" overwrite="true">
-            <filterchain>
-                <replacetokens>
-                    <token key="HOSTNAME" value="${HOSTNAME}" />
+                    <token key="ENV" value="${env.APP_ENV}"/>
+                    <token key="APP_DEBUG" value="${APP_DEBUG}" />
                     <token key="APP_SALT" value="${APP_SALT}" />
+                    <token key="HOSTNAME" value="${HOSTNAME}" />
+                    <token key="APP_VERSION" value="${APP_VERSION}" />
                     <token key="CRON_TOKEN" value="${CRON_TOKEN}" />
                     <token key="PENDING_WEBSITE_WARNING" value="${PENDING_WEBSITE_WARNING}" />
                     <token key="PENDING_WEBSITE_REMOVE" value="${PENDING_WEBSITE_REMOVE}" />
@@ -132,6 +38,7 @@
                     <token key="MARIADB_DATABASE" value="${MARIADB_DATABASE}" />
                     <token key="MARIADB_USER" value="${MARIADB_USER}" />
                     <token key="MARIADB_PASSWORD" value="${MARIADB_PASSWORD}" />
+                    <token key="MARIADB_ROOT_PASSWORD" value="${MARIADB_ROOT_PASSWORD}" />
                     <token key="MAIL_HOST" value="${MAIL_HOST}" />
                     <token key="MAIL_PORT" value="${MAIL_PORT}" />
                     <token key="MAIL_USERNAME" value="${MAIL_USERNAME}" />
@@ -148,13 +55,94 @@
                     <token key="ANALYTICS_API_BASE_URL" value="${ANALYTICS_API_BASE_URL}" />
                     <token key="ANALYTICS_API_SSL_VERIFY" value="${ANALYTICS_API_SSL_VERIFY}" />
                     <token key="ANALYTICS_PUBLIC_URL" value="${ANALYTICS_PUBLIC_URL}" />
+                    <token key="MATOMO_ROOT_USER" value="${MATOMO_ROOT_USER}" />
+                    <token key="MATOMO_ROOT_PASSWORD" value="${HASHED_MATOMO_ROOT_PASSWORD}" />
+                    <token key="MATOMO_ROOT_APIKEY" value="${MATOMO_ROOT_APIKEY}" />
+                    <token key="MATOMO_VERSION" value="${MATOMO_VERSION}" />
                 </replacetokens>
             </filterchain>
         </copy>
+    </target>
+
+    <!-- Target: set-docker-compose-env -->
+    <target name="set-docker-compose-env">
+    <!-- Set docker-compose .env file according to current environment -->
+    <echo message="Setting docker-compose environment..."/>
+        <!-- Calculated properties -->
+        <echo msg="Calculating properties..."/>
+        <php function="random_bytes" returnProperty="APP_SALT">
+            <param value="32"/>
+        </php>
+        <php function="bin2hex" returnProperty="APP_SALT">
+            <param value="${APP_SALT}"/>
+        </php>
+        <php function="md5" returnProperty="HASHED_MATOMO_ROOT_PASSWORD">
+            <param value="${MATOMO_ROOT_PASSWORD}"/>
+        </php>
+        <php function="password_hash" returnProperty="HASHED_MATOMO_ROOT_PASSWORD">
+            <param value="${HASHED_MATOMO_ROOT_PASSWORD}"/>
+            <param value="1"/> <!-- PHP constant PASSWORD_BCRYPT is 1 -->
+        </php>
+        <if>
+            <available file="containers/docker-compose.${env.APP_ENV}.yml" type="file" property="ignored"/>
+            <then>
+                <copy file="containers/docker-compose.${env.APP_ENV}.yml" tofile="containers/docker-compose.override.yml" overwrite="true"/>
+            </then>
+        </if>
+        <phingcall target="compile-template">
+            <property name="templateSrc" value="env/env-containers.template" />
+            <property name="templateDest" value="containers/.env" />
+        </phingcall>
+    </target>
+
+    <!-- Target: clear alias of clean -->
+    <target name="clear" depends="clean">
+    </target>
+
+    <!-- Target: clean -->
+    <target name="clean" depends="set-docker-compose-env">
+        <echo msg="Cleaning environment..."/>
+        <!-- Delete containers data directory -->
+        <echo msg="Deleting containers data directory...."/>
+        <delete dir="containers/data" includeemptydirs="true" quiet="true"/>
+        <!-- Delete testing db file -->
+        <echo msg="Deleting testing database file...."/>
+        <delete file="database/testing.sqlite" quiet="true"/>
+        <!-- Delete containers logs directory -->
+        <echo msg="Deleting containers logs directory...."/>
+        <delete dir="containers/logs" includeemptydirs="true" quiet="true"/>
+        <echo msg="Deleting containers and images..."/>
+        <!-- Stopping and deleting running containers and images -->
+        <if>
+            <available file="containers" type="dir" property="ignored"/>
+            <then>
+                <echo msg="Stopping Docker containers currently running..."/>
+                <exec command="docker-compose down --rmi 'local' -v" dir="containers" passthru="true" checkreturn="true"/>
+            </then>
+        </if>
+        <echo msg="Deleting environment files...."/>
+        <delete file=".env" quiet="true"/>
+        <delete file="containers/.env" quiet="true"/>
+        <delete file="containers/docker-compose.override.yml" quiet="true"/>
+        <delete quiet="true">
+            <fileset dir=".">
+                <include name=".env.dusk.*"/>
+            </fileset>
+        </delete>
+    </target>
+
+    <!-- Target: prepare -->
+    <target name="prepare" depends="set-docker-compose-env">
+        <echo msg="Preparing ${env.APP_ENV} environment..."/>
+        <!-- Set Laravel .env file according to current environment -->
+        <echo message="Setting Laravel environment..."/>
+        <phingcall target="compile-template">
+            <property name="templateSrc" value="env/env-laravel.template" />
+            <property name="templateDest" value=".env" />
+        </phingcall>
         <!-- Create a copy of xdebug.ini -->
-        <echo message="Copying xdebug.ini files..."/>
+        <echo message="Setting xdebug.ini files..."/>
         <copy file="containers/php-fpm/xdebug.template.ini" tofile="containers/php-fpm/xdebug.ini" overwrite="true"/>
-        <copy file="containers/workspace/xdebug.template.ini" tofile="containers/workspace/xdebug.ini" overwrite="true"/>
         <if>
             <or>
                 <equals arg1="${env.APP_ENV}" arg2="local"/>
@@ -164,47 +152,31 @@
                 <!-- Set value of xdebug ide key to configured xdebug ide key -->
                 <echo message="Setting XDEBUG IDE KEY to ${XDEBUG_IDEKEY} ..."/>
                 <replaceregexp file="containers/php-fpm/xdebug.ini" match="xdebug.idekey=(\S*)" replace="xdebug.idekey=${XDEBUG_IDEKEY}"/>
-                <replaceregexp file="containers/workspace/xdebug.ini" match="xdebug.idekey=(\S*)" replace="xdebug.idekey=${XDEBUG_IDEKEY}"/>
                 <!-- Set XDEBUG remote host -->
                 <echo message="Setting XDEBUG remote host to ${XDEBUG_REMOTE_HOST} ..."/>
                 <replaceregexp file="containers/php-fpm/xdebug.ini" match="xdebug.remote_host=(\S*)" replace="xdebug.remote_host=${XDEBUG_REMOTE_HOST}"/>
-                <replaceregexp file="containers/workspace/xdebug.ini" match="xdebug.remote_host=(\S*)" replace="xdebug.remote_host=${XDEBUG_REMOTE_HOST}"/>
                 <!-- Set dusk .env file according to current environment -->
                 <echo msg="Setting Laravel Dusk .env file according to current environment..."/>
-                <copy file="env/env-dusk-${env.APP_ENV}" tofile=".env.dusk.${env.APP_ENV}" overwrite="true">
-                    <filterchain>
-                        <replacetokens>
-                            <token key="MAIL_HOST" value="${MAIL_HOST}" />
-                            <token key="MAIL_PORT" value="${MAIL_PORT}" />
-                            <token key="MAIL_USERNAME" value="${MAIL_USERNAME}" />
-                            <token key="MAIL_PASSWORD" value="${MAIL_PASSWORD}" />
-                            <token key="MAIL_ENCRYPTION" value="${MAIL_ENCRYPTION}" />
-                            <token key="PEC_HOST" value="${PEC_HOST}" />
-                            <token key="PEC_PORT" value="${PEC_PORT}" />
-                            <token key="PEC_USERNAME" value="${PEC_USERNAME}" />
-                            <token key="PEC_PASSWORD" value="${PEC_PASSWORD}" />
-                            <token key="PEC_ENCRYPTION" value="${PEC_ENCRYPTION}" />
-                            <token key="ANALYTICS_ADMIN_TOKEN" value="${MATOMO_ROOT_APIKEY}" />
-                            <token key="ANALYTICS_API_BASE_URL" value="${ANALYTICS_API_BASE_URL}" />
-                            <token key="ANALYTICS_API_SSL_VERIFY" value="${ANALYTICS_API_SSL_VERIFY}" />
-                            <token key="ANALYTICS_PUBLIC_URL" value="${ANALYTICS_PUBLIC_URL}" />
-                        </replacetokens>
-                    </filterchain>
-                </copy>
+                <phingcall target="compile-template">
+                    <property name="templateSrc" value="env/env-dusk.template" />
+                    <property name="templateDest" value=".env.dusk.${env.APP_ENV}" />
+                </phingcall>
             </then>
         </if>
+        <!-- Install php dependencies -->
+        <echo msg="Installing php dependencies..."/>
+        <exec command="composer install" passthru="true" checkreturn="true"/>
         <!-- Set a new application key -->
         <echo msg="Setting a new application secret key..."/>
         <exec command="php artisan key:generate" checkreturn="true"/>
-        <!-- Install node modules -->
-        <echo msg="Installing node modules..."/>
+        <!-- Install javascript dependencies -->
+        <echo msg="Installing javascript dependencies..."/>
         <exec command="npm install" passthru="true" checkreturn="true"/>
         <!-- Run laravel mix -->
         <echo msg="Compiling assets with Laravel Mix..."/>
         <if>
             <or>
                 <equals arg1="${env.APP_ENV}" arg2="local"/>
-                <equals arg1="${env.APP_ENV}" arg2="testing"/>
             </or>
             <then>
                 <exec command="npm run dev" passthru="true" checkreturn="true"/>
@@ -216,24 +188,36 @@
         <!--
           If in testing environment copy application files in a location for
           being included in the application container. This is necessary because
-          CircleCI doesn't support volume mount from docker host.
+          CircleCI doesn't support bind mount from running host.
         -->
         <if>
             <equals arg1="${env.APP_ENV}" arg2="testing"/>
             <then>
-                <echo msg="Copying application files..."/>
-                <copy todir="containers/application/data">
-                    <fileset dir=".">
-                        <exclude name="containers/**"/>
-                    </fileset>
-                </copy>
-                <copy todir="containers/application/logs">
-                    <fileset dir="containers/logs">
-                    </fileset>
-                </copy>
-                <property name="MARIADB_DATABASE" value="default"/>
-                <property name="MARIADB_ROOT_PASSWORD" value="root"/>
+                <echo msg="Copying application files to application-code volume"/>
+                <exec command="docker run -v application-code:/var/www/ -v application-logs:/var/log/ --name application-container busybox mkdir -p /var/log/nginx" checkreturn="true"/>
+                <exec command="docker cp app application-container:/var/www/" checkreturn="true"/>
+                <exec command="docker cp bootstrap application-container:/var/www/" checkreturn="true"/>
+                <exec command="docker cp config application-container:/var/www/" checkreturn="true"/>
+                <exec command="docker cp database application-container:/var/www/" checkreturn="true"/>
+                <exec command="docker cp public application-container:/var/www/" checkreturn="true"/>
+                <exec command="docker cp resources application-container:/var/www/" checkreturn="true"/>
+                <exec command="docker cp routes application-container:/var/www/" checkreturn="true"/>
+                <exec command="docker cp storage application-container:/var/www/" checkreturn="true"/>
+                <exec command="docker cp tests application-container:/var/www/" checkreturn="true"/>
+                <exec command="docker cp vendor application-container:/var/www/" checkreturn="true"/>
+                <exec command="docker cp .env application-container:/var/www/" checkreturn="true"/>
+                <exec command="docker cp .env.dusk.testing application-container:/var/www/" checkreturn="true"/>
+                <exec command="docker cp artisan application-container:/var/www/" checkreturn="true"/>
+                <exec command="docker cp composer.json application-container:/var/www/" checkreturn="true"/>
+                <exec command="docker cp composer.lock application-container:/var/www/" checkreturn="true"/>
+                <exec command="docker cp phpunit.dusk.xml application-container:/var/www/" checkreturn="true"/>
+                <exec command="docker cp phpunit.xml application-container:/var/www/" checkreturn="true"/>
             </then>
+            <else>
+                <echo msg="Create log directories if needed..."/>
+                <mkdir dir="containers/logs/nginx"/>
+                <mkdir dir="containers/logs/php"/>
+            </else>
         </if>
     </target>
 
@@ -242,9 +226,17 @@
         <echo msg="Building..."/>
         <!-- Start containers -->
         <echo msg="Starting Docker containers..."/>
-        <exec command="docker-compose up -d --build nginx mariadb redis mailhog workspace matomo queue-worker spid-testenv" dir="containers" passthru="true" checkreturn="true"/>
+        <if>
+            <equals arg1="${env.APP_ENV}" arg2="testing"/>
+            <then>
+                <exec command="docker-compose up -d --build nginx mariadb redis php-fpm matomo" dir="containers" passthru="true" checkreturn="true"/>
+            </then>
+            <else>
+                <exec command="docker-compose up -d --build nginx mariadb redis mailhog php-fpm matomo queue-worker spid-testenv" dir="containers" passthru="true" checkreturn="true"/>
+            </else>
+        </if>
         <!-- Wait for mariadb container to start gracefully -->
-        <echo msg="Waiting for database container to start gracefully..."/>
+        <echo msg="Waiting for database container to be ready..."/>
         <retry retryDelay="5" retryCount="12">
             <exec command="docker-compose exec mariadb mysql -u root -p${MARIADB_ROOT_PASSWORD} ${MARIADB_DATABASE} -e 'select 1;'" dir="containers" checkreturn="true"/>
         </retry>
@@ -254,21 +246,22 @@
             <not><equals arg1="${checkMatomo}" arg2="0"/></not>
             <then>
                 <echo msg="Installing Matomo database..."/>
-                <exec command="docker-compose exec mariadb bash /opt/install_matomo_db.sh" dir="containers" checkreturn="true"/>
-                <exec command="docker-compose exec mariadb bash /opt/install_disable_tracking_plugin.sh" dir="containers" checkreturn="true"/>
+                <exec command="docker-compose exec mariadb bash /opt/matomo-install/install_matomo_db.sh" dir="containers" checkreturn="true"/>
+                <exec command="docker-compose exec mariadb bash /opt/matomo-install/install_disable_tracking_plugin.sh" dir="containers" checkreturn="true"/>
+                <exec command="docker-compose exec php-fpm rm -Rf /opt/matomo-install/" dir="containers" checkreturn="true"/>
                 <exec command="docker-compose exec php-fpm chown -R www-data:www-data /opt/matomo" dir="containers" passthru="true" checkreturn="true"/>
             </then>
         </if>
         <!-- Run migrations -->
         <echo msg="Running database migrations..."/>
-        <exec command="docker-compose exec workspace php artisan migrate" dir="containers" passthru="true" checkreturn="true"/>
+        <exec command="docker-compose exec php-fpm php artisan migrate" dir="containers" passthru="true" checkreturn="true"/>
         <!-- Create roles -->
         <exec command="docker-compose exec mariadb mysql -u root -p${MARIADB_ROOT_PASSWORD} ${MARIADB_DATABASE} -e 'select * from abilities where id=1'" dir="containers" outputProperty="checkRoles"/>
         <if>
             <equals arg1="${checkRoles}" arg2=""/>
             <then>
                 <echo msg="Creating application roles..."/>
-                <exec command="docker-compose exec workspace php artisan app:init-permissions" dir="containers" passthru="true" checkreturn="true"/>
+                <exec command="docker-compose exec php-fpm php artisan app:init-permissions" dir="containers" passthru="true" checkreturn="true"/>
             </then>
         </if>
         <!-- Database seed -->
@@ -277,19 +270,19 @@
             <equals arg1="${checkDBseed}" arg2=""/>
             <then>
                 <echo msg="Seeding database..."/>
-                <exec command="docker-compose exec workspace php artisan db:seed" dir="containers" passthru="true" checkreturn="true"/>
+                <exec command="docker-compose exec php-fpm php artisan db:seed" dir="containers" passthru="true" checkreturn="true"/>
             </then>
         </if>
         <!-- Clear sessions and caches -->
         <echo msg="Clearing sessions and caches..."/>
-        <exec command="docker-compose exec workspace php artisan view:clear" dir="containers" passthru="true" checkreturn="true"/>
-        <exec command="docker-compose exec workspace php artisan route:clear" dir="containers" passthru="true" checkreturn="true"/>
-        <exec command="docker-compose exec workspace php artisan config:clear" dir="containers" passthru="true" checkreturn="true"/>
-        <exec command="docker-compose exec workspace php artisan cache:clear" dir="containers" passthru="true" checkreturn="true"/>
-        <exec command="docker-compose exec workspace php artisan clear-compiled" dir="containers" passthru="true" checkreturn="true"/>
+        <exec command="docker-compose exec php-fpm php artisan view:clear" dir="containers" passthru="true" checkreturn="true"/>
+        <exec command="docker-compose exec php-fpm php artisan route:clear" dir="containers" passthru="true" checkreturn="true"/>
+        <exec command="docker-compose exec php-fpm php artisan config:clear" dir="containers" passthru="true" checkreturn="true"/>
+        <exec command="docker-compose exec php-fpm php artisan cache:clear" dir="containers" passthru="true" checkreturn="true"/>
+        <exec command="docker-compose exec php-fpm php artisan clear-compiled" dir="containers" passthru="true" checkreturn="true"/>
         <!-- Populate IPA list -->
         <echo msg="Populating IPA list..."/>
-        <exec command="docker-compose exec workspace php artisan app:update-ipa -S" dir="containers" passthru="true" checkreturn="true"/>
+        <exec command="docker-compose exec php-fpm php artisan app:update-ipa -S" dir="containers" passthru="true" checkreturn="true"/>
         <echo msg="Deleting sessions..."/>
         <delete>
             <fileset dir="storage/framework/sessions">
@@ -316,22 +309,22 @@
         </if>
         <!-- Set permissions -->
         <echo msg="Setting permissions..."/>
-        <exec command="docker-compose exec workspace bash -c 'rm -f database/testing.sqlite; touch database/testing.sqlite'" dir="containers"/>
-        <exec command="docker-compose exec workspace bash -c 'touch storage/logs/testing.log'" dir="containers"/>
+        <exec command="docker-compose exec php-fpm bash -c 'rm -f database/testing.sqlite; touch database/testing.sqlite'" dir="containers"/>
+        <exec command="docker-compose exec php-fpm bash -c 'touch storage/logs/testing.log'" dir="containers"/>
         <exec command="docker-compose exec php-fpm chown -R www-data:www-data storage" dir="containers" passthru="true" checkreturn="true"/>
         <exec command="docker-compose exec php-fpm chown -R www-data:www-data database" dir="containers" passthru="true" checkreturn="true"/>
         <!-- Execute phpunit to run unit tests -->
         <echo msg="Running unit tests [PHPUnit]..."/>
-        <exec command="docker-compose exec workspace bin/phpunit" dir="containers" passthru="true" checkreturn="true"/>
+        <exec command="docker-compose exec php-fpm vendor/phpunit/phpunit/phpunit" dir="containers" passthru="true" checkreturn="true"/>
         <!-- Execute dusk to run browser tests -->
         <echo msg="Running browser tests [Laravel Dusk]..."/>
-        <exec command="docker-compose exec workspace php artisan dusk" dir="containers" passthru="true" checkreturn="true"/>
+        <exec command="docker-compose exec php-fpm php artisan dusk" dir="containers" passthru="true" checkreturn="true"/>
         <!-- Restore the IPA list after tests -->
         <if>
             <equals arg1="${env.APP_ENV}" arg2="local"/>
             <then>
                 <echo msg="Restoring IPA list after tests..."/>
-                <exec command="docker-compose exec workspace php artisan app:update-ipa -S" dir="containers" passthru="true" checkreturn="true"/>
+                <exec command="docker-compose exec php-fpm php artisan app:update-ipa -S" dir="containers" passthru="true" checkreturn="true"/>
             </then>
         </if>
     </target>
@@ -358,19 +351,8 @@
             <available file="containers" type="dir" property="ignored"/>
             <then>
                 <echo msg="Starting Docker containers..."/>
-                <exec command="docker-compose up -d nginx mariadb redis mailhog workspace queue-worker spid-testenv" dir="containers" passthru="true" checkreturn="true"/>
+                <exec command="docker-compose up -d nginx mariadb redis mailhog php-fpm queue-worker spid-testenv" dir="containers" passthru="true" checkreturn="true"/>
                 <echo msg="Web Analytics Italia up and running!"/>
-            </then>
-        </if>
-    </target>
-
-    <!-- Target: enter workspace -->
-    <target name="ws">
-        <if>
-            <available file="containers" type="dir" property="ignored"/>
-            <then>
-                <echo msg="Entering into the workspace..."/>
-                <exec command="docker-compose exec workspace bash" dir="containers" passthru="true"/>
             </then>
         </if>
     </target>
