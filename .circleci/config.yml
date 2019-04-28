@@ -30,9 +30,9 @@ commands:
           name: Run php-cs-fixer (future mode)
           command: |
             PHP_CS_FIXER_FUTURE_MODE=1
-            bin/php-cs-fixer fix --dry-run || (echo "Coding standards are not respected. Run PHP-CS-Fixer to fix." && exit 1)
+            bin/php-cs-fixer fix --diff --dry-run --verbose || (echo "Coding standards are not respected. Run PHP-CS-Fixer to fix." && exit 1)
 
-  npm:
+  install_node:
     description: Ensure all javascript dependencies are installed
     steps:
       - run:
@@ -41,10 +41,6 @@ commands:
             git clone https://github.com/nodenv/node-build.git ../node-build
             sudo ../node-build/install.sh
             sudo node-build $(cat .node-version) /usr/local
-
-      - run:
-          name: Install npm dependencies
-          command: npm install --silent
 
   save_all_caches:
     description: Save php and javascript dependencies
@@ -62,6 +58,13 @@ commands:
   store_test_artifacts:
     description: Save artifacts from tests for debug purposes
     steps:
+      - run:
+          name: Copy artifacts from docker container
+          command: |
+            docker cp `docker-compose -f containers/docker-compose.yml --project-directory containers ps -q php-fpm`:/var/www/tests/Browser/screenshots/. tests/Browser/screenshots
+            docker cp `docker-compose -f containers/docker-compose.yml --project-directory containers ps -q php-fpm`:/var/www/tests/Browser/console/. tests/Browser/console
+            docker cp `docker-compose -f containers/docker-compose.yml --project-directory containers ps -q php-fpm`:/var/www/clover.xml clover.xml
+
       - store_artifacts:
           path: tests/Browser/console
           destination: browser-tests/console
@@ -72,7 +75,7 @@ commands:
 
       - store_artifacts:
           path: clover.xml
-          destination: unit-tests/coverage
+          destination: unit-tests/coverage/clover.xml
 
 jobs:
   build_and_test:
@@ -85,7 +88,7 @@ jobs:
       - restore_all_caches
       - composer
       - php-cs-fixer
-      - npm
+      - install_node
       - save_all_caches
       - setup_remote_docker
       # build
