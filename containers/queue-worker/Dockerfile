@@ -1,70 +1,29 @@
-#
-#--------------------------------------------------------------------------
-# Image Setup
-#--------------------------------------------------------------------------
-#
-# This 'queue-worker' is a simplified version of the Laradock 'php-worker'
-# Maintained by Mahmoud Zalt <mahmoud@zalt.me>
-# See: https://github.com/Laradock/workspace
-#
+ARG PHP_VERSION
 
-FROM php:7.1-alpine
+FROM php:${PHP_VERSION}-alpine
 
 LABEL maintainer="Davide Porrovecchio <davide.porrovecchio@agid.gov.it>"
 
-RUN apk --update add wget \
-  curl \
-  git \
-  build-base \
-  libmemcached-dev \
-  libmcrypt-dev \
-  libxml2-dev \
-  zlib-dev \
-  autoconf \
-  cyrus-sasl-dev \
-  libgsasl-dev \
-  supervisor
+# supervisord
+RUN apk --update add supervisor
 
-RUN docker-php-ext-install mysqli mbstring pdo pdo_mysql mcrypt tokenizer xml
-RUN pecl channel-update pecl.php.net && printf "\n" | pecl install -o -f redis && rm -rf /tmp/pear && docker-php-ext-enable redis
+# php required extensions
+RUN docker-php-ext-install pdo_mysql bcmath
 
-RUN rm /var/cache/apk/* \
-    && mkdir -p /var/www
+# clean apk cache
+RUN rm /var/cache/apk/*
 
-#
-#--------------------------------------------------------------------------
-# Optional Supervisord Configuration
-#--------------------------------------------------------------------------
-#
-# Modify the ./supervisor.conf file to match your App's requirements.
-# Make sure you rebuild your container with every change.
-#
-
+# supervisord conf
 COPY supervisord.conf /etc/supervisord.conf
 
-ENTRYPOINT ["/usr/bin/supervisord", "-n", "-c",  "/etc/supervisord.conf"]
+# cron scheduler
+COPY ./cron-laravel-scheduler /etc/cron.d/
+RUN chmod 644 /etc/cron.d/cron-laravel-scheduler
 
-#
-#--------------------------------------------------------------------------
-# Optional Software's Installation
-#--------------------------------------------------------------------------
-#
-# If you need to modify this image, feel free to do it right here.
-#
-    # -- Your awesome modifications go here -- #
+# entrypoint
+COPY ./entrypoint.sh /entrypoint.sh
+RUN chmod 744 /entrypoint.sh
 
-#
-#--------------------------------------------------------------------------
-# Check PHP version
-#--------------------------------------------------------------------------
-#
-
-RUN php -v | head -n 1 | grep -q "PHP 7.1."
-
-#
-#--------------------------------------------------------------------------
-# Final Touch
-#--------------------------------------------------------------------------
-#
+ENTRYPOINT ["/entrypoint.sh"]
 
 WORKDIR /etc/supervisor/conf.d/
