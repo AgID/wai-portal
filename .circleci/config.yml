@@ -77,7 +77,7 @@ commands:
 jobs:
   build_and_test:
     docker:
-      - image: circleci/php:7.2-cli
+      - image: circleci/php:7.3-cli
     environment:
       - APP_ENV: "testing"
     steps:
