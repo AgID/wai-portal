@@ -55,7 +55,7 @@ class ProcessPendingWebsites implements ShouldQueue
             try {
                 $analyticsService = app()->make('analytics-service');
                 if ($this->hasActivated($website, $this->tokenAuth)) {
-                    $this->activate($website, $this->tokenAuth);
+                    $this->activate($website);
 
                     event(new WebsiteActivated($website));
 

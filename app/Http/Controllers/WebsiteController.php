@@ -207,7 +207,7 @@ class WebsiteController extends Controller
         try {
             $tokenAuth = current_user_auth_token();
             if ($website->status->is(WebsiteStatus::PENDING) && $this->hasActivated($website, $tokenAuth)) {
-                $this->activate($website, $tokenAuth);
+                $this->activate($website);
 
                 event(new WebsiteActivated($website));
             }
