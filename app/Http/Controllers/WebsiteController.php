@@ -18,7 +18,6 @@ use App\Models\Website;
 use App\Traits\ActivatesWebsite;
 use App\Transformers\UsersPermissionsTransformer;
 use App\Transformers\WebsiteTransformer;
-use Ehann\RediSearch\Index;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -172,18 +171,18 @@ class WebsiteController extends Controller
             $administrator->setWriteAccessForWebsite($website);
             $administrator->syncWebsitesPermissionsToAnalyticsService();
         });
-        $usersEnabled = $request->input('usersEnabled') ?? [];
-        $usersPermissions = $request->input('usersPermissions') ?? [];
+        $usersEnabled = $request->input('usersEnabled', []);
+        $usersPermissions = $request->input('usersPermissions', []);
         $publicAdministration->getNotAdministrators()->map(function ($user) use ($website, $usersEnabled, $usersPermissions) {
-            if (!emtpy($usersPermissions[$user->id]) && UserPermission::MANAGE_ANALYTICS === $usersPermissions[$user->id]) {
+            if (!empty($usersPermissions[$user->id]) && UserPermission::MANAGE_ANALYTICS === $usersPermissions[$user->id]) {
                 $user->setWriteAccessForWebsite($website);
             }
 
-            if (!emtpy($usersPermissions[$user->id]) && UserPermission::READ_ANALYTICS === $usersPermissions[$user->id]) {
-                $user->setViewForWebsite($website);
+            if (!empty($usersPermissions[$user->id]) && UserPermission::READ_ANALYTICS === $usersPermissions[$user->id]) {
+                $user->setViewAccessForWebsite($website);
             }
 
-            if (emtpy($usersEnabled[$user->id])) {
+            if (empty($usersEnabled[$user->id])) {
                 $user->setNoAccessForWebsite($website);
             }
 

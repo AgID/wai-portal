@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\UserPermission;
+use App\Enums\UserRole;
 use App\Enums\UserStatus;
 use App\Events\User\UserInvited;
 use App\Http\Requests\StoreUserRequest;
@@ -84,24 +85,25 @@ class UserController extends Controller
 
         $user->registerAnalyticsServiceAccount();
 
-        $isAdmin = $request->input('isAdmin');
-        $websitesEnabled = $request->input('websitesEnabled') ?? [];
-        $websitesPermissions = $request->input('websitesPermissions') ?? [];
+        $isAdmin = $request->input('isAdmin', false);
+        $websitesEnabled = $request->input('websitesEnabled', []);
+        $websitesPermissions = $request->input('websitesPermissions', []);
         $currentPublicAdministration->websites->map(function ($website) use ($user, $isAdmin, $websitesEnabled, $websitesPermissions) {
-            if (!empty($isAdmin) && $isAdmin) {
+            if ($isAdmin) {
+                $user->assign(UserRole::ADMIN);
                 $user->setWriteAccessForWebsite($website);
-            }
+            } else {
+                if (!empty($websitesPermissions[$website->id]) && UserPermission::MANAGE_ANALYTICS === $websitesPermissions[$website->id]) {
+                    $user->setWriteAccessForWebsite($website);
+                }
 
-            if (!empty($websitesPermissions[$website->id]) && UserPermission::MANAGE_ANALYTICS === $websitesPermissions[$website->id]) {
-                $user->setWriteAccessForWebsite($website);
-            }
+                if (!empty($websitesPermissions[$website->id]) && UserPermission::READ_ANALYTICS === $websitesPermissions[$website->id]) {
+                    $user->setViewAccessForWebsite($website);
+                }
 
-            if (!empty($websitesPermissions[$website->id]) && UserPermission::READ_ANALYTICS === $websitesPermissions[$website->id]) {
-                $user->setViewAccessForWebsite($website);
-            }
-
-            if (empty($websitesEnabled[$website->id])) {
-                $user->setNoAccessForWebsite($website);
+                if (empty($websitesEnabled[$website->id])) {
+                    $user->setNoAccessForWebsite($website);
+                }
             }
         });
 

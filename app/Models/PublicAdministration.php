@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\PublicAdministrationStatus;
 use App\Enums\UserRole;
+use App\Enums\UserStatus;
 use App\Notifications\WebsiteActivatedPAEmail;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;

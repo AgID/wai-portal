@@ -23,6 +23,7 @@ trait HasWebsitePermissions
         Bouncer::allow($this)->to(UserPermission::NO_ACCESS, $website);
         Bouncer::disallow($this)->to(UserPermission::READ_ANALYTICS, $website);
         Bouncer::disallow($this)->to(UserPermission::MANAGE_ANALYTICS, $website);
+        Bouncer::refreshFor($this);
 
         event(new UserWebsiteAccessChanged($this, $website, WebsiteAccessType::NO_ACCESS()));
     }
@@ -39,6 +40,7 @@ trait HasWebsitePermissions
         Bouncer::allow($this)->to(UserPermission::READ_ANALYTICS, $website);
         Bouncer::disallow($this)->to(UserPermission::NO_ACCESS, $website);
         Bouncer::disallow($this)->to(UserPermission::MANAGE_ANALYTICS, $website);
+        Bouncer::refreshFor($this);
 
         event(new UserWebsiteAccessChanged($this, $website, WebsiteAccessType::VIEW()));
     }
@@ -55,6 +57,7 @@ trait HasWebsitePermissions
         Bouncer::allow($this)->to(UserPermission::READ_ANALYTICS, $website);
         Bouncer::allow($this)->to(UserPermission::MANAGE_ANALYTICS, $website);
         Bouncer::disallow($this)->to(UserPermission::NO_ACCESS, $website);
+        Bouncer::refreshFor($this);
 
         event(new UserWebsiteAccessChanged($this, $website, WebsiteAccessType::WRITE()));
     }
@@ -71,6 +74,7 @@ trait HasWebsitePermissions
         Bouncer::allow($this)->to(UserPermission::READ_ANALYTICS, $website);
         Bouncer::allow($this)->to(UserPermission::MANAGE_ANALYTICS, $website);
         Bouncer::disallow($this)->to(UserPermission::NO_ACCESS, $website);
+        Bouncer::refreshFor($this);
 
         event(new UserWebsiteAccessChanged($this, $website, WebsiteAccessType::ADMIN()));
     }
