@@ -6,6 +6,7 @@ use App\Enums\UserPermission;
 use App\Enums\WebsiteAccessType;
 use App\Events\User\UserWebsiteAccessChanged;
 use App\Exceptions\TenantIdNotSetException;
+use App\Models\PublicAdministration;
 use App\Models\Website;
 use Silber\Bouncer\BouncerFacade as Bouncer;
 
@@ -93,13 +94,22 @@ trait HasWebsitePermissions
      * @throws \Illuminate\Contracts\Container\BindingResolutionException if unable to bind to the service
      * @throws \App\Exceptions\AnalyticsServiceException if unable to connect the Analytics Service
      * @throws \App\Exceptions\CommandErrorException if command is unsuccessful
+     * @throws TenantIdNotSetException if the tenant id is not set in the current session
      */
     public function syncWebsitesPermissionsToAnalyticsService(): void
     {
         $this->ensurePermissionScopeIsSet();
-        $this->getAbilities()->where('entity_type', 'App\Models\Website')->map(function ($websitePermission) {
-            $website = Website::find($websitePermission->entity_id);
-            app()->make('analytics-service')->setWebsiteAccess($this->uuid, WebsiteAccessType::fromUserPermission($websitePermission->name), $website->analytics_id, config('analytics-service.admin_token'));
+
+        $publicAdministration = PublicAdministration::find(session('tenant_id'));
+
+        $publicAdministration->websites()->get()->map(function ($website) {
+            if ($this->can(UserPermission::MANAGE_ANALYTICS, $website)) {
+                app()->make('analytics-service')->setWebsiteAccess($this->uuid, WebsiteAccessType::WRITE, $website->analytics_id, config('analytics-service.admin_token'));
+            } elseif ($this->can(UserPermission::READ_ANALYTICS, $website)) {
+                app()->make('analytics-service')->setWebsiteAccess($this->uuid, WebsiteAccessType::VIEW, $website->analytics_id, config('analytics-service.admin_token'));
+            } else {
+                app()->make('analytics-service')->setWebsiteAccess($this->uuid, WebsiteAccessType::NO_ACCESS, $website->analytics_id, config('analytics-service.admin_token'));
+            }
         });
     }
 
