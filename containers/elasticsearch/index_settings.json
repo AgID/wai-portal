@@ -1,0 +1,70 @@
+{
+    "settings": {
+        "analysis": {
+            "analyzer": {
+                "autocomplete": {
+                    "tokenizer": "autocomplete",
+                    "filter": [
+                        "lowercase"
+                    ]
+                },
+                "autocomplete_search": {
+                    "tokenizer": "lowercase"
+                }
+            },
+            "tokenizer": {
+                "autocomplete": {
+                    "type": "ngram",
+                    "min_gram": 3,
+                    "max_gram": 10
+                }
+            }
+        },
+        "index": {
+            "max_ngram_diff": 7
+        }
+    },
+    "mappings": {
+        "properties": {
+            "channel": {
+                "type": "keyword"
+            },
+            "context": {
+                "properties": {
+                    "event": {
+                        "type": "integer"
+                    },
+                    "job": {
+                        "type": "integer"
+                    },
+                    "type": {
+                        "type": "integer"
+                    },
+                    "pa": {
+                        "type": "keyword"
+                    },
+                    "website": {
+                        "type": "keyword"
+                    },
+                    "user": {
+                        "type": "keyword"
+                    }
+                }
+            },
+            "datetime": {
+                "type": "date"
+            },
+            "level": {
+                "type": "integer"
+            },
+            "level_name": {
+                "type": "keyword"
+            },
+            "message": {
+                "type": "text",
+                "analyzer" : "autocomplete",
+                "search_analyzer": "autocomplete_search"
+            }
+        }
+    }
+}

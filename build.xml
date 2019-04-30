@@ -35,6 +35,10 @@
                     <token key="ARCHIVING_WEBSITE_ARCHIVE" value="${ARCHIVING_WEBSITE_ARCHIVE}" />
                     <token key="ARCHIVING_WEBSITE_NOTIFICATION_WEEK_DAY" value="${ARCHIVING_WEBSITE_NOTIFICATION_WEEK_DAY}" />
                     <token key="ARCHIVING_WEBSITE_DAILY_NOTIFICATION" value="${ARCHIVING_WEBSITE_DAILY_NOTIFICATION}" />
+                    <token key="ELASTICSEARCH_INDEX_PREFIX" value="${ELASTICSEARCH_INDEX_PREFIX}" />
+                    <token key="ELASTICSEARCH_INDEX_NAME" value="${ELASTICSEARCH_INDEX_PREFIX}-${ELASTICSEARCH_INDEX_NAME}" />
+                    <token key="ELASTICSEARCH_IGNORE_EXCEPTIONS" value="${ELASTICSEARCH_IGNORE_EXCEPTIONS}" />
+                    <token key="ELASTICSEARCH_SEARCH_TEMPLATE_NAME" value="${ELASTICSEARCH_SEARCH_TEMPLATE_NAME}" />
                     <token key="MARIADB_DATABASE" value="${MARIADB_DATABASE}" />
                     <token key="MARIADB_USER" value="${MARIADB_USER}" />
                     <token key="MARIADB_PASSWORD" value="${MARIADB_PASSWORD}" />
@@ -229,10 +233,10 @@
         <if>
             <equals arg1="${env.APP_ENV}" arg2="testing"/>
             <then>
-                <exec command="docker-compose up -d --build nginx mariadb redis ipa-redisearch php-fpm matomo" dir="containers" passthru="true" checkreturn="true"/>
+                <exec command="docker-compose up -d --build nginx mariadb redis ipa-redisearch elasticsearch php-fpm matomo" dir="containers" passthru="true" checkreturn="true"/>
             </then>
             <else>
-                <exec command="docker-compose up -d --build nginx mariadb redis ipa-redisearch mailhog php-fpm matomo queue-worker spid-testenv" dir="containers" passthru="true" checkreturn="true"/>
+                <exec command="docker-compose up -d --build nginx mariadb redis ipa-redisearch mailhog php-fpm matomo queue-worker elasticsearch spid-testenv" dir="containers" passthru="true" checkreturn="true"/>
             </else>
         </if>
         <!-- Wait for mariadb container to start gracefully -->
@@ -250,6 +254,22 @@
                 <exec command="docker-compose exec mariadb bash /opt/matomo-install/install_disable_tracking_plugin.sh" dir="containers" checkreturn="true"/>
                 <exec command="docker-compose exec php-fpm rm -Rf /opt/matomo-install/" dir="containers" checkreturn="true"/>
                 <exec command="docker-compose exec php-fpm chown -R www-data:www-data /opt/matomo" dir="containers" passthru="true" checkreturn="true"/>
+            </then>
+        </if>
+        <!-- Initialize ElasticSearch -->
+        <echo msg="Waiting for ElasticSearch to start..." />
+        <exec command="docker-compose exec elasticsearch bash /opt/check_index.sh" dir="containers" returnProperty="checkElasticSearch" />
+        <if>
+            <not><equals arg1="${checkElasticSearch}" arg2="0" /></not>
+            <then>
+                <echo msg="Initializing ElasticSearch cluster..."/>
+                <retry retryDelay="5" retryCount="12">
+                    <exec command="docker-compose exec elasticsearch bash /opt/elasticsearch-init/initialize_index.sh" dir="containers" checkreturn="true"/>
+                </retry>
+                <echo msg="Initializing ElasticSearch search template..."/>
+                <retry retryDelay="5" retryCount="12">
+                    <exec command="docker-compose exec elasticsearch bash /opt/elasticsearch-init/initialize_search_template.sh" dir="containers" checkreturn="true"/>
+                </retry>
             </then>
         </if>
         <!-- Run migrations -->
@@ -340,7 +360,11 @@
             <available file="containers" type="dir" property="ignored"/>
             <then>
                 <echo msg="Starting Docker containers..."/>
+<<<<<<< HEAD
                 <exec command="docker-compose up -d nginx mariadb redis ipa-redisearch mailhog php-fpm queue-worker spid-testenv" dir="containers" passthru="true" checkreturn="true"/>
+=======
+                <exec command="docker-compose up -d nginx mariadb redis mailhog php-fpm queue-worker elasticsearch spid-testenv" dir="containers" passthru="true" checkreturn="true"/>
+>>>>>>> Add elasticsearch/kibana containers
                 <echo msg="Web Analytics Italia up and running!"/>
             </then>
         </if>
@@ -353,6 +377,29 @@
             <then>
                 <echo msg="Running phpMyAdmin..."/>
                 <exec command="docker-compose up -d phpmyadmin" dir="containers" passthru="true"/>
+            </then>
+        </if>
+    </target>
+
+    <!-- Target: start Kibana -->
+    <target name="kibana">
+        <if>
+            <available file="containers" type="dir" property="ignored"/>
+            <then>
+                <echo msg="Running Kibana..."/>
+                <exec command="docker-compose up --build -d kibana" dir="containers" passthru="true"/>
+                <echo msg="Waiting for Kibana to start..." />
+                <exec command="docker-compose exec kibana bash /opt/check_index_pattern.sh" dir="containers" returnProperty="checkKibana"/>
+                <if>
+                    <not><equals arg1="${checkKibana}" arg2="0"/></not>
+                    <then>
+                        <echo msg="Initializing Index Pattern..."/>
+                        <retry retryDelay="5" retryCount="12">
+                            <exec command="docker-compose exec kibana bash /opt/kibana-init/initialize_index_pattern.sh" dir="containers" checkreturn="true"/>
+                        </retry>
+                        <exec command="docker-compose exec -u root kibana rm -Rf /opt/kibana-init" dir="containers" checkreturn="true"/>
+                    </then>
+                </if>
             </then>
         </if>
     </target>
