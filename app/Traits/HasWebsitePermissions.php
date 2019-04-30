@@ -15,7 +15,9 @@ trait HasWebsitePermissions
      * Set no-access permission for this user and for the specified website
      * in the Analytics Service.
      *
-     * @param Website the website for which the permission is set
+     * @param Website $website the website for which the permission is set
+     *
+     * @throws TenantIdNotSetException if the tenant id is not set in the current session
      */
     public function setNoAccessForWebsite(Website $website): void
     {
@@ -32,7 +34,9 @@ trait HasWebsitePermissions
      * Set view permission for this user and for the specified website
      * in the Analytics Service.
      *
-     * @param Website the website for which the permission is set
+     * @param Website $website the website for which the permission is set
+     *
+     * @throws TenantIdNotSetException if the tenant id is not set in the current session
      */
     public function setViewAccessForWebsite(Website $website): void
     {
@@ -49,7 +53,9 @@ trait HasWebsitePermissions
      * Set write permission for this user and for the specified website
      * in the Analytics Service.
      *
-     * @param Website the website for which the permission is set
+     * @param Website $website the website for which the permission is set
+     *
+     * @throws TenantIdNotSetException if the tenant id is not set in the current session
      */
     public function setWriteAccessForWebsite(Website $website): void
     {
@@ -66,7 +72,9 @@ trait HasWebsitePermissions
      * Set admin permission for this user and for the specified website
      * in the Analytics Service.
      *
-     * @param Website the website for which the permission is set
+     * @param Website $website the website for which the permission is set
+     *
+     * @throws TenantIdNotSetException if the tenant id is not set in the current session
      */
     public function setAdminAccessForWebsite(Website $website): void
     {

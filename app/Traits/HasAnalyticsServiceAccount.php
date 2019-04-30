@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Exceptions\AnalyticsServiceAccountException;
 use Illuminate\Support\Str;
 
 trait HasAnalyticsServiceAccount
@@ -55,6 +56,7 @@ trait HasAnalyticsServiceAccount
      * @throws \Illuminate\Contracts\Container\BindingResolutionException if unable to bind to the service
      * @throws \App\Exceptions\AnalyticsServiceException if unable to connect the Analytics Service
      * @throws \App\Exceptions\CommandErrorException if command is unsuccessful
+     * @throws \App\Exceptions\AnalyticsServiceAccountException if the Analytics Service account doesn't exist
      */
     public function updateAnalyticsServiceAccountEmail(): void
     {

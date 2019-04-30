@@ -1,12 +1,14 @@
 <?php
 
+use App\Models\PublicAdministration;
+
 if (!function_exists('current_public_administration')) {
     /**
-     * Get the public administration corresponding to the current selcted tenant.
+     * Get the public administration corresponding to the current selected tenant.
      *
-     * @return PublicAdministration|null the PublicAdministration found or null if not found
+     * @return \App\Models\PublicAdministration|null the PublicAdministration found or null if not found
      */
-    function current_public_administration()
+    function current_public_administration(): ?PublicAdministration
     {
         if (auth()->user()) {
             return auth()->user()->publicAdministrations()->where('id', session('tenant_id'))->first();
@@ -26,7 +28,7 @@ if (!function_exists('current_user_auth_token')) {
      *
      * @return string|null the user authentication token or null if unable to retrieve
      */
-    function current_user_auth_token()
+    function current_user_auth_token(): ?string
     {
         if (auth()->user()) {
             return auth()->user()->getAnalyticsServiceAccountTokenAuth();
