@@ -155,3 +155,46 @@ services:
       - "${SPID_TESTENV_PORT}:8088"
     networks:
       - frontend
+      
+# ElasticSearch
+  elasticsearch:
+    image: wai-elasticsearch:dev
+    build:
+      context: ./elasticsearch
+      args:
+        - ELASTICSEARCH_INDEX_NAME=${ELASTICSEARCH_INDEX_NAME}
+        - ELASTICSEARCH_SEARCH_TEMPLATE_NAME=${ELASTICSEARCH_SEARCH_TEMPLATE_NAME}
+    environment:
+      - node.name=elastic01
+      - cluster.name=wai-cluster
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - TAKE_FILE_OWNERSHIP=1
+    volumes:
+      - ${DATA_PATH_HOST}/elasticsearch:/usr/share/elasticsearch/data
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - "${ELASTICSEARCH_PORT}:9200"
+    expose:
+      - "9300"
+    networks:
+      - backend
+
+  kibana:
+    image: wai-kibana:dev
+    build:
+      context: ./kibana
+      args:
+        - ELASTICSEARCH_INDEX_PREFIX=${ELASTICSEARCH_INDEX_PREFIX}
+    environment:
+      - SERVER_NAME=kibana01
+      - ELASTICSEARCH_HOST=http://elasticsearch:9200
+    ports:
+      - "${KIBANA_PORT}:5601"
+    networks:
+      - frontend
+      - backend
