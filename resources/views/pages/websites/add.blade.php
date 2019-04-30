@@ -67,7 +67,9 @@
                     <select class="Form-input" id="type" name="type" aria-required="true" required>
                     <option value="">seleziona</option>{{-- //TODO: use localized enum --}}
                     @foreach(WebsiteType::toSelectArray() as $value => $label)
-                        <option value="{{ $value }}" {{ old('type') == $value ? "selected" : "" }}>{{ $label }}</option>
+                        @if ($value !== WebsiteType::PRIMARY)
+                            <option value="{{ $value }}" {{ old('type') == $value ? "selected" : "" }}>{{ $label }}</option>
+                        @endif
                     @endforeach
                     </select>
                 @if ($errors->has('type'))

@@ -35,7 +35,7 @@ class StoreWebsiteRequest extends FormRequest
             'url' => 'required|url|unique:websites',
             'type' => [
                 'required',
-                Rule::in([WebsiteType::PRIMARY, WebsiteType::SECONDARY, WebsiteType::WEBAPP, WebsiteType::TESTING]),
+                Rule::in([WebsiteType::SECONDARY, WebsiteType::WEBAPP, WebsiteType::TESTING]),
             ],
             'usersEnabled' => 'array',
             'usersEnabled.*' => 'in:enabled',
