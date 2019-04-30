@@ -8,7 +8,6 @@ use App\Events\Website\WebsiteArchived;
 use App\Events\Website\WebsiteArchiving;
 use App\Events\Website\WebsitePurged;
 use App\Events\Website\WebsitePurging;
-use App\Events\Website\WebsiteType;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Events\Dispatcher;
 
@@ -38,7 +37,7 @@ class WebsiteEventsSubscriber implements ShouldQueue
 //        //Notify Public Administration
 //        $publicAdministration->sendWebsiteActivatedNotification($website);
 
-        logger()->info('Website ' . $website->getInfo() . ' added of type ' . WebsiteType::getDescription($website->type));
+        logger()->info('Website ' . $website->getInfo() . ' added of type ' . $website->type->description);
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace App\Transformers;
 
 use App\Enums\UserPermission;
+use App\Enums\UserRole;
 use App\Models\User;
 use League\Fractal\TransformerAbstract;
 
@@ -13,12 +14,12 @@ class UserTransformer extends TransformerAbstract
      *
      * @return array
      */
-    public function transform(User $user)
+    public function transform(User $user): array
     {
         $data = [
             'name' => implode(' ', [$user->familyName, $user->name]),
             'email' => $user->email,
-            'admin' => $user->isAn('admin'),
+            'admin' => $user->isAn(UserRole::ADMIN),
             'added_at' => $user->created_at->format('d/m/Y'),
             'status' => $user->status->description,
             'buttons' => [],
