@@ -51,6 +51,7 @@ class ArchiveWebsiteJsonRoutesTest extends TestCase
      * @throws \App\Exceptions\AnalyticsServiceException if unable to connect to the Analytics Service
      * @throws \App\Exceptions\CommandErrorException if command finishes with error
      * @throws \Illuminate\Contracts\Container\BindingResolutionException if unable to bind to the service
+     * @throws \App\Exceptions\TenantIdNotSetException if the tenant id is not set in the current session
      */
     protected function setUp(): void
     {

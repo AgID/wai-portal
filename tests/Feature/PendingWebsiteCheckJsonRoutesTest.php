@@ -49,8 +49,10 @@ class PendingWebsiteCheckJsonRoutesTest extends TestCase
     /**
      * Pre-test setup.
      *
+     * @throws \App\Exceptions\AnalyticsServiceAccountException if the Analytics Service account doesn't exist
      * @throws \App\Exceptions\AnalyticsServiceException if unable to connect to the Analytics Service
      * @throws \App\Exceptions\CommandErrorException if command finishes with error
+     * @throws \App\Exceptions\TenantIdNotSetException if the tenant id is not set in the current session
      * @throws \Illuminate\Contracts\Container\BindingResolutionException if unable to bind to the service
      */
     protected function setUp(): void
