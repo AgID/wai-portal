@@ -7,7 +7,7 @@
 @section('title', __('ui.pages.spid-auth_login.title'))
 
 @section('page-content')
-    @can('access-admin-area')
+    @can(UserPermission::ACCESS_ADMIN_AREA)
         @include('spid-auth::spid-button', ['size' => 'l'])
     @else
         <div class="agid-spid-enter-button" aria-live="polite" data-size="l"></div>

@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class ProfileController extends Controller
 {
@@ -39,17 +41,35 @@ class ProfileController extends Controller
      */
     public function update(Request $request)
     {
-        $validatedData = $request->validate([
-            'email' => 'required|unique:users|email',
+        $user = $request->user();
+        $validator = validator($request->all(), [
+            'email' => [
+                'required',
+                'email',
+                Rule::unique('users')->ignore($user->id),
+            ],
         ]);
 
-        $user = $request->user();
-        $user->email = $validatedData['email'];
+        $validator->after(function ($validator) use ($user, $request) {
+            if ($user->email === $request->input('email')) {
+                $validator->errors()->add('email', 'Il nuovo indirizzo email non può essere uguale a quello attuale.'); //TODO: put error message in lang file
+            }
+        });
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+        $user->email = $request->input('email');
         $user->save();
 
-        $redirectRoute = $user->isA('super-admin') ? 'admin.profile' : 'user.profile';
+        $redirectRoute = $user->isA(UserRole::SUPER_ADMIN) ? 'admin.profile' : 'user.profile';
 
         return redirect()->route($redirectRoute)
-            ->withMessage(['success' => "L'indirizzo email è stato modificato correttamente."]); //TODO: put message in lang file
+            ->withMessage([
+                'success' => "L'indirizzo email è stato modificato correttamente.",
+                'info' => "Una nuova email di verifica è stata inviata all'indirizzo " . $user->email . '.',
+            ]); //TODO: put message in lang file
     }
 }

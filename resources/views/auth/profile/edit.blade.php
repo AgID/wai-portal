@@ -3,10 +3,10 @@
 @section('title', __('ui.pages.profile.edit.title'))
 
 @section('content')
-    <form class="Form Form--spaced u-text-r-xs" method="post" action="{{ route($user->isA('super-admin') ? 'admin.profile.update' : 'user.profile.update') }}">
+    <form class="Form Form--spaced u-text-r-xs" method="post" action="{{ route($user->isA(UserRole::SUPER_ADMIN) ? 'admin.profile.update' : 'user.profile.update') }}">
         @method('patch')
         @csrf
-        @if ($user->isA('super-admin'))
+        @if ($user->isA(UserRole::SUPER_ADMIN))
             <div class="Prose Alert Alert--warning">
                 <p class="u-text-p">
                     L'indirizzo email è una crendenziale ed è usato per il recupero della password.

@@ -55,7 +55,7 @@ class ProcessPendingWebsites implements ShouldQueue
             try {
                 $analyticsService = app()->make('analytics-service');
                 if ($this->hasActivated($website, $this->tokenAuth)) {
-                    $this->activate($website, $this->tokenAuth);
+                    $this->activate($website);
 
                     event(new WebsiteActivated($website));
 
@@ -83,12 +83,8 @@ class ProcessPendingWebsites implements ShouldQueue
                         $pendingUser = $publicAdministration->users()->where('status', UserStatus::PENDING)->first();
                         if (null !== $pendingUser) {
                             $pendingUser->publicAdministrations()->detach($publicAdministration->id);
-                            $pendingUser->partial_analytics_password = null;
-
-                            $analyticsService->deleteUser($pendingUser->uuid, $this->tokenAuth);
-
+                            $pendingUser->deleteAnalyticsServiceAccount();
                             $publicAdministration->forceDelete();
-                            $pendingUser->save();
                         }
                         event(new PublicAdministrationPurged($publicAdministration->toJson()));
                     } else {

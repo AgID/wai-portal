@@ -23,7 +23,7 @@ class AnalyticsServiceException extends Exception
     /**
      * Render the exception into an HTTP response.
      *
-     * @return \Illuminate\Http\RedirectResponse the response
+     * @return RedirectResponse the response
      */
     public function render(): RedirectResponse
     {

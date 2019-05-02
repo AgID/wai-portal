@@ -3,11 +3,15 @@
 namespace App\Models;
 
 use App\Enums\UserStatus;
+use App\Events\User\UserUpdated;
+use App\Events\User\UserUpdating;
 use App\Notifications\VerifyEmail;
 use App\Notifications\WebsiteActivatedUserEmail;
 use App\Notifications\WebsiteArchivedUserEmail;
 use App\Notifications\WebsiteArchivingUserEmail;
 use App\Notifications\WebsitePurgingUserEmail;
+use App\Traits\HasAnalyticsServiceAccount;
+use App\Traits\HasWebsitePermissions;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -25,6 +29,8 @@ class User extends Authenticatable implements MustVerifyEmail
 {
     use Notifiable;
     use HasRolesAndAbilities;
+    use HasWebsitePermissions;
+    use HasAnalyticsServiceAccount;
     use Notifiable;
     use SoftDeletes;
 
@@ -64,6 +70,16 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+    ];
+
+    /**
+     * The event map for the model.
+     *
+     * @var array
+     */
+    protected $dispatchesEvents = [
+        'updating' => UserUpdating::class,
+        'updated' => UserUpdated::class,
     ];
 
     /**

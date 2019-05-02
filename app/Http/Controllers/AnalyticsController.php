@@ -11,11 +11,11 @@ class AnalyticsController extends Controller
      *
      * @throws \Illuminate\Contracts\Container\BindingResolutionException if unable to bind analytics service
      *
-     * @return \Illuminate\Http\RedirectResponse the server response
+     * @return RedirectResponse the server redirect response
      */
     public function login(): RedirectResponse
     {
-        if (empty(auth()->user()->partial_analytics_password)) {
+        if (!auth()->user()->hasAnalyticsServiceAccount()) {
             abort(404);
         }
 

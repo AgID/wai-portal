@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Enums\UserRole;
 use App\Enums\UserStatus;
 use App\Models\PublicAdministration;
 use App\Models\User;
@@ -68,7 +69,7 @@ class AccountVerification extends Mailable
     public function build(): AccountVerification
     {
         if ($this->user->status->is(UserStatus::INVITED)) {
-            if ($this->user->isA('super-admin')) {
+            if ($this->user->isA(UserRole::SUPER_ADMIN)) {
                 $mailTemplate = 'mail.admin_invited_verification';
             } else {
                 $mailTemplate = 'mail.invited_verification';

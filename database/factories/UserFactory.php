@@ -17,7 +17,6 @@ $factory->define(User::class, function (Faker $faker) {
         'fiscalNumber' => $faker->taxId(),
         'email' => $faker->unique()->safeEmail,
         'uuid' => Uuid::uuid4()->toString(),
-        'partial_analytics_password' => Str::random(rand(32, 48)),
         'password_changed_at' => Carbon::now()->format('Y-m-d H:i:s'),
         'status' => UserStatus::INACTIVE,
     ];

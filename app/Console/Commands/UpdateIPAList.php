@@ -15,7 +15,7 @@ class UpdateIPAList extends Command
      *
      * @var string the command
      */
-    protected $signature = 'app:update-ipa';
+    protected $signature = 'app:update-ipa {--S|skip-db-update : Whether the DB update should be skipped}';
 
     /**
      * The console command description.
@@ -31,7 +31,8 @@ class UpdateIPAList extends Command
      */
     public function handle()
     {
-        dispatch(new ProcessIPAList())->onConnection('sync');
+        $this->info('Updating IPA list...' . ($this->option('skip-db-update') ? ' [skipping db update]' : ''));
+        dispatch(new ProcessIPAList($this->option('skip-db-update')))->onConnection('sync');
         $this->info('IPA list updated');
     }
 }

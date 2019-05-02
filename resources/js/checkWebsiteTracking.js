@@ -12,17 +12,14 @@ export default (() => {
             });
     }
 
-    const initWebsiteCheckButton = (json) => {
-        json.data && json.data.map((website) => {
-            website.buttons && website.buttons.map((button) => {
-                if (button.type === 'check_tracking') {
-                    let checkButton = document.querySelector('a[href="' + button.link + '"]');
-                    let href = checkButton.getAttribute('href');
+    const initWebsiteCheckButton = () => {
+        let checkButtons = [...document.querySelectorAll('a[role="button"][data-type="checkTracking"]')];
 
-                    checkButton.removeAttribute('href');
-                    checkButton.onclick = () => checkTracking(href);
-                }
-            });
+        checkButtons.map((checkButton) => {
+            let href = checkButton.getAttribute('href');
+
+            checkButton.removeAttribute('href');
+            checkButton.onclick = () => checkTracking(href);
         });
     }
 

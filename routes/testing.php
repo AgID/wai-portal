@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\UserRole;
 use App\Models\PublicAdministration;
 use App\Models\User;
 use App\Models\Website;
@@ -36,12 +37,7 @@ Route::get('/_test/_create_website/{paId}', function ($paId) {
 
 Route::get('/_test/_create_analytics_user/{userId}', function ($userId) {
     $user = User::find($userId);
-    app()->make('analytics-service')->registerUser(
-        $user->uuid,
-        $user->analytics_password,
-        $user->email,
-        config('analytics-service.admin_token')
-    );
+    $user->registerAnalyticsServiceAccount();
 });
 
 Route::get('/_test/_create_analytics_site/{websiteId}', function ($websiteId) {
@@ -63,7 +59,7 @@ Route::get('/_test/_grant_analytics_access_to_site/{websiteId}/{userId}/{access}
 
 Route::get('/_test/_delete_analytics_user/{userId}', function ($userId) {
     $user = User::find($userId);
-    app()->make('analytics-service')->deleteUser($user->uuid, config('analytics-service.admin_token'));
+    $user->deleteAnalyticsServiceAccount();
 });
 
 Route::get('/_test/_delete_analytics_site/{websiteId}', function ($websiteId) {
@@ -113,7 +109,7 @@ Route::get('/_test/_set_password/{userId}/{password}', function ($userId, $passw
 
 Route::get('/_test/_get_user_verification_signed_url/{userId}', function ($userId) {
     $user = User::find($userId);
-    $verificationRoute = $user->isA('super-admin')
+    $verificationRoute = $user->isA(UserRole::SUPER_ADMIN)
         ? 'admin.verification.verify'
         : 'verification.verify';
     $signedUrl = URL::temporarySignedRoute(

@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Enums\UserRole;
 use App\Enums\UserStatus;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use Ramsey\Uuid\Uuid;
 
 class RegisterController extends Controller
@@ -45,16 +45,12 @@ class RegisterController extends Controller
             'uuid' => Uuid::uuid4()->toString(),
             'email' => $request->email,
             'status' => UserStatus::INACTIVE,
-            'partial_analytics_password' => Str::random(rand(32, 48)),
         ]);
 
         event(new Registered($user));
 
-        $user->assign('registered');
+        $user->assign(UserRole::REGISTERED);
         auth()->login($user);
-
-        //TODO: da gestire meglio con la CRUD utenti
-        app()->make('analytics-service')->registerUser($user->uuid, $user->analytics_password, $user->email, config('analytics-service.admin_token'));
 
         return redirect()->home()
                ->withMessage(['info' => "Una email di verifica è stata inviata all'indirizzo " . $user->email]); //TODO: put message in lang file

@@ -1,6 +1,8 @@
 <?php
 
 use App\Enums\PublicAdministrationStatus;
+use App\Enums\UserPermission;
+use App\Enums\UserRole;
 use App\Enums\UserStatus;
 use App\Enums\WebsiteAccessType;
 use App\Enums\WebsiteStatus;
@@ -14,12 +16,27 @@ return[
         PublicAdministrationStatus::SUSPENDED => 'sospesa',
     ],
 
+    UserPermission::class => [
+        UserPermission::ACCESS_ADMIN_AREA => "Accesso all'area amministrativa",
+        UserPermission::MANAGE_USERS => 'Gestione utenti',
+        UserPermission::MANAGE_WEBSITES => 'Gestione siti',
+        UserPermission::MANAGE_ANALYTICS => 'Gestione analytics',
+        UserPermission::READ_ANALYTICS => 'Lettura analytics',
+        UserPermission::DO_NOTHING => 'Nessun permesso',
+    ],
+
+    UserRole::class => [
+        UserRole::SUPER_ADMIN => 'Super amministatore di ' . config('app.name'),
+        UserRole::ADMIN => 'Amministarore della propria PA',
+        UserRole::REGISTERED => 'Utente registrato',
+    ],
+
     UserStatus::class => [
         UserStatus::INVITED => 'invitato',
         UserStatus::INACTIVE => 'inattivo',
         UserStatus::PENDING => 'in attesa',
         UserStatus::ACTIVE => 'attivo',
-        UserStatus::SUSPENDED => 'sospsso',
+        UserStatus::SUSPENDED => 'sospeso',
     ],
 
     WebsiteStatus::class => [

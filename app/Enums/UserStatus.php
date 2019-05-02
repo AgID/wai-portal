@@ -6,7 +6,7 @@ use BenSampo\Enum\Contracts\LocalizedEnum;
 use BenSampo\Enum\Enum;
 
 /**
- * User states.
+ * User status.
  */
 final class UserStatus extends Enum implements LocalizedEnum
 {

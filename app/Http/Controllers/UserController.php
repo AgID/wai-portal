@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\UserPermission;
+use App\Enums\UserRole;
 use App\Enums\UserStatus;
-use App\Events\Auth\UserInvited;
+use App\Events\User\UserInvited;
+use App\Http\Requests\StoreUserRequest;
 use App\Models\User;
 use App\Transformers\UserTransformer;
-use CodiceFiscale\Checker as FiscalNumberChecker;
+use App\Transformers\WebsitesPermissionsTransformer;
 use Illuminate\Http\Request;
 use Ramsey\Uuid\Uuid;
 use Yajra\Datatables\Datatables;
@@ -20,7 +23,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $datatable = [
+        $usersDatatable = [
             'columns' => [
                 ['data' => 'name', 'name' => 'Cognome e nome'],
                 ['data' => 'email', 'name' => 'Email'],
@@ -34,7 +37,7 @@ class UserController extends Controller
             'columnsOrder' => [['added_at', 'asc'], ['name', 'asc']],
         ];
 
-        return view('pages.users.index')->with($datatable);
+        return view('pages.users.index')->with($usersDatatable);
     }
 
     /**
@@ -44,45 +47,69 @@ class UserController extends Controller
      */
     public function create()
     {
-        return view('pages.users.add');
+        $websitesPermissionsDatatable = [
+            'columns' => [
+                ['data' => 'url', 'name' => 'URL'],
+                ['data' => 'type', 'name' => 'Tipo'],
+                ['data' => 'added_at', 'name' => 'Aggiunto il'],
+                ['data' => 'status', 'name' => 'Stato'],
+                ['data' => 'checkboxes', 'name' => 'Abilitato'],
+                ['data' => 'radios', 'name' => 'Permessi'],
+            ],
+            'source' => route('users.websites.permissions.data'),
+            'caption' => 'Elenco dei siti web presenti su Web Analytics Italia', //TODO: set title in lang file
+            'columnsOrder' => [['added_at', 'asc']],
+        ];
+
+        return view('pages.users.add')->with($websitesPermissionsDatatable);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param StoreUserRequest $request
      *
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreUserRequest $request)
     {
-        $validatedData = $request->validate([
-            'email' => 'required|email|unique:users',
-            'fiscalNumber' => [
-                'required',
-                'unique:users',
-                function ($attribute, $value, $fail) {
-                    $chk = new FiscalNumberChecker();
-                    if (!$chk->isFormallyCorrect($value)) {
-                        return $fail('Il codice fiscale non è formalmente valido.');
-                    }
-                },
-            ],
-            'role' => 'required|exists:roles,name',
-        ]);
+        $currentPublicAdministration = current_public_administration();
 
         $user = User::create([
-            'fiscalNumber' => $validatedData['fiscalNumber'],
-            'email' => $validatedData['email'],
             'uuid' => Uuid::uuid4()->toString(),
+            'fiscalNumber' => $request->input('fiscalNumber'),
+            'email' => $request->input('email'),
             'status' => UserStatus::INVITED,
         ]);
-        $user->publicAdministrations()->attach(session('tenant_id'));
-        $user->assign($validatedData['role']);
+        $user->publicAdministrations()->attach($currentPublicAdministration->id);
+
+        $user->registerAnalyticsServiceAccount();
+
+        $isAdmin = $request->input('isAdmin', false);
+        $websitesEnabled = $request->input('websitesEnabled', []);
+        $websitesPermissions = $request->input('websitesPermissions', []);
+        $currentPublicAdministration->websites->map(function ($website) use ($user, $isAdmin, $websitesEnabled, $websitesPermissions) {
+            if ($isAdmin) {
+                $user->assign(UserRole::ADMIN);
+                $user->setWriteAccessForWebsite($website);
+            } else {
+                if (!empty($websitesPermissions[$website->id]) && UserPermission::MANAGE_ANALYTICS === $websitesPermissions[$website->id]) {
+                    $user->setWriteAccessForWebsite($website);
+                }
+
+                if (!empty($websitesPermissions[$website->id]) && UserPermission::READ_ANALYTICS === $websitesPermissions[$website->id]) {
+                    $user->setViewAccessForWebsite($website);
+                }
+
+                if (empty($websitesEnabled[$website->id])) {
+                    $user->setNoAccessForWebsite($website);
+                }
+            }
+        });
+
+        $user->syncWebsitesPermissionsToAnalyticsService();
 
         event(new UserInvited($user, current_public_administration(), $request->user()));
-
-        logger()->info('User ' . auth()->user()->getInfo() . ' added a new user [' . $validatedData['email'] . '] as ' . $validatedData['role'] . ' for "' . current_public_administration()->name . '"');
 
         return redirect()->route('users-index')->withMessage(['success' => 'Il nuovo utente è stato invitato al progetto Web Analytics Italia']); //TODO: put message in lang file
     }
@@ -172,7 +199,22 @@ class UserController extends Controller
     public function dataJson()
     {
         return Datatables::of(current_public_administration()->users)
-                ->setTransformer(new UserTransformer())
-                ->make(true);
+            ->setTransformer(new UserTransformer())
+            ->make(true);
+    }
+
+    /**
+     * Get all websites of the specified Public Administration
+     * in JSON format (to be consumed by Datatables).
+     *
+     * @throws \Exception
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function dataWebsitesPermissionsJson()
+    {
+        return Datatables::of(current_public_administration()->websites)
+            ->setTransformer(new WebsitesPermissionsTransformer())
+            ->make(true);
     }
 }

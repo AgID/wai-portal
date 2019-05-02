@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Enums\WebsiteAccessType;
 use App\Enums\WebsiteStatus;
 use App\Models\PublicAdministration;
 use App\Models\User;
@@ -57,7 +56,7 @@ class JsonRoutesTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $tokenAuth = config('analytics-service.admin_token');
+        Bouncer::dontCache();
         $this->user = factory(User::class)->state('active')->create();
         $this->publicAdministration = factory(PublicAdministration::class)->create();
         $this->publicAdministration->users()->sync($this->user->id);
@@ -69,13 +68,11 @@ class JsonRoutesTest extends TestCase
         $analyticsID = $this->app->make('analytics-service')->registerSite($this->website->name, $this->website->url, $this->publicAdministration->name);
         $this->website->analytics_id = $analyticsID;
         $this->website->save();
-        $this->app->make('analytics-service')->registerUser($this->user->uuid, $this->user->analytics_password, $this->user->email, $tokenAuth);
-        $this->app->make('analytics-service')->setWebsiteAccess($this->user->uuid, WebsiteAccessType::VIEW, $this->website->analytics_id, $tokenAuth);
-        $this->userTokenAuth = $this->app->make('analytics-service')->getUserAuthToken($this->user->uuid, md5($this->user->analytics_password));
-
-        Bouncer::scope()->to($this->publicAdministration->id);
-        $this->user->assign('reader');
-        $this->user->allow('read-analytics');
+        session()->put('tenant_id', $this->publicAdministration->id);
+        $this->user->registerAnalyticsServiceAccount();
+        $this->user->setViewAccessForWebsite($this->website);
+        $this->user->syncWebsitesPermissionsToAnalyticsService();
+        $this->userTokenAuth = $this->user->getAnalyticsServiceAccountTokenAuth();
     }
 
     /**
@@ -88,7 +85,7 @@ class JsonRoutesTest extends TestCase
     protected function tearDown(): void
     {
         $tokenAuth = config('analytics-service.admin_token');
-        $this->app->make('analytics-service')->deleteUser($this->user->uuid, $tokenAuth);
+        $this->user->deleteAnalyticsServiceAccount();
         $this->app->make('analytics-service')->deleteSite($this->website->analytics_id, $tokenAuth);
         parent::tearDown();
     }
@@ -149,10 +146,16 @@ class JsonRoutesTest extends TestCase
      */
     public function testCheckWebsiteFailedRoute(): void
     {
-        $website = factory(Website::class)->create([
-            'public_administration_id' => $this->publicAdministration->id,
-            'status' => WebsiteStatus::PENDING,
-        ]);
+        do {
+            $website = factory(Website::class)->make([
+                'public_administration_id' => $this->publicAdministration->id,
+                'status' => WebsiteStatus::PENDING,
+            ]);
+        } while ($website->slug === $this->website->slug);
+
+        $website->save();
+
+        $this->user->setViewAccessForWebsite($website);
 
         $response = $this->actingAs($this->user)
             ->withSession([

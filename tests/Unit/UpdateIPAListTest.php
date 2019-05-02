@@ -22,7 +22,7 @@ use Tests\TestCase;
 /**
  * Update IPA job tests.
  */
-class UpdateIPAListUpdateTest extends TestCase
+class UpdateIPAListTest extends TestCase
 {
     use RefreshDatabase;
 

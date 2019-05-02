@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\Website\WebsiteActivated;
+use App\Events\Website\WebsiteAdded;
 use App\Events\Website\WebsiteArchived;
 use App\Events\Website\WebsiteArchiving;
 use App\Events\Website\WebsitePurged;
@@ -18,6 +19,30 @@ class WebsiteEventsSubscriber implements ShouldQueue
     /**
      * Website activated event callback.
      *
+     * @param WebsiteAdded $event the event
+     */
+    public function onAdded(WebsiteAdded $event): void
+    {
+        $website = $event->getWebsite();
+
+        //TODO: da testare e verificare per attività "Invio mail e PEC"
+//        $publicAdministration = $website->publicAdministration;
+//        //Notify Website administrators
+//        $users = $publicAdministration->getAdministrators();
+//        foreach ($users as $user) {
+//            logger()->info('User: ' . $user->getInfo());
+//            $user->sendWebsiteActivatedNotification($website);
+//        }
+//
+//        //Notify Public Administration
+//        $publicAdministration->sendWebsiteActivatedNotification($website);
+
+        logger()->info('Website ' . $website->getInfo() . ' added of type ' . $website->type->description);
+    }
+
+    /**
+     * Website activated event callback.
+     *
      * @param WebsiteActivated $event the event
      */
     public function onActivated(WebsiteActivated $event): void
@@ -27,15 +52,10 @@ class WebsiteEventsSubscriber implements ShouldQueue
         //TODO: da testare e verificare per attività "Invio mail e PEC"
 //        $publicAdministration = $website->publicAdministration;
 //        //Notify Website administrators
-//        $users = $website->getAdministrators($website);
-//
+//        $users = $publicAdministration->getAdministrators();
 //        foreach ($users as $user) {
-//            logger()->info('User: ' . $user->getInfo());
 //            $user->sendWebsiteActivatedNotification($website);
 //        }
-//
-//        //Notify Public Administration
-//        $publicAdministration->sendWebsiteActivatedNotification($website);
 
         logger()->info('Website ' . $website->getInfo() . ' activated');
     }
@@ -88,8 +108,9 @@ class WebsiteEventsSubscriber implements ShouldQueue
         $website = $event->getWebsite();
 
         //TODO: da testare e verificare per attività "Invio mail e PEC"
+//        $publicAdministration = $website->publicAdministration;
 //        //Notify Website administrators
-//        $users = $website->getAdministrators($website);
+//        $users = $publicAdministration->getAdministrators();
 //        foreach ($users as $user) {
 //            $user->sendWebsitePurgingNotification($website);
 //        }
@@ -116,6 +137,10 @@ class WebsiteEventsSubscriber implements ShouldQueue
      */
     public function subscribe($events): void
     {
+        $events->listen(
+            'App\Events\Website\WebsiteAdded',
+            'App\Listeners\WebsiteEventsSubscriber@onAdded'
+        );
         $events->listen(
             'App\Events\Website\WebsiteActivated',
             'App\Listeners\WebsiteEventsSubscriber@onActivated'

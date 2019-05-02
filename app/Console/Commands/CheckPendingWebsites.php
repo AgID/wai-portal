@@ -31,6 +31,7 @@ class CheckPendingWebsites extends Command
      */
     public function handle()
     {
+        $this->info('Checking pending websites...');
         dispatch(new ProcessPendingWebsites())->onConnection('sync');
         $this->info('Pending websites checked');
     }

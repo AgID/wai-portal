@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Enums\UserPermission;
 use Closure;
 
 class RedirectIfAuthenticated
@@ -18,7 +19,7 @@ class RedirectIfAuthenticated
     public function handle($request, Closure $next, $guard = null)
     {
         if (auth()->guard($guard)->check()) {
-            $redirectTo = $request->user()->can('access-admin-area') ? '/admin/dashboard' : '/dashboard';
+            $redirectTo = $request->user()->can(UserPermission::ACCESS_ADMIN_AREA) ? '/admin/dashboard' : '/dashboard';
 
             return redirect($redirectTo);
         }

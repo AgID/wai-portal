@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Enums\UserPermission;
+use App\Enums\UserRole;
 use App\Enums\UserStatus;
+use App\Events\User\UserActivated;
 use App\Http\Controllers\Controller;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 
 class VerificationController extends Controller
 {
@@ -54,7 +56,7 @@ class VerificationController extends Controller
             event(new Verified($user));
         }
 
-        $dashboard = $request->user()->can('access-admin-area') ? '/admin/dashboard' : '/dashboard';
+        $dashboard = $request->user()->can(UserPermission::ACCESS_ADMIN_AREA) ? '/admin/dashboard' : '/dashboard';
 
         return redirect($dashboard)
             ->withMessage(['success' => "L'indirizzo email è stato verificato correttamente."]); //TODO: put message in lang file
@@ -102,7 +104,7 @@ class VerificationController extends Controller
         if ($user->status->is(UserStatus::INVITED)) {
             $newStatus = UserStatus::ACTIVE;
 
-            if (!$user->isA('super-admin')) {
+            if ($user->isNotA(UserRole::SUPER_ADMIN)) {
                 $SPIDUser = session()->get('spid_user');
 
                 if ($user->fiscalNumber !== $SPIDUser->fiscalNumber) {
@@ -110,29 +112,18 @@ class VerificationController extends Controller
 
                     return app()->make('SPIDAuth')->logout();
                 }
-
                 $user->fill([
                     'spidCode' => $SPIDUser->spidCode,
                     'name' => $SPIDUser->name,
                     'familyName' => $SPIDUser->familyName,
-                    'partial_analytics_password' => Str::random(rand(32, 48)),
                 ]);
-
                 $newStatus = UserStatus::ACTIVE;
 
-                // To be moved in user creation
-                // $analyticsService = app()->make('analytics-service');
-
-                // $analyticsService->registerUser($user->email, $user->analytics_password, $user->email);
-
-                // $access = $user->can('manage-analytics') ? 'admin' : 'view';
-                // foreach ($user->getWebsites() as $website) {
-                //     $analyticsService->setWebsiteAccess($user->email, $access, $website->analytics_id);
-                // }
+                event(new UserActivated($user));
             }
         }
 
-        $user->status = $newStatus;
+        $user->status = $newStatus ?? $user->status->value;
         $user->email_verified_at = $user->freshTimestamp();
 
         return $user->save();

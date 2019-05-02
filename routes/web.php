@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\UserPermission;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -221,32 +222,39 @@ Route::middleware('spid.auth', 'auth', 'verified')->group(function () {
                 Route::get('/add', [
                     'as' => 'websites-add',
                     'uses' => 'WebsiteController@create',
-                ])->middleware('authorize.analytics:manage-sites');
+                ])->middleware('authorize.analytics:' . UserPermission::MANAGE_WEBSITES);
+
+                Route::get('/webistes-data', [
+                    'as' => 'websites.users.permissions.data',
+                    'uses' => 'WebsiteController@dataUsersPermissionsJson',
+                ])->middleware('authorize.analytics:' . UserPermission::MANAGE_WEBSITES);
 
                 Route::post('/store', [
                     'as' => 'websites-store',
                     'uses' => 'WebsiteController@store',
-                ])->middleware('authorize.analytics:manage-sites');
+                ])->middleware('authorize.analytics:' . UserPermission::MANAGE_WEBSITES);
 
                 Route::get('/{website}/check', [
                     'as' => 'website-check_tracking',
                     'uses' => 'WebsiteController@checkTracking',
-                ])->middleware('authorize.analytics:read-analytics');
+                    // Authorization for specific websites is handled in the middleware
+                ])->middleware('authorize.analytics:' . UserPermission::READ_ANALYTICS);
 
                 Route::get('/{website}/edit', [
                     'as' => 'websites-edit',
                     'uses' => 'WebsiteController@edit',
-                ])->middleware('authorize.analytics:manage-sites');
+                ])->middleware('authorize.analytics:' . UserPermission::MANAGE_WEBSITES);
 
                 Route::post('/{website}/update', [
                     'as' => 'websites-update',
                     'uses' => 'WebsiteController@update',
-                ])->middleware('authorize.analytics:manage-sites');
+                ])->middleware('authorize.analytics:' . UserPermission::MANAGE_WEBSITES);
 
                 Route::get('/{website}/javascript-snippet', [
                     'as' => 'website-javascript-snippet',
                     'uses' => 'WebsiteController@showJavascriptSnippet',
-                ])->middleware('authorize.analytics:read-analytics');
+                    // Authorization for specific websites is handled in the middleware
+                ])->middleware('authorize.analytics:' . UserPermission::READ_ANALYTICS);
 
                 Route::get('/data', [
                     'as' => 'websites-data-json',
@@ -258,32 +266,37 @@ Route::middleware('spid.auth', 'auth', 'verified')->group(function () {
                 Route::get('/', [
                     'as' => 'users-index',
                     'uses' => 'UserController@index',
-                ])->middleware('authorize.analytics:read-analytics');
+                ]);
 
                 Route::get('/data', [
                     'as' => 'users-data-json',
                     'uses' => 'UserController@dataJson',
-                ])->middleware('authorize.analytics:read-analytics');
+                ]);
 
                 Route::get('/add', [
                     'as' => 'users-create',
                     'uses' => 'UserController@create',
-                ])->middleware('authorize.analytics:manage-users');
+                ])->middleware('authorize.analytics:' . UserPermission::MANAGE_USERS);
+
+                Route::get('/webistes-data', [
+                    'as' => 'users.websites.permissions.data',
+                    'uses' => 'UserController@dataWebsitesPermissionsJson',
+                ])->middleware('authorize.analytics:' . UserPermission::MANAGE_USERS);
 
                 Route::post('/store', [
                     'as' => 'users-store',
                     'uses' => 'UserController@store',
-                ])->middleware('authorize.analytics:manage-users');
+                ])->middleware('authorize.analytics:' . UserPermission::MANAGE_USERS);
 
                 Route::get('/{user}/edit', [
                     'as' => 'users-edit',
                     'uses' => 'UserController@edit',
-                ])->middleware('authorize.analytics:manage-users');
+                ])->middleware('authorize.analytics:' . UserPermission::MANAGE_USERS);
 
                 Route::post('/{user}/update', [
                     'as' => 'users-update',
                     'uses' => 'UserController@update',
-                ])->middleware('authorize.analytics:manage-users');
+                ])->middleware('authorize.analytics:' . UserPermission::MANAGE_USERS);
             });
         });
 

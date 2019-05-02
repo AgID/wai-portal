@@ -5,10 +5,12 @@
 import './bootstrap';
 import Datatables from './datatables';
 import CheckWebsiteTracking from './checkWebsiteTracking';
+import UserWebsitesPermissions from './userWebsitesPermissions';
 
 $(document).ready(() => {
     Datatables.init([
-        (settings, json) => CheckWebsiteTracking.initWebsiteCheckButton(json)
+        () => CheckWebsiteTracking.initWebsiteCheckButton(),
+        () => UserWebsitesPermissions.initPermissionInputs()
     ]);
 });
 
