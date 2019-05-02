@@ -1,0 +1,361 @@
+<?php
+
+namespace Tests\Feature;
+
+use App\Enums\PublicAdministrationStatus;
+use App\Enums\UserPermission;
+use App\Enums\UserRole;
+use App\Enums\WebsiteStatus;
+use App\Enums\WebsiteType;
+use App\Events\Website\WebsiteArchived;
+use App\Events\Website\WebsiteReEnabled;
+use App\Models\PublicAdministration;
+use App\Models\User;
+use App\Models\Website;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Event;
+use Silber\Bouncer\BouncerFacade as Bouncer;
+use Tests\TestCase;
+
+/**
+ * Website controller archive/re-enable JSON requests tests.
+ */
+class ArchiveWebsiteJsonRoutesTest extends TestCase
+{
+    use RefreshDatabase;
+
+    /**
+     * The fake calling user.
+     *
+     * @var User the user
+     */
+    protected $user;
+
+    /**
+     * The selected public administration for the user.
+     *
+     * @var PublicAdministration the public administration
+     */
+    protected $publicAdministration;
+
+    /**
+     * The requested website.
+     *
+     * @var Website the website
+     */
+    protected $website;
+
+    /**
+     * Pre-test setup.
+     *
+     * @throws \App\Exceptions\AnalyticsServiceException if unable to connect to the Analytics Service
+     * @throws \App\Exceptions\CommandErrorException if command finishes with error
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException if unable to bind to the service
+     */
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        Event::fake();
+        Bouncer::dontCache();
+
+        $this->user = factory(User::class)->state('active')->create();
+        $this->publicAdministration = factory(PublicAdministration::class)->create([
+            'status' => PublicAdministrationStatus::ACTIVE,
+        ]);
+        $this->publicAdministration->users()->sync($this->user->id);
+        $this->website = factory(Website::class)->create([
+            'status' => WebsiteStatus::ACTIVE,
+            'type' => WebsiteType::SECONDARY,
+            'public_administration_id' => $this->publicAdministration->id,
+        ]);
+
+        $analyticsID = $this->app->make('analytics-service')->registerSite($this->website->name, $this->website->url, $this->publicAdministration->name);
+        $this->website->analytics_id = $analyticsID;
+        $this->website->save();
+
+        $this->user->roles()->detach();
+        Bouncer::scope()->to($this->publicAdministration->id);
+        $this->user->assign(UserRole::ADMIN);
+        $this->user->allow(UserPermission::MANAGE_WEBSITES);
+
+        session()->put('tenant_id', $this->publicAdministration->id);
+        $this->user->registerAnalyticsServiceAccount();
+        $this->user->setWriteAccessForWebsite($this->website);
+        $this->user->syncWebsitesPermissionsToAnalyticsService();
+    }
+
+    /**
+     * Post-test cleanup.
+     *
+     * @throws \App\Exceptions\AnalyticsServiceException if unable to connect to the Analytics Service
+     * @throws \App\Exceptions\CommandErrorException if command finishes with error
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException if unable to bind to the service
+     */
+    protected function tearDown(): void
+    {
+        $tokenAuth = config('analytics-service.admin_token');
+        $this->user->deleteAnalyticsServiceAccount();
+        $this->app->make('analytics-service')->deleteSite($this->website->analytics_id, $tokenAuth);
+        parent::tearDown();
+    }
+
+    /**
+     * Test website archive status not modified response.
+     */
+    public function testArchiveWebsiteNotChangedRoute(): void
+    {
+        $this->website->status = WebsiteStatus::ARCHIVED;
+        $this->website->save();
+
+        $response = $this->actingAs($this->user, 'web')
+            ->withSession([
+                'spid_sessionIndex' => 'fake-session-index',
+                'tenant_id' => $this->publicAdministration->id,
+            ])
+            ->patch(route('website.archive', ['website' => $this->website->slug]));
+
+        $response->assertStatus(304);
+
+        $this->assertEmpty($response->getContent());
+
+        Event::assertNotDispatched(WebsiteArchived::class);
+        Event::assertNotDispatched(WebsiteReEnabled::class);
+    }
+
+    /**
+     * Test website archive successfully completed.
+     */
+    public function testArchiveWebsiteChangedRoute(): void
+    {
+        $response = $this->actingAs($this->user, 'web')
+            ->withSession([
+                'spid_sessionIndex' => 'fake-session-index',
+                'tenant_id' => $this->publicAdministration->id,
+            ])
+            ->patch(route('website.archive', ['website' => $this->website->slug]));
+
+        $response->assertStatus(200);
+
+        $response->assertJson([
+            'result' => 'ok',
+            'id' => $this->website->slug,
+            'status' => WebsiteStatus::getDescription(WebsiteStatus::ARCHIVED),
+        ]);
+
+        Event::assertDispatched(WebsiteArchived::class, function ($event) {
+            return $event->getWebsite()->slug === $this->website->slug;
+        });
+        Event::assertNotDispatched(WebsiteReEnabled::class);
+    }
+
+    /**
+     * Test website archive failed due to primary website type.
+     */
+    public function testArchiveFailOnPrimarySiteRoute(): void
+    {
+        $this->website->type = WebsiteType::PRIMARY;
+        $this->website->save();
+
+        $response = $this->actingAs($this->user, 'web')
+            ->withSession([
+                'spid_sessionIndex' => 'fake-session-index',
+                'tenant_id' => $this->publicAdministration->id,
+            ])
+            ->patch(route('website.archive', ['website' => $this->website->slug]));
+
+        $response->assertStatus(400);
+
+        $response->assertJson([
+            'result' => 'error',
+            'message' => 'Invalid operation for current website status',
+        ]);
+
+        Event::assertNotDispatched(WebsiteArchived::class);
+        Event::assertNotDispatched(WebsiteReEnabled::class);
+    }
+
+    /**
+     * Test website archive failed due to wrong current status.
+     */
+    public function testArchiveWebsiteFailedWrongStatusRoute(): void
+    {
+        $this->website->status = WebsiteStatus::PENDING;
+        $this->website->save();
+
+        $response = $this->actingAs($this->user, 'web')
+            ->withSession([
+                'spid_sessionIndex' => 'fake-session-index',
+                'tenant_id' => $this->publicAdministration->id,
+            ])
+            ->patch(route('website.archive', ['website' => $this->website->slug]));
+
+        $response->assertStatus(400);
+
+        $response->assertJson([
+            'result' => 'error',
+            'message' => 'Invalid operation for current website status',
+        ]);
+
+        Event::assertNotDispatched(WebsiteArchived::class);
+        Event::assertNotDispatched(WebsiteReEnabled::class);
+    }
+
+    /**
+     * Test website archive failed due to error in Analytics Service call.
+     */
+    public function testArchiveWebsiteFailedRoute(): void
+    {
+        $website = factory(Website::class)->create([
+            'public_administration_id' => $this->publicAdministration->id,
+            'type' => WebsiteType::SECONDARY,
+            'status' => WebsiteStatus::ACTIVE,
+        ]);
+
+        $response = $this->actingAs($this->user)
+            ->withSession([
+                'spid_sessionIndex' => 'fake-session-index',
+                'tenant_id' => $this->publicAdministration->id,
+            ])
+            ->patch(route('website.archive', ['website' => $website->slug]));
+
+        $response->assertJson([
+            'result' => 'error',
+            'message' => 'Bad Request',
+        ]);
+
+        Event::assertNotDispatched(WebsiteArchived::class);
+        Event::assertNotDispatched(WebsiteReEnabled::class);
+    }
+
+    /**
+     * Test website re-enable status not modified response.
+     */
+    public function testReEnableWebsiteNotChanged(): void
+    {
+        $this->website->status = WebsiteStatus::ACTIVE;
+        $this->website->save();
+
+        $response = $this->actingAs($this->user, 'web')
+            ->withSession([
+                'spid_sessionIndex' => 'fake-session-index',
+                'tenant_id' => $this->publicAdministration->id,
+            ])
+            ->patch(route('website.enable', ['website' => $this->website->slug]));
+
+        $response->assertStatus(304);
+
+        $this->assertEmpty($response->getContent());
+
+        Event::assertNotDispatched(WebsiteArchived::class);
+        Event::assertNotDispatched(WebsiteReEnabled::class);
+    }
+
+    /**
+     * Test website re-enable successfully completed.
+     */
+    public function testReEnableWebsiteChangedRoute(): void
+    {
+        $this->website->status = WebsiteStatus::ARCHIVED;
+        $this->website->save();
+
+        $response = $this->actingAs($this->user, 'web')
+            ->withSession([
+                'spid_sessionIndex' => 'fake-session-index',
+                'tenant_id' => $this->publicAdministration->id,
+            ])
+            ->patch(route('website.enable', ['website' => $this->website->slug]));
+
+        $response->assertStatus(200);
+
+        $response->assertJson([
+            'result' => 'ok',
+            'id' => $this->website->slug,
+            'status' => WebsiteStatus::getDescription(WebsiteStatus::ACTIVE),
+        ]);
+
+        Event::assertDispatched(WebsiteReEnabled::class, function ($event) {
+            return $event->getWebsite()->slug === $this->website->slug;
+        });
+        Event::assertNotDispatched(WebsiteArchived::class);
+    }
+
+    /**
+     * Test website re-enable failed due to primary website type.
+     */
+    public function testReEnableFailOnPrimarySiteRoute(): void
+    {
+        $this->website->type = WebsiteType::PRIMARY;
+        $this->website->save();
+
+        $response = $this->actingAs($this->user, 'web')
+            ->withSession([
+                'spid_sessionIndex' => 'fake-session-index',
+                'tenant_id' => $this->publicAdministration->id,
+            ])
+            ->patch(route('website.enable', ['website' => $this->website->slug]));
+
+        $response->assertStatus(400);
+
+        $response->assertJson([
+            'result' => 'error',
+            'message' => 'Invalid operation for current website status',
+        ]);
+
+        Event::assertNotDispatched(WebsiteArchived::class);
+        Event::assertNotDispatched(WebsiteReEnabled::class);
+    }
+
+    /**
+     * Test website re-enable failed due to wrong current status.
+     */
+    public function testReEnableWebsiteFailedWrongStatusRoute(): void
+    {
+        $this->website->status = WebsiteStatus::PENDING;
+        $this->website->save();
+
+        $response = $this->actingAs($this->user, 'web')
+            ->withSession([
+                'spid_sessionIndex' => 'fake-session-index',
+                'tenant_id' => $this->publicAdministration->id,
+            ])
+            ->patch(route('website.enable', ['website' => $this->website->slug]));
+
+        $response->assertStatus(400);
+
+        $response->assertJson([
+            'result' => 'error',
+            'message' => 'Invalid operation for current website status',
+        ]);
+
+        Event::assertNotDispatched(WebsiteArchived::class);
+        Event::assertNotDispatched(WebsiteReEnabled::class);
+    }
+
+    /**
+     * Test website archive failed due to error in Analytics Service call.
+     */
+    public function testReEnableWebsiteFailedRoute(): void
+    {
+        $website = factory(Website::class)->create([
+            'public_administration_id' => $this->publicAdministration->id,
+            'status' => WebsiteStatus::ARCHIVED,
+            'type' => WebsiteType::SECONDARY,
+        ]);
+
+        $response = $this->actingAs($this->user)
+            ->withSession([
+                'spid_sessionIndex' => 'fake-session-index',
+                'tenant_id' => $this->publicAdministration->id,
+            ])
+            ->patch(route('website.enable', ['website' => $website->slug]));
+
+        $response->assertJson([
+            'result' => 'error',
+            'message' => 'Bad Request',
+        ]);
+
+        Event::assertNotDispatched(WebsiteArchived::class);
+        Event::assertNotDispatched(WebsiteReEnabled::class);
+    }
+}

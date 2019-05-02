@@ -14,7 +14,7 @@ use Tests\TestCase;
 /**
  * Website controller JSON requests test.
  */
-class JsonRoutesTest extends TestCase
+class PendingWebsiteCheckJsonRoutesTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -91,7 +91,7 @@ class JsonRoutesTest extends TestCase
     }
 
     /**
-     * Test website not activated.
+     * Test website status not changed.
      */
     public function testCheckWebsiteNotActiveRoute(): void
     {
@@ -102,13 +102,9 @@ class JsonRoutesTest extends TestCase
             ])
             ->get(route('website-check_tracking', ['website' => $this->website->slug]));
 
-        $response->assertStatus(200);
+        $response->assertStatus(304);
 
-        $response->assertJson([
-            'result' => 'ok',
-            'id' => $this->website->slug,
-            'status' => WebsiteStatus::getDescription(WebsiteStatus::PENDING),
-        ]);
+        $this->assertEmpty($response->getContent());
     }
 
     /**
