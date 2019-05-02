@@ -72,7 +72,7 @@ class ProcessWebsitesMonitoring implements ShouldQueue
                     if (empty($filteredVisits)) {
                         $website->status = WebsiteStatus::ARCHIVED;
 
-                        $analyticsService->changeArchiveStatus($website->analytics_id, WebsiteStatus::ARCHIVED, $this->tokenAuth);
+                        $analyticsService->changeArchiveStatus($website->analytics_id, WebsiteStatus::ARCHIVED);
                         $website->save();
 
                         event(new WebsiteArchived($website));
