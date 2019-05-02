@@ -4,11 +4,15 @@ export default (() => {
             .then((response) => {
                 //TODO: usare alert bootstrap
                 //TODO: refresh page/datatable after success
-                alert('Stato sito: ' + response.data.status)
+                alert('Stato sito: ' + response.data.status);
             })
-            .catch(() => {
+            .catch((error) => {
                 //TODO: usare alert bootstrap
-                alert('Richiesta stato website fallita')
+                if (error.response && error.response.status === 304) {
+                    alert('Stato non cambiato');
+                } else {
+                    alert('Richiesta stato website fallita');
+                }
             });
     }
 

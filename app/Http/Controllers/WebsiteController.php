@@ -211,13 +211,15 @@ class WebsiteController extends Controller
                 $this->activate($website);
 
                 event(new WebsiteActivated($website));
+
+                return response()->json([
+                    'result' => 'ok',
+                    'id' => $website->slug,
+                    'status' => $website->status->description,
+                ]);
             }
 
-            return response()->json([
-                'result' => 'ok',
-                'id' => $website->slug,
-                'status' => $website->status->description,
-            ]);
+            return response()->json(null, 304);
         } catch (AnalyticsServiceException | BindingResolutionException $exception) {
             report($exception);
             $code = $exception->getCode();
