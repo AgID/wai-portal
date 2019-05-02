@@ -70,25 +70,6 @@ trait HasWebsitePermissions
     }
 
     /**
-     * Set admin permission for this user and for the specified website
-     * in the Analytics Service.
-     *
-     * @param Website $website the website for which the permission is set
-     *
-     * @throws TenantIdNotSetException if the tenant id is not set in the current session
-     */
-    public function setAdminAccessForWebsite(Website $website): void
-    {
-        $this->ensurePermissionScopeIsSet();
-        Bouncer::allow($this)->to(UserPermission::READ_ANALYTICS, $website);
-        Bouncer::allow($this)->to(UserPermission::MANAGE_ANALYTICS, $website);
-        Bouncer::disallow($this)->to(UserPermission::NO_ACCESS, $website);
-        Bouncer::refreshFor($this);
-
-        event(new UserWebsiteAccessChanged($this, $website, WebsiteAccessType::ADMIN()));
-    }
-
-    /**
      * Synchronize current user website permission to the analytics service.
      *
      * @throws \Illuminate\Contracts\Container\BindingResolutionException if unable to bind to the service
