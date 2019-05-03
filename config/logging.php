@@ -1,10 +1,12 @@
 <?php
 
+use App\Services\ElasticSearchClientSetup;
+use Monolog\Formatter\ElasticaFormatter;
+use Monolog\Handler\ElasticSearchHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogUdpHandler;
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Default Log Channel
@@ -58,6 +60,35 @@ return [
             'days' => 14,
         ],
 
+        'elasticsearch' => [
+            'driver' => 'monolog',
+            'level' => 'debug',
+            'handler' => ElasticSearchHandler::class,
+            'handler_with' => [
+                'client' => app(ElasticSearchClientSetup::class)->getElasticSearchClient(),
+                'options' => [
+                    'index' => config('elastic-search.index_name'),
+                    /*
+                     * Index type deprecated from ElasticSearch 6.x and default to _doc in 7.x
+                     * It will be removed in ElasticSearch 8.x
+                     * https://www.elastic.co/guide/en/elasticsearch/reference/current/removal-of-types.html
+                     */
+                    'type' => '_doc',
+                    'ignore_error' => config('elastic-search.ignore_exceptions'),
+                ],
+            ],
+            'formatter' => ElasticaFormatter::class,
+            'formatter_with' => [
+                'index' => config('elastic-search.index_name'),
+                /*
+                 * Index type deprecated from ElasticSearch 6.x and default to _doc in 7.x
+                 * It will be removed in ElasticSearch 8.x
+                 * https://www.elastic.co/guide/en/elasticsearch/reference/current/removal-of-types.html
+                 */
+                'type' => '_doc',
+            ],
+        ],
+
         'slack' => [
             'driver' => 'slack',
             'url' => env('LOG_SLACK_WEBHOOK_URL'),
@@ -95,5 +126,4 @@ return [
             'level' => 'debug',
         ],
     ],
-
 ];
