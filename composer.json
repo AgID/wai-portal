@@ -22,6 +22,7 @@
         "laravel/tinker": "^1.0",
         "league/fractal": "^0.17.0",
         "predis/predis": "^1.1",
+        "ruflin/elastica": "^6.1",
         "silber/bouncer": "v1.0.0-rc.5",
         "symfony/yaml": "^4.0",
         "usu/codice-fiscale": "^1.0",
