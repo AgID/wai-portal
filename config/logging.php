@@ -107,6 +107,14 @@ return [
             ],
         ],
 
+        'stdout' => [
+            'driver' => 'monolog',
+            'handler' => StreamHandler::class,
+            'handler_with' => [
+                'stream' => 'php://stdout',
+            ],
+        ],
+
         'stderr' => [
             'driver' => 'monolog',
             'handler' => StreamHandler::class,
