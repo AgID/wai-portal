@@ -1,9 +1,30 @@
-version: "2"
+version: '3.7'
+
+volumes:
+  application-code:
+    driver: local
+    external: true
+  application-logs:
+    driver: local
+    external: true
 
 services:
+# php-fpm
+  php-fpm:
+    volumes:
+      - application-code:${APP_CODE_PATH_CONTAINER}
 
-### Applications Code Container #############################
+# queue-worker
+  queue-worker:
+    volumes:
+      - application-code:${APP_CODE_PATH_CONTAINER}
 
-    application:
-      build:
-        context: ./application
+# nginx
+  nginx:
+    volumes:
+      - type: volume
+        source: application-code
+        target: ${APP_CODE_PATH_CONTAINER}
+        volume:
+          nocopy: true
+      - application-logs:${APP_LOGS_PATH_CONTAINER}

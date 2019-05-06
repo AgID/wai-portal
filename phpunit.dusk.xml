@@ -18,4 +18,18 @@
             <directory suffix=".php">./app</directory>
         </whitelist>
     </filter>
+        <listeners>
+        <listener class="JohnKary\PHPUnit\Listener\SpeedTrapListener">
+            <arguments>
+                <array>
+                    <element key="slowThreshold">
+                        <integer>5000</integer>
+                    </element>
+                    <element key="reportLength">
+                        <integer>15</integer>
+                    </element>
+                </array>
+            </arguments>
+        </listener>
+    </listeners>
 </phpunit>
