@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "bensampo/laravel-enum",
-            "version": "1.17.1",
+            "version": "1.18.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/BenSampo/laravel-enum.git",
-                "reference": "612ae4c7a986aaf0e3c4666d48731e1f8e2ee19b"
+                "reference": "de5fd65755aa4e0933ee4ca14ca7ac29768f961e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/BenSampo/laravel-enum/zipball/612ae4c7a986aaf0e3c4666d48731e1f8e2ee19b",
-                "reference": "612ae4c7a986aaf0e3c4666d48731e1f8e2ee19b",
+                "url": "https://api.github.com/repos/BenSampo/laravel-enum/zipball/de5fd65755aa4e0933ee4ca14ca7ac29768f961e",
+                "reference": "de5fd65755aa4e0933ee4ca14ca7ac29768f961e",
                 "shasum": ""
             },
             "require": {
@@ -66,7 +66,7 @@
                 "package",
                 "validation"
             ],
-            "time": "2019-03-05T10:29:46+00:00"
+            "time": "2019-05-05T08:53:17+00:00"
         },
         {
             "name": "cweagans/composer-patches",
@@ -1545,11 +1545,6 @@
                 "ext-openssl": "Install openssl lib in order to handle with x509 certs (require to support sign and encryption)"
             },
             "type": "library",
-            "extra": {
-                "patches_applied": {
-                    "Compatibility with SPID": "https://rawgit.com/italia/spid-laravel/master/patches/php-saml-3-spid.patch"
-                }
-            },
             "autoload": {
                 "psr-4": {
                     "OneLogin\\": "src/"
@@ -1566,7 +1561,12 @@
                 "onelogin",
                 "saml"
             ],
-            "time": "2019-03-11T09:41:32+00:00"
+            "time": "2019-03-11T09:41:32+00:00",
+            "extra": {
+                "patches_applied": {
+                    "Compatibility with SPID": "https://rawgit.com/italia/spid-laravel/master/patches/php-saml-3-spid.patch"
+                }
+            }
         },
         {
             "name": "opis/closure",
@@ -2884,7 +2884,7 @@
                 },
                 {
                     "name": "Gert de Pagter",
-                    "email": "backendtea@gmail.com"
+                    "email": "BackEndTea@gmail.com"
                 }
             ],
             "description": "Symfony polyfill for ctype functions",
