@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\WebsiteStatus;
 use App\Enums\WebsiteType;
+use BenSampo\Enum\Traits\CastsEnums;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -15,6 +16,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Website extends Model
 {
     use SoftDeletes;
+    use CastsEnums;
 
     /**
      * The attributes that are mass assignable.
@@ -32,6 +34,26 @@ class Website extends Model
     ];
 
     /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'status' => 'integer',
+        'type' => 'integer',
+    ];
+
+    /**
+     * The attributes that should be cast to enums classes.
+     *
+     * @var array enum casted attributes
+     */
+    protected $enumCasts = [
+        'status' => WebsiteStatus::class,
+        'type' => WebsiteType::class,
+    ];
+
+    /**
      * Get the route key for the model.
      *
      * @return string the DB column name to use for route binding
@@ -39,38 +61,6 @@ class Website extends Model
     public function getRouteKeyName(): string
     {
         return 'slug';
-    }
-
-    /**
-     * Website status accessor.
-     *
-     * @param int $value the database value
-     *
-     * @throws \BenSampo\Enum\Exceptions\InvalidEnumMemberException if status is not valid
-     *
-     * @return WebsiteStatus the status
-     *
-     * @see \App\Enums\WebsiteStatus
-     */
-    public function getStatusAttribute($value): WebsiteStatus
-    {
-        return new WebsiteStatus((int) $value);
-    }
-
-    /**
-     * Website type accessor.
-     *
-     * @param int $value the database value
-     *
-     * @throws \BenSampo\Enum\Exceptions\InvalidEnumMemberException if type is not valid
-     *
-     * @return WebsiteType the type
-     *
-     * @see \App\Enums\WebsiteType
-     */
-    public function getTypeAttribute($value)
-    {
-        return new WebsiteType((int) $value);
     }
 
     /**

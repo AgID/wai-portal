@@ -6,6 +6,7 @@ use App\Enums\PublicAdministrationStatus;
 use App\Enums\UserRole;
 use App\Enums\UserStatus;
 use App\Notifications\WebsiteActivatedPAEmail;
+use BenSampo\Enum\Traits\CastsEnums;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -20,6 +21,7 @@ use Silber\Bouncer\BouncerFacade as Bouncer;
  */
 class PublicAdministration extends Model
 {
+    use CastsEnums;
     use SoftDeletes;
     use Notifiable;
 
@@ -37,6 +39,24 @@ class PublicAdministration extends Model
         'region',
         'type',
         'status',
+    ];
+
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'status' => 'integer',
+    ];
+
+    /**
+     * The attributes that should be cast to enums classes.
+     *
+     * @var array enum casted attributes
+     */
+    protected $enumCasts = [
+        'status' => PublicAdministrationStatus::class,
     ];
 
     /**
@@ -83,22 +103,6 @@ class PublicAdministration extends Model
     public function routeNotificationForMail($notification)
     {
         return empty(trim($this->name)) ? $this->pec_address : [$this->pec_address, $this->name];
-    }
-
-    /**
-     * Public administration status accessor.
-     *
-     * @param int $value the database value
-     *
-     * @throws \BenSampo\Enum\Exceptions\InvalidEnumMemberException if status is not valid
-     *
-     * @return PublicAdministrationStatus the status
-     *
-     * @see \App\Enums\PublicAdministrationStatus
-     */
-    public function getStatusAttribute($value): PublicAdministrationStatus
-    {
-        return new PublicAdministrationStatus((int) $value);
     }
 
     /**

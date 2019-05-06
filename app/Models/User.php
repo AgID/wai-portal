@@ -12,6 +12,7 @@ use App\Notifications\WebsiteArchivingUserEmail;
 use App\Notifications\WebsitePurgingUserEmail;
 use App\Traits\HasAnalyticsServiceAccount;
 use App\Traits\HasWebsitePermissions;
+use BenSampo\Enum\Traits\CastsEnums;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -27,6 +28,7 @@ use Silber\Bouncer\Database\HasRolesAndAbilities;
  */
 class User extends Authenticatable implements MustVerifyEmail
 {
+    use CastsEnums;
     use Notifiable;
     use HasRolesAndAbilities;
     use HasWebsitePermissions;
@@ -70,6 +72,16 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'status' => 'integer',
+    ];
+
+    /**
+     * The attributes that should be cast to enums classes.
+     *
+     * @var array enum casted attributes
+     */
+    protected $enumCasts = [
+        'status' => UserStatus::class,
     ];
 
     /**
@@ -126,22 +138,6 @@ class User extends Authenticatable implements MustVerifyEmail
     public function routeNotificationForMail($notification)
     {
         return empty($this->full_name) ? $this->email : [$this->email, $this->full_name];
-    }
-
-    /**
-     * User status accessor.
-     *
-     * @param int $value the database value
-     *
-     * @throws \BenSampo\Enum\Exceptions\InvalidEnumMemberException if status is not valid
-     *
-     * @return UserStatus the status
-     *
-     * @see \App\Enums\UserStatus
-     */
-    public function getStatusAttribute($value): UserStatus
-    {
-        return new UserStatus((int) $value);
     }
 
     /**
