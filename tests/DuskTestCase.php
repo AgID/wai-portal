@@ -102,7 +102,7 @@ abstract class DuskTestCase extends BaseTestCase
         });
     }
 
-    public function injectFakeTenandID(int $publicAdminiatraionId)
+    public function injectFakeTenantId(int $publicAdminiatraionId)
     {
         $this->browse(function (Browser $browser) use ($publicAdminiatraionId) {
             $browser->visit('/_test/_inject_tenant_id/' . $publicAdminiatraionId);
