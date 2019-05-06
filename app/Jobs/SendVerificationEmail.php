@@ -13,7 +13,10 @@ use Illuminate\Support\Facades\Mail;
 
 class SendVerificationEmail implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     /**
      * The user this mail will be sent to.

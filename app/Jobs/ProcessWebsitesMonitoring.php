@@ -22,7 +22,10 @@ use Illuminate\Queue\SerializesModels;
  */
 class ProcessWebsitesMonitoring implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     /**
      * The authentication token to use for Analytics Service.

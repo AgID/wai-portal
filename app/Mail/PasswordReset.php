@@ -9,7 +9,8 @@ use Illuminate\Queue\SerializesModels;
 
 class PasswordReset extends Mailable
 {
-    use Queueable, SerializesModels;
+    use Queueable;
+    use SerializesModels;
 
     /**
      * The user this mail will be sent to.

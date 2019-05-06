@@ -27,7 +27,11 @@ use Illuminate\Queue\SerializesModels;
  */
 class ProcessPendingWebsites implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, ActivatesWebsite;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
+    use ActivatesWebsite;
 
     /**
      * The authentication token to use for Analytics Service.

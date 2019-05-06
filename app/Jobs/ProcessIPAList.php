@@ -25,7 +25,10 @@ use Illuminate\Support\Str;
  */
 class ProcessIPAList implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     /**
      * Whether the DB update should be skipped.
