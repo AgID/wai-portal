@@ -160,7 +160,7 @@ class WebsiteController extends Controller
         $website = Website::create([
             'name' => $request->input('name'),
             'url' => $request->input('url'),
-            'type' => $request->input('type'),
+            'type' => (int) $request->input('type'),
             'public_administration_id' => $publicAdministration->id,
             'analytics_id' => $analyticsId,
             'slug' => Str::slug($request->input('url')),
