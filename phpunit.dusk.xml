@@ -18,7 +18,7 @@
             <directory suffix=".php">./app</directory>
         </whitelist>
     </filter>
-        <listeners>
+    <listeners>
         <listener class="JohnKary\PHPUnit\Listener\SpeedTrapListener">
             <arguments>
                 <array>
