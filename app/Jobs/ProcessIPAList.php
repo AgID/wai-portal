@@ -108,6 +108,8 @@ class ProcessIPAList implements ShouldQueue
 
         while (false !== ($data = fgetcsv($handle, 0, "\t"))) {
             try {
+                $pec = '';
+
                 for ($i = 16; $i <= 24 && $i < $count; $i += 2) {
                     if ('pec' === strtolower($data[$i + 1])) {
                         $pec = $data[$i];
@@ -116,7 +118,7 @@ class ProcessIPAList implements ShouldQueue
                 }
 
                 if (empty($pec)) {
-                    logger()->warning($count . 'No PEC email found into IPA data for Public Administration ' . $data[1] . ' [' . $data[0] . ']. Some functions may not work and notifications cannot be sent');
+                    logger()->warning($count . 'No PEC address found into IPA data for Public Administration ' . $data[1] . ' [' . $data[0] . ']. Some functions may not work and notifications cannot be sent');
                 }
 
                 $retrievedPA = [
