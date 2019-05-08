@@ -202,6 +202,7 @@ class ArchiveWebsiteJsonRoutesTest extends TestCase
         Event::assertNotDispatched(WebsiteUnarchived::class);
     }
 
+//    to be uncommented after the resolution of https://github.com/matomo-org/matomo/issues/8697
 //    /**
 //     * Test website archive failed due to error in Analytics Service call.
 //     */
@@ -333,6 +334,7 @@ class ArchiveWebsiteJsonRoutesTest extends TestCase
         Event::assertNotDispatched(WebsiteUnarchived::class);
     }
 
+//    to be uncommented after the resolution of https://github.com/matomo-org/matomo/issues/8697
 //    /**
 //     * Test website archive failed due to error in Analytics Service call.
 //     */
