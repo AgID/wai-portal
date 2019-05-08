@@ -245,9 +245,9 @@ Route::middleware('spid.auth', 'auth', 'verified')->group(function () {
                     'uses' => 'WebsiteController@archive',
                 ])->middleware('authorize.analytics:' . UserPermission::MANAGE_WEBSITES);
 
-                Route::patch('/{website}/enable', [
-                    'as' => 'website.enable',
-                    'uses' => 'WebsiteController@enable',
+                Route::patch('/{website}/unarchive', [
+                    'as' => 'website.unarchive',
+                    'uses' => 'WebsiteController@unarchive',
                 ])->middleware('authorize.analytics:' . UserPermission::MANAGE_WEBSITES);
 
                 Route::get('/{website}/edit', [

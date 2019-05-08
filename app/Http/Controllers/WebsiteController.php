@@ -10,7 +10,7 @@ use App\Enums\WebsiteType;
 use App\Events\Website\WebsiteActivated;
 use App\Events\Website\WebsiteAdded;
 use App\Events\Website\WebsiteArchived;
-use App\Events\Website\WebsiteReEnabled;
+use App\Events\Website\WebsiteUnarchived;
 use App\Exceptions\AnalyticsServiceException;
 use App\Exceptions\CommandErrorException;
 use App\Http\Requests\StorePrimaryWebsiteRequest;
@@ -292,7 +292,7 @@ class WebsiteController extends Controller
      *
      * @return JsonResponse the JSON response
      */
-    public function enable(Website $website): JsonResponse
+    public function unarchive(Website $website): JsonResponse
     {
         try {
             if (!$website->type->is(WebsiteType::PRIMARY)) {
@@ -301,7 +301,7 @@ class WebsiteController extends Controller
                     app()->make('analytics-service')->changeArchiveStatus($website->analytics_id, WebsiteStatus::ACTIVE);
                     $website->save();
 
-                    event(new WebsiteReEnabled($website));
+                    event(new WebsiteUnarchived($website));
 
                     return response()->json([
                         'result' => 'ok',

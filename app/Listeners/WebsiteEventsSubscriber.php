@@ -8,7 +8,7 @@ use App\Events\Website\WebsiteArchived;
 use App\Events\Website\WebsiteArchiving;
 use App\Events\Website\WebsitePurged;
 use App\Events\Website\WebsitePurging;
-use App\Events\Website\WebsiteReEnabled;
+use App\Events\Website\WebsiteUnarchived;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Events\Dispatcher;
 
@@ -102,9 +102,9 @@ class WebsiteEventsSubscriber implements ShouldQueue
     /**
      * Website re-enabled event callback.
      *
-     * @param WebsiteReEnabled $event the event
+     * @param WebsiteUnarchived $event the event
      */
-    public function onReEnabled(WebsiteReEnabled $event): void
+    public function onReEnabled(WebsiteUnarchived $event): void
     {
         $website = $event->getWebsite();
         //TODO: notificare qualcuno? è un'azione solo manuale
@@ -167,7 +167,7 @@ class WebsiteEventsSubscriber implements ShouldQueue
             'App\Listeners\WebsiteEventsSubscriber@onArchived'
         );
         $events->listen(
-            'App\Events\Website\WebsiteReEnabled',
+            'App\Events\Website\WebsiteUnarchived',
             'App\Listeners\WebsiteEventsSubscriber@onReEnabled'
         );
         $events->listen(

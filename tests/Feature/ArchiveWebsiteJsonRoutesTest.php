@@ -8,7 +8,7 @@ use App\Enums\UserRole;
 use App\Enums\WebsiteStatus;
 use App\Enums\WebsiteType;
 use App\Events\Website\WebsiteArchived;
-use App\Events\Website\WebsiteReEnabled;
+use App\Events\Website\WebsiteUnarchived;
 use App\Models\PublicAdministration;
 use App\Models\User;
 use App\Models\Website;
@@ -121,7 +121,7 @@ class ArchiveWebsiteJsonRoutesTest extends TestCase
         $this->assertEmpty($response->getContent());
 
         Event::assertNotDispatched(WebsiteArchived::class);
-        Event::assertNotDispatched(WebsiteReEnabled::class);
+        Event::assertNotDispatched(WebsiteUnarchived::class);
     }
 
     /**
@@ -147,7 +147,7 @@ class ArchiveWebsiteJsonRoutesTest extends TestCase
         Event::assertDispatched(WebsiteArchived::class, function ($event) {
             return $event->getWebsite()->slug === $this->website->slug;
         });
-        Event::assertNotDispatched(WebsiteReEnabled::class);
+        Event::assertNotDispatched(WebsiteUnarchived::class);
     }
 
     /**
@@ -173,7 +173,7 @@ class ArchiveWebsiteJsonRoutesTest extends TestCase
         ]);
 
         Event::assertNotDispatched(WebsiteArchived::class);
-        Event::assertNotDispatched(WebsiteReEnabled::class);
+        Event::assertNotDispatched(WebsiteUnarchived::class);
     }
 
     /**
@@ -199,7 +199,7 @@ class ArchiveWebsiteJsonRoutesTest extends TestCase
         ]);
 
         Event::assertNotDispatched(WebsiteArchived::class);
-        Event::assertNotDispatched(WebsiteReEnabled::class);
+        Event::assertNotDispatched(WebsiteUnarchived::class);
     }
 
 //    /**
@@ -226,13 +226,13 @@ class ArchiveWebsiteJsonRoutesTest extends TestCase
 //        ]);
 //
 //        Event::assertNotDispatched(WebsiteArchived::class);
-//        Event::assertNotDispatched(WebsiteReEnabled::class);
+//        Event::assertNotDispatched(WebsiteUnarchived::class);
 //    }
 
     /**
      * Test website re-enable status not modified response.
      */
-    public function testReEnableWebsiteNotChanged(): void
+    public function testUnarchiveWebsiteNotChanged(): void
     {
         $this->website->status = WebsiteStatus::ACTIVE;
         $this->website->save();
@@ -242,20 +242,20 @@ class ArchiveWebsiteJsonRoutesTest extends TestCase
                 'spid_sessionIndex' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
             ])
-            ->patch(route('website.enable', ['website' => $this->website->slug]));
+            ->patch(route('website.unarchive', ['website' => $this->website->slug]));
 
         $response->assertStatus(304);
 
         $this->assertEmpty($response->getContent());
 
         Event::assertNotDispatched(WebsiteArchived::class);
-        Event::assertNotDispatched(WebsiteReEnabled::class);
+        Event::assertNotDispatched(WebsiteUnarchived::class);
     }
 
     /**
      * Test website re-enable successfully completed.
      */
-    public function testReEnableWebsiteChangedRoute(): void
+    public function testUnarchiveWebsiteChangedRoute(): void
     {
         $this->website->status = WebsiteStatus::ARCHIVED;
         $this->website->save();
@@ -265,7 +265,7 @@ class ArchiveWebsiteJsonRoutesTest extends TestCase
                 'spid_sessionIndex' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
             ])
-            ->patch(route('website.enable', ['website' => $this->website->slug]));
+            ->patch(route('website.unarchive', ['website' => $this->website->slug]));
 
         $response->assertStatus(200);
 
@@ -275,7 +275,7 @@ class ArchiveWebsiteJsonRoutesTest extends TestCase
             'status' => WebsiteStatus::getDescription(WebsiteStatus::ACTIVE),
         ]);
 
-        Event::assertDispatched(WebsiteReEnabled::class, function ($event) {
+        Event::assertDispatched(WebsiteUnarchived::class, function ($event) {
             return $event->getWebsite()->slug === $this->website->slug;
         });
         Event::assertNotDispatched(WebsiteArchived::class);
@@ -284,7 +284,7 @@ class ArchiveWebsiteJsonRoutesTest extends TestCase
     /**
      * Test website re-enable failed due to primary website type.
      */
-    public function testReEnableFailOnPrimarySiteRoute(): void
+    public function testUnarchiveFailOnPrimarySiteRoute(): void
     {
         $this->website->type = WebsiteType::PRIMARY;
         $this->website->save();
@@ -294,7 +294,7 @@ class ArchiveWebsiteJsonRoutesTest extends TestCase
                 'spid_sessionIndex' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
             ])
-            ->patch(route('website.enable', ['website' => $this->website->slug]));
+            ->patch(route('website.unarchive', ['website' => $this->website->slug]));
 
         $response->assertStatus(400);
 
@@ -304,13 +304,13 @@ class ArchiveWebsiteJsonRoutesTest extends TestCase
         ]);
 
         Event::assertNotDispatched(WebsiteArchived::class);
-        Event::assertNotDispatched(WebsiteReEnabled::class);
+        Event::assertNotDispatched(WebsiteUnarchived::class);
     }
 
     /**
      * Test website re-enable failed due to wrong current status.
      */
-    public function testReEnableWebsiteFailedWrongStatusRoute(): void
+    public function testUnarchiveWebsiteFailedWrongStatusRoute(): void
     {
         $this->website->status = WebsiteStatus::PENDING;
         $this->website->save();
@@ -320,7 +320,7 @@ class ArchiveWebsiteJsonRoutesTest extends TestCase
                 'spid_sessionIndex' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
             ])
-            ->patch(route('website.enable', ['website' => $this->website->slug]));
+            ->patch(route('website.unarchive', ['website' => $this->website->slug]));
 
         $response->assertStatus(400);
 
@@ -330,13 +330,13 @@ class ArchiveWebsiteJsonRoutesTest extends TestCase
         ]);
 
         Event::assertNotDispatched(WebsiteArchived::class);
-        Event::assertNotDispatched(WebsiteReEnabled::class);
+        Event::assertNotDispatched(WebsiteUnarchived::class);
     }
 
 //    /**
 //     * Test website archive failed due to error in Analytics Service call.
 //     */
-//    public function testReEnableWebsiteFailedRoute(): void
+//    public function testUnarchiveWebsiteFailedRoute(): void
 //    {
 //        $website = factory(Website::class)->create([
 //            'public_administration_id' => $this->publicAdministration->id,
@@ -349,7 +349,7 @@ class ArchiveWebsiteJsonRoutesTest extends TestCase
 //                'spid_sessionIndex' => 'fake-session-index',
 //                'tenant_id' => $this->publicAdministration->id,
 //            ])
-//            ->patch(route('website.enable', ['website' => $website->slug]));
+//            ->patch(route('website.unarchive', ['website' => $website->slug]));
 //
 //        $response->assertJson([
 //            'result' => 'error',
@@ -357,6 +357,6 @@ class ArchiveWebsiteJsonRoutesTest extends TestCase
 //        ]);
 //
 //        Event::assertNotDispatched(WebsiteArchived::class);
-//        Event::assertNotDispatched(WebsiteReEnabled::class);
+//        Event::assertNotDispatched(WebsiteUnarchived::class);
 //    }
 }

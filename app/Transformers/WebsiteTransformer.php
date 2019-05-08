@@ -64,7 +64,7 @@ class WebsiteTransformer extends TransformerAbstract
                 ];
             } elseif ($website->status->is(WebsiteStatus::ARCHIVED)) {
                 $data['buttons'][] = [
-                    'link' => route('website.enable', ['website' => $website], false),
+                    'link' => route('website.unarchive', ['website' => $website], false),
                     'label' => __('ui.pages.websites.index.enable'),
                     'dataAttributes' => [
                         'type' => 'archiveStatus',
