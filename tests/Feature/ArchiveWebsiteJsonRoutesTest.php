@@ -169,7 +169,7 @@ class ArchiveWebsiteJsonRoutesTest extends TestCase
 
         $response->assertJson([
             'result' => 'error',
-            'message' => 'Invalid operation for current website status',
+            'message' => 'Invalid operation for current website',
         ]);
 
         Event::assertNotDispatched(WebsiteArchived::class);
@@ -300,7 +300,7 @@ class ArchiveWebsiteJsonRoutesTest extends TestCase
 
         $response->assertJson([
             'result' => 'error',
-            'message' => 'Invalid operation for current website status',
+            'message' => 'Invalid operation for current website',
         ]);
 
         Event::assertNotDispatched(WebsiteArchived::class);

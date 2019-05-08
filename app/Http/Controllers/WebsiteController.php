@@ -13,6 +13,8 @@ use App\Events\Website\WebsiteArchived;
 use App\Events\Website\WebsiteUnarchived;
 use App\Exceptions\AnalyticsServiceException;
 use App\Exceptions\CommandErrorException;
+use App\Exceptions\InvalidWebsiteStatusException;
+use App\Exceptions\OperationNotAllowedException;
 use App\Http\Requests\StorePrimaryWebsiteRequest;
 use App\Http\Requests\StoreWebsiteRequest;
 use App\Models\PublicAdministration;
@@ -207,24 +209,33 @@ class WebsiteController extends Controller
     {
         try {
             $tokenAuth = current_user_auth_token();
-            if ($website->status->is(WebsiteStatus::PENDING) && $this->hasActivated($website, $tokenAuth)) {
-                $this->activate($website);
+            if ($website->status->is(WebsiteStatus::PENDING)) {
+                if ($this->hasActivated($website, $tokenAuth)) {
+                    $this->activate($website);
 
-                event(new WebsiteActivated($website));
+                    event(new WebsiteActivated($website));
 
-                return response()->json([
-                    'result' => 'ok',
-                    'id' => $website->slug,
-                    'status' => $website->status->description,
-                ]);
+                    return response()->json([
+                        'result' => 'ok',
+                        'id' => $website->slug,
+                        'status' => $website->status->description,
+                    ]);
+                }
+
+                return response()->json(null, 304);
             }
 
-            return response()->json(null, 304);
+            throw new InvalidWebsiteStatusException('Unable to check activation for website ' . $website->getInfo() . ' in status ' . $website->status->description);
         } catch (AnalyticsServiceException | BindingResolutionException $exception) {
             report($exception);
             $code = $exception->getCode();
             $message = 'Internal Server Error';
             $httpStatusCode = 500;
+        } catch (InvalidWebsiteStatusException $exception) {
+            report($exception);
+            $code = $exception->getCode();
+            $message = 'Invalid operation for current website status';
+            $httpStatusCode = 400;
         } catch (CommandErrorException $exception) {
             report($exception);
             $code = $exception->getCode();
@@ -264,16 +275,26 @@ class WebsiteController extends Controller
                 if ($website->status->is(WebsiteStatus::ARCHIVED)) {
                     return response()->json(null, 304);
                 }
+
+                throw new InvalidWebsiteStatusException('Unable to archive website ' . $website->getInfo() . ' in status ' . $website->status->description);
             }
 
-            $code = 0x00;
-            $message = 'Invalid operation for current website status';
-            $httpStatusCode = 400;
+            throw new OperationNotAllowedException('Archive request not allowed on primary website ' . $website->getInfo());
         } catch (AnalyticsServiceException | BindingResolutionException $exception) {
             report($exception);
             $code = $exception->getCode();
             $message = 'Internal Server Error';
             $httpStatusCode = 500;
+        } catch (InvalidWebsiteStatusException $exception) {
+            report($exception);
+            $code = $exception->getCode();
+            $message = 'Invalid operation for current website status';
+            $httpStatusCode = 400;
+        } catch (OperationNotAllowedException $exception) {
+            report($exception);
+            $code = $exception->getCode();
+            $message = 'Invalid operation for current website';
+            $httpStatusCode = 400;
         } catch (CommandErrorException $exception) {
             report($exception);
             $code = $exception->getCode();
@@ -313,16 +334,26 @@ class WebsiteController extends Controller
                 if ($website->status->is(WebsiteStatus::ACTIVE)) {
                     return response()->json(null, 304);
                 }
+
+                throw new InvalidWebsiteStatusException('Unable to cancel archiving for website ' . $website->getInfo() . ' in status ' . $website->status->description);
             }
 
-            $code = 0x00;
-            $message = 'Invalid operation for current website status';
-            $httpStatusCode = 400;
+            throw new OperationNotAllowedException('Cancel archiving request not allowed on primary website ' . $website->getInfo());
         } catch (AnalyticsServiceException | BindingResolutionException $exception) {
             report($exception);
             $code = $exception->getCode();
             $message = 'Internal Server Error';
             $httpStatusCode = 500;
+        } catch (InvalidWebsiteStatusException $exception) {
+            report($exception);
+            $code = $exception->getCode();
+            $message = 'Invalid operation for current website status';
+            $httpStatusCode = 400;
+        } catch (OperationNotAllowedException $exception) {
+            report($exception);
+            $code = $exception->getCode();
+            $message = 'Invalid operation for current website';
+            $httpStatusCode = 400;
         } catch (CommandErrorException $exception) {
             report($exception);
             $code = $exception->getCode();
