@@ -14,7 +14,7 @@ use Tests\TestCase;
 /**
  * Website controller JSON requests test.
  */
-class JsonRoutesTest extends TestCase
+class PendingWebsiteCheckJsonRoutesTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -49,8 +49,10 @@ class JsonRoutesTest extends TestCase
     /**
      * Pre-test setup.
      *
+     * @throws \App\Exceptions\AnalyticsServiceAccountException if the Analytics Service account doesn't exist
      * @throws \App\Exceptions\AnalyticsServiceException if unable to connect to the Analytics Service
      * @throws \App\Exceptions\CommandErrorException if command finishes with error
+     * @throws \App\Exceptions\TenantIdNotSetException if the tenant id is not set in the current session
      * @throws \Illuminate\Contracts\Container\BindingResolutionException if unable to bind to the service
      */
     protected function setUp(): void
@@ -91,7 +93,7 @@ class JsonRoutesTest extends TestCase
     }
 
     /**
-     * Test website not activated.
+     * Test website status not changed.
      */
     public function testCheckWebsiteNotActiveRoute(): void
     {
@@ -102,13 +104,9 @@ class JsonRoutesTest extends TestCase
             ])
             ->get(route('website-check_tracking', ['website' => $this->website->slug]));
 
-        $response->assertStatus(200);
+        $response->assertStatus(304);
 
-        $response->assertJson([
-            'result' => 'ok',
-            'id' => $this->website->slug,
-            'status' => WebsiteStatus::getDescription(WebsiteStatus::PENDING),
-        ]);
+        $this->assertEmpty($response->getContent());
     }
 
     /**

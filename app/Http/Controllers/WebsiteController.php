@@ -9,8 +9,12 @@ use App\Enums\WebsiteStatus;
 use App\Enums\WebsiteType;
 use App\Events\Website\WebsiteActivated;
 use App\Events\Website\WebsiteAdded;
+use App\Events\Website\WebsiteArchived;
+use App\Events\Website\WebsiteUnarchived;
 use App\Exceptions\AnalyticsServiceException;
 use App\Exceptions\CommandErrorException;
+use App\Exceptions\InvalidWebsiteStatusException;
+use App\Exceptions\OperationNotAllowedException;
 use App\Http\Requests\StorePrimaryWebsiteRequest;
 use App\Http\Requests\StoreWebsiteRequest;
 use App\Models\PublicAdministration;
@@ -158,7 +162,7 @@ class WebsiteController extends Controller
         $website = Website::create([
             'name' => $request->input('name'),
             'url' => $request->input('url'),
-            'type' => $request->input('type'),
+            'type' => (int) $request->input('type'),
             'public_administration_id' => $publicAdministration->id,
             'analytics_id' => $analyticsId,
             'slug' => Str::slug($request->input('url')),
@@ -205,22 +209,151 @@ class WebsiteController extends Controller
     {
         try {
             $tokenAuth = current_user_auth_token();
-            if ($website->status->is(WebsiteStatus::PENDING) && $this->hasActivated($website, $tokenAuth)) {
-                $this->activate($website);
+            if ($website->status->is(WebsiteStatus::PENDING)) {
+                if ($this->hasActivated($website, $tokenAuth)) {
+                    $this->activate($website);
 
-                event(new WebsiteActivated($website));
+                    event(new WebsiteActivated($website));
+
+                    return response()->json([
+                        'result' => 'ok',
+                        'id' => $website->slug,
+                        'status' => $website->status->description,
+                    ]);
+                }
+
+                return response()->json(null, 304);
             }
 
-            return response()->json([
-                'result' => 'ok',
-                'id' => $website->slug,
-                'status' => $website->status->description,
-            ]);
+            throw new InvalidWebsiteStatusException('Unable to check activation for website ' . $website->getInfo() . ' in status ' . $website->status->description);
         } catch (AnalyticsServiceException | BindingResolutionException $exception) {
             report($exception);
             $code = $exception->getCode();
             $message = 'Internal Server Error';
             $httpStatusCode = 500;
+        } catch (InvalidWebsiteStatusException $exception) {
+            report($exception);
+            $code = $exception->getCode();
+            $message = 'Invalid operation for current website status';
+            $httpStatusCode = 400;
+        } catch (CommandErrorException $exception) {
+            report($exception);
+            $code = $exception->getCode();
+            $message = 'Bad Request';
+            $httpStatusCode = 400;
+        }
+
+        return response()->json(['result' => 'error', 'message' => $message, 'code' => $code], $httpStatusCode);
+    }
+
+    /**
+     * Archive website request.
+     * Only active and not primary type websites can be archived.
+     *
+     * @param Website $website the website
+     *
+     * @return JsonResponse the JSON response
+     */
+    public function archive(Website $website): JsonResponse
+    {
+        try {
+            if (!$website->type->is(WebsiteType::PRIMARY)) {
+                if ($website->status->is(WebsiteStatus::ACTIVE)) {
+                    $website->status = WebsiteStatus::ARCHIVED;
+                    app()->make('analytics-service')->changeArchiveStatus($website->analytics_id, WebsiteStatus::ARCHIVED);
+                    $website->save();
+
+                    event(new WebsiteArchived($website));
+
+                    return response()->json([
+                        'result' => 'ok',
+                        'id' => $website->slug,
+                        'status' => $website->status->description,
+                    ]);
+                }
+
+                if ($website->status->is(WebsiteStatus::ARCHIVED)) {
+                    return response()->json(null, 304);
+                }
+
+                throw new InvalidWebsiteStatusException('Unable to archive website ' . $website->getInfo() . ' in status ' . $website->status->description);
+            }
+
+            throw new OperationNotAllowedException('Archive request not allowed on primary website ' . $website->getInfo());
+        } catch (AnalyticsServiceException | BindingResolutionException $exception) {
+            report($exception);
+            $code = $exception->getCode();
+            $message = 'Internal Server Error';
+            $httpStatusCode = 500;
+        } catch (InvalidWebsiteStatusException $exception) {
+            report($exception);
+            $code = $exception->getCode();
+            $message = 'Invalid operation for current website status';
+            $httpStatusCode = 400;
+        } catch (OperationNotAllowedException $exception) {
+            report($exception);
+            $code = $exception->getCode();
+            $message = 'Invalid operation for current website';
+            $httpStatusCode = 400;
+        } catch (CommandErrorException $exception) {
+            report($exception);
+            $code = $exception->getCode();
+            $message = 'Bad Request';
+            $httpStatusCode = 400;
+        }
+
+        return response()->json(['result' => 'error', 'message' => $message, 'code' => $code], $httpStatusCode);
+    }
+
+    /**
+     * Re-enable an archived website.
+     * Only archived and not primary type websites can be re-enabled.
+     *
+     * @param Website $website the website
+     *
+     * @return JsonResponse the JSON response
+     */
+    public function unarchive(Website $website): JsonResponse
+    {
+        try {
+            if (!$website->type->is(WebsiteType::PRIMARY)) {
+                if ($website->status->is(WebsiteStatus::ARCHIVED)) {
+                    $website->status = WebsiteStatus::ACTIVE;
+                    app()->make('analytics-service')->changeArchiveStatus($website->analytics_id, WebsiteStatus::ACTIVE);
+                    $website->save();
+
+                    event(new WebsiteUnarchived($website));
+
+                    return response()->json([
+                        'result' => 'ok',
+                        'id' => $website->slug,
+                        'status' => $website->status->description,
+                    ]);
+                }
+
+                if ($website->status->is(WebsiteStatus::ACTIVE)) {
+                    return response()->json(null, 304);
+                }
+
+                throw new InvalidWebsiteStatusException('Unable to cancel archiving for website ' . $website->getInfo() . ' in status ' . $website->status->description);
+            }
+
+            throw new OperationNotAllowedException('Cancel archiving request not allowed on primary website ' . $website->getInfo());
+        } catch (AnalyticsServiceException | BindingResolutionException $exception) {
+            report($exception);
+            $code = $exception->getCode();
+            $message = 'Internal Server Error';
+            $httpStatusCode = 500;
+        } catch (InvalidWebsiteStatusException $exception) {
+            report($exception);
+            $code = $exception->getCode();
+            $message = 'Invalid operation for current website status';
+            $httpStatusCode = 400;
+        } catch (OperationNotAllowedException $exception) {
+            report($exception);
+            $code = $exception->getCode();
+            $message = 'Invalid operation for current website';
+            $httpStatusCode = 400;
         } catch (CommandErrorException $exception) {
             report($exception);
             $code = $exception->getCode();

@@ -6,11 +6,13 @@ import './bootstrap';
 import Datatables from './datatables';
 import CheckWebsiteTracking from './checkWebsiteTracking';
 import UserWebsitesPermissions from './userWebsitesPermissions';
+import ChangeArchiveStatus from './changeArchiveStatus';
 
 $(document).ready(() => {
     Datatables.init([
         () => CheckWebsiteTracking.initWebsiteCheckButton(),
-        () => UserWebsitesPermissions.initPermissionInputs()
+        () => UserWebsitesPermissions.initPermissionInputs(),
+        () => ChangeArchiveStatus.initArchiveStatusButton(),
     ]);
 });
 

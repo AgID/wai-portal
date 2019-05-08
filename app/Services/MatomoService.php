@@ -130,14 +130,13 @@ class MatomoService implements AnalyticsServiceContract
      *
      * @param string $idSites the Analytics Service website ID
      * @param int $status the new status
-     * @param string $tokenAuth the Analytics authentication token
      *
      * @throws AnalyticsServiceException if unable to connect the Analytics Service
      * @throws CommandErrorException if command is unsuccessful
      *
      * @see \App\Enums\WebsiteStatus
      */
-    public function changeArchiveStatus(string $idSites, int $status, string $tokenAuth): void
+    public function changeArchiveStatus(string $idSites, int $status): void
     {
         if (WebsiteStatus::ARCHIVED !== $status && WebsiteStatus::ACTIVE !== $status) {
             throw new CommandErrorException('Invalid parameter for archiving: must be ' . WebsiteStatus::ACTIVE . ' or ' . WebsiteStatus::ARCHIVED . '. Received: ' . $status);
@@ -146,7 +145,7 @@ class MatomoService implements AnalyticsServiceContract
         $params = [
             'method' => 'DisableTracking.changeDisableState',
             'idSites' => $idSites,
-            'token_auth' => $tokenAuth,
+            'token_auth' => config('analytics-service.admin_token'),
             'disable' => self::ARCHIVE_STATUS_MAPPINGS[$status],
         ];
 

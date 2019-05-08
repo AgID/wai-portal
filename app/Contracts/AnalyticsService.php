@@ -44,14 +44,13 @@ interface AnalyticsService
      *
      * @param string $idSites the Analytics Service website ID
      * @param int $status the new status
-     * @param string $tokenAuth the Analytics authentication token
      *
      * @throws AnalyticsServiceException if unable to connect the Analytics Service
      * @throws CommandErrorException if command is unsuccessful
      *
      * @see \App\Enums\WebsiteStatus
      */
-    public function changeArchiveStatus(string $idSites, int $status, string $tokenAuth): void;
+    public function changeArchiveStatus(string $idSites, int $status): void;
 
     /**
      * Get Javascript code snippet for a specified site

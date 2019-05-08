@@ -240,6 +240,16 @@ Route::middleware('spid.auth', 'auth', 'verified')->group(function () {
                     // Authorization for specific websites is handled in the middleware
                 ])->middleware('authorize.analytics:' . UserPermission::READ_ANALYTICS);
 
+                Route::patch('/{website}/archive', [
+                    'as' => 'website.archive',
+                    'uses' => 'WebsiteController@archive',
+                ])->middleware('authorize.analytics:' . UserPermission::MANAGE_WEBSITES);
+
+                Route::patch('/{website}/unarchive', [
+                    'as' => 'website.unarchive',
+                    'uses' => 'WebsiteController@unarchive',
+                ])->middleware('authorize.analytics:' . UserPermission::MANAGE_WEBSITES);
+
                 Route::get('/{website}/edit', [
                     'as' => 'websites-edit',
                     'uses' => 'WebsiteController@edit',

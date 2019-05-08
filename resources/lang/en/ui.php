@@ -68,6 +68,8 @@ return [
                 'add_website' => 'aggiungi sito',
                 'edit_website' => 'modifica sito',
                 'check_tracking' => 'check activation',
+                'archive' => 'archive',
+                'enable' => 're-enable',
             ],
             'add-primary' => [
                 'title' => 'Sito istituzionale'

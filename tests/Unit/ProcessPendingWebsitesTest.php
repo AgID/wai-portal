@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\Enums\UserRole;
 use App\Enums\WebsiteAccessType;
 use App\Enums\WebsiteType;
 use App\Events\Jobs\PendingWebsitesCheckCompleted;
@@ -187,7 +188,7 @@ class ProcessPendingWebsitesTest extends TestCase
         });
 
         Bouncer::scope()->to($publicAdministration->id);
-        $this->assertTrue($user->isAn('admin'));
+        $this->assertTrue($user->isAn(UserRole::ADMIN));
     }
 
     /**
@@ -220,7 +221,7 @@ class ProcessPendingWebsitesTest extends TestCase
         $website->save();
 
         session()->put('tenant_id', $publicAdministration->id);
-        $userAdmin->assign('admin');
+        $userAdmin->assign(UserRole::ADMIN);
         $userWrite->setWriteAccessForWebsite($website);
         $userView->setViewAccessForWebsite($website);
         $userNoAccess->setNoAccessForWebsite($website);
