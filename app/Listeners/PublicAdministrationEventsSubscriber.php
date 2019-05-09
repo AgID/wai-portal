@@ -5,6 +5,7 @@ namespace App\Listeners;
 use App\Events\PublicAdministration\PublicAdministrationActivated;
 use App\Events\PublicAdministration\PublicAdministrationActivationFailed;
 use App\Events\PublicAdministration\PublicAdministrationPurged;
+use App\Events\PublicAdministration\PublicAdministrationRegistered;
 use App\Events\PublicAdministration\PublicAdministrationUpdated;
 use App\Events\PublicAdministration\PublicAdministrationWebsiteUpdated;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -15,6 +16,19 @@ use Illuminate\Events\Dispatcher;
  */
 class PublicAdministrationEventsSubscriber implements ShouldQueue
 {
+    /**
+     * Public Administration registered callback.
+     *
+     * @param PublicAdministrationRegistered $event the event
+     */
+    public function onRegistered(PublicAdministrationRegistered $event): void
+    {
+        $publicAdministration = $event->getPublicAdministration();
+        $user = $event->getUser();
+        //TODO: inviare PEC a PA per la notifica?
+        logger()->info('User ' . $user->getInfo() . ' registered Public Administration ' . $publicAdministration->getInfo());
+    }
+
     /**
      * Public administration activated callback.
      *
@@ -79,6 +93,10 @@ class PublicAdministrationEventsSubscriber implements ShouldQueue
      */
     public function subscribe($events): void
     {
+        $events->listen(
+            'App\Events\PublicAdministration\PublicAdministrationRegistered',
+            'App\Listeners\PublicAdministrationEventsSubscriber@onRegistered'
+        );
         $events->listen(
             'App\Events\PublicAdministration\PublicAdministrationActivated',
             'App\Listeners\PublicAdministrationEventsSubscriber@onActivated'
