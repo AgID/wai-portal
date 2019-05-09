@@ -16,6 +16,11 @@ use Illuminate\Events\Dispatcher;
  */
 class PublicAdministrationEventsSubscriber implements ShouldQueue
 {
+    /**
+     * Public Administration registered callback.
+     *
+     * @param PublicAdministrationRegistered $event the event
+     */
     public function onRegistered(PublicAdministrationRegistered $event): void
     {
         $publicAdministration = $event->getPublicAdministration();
