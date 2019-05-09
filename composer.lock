@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "bensampo/laravel-enum",
-            "version": "1.18.1",
+            "version": "1.18.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/BenSampo/laravel-enum.git",
-                "reference": "de5fd65755aa4e0933ee4ca14ca7ac29768f961e"
+                "reference": "70667f7ed5a15d7da89b4c23e6be9ae36d175952"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/BenSampo/laravel-enum/zipball/de5fd65755aa4e0933ee4ca14ca7ac29768f961e",
-                "reference": "de5fd65755aa4e0933ee4ca14ca7ac29768f961e",
+                "url": "https://api.github.com/repos/BenSampo/laravel-enum/zipball/70667f7ed5a15d7da89b4c23e6be9ae36d175952",
+                "reference": "70667f7ed5a15d7da89b4c23e6be9ae36d175952",
                 "shasum": ""
             },
             "require": {
@@ -66,7 +66,7 @@
                 "package",
                 "validation"
             ],
-            "time": "2019-05-05T08:53:17+00:00"
+            "time": "2019-05-08T14:46:20+00:00"
         },
         {
             "name": "cweagans/composer-patches",
