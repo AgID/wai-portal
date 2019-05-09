@@ -7,6 +7,7 @@ use App\Enums\UserPermission;
 use App\Enums\UserStatus;
 use App\Enums\WebsiteStatus;
 use App\Enums\WebsiteType;
+use App\Events\PublicAdministration\PublicAdministrationRegistered;
 use App\Events\Website\WebsiteActivated;
 use App\Events\Website\WebsiteAdded;
 use App\Events\Website\WebsiteArchived;
@@ -113,6 +114,7 @@ class WebsiteController extends Controller
         $request->user()->setViewAccessForWebsite($website);
         $request->user()->syncWebsitesPermissionsToAnalyticsService();
 
+        event(new PublicAdministrationRegistered($publicAdministration, $request->user()));
         event(new WebsiteAdded($website));
 
         return redirect()->route('websites-index')->withMessage(['success' => 'Il sito è stato aggiunto al progetto Web Analytics Italia.']); //TODO: put message in lang file
