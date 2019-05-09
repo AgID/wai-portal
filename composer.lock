@@ -1545,11 +1545,6 @@
                 "ext-openssl": "Install openssl lib in order to handle with x509 certs (require to support sign and encryption)"
             },
             "type": "library",
-            "extra": {
-                "patches_applied": {
-                    "Compatibility with SPID": "https://rawgit.com/italia/spid-laravel/master/patches/php-saml-3-spid.patch"
-                }
-            },
             "autoload": {
                 "psr-4": {
                     "OneLogin\\": "src/"
@@ -1566,7 +1561,12 @@
                 "onelogin",
                 "saml"
             ],
-            "time": "2019-03-11T09:41:32+00:00"
+            "time": "2019-03-11T09:41:32+00:00",
+            "extra": {
+                "patches_applied": {
+                    "Compatibility with SPID": "https://rawgit.com/italia/spid-laravel/master/patches/php-saml-3-spid.patch"
+                }
+            }
         },
         {
             "name": "opis/closure",
@@ -2884,7 +2884,7 @@
                 },
                 {
                     "name": "Gert de Pagter",
-                    "email": "backendtea@gmail.com"
+                    "email": "BackEndTea@gmail.com"
                 }
             ],
             "description": "Symfony polyfill for ctype functions",
@@ -5478,16 +5478,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "8.1.3",
+            "version": "8.1.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "2a676677982b484ee36b54961f570c02eabbe7e1"
+                "reference": "b534b017daaef2d7f60c6ee61e6aa2e13fdc6910"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/2a676677982b484ee36b54961f570c02eabbe7e1",
-                "reference": "2a676677982b484ee36b54961f570c02eabbe7e1",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/b534b017daaef2d7f60c6ee61e6aa2e13fdc6910",
+                "reference": "b534b017daaef2d7f60c6ee61e6aa2e13fdc6910",
                 "shasum": ""
             },
             "require": {
@@ -5556,7 +5556,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2019-04-19T15:52:00+00:00"
+            "time": "2019-05-09T05:13:39+00:00"
         },
         {
             "name": "sebastian/code-unit-reverse-lookup",
