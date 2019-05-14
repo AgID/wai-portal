@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Enums\Logs\EventType;
 use App\Models\User;
 use Italia\SPIDAuth\Events\LoginEvent;
 use Italia\SPIDAuth\Events\LogoutEvent;
@@ -21,7 +22,13 @@ class SPIDEventSubscriber
         if (isset($user)) {
             auth()->login($user);
 
-            logger()->info('User ' . $user->getInfo() . ' logged in.');
+            logger()->info(
+                'User ' . $user->getInfo() . ' logged in.',
+                [
+                    'event' => EventType::USER_SPID_LOGIN,
+                    'user' => $user->uuid,
+                ]
+            );
         }
     }
 
@@ -35,7 +42,13 @@ class SPIDEventSubscriber
         if (auth()->check()) {
             $user = auth()->user();
 
-            logger()->info('User ' . $user->getInfo() . ' logged out.');
+            logger()->info(
+                'User ' . $user->getInfo() . ' logged out.',
+                [
+                    'event' => EventType::USER_SPID_LOGOUT,
+                    'user' => $user->uuid,
+                ]
+            );
 
             session()->invalidate();
         }

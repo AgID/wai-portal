@@ -2,6 +2,8 @@
 
 namespace App\Traits;
 
+use App\Enums\Logs\EventType;
+use App\Enums\Logs\ExceptionType;
 use Ehann\RediSearch\Index;
 use Ehann\RediSearch\Query\SearchResult;
 use Ehann\RediSearch\RediSearchRedisClient;
@@ -29,11 +31,17 @@ trait InteractsWithIPAIndex
                 ->inFields(3, ['ipa_code', 'name', 'city'])
                 ->search($query)
                 ->getDocuments();
-        } catch (Exception $e) {
+        } catch (Exception $exception) {
             // RediSearch returned an error, probably malformed query or index not found.
             // TODO: Please notify me!
             if (!app()->environment('testing')) {
-                logger()->error($e);
+                logger()->error(
+                    'Unable to search into IPA index: ' . $exception->getMessage(),
+                    [
+                        'event' => EventType::EXCEPTION,
+                        'type' => ExceptionType::IPA_INDEX_SEARCH,
+                    ]
+                );
             }
         }
 
