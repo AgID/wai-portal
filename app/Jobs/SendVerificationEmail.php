@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Enums\Logs\JobType;
 use App\Mail\AccountVerification;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
@@ -56,6 +57,12 @@ class SendVerificationEmail implements ShouldQueue
         $email = new AccountVerification($this->user, $this->token);
         Mail::to($this->user->email)->send($email);
 
-        logger()->info('Activation mail sent to ' . $this->user->getInfo());
+        logger()->info(
+            'Activation mail sent to ' . $this->user->getInfo(),
+            [
+                'user' => $this->user->uuid,
+                'job' => JobType::SEND_EMAIL_VERIFICATION_TOKEN,
+            ]
+        );
     }
 }

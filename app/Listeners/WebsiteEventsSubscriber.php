@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Enums\Logs\EventType;
 use App\Events\Website\WebsiteActivated;
 use App\Events\Website\WebsiteAdded;
 use App\Events\Website\WebsiteArchived;
@@ -31,14 +32,20 @@ class WebsiteEventsSubscriber implements ShouldQueue
 //        //Notify Website administrators
 //        $users = $publicAdministration->getAdministrators();
 //        foreach ($users as $user) {
-//            logger()->info('User: ' . $user->getInfo());
 //            $user->sendWebsiteActivatedNotification($website);
 //        }
 //
 //        //Notify Public Administration
 //        $publicAdministration->sendWebsiteActivatedNotification($website);
 
-        logger()->info('Website ' . $website->getInfo() . ' added of type ' . $website->type->description);
+        logger()->info(
+            'Website ' . $website->getInfo() . ' added of type ' . $website->type->description,
+            [
+                'event' => EventType::WEBSITE_ADDED,
+                'website' => $website->slug,
+                'pa' => $website->publicAdministration->ipa_code,
+            ]
+        );
     }
 
     /**
@@ -58,7 +65,14 @@ class WebsiteEventsSubscriber implements ShouldQueue
 //            $user->sendWebsiteActivatedNotification($website);
 //        }
 
-        logger()->info('Website ' . $website->getInfo() . ' activated');
+        logger()->info(
+            'Website ' . $website->getInfo() . ' activated',
+            [
+                'event' => EventType::WEBSITE_ACTIVATED,
+                'website' => $website->slug,
+                'pa' => $website->publicAdministration->ipa_code,
+            ]
+        );
     }
 
     /**
@@ -77,7 +91,14 @@ class WebsiteEventsSubscriber implements ShouldQueue
 //            $user->sendWebsiteArchivingNotification($website, $event->getWebsite());
 //        }
 
-        logger()->info('Website ' . $website->getInfo() . ' reported as not active and scheduled for archiving');
+        logger()->info(
+            'Website ' . $website->getInfo() . ' reported as not active and scheduled for archiving',
+            [
+                'event' => EventType::WEBSITE_ARCHIVING,
+                'website' => $website->slug,
+                'pa' => $website->publicAdministration->ipa_code,
+            ]
+        );
     }
 
     /**
@@ -96,7 +117,14 @@ class WebsiteEventsSubscriber implements ShouldQueue
 //            $user->sendWebsiteArchivedNotification($website);
 //        }
 
-        logger()->info('Website ' . $website->getInfo() . ' archived due to inactivity');
+        logger()->info(
+            'Website ' . $website->getInfo() . ' archived due to inactivity',
+            [
+                'event' => EventType::WEBSITE_ARCHIVED,
+                'website' => $website->slug,
+                'pa' => $website->publicAdministration->ipa_code,
+            ]
+        );
     }
 
     /**
@@ -108,7 +136,14 @@ class WebsiteEventsSubscriber implements ShouldQueue
     {
         $website = $event->getWebsite();
         //TODO: notificare qualcuno? è un'azione solo manuale
-        logger()->info('Website ' . $website->getInfo() . ' manually unarchived');
+        logger()->info(
+            'Website ' . $website->getInfo() . ' manually unarchived',
+            [
+                'event' => EventType::WEBSITE_UNARCHIVED,
+                'website' => $website->slug,
+                'pa' => $website->publicAdministration->ipa_code,
+            ]
+        );
     }
 
     /**
@@ -128,7 +163,14 @@ class WebsiteEventsSubscriber implements ShouldQueue
 //            $user->sendWebsitePurgingNotification($website);
 //        }
 
-        logger()->info('Website ' . $website->getInfo() . ' scheduled purging');
+        logger()->info(
+            'Website ' . $website->getInfo() . ' scheduled purging',
+            [
+                'event' => EventType::WEBSITE_PURGING,
+                'website' => $website->slug,
+                'pa' => $website->publicAdministration->ipa_code,
+            ]
+        );
     }
 
     /**
@@ -140,7 +182,15 @@ class WebsiteEventsSubscriber implements ShouldQueue
     {
         $website = json_decode($event->getWebsiteJson());
         $websiteInfo = '"' . $website->name . '" [' . $website->slug . ']';
-        logger()->info('Website ' . $websiteInfo . ' purged');
+        //NOTE: toJson: relationship attributes are snake_case
+        logger()->info(
+            'Website ' . $websiteInfo . ' purged',
+            [
+                'event' => EventType::WEBSITE_PURGED,
+                'website' => $website->slug,
+                'pa' => $website->public_administration->ipa_code,
+            ]
+        );
     }
 
     /**

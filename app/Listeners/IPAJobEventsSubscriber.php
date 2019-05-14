@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Enums\Logs\EventType;
 use App\Events\Jobs\IPAUpdateCompleted;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Events\Dispatcher;
@@ -18,7 +19,12 @@ class IPAJobEventsSubscriber implements ShouldQueue
      */
     public function onCompleted(IPAUpdateCompleted $event): void
     {
-        logger()->info('Completed update of Public administrations from IPA list: ' . count($event->getUpdates()) . ' registered Public Administration/s updated');
+        logger()->info(
+            'Completed update of Public administrations from IPA list: ' . count($event->getUpdates()) . ' registered Public Administration/s updated',
+            [
+                'event' => EventType::IPA_UPDATE_COMPLETED,
+            ]
+        );
     }
 
     /**

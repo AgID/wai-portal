@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Logs\EventType;
 use Illuminate\Http\RedirectResponse;
 
 class AnalyticsController extends Controller
@@ -19,7 +20,14 @@ class AnalyticsController extends Controller
             abort(404);
         }
 
-        logger()->info('User ' . auth()->user()->getInfo() . ' logged in the Analytics Service.');
+        logger()->info(
+            'User ' . auth()->user()->getInfo() . ' logged in the Analytics Service.',
+            [
+                'user' => auth()->user()->uuid,
+                'pa' => current_public_administration()->ipa_code,
+                'event' => EventType::ANALYTICS_LOGIN,
+            ]
+        );
 
         $hashedPassword = md5(auth()->user()->analytics_password);
 

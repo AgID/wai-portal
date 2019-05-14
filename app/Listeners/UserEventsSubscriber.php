@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Enums\Logs\EventType;
 use App\Events\User\UserActivated;
 use App\Events\User\UserInvited;
 use App\Events\User\UserUpdated;
@@ -23,7 +24,14 @@ class UserEventsSubscriber
      */
     public function onRegistered(Registered $event): void
     {
-        logger()->info('New user registered: ' . $event->user->getInfo()); //TODO: notify me!
+        //NOTE: user isn't connected to any P.A. yet
+        logger()->info(
+            'New user registered: ' . $event->user->getInfo(),
+            [
+                'event' => EventType::USER_REGISTERED,
+                'user' => $event->user->uuid,
+            ]
+        ); //TODO: notify me!
     }
 
     /**
@@ -35,7 +43,18 @@ class UserEventsSubscriber
     {
         $user = $event->getUser();
         $invitedBy = $event->getInvitedBy();
-        logger()->info('New user invited: ' . $user->getInfo() . ' by ' . $invitedBy->getInfo()); //TODO: notify me!
+
+        $context = [
+            'event' => EventType::USER_INVITED,
+            'user' => $user->uuid,
+        ];
+        if (null !== $event->getPublicAdministration()) {
+            $context['pa'] = $event->getPublicAdministration()->ipa_code;
+        }
+        logger()->info(
+            'New user invited: ' . $user->getInfo() . ' by ' . $invitedBy->getInfo(),
+            $context
+        ); //TODO: notify me!
         //TODO: if the new user is invited as an admin then notify the public administration via PEC
     }
 
@@ -46,7 +65,13 @@ class UserEventsSubscriber
      */
     public function onVerified(Verified $event): void
     {
-        logger()->info('User ' . $event->user->getInfo() . ' confirmed email address.'); //TODO: notify me!
+        logger()->info(
+            'User ' . $event->user->getInfo() . ' confirmed email address.',
+            [
+                'event' => EventType::USER_VERIFIED,
+                'user' => $event->user->uuid,
+            ]
+        ); //TODO: notify me!
     }
 
     /**
@@ -57,7 +82,14 @@ class UserEventsSubscriber
     public function onActivated(UserActivated $event): void
     {
         $user = $event->getUser();
-        logger()->info('User ' . $user->getInfo() . ' activated');
+        logger()->info(
+            'User ' . $user->getInfo() . ' activated',
+            [
+                'event' => EventType::USER_ACTIVATED,
+                'user' => $user->uuid,
+                'pa' => $event->getPublicAdministration()->ipa_code,
+            ]
+        );
     }
 
     /**
@@ -99,7 +131,14 @@ class UserEventsSubscriber
         $user = $event->getUser();
         $website = $event->getWebsite();
         $accessType = $event->getAccessType();
-        logger()->info('Granted "' . $accessType->description . '" access for website ' . $website->getInfo() . ' to user ' . $user->getInfo());
+        logger()->info(
+            'Granted "' . $accessType->description . '" access for website ' . $website->getInfo() . ' to user ' . $user->getInfo(),
+            [
+                'event' => EventType::USER_WEBSITE_ACCESS_CHANGED,
+                'user' => $user->uuid,
+                'pa' => $website->publicAdministration->ipa_code,
+            ]
+        );
     }
 
     /**

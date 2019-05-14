@@ -2,6 +2,8 @@
 
 namespace App\Exceptions;
 
+use App\Enums\Logs\EventType;
+use App\Enums\Logs\ExceptionType;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
@@ -69,10 +71,22 @@ class Handler extends ExceptionHandler
             $statusCode = $exception->getStatusCode();
             switch ($statusCode) {
                 case 403:
-                    logger()->warning($user . ' requested an unauthorized resource [' . $request->url() . '].');
+                    logger()->warning(
+                        $user . ' requested an unauthorized resource [' . $request->url() . '].',
+                        [
+                            'event' => EventType::EXCEPTION,
+                            'type' => ExceptionType::UNAUTHORIZED_ACCESS,
+                        ]
+                    );
                     break;
                 default:
-                    logger()->warning('A server error (status code: ' . $statusCode . ') occurred [' . $request->url() . ' visited by ' . $user . '].');
+                    logger()->warning(
+                        'A server error (status code: ' . $statusCode . ') occurred [' . $request->url() . ' visited by ' . $user . '].',
+                        [
+                            'event' => EventType::EXCEPTION,
+                            'type' => ExceptionType::GENERIC,
+                        ]
+                    );
                     // TODO: notify me!
             }
         }
@@ -86,5 +100,21 @@ class Handler extends ExceptionHandler
         }
 
         return parent::render($request, $exception);
+    }
+
+    protected function context(): array
+    {
+        $context = [
+            'event' => EventType::EXCEPTION,
+            'type' => ExceptionType::GENERIC,
+        ];
+        if (auth()->check()) {
+            $context['user'] = auth()->user()->uuid;
+        }
+
+        return array_merge(
+            parent::context(),
+            $context
+        );
     }
 }
