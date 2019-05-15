@@ -12,6 +12,7 @@
     ],
     "require": {
         "php": "^7.3",
+        "bensampo/laravel-enum": "^1.17",
         "davejamesmiller/laravel-breadcrumbs": "^5.0",
         "ethanhann/redisearch-php": "^1.0",
         "fideloper/proxy": "^4.0",
@@ -25,8 +26,7 @@
         "symfony/yaml": "^4.0",
         "usu/codice-fiscale": "^1.0",
         "yajra/laravel-datatables-fractal": "^1.0",
-        "yajra/laravel-datatables-oracle": "~9.0",
-        "bensampo/laravel-enum": "^1.17"
+        "yajra/laravel-datatables-oracle": "~9.0"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.2",

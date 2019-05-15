@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "47fca018f4ca727bafca1e06b55b6ab3",
+    "content-hash": "cf45e3b74f59575229d5bcffb5207ba4",
     "packages": [
         {
             "name": "bensampo/laravel-enum",
@@ -1546,6 +1546,11 @@
                 "ext-openssl": "Install openssl lib in order to handle with x509 certs (require to support sign and encryption)"
             },
             "type": "library",
+            "extra": {
+                "patches_applied": {
+                    "Compatibility with SPID": "https://rawgit.com/italia/spid-laravel/master/patches/php-saml-3-spid.patch"
+                }
+            },
             "autoload": {
                 "psr-4": {
                     "OneLogin\\": "src/"
@@ -1562,12 +1567,7 @@
                 "onelogin",
                 "saml"
             ],
-            "time": "2019-03-11T09:41:32+00:00",
-            "extra": {
-                "patches_applied": {
-                    "Compatibility with SPID": "https://rawgit.com/italia/spid-laravel/master/patches/php-saml-3-spid.patch"
-                }
-            }
+            "time": "2019-03-11T09:41:32+00:00"
         },
         {
             "name": "opis/closure",
@@ -2888,7 +2888,7 @@
                 },
                 {
                     "name": "Gert de Pagter",
-                    "email": "BackEndTea@gmail.com"
+                    "email": "backendtea@gmail.com"
                 }
             ],
             "description": "Symfony polyfill for ctype functions",
