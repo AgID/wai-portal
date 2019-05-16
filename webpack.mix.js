@@ -19,6 +19,10 @@ mix.webpackConfig({
     }
 });
 
+mix.autoload({
+    jquery: ['$', 'jQuery']
+});
+
 mix.js('resources/js/app.js', 'public/js')
     .stylelint({ files: ['resources/**/*.s?(a|c)ss']})
     .eslint({
@@ -38,7 +42,7 @@ mix.js('resources/js/app.js', 'public/js')
     // .extract();
 
 mix.copyDirectory('resources/images', 'public/images');
-mix.copyDirectory('resources/js/web-toolkit', 'public/web-toolkit');
+mix.copyDirectory('node_modules/bootstrap-italia/dist/fonts', 'public/fonts');
 
 if (!mix.inProduction()) {
     mix.webpackConfig({
