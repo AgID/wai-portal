@@ -1,42 +1,10 @@
-<!DOCTYPE html>
-<!--[if IE 8]>
-<html lang="it" class="no-js ie89 ie8"><![endif]-->
-<!--[if IE 9]>
-<html lang="it" class="no-js ie89 ie9"><![endif]-->
-<!--[if (gte IE 9)|!(IE)]><!-->
-<html lang="it" class="no-js" prefix="og: http://ogp.me/ns#">
-<!--<![endif]-->
-
 <head>
     <meta charset="utf-8">
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ __('ui.site_title') }} - @yield('title')</title>
 
-    <link rel="preload" href="{{ asset('/web-toolkit/IWT.min.js') }}" as="script">
-
-    <script type="text/javascript">
-        WebFontConfig = {
-            google: {
-                families: ['Titillium+Web:300,400,600,700,400italic:latin']
-            }
-        };
-        (function () {
-            var wf = document.createElement('script');
-            wf.src = 'https://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
-            wf.type = 'text/javascript';
-            wf.async = 'true';
-            var s = document.getElementsByTagName('script')[0];
-            s.parentNode.insertBefore(wf, s);
-        })();
-    </script>
-
-    <!-- include html5shim per Explorer 8 -->
-    <script src="{{ asset('/web-toolkit/vendor/modernizr.js') }}"></script>
-
-    <link media="all" rel="stylesheet" href="{{ asset('/web-toolkit/build.css') }}">
     <link media="all" rel="stylesheet" href="{{ asset('/css/app.css') }}">
 
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('/icons/apple-touch-icon.png') }}">
@@ -54,4 +22,3 @@
 
     @include('layouts.includes.tracking')
 </head>
-<body class="{{ $site['css_theme'] }}">
