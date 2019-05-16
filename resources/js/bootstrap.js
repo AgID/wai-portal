@@ -1,12 +1,10 @@
+import 'bootstrap-italia';
+
 /**
- * We'll load jQuery and the Bootstrap jQuery plugin which provides support
- * for JavaScript based Bootstrap features such as modals and tabs. This
- * code may be modified to fit the specific needs of your application.
+ * Keep jQuery in the window object for legacy scripts
  */
 
-try {
-    window.$ = window.jQuery = require('jquery');
-} catch (e) {} // eslint-disable-line no-empty
+window.$ = jQuery;
 
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests
