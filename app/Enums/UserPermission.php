@@ -25,6 +25,8 @@ final class UserPermission extends Enum implements LocalizedEnum
      */
     public const MANAGE_WEBSITES = 'manage-websites';
 
+    public const VIEW_LOGS = 'view-logs';
+
     /**
      * Manage analytics data permission constant.
      */

@@ -23,6 +23,7 @@ return[
         UserPermission::ACCESS_ADMIN_AREA => 'Access to admin area',
         UserPermission::MANAGE_USERS => 'Manage users',
         UserPermission::MANAGE_WEBSITES => 'Manage websites',
+        UserPermission::VIEW_LOGS => 'View logs',
         UserPermission::MANAGE_ANALYTICS => 'Manage analytics',
         UserPermission::READ_ANALYTICS => 'Read analytics',
         UserPermission::DO_NOTHING => 'No permissions',
