@@ -301,6 +301,12 @@
         <exec command="docker-compose exec php-fpm php artisan config:clear" dir="containers" passthru="true" checkreturn="true"/>
         <exec command="docker-compose exec php-fpm php artisan cache:clear" dir="containers" passthru="true" checkreturn="true"/>
         <exec command="docker-compose exec php-fpm php artisan clear-compiled" dir="containers" passthru="true" checkreturn="true"/>
+        <!-- Populate Website list -->
+        <echo msg="Populating Websites list..."/>
+        <exec command="docker-compose exec php-fpm php artisan app:update-websites" dir="containers" passthru="true" checkreturn="true"/>
+        <!-- Populate User list -->
+        <echo msg="Populating Users list..."/>
+        <exec command="docker-compose exec php-fpm php artisan app:update-users" dir="containers" passthru="true" checkreturn="true"/>
         <echo msg="Deleting sessions..."/>
         <delete>
             <fileset dir="storage/framework/sessions">

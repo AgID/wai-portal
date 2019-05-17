@@ -8,6 +8,12 @@ use App\Events\User\UserInvited;
 use App\Events\User\UserUpdated;
 use App\Events\User\UserUpdating;
 use App\Events\User\UserWebsiteAccessChanged;
+use App\Jobs\ProcessUsersList;
+use App\Models\User;
+use Ehann\RediSearch\Exceptions\FieldNotInSchemaException;
+use Ehann\RediSearch\Index;
+use Ehann\RedisRaw\PredisAdapter;
+use Exception;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Events\Dispatcher;
@@ -24,6 +30,8 @@ class UserEventsSubscriber
      */
     public function onRegistered(Registered $event): void
     {
+        $this->updateUsersIndex($event->user);
+
         //NOTE: user isn't connected to any P.A. yet
         logger()->info(
             'New user registered: ' . $event->user->getInfo(),
@@ -43,6 +51,8 @@ class UserEventsSubscriber
     {
         $user = $event->getUser();
         $invitedBy = $event->getInvitedBy();
+
+        $this->updateUsersIndex($user);
 
         $context = [
             'event' => EventType::USER_INVITED,
@@ -119,6 +129,8 @@ class UserEventsSubscriber
         if ($user->isDirty('email')) {
             $user->sendEmailVerificationNotification();
         }
+
+        $this->updateUsersIndex($user);
     }
 
     /**
@@ -182,5 +194,34 @@ class UserEventsSubscriber
             'App\Events\User\UserWebsiteAccessChanged',
             'App\Listeners\UserEventsSubscriber@onWebsiteAccessChanged'
         );
+    }
+
+    private function updateUsersIndex(User $user): void
+    {
+        $userIndex = new Index(
+            (new PredisAdapter())->connect(config('database.redis.indexes.host'), config('database.redis.indexes.port'), config('database.redis.indexes.database')),
+            ProcessUsersList::USER_INDEX_NAME
+        );
+
+        try {
+            $userIndex->addTagField('pas')
+                ->addTextField('uuid')
+                ->addTextField('familyName', 2.0, true)
+                ->addTextField('name', 2.0, true)
+                ->create();
+        } catch (Exception $e) {
+            // Index already exists, it's ok!
+        }
+
+        try {
+            $userDocument = $userIndex->makeDocument($user->uuid);
+            $userDocument->uuid->setValue($user->uuid);
+            $userDocument->name->setValue($user->name);
+            $userDocument->familyName->setValue($user->familyName);
+            $userDocument->pas->setValue(implode(',', $user->publicAdministrations()->get()->pluck('ipa_code')->toArray()));
+            $userIndex->replace($userDocument);
+        } catch (FieldNotInSchemaException $exception) {
+            report($exception);
+        }
     }
 }
