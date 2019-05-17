@@ -203,6 +203,20 @@ Route::middleware('spid.auth', 'auth', 'verified')->group(function () {
                 'uses' => 'SearchIPAListController@search',
             ]);
 
+            Route::middleware('authorize.analytics:' . UserPermission::VIEW_LOGS)->group(function () {
+                Route::prefix('/logs')->group(function () {
+                    Route::post('/search-website-list', [
+                        'as' => 'logs.search-website',
+                        'uses' => 'Logs\SearchWebsiteListController@search',
+                    ]);
+
+                    Route::post('/search-user-list', [
+                        'as' => 'logs.search-user',
+                        'uses' => 'Logs\SearchUserListController@search',
+                    ]);
+                });
+            });
+
             Route::prefix('/websites')->group(function () {
                 Route::get('/', [
                     'as' => 'websites-index',
@@ -335,6 +349,21 @@ Route::middleware('admin.auth', 'verified:admin.verification.notice')->group(fun
                 'as' => 'admin-dashboard',
                 'uses' => 'AdminController@dashboard',
             ]);
+
+            Route::prefix('/logs')->group(function () {
+                Route::post('/search-ipa-list', [
+                    'as' => 'admin.logs.search-ipa-list',
+                    'uses' => 'SearchIPAListController@search',
+                ]);
+                Route::post('/search-website-list', [
+                    'as' => 'admin.logs.search-website',
+                    'uses' => 'Logs\SearchWebsiteListController@search',
+                ]);
+                Route::post('/search-user-list', [
+                    'as' => 'admin.logs.search-user',
+                    'uses' => 'Logs\SearchUserListController@search',
+                ]);
+            });
 
             Route::get('/users/add', [
                 'as' => 'admin-user_add',

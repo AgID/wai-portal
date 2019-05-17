@@ -10,7 +10,9 @@ use App\Listeners\PublicAdministrationEventsSubscriber;
 use App\Listeners\SendInvitationNotification;
 use App\Listeners\SPIDEventSubscriber;
 use App\Listeners\UserEventsSubscriber;
+use App\Listeners\UsersJobEventsSubscriber;
 use App\Listeners\WebsiteEventsSubscriber;
+use App\Listeners\WebsitesJobEventSubscriber;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -47,6 +49,8 @@ class EventServiceProvider extends ServiceProvider
         WebsiteEventsSubscriber::class,
         CheckPendingWebsiteJobsEventsSubscriber::class,
         CheckWebsitesMonitoringJobEventsSubscriber::class,
+        UsersJobEventsSubscriber::class,
+        WebsitesJobEventSubscriber::class,
     ];
 
     /**

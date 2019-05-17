@@ -10,6 +10,12 @@ use App\Events\Website\WebsiteArchiving;
 use App\Events\Website\WebsitePurged;
 use App\Events\Website\WebsitePurging;
 use App\Events\Website\WebsiteUnarchived;
+use App\Jobs\ProcessWebsitesList;
+use App\Models\Website;
+use Ehann\RediSearch\Exceptions\FieldNotInSchemaException;
+use Ehann\RediSearch\Index;
+use Ehann\RedisRaw\PredisAdapter;
+use Exception;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Events\Dispatcher;
 
@@ -37,6 +43,9 @@ class WebsiteEventsSubscriber implements ShouldQueue
 //
 //        //Notify Public Administration
 //        $publicAdministration->sendWebsiteActivatedNotification($website);
+
+        //Update Redisearch websites index
+        $this->updateWebsiteIndex($website);
 
         logger()->info(
             'Website ' . $website->getInfo() . ' added of type ' . $website->type->description,
@@ -228,5 +237,32 @@ class WebsiteEventsSubscriber implements ShouldQueue
             'App\Events\Website\WebsitePurged',
             'App\Listeners\WebsiteEventsSubscriber@onPurged'
         );
+    }
+
+    private function updateWebsiteIndex(Website $website): void
+    {
+        $websiteIndex = new Index(
+            (new PredisAdapter())->connect(config('database.redis.indexes.host'), config('database.redis.indexes.port'), config('database.redis.indexes.database')),
+            ProcessWebsitesList::WEBSITE_INDEX_NAME
+        );
+
+        try {
+            $websiteIndex->addTagField('pa')
+                ->addTextField('slug', 2.0, true)
+                ->addTextField('name', 2.0, true)
+                ->create();
+        } catch (Exception $e) {
+            // Index already exists, it's ok!
+        }
+
+        try {
+            $websiteDocument = $websiteIndex->makeDocument($website->slug);
+            $websiteDocument->slug->setValue($website->slug);
+            $websiteDocument->name->setValue($website->name);
+            $websiteDocument->pa->setValue($website->publicAdministration->ipa_code);
+            $websiteIndex->replace($websiteDocument);
+        } catch (FieldNotInSchemaException $exception) {
+            report($exception);
+        }
     }
 }
