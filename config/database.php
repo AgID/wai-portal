@@ -113,6 +113,13 @@ return [
             'database' => env('REDIS_CACHE_DB', 1),
         ],
 
+        'indexes' => [
+            'host' => env('REDIS_HOST', '127.0.0.1'),
+            'password' => env('REDIS_PASSWORD', null),
+            'port' => env('REDIS_PORT', 6379),
+            'database' => env('REDIS_REDISEARCH_DB', 0),
+        ],
+
         'ipaindex' => [
             'host' => env('REDIS_REDISEARCH_HOST', '127.0.0.1'),
             'password' => env('REDIS_REDISEARCH_PASSWORD', null),
