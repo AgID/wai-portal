@@ -23,6 +23,7 @@ return[
         UserPermission::ACCESS_ADMIN_AREA => "Accesso all'area amministrativa",
         UserPermission::MANAGE_USERS => 'Gestione utenti',
         UserPermission::MANAGE_WEBSITES => 'Gestione siti',
+        UserPermission::VIEW_LOGS => 'Visualizzare i log',
         UserPermission::MANAGE_ANALYTICS => 'Gestione analytics',
         UserPermission::READ_ANALYTICS => 'Lettura analytics',
         UserPermission::DO_NOTHING => 'Nessun permesso',
