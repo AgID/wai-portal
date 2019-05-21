@@ -1546,11 +1546,6 @@
                 "ext-openssl": "Install openssl lib in order to handle with x509 certs (require to support sign and encryption)"
             },
             "type": "library",
-            "extra": {
-                "patches_applied": {
-                    "Compatibility with SPID": "https://rawgit.com/italia/spid-laravel/master/patches/php-saml-3-spid.patch"
-                }
-            },
             "autoload": {
                 "psr-4": {
                     "OneLogin\\": "src/"
@@ -1567,7 +1562,12 @@
                 "onelogin",
                 "saml"
             ],
-            "time": "2019-03-11T09:41:32+00:00"
+            "time": "2019-03-11T09:41:32+00:00",
+            "extra": {
+                "patches_applied": {
+                    "Compatibility with SPID": "https://rawgit.com/italia/spid-laravel/master/patches/php-saml-3-spid.patch"
+                }
+            }
         },
         {
             "name": "opis/closure",
@@ -2888,7 +2888,7 @@
                 },
                 {
                     "name": "Gert de Pagter",
-                    "email": "backendtea@gmail.com"
+                    "email": "BackEndTea@gmail.com"
                 }
             ],
             "description": "Symfony polyfill for ctype functions",
@@ -3674,16 +3674,16 @@
         },
         {
             "name": "yajra/laravel-datatables-oracle",
-            "version": "v9.2.0",
+            "version": "v9.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/yajra/laravel-datatables.git",
-                "reference": "177b4360031ba1e7c040622b12cfd563d33274c6"
+                "reference": "62f14b28ed15bb2c419489ff196fed3884ff8613"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yajra/laravel-datatables/zipball/177b4360031ba1e7c040622b12cfd563d33274c6",
-                "reference": "177b4360031ba1e7c040622b12cfd563d33274c6",
+                "url": "https://api.github.com/repos/yajra/laravel-datatables/zipball/62f14b28ed15bb2c419489ff196fed3884ff8613",
+                "reference": "62f14b28ed15bb2c419489ff196fed3884ff8613",
                 "shasum": ""
             },
             "require": {
@@ -3741,7 +3741,7 @@
                 "jquery",
                 "laravel"
             ],
-            "time": "2019-05-09T02:07:53+00:00"
+            "time": "2019-05-21T05:15:44+00:00"
         }
     ],
     "packages-dev": [
