@@ -93,6 +93,7 @@ class UserController extends Controller
                 $user->assign(UserRole::ADMIN);
                 $user->setWriteAccessForWebsite($website);
             } else {
+                $user->assign(UserRole::DELEGATED);
                 if (!empty($websitesPermissions[$website->id]) && UserPermission::MANAGE_ANALYTICS === $websitesPermissions[$website->id]) {
                     $user->setWriteAccessForWebsite($website);
                 }
