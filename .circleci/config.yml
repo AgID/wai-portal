@@ -64,6 +64,7 @@ commands:
             docker cp `docker-compose -f containers/docker-compose.yml --project-directory containers ps -q php-fpm`:/var/www/tests/Browser/screenshots/. tests/Browser/screenshots
             docker cp `docker-compose -f containers/docker-compose.yml --project-directory containers ps -q php-fpm`:/var/www/tests/Browser/console/. tests/Browser/console
             docker cp `docker-compose -f containers/docker-compose.yml --project-directory containers ps -q php-fpm`:/var/www/clover.xml clover.xml
+          when: on_fail
 
       - store_artifacts:
           path: tests/Browser/console
