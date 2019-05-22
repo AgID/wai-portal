@@ -44,6 +44,7 @@ class InitPermissions extends Command
         Bouncer::allow(UserRole::SUPER_ADMIN)->to(UserPermission::ACCESS_ADMIN_AREA);
         Bouncer::allow(UserRole::ADMIN)->to(UserPermission::MANAGE_USERS);
         Bouncer::allow(UserRole::ADMIN)->to(UserPermission::MANAGE_WEBSITES);
+        Bouncer::allow(UserRole::DELEGATED)->to(UserPermission::DO_NOTHING);
         Bouncer::allow(UserRole::REGISTERED)->to(UserPermission::DO_NOTHING);
         $this->info('Created roles for Web Analytics Italia');
     }

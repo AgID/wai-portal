@@ -28,6 +28,7 @@ return[
     UserRole::class => [
         UserRole::SUPER_ADMIN => 'Super admin of ' . config('app.name'),
         UserRole::ADMIN => 'Admin of own Public Administation',
+        UserRole::DELEGATED => 'Delegated user',
         UserRole::REGISTERED => 'Registered user',
     ],
 
