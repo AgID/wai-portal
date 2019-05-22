@@ -44,8 +44,12 @@ class VerificationController extends Controller
     {
         $user = $request->user();
 
-        if (!$user || ($request->route('uuid') != $user->getAttribute($user->getRouteKeyName()))) {
+        if (!$user) {
             throw new AuthorizationException();
+        }
+
+        if (($request->route('uuid') != $user->getAttribute($user->getRouteKeyName()))) {
+            throw new AuthorizationException("L'utente non corrisponde all'invito.");
         }
 
         if ($user->hasVerifiedEmail()) {
@@ -108,7 +112,7 @@ class VerificationController extends Controller
                 $SPIDUser = session()->get('spid_user');
 
                 if ($user->fiscalNumber !== $SPIDUser->fiscalNumber) {
-                    session()->flash('message', ['error' => "Il codice fiscale dell'utenza SPID è diverso da quello dell'invito."]);
+                    session()->flash('message', ['error' => "L'utente non corrisponde all'invito."]);
 
                     return app()->make('SPIDAuth')->logout();
                 }
