@@ -42,7 +42,7 @@ class UserInvited extends AbstractUserEvent
      *
      * @return PublicAdministration the public administration
      */
-    public function getPublicAdministration(): PublicAdministration
+    public function getPublicAdministration(): ?PublicAdministration
     {
         return $this->publicAdministration;
     }
