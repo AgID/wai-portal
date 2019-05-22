@@ -42,6 +42,7 @@ class CommandsTest extends TestCase
     {
         $this->assertDatabaseMissing('roles', [
             'name' => UserRole::REGISTERED,
+            'name' => UserRole::DELEGATED,
             'name' => UserRole::ADMIN,
             'name' => UserRole::SUPER_ADMIN,
         ]);
@@ -56,6 +57,7 @@ class CommandsTest extends TestCase
         $this->artisan('app:init-permissions');
         $this->assertDatabaseHas('roles', [
             'name' => UserRole::REGISTERED,
+            'name' => UserRole::DELEGATED,
             'name' => UserRole::ADMIN,
             'name' => UserRole::SUPER_ADMIN,
         ]);
