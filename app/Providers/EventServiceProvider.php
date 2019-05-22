@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Events\Auth\UserInvited;
+use App\Events\User\UserInvited;
 use App\Listeners\CheckPendingWebsiteJobsEventsSubscriber;
 use App\Listeners\CheckWebsitesMonitoringJobEventsSubscriber;
 use App\Listeners\IPAJobEventsSubscriber;
