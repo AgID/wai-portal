@@ -103,6 +103,18 @@ return [
         'password' => [
             'regex' => 'La password scelta non è sufficientemente complessa.',
         ],
+        'ipa_code' => [
+            'required' => 'Pubblica amministrazione non valida.',
+            'exists' => 'Pubblica amministratzione non valida.',
+        ],
+        'slug' => [
+            'required' => 'Sito web non valido.',
+            'exists' => 'Sito web non valido.',
+        ],
+        'uuid' => [
+            'required' => 'Utente non valido.',
+            'exists' => 'Utente non valido.',
+        ],
     ],
 
     /*
@@ -135,6 +147,9 @@ return [
         'month' => 'mese',
         'year' => 'anno',
         'hour' => 'ora',
+        'ipa_code' => 'pubblica amministratione',
+        'slug' => 'sito web',
+        'uuid' => 'utente',
         'minute' => 'minuto',
         'second' => 'secondo',
         'title' => 'titolo',
@@ -145,5 +160,7 @@ return [
         'time' => 'ora',
         'available' => 'disponibile',
         'size' => 'dimensione',
+        'start_time' => 'orario di inizio',
+        'end_time' => 'orario di fine',
     ],
 ];

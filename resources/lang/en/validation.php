@@ -100,8 +100,20 @@ return [
     */
 
     'custom' => [
-        'attribute-name' => [
-            'rule-name' => 'custom-message',
+        'password' => [
+            'regex' => 'The chosen password does not meet the policy requirements.',
+        ],
+        'ipa_code' => [
+            'required' => 'Invalid Public Administration.',
+            'exists' => 'Invalid Public Administration.',
+        ],
+        'slug' => [
+            'required' => 'Invalid Website.',
+            'exists' => 'Invalid Website.',
+        ],
+        'uuid' => [
+            'required' => 'Invalid User.',
+            'exists' => 'Invalid User.',
         ],
     ],
 
@@ -116,6 +128,40 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+        'name' => 'first name',
+        'username' => 'user name',
+        'familyName' => 'last name',
+        'fiscalNumber' => 'fiscal code',
+        'password_confirmation' => 'confirm password',
+        'email' => 'email address',
+        'city' => 'city',
+        'country' => 'country',
+        'address' => 'address',
+        'phone' => 'phone number',
+        'mobile' => 'mobile phone number',
+        'age' => 'age',
+        'sex' => 'gender',
+        'gender' => 'gender',
+        'day' => 'day',
+        'month' => 'month',
+        'year' => 'year',
+        'hour' => 'hour',
+        'ipa_code' => 'public administration',
+        'slug' => 'website',
+        'uuid' => 'user',
+        'minute' => 'minute',
+        'second' => 'second',
+        'title' => 'title',
+        'content' => 'content',
+        'description' => 'description',
+        'excerpt' => 'excerpt',
+        'date' => 'date',
+        'time' => 'time',
+        'available' => 'available',
+        'size' => 'size',
+        'start_time' => 'starting time',
+        'end_time' => 'ending time',
+    ],
 
 ];
