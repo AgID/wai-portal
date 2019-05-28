@@ -31,7 +31,8 @@ TODO
 /public/css
 /public/js
 /public/images
-/public/web-toolkit
+/public/fonts
+/public/svg
 
 # ignored for security reasons
 /env/build.properties.*
