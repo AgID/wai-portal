@@ -257,6 +257,10 @@ return [
         'WebsiteStatus' => App\Enums\WebsiteStatus::class,
         'WebsiteType' => App\Enums\WebsiteType::class,
         'WebsiteAccessType' => App\Enums\WebsiteAccessType::class,
+        'Logger' => Monolog\Logger::class,
+        'EventType' => App\Enums\Logs\EventType::class,
+        'JobType' => App\Enums\Logs\JobType::class,
+        'ExceptionType' => App\Enums\Logs\ExceptionType::class,
     ],
 
 ];

@@ -205,6 +205,14 @@ Route::middleware('spid.auth', 'auth', 'verified')->group(function () {
 
             Route::middleware('authorize.analytics:' . UserPermission::VIEW_LOGS)->group(function () {
                 Route::prefix('/logs')->group(function () {
+                    Route::get('/', [
+                        'as' => 'logs.show',
+                        'uses' => 'Logs\LogController@show',
+                    ]);
+                    Route::post('/data', [
+                        'as' => 'logs.data',
+                        'uses' => 'Logs\LogController@data',
+                    ]);
                     Route::post('/search-website-list', [
                         'as' => 'logs.search-website',
                         'uses' => 'Logs\SearchWebsiteListController@search',
@@ -351,6 +359,14 @@ Route::middleware('admin.auth', 'verified:admin.verification.notice')->group(fun
             ]);
 
             Route::prefix('/logs')->group(function () {
+                Route::get('/', [
+                    'as' => 'admin.logs.show',
+                    'uses' => 'Logs\LogController@show',
+                ]);
+                Route::post('/data', [
+                    'as' => 'admin.logs.data',
+                    'uses' => 'Logs\LogController@data',
+                ]);
                 Route::post('/search-ipa-list', [
                     'as' => 'admin.logs.search-ipa-list',
                     'uses' => 'SearchIPAListController@search',
