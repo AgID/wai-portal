@@ -343,6 +343,16 @@
         <!-- Execute dusk to run browser tests -->
         <echo msg="Running browser tests [Laravel Dusk]..."/>
         <exec command="docker-compose exec php-fpm php artisan dusk" dir="containers" passthru="true" checkreturn="true"/>
+        <!-- Restore the Users/Websites indexes after tests -->
+        <if>
+            <equals arg1="${env.APP_ENV}" arg2="local"/>
+            <then>
+                <echo msg="Restoring User list after tests..."/>
+                <exec command="docker-compose exec php-fpm php artisan app:update-users" dir="containers" passthru="true" checkreturn="true"/>
+                <echo msg="Restoring Website list after tests..."/>
+                <exec command="docker-compose exec php-fpm php artisan app:update-websites" dir="containers" passthru="true" checkreturn="true"/>
+            </then>
+        </if>
     </target>
 
     <!-- Target: stop -->
@@ -367,11 +377,7 @@
             <available file="containers" type="dir" property="ignored"/>
             <then>
                 <echo msg="Starting Docker containers..."/>
-<<<<<<< HEAD
-                <exec command="docker-compose up -d nginx mariadb redis ipa-redisearch mailhog php-fpm queue-worker spid-testenv" dir="containers" passthru="true" checkreturn="true"/>
-=======
-                <exec command="docker-compose up -d nginx mariadb redis mailhog php-fpm queue-worker elasticsearch spid-testenv" dir="containers" passthru="true" checkreturn="true"/>
->>>>>>> Add elasticsearch/kibana containers
+                <exec command="docker-compose up -d nginx mariadb redis ipa-redisearch mailhog php-fpm queue-worker elasticsearch spid-testenv" dir="containers" passthru="true" checkreturn="true"/>
                 <echo msg="Web Analytics Italia up and running!"/>
             </then>
         </if>
