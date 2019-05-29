@@ -8,7 +8,7 @@ sei stato invitato per la tua PA ({{ $publicAdministration->name }}) su
 Per completare la tua iscrizione è necessario effettuare l'accesso con SPID
 e la conferma del tuo indirizzo email.
 
-@component('mail::button', ['url' => $signedUrl])
+@component('mail::button', ['link' => $signedUrl])
     Accedi e conferma indirizzo email
 @endcomponent
 
@@ -19,5 +19,3 @@ browser: `{!! $signedUrl !!}`
 **È possibile effettuare la conferma dell'indirizzo email entro un'ora
 dall'invio di questo messaggio.**
 @endcomponent
-
-{{-- //TODO: put message in lang file --}}

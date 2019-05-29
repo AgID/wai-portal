@@ -7,7 +7,7 @@ ci è pervenuta una richiesta di reset della tua password su {{ config('app.name
 Se sei stato tu a fare la richiesta perché non riesci ad accedere,
 usa il bottone per andare alla pagina di reset della password.
 
-@component('mail::button', ['url' => route('admin.password.reset.show', $token)])
+@component('mail::button', ['link' => route('admin.password.reset.show', $token)])
     Reimposta password
 @endcomponent
 
@@ -21,5 +21,3 @@ ed inserire il seguente codice:
 
 **Se non sei stato tu a richiedere il reset la password, puoi ignorare questo messaggio email.**
 @endcomponent
-
-{{-- //TODO: put message in lang file --}}

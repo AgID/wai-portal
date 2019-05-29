@@ -1,23 +1,21 @@
-<tr class="u-background-95">
-    <td>
-        <table class="footer" align="center" width="570" cellpadding="0" cellspacing="0">
-            <tr>
-                <td class="content-cell" align="center">
-                    <div class="u-textCenter u-margin-r-all">
-                        <span class="u-color-white u-textWeight-400 u-margin-r-right">{{ ucfirst(__('ui.follow_us')) }}</span>
-                        <ul class="Footer-socialIcons u-inlineBlock">
-                            @foreach ($site['social'] as $social)
-                            <li>
-                                <a href="{{ $social['link'] }}" title="{{ $social['name'] }}">
-                                    <span class="Icon-{{ $social['name'] }}"></span>
-                                    <span class="u-hiddenVisually">{{ ucfirst($social['name']) }}</span>
-                                </a>
-                            </li>
-                            @endforeach
-                        </ul>
-                    </div>
-                </td>
-            </tr>
-        </table>
+<tr>
+    <td class="mail-footer primary-bg-a11 py-5 px-4">
+        <div class="container text-center">
+            <ul class="list-inline d-inline-block text-left m-0">
+                <li class="list-inline-item ml-1">
+                    <a class="text-white" href="">{{ __("Cos'è") }} {{ config('app.name') }}?</a>
+                </li>
+                <li class="list-inline-item ml-1">
+                    <a class="text-white" href="">{{ __('Ottieni aiuto') }}</a>
+                </li>
+                <li class="list-inline-item ml-1">
+                    <a class="text-white" href="">{{ __('Contattaci') }}</a>
+                </li>
+            </ul>
+        </div>
+        <div class="container text-center text-white mt-3">
+            <p class="m-0 text-sans-serif">{{ __('Ti abbiamo inviato questa mail perché sei iscritto a') }} <a class="text-white" href="{{ url('/') }}">{{ config('app.name') }}</a>.</p>
+            <p class="m-0 text-sans-serif">{{ __('Non rispondere a questo messaggio perché è stato inviato automaticamente da un indirizzo non programmato per la ricezione.') }}</p>
+        </div>
     </td>
 </tr>
