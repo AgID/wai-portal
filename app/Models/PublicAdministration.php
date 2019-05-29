@@ -169,7 +169,7 @@ class PublicAdministration extends Model
         }
 
         Bouncer::scope()->to($this->id);
-        $notAdministrators = User::whereIs(UserRole::REGISTERED)->get();
+        $notAdministrators = User::whereIs(UserRole::DELEGATED)->get();
         Bouncer::scope()->to(session('tenant_id'));
 
         return $notAdministrators;

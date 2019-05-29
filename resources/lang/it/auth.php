@@ -34,7 +34,10 @@ return [
     'roles' => [
         'info' => "Il ruolo dell'utente è:",
         UserRole::REGISTERED => [
-            'description' => "Può proporre un nuovo sito web per una nuova pubblica amministrazione.",
+            'description' => 'Appena registrato su ' . config('app.name') . '.',
+        ],
+        UserRole::DELEGATED => [
+            'description' => "Può accedere ai dati analytics della sua pubblica amministrazione.",
         ],
         UserRole::ADMIN => [
             'description' => "Può gestire gli utenti, i siti e i dati analytics per la sua pubblica amministrazione.",
