@@ -27,12 +27,10 @@ class UserInvited extends AbstractUserEvent
      * @param User $user the invited user
      * @param User $invitedBy the user issuing the invitation
      * @param PublicAdministration $publicAdministration the public administration selected for the invitation
-     *
-     * @return void
      */
-    public function __construct(User $user, PublicAdministration $publicAdministration = null, User $invitedBy)
+    public function __construct(User $user, User $invitedBy, PublicAdministration $publicAdministration = null)
     {
-        $this->user = $user;
+        parent::__construct($user);
         $this->publicAdministration = $publicAdministration;
         $this->invitedBy = $invitedBy;
     }
@@ -40,7 +38,7 @@ class UserInvited extends AbstractUserEvent
     /**
      * Get the public administration.
      *
-     * @return PublicAdministration the public administration
+     * @return PublicAdministration|null the public administration
      */
     public function getPublicAdministration(): ?PublicAdministration
     {
