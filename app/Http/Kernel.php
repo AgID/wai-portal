@@ -84,6 +84,7 @@ class Kernel extends HttpKernel
     protected $middlewarePriority = [
         \Illuminate\Session\Middleware\StartSession::class,
         \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+        \App\Http\Middleware\ScopeBouncer::class,
         \App\Http\Middleware\Authenticate::class,
         \App\Http\Middleware\AdminAuthenticate::class,
         \Illuminate\Session\Middleware\AuthenticateSession::class,
@@ -92,7 +93,6 @@ class Kernel extends HttpKernel
         \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         \App\Http\Middleware\EnsurePasswordIsNotExpired::class,
         \App\Http\Middleware\SelectTenant::class,
-        \App\Http\Middleware\ScopeBouncer::class,
         \App\Http\Middleware\AuthorizeAnalytics::class,
     ];
 }
