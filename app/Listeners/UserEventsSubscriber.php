@@ -3,7 +3,6 @@
 namespace App\Listeners;
 
 use App\Events\User\UserActivated;
-use App\Events\User\UserActivationFailed;
 use App\Events\User\UserInvited;
 use App\Events\User\UserUpdated;
 use App\Events\User\UserUpdating;
@@ -59,12 +58,6 @@ class UserEventsSubscriber
     {
         $user = $event->getUser();
         logger()->info('User ' . $user->getInfo() . ' activated');
-    }
-
-    public function onActivationFailed(UserActivationFailed $event)
-    {
-        $user = $event->getUser();
-        logger()->error('User ' . $user->getInfo() . ' activation failed');
     }
 
     /**
@@ -134,11 +127,6 @@ class UserEventsSubscriber
         $events->listen(
             'App\Events\User\UserActivated',
             'App\Listeners\UserEventsSubscriber@onActivated'
-        );
-
-        $events->listen(
-            'App\Events\User\UserActivationFailed',
-            'App\Listeners\UserEventsSubscriber@onActivationFailed'
         );
 
         $events->listen(
