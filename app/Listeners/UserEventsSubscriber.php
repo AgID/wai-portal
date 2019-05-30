@@ -8,7 +8,6 @@ use App\Events\User\UserInvited;
 use App\Events\User\UserUpdated;
 use App\Events\User\UserUpdating;
 use App\Events\User\UserWebsiteAccessChanged;
-use App\Events\User\UserWebsiteAccessFailed;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Events\Dispatcher;
@@ -111,19 +110,6 @@ class UserEventsSubscriber
     }
 
     /**
-     * Handle change user access to website failed.
-     *
-     * @param UserWebsiteAccessFailed $event the event
-     */
-    public function onWebsiteAccessChangeFailed(UserWebsiteAccessFailed $event): void
-    {
-        $user = $event->getUser();
-        $website = $event->getWebsite();
-        $message = $event->getMessage();
-        logger()->error('Unable to change access level for website ' . $website->getInfo() . ' to user ' . $user->getInfo() . ': ' . $message);
-    }
-
-    /**
      * Register the listeners for the subscriber.
      *
      * @param Dispatcher $events the dispatcher
@@ -168,11 +154,6 @@ class UserEventsSubscriber
         $events->listen(
             'App\Events\User\UserWebsiteAccessChanged',
             'App\Listeners\UserEventsSubscriber@onWebsiteAccessChanged'
-        );
-
-        $events->listen(
-            'App\Events\User\UserWebsiteAccessFailed',
-            'App\Listeners\UserEventsSubscriber@onWebsiteAccessChangeFailed'
         );
     }
 }
