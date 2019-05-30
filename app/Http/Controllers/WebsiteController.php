@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\PublicAdministrationStatus;
 use App\Enums\UserPermission;
+use App\Enums\UserRole;
 use App\Enums\UserStatus;
 use App\Enums\WebsiteStatus;
 use App\Enums\WebsiteType;
@@ -28,6 +29,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Silber\Bouncer\BouncerFacade as Bouncer;
 use Yajra\Datatables\Datatables;
 
 class WebsiteController extends Controller
@@ -110,6 +112,9 @@ class WebsiteController extends Controller
         // This is the first time we know which public administration the
         // current user belongs, so we need to set the tenant id just now.
         session()->put('tenant_id', $publicAdministration->id);
+        $request->user()->roles()->detach();
+        Bouncer::scope()->to($publicAdministration->id);
+        $request->user()->assign(UserRole::REGISTERED);
         $request->user()->registerAnalyticsServiceAccount();
         $request->user()->setViewAccessForWebsite($website);
         $request->user()->syncWebsitesPermissionsToAnalyticsService();
