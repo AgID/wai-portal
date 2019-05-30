@@ -531,16 +531,16 @@
         },
         {
             "name": "ethanhann/redisearch-php",
-            "version": "1.4.0",
+            "version": "1.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ethanhann/redisearch-php.git",
-                "reference": "e5bee0ec52d3c0529a10358edacf80c607bd536c"
+                "reference": "b3c9ed043753b2d63e1c5ad032cddaa2a63133b6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ethanhann/redisearch-php/zipball/e5bee0ec52d3c0529a10358edacf80c607bd536c",
-                "reference": "e5bee0ec52d3c0529a10358edacf80c607bd536c",
+                "url": "https://api.github.com/repos/ethanhann/redisearch-php/zipball/b3c9ed043753b2d63e1c5ad032cddaa2a63133b6",
+                "reference": "b3c9ed043753b2d63e1c5ad032cddaa2a63133b6",
                 "shasum": ""
             },
             "require": {
@@ -574,7 +574,7 @@
                     "email": "ethanhann@gmail.com"
                 }
             ],
-            "time": "2019-02-10T21:37:25+00:00"
+            "time": "2019-02-19T02:18:12+00:00"
         },
         {
             "name": "fideloper/proxy",
