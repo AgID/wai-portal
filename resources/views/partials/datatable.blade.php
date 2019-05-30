@@ -5,7 +5,7 @@
     <caption class="u-hiddenVisually">{{ $caption }}</caption>
     <thead>
         <tr>
-            @foreach (array_pluck($columns, 'name') as $column)
+            @foreach (Arr::pluck($columns, 'name') as $column)
                 <th scope="col">{{ $column }}</th>
             @endforeach
             <th scope="col"></th>
