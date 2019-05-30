@@ -100,15 +100,15 @@ class WebsiteEventsSubscriber implements ShouldQueue
     }
 
     /**
-     * Website re-enabled event callback.
+     * Website unarchived event callback.
      *
      * @param WebsiteUnarchived $event the event
      */
-    public function onReEnabled(WebsiteUnarchived $event): void
+    public function onUnarchived(WebsiteUnarchived $event): void
     {
         $website = $event->getWebsite();
         //TODO: notificare qualcuno? è un'azione solo manuale
-        logger()->info('Website ' . $website->getInfo() . ' manually re-enabled');
+        logger()->info('Website ' . $website->getInfo() . ' manually unarchived');
     }
 
     /**
@@ -168,7 +168,7 @@ class WebsiteEventsSubscriber implements ShouldQueue
         );
         $events->listen(
             'App\Events\Website\WebsiteUnarchived',
-            'App\Listeners\WebsiteEventsSubscriber@onReEnabled'
+            'App\Listeners\WebsiteEventsSubscriber@onUnarchived'
         );
         $events->listen(
             'App\Events\Website\WebsitePurging',
