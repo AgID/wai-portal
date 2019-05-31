@@ -130,8 +130,12 @@ services:
 # redis
   redis:
     image: redislabs/redisearch:latest
-    ports:
-      - "${REDIS_PORT}:6379"
+    networks:
+      - backend
+
+# ipa-redisearch
+  ipa-redisearch:
+    image: pdavide/ipa-redisearch:latest
     networks:
       - backend
 
