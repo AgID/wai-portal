@@ -4,8 +4,8 @@ namespace Tests\Unit;
 
 use App\Enums\UserPermission;
 use App\Enums\UserRole;
-use App\Jobs\ProcessIPAList;
 use App\Jobs\ProcessPendingWebsites;
+use App\Jobs\ProcessPublicAdministrationsUpdateFromIpa;
 use App\Models\Website;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
@@ -74,12 +74,12 @@ class CommandsTest extends TestCase
     /**
      * Test update IPA command.
      */
-    public function testUpdateIPAList(): void
+    public function testUpdatePublicAdministrationsFromIpa(): void
     {
         Bus::fake();
 
         $this->artisan('app:update-ipa');
 
-        Bus::assertDispatched(ProcessIPAList::class);
+        Bus::assertDispatched(ProcessPublicAdministrationsUpdateFromIpa::class);
     }
 }

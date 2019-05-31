@@ -5,101 +5,22 @@ namespace Tests\Unit;
 use App\Enums\PublicAdministrationStatus;
 use App\Enums\WebsiteType;
 use App\Events\Jobs\IPAUpdateCompleted;
-use App\Events\Jobs\IPAUpdateFailed;
 use App\Events\PublicAdministration\PublicAdministrationUpdated;
 use App\Events\PublicAdministration\PublicAdministrationWebsiteUpdated;
-use App\Jobs\ProcessIPAList;
+use App\Jobs\ProcessPublicAdministrationsUpdateFromIpa;
 use App\Models\PublicAdministration;
 use App\Models\Website;
-use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Tests\TestCase;
 
 /**
  * Update IPA job tests.
  */
-class UpdateIPAListTest extends TestCase
+class UpdatePublicAdministrationsFromIpaTest extends TestCase
 {
     use RefreshDatabase;
-
-    /**
-     * Setup the test environment.
-     */
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $filename = 'ipa_csv/ipa_csv_' . Carbon::now()->toDateString() . '.csv';
-
-        if (Storage::exists($filename) && !Storage::exists($filename . '.original')) {
-            Storage::move($filename, $filename . '.original');
-        }
-        $file = File::get(storage_path('testing/amministrazioni.csv'));
-        Storage::put($filename, $file);
-    }
-
-    /**
-     * Clean up the testing environment before the next test.
-     */
-    protected function tearDown(): void
-    {
-        $filename = 'ipa_csv/ipa_csv_' . Carbon::now()->toDateString() . '.csv';
-
-        Storage::delete($filename);
-        if (Storage::exists($filename . '.original')) {
-            Storage::move($filename . '.original', $filename);
-        }
-        parent::tearDown();
-    }
-
-    /**
-     * Test IPA index updates successfully.
-     */
-    public function testIPAIndexUpdated()
-    {
-        Event::fake();
-
-        $job = new ProcessIPAList();
-        $job->handle();
-
-        $this->assertFileExists(storage_path('app/ipa_csv/ipa_csv_' . Carbon::now()->toDateString() . '.csv'));
-        $this->assertFileIsReadable(storage_path('app/ipa_csv/ipa_csv_' . Carbon::now()->toDateString() . '.csv'));
-
-        $handle = fopen(storage_path('app/ipa_csv/ipa_csv_' . Carbon::now()->toDateString() . '.csv'), 'rb');
-
-        $this->assertNotNull($handle);
-        $this->assertIsResource($handle);
-
-        $this->assertGreaterThan(12, count(fgetcsv($handle, 0, "\t")));
-
-        Event::assertDispatched(IPAUpdateCompleted::class);
-
-        Event::assertNotDispatched(IPAUpdateFailed::class);
-    }
-
-    /**
-     * Test IPA index update fails.
-     */
-    public function testIPAIndexFailed()
-    {
-        $filename = 'ipa_csv/ipa_csv_' . Carbon::now()->toDateString() . '.csv';
-        $file = File::get(storage_path('testing/amministrazioni_bugged.csv'));
-        if (Storage::exists($filename)) {
-            Storage::delete($filename);
-        }
-        Storage::put($filename, $file);
-
-        Event::fake();
-
-        $job = new ProcessIPAList();
-        $job->handle();
-
-        Event::assertDispatched(IPAUpdateFailed::class);
-        Event::assertNotDispatched(IPAUpdateCompleted::class);
-    }
 
     /**
      * Test registered Public Administration check with no updates.
@@ -125,9 +46,10 @@ class UpdateIPAListTest extends TestCase
             'public_administration_id' => $public_administration->id,
         ]);
 
-        $job = new ProcessIPAList();
+        $job = new ProcessPublicAdministrationsUpdateFromIpa();
         $job->handle();
 
+        Event::assertDispatched(IPAUpdateCompleted::class);
         Event::assertNotDispatched(PublicAdministrationUpdated::class);
         Event::assertNotDispatched(PublicAdministrationWebsiteUpdated::class);
     }
@@ -157,9 +79,10 @@ class UpdateIPAListTest extends TestCase
             'type' => WebsiteType::PRIMARY,
         ]);
 
-        $job = new ProcessIPAList();
+        $job = new ProcessPublicAdministrationsUpdateFromIpa();
         $job->handle();
 
+        Event::assertDispatched(IPAUpdateCompleted::class);
         Event::assertDispatched(PublicAdministrationWebsiteUpdated::class, function ($event) use ($public_administration, $website) {
             return $event->getPublicAdministration()->ipa_code === $public_administration->ipa_code && $event->getPrimaryWebsite()->url === $website->url && 'www.camera.it' === $event->getNewURL();
         });
