@@ -12,10 +12,16 @@ use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
 use Monolog\Logger;
 
+/**
+ * Log data request.
+ */
 class LogFilteringRequest extends FormRequest
 {
     /**
-     * @return bool
+     * Determine if the user is authorized to make this request.
+     * NOTE: always return true since authorization logic is performed using middleware.
+     *
+     * @return bool true
      */
     public function authorize(): bool
     {
@@ -23,7 +29,9 @@ class LogFilteringRequest extends FormRequest
     }
 
     /**
-     * @return array
+     * Get the validation rules that apply to the request.
+     *
+     * @return array the validation rules
      */
     public function rules(): array
     {
@@ -84,7 +92,9 @@ class LogFilteringRequest extends FormRequest
     }
 
     /**
-     * @param \Illuminate\Validation\Validator $validator
+     * Configure the validator instance.
+     *
+     * @param \Illuminate\Validation\Validator $validator the validator
      */
     public function withValidator(Validator $validator): void
     {

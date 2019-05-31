@@ -13,6 +13,9 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
+/**
+ * Users index update job.
+ */
 class ProcessUsersList implements ShouldQueue
 {
     use Dispatchable;
@@ -20,8 +23,14 @@ class ProcessUsersList implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
+    /**
+     * Redisearch index name.
+     */
     public const USER_INDEX_NAME = 'UserIndex';
 
+    /**
+     * Execute the job.
+     */
     public function handle(): void
     {
         $userIndex = new Index(

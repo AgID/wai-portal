@@ -6,7 +6,7 @@ use App\Enums\UserStatus;
 use Closure;
 
 /**
- * User authenticattion.
+ * User authentication.
  */
 class Authenticate
 {

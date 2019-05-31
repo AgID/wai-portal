@@ -12,20 +12,51 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Silber\Bouncer\BouncerFacade as Bouncer;
 use Tests\TestCase;
 
+/**
+ * Users index controller test.
+ */
 class SearchUserListRouteTest extends TestCase
 {
     use RefreshDatabase;
 
+    /**
+     * The super-admin user.
+     *
+     * @var User super-admin user
+     */
     private $superAdmin;
 
+    /**
+     * The first user.
+     *
+     * @var User a user
+     */
     private $firstUser;
 
+    /**
+     * The second user.
+     *
+     * @var User another user
+     */
     private $secondUser;
 
+    /**
+     * The first public administration.
+     *
+     * @var PublicAdministration a public administration
+     */
     private $firstPublicAdministration;
 
+    /**
+     * The second public administration.
+     *
+     * @var PublicAdministration a public administration
+     */
     private $secondPublicAdministration;
 
+    /**
+     * Pre-test setup.
+     */
     public function setUp(): void
     {
         parent::setUp();
@@ -62,6 +93,9 @@ class SearchUserListRouteTest extends TestCase
         (new ProcessUsersList())->handle();
     }
 
+    /**
+     * Test super-admin user search capabilities.
+     */
     public function testSuperAdminSearch(): void
     {
         $response = $this->actingAs($this->superAdmin, 'web')
@@ -87,6 +121,9 @@ class SearchUserListRouteTest extends TestCase
         );
     }
 
+    /**
+     * Test first user search capabilities.
+     */
     public function testPublicAdministrationFirstAdminSearch(): void
     {
         $response = $this->actingAs($this->firstUser, 'web')
@@ -117,6 +154,9 @@ class SearchUserListRouteTest extends TestCase
         ));
     }
 
+    /**
+     * Test second user search capabilities.
+     */
     public function testPublicAdministrationSecondAdminSearch(): void
     {
         $response = $this->actingAs($this->secondUser, 'web')
@@ -147,6 +187,9 @@ class SearchUserListRouteTest extends TestCase
         ));
     }
 
+    /**
+     * Test super-admin user search capabilities using an I.P.A. code.
+     */
     public function testIPACodeFilteringOnSuperAdmin(): void
     {
         $response = $this->actingAs($this->superAdmin, 'web')
@@ -173,6 +216,9 @@ class SearchUserListRouteTest extends TestCase
         ));
     }
 
+    /**
+     * Test first user search capabilities using an I.P.A. code.
+     */
     public function testIPACodeFilteringOnAdmin(): void
     {
         $response = $this->actingAs($this->firstUser, 'web')

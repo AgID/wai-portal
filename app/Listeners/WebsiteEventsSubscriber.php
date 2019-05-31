@@ -239,6 +239,11 @@ class WebsiteEventsSubscriber implements ShouldQueue
         );
     }
 
+    /**
+     * Update websites index.
+     *
+     * @param Website $website the website to update
+     */
     private function updateWebsiteIndex(Website $website): void
     {
         $websiteIndex = new Index(

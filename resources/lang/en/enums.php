@@ -11,7 +11,7 @@ use App\Enums\WebsiteAccessType;
 use App\Enums\WebsiteStatus;
 use App\Enums\WebsiteType;
 
-return[
+return [
 
     PublicAdministrationStatus::class => [
         PublicAdministrationStatus::PENDING => 'pending',

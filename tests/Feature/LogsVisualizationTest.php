@@ -17,20 +17,51 @@ use Monolog\Logger;
 use Silber\Bouncer\BouncerFacade as Bouncer;
 use Tests\TestCase;
 
+/**
+ * Logs visualization test.
+ */
 class LogsVisualizationTest extends TestCase
 {
     use RefreshDatabase;
 
+    /**
+     * The super-admin user.
+     *
+     * @var User the super-admin user
+     */
     private $superAdmin;
 
-    private $firstUser;
+    /**
+     * The admin user.
+     *
+     * @var User the user
+     */
+    private $user;
 
+    /**
+     * The first public administration.
+     *
+     * @var PublicAdministration the first public administration
+     */
     private $firstPublicAdministration;
 
+    /**
+     * The second public administration.
+     *
+     * @var PublicAdministration the second public administration
+     */
     private $secondPublicAdministration;
 
-    private $firstWebsite;
+    /**
+     * The website.
+     *
+     * @var Website the website
+     */
+    private $website;
 
+    /**
+     * Pre-test setup.
+     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -43,23 +74,28 @@ class LogsVisualizationTest extends TestCase
         $this->superAdmin->assign(UserRole::SUPER_ADMIN);
         $this->superAdmin->allow(UserPermission::ACCESS_ADMIN_AREA);
 
-        $this->firstUser = factory(User::class)->create([
+        $this->user = factory(User::class)->create([
             'email_verified_at' => Carbon::now(),
         ]);
         $this->firstPublicAdministration = factory(PublicAdministration::class)->create();
-        $this->firstUser->publicAdministrations()->sync($this->firstPublicAdministration->id);
+        $this->user->publicAdministrations()->sync($this->firstPublicAdministration->id);
 
         Bouncer::scope()->to($this->firstPublicAdministration->id);
-        $this->firstUser->assign(UserRole::ADMIN);
-        $this->firstUser->allow(UserPermission::VIEW_LOGS);
+        $this->user->assign(UserRole::ADMIN);
+        $this->user->allow(UserPermission::VIEW_LOGS);
 
-        $this->firstWebsite = factory(Website::class)->create([
+        $this->website = factory(Website::class)->create([
             'public_administration_id' => $this->firstPublicAdministration->id,
         ]);
 
         $this->secondPublicAdministration = factory(PublicAdministration::class)->create();
     }
 
+    /**
+     * Post-test tear down.
+     *
+     * @throws \GuzzleHttp\Exception\GuzzleException if unable to clear logs
+     */
     protected function tearDown(): void
     {
         $client = new Client(['base_uri' => 'http://' . config('elastic-search.host') . ':' . config('elastic-search.port')]);
@@ -82,6 +118,9 @@ class LogsVisualizationTest extends TestCase
         parent::tearDown();
     }
 
+    /**
+     * Test data validation successful.
+     */
     public function testValidationSuccessful(): void
     {
         $response = $this->actingAs($this->superAdmin)
@@ -122,6 +161,9 @@ class LogsVisualizationTest extends TestCase
         ]);
     }
 
+    /**
+     * Test data validation fail.
+     */
     public function testValidationFail(): void
     {
         $response = $this->actingAs($this->superAdmin)
@@ -137,8 +179,8 @@ class LogsVisualizationTest extends TestCase
                     'start_time' => Carbon::now()->format('H:i'),
                     'end_time' => Carbon::now()->subMinutes(15)->format('H:i'),
                     'pa' => $this->firstPublicAdministration->name,
-                    'website' => $this->firstWebsite->name,
-                    'user' => $this->firstUser->name,
+                    'website' => $this->website->name,
+                    'user' => $this->user->name,
                     'event' => -1,
                     'exception' => -1,
                     'job' => -1,
@@ -167,7 +209,12 @@ class LogsVisualizationTest extends TestCase
         ]);
     }
 
-    public function testSuperAdminSearching(): void
+    /**
+     * Test users search capabilities.
+     *
+     * @throws \GuzzleHttp\Exception\GuzzleException if unable to push logs
+     */
+    public function testSearchingCapabilities(): void
     {
         $client = new Client(['base_uri' => 'http://' . config('elastic-search.host') . ':' . config('elastic-search.port')]);
 
@@ -249,7 +296,7 @@ class LogsVisualizationTest extends TestCase
                     'level_name' => 'ERROR',
                     'datetime' => Carbon::now()->toIso8601String(),
                     'context' => [
-                        'pa' => $this->firstUser->uuid,
+                        'pa' => $this->user->uuid,
                     ],
                 ],
             ]
@@ -292,7 +339,7 @@ class LogsVisualizationTest extends TestCase
             'level_name' => 'ERROR',
         ]);
 
-        $response = $this->actingAs($this->firstUser)
+        $response = $this->actingAs($this->user)
             ->withSession([
                 'spid_sessionIndex' => 'fake-session-index',
                 'tenant_id' => $this->firstPublicAdministration->id,
