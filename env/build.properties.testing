@@ -17,6 +17,11 @@ HOSTNAME=localhost
 # -------------
 LOG_STACK_CHANNELS=testing
 
+# Slack notifications
+# -------------------
+LOG_SLACK_WEBHOOK_URL=
+LOG_SLACK_USERNAME=
+
 # SPID Service Provider
 # ---------------------
 
