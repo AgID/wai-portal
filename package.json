@@ -11,7 +11,7 @@
     },
     "devDependencies": {
         "@babel/plugin-syntax-dynamic-import": "^7.2.0",
-        "axios": "^0.18",
+        "axios": "^0.19",
         "babel-eslint": "^10.0.1",
         "cross-env": "^5.2.0",
         "datatables.net": "^1.10.19",
