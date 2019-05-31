@@ -110,7 +110,7 @@ class UserController extends Controller
 
         $user->syncWebsitesPermissionsToAnalyticsService();
 
-        event(new UserInvited($user, current_public_administration(), $request->user()));
+        event(new UserInvited($user, $request->user(), current_public_administration()));
 
         return redirect()->route('users-index')->withMessage(['success' => 'Il nuovo utente è stato invitato al progetto Web Analytics Italia']); //TODO: put message in lang file
     }
