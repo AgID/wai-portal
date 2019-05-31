@@ -91,8 +91,8 @@ return [
 
         'slack' => [
             'driver' => 'slack',
-            'url' => env('LOG_SLACK_WEBHOOK_URL'),
-            'username' => 'Laravel Log',
+            'url' => env('LOG_SLACK_WEBHOOK_URL', ''),
+            'username' => env('LOG_SLACK_USERNAME', 'WAI Portal'),
             'emoji' => ':boom:',
             'level' => 'critical',
         ],
