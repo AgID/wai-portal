@@ -13,6 +13,10 @@ APP_DEBUG=true
 # --------
 HOSTNAME=localhost
 
+# Logging stack
+# -------------
+LOG_STACK_CHANNELS=testing
+
 # SPID Service Provider
 # ---------------------
 

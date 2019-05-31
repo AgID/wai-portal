@@ -27,6 +27,7 @@
                     <token key="APP_DEBUG" value="${APP_DEBUG}" />
                     <token key="APP_SALT" value="${APP_SALT}" />
                     <token key="HOSTNAME" value="${HOSTNAME}" />
+                    <token key="LOG_STACK_CHANNELS" value="${LOG_STACK_CHANNELS}" />
                     <token key="APP_VERSION" value="${APP_VERSION}" />
                     <token key="CRON_TOKEN" value="${CRON_TOKEN}" />
                     <token key="PENDING_WEBSITE_WARNING" value="${PENDING_WEBSITE_WARNING}" />
