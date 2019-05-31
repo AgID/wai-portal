@@ -119,6 +119,11 @@ class UserEventsSubscriber
      * Handle user update event.
      *
      * @param UserUpdated $event the event
+     *
+     * @throws \App\Exceptions\AnalyticsServiceAccountException if the Analytics Service account doesn't exist
+     * @throws \App\Exceptions\AnalyticsServiceException if unable to connect the Analytics Service
+     * @throws \App\Exceptions\CommandErrorException if command is unsuccessful
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException if unable to bind analytics service
      */
     public function onUpdated(UserUpdated $event): void
     {
@@ -196,6 +201,11 @@ class UserEventsSubscriber
         );
     }
 
+    /**
+     * Update users index.
+     *
+     * @param User $user the user to update
+     */
     private function updateUsersIndex(User $user): void
     {
         $userIndex = new Index(

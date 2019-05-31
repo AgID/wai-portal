@@ -7,45 +7,26 @@ use App\Enums\Logs\ExceptionType;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\Request;
 use Illuminate\Session\TokenMismatchException;
 use Italia\SPIDAuth\Exceptions\SPIDLoginException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+/**
+ * Base exceptions handler.
+ */
 class Handler extends ExceptionHandler
 {
     /**
-     * A list of the exception types that are not reported.
-     *
-     * @var array
-     */
-    protected $dontReport = [
-        //
-    ];
-
-    /**
-     * A list of the inputs that are never flashed for validation exceptions.
-     *
-     * @var array
-     */
-    protected $dontFlash = [
-        'password',
-        'password_confirmation',
-    ];
-
-    /**
      * Report or log an exception.
      *
-     * This is a great spot to send exceptions to Sentry, Bugsnag, etc.
+     * @param Exception $exception the raised exception
      *
-     * @param Exception $exception
-     *
-     * @throws Exception
-     *
-     * @return void
+     * @throws \Exception if an error occurred during reporting
      */
-    public function report(Exception $exception)
+    public function report(Exception $exception): void
     {
         parent::report($exception);
     }
@@ -53,10 +34,10 @@ class Handler extends ExceptionHandler
     /**
      * Render an exception into an HTTP response.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param Exception $exception
+     * @param Request $request the request
+     * @param Exception $exception the raised exception
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Response the response
      */
     public function render($request, Exception $exception)
     {
@@ -102,6 +83,11 @@ class Handler extends ExceptionHandler
         return parent::render($request, $exception);
     }
 
+    /**
+     * Get the context variables for logging.
+     *
+     * @return array the context variables
+     */
     protected function context(): array
     {
         $context = [

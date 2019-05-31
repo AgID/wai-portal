@@ -8,10 +8,20 @@ use App\Traits\InteractsWithWebsiteIndex;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
+/**
+ * Websites index controller.
+ */
 class SearchWebsiteListController extends Controller
 {
     use InteractsWithWebsiteIndex;
 
+    /**
+     * Search a website.
+     *
+     * @param Request $request the request
+     *
+     * @return JsonResponse the JSON response
+     */
     public function search(Request $request): JsonResponse
     {
         if (auth()->user()->isAn(UserRole::SUPER_ADMIN)) {

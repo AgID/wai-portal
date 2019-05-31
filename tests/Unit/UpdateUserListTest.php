@@ -10,16 +10,25 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
 
+/**
+ * Update users index job test.
+ */
 class UpdateUserListTest extends TestCase
 {
     use RefreshDatabase;
 
+    /**
+     * Pre-test setup.
+     */
     protected function setUp(): void
     {
         parent::setUp();
         Event::fake();
     }
 
+    /**
+     * Test job completed without index updates.
+     */
     public function testUserIndexUpdatedNoUsers(): void
     {
         $job = new ProcessUsersList();
@@ -31,6 +40,9 @@ class UpdateUserListTest extends TestCase
         });
     }
 
+    /**
+     * Test index updated.
+     */
     public function testUserIndexUpdatedUserAdded(): void
     {
         $publicAdministration = factory(PublicAdministration::class)->create();
@@ -46,6 +58,9 @@ class UpdateUserListTest extends TestCase
         });
     }
 
+    /**
+     * Test index updated even with soft-deleted users.
+     */
     public function testUserIndexUpdatedThrashedUserAdded(): void
     {
         $publicAdministration = factory(PublicAdministration::class)->create();

@@ -13,6 +13,9 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
+/**
+ * Websites index update job.
+ */
 class ProcessWebsitesList implements ShouldQueue
 {
     use Dispatchable;
@@ -20,8 +23,14 @@ class ProcessWebsitesList implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
+    /**
+     * Redisearch index name.
+     */
     public const WEBSITE_INDEX_NAME = 'WebsiteIndex';
 
+    /**
+     * Execute the job.
+     */
     public function handle(): void
     {
         $websiteIndex = new Index(

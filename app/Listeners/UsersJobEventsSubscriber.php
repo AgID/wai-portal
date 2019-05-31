@@ -5,9 +5,18 @@ namespace App\Listeners;
 use App\Enums\Logs\EventType;
 use App\Events\Jobs\UserIndexUpdateCompleted;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Events\Dispatcher;
 
+/**
+ * Users index job events listener.
+ */
 class UsersJobEventsSubscriber implements ShouldQueue
 {
+    /**
+     * Job completed callback.
+     *
+     * @param UserIndexUpdateCompleted $event the event
+     */
     public function onCompleted(UserIndexUpdateCompleted $event): void
     {
         logger()->info(
@@ -18,6 +27,11 @@ class UsersJobEventsSubscriber implements ShouldQueue
         );
     }
 
+    /**
+     * Register the listeners for the subscriber.
+     *
+     * @param Dispatcher $events the dispatcher
+     */
     public function subscribe($events): void
     {
         $events->listen(

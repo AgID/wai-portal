@@ -16,11 +16,21 @@ use Illuminate\Support\Arr;
 use Illuminate\View\View;
 use Monolog\Logger;
 
+/**
+ * Logs visualization controller.
+ */
 class LogController extends Controller
 {
     use InteractsWithWebsiteIndex;
     use InteractsWithUserIndex;
 
+    /**
+     * Display the logs list.
+     *
+     * @param Request $request the request
+     *
+     * @return View the view to show
+     */
     public function show(Request $request): View
     {
         $data = [
@@ -41,6 +51,13 @@ class LogController extends Controller
         return view('pages.logs.show')->with($data);
     }
 
+    /**
+     * Retrieve the logs data.
+     *
+     * @param LogFilteringRequest $request the request
+     *
+     * @return JsonResponse the JSON response
+     */
     public function data(LogFilteringRequest $request): JsonResponse
     {
         $validatedData = $request->validated();
@@ -93,6 +110,13 @@ class LogController extends Controller
         return response()->json($response);
     }
 
+    /**
+     * Extract query parameters from a request validated data array.
+     *
+     * @param array $data the data
+     *
+     * @return array the query parameters array
+     */
     private function extractData(array $data): array
     {
         $params['message'] = empty($data['message']) ? null : $data['message'];

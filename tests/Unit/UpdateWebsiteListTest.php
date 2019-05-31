@@ -10,16 +10,25 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
 
+/**
+ * Update websites index job test.
+ */
 class UpdateWebsiteListTest extends TestCase
 {
     use RefreshDatabase;
 
+    /**
+     * Pre-test setup.
+     */
     protected function setUp(): void
     {
         parent::setUp();
         Event::fake();
     }
 
+    /**
+     * Test job completed without index updates.
+     */
     public function testWebsiteIndexUpdatedNoWebsites(): void
     {
         $job = new ProcessWebsitesList();
@@ -31,6 +40,9 @@ class UpdateWebsiteListTest extends TestCase
         });
     }
 
+    /**
+     * Test index updated.
+     */
     public function testWebsiteIndexUpdatedWebsiteAdded(): void
     {
         $publicAdministration = factory(PublicAdministration::class)->create();
@@ -48,6 +60,9 @@ class UpdateWebsiteListTest extends TestCase
         });
     }
 
+    /**
+     * Test index updated even with soft-deleted users.
+     */
     public function testWebsiteIndexUpdatedThrashedWebsiteAdded(): void
     {
         $publicAdministration = factory(PublicAdministration::class)->create();

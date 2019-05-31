@@ -9,8 +9,19 @@ use Ehann\RediSearch\Index;
 use Ehann\RedisRaw\PredisAdapter;
 use Exception;
 
+/**
+ * Users index search.
+ */
 trait InteractsWithUserIndex
 {
+    /**
+     * Search a user.
+     *
+     * @param string $query the query
+     * @param string|null $ipaCode the public administration IPA code to use as filter or null to not filter
+     *
+     * @return array the results list or an empty array if none
+     */
     public function searchUser(string $query, string $ipaCode = null): array
     {
         // Remove negation from query which can be slow and cause high CPU consumption
