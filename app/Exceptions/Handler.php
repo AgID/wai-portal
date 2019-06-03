@@ -24,32 +24,14 @@ class Handler extends ExceptionHandler
      *
      * @param Exception $exception the raised exception
      *
-     * @throws \Exception if an error occurred during reporting
+     * @throws Exception if an error occurred during reporting
      */
     public function report(Exception $exception): void
     {
-        parent::report($exception);
-    }
-
-    /**
-     * Render an exception into an HTTP response.
-     *
-     * @param Request $request the request
-     * @param Exception $exception the raised exception
-     *
-     * @return \Illuminate\Http\Response the response
-     */
-    public function render($request, Exception $exception)
-    {
-        if ($exception instanceof NotFoundHttpException ||
-            $exception instanceof ModelNotFoundException ||
-            $exception instanceof MethodNotAllowedHttpException) {
-            return response()->view('errors.404', ['not_found_path' => request()->path()]);
-        }
-
         if ($exception instanceof HttpException) {
             $user = auth()->check() ? 'User ' . auth()->user()->getInfo() : 'Anonymous user';
             $statusCode = $exception->getStatusCode();
+            $url = request()->fullUrl();
             switch ($statusCode) {
                 case 403:
                     logger()->warning(
@@ -70,6 +52,25 @@ class Handler extends ExceptionHandler
                     );
                     // TODO: notify me!
             }
+        }
+
+        parent::report($exception);
+    }
+
+    /**
+     * Render an exception into an HTTP response.
+     *
+     * @param Request $request the request
+     * @param Exception $exception the raised exception
+     *
+     * @return \Illuminate\Http\Response the response
+     */
+    public function render($request, Exception $exception)
+    {
+        if ($exception instanceof NotFoundHttpException ||
+            $exception instanceof ModelNotFoundException ||
+            $exception instanceof MethodNotAllowedHttpException) {
+            return response()->view('errors.404', ['not_found_path' => request()->path()]);
         }
 
         if ($exception instanceof TokenMismatchException) {
