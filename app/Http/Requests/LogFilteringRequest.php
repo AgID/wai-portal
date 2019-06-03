@@ -76,7 +76,6 @@ class LogFilteringRequest extends FormRequest
                 'nullable',
                 'integer',
                 new EnumValue(ExceptionType::class, false),
-                Rule::requiredIf($this->filled('event') && EventType::EXCEPTION === ((int) $this->input('event'))),
             ],
             'job' => [
                 'nullable',
