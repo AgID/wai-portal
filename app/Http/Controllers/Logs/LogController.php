@@ -161,13 +161,13 @@ class LogController extends Controller
         if (!empty($data['uuid'])) {
             $params['filters'][] = ['term' => ['context.user' => $data['uuid']]];
         }
-        if (!empty($data['job'])) {
+        if (isset($data['job'])) {
             $params['filters'][] = ['term' => ['context.job' => $data['job']]];
         }
-        if (!empty($data['event'])) {
+        if (isset($data['event'])) {
             $params['filters'][] = ['term' => ['context.event' => $data['event']]];
         }
-        if (!empty($data['exception'])) {
+        if (isset($data['exception'])) {
             $params['filters'][] = ['term' => ['context.type' => $data['exception']]];
         }
 

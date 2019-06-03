@@ -430,68 +430,77 @@ export default (() => {
         // Enable/disable jobs and events selects
         // since they are mutually exclusive
         if ($event && $job) {
-            $event.onchange = (event) => {
+            $event.addEventListener('change', (event) => {
                 if (event.target.value) {
                     $job.setAttribute('disabled', '');
                     $job.setAttribute('aria-disabled', 'true');
+                    delete filters.job;
                 } else {
                     $job.removeAttribute('disabled');
                     $job.removeAttribute('aria-disabled');
+                    filters.job = $job && $job.value;
                 }
-            }
+            });
     
-            $job.onchange = (event) => {
+            $job.addEventListener('change', (event) => {
                 if (event.target.value) {
                     $event.setAttribute('disabled', '');
                     $event.setAttribute('aria-disabled', 'true');
+                    delete filters.event;
+                    delete filters.exception;
                 } else {
                     $event.removeAttribute('disabled');
                     $event.removeAttribute('aria-disabled');
+                    filters.event = $event && $event.value;
+                    filters.exception = $exception && $exception.value;
                 }
-            }
+            });
         }
         
         // Enable/disable exception select since it can
         // be selected only with event type 'Exception'
         if ($event && $exception) {
-            $event.onchange = (event) => {
-                if (event.target.type && event.target.type === 'exception') {
+            $event.addEventListener('change', () => {
+                let option = $event.options[$event.selectedIndex];
+                if (option.getAttribute('type') && option.getAttribute('type') === 'exception') {
                     $exception.removeAttribute('disabled');
                     $exception.removeAttribute('aria-disabled');
+                    filters.exception = $exception.value;
                 } else {
                     $exception.setAttribute('disabled', '');
                     $exception.setAttribute('aria-disabled', 'true');
+                    delete filters.exception;
                 }
-            }
+            });
         }
         
         if ($event) {
             filters.event = $event.value;
-            $event.onchange = () => {
+            $event.addEventListener('change', () => {
                 filters.event = $event.value;
                 filter && filter();
-            }
+            });
         }
         if ($exception) {
             filters.exception = $exception.value;
-            $exception.onchange = () => {
-                filters.exception = $event.value;
+            $exception.addEventListener('change', () => {
+                filters.exception = $exception.value;
                 filter && filter();
-            };
+            });
         }
         if ($job) {
             filters.job = $job.value;
-            $job.onchange = () => {
+            $job.addEventListener('change', () => {
                 filters.job = $job.value;
                 filter && filter();
-            };
+            });
         }
         if ($severity) {
             filters.severity = $severity.value;
-            $severity.onchange = () => {
+            $severity.addEventListener('change', () => {
                 filters.severity = $severity.value;
                 filter && filter();
-            };
+            });
         }
     }
     
