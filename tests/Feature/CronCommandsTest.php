@@ -2,8 +2,8 @@
 
 namespace Tests\Feature;
 
-use App\Jobs\ProcessIPAList;
 use App\Jobs\ProcessPendingWebsites;
+use App\Jobs\ProcessPublicAdministrationsUpdateFromIpa;
 use App\Jobs\ProcessWebsitesMonitoring;
 use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
@@ -30,7 +30,7 @@ class CronCommandsTest extends TestCase
         $response = $this->get('/cron/updateipa?token=' . config('cron-auth.cron_token'));
         $response->assertStatus(202);
 
-        Queue::assertPushed(ProcessIPAList::class);
+        Queue::assertPushed(ProcessPublicAdministrationsUpdateFromIpa::class);
     }
 
     /**
@@ -40,11 +40,11 @@ class CronCommandsTest extends TestCase
     {
         $response = $this->get('/cron/updateipa');
         $response->assertForbidden();
-        Queue::assertNotPushed(ProcessIPAList::class);
+        Queue::assertNotPushed(ProcessPublicAdministrationsUpdateFromIpa::class);
 
         $response = $this->get('/cron/updateipa?token=' . md5('wrong_token'));
         $response->assertForbidden();
-        Queue::assertNotPushed(ProcessIPAList::class);
+        Queue::assertNotPushed(ProcessPublicAdministrationsUpdateFromIpa::class);
     }
 
     /**

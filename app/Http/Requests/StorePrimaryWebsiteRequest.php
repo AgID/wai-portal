@@ -52,7 +52,7 @@ class StorePrimaryWebsiteRequest extends FormRequest
     {
         $validator->after(function (Validator $validator) {
             if (filled($this->input('ipa_code'))) {
-                $publicAdministration = $this->getPublicAdministrationEntryByIPACode($this->input('ipa_code'));
+                $publicAdministration = $this->getPublicAdministrationEntryByIpaCode($this->input('ipa_code'));
                 $this->publicAdministration = $publicAdministration;
                 if (empty($publicAdministration)) {
                     $validator->errors()->add('public_administration_name', 'La PA selezionata non esiste'); //TODO: put error message in lang file

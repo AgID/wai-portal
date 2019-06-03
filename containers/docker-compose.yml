@@ -85,8 +85,6 @@ services:
       - ${DATA_PATH_HOST}/mariadb:/var/lib/mysql
       - ${APP_LOGS_PATH_HOST}:${APP_LOGS_PATH_CONTAINER}
       - matomo-install:/opt/matomo-install/
-    ports:
-      - "${MARIADB_PORT}:3306"
     environment:
       - MYSQL_DATABASE=${MARIADB_DATABASE}
       - MYSQL_USER=${MARIADB_USER}
@@ -130,8 +128,12 @@ services:
 # redis
   redis:
     image: redislabs/redisearch:latest
-    ports:
-      - "${REDIS_PORT}:6379"
+    networks:
+      - backend
+
+# ipa-redisearch
+  ipa-redisearch:
+    image: pdavide/ipa-redisearch:latest
     networks:
       - backend
 
@@ -139,7 +141,6 @@ services:
   mailhog:
     image: mailhog/mailhog
     ports:
-      - "${MAILHOG_SMTP_PORT}:1025"
       - "${MAILHOG_HTTP_PORT}:8025"
     networks:
       - frontend

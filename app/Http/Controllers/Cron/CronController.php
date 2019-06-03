@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Cron;
 
 use App\Http\Controllers\Controller;
-use App\Jobs\ProcessIPAList;
 use App\Jobs\ProcessPendingWebsites;
+use App\Jobs\ProcessPublicAdministrationsUpdateFromIpa;
 use App\Jobs\ProcessWebsitesMonitoring;
 use Illuminate\Http\JsonResponse;
 
@@ -20,7 +20,7 @@ class CronController extends Controller
      */
     public function updateIPA(): JsonResponse
     {
-        dispatch(new ProcessIPAList());
+        dispatch(new ProcessPublicAdministrationsUpdateFromIpa());
 
         return response()->json(['message' => 'Update submitted'], 202);
     }

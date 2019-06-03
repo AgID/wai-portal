@@ -3,6 +3,8 @@
 namespace App\Traits;
 
 use Ehann\RediSearch\Index;
+use Ehann\RediSearch\Query\SearchResult;
+use Ehann\RediSearch\RediSearchRedisClient;
 use Ehann\RedisRaw\PredisAdapter;
 use Exception;
 
@@ -21,10 +23,9 @@ trait InteractsWithIPAIndex
         // See: http://redisearch.io/Query_Syntax/#pure"_"negative"_"queries
         $query = str_replace('-', '', $query) . '*';
 
-        $ipaIndex = new Index((new PredisAdapter())->connect(config('database.redis.ipaindex.host'), config('database.redis.ipaindex.port'), config('database.redis.ipaindex.database')), 'IPAIndex');
         try {
+            $ipaIndex = new Index((new PredisAdapter())->connect(config('database.redis.ipaindex.host'), config('database.redis.ipaindex.port'), config('database.redis.ipaindex.database')), 'IPAIndex');
             $result = $ipaIndex->limit(0, 100)
-                ->sortBy('name')
                 ->inFields(3, ['ipa_code', 'name', 'city'])
                 ->search($query)
                 ->getDocuments();
@@ -40,39 +41,54 @@ trait InteractsWithIPAIndex
     }
 
     /**
-     * Get a Public Administration entry specified by ipa_code.
+     * Get a Public Administration entry specified by ipa code.
      *
      * @param string $ipaCode The ipa code to search for
      *
-     * @return stdClass|null The Public Administration (as an assoc array) if found
+     * @return array|null The Public Administration (as an assoc array) if found
      */
-    protected function getPublicAdministrationEntryByIPACode($ipaCode): ?array
+    protected function getPublicAdministrationEntryByIpaCode($ipaCode): ?array
     {
-        $ipaIndex = new Index((new PredisAdapter())->connect(config('database.redis.ipaindex.host'), config('database.redis.ipaindex.port'), config('database.redis.ipaindex.database')), 'IPAIndex');
+        try {
+            $redisSearchClient = new RediSearchRedisClient((new PredisAdapter())->connect(config('database.redis.ipaindex.host'), config('database.redis.ipaindex.port'), config('database.redis.ipaindex.database')));
+            $rawResult = $redisSearchClient->rawCommand('FT.GET', ['IPAIndex', $ipaCode]);
+            $result = SearchResult::makeSearchResult($rawResult ? [1, $ipaCode, $rawResult] : [], true);
+        } catch (Exception $e) {
+            // RediSearch returned an error, probably malformed query or index not found.
+            // TODO: Please notify me!
+            if (!app()->environment('testing')) {
+                logger()->error($e);
+            }
+        }
 
-        $result = $ipaIndex->inFields(1, ['ipa_code'])
-            ->search($ipaCode)
-            ->getDocuments();
-
-        return empty($result) ? null : get_object_vars($result[0]);
+        return empty($result) ? null : $result->getDocuments()[0];
     }
 
     /**
      * Get a Public Administration entry specified by primary website URL.
      *
-     * @param string $url The url of the primary website search for
+     * @param string $url The url of the primary website to search for
      *
-     * @return stdClass|null The Public Administration (as an assoc array) if found
+     * @return array|null The first Public Administration (as an assoc array) if found
      */
     protected function getPublicAdministrationEntryByPrimaryWebsiteUrl($url): ?array
     {
-        $ipaIndex = new Index((new PredisAdapter())->connect(config('database.redis.ipaindex.host'), config('database.redis.ipaindex.port'), config('database.redis.ipaindex.database')), 'IPAIndex');
+        try {
+            $ipaIndex = new Index((new PredisAdapter())->connect(config('database.redis.ipaindex.host'), config('database.redis.ipaindex.port'), config('database.redis.ipaindex.database')), 'IPAIndex');
+            $url = parse_url($url, PHP_URL_HOST);
+            $result = $ipaIndex->limit(0, 1)
+                ->inFields(1, ['site'])
+                ->verbatim()
+                ->search(str_replace([':', '-', '@'], ['\:', '\-', '\@'], $url), true)
+                ->getDocuments();
+        } catch (Exception $e) {
+            // RediSearch returned an error, probably malformed query or index not found.
+            // TODO: Please notify me!
+            if (!app()->environment('testing')) {
+                logger()->error($e);
+            }
+        }
 
-        $url = parse_url($url, PHP_URL_HOST);
-        $result = $ipaIndex->inFields(1, ['site'])
-            ->search(str_replace([':', '-', '@'], ['\:', '\-', '\@'], $url))
-            ->getDocuments();
-
-        return empty($result) ? null : get_object_vars($result[0]);
+        return empty($result) ? null : $result[0];
     }
 }
