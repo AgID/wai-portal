@@ -35,7 +35,7 @@ class Handler extends ExceptionHandler
             switch ($statusCode) {
                 case 403:
                     logger()->warning(
-                        $user . ' requested an unauthorized resource [' . $request->url() . '].',
+                        $user . ' requested an unauthorized resource [' . request()->url() . '].',
                         [
                             'event' => EventType::EXCEPTION,
                             'type' => ExceptionType::UNAUTHORIZED_ACCESS,
@@ -44,7 +44,7 @@ class Handler extends ExceptionHandler
                     break;
                 default:
                     logger()->warning(
-                        'A server error (status code: ' . $statusCode . ') occurred [' . $request->url() . ' visited by ' . $user . '].',
+                        'A server error (status code: ' . $statusCode . ') occurred [' . request()->url() . ' visited by ' . $user . '].',
                         [
                             'event' => EventType::EXCEPTION,
                             'type' => ExceptionType::GENERIC,
