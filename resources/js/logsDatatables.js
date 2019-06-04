@@ -111,8 +111,8 @@ export default (() => {
                 }
             }
             if ($endTime.value.trim() && filters.start_time) {
-                let startTime = Date.now();
-                let endTime = Date.now();
+                let startTime = new Date();
+                let endTime = new Date();
                 let startArray = filters.start_time.split(':');
                 startTime.setHours(startArray[0]);
                 startTime.setMinutes(startArray[1]);
