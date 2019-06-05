@@ -8,36 +8,55 @@
         <fieldset class="Form-fieldset">
             <legend class="Form-legend">{{ __('ui.pages.logs.form.legend') }}</legend>
 
-            @error('date')
-            <div class="Alert Alert--error Alert--withBg u-padding-r-top u-padding-r-bottom u-padding-r-right">
-                <p class="u-text-p u-padding-r-bottom">{{ $message }}</p>
-                @enderror
-                <label class="Form-label" for="date">{{ __('ui.pages.logs.form.inputs.date.label') }}</label>
-                <div class="Grid Grid--alignMiddle Grid--fit Grid--withGutter">
-                    <div class="Grid-cell u-size10of12">
-                        <input class="Form-input u-text-r-s u-borderRadius-m js-Datepicker" type="text" name="date" id="date" value="{{ empty(old('date')) ? $currentDate : old('date') }}" pattern="(0[1-9]|1[0-9]|2[0-9]|3[01])\/(0?[1-9]|1[012])\/([0-9]{4})">
+                @error('start_date')
+                <div class="Alert Alert--error Alert--withBg u-padding-r-top u-padding-r-bottom u-padding-r-right">
+                    <p class="u-text-p u-padding-r-bottom">{{ $message }}</p>
+                    @enderror
+                    <label class="Form-label" for="start_date">{{ __('ui.pages.logs.form.inputs.start_date.label') }}</label>
+                    <div class="Grid Grid--alignMiddle Grid--fit Grid--withGutter">
+                        <div class="Grid-cell u-size10of12">
+                            <input class="Form-input u-text-r-s u-borderRadius-m js-Datepicker" type="text" name="start_date" id="start_date" value="{{ old('start_date') }}" pattern="(0[1-9]|1[0-9]|2[0-9]|3[01])\/(0?[1-9]|1[012])\/([0-9]{4})">
+                        </div>
+                        <div class="Grid-cell u-size2of12">
+                            <button type="button" aria-describedby="start_date-label" aria-controls="start_date">
+                                <span class="u-hiddenVisually">{{ __('ui.pages.logs.form.inputs.start_date.button') }}</span>
+                                <span class="Icon-calendar u-text-r-l"></span>
+                            </button>
+                        </div>
                     </div>
-                    <div class="Grid-cell u-size2of12">
-                        <button type="button" aria-describedby="date-label" aria-controls="date">
-                            <span class="u-hiddenVisually">{{ __('ui.pages.logs.form.inputs.date.button') }}</span>
-                            <span class="Icon-calendar u-text-r-l"></span>
-                        </button>
-                    </div>
+                    @error('start_date')
                 </div>
-                @error('date')
-            </div>
-            @enderror
+                @enderror
 
-            <div class="Grid Grid--fit Grid--withGutter">
                 @error('start_time')
                 <div class="Alert Alert--error Alert--withBg u-padding-r-top u-padding-r-bottom u-padding-r-right">
                     <p class="u-text-p u-padding-r-bottom">{{ $message }}</p>
                     @enderror
                     <div class="Form-field Form-field--time Grid-cell">
                         <label class="Form-label" for="start_time">{{ __('ui.pages.logs.form.inputs.start_time.label') }}</label>
-                        <input class="Form-input u-text-r-s u-borderRadius-m" type="text" id="starttime" name="start_time" value="{{ empty(old('start_time')) ? $startTime : old('start_time') }}" pattern="(0[0-9]|1[0-9]|2[0-3]):(0[0-9]|1[0-9]|2[0-9]|3[0-9]|4[0-9]|5[0-9])">
+                        <input class="Form-input u-text-r-s u-borderRadius-m" type="text" id="starttime" name="start_time" value="{{ old('start_time') }}" pattern="(0[0-9]|1[0-9]|2[0-3]):(0[0-9]|1[0-9]|2[0-9]|3[0-9]|4[0-9]|5[0-9])">
                     </div>
                     @error('start_time')
+                </div>
+                @enderror
+
+                @error('end_date')
+                <div class="Alert Alert--error Alert--withBg u-padding-r-top u-padding-r-bottom u-padding-r-right">
+                    <p class="u-text-p u-padding-r-bottom">{{ $message }}</p>
+                    @enderror
+                    <label class="Form-label" for="end_date">{{ __('ui.pages.logs.form.inputs.end_date.label') }}</label>
+                    <div class="Grid Grid--alignMiddle Grid--fit Grid--withGutter">
+                        <div class="Grid-cell u-size10of12">
+                            <input class="Form-input u-text-r-s u-borderRadius-m js-Datepicker" type="text" name="end_date" id="end_date" value="{{ old('end_date') }}" pattern="(0[1-9]|1[0-9]|2[0-9]|3[01])\/(0?[1-9]|1[012])\/([0-9]{4})">
+                        </div>
+                        <div class="Grid-cell u-size2of12">
+                            <button type="button" aria-describedby="end_date-label" aria-controls="end_date">
+                                <span class="u-hiddenVisually">{{ __('ui.pages.logs.form.inputs.end_date.button') }}</span>
+                                <span class="Icon-calendar u-text-r-l"></span>
+                            </button>
+                        </div>
+                    </div>
+                    @error('start_date')
                 </div>
                 @enderror
 
@@ -47,12 +66,11 @@
                     @enderror
                     <div class="Form-field Form-field--time Grid-cell">
                         <label class="Form-label" for="end_time">{{ __('ui.pages.logs.form.inputs.end_time.label') }}</label>
-                        <input class="Form-input u-text-r-s u-borderRadius-m" type="text" id="endtime" name="end_time" value="{{ empty(old('end_time')) ? $endTime : old('end_time') }}" pattern="(0[0-9]|1[0-9]|2[0-3]):(0[0-9]|1[0-9]|2[0-9]|3[0-9]|4[0-9]|5[0-9])">
+                        <input class="Form-input u-text-r-s u-borderRadius-m" type="text" id="endtime" name="end_time" value="{{ old('end_time') }}" pattern="(0[0-9]|1[0-9]|2[0-3]):(0[0-9]|1[0-9]|2[0-9]|3[0-9]|4[0-9]|5[0-9])">
                     </div>
                     @error('end_time')
                 </div>
                 @enderror
-            </div>
 
             <div class="Form-field">
                 <label class="Form-label" for="message">{{ __('ui.pages.logs.form.inputs.message.label') }}</label>

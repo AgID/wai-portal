@@ -14,7 +14,7 @@ export default (() => {
             return length === 0 || length >= 3;
         }
         
-        $message.oninput = (event) => {
+        $message.addEventListener('input', (event) => {
             if (!useAsFilter()) {
                 event.preventDefault();
                 filters.message = '';
@@ -22,114 +22,47 @@ export default (() => {
             }
             filters.message = $message.value.trim();
             filter && filter();
-        }
+        });
     }
     
-    const initDateFilter = ($date, $startTime, $endTime) => {
+    const initDateFilter = ($date) => {
         if (!$date) {
             return;
         }
         
-        let setValidity = () => {
-            if (!$date.value.trim() && (filters.start_time || filters.end_time)) {
-                $date.setCustomValidity('"Date" is required with Starting time or "Ending time"');
-                return false;
-            } else {
-                $date.setCustomValidity('');
-            }
-            return true;
-        }
+        filters[$date.name] = $date.value;
         
-        filters.date = $date.value;
-        
-        $date.oninput = () => {
+        $date.addEventListener('input', () => {
             if ($date.hasAttribute('pattern')) {
                 let regexp = new RegExp($date.getAttribute('pattern'));
                 if ($date.value.trim() && !regexp.test($date.value)) {
+                    filters[$date.name] = '';
                     return;
                 }
             }
-            if (!setValidity($date)) {
-                return;
-            }
-            filters.date = $date.value;
+            filters[$date.name] = $date.value;
             filter && filter();
-        }
-        
-        $startTime.onblur = $endTime.onblur = () => {
-            setValidity()
-        }
+        });
     }
     
-    const initStartTimeFilter = ($startTime) => {
-        if (!$startTime) {
+    const initTimeFilter = ($time) => {
+        if (!$time) {
             return;
         }
         
-        filters.start_time = $startTime.value;
+        filters[$time.name] = $time.value;
         
-        $startTime.oninput = () => {
-            if ($startTime.hasAttribute('pattern')) {
-                let regexp = new RegExp($startTime.getAttribute('pattern'));
-                if ($startTime.value.trim() && !regexp.test($startTime.value)) {
+        $time.addEventListener('input', () => {
+            if ($time.hasAttribute('pattern')) {
+                let regexp = new RegExp($time.getAttribute('pattern'));
+                if ($time.value.trim() && !regexp.test($time.value)) {
+                    filters[$time.name] = '';
                     return;
                 }
             }
-            if ($startTime.value.trim() && filters.end_time) {
-                let startTime = new Date();
-                let endTime = new Date();
-                let startArray = $startTime.value.trim().split(':');
-                startTime.setHours(startArray[0]);
-                startTime.setMinutes(startArray[1]);
-                let endArray = filters.end_time.split(':');
-                endTime.setHours(endArray[0]);
-                endTime.setMinutes(endArray[1]);
-                if (startTime >= endTime) {
-                    $startTime.setCustomValidity('"Starting time" must be before "Ending time"');
-                    return;
-                } else {
-                    $startTime.setCustomValidity('');
-                }
-            }
-            filters.start_time = $startTime.value;
+            filters[$time.name] = $time.value;
             filter && filter();
-        }
-    }
-    
-    const initEndTimeFilter = ($endTime) => {
-        if (!$endTime) {
-            return;
-        }
-        
-        filters.end_time = $endTime.value;
-    
-        $endTime.oninput = () => {
-            if ($endTime.hasAttribute('pattern')) {
-                let regexp = new RegExp($endTime.getAttribute('pattern'));
-                if ($endTime.value.trim() && !regexp.test($endTime.value)) {
-                    return;
-                }
-            }
-            if ($endTime.value.trim() && filters.start_time) {
-                let startTime = new Date();
-                let endTime = new Date();
-                let startArray = filters.start_time.split(':');
-                startTime.setHours(startArray[0]);
-                startTime.setMinutes(startArray[1]);
-                let endArray = $endTime.value.trim().split(':');
-                endTime.setHours(endArray[0]);
-                endTime.setMinutes(endArray[1]);
-                if (startTime >= endTime) {
-                    $endTime.setCustomValidity('"Ending time" must be after "Starting time"');
-                    return;
-                } else {
-                    $endTime.setCustomValidity('');
-                }
-        
-            }
-            filters.end_time = $endTime.value;
-            filter && filter();
-        }
+        });
     }
     
     const initPublicAdministrationFilter = ($publicAdministration, $paIpaCode, $website, $websiteId, $user, $userUuid) => {
@@ -145,33 +78,33 @@ export default (() => {
                 event.preventDefault();
             }
         };
-    
-        $publicAdministration.oninput = () => {
+        
+        $publicAdministration.addEventListener('input', () => {
             if ($paIpaCode) {
                 if (filters.pa_ipa_code) {
                     $paIpaCode.value = '';
                     filters.pa = '';
                     filters.pa_ipa_code = '';
-    
+                    
                     if ($website) {
                         $website.value = '';
                         $website.cache = {};
                         $website.last_val = {};
                         filters.website = ''
                     }
-    
+                    
                     if ($websiteId) {
                         $websiteId.value = '';
                         filters.website_id = '';
                     }
-    
+                    
                     if ($user) {
                         $user.value = '';
                         $user.cache = {};
                         $user.last_val = {};
                         filters.user = '';
                     }
-    
+                    
                     if ($userUuid) {
                         $userUuid.value = ''
                         filters.user_uuid = '';
@@ -180,7 +113,7 @@ export default (() => {
                     filter && filter();
                 }
             }
-        }
+        });
         
         let publicAdministrationAutocomplete = new window.autoComplete({
             selector: $publicAdministration,
@@ -241,7 +174,7 @@ export default (() => {
         if (!$website || !$websiteId) {
             return;
         }
-    
+        
         filters.website = $website.value;
         filters.website_id = $websiteId.value;
         
@@ -250,8 +183,8 @@ export default (() => {
                 event.preventDefault();
             }
         };
-    
-        $website.oninput = () => {
+        
+        $website.addEventListener('input', () => {
             if ($websiteId) {
                 if (filters.website_id) {
                     $websiteId.value = '';
@@ -260,8 +193,8 @@ export default (() => {
                     filter && filter();
                 }
             }
-        }
-    
+        });
+        
         let websiteAutocomplete = new window.autoComplete({
             selector: $website,
             minChars: 3,
@@ -338,14 +271,14 @@ export default (() => {
         
         filters.user = $user.value;
         filters.user_uuid = $userUuid.value;
-    
+        
         $user.onkeypress = (event) => {
             if (13 === event.keyCode) {
                 event.preventDefault();
             }
         };
-    
-        $user.oninput = () => {
+        
+        $user.addEventListener('input', () => {
             if ($userUuid) {
                 if (filters.user_uuid) {
                     $userUuid.value = '';
@@ -354,7 +287,7 @@ export default (() => {
                     filter && filter();
                 }
             }
-        }
+        });
         
         let userAutocomplete = new window.autoComplete({
             selector: $user,
@@ -424,8 +357,9 @@ export default (() => {
         
         let $message = document.querySelector('input[name="message"]');
         
-        let $date = document.querySelector('input[name="date"]');
+        let $startDate = document.querySelector('input[name="start_date"]');
         let $startTime = document.querySelector('input[name="start_time"]');
+        let $endDate = document.querySelector('input[name="end_date"]');
         let $endTime = document.querySelector('input[name="end_time"]');
         
         let $publicAdministration = showPA ? document.querySelector('input[name="pa"]') : null;
@@ -436,9 +370,10 @@ export default (() => {
         let $userUuid = document.querySelector('input[name="user_uuid"]');
         
         initMessageFilter($message);
-        initDateFilter($date, $startTime, $endTime);
-        initStartTimeFilter($startTime)
-        initEndTimeFilter($endTime)
+        initDateFilter($startDate);
+        initDateFilter($endDate);
+        initTimeFilter($startTime);
+        initTimeFilter($endTime);
         
         if (showPA) {
             initPublicAdministrationFilter($publicAdministration, $paIpaCode, $website, $websiteId, $user, $userUuid);
@@ -452,7 +387,7 @@ export default (() => {
         let $exception = document.querySelector('select[name="exception"]');
         let $job = document.querySelector('select[name="job"]');
         let $severity = document.querySelector('select[name="severity"]');
-    
+        
         // Enable/disable jobs and events selects
         // since they are mutually exclusive
         if ($event && $job) {
@@ -467,7 +402,7 @@ export default (() => {
                     filters.job = $job && $job.value;
                 }
             });
-    
+            
             $job.addEventListener('change', (event) => {
                 if (event.target.value) {
                     $event.setAttribute('disabled', '');
@@ -566,7 +501,7 @@ export default (() => {
         if ($datatable.length === 0) {
             return;
         }
-    
+        
         await import(/* webpackChunkName: "datatables.net" */ './datatablesImports');
         
         initFilters();

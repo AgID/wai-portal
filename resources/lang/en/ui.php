@@ -114,11 +114,14 @@ return [
             'form' => [
                 'legend' => 'Log filters',
                 'inputs' => [
-                    'date' => [
-                        'label' => 'Date (gg/mm/aaaa)',
+                    'start_date' => [
+                        'label' => 'Starting date (gg/mm/aaaa)',
                     ],
                     'start_time' => [
                         'label' => 'Starting time (HH:mm)',
+                    ],
+                    'end_date' => [
+                        'label' => 'Ending date (gg/mm/aaaa)',
                     ],
                     'end_time' => [
                         'label' => 'Ending time (HH:mm)',
