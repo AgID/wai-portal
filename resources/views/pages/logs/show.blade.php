@@ -68,7 +68,7 @@
                     <select class="Form-input" id="severity" name="severity">
                         @foreach(Logger::getLevels() as $label => $value)
                             @if ($value >= Logger::INFO || $currentUser->isA(UserRole::SUPER_ADMIN))
-                                <option value="{{ $value }}" {{ (empty(old('severity')) && $value == Logger::ERROR) || old('severity') == $value ? 'selected' : '' }}>{{ $label }}</option>
+                                <option value="{{ $value }}" {{ old('severity') == $value ? 'selected' : '' }}>{{ $label }}</option>
                             @endif
                         @endforeach
                     </select>
