@@ -14,14 +14,15 @@
             },
             "tokenizer": {
                 "autocomplete": {
-                    "type": "ngram",
+                    "type": "edge_ngram",
                     "min_gram": 3,
-                    "max_gram": 10
+                    "max_gram": 10,
+                    "token_chars": [
+                        "letter",
+                        "digit"
+                    ]
                 }
             }
-        },
-        "index": {
-            "max_ngram_diff": 7
         }
     },
     "mappings": {
