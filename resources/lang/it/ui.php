@@ -119,11 +119,14 @@ return [
             'form' => [
                 'legend' => 'Filtri di ricerca',
                 'inputs' => [
-                    'date' => [
-                        'label' => 'Data (gg/mm/aaaa)',
+                    'start_date' => [
+                        'label' => 'Data di inizio (gg/mm/aaaa)',
                     ],
                     'start_time' => [
                         'label' => 'Orario di inizio (HH:mm)',
+                    ],
+                    'end_date' => [
+                        'label' => 'Data di fine (gg/mm/aaaa)',
                     ],
                     'end_time' => [
                         'label' => 'Orario di fine (HH:mm)',

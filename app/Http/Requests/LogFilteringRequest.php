@@ -41,12 +41,17 @@ class LogFilteringRequest extends FormRequest
             'length' => 'required|integer',
             'message' => 'nullable|string|min:3',
             'order.0.dir' => 'nullable|in:asc,desc',
-            'date' => [
+            'start_date' => [
                 'nullable',
                 'date_format:d/m/Y',
-                Rule::requiredIf($this->filled('start_time') || $this->filled('end_time')),
+                Rule::requiredIf($this->filled('start_time')),
             ],
             'start_time' => 'nullable|date_format:H:i',
+            'end_date' => [
+                'nullable',
+                'date_format:d/m/Y',
+                Rule::requiredIf($this->filled('end_time')),
+            ],
             'end_time' => 'nullable|date_format:H:i',
             //NOTE: can't force public administration existence
             //      since Public Administration purge force delete it
@@ -99,10 +104,13 @@ class LogFilteringRequest extends FormRequest
     {
         $validator->after(function (Validator $validator) {
             if ($this->filled('start_time') && $this->filled('end_time')) {
-                //NOTE: if 'date' is missing, validate 'start_time' and 'end_time' fields using current date.
-                //      'date' field missing is already reported as error
-                $startTime = Carbon::createFromFormat('d/m/Y H:i', $this->input('date', Carbon::now()->format('d/m/Y')) . ' ' . $this->input('start_time'));
-                $endTime = Carbon::createFromFormat('d/m/Y H:i', $this->input('date', Carbon::now()->format('d/m/Y')) . ' ' . $this->input('end_time'));
+                if (!$this->filled('start_date') || !$this->filled('end_date')) {
+                    //NOTE: On 'start_date' or 'end_date' missing, a validation error is already reported
+                    //      and before/after validation cannot be done
+                    return;
+                }
+                $startTime = Carbon::createFromFormat('d/m/Y H:i', $this->input('start_date') . ' ' . $this->input('start_time'));
+                $endTime = Carbon::createFromFormat('d/m/Y H:i', $this->input('end_date') . ' ' . $this->input('end_time'));
                 if (!$startTime->isBefore($endTime)) {
                     $validator->errors()->add('start_time', __('validation.before', ['attribute' => __('validation.attributes.start_time'), 'date' => $this->input('end_time')]));
                     $validator->errors()->add('end_time', __('validation.after', ['attribute' => __('validation.attributes.end_time'), 'date' => $this->input('start_time')]));

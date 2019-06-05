@@ -35,9 +35,6 @@ class LogController extends Controller
     {
         $data = [
             'currentUser' => $request->user(),
-            'currentDate' => Carbon::now()->format('d/m/Y'),
-            'startTime' => Carbon::now()->subMinutes(15)->format('H:i'),
-            'endTime' => Carbon::now()->format('H:i'),
             'columns' => [
                 ['data' => 'datetime', 'name' => __('ui.pages.logs.table.headers.time'), 'className' => 'u-textNoWrap', 'searchable' => false],
                 ['data' => 'level_name', 'name' => __('ui.pages.logs.table.headers.level'), 'orderable' => false, 'searchable' => false, 'className' => 'u-textNoWrap dt-body-center'],
@@ -134,11 +131,11 @@ class LogController extends Controller
         }
 
         if (!empty($data['start_time'])) {
-            $params['start_time'] = Carbon::createFromFormat('d/m/Y H:i', $data['date'] . ' ' . $data['start_time'])->toIso8601String();
+            $params['start_time'] = Carbon::createFromFormat('d/m/Y H:i', $data['start_date'] . ' ' . $data['start_time'])->toIso8601String();
         }
 
         if (!empty($data['end_time'])) {
-            $params['end_time'] = Carbon::createFromFormat('d/m/Y H:i', $data['date'] . ' ' . $data['end_time'])->toIso8601String();
+            $params['end_time'] = Carbon::createFromFormat('d/m/Y H:i', $data['end_date'] . ' ' . $data['end_time'])->toIso8601String();
         }
 
         if (!empty($data['order']) && !empty($data['order'][0]) && !empty($data['order'][0]['dir'])) {
