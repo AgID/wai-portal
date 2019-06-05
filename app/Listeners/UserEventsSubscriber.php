@@ -154,6 +154,7 @@ class UserEventsSubscriber
                 'event' => EventType::USER_WEBSITE_ACCESS_CHANGED,
                 'user' => $user->uuid,
                 'pa' => $website->publicAdministration->ipa_code,
+                'website' => $website->id,
             ]
         );
     }
