@@ -55,7 +55,7 @@ class ProcessWebsitesList implements ShouldQueue
         }
 
         $results = Website::withTrashed()->get()->mapToGroups(function ($website) use ($websiteIndex) {
-            $websiteDocument = $websiteIndex->makeDocument($website->slug);
+            $websiteDocument = $websiteIndex->makeDocument($website->id);
             $websiteDocument->slug->setValue($website->slug);
             $websiteDocument->name->setValue($website->name);
             $websiteDocument->pa->setValue($website->publicAdministration->ipa_code);

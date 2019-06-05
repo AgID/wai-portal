@@ -132,12 +132,13 @@ export default (() => {
         }
     }
     
-    const initPublicAdministrationFilter = ($publicAdministration, $ipa, $website, $slug, $user, $uuid) => {
-        if (!$publicAdministration || !$ipa) {
+    const initPublicAdministrationFilter = ($publicAdministration, $paIpaCode, $website, $websiteId, $user, $userUuid) => {
+        if (!$publicAdministration || !$paIpaCode) {
             return;
         }
         
-        filters.ipa_code = $ipa.value;
+        filters.pa = $publicAdministration.value;
+        filters.pa_ipa_code = $paIpaCode.value;
         
         $publicAdministration.onkeypress = (event) => {
             if (13 === event.keyCode) {
@@ -146,29 +147,37 @@ export default (() => {
         };
     
         $publicAdministration.oninput = () => {
-            if ($ipa.value) {
-                $ipa.value = '';
+            if ($paIpaCode) {
+                if (filters.pa_ipa_code) {
+                    $paIpaCode.value = '';
+                    filters.pa = '';
+                    filters.pa_ipa_code = '';
     
-                if ($website) {
-                    $website.value = '';
-                    $website.cache = {};
-                    $website.last_val = {};
-                }
+                    if ($website) {
+                        $website.value = '';
+                        $website.cache = {};
+                        $website.last_val = {};
+                        filters.website = ''
+                    }
     
-                if ($slug) {
-                    $slug.value = '';
-                    filters.slug = '';
-                }
+                    if ($websiteId) {
+                        $websiteId.value = '';
+                        filters.website_id = '';
+                    }
     
-                if ($user) {
-                    $user.value = '';
-                    $user.cache = {};
-                    $user.last_val = {};
-                }
+                    if ($user) {
+                        $user.value = '';
+                        $user.cache = {};
+                        $user.last_val = {};
+                        filters.user = '';
+                    }
     
-                if ($uuid) {
-                    $uuid.value = ''
-                    filters.uuid = '';
+                    if ($userUuid) {
+                        $userUuid.value = ''
+                        filters.user_uuid = '';
+                    }
+                    
+                    filter && filter();
                 }
             }
         }
@@ -215,23 +224,26 @@ export default (() => {
                 ].join('');
             },
             onSelect: (e, term, item) => {
-                $ipa.value = item.getAttribute('data-ipa_code');
-                filters.ipa_code = item.getAttribute('data-ipa_code');
+                $paIpaCode.value = item.getAttribute('data-ipa_code');
+                filters.pa = $publicAdministration.value;
+                filters.pa_ipa_code = item.getAttribute('data-ipa_code');
                 filter && filter();
             },
             resetInfo: () => {
-                $ipa.value = '';
-                filters.ipa_code = '';
+                $paIpaCode.value = '';
+                filters.pa = '';
+                filters.pa_ipa_code = '';
             }
         });
     }
     
-    const initWebsiteFilter = ($website, $slug, $publicAdministration, $ipa) => {
-        if (!$website || !$slug) {
+    const initWebsiteFilter = ($website, $websiteId, $publicAdministration, $paIpaCode) => {
+        if (!$website || !$websiteId) {
             return;
         }
     
-        filters.slug = $slug.value;
+        filters.website = $website.value;
+        filters.website_id = $websiteId.value;
         
         $website.onkeypress = (event) => {
             if (13 === event.keyCode) {
@@ -240,9 +252,13 @@ export default (() => {
         };
     
         $website.oninput = () => {
-            if ($slug.value) {
-                $slug.value = '';
-                filters.slug = '';
+            if ($websiteId) {
+                if (filters.website_id) {
+                    $websiteId.value = '';
+                    filters.website = '';
+                    filters.website_id = '';
+                    filter && filter();
+                }
             }
         }
     
@@ -264,7 +280,7 @@ export default (() => {
                     url: $website.getAttribute('data-source'),
                     data: {
                         q: term,
-                        p: filters.ipa_code || null,
+                        p: filters.pa_ipa_code || null,
                     },
                 }).then((response) => {
                     suggest(response.data);
@@ -285,7 +301,7 @@ export default (() => {
                 let re = new RegExp('(' + search.split(' ').join('|') + ')', 'gi');
                 return [
                     '<div class="autocomplete-suggestion website"',
-                    'data-slug="' + item.slug + '"',
+                    'data-id="' + item.id + '"',
                     'data-val="' + item.name + '"',
                     'data-pa="' + item.pa + '"',
                     'data-pa_name="' + item.pa_name + '">',
@@ -294,30 +310,34 @@ export default (() => {
                 ].join('');
             },
             onSelect: (e, term, item) => {
-                $slug.value = item.getAttribute('data-slug');
-                filters.slug = item.getAttribute('data-slug');
+                $websiteId.value = item.getAttribute('data-id');
+                filters.website = $website.value;
+                filters.website_id = item.getAttribute('data-id');
                 if ($publicAdministration && !$publicAdministration.value) {
                     $publicAdministration.value = item.getAttribute('data-pa_name');
-                    if ($ipa) {
-                        $ipa.value = item.getAttribute('data-pa');
-                        filters.ipa_code = item.getAttribute('data-pa');
+                    if ($paIpaCode) {
+                        $paIpaCode.value = item.getAttribute('data-pa');
+                        filters.pa = $publicAdministration.value;
+                        filters.pa_ipa_code = item.getAttribute('data-pa');
                     }
                 }
                 filter && filter();
             },
             resetInfo: () => {
-                $slug.value = '';
-                filters.slug = '';
+                $websiteId.value = '';
+                filters.website = '';
+                filters.website_id = '';
             }
         });
     }
     
-    const initUserFilter = ($user, $uuid) => {
-        if (!$user || !$uuid) {
+    const initUserFilter = ($user, $userUuid) => {
+        if (!$user || !$userUuid) {
             return;
         }
         
-        filters.uuid = $uuid.value;
+        filters.user = $user.value;
+        filters.user_uuid = $userUuid.value;
     
         $user.onkeypress = (event) => {
             if (13 === event.keyCode) {
@@ -326,9 +346,13 @@ export default (() => {
         };
     
         $user.oninput = () => {
-            if ($uuid) {
-                $uuid.value = '';
-                filters.uuid = '';
+            if ($userUuid) {
+                if (filters.user_uuid) {
+                    $userUuid.value = '';
+                    filters.user = '';
+                    filters.user_uuid = '';
+                    filter && filter();
+                }
             }
         }
         
@@ -350,7 +374,7 @@ export default (() => {
                     url: $user.getAttribute('data-source'),
                     data: {
                         q: term,
-                        p: filters.ipa_code || null,
+                        p: filters.pa_ipa_code || null,
                     },
                 }).then((response) => {
                     suggest(response.data);
@@ -378,13 +402,15 @@ export default (() => {
                 ].join('');
             },
             onSelect: (e, term, item) => {
-                $uuid.value = item.getAttribute('data-uuid');
-                filters.uuid = item.getAttribute('data-uuid');
+                $userUuid.value = item.getAttribute('data-uuid');
+                filters.user = $user.value;
+                filters.user_uuid = item.getAttribute('data-uuid');
                 filter && filter();
             },
             resetInfo: () => {
-                $uuid.value = '';
-                filters.uuid = '';
+                $userUuid.value = '';
+                filters.user = '';
+                filters.user_uuid = '';
             }
         });
     }
@@ -403,22 +429,22 @@ export default (() => {
         let $endTime = document.querySelector('input[name="end_time"]');
         
         let $publicAdministration = showPA ? document.querySelector('input[name="pa"]') : null;
-        let $ipa = showPA ? document.querySelector('input[name="ipa_code"]') : null;
+        let $paIpaCode = showPA ? document.querySelector('input[name="pa_ipa_code"]') : null;
         let $website = document.querySelector('input[name="website"]');
-        let $slug = document.querySelector('input[name="slug"]');
+        let $websiteId = document.querySelector('input[name="website_id"]');
         let $user = document.querySelector('input[name="user"]');
-        let $uuid = document.querySelector('input[name="uuid"]');
-    
+        let $userUuid = document.querySelector('input[name="user_uuid"]');
+        
         initMessageFilter($message);
         initDateFilter($date, $startTime, $endTime);
         initStartTimeFilter($startTime)
         initEndTimeFilter($endTime)
         
         if (showPA) {
-            initPublicAdministrationFilter($publicAdministration, $ipa, $website, $slug, $user, $uuid);
+            initPublicAdministrationFilter($publicAdministration, $paIpaCode, $website, $websiteId, $user, $userUuid);
         }
-        initWebsiteFilter($website, $slug, $publicAdministration, $ipa);
-        initUserFilter($user, $uuid);
+        initWebsiteFilter($website, $websiteId, $publicAdministration, $paIpaCode);
+        initUserFilter($user, $userUuid);
     }
     
     const initSelects = () => {

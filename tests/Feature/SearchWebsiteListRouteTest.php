@@ -127,7 +127,7 @@ class SearchWebsiteListRouteTest extends TestCase
 
         $response->assertJsonFragment(
             [
-                'id' => $this->firstWebsite->slug,
+                'id' => (string) $this->firstWebsite->id,
                 'pa' => $this->firstPublicAdministration->ipa_code,
                 'slug' => $this->firstWebsite->slug,
                 'name' => $this->firstWebsite->name,
@@ -135,7 +135,7 @@ class SearchWebsiteListRouteTest extends TestCase
         );
         $response->assertJsonFragment(
             [
-                'id' => $this->secondWebsite->slug,
+                'id' => (string) $this->secondWebsite->id,
                 'pa' => $this->secondPublicAdministration->ipa_code,
                 'slug' => $this->secondWebsite->slug,
                 'name' => $this->secondWebsite->name,
@@ -157,7 +157,7 @@ class SearchWebsiteListRouteTest extends TestCase
 
         $response->assertExactJson([
             [
-                'id' => $this->firstWebsite->slug,
+                'id' => (string) $this->firstWebsite->id,
                 'pa' => $this->firstPublicAdministration->ipa_code,
                 'slug' => $this->firstWebsite->slug,
                 'name' => $this->firstWebsite->name,
@@ -166,7 +166,7 @@ class SearchWebsiteListRouteTest extends TestCase
 
         $response->assertDontSee(json_encode(
             [
-                'id' => $this->secondWebsite->slug,
+                'id' => (string) $this->secondWebsite->id,
                 'pa' => $this->secondPublicAdministration->ipa_code,
                 'slug' => $this->secondWebsite->slug,
                 'name' => $this->secondWebsite->name,
@@ -188,7 +188,7 @@ class SearchWebsiteListRouteTest extends TestCase
 
         $response->assertExactJson([
             [
-                'id' => $this->secondWebsite->slug,
+                'id' => (string) $this->secondWebsite->id,
                 'pa' => $this->secondPublicAdministration->ipa_code,
                 'slug' => $this->secondWebsite->slug,
                 'name' => $this->secondWebsite->name,
@@ -197,7 +197,7 @@ class SearchWebsiteListRouteTest extends TestCase
 
         $response->assertDontSee(json_encode(
             [
-                'id' => $this->firstWebsite->slug,
+                'id' => (string) $this->firstWebsite->id,
                 'pa' => $this->firstPublicAdministration->ipa_code,
                 'slug' => $this->firstWebsite->slug,
                 'name' => $this->firstWebsite->name,
@@ -215,7 +215,7 @@ class SearchWebsiteListRouteTest extends TestCase
 
         $response->assertExactJson([
             [
-                'id' => $this->firstWebsite->slug,
+                'id' => (string) $this->firstWebsite->id,
                 'pa' => $this->firstPublicAdministration->ipa_code,
                 'slug' => $this->firstWebsite->slug,
                 'name' => $this->firstWebsite->name,
@@ -224,7 +224,7 @@ class SearchWebsiteListRouteTest extends TestCase
 
         $response->assertDontSee(json_encode(
             [
-                'id' => $this->secondWebsite->slug,
+                'id' => (string) $this->secondWebsite->id,
                 'pa' => $this->secondPublicAdministration->ipa_code,
                 'slug' => $this->secondWebsite->slug,
                 'name' => $this->secondWebsite->name,
@@ -246,7 +246,7 @@ class SearchWebsiteListRouteTest extends TestCase
 
         $response->assertExactJson([
             [
-                'id' => $this->firstWebsite->slug,
+                'id' => (string) $this->firstWebsite->id,
                 'pa' => $this->firstPublicAdministration->ipa_code,
                 'slug' => $this->firstWebsite->slug,
                 'name' => $this->firstWebsite->name,
@@ -255,7 +255,7 @@ class SearchWebsiteListRouteTest extends TestCase
 
         $response->assertDontSee(json_encode(
             [
-                'id' => $this->secondWebsite->slug,
+                'id' => (string) $this->secondWebsite->id,
                 'pa' => $this->secondPublicAdministration->ipa_code,
                 'slug' => $this->secondWebsite->slug,
                 'name' => $this->secondWebsite->name,
