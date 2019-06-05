@@ -130,41 +130,41 @@
 
             @if($currentUser->isA(UserRole::SUPER_ADMIN))
                 <div class="Form-field">
-                    @error('ipa_code')
+                    @error('pa_ipa_code')
                     <div class="Alert Alert--error Alert--withBg u-padding-r-top u-padding-r-bottom u-padding-r-right">
                         <p class="u-text-p u-padding-r-bottom">{{ $message }}</p>
                         @enderror
                         <label class="Form-label" for="pa">{{ __('ui.pages.logs.form.inputs.pa.label') }}</label>
                         <input class="Form-input autocomplete" type="text" id="pa" name="pa" value="{{ old('pa') }}" data-source="{{ route('admin.logs.search-ipa-list', [], false) }}"/>
-                        <input type="hidden" name="ipa_code" value="{{ old('ipa_code') }}"/>
-                        @error('ipa_code')
+                        <input type="hidden" name="pa_ipa_code" value="{{ old('pa_ipa_code') }}"/>
+                        @error('pa_ipa_code')
                     </div>
                     @enderror
                 </div>
             @endif
 
             <div class="Form-field">
-                @error('slug')
+                @error('website_id')
                 <div class="Alert Alert--error Alert--withBg u-padding-r-top u-padding-r-bottom u-padding-r-right">
                     <p class="u-text-p u-padding-r-bottom">{{ $message }}</p>
                     @enderror
                     <label class="Form-label" for="website">{{ __('ui.pages.logs.form.inputs.website.label') }}</label>
                     <input class="Form-input autocomplete" type="text" id="website" name="website" value="{{ old('website') }}" data-source="{{ $currentUser->isAn(UserRole::SUPER_ADMIN)? route('admin.logs.search-website', [], false) : route('logs.search-website', [], false) }}"/>
-                    <input type="hidden" name="slug" value="{{ old('slug') }}"/>
-                    @error('slug')
+                    <input type="hidden" name="website_id" value="{{ old('website_id') }}"/>
+                    @error('website_id')
                 </div>
                 @enderror
             </div>
 
             <div class="Form-field">
-                @error('uuid')
+                @error('user_uuid')
                 <div class="Alert Alert--error Alert--withBg u-padding-r-top u-padding-r-bottom u-padding-r-right">
                     <p class="u-text-p u-padding-r-bottom">{{ $message }}</p>
                     @enderror
                     <label class="Form-label" for="user">{{ __('ui.pages.logs.form.inputs.user.label') }}</label>
                     <input class="Form-input autocomplete" type="text" id="user" name="user" value="{{ old('user') }}" data-source="{{ $currentUser->isAn(UserRole::SUPER_ADMIN) ? route('admin.logs.search-user', [], false) : route('logs.search-user', [], false) }}"/>
-                    <input type="hidden" name="uuid" value="{{ old('uuid') }}"/>
-                    @error('uuid')
+                    <input type="hidden" name="user_uuid" value="{{ old('user_uuid') }}"/>
+                    @error('user_uuid')
                 </div>
                 @enderror
             </div>

@@ -44,7 +44,7 @@
                         "type": "keyword"
                     },
                     "website": {
-                        "type": "keyword"
+                        "type": "integer"
                     },
                     "user": {
                         "type": "keyword"
@@ -62,7 +62,7 @@
             },
             "message": {
                 "type": "text",
-                "analyzer" : "autocomplete",
+                "analyzer": "autocomplete",
                 "search_analyzer": "autocomplete_search"
             }
         }

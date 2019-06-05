@@ -51,7 +51,7 @@ class WebsiteEventsSubscriber implements ShouldQueue
             'Website ' . $website->getInfo() . ' added of type ' . $website->type->description,
             [
                 'event' => EventType::WEBSITE_ADDED,
-                'website' => $website->slug,
+                'website' => $website->id,
                 'pa' => $website->publicAdministration->ipa_code,
             ]
         );
@@ -78,7 +78,7 @@ class WebsiteEventsSubscriber implements ShouldQueue
             'Website ' . $website->getInfo() . ' activated',
             [
                 'event' => EventType::WEBSITE_ACTIVATED,
-                'website' => $website->slug,
+                'website' => $website->id,
                 'pa' => $website->publicAdministration->ipa_code,
             ]
         );
@@ -104,7 +104,7 @@ class WebsiteEventsSubscriber implements ShouldQueue
             'Website ' . $website->getInfo() . ' reported as not active and scheduled for archiving',
             [
                 'event' => EventType::WEBSITE_ARCHIVING,
-                'website' => $website->slug,
+                'website' => $website->id,
                 'pa' => $website->publicAdministration->ipa_code,
             ]
         );
@@ -130,7 +130,7 @@ class WebsiteEventsSubscriber implements ShouldQueue
             'Website ' . $website->getInfo() . ' archived due to inactivity',
             [
                 'event' => EventType::WEBSITE_ARCHIVED,
-                'website' => $website->slug,
+                'website' => $website->id,
                 'pa' => $website->publicAdministration->ipa_code,
             ]
         );
@@ -149,7 +149,7 @@ class WebsiteEventsSubscriber implements ShouldQueue
             'Website ' . $website->getInfo() . ' manually unarchived',
             [
                 'event' => EventType::WEBSITE_UNARCHIVED,
-                'website' => $website->slug,
+                'website' => $website->id,
                 'pa' => $website->publicAdministration->ipa_code,
             ]
         );
@@ -176,7 +176,7 @@ class WebsiteEventsSubscriber implements ShouldQueue
             'Website ' . $website->getInfo() . ' scheduled purging',
             [
                 'event' => EventType::WEBSITE_PURGING,
-                'website' => $website->slug,
+                'website' => $website->id,
                 'pa' => $website->publicAdministration->ipa_code,
             ]
         );
@@ -196,7 +196,7 @@ class WebsiteEventsSubscriber implements ShouldQueue
             'Website ' . $websiteInfo . ' purged',
             [
                 'event' => EventType::WEBSITE_PURGED,
-                'website' => $website->slug,
+                'website' => $website->id,
                 'pa' => $website->public_administration->ipa_code,
             ]
         );
@@ -261,7 +261,7 @@ class WebsiteEventsSubscriber implements ShouldQueue
         }
 
         try {
-            $websiteDocument = $websiteIndex->makeDocument($website->slug);
+            $websiteDocument = $websiteIndex->makeDocument($website->id);
             $websiteDocument->slug->setValue($website->slug);
             $websiteDocument->name->setValue($website->name);
             $websiteDocument->pa->setValue($website->publicAdministration->ipa_code);

@@ -148,18 +148,18 @@ class LogController extends Controller
         $params['filters'][] = ['term' => ['channel' => config('app.env')]];
 
         if (auth()->user()->isA(UserRole::SUPER_ADMIN)) {
-            if (!empty($data['ipa_code'])) {
-                $params['filters'][] = ['term' => ['context.pa' => $data['ipa_code']]];
+            if (!empty($data['pa_ipa_code'])) {
+                $params['filters'][] = ['term' => ['context.pa' => $data['pa_ipa_code']]];
             }
         } else {
             $params['filters'][] = ['term' => ['context.pa' => current_public_administration()->ipa_code]];
         }
 
-        if (!empty($data['slug'])) {
-            $params['filters'][] = ['term' => ['context.website' => $data['slug']]];
+        if (!empty($data['website_id'])) {
+            $params['filters'][] = ['term' => ['context.website' => $data['website_id']]];
         }
-        if (!empty($data['uuid'])) {
-            $params['filters'][] = ['term' => ['context.user' => $data['uuid']]];
+        if (!empty($data['user_uuid'])) {
+            $params['filters'][] = ['term' => ['context.user' => $data['user_uuid']]];
         }
         if (isset($data['job'])) {
             $params['filters'][] = ['term' => ['context.job' => $data['job']]];

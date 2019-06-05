@@ -51,18 +51,18 @@ class LogFilteringRequest extends FormRequest
             //NOTE: can't force public administration existence
             //      since Public Administration purge force delete it
             //      See: ProcessPendingWebsites:handle()
-            'ipa_code' => [
+            'pa_ipa_code' => [
                 'nullable',
                 Rule::requiredIf($this->filled('pa')),
             ],
             //NOTE: can't force website existence
             //      since Website purge force delete it
             //      See: ProcessPendingWebsites:handle()
-            'slug' => [
+            'website_id' => [
                 'nullable',
                 Rule::requiredIf($this->filled('website')),
             ],
-            'uuid' => [
+            'user_uuid' => [
                 'nullable',
                 Rule::requiredIf($this->filled('user')),
                 'exists:users,uuid',
