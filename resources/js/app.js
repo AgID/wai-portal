@@ -10,13 +10,16 @@ import UserWebsitesPermissions from './userWebsitesPermissions';
 import ChangeArchiveStatus from './changeArchiveStatus';
 
 $(document).ready(() => {
-    Datatables.init([
-        () => CheckWebsiteTracking.initWebsiteCheckButton(),
-        () => UserWebsitesPermissions.initPermissionInputs(),
-        () => ChangeArchiveStatus.initArchiveStatusButton(),
-    ]);
-    
-    LogsDatatables.init();
+    Datatables.init(
+        [
+            (datatableApi) => LogsDatatables.preDatatableInit(datatableApi),
+        ],
+        [
+            () => CheckWebsiteTracking.initWebsiteCheckButton(),
+            () => UserWebsitesPermissions.initPermissionInputs(),
+            () => ChangeArchiveStatus.initArchiveStatusButton(),
+        ]
+    );
 });
 
 // Legacy script to be removed

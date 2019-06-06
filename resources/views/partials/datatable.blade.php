@@ -1,7 +1,16 @@
-<table class="Datatable table table-striped responsive nowrap u-text-r-xs u-textNoWrap"
-    data-dt-source="{{ json_encode($source) }}"
-    data-dt-columns="{{ json_encode($columns) }}"
-    data-dt-columns-order="{{ json_encode($columnsOrder) }}">
+<table class="Datatable table table-striped responsive u-text-r-xs {{ (!isset($textWrap) || !$textWrap) ? 'nowrap u-textNoWrap' : '' }}"
+       @if (isset($serverSide))
+       data-dt-server-side={{ $serverSide ? 'true' : 'false' }}
+       @endif
+       @if (isset($processing))
+               data-dt-processing={{ $processing ? 'true' :  'false' }}
+       @endif
+       @if (isset($searching))
+               data-dt-searching={{ $searching ? 'true' : 'false' }}
+       @endif
+       data-dt-source="{{ url($source) }}"
+       data-dt-columns="{{ json_encode($columns) }}"
+       data-dt-columns-order="{{ json_encode($columnsOrder) }}">
     <caption class="u-hiddenVisually">{{ $caption }}</caption>
     <thead>
         <tr>
