@@ -177,10 +177,6 @@ services:
       memlock:
         soft: -1
         hard: -1
-    ports:
-      - "${ELASTICSEARCH_PORT}:9200"
-    expose:
-      - "9300"
     networks:
       - backend
 
