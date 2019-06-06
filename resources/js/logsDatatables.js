@@ -1,5 +1,4 @@
 export default (() => {
-    let datatable = {};
     let filters = {};
     
     let filter;
@@ -465,12 +464,7 @@ export default (() => {
         }
     }
     
-    const initFilters = () => {
-        let $form = document.getElementById('filters');
-        if (!$form) {
-            return;
-        }
-        
+    const initFilters = ($form) => {
         initInputs($form);
         initSelects();
     }
@@ -482,58 +476,15 @@ export default (() => {
         return data;
     }
     
-    const initData = ($datatableElement) => {
-        datatable.source = $datatableElement.data('dt-source');
-        datatable.columns = $datatableElement.data('dt-columns');
-        datatable.columnsOrder = $datatableElement.data('dt-columns-order');
-    }
-    
-    const initOrder = () => {
-        datatable.columnsOrder.map((ord) => {
-            ord[0] = datatable.columns.findIndex((column) => {
-                return column.data == ord[0];
-            });
-        });
-    }
-    
-    const init = async () => {
-        let $datatable = $('.LogsDatatable');
-        if ($datatable.length === 0) {
+    const preDatatableInit = (datatableApi) => {
+        let $form = document.getElementById('filters');
+        if (!$form) {
             return;
         }
         
-        await import(/* webpackChunkName: "datatables.net" */ './datatablesImports');
+        initFilters($form);
         
-        initFilters();
-        initData($datatable);
-        initOrder();
-        
-        let api = window.dt = $datatable.DataTable({
-            processing: true,
-            serverSide: true,
-            searching: false,
-            ajax: datatable.source,
-            responsive: {
-                details: {
-                    type: 'column',
-                    target: -1
-                }
-            },
-            autoWidth: false,
-            columns: datatable.columns.concat({
-                defaultContent: '',
-                className: 'control',
-                orderable: false,
-                targets: -1,
-            }),
-            language: {
-                url: "//cdn.datatables.net/plug-ins/1.10.18/i18n/Italian.json"
-            },
-            order: datatable.columnsOrder,
-            initComplete: () => {
-                api.responsive.recalc();
-            }
-        }).on('preXhr.dt', (event, settings, data) => {
+        datatableApi.on('preXhr.dt', (event, settings, data) => {
             addFilters(data);
         }).on('xhr.dt', (event, settings, json, xhr) => {
             if (!json) {
@@ -557,5 +508,5 @@ export default (() => {
         );
     }
     
-    return { init };
+    return { preDatatableInit };
 })();

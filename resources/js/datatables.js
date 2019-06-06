@@ -2,7 +2,10 @@ export default (() => {
     let datatable = {};
 
     const initData = ($datatable) => {
-        datatable.source = JSON.parse($datatable.data('dt-source'));
+        datatable.processing = $datatable.data('dt-processing') || false;
+        datatable.serverSide = $datatable.data('dt-server-side') || false;
+        datatable.searching = undefined === $datatable.data('dt-searching') ?  true : $datatable.data('dt-searching');
+        datatable.source = 'string' === typeof $datatable.data('dt-source') ? JSON.parse($datatable.data('dt-source')) : $datatable.data('dt-source');
         datatable.columns = $datatable.data('dt-columns');
         datatable.columnsOrder = $datatable.data('dt-columns-order');
     }
@@ -106,7 +109,7 @@ export default (() => {
         });
     }
 
-    const init = async (afterInit) => {
+    const init = async (preInit, afterInit) => {
         let $datatable = $('.Datatable');
 
         if ($datatable.length === 0) {
@@ -122,6 +125,9 @@ export default (() => {
         initOrder();
 
         let datatableApi = window.dt = $datatable.DataTable({
+            processing: datatable.processing,
+            serverSide: datatable.serverSide,
+            searching: datatable.searching,
             ajax: datatable.source,
             responsive: {
                 details: {
@@ -143,6 +149,8 @@ export default (() => {
                 afterInit && afterInit.map((afterInitFunction) => afterInitFunction());
                 datatableApi.responsive.recalc();
             }
+        }).on('preInit.dt', () => {
+            preInit && preInit.map((preInitFunction) => preInitFunction(datatableApi));
         }).on('responsive-display', () => {
             afterInit && afterInit.map((afterInitFunction) => afterInitFunction());
         });

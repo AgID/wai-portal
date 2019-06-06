@@ -35,6 +35,12 @@ class LogController extends Controller
     {
         $data = [
             'currentUser' => $request->user(),
+            'datatableOptions' => [
+                'textWrap' => true,
+                'serverSide' => true,
+                'processing' => true,
+                'searching' => false,
+            ],
             'columns' => [
                 ['data' => 'datetime', 'name' => __('ui.pages.logs.table.headers.time'), 'className' => 'u-textNoWrap', 'searchable' => false],
                 ['data' => 'level_name', 'name' => __('ui.pages.logs.table.headers.level'), 'orderable' => false, 'searchable' => false, 'className' => 'u-textNoWrap dt-body-center'],
