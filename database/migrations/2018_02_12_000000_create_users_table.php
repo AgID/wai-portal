@@ -30,6 +30,7 @@ class CreateUsersTable extends Migration
             $table->tinyInteger('status')->unsigned();
             $table->string('partial_analytics_password')->nullable();
             $table->timestamp('password_changed_at')->nullable();
+            $table->timestamp('last_access_at')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();

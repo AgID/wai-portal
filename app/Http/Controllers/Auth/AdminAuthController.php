@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Auth;
 
 use App\Enums\UserPermission;
 use App\Enums\UserStatus;
+use App\Events\User\UserLogin;
+use App\Events\User\UserLogout;
 use App\Http\Controllers\Controller;
 use App\Jobs\ClearPasswordResetToken;
 use App\Jobs\SendPasswordResetEmail;
@@ -82,8 +84,11 @@ class AdminAuthController extends Controller
     public function logout()
     {
         if (auth()->check() && auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)) {
+            $user = auth()->user();
             auth()->logout();
             session()->invalidate();
+
+            event(new UserLogout($user));
         }
 
         return redirect()->home();
@@ -248,6 +253,8 @@ class AdminAuthController extends Controller
     protected function sendLoginResponse(Request $request)
     {
         $this->clearLoginAttempts($request);
+
+        event(new UserLogin(auth()->user()));
 
         return redirect()->intended(route('admin-dashboard'));
     }

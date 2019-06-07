@@ -5,6 +5,8 @@ namespace App\Listeners;
 use App\Enums\Logs\EventType;
 use App\Events\User\UserActivated;
 use App\Events\User\UserInvited;
+use App\Events\User\UserLogin;
+use App\Events\User\UserLogout;
 use App\Events\User\UserUpdated;
 use App\Events\User\UserUpdating;
 use App\Events\User\UserWebsiteAccessChanged;
@@ -17,6 +19,7 @@ use Exception;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Events\Dispatcher;
+use Illuminate\Support\Facades\Date;
 
 /**
  * Users related events subscriber.
@@ -159,6 +162,32 @@ class UserEventsSubscriber
         );
     }
 
+    public function onLogin(UserLogin $event): void
+    {
+        $user = $event->getUser();
+        $user->last_access_at = Date::now();
+        $user->save();
+        logger()->info(
+            'User ' . $user->uuid . ' logged in.',
+            [
+                'user' => $user->uuid,
+                'event' => EventType::USER_LOGIN,
+            ]
+        );
+    }
+
+    public function onLogout(UserLogout $event): void
+    {
+        $user = $event->getUser();
+        logger()->info(
+            'User ' . $user->uuid . ' logged out.',
+            [
+                'user' => $user->uuid,
+                'event' => EventType::USER_LOGOUT,
+            ]
+        );
+    }
+
     /**
      * Register the listeners for the subscriber.
      *
@@ -199,6 +228,16 @@ class UserEventsSubscriber
         $events->listen(
             'App\Events\User\UserWebsiteAccessChanged',
             'App\Listeners\UserEventsSubscriber@onWebsiteAccessChanged'
+        );
+
+        $events->listen(
+            'App\Events\User\UserLogin',
+            'App\Listeners\UserEventsSubscriber@onLogin'
+        );
+
+        $events->listen(
+            'App\Events\User\UserLogout',
+            'App\Listeners\UserEventsSubscriber@onLogout'
         );
     }
 
