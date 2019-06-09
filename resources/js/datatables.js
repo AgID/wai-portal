@@ -5,7 +5,7 @@ export default (() => {
         datatable.processing = $datatable.data('dt-processing') || false;
         datatable.serverSide = $datatable.data('dt-server-side') || false;
         datatable.searching = undefined === $datatable.data('dt-searching') ?  true : $datatable.data('dt-searching');
-        datatable.source = 'string' === typeof $datatable.data('dt-source') ? JSON.parse($datatable.data('dt-source')) : $datatable.data('dt-source');
+        datatable.source = $datatable.data('dt-source');
         datatable.columns = $datatable.data('dt-columns');
         datatable.columnsOrder = $datatable.data('dt-columns-order');
     }
@@ -124,7 +124,7 @@ export default (() => {
         initRadios();
         initOrder();
 
-        let datatableApi = window.dt = $datatable.DataTable({
+        let datatableApi = $datatable.DataTable({
             processing: datatable.processing,
             serverSide: datatable.serverSide,
             searching: datatable.searching,

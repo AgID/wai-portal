@@ -1,13 +1,13 @@
 <table class="Datatable table table-striped responsive u-text-r-xs {{ (!isset($textWrap) || !$textWrap) ? 'nowrap u-textNoWrap' : '' }}"
-       @if (isset($serverSide))
+       @isset($serverSide))
        data-dt-server-side={{ $serverSide ? 'true' : 'false' }}
-       @endif
-       @if (isset($processing))
+       @endisset
+       @isset($processing))
                data-dt-processing={{ $processing ? 'true' :  'false' }}
-       @endif
-       @if (isset($searching))
+       @endisset
+       @isset($searching))
                data-dt-searching={{ $searching ? 'true' : 'false' }}
-       @endif
+       @endisset
        data-dt-source="{{ url($source) }}"
        data-dt-columns="{{ json_encode($columns) }}"
        data-dt-columns-order="{{ json_encode($columnsOrder) }}">
