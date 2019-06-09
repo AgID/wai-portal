@@ -191,7 +191,7 @@
     </form>
 
     <table class="LogsDatatable table table-striped responsive u-text-r-xs"
-           data-dt-source="{{ json_encode($source) }}"
+           data-dt-source="{{ url($source) }}"
            data-dt-columns="{{ json_encode($columns) }}"
            data-dt-columns-order="{{ json_encode($columnsOrder) }}">
         <caption class="u-hiddenVisually">{{ $caption }}</caption>

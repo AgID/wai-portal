@@ -483,7 +483,7 @@ export default (() => {
     }
     
     const initData = ($datatableElement) => {
-        datatable.source = JSON.parse($datatableElement.data('dt-source'));
+        datatable.source = $datatableElement.data('dt-source');
         datatable.columns = $datatableElement.data('dt-columns');
         datatable.columnsOrder = $datatableElement.data('dt-columns-order');
     }
@@ -512,14 +512,7 @@ export default (() => {
             processing: true,
             serverSide: true,
             searching: false,
-            ajax: {
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                type: 'POST',
-                url: datatable.source,
-                dataType: 'json',
-            },
+            ajax: datatable.source,
             responsive: {
                 details: {
                     type: 'column',

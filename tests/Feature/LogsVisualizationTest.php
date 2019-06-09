@@ -124,7 +124,8 @@ class LogsVisualizationTest extends TestCase
     public function testValidationSuccessful(): void
     {
         $response = $this->actingAs($this->superAdmin)
-            ->post(
+            ->json(
+                'GET',
                 route('admin.logs.data'),
                 [
                     'draw' => 0,
@@ -171,7 +172,8 @@ class LogsVisualizationTest extends TestCase
     public function testValidationFail(): void
     {
         $response = $this->actingAs($this->superAdmin)
-            ->post(
+            ->json(
+                'GET',
                 route('admin.logs.data'),
                 [
                     'message' => 0,
@@ -192,9 +194,9 @@ class LogsVisualizationTest extends TestCase
                 ],
                 );
 
-        $response->assertStatus(302);
+        $response->assertStatus(422);
 
-        $response->assertSessionHasErrors([
+        $response->assertJsonValidationErrors([
             'draw',
             'start',
             'length',
@@ -306,7 +308,8 @@ class LogsVisualizationTest extends TestCase
         );
 
         $response = $this->actingAs($this->superAdmin)
-            ->post(
+            ->json(
+                'GET',
                 route('admin.logs.data'),
                 [
                     'draw' => 0,
@@ -347,7 +350,8 @@ class LogsVisualizationTest extends TestCase
                 'spid_sessionIndex' => 'fake-session-index',
                 'tenant_id' => $this->firstPublicAdministration->id,
             ])
-            ->post(
+            ->json(
+                'GET',
                 route('logs.data'),
                 [
                     'draw' => 0,
