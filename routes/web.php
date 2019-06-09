@@ -209,7 +209,7 @@ Route::middleware('spid.auth', 'auth', 'verified')->group(function () {
                         'as' => 'logs.show',
                         'uses' => 'Logs\LogController@show',
                     ]);
-                    Route::post('/data', [
+                    Route::get('/data', [
                         'as' => 'logs.data',
                         'uses' => 'Logs\LogController@data',
                     ]);
@@ -363,7 +363,7 @@ Route::middleware('admin.auth', 'verified:admin.verification.notice')->group(fun
                     'as' => 'admin.logs.show',
                     'uses' => 'Logs\LogController@show',
                 ]);
-                Route::post('/data', [
+                Route::get('/data', [
                     'as' => 'admin.logs.data',
                     'uses' => 'Logs\LogController@data',
                 ]);
