@@ -148,14 +148,14 @@
 
             @if($currentUser->isA(UserRole::SUPER_ADMIN))
                 <div class="Form-field">
-                    @error('pa_ipa_code')
+                    @error('ipa_code')
                     <div class="Alert Alert--error Alert--withBg u-padding-r-top u-padding-r-bottom u-padding-r-right">
                         <p class="u-text-p u-padding-r-bottom">{{ $message }}</p>
                         @enderror
                         <label class="Form-label" for="pa">{{ __('ui.pages.logs.form.inputs.pa.label') }}</label>
                         <input class="Form-input autocomplete" type="text" id="pa" name="pa" value="{{ old('pa') }}" data-source="{{ route('admin.logs.search-ipa-list', [], false) }}"/>
-                        <input type="hidden" name="pa_ipa_code" value="{{ old('pa_ipa_code') }}"/>
-                        @error('pa_ipa_code')
+                        <input type="hidden" name="ipa_code" value="{{ old('ipa_code') }}"/>
+                        @error('ipa_code')
                     </div>
                     @enderror
                 </div>

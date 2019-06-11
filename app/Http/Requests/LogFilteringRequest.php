@@ -56,7 +56,7 @@ class LogFilteringRequest extends FormRequest
             //NOTE: can't force public administration existence
             //      since Public Administration purge force delete it
             //      See: ProcessPendingWebsites:handle()
-            'pa_ipa_code' => [
+            'ipa_code' => [
                 'nullable',
                 Rule::requiredIf($this->filled('pa')),
             ],
