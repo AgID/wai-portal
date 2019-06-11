@@ -110,7 +110,7 @@ export default (() => {
     }
 
     const init = async (preInit, afterInit) => {
-        let $datatable = $('.Datatable');
+        const $datatable = $('.Datatable');
 
         if ($datatable.length === 0) {
             return;
@@ -124,7 +124,8 @@ export default (() => {
         initRadios();
         initOrder();
 
-        let datatableApi = $datatable.DataTable({
+        $.fn.dataTable.ext.errMode = 'none';
+        const datatableApi = $datatable.DataTable({
             processing: datatable.processing,
             serverSide: datatable.serverSide,
             searching: datatable.searching,
