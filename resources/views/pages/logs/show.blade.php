@@ -3,8 +3,7 @@
 @section('title', __('ui.pages.logs.title'))
 
 @section('content')
-    <form id="filters" class="Form Form--spaced u-text-r-xs" method="post" action="" data-show-pa="{{ $currentUser->isA(UserRole::SUPER_ADMIN) }}">
-        @csrf
+    <div id="filters" class="Form Form--spaced u-text-r-xs" method="post" action="" data-show-pa="{{ $currentUser->isA(UserRole::SUPER_ADMIN) }}">
         <fieldset class="Form-fieldset">
             <legend class="Form-legend">{{ __('ui.pages.logs.form.legend') }}</legend>
 
@@ -188,7 +187,7 @@
             </div>
 
         </fieldset>
-    </form>
+    </div>
 
     @include(
         'partials.datatable',
