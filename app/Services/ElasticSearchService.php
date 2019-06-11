@@ -5,16 +5,16 @@ namespace App\Services;
 use Elastica\Client;
 
 /**
- * ElasticSearch log push initializer.
+ * ElasticSearch service.
  */
-class ElasticSearchClientSetup
+class ElasticSearchService
 {
     /**
      * Initialize the client to push log messages to ElasticSearch.
      *
      * @return \Elastica\Client the client
      */
-    public function getElasticSearchClient(): Client
+    public function getClient(): Client
     {
         return new Client([
             'host' => config('elastic-search.host'),

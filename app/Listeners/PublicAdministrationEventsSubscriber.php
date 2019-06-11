@@ -27,7 +27,7 @@ class PublicAdministrationEventsSubscriber implements ShouldQueue
         $publicAdministration = $event->getPublicAdministration();
         $user = $event->getUser();
         //TODO: inviare PEC a PA per la notifica?
-        logger()->info(
+        logger()->notice(
             'User ' . $user->getInfo() . ' registered Public Administration ' . $publicAdministration->getInfo(),
             [
                 'event' => EventType::PUBLIC_ADMINISTRATION_REGISTERED,
@@ -45,7 +45,7 @@ class PublicAdministrationEventsSubscriber implements ShouldQueue
     public function onActivated(PublicAdministrationActivated $event): void
     {
         $publicAdministration = $event->getPublicAdministration();
-        logger()->info(
+        logger()->notice(
             'Public Administration ' . $publicAdministration->getInfo() . ' activated',
             [
                 'event' => EventType::PUBLIC_ADMINISTRATION_ACTIVATED,
@@ -79,7 +79,7 @@ class PublicAdministrationEventsSubscriber implements ShouldQueue
     public function onUpdated(PublicAdministrationUpdated $event): void
     {
         $publicAdministration = $event->getPublicAdministration();
-        logger()->info(
+        logger()->notice(
             'Public Administration ' . $publicAdministration->getInfo() . ' updated',
             [
                 'event' => EventType::PUBLIC_ADMINISTRATION_UPDATED,
@@ -115,7 +115,7 @@ class PublicAdministrationEventsSubscriber implements ShouldQueue
     {
         $publicAdministration = json_decode($event->getPublicAdministrationJson());
         $publicAdministrationInfo = '"' . $publicAdministration->name . '" [' . $publicAdministration->ipa_code . ']';
-        logger()->info(
+        logger()->notice(
             'Public Administration ' . $publicAdministrationInfo . ' purged',
             [
                 'event' => EventType::PUBLIC_ADMINISTRATION_PURGED,

@@ -10,12 +10,7 @@ use App\Events\Website\WebsiteArchiving;
 use App\Events\Website\WebsitePurged;
 use App\Events\Website\WebsitePurging;
 use App\Events\Website\WebsiteUnarchived;
-use App\Jobs\ProcessWebsitesList;
-use App\Models\Website;
-use Ehann\RediSearch\Exceptions\FieldNotInSchemaException;
-use Ehann\RediSearch\Index;
-use Ehann\RedisRaw\PredisAdapter;
-use Exception;
+use App\Traits\InteractsWithWebsiteIndex;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Events\Dispatcher;
 
@@ -24,6 +19,8 @@ use Illuminate\Events\Dispatcher;
  */
 class WebsiteEventsSubscriber implements ShouldQueue
 {
+    use InteractsWithWebsiteIndex;
+
     /**
      * Website activated event callback.
      *
@@ -47,7 +44,7 @@ class WebsiteEventsSubscriber implements ShouldQueue
         //Update Redisearch websites index
         $this->updateWebsiteIndex($website);
 
-        logger()->info(
+        logger()->notice(
             'Website ' . $website->getInfo() . ' added of type ' . $website->type->description,
             [
                 'event' => EventType::WEBSITE_ADDED,
@@ -74,7 +71,7 @@ class WebsiteEventsSubscriber implements ShouldQueue
 //            $user->sendWebsiteActivatedNotification($website);
 //        }
 
-        logger()->info(
+        logger()->notice(
             'Website ' . $website->getInfo() . ' activated',
             [
                 'event' => EventType::WEBSITE_ACTIVATED,
@@ -100,7 +97,7 @@ class WebsiteEventsSubscriber implements ShouldQueue
 //            $user->sendWebsiteArchivingNotification($website, $event->getWebsite());
 //        }
 
-        logger()->info(
+        logger()->notice(
             'Website ' . $website->getInfo() . ' reported as not active and scheduled for archiving',
             [
                 'event' => EventType::WEBSITE_ARCHIVING,
@@ -126,7 +123,7 @@ class WebsiteEventsSubscriber implements ShouldQueue
 //            $user->sendWebsiteArchivedNotification($website);
 //        }
 
-        logger()->info(
+        logger()->notice(
             'Website ' . $website->getInfo() . ' archived due to inactivity',
             [
                 'event' => EventType::WEBSITE_ARCHIVED,
@@ -145,7 +142,7 @@ class WebsiteEventsSubscriber implements ShouldQueue
     {
         $website = $event->getWebsite();
         //TODO: notificare qualcuno? è un'azione solo manuale
-        logger()->info(
+        logger()->notice(
             'Website ' . $website->getInfo() . ' manually unarchived',
             [
                 'event' => EventType::WEBSITE_UNARCHIVED,
@@ -172,7 +169,7 @@ class WebsiteEventsSubscriber implements ShouldQueue
 //            $user->sendWebsitePurgingNotification($website);
 //        }
 
-        logger()->info(
+        logger()->notice(
             'Website ' . $website->getInfo() . ' scheduled purging',
             [
                 'event' => EventType::WEBSITE_PURGING,
@@ -192,7 +189,7 @@ class WebsiteEventsSubscriber implements ShouldQueue
         $website = json_decode($event->getWebsiteJson());
         $websiteInfo = '"' . $website->name . '" [' . $website->slug . ']';
         //NOTE: toJson: relationship attributes are snake_case
-        logger()->info(
+        logger()->notice(
             'Website ' . $websiteInfo . ' purged',
             [
                 'event' => EventType::WEBSITE_PURGED,
@@ -237,37 +234,5 @@ class WebsiteEventsSubscriber implements ShouldQueue
             'App\Events\Website\WebsitePurged',
             'App\Listeners\WebsiteEventsSubscriber@onPurged'
         );
-    }
-
-    /**
-     * Update websites index.
-     *
-     * @param Website $website the website to update
-     */
-    private function updateWebsiteIndex(Website $website): void
-    {
-        $websiteIndex = new Index(
-            (new PredisAdapter())->connect(config('database.redis.indexes.host'), config('database.redis.indexes.port'), config('database.redis.indexes.database')),
-            ProcessWebsitesList::WEBSITE_INDEX_NAME
-        );
-
-        try {
-            $websiteIndex->addTagField('pa')
-                ->addTextField('slug', 2.0, true)
-                ->addTextField('name', 2.0, true)
-                ->create();
-        } catch (Exception $e) {
-            // Index already exists, it's ok!
-        }
-
-        try {
-            $websiteDocument = $websiteIndex->makeDocument($website->id);
-            $websiteDocument->slug->setValue($website->slug);
-            $websiteDocument->name->setValue($website->name);
-            $websiteDocument->pa->setValue($website->publicAdministration->ipa_code);
-            $websiteIndex->replace($websiteDocument);
-        } catch (FieldNotInSchemaException $exception) {
-            report($exception);
-        }
     }
 }

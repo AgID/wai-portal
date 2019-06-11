@@ -31,37 +31,42 @@ class ExceptionType extends Enum implements LocalizedEnum
     public const ANALYTICS_COMMAND = 3;
 
     /**
-     * Unauthorized access exception.
+     * Client HTTP error.
      */
-    public const UNAUTHORIZED_ACCESS = 4;
+    public const HTTP_CLIENT_ERROR = 4;
+
+    /**
+     * Internal server error.
+     */
+    public const SERVER_ERROR = 5;
 
     /**
      * Tenant selection exception.
      */
-    public const TENANT_SELECTION = 5;
+    public const TENANT_SELECTION = 6;
 
     /**
-     * I.P.A. search exception.
+     * IPA search exception.
      */
-    public const IPA_INDEX_SEARCH = 6;
+    public const IPA_INDEX_SEARCH = 7;
 
     /**
      * Websites index search exception.
      */
-    public const WEBSITE_INDEX_SEARCH = 7;
+    public const WEBSITE_INDEX_SEARCH = 8;
 
     /**
      * Users index search exception.
      */
-    public const USER_INDEX_SEARCH = 8;
+    public const USER_INDEX_SEARCH = 9;
 
     /**
      * Invalid website status related exception.
      */
-    public const INVALID_WEBSITE_STATUS = 9;
+    public const INVALID_WEBSITE_STATUS = 10;
 
     /**
      * Invalid operation related exception.
      */
-    public const INVALID_OPERATION = 10;
+    public const INVALID_OPERATION = 11;
 }

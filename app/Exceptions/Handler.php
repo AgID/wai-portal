@@ -31,26 +31,24 @@ class Handler extends ExceptionHandler
         if ($exception instanceof HttpException) {
             $user = auth()->check() ? 'User ' . auth()->user()->getInfo() : 'Anonymous user';
             $statusCode = $exception->getStatusCode();
-            $url = request()->fullUrl();
-            switch ($statusCode) {
-                case 403:
-                    logger()->warning(
-                        $user . ' requested an unauthorized resource [' . request()->url() . '].',
+            switch (true) {
+                case $statusCode < 500:
+                    logger()->info(
+                        'A client error (status code: ' . $statusCode . ') occurred [' . request()->url() . ' visited by ' . $user . '].',
                         [
                             'event' => EventType::EXCEPTION,
-                            'type' => ExceptionType::UNAUTHORIZED_ACCESS,
+                            'type' => ExceptionType::HTTP_CLIENT_ERROR,
                         ]
                     );
                     break;
                 default:
-                    logger()->warning(
+                    logger()->error(
                         'A server error (status code: ' . $statusCode . ') occurred [' . request()->url() . ' visited by ' . $user . '].',
                         [
                             'event' => EventType::EXCEPTION,
-                            'type' => ExceptionType::GENERIC,
+                            'type' => ExceptionType::SERVER_ERROR,
                         ]
                     );
-                    // TODO: notify me!
             }
         }
 
@@ -99,9 +97,6 @@ class Handler extends ExceptionHandler
             $context['user'] = auth()->user()->uuid;
         }
 
-        return array_merge(
-            parent::context(),
-            $context
-        );
+        return $context;
     }
 }

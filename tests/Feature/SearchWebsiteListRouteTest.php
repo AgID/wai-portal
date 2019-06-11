@@ -123,7 +123,11 @@ class SearchWebsiteListRouteTest extends TestCase
     public function testSuperAdminSearch(): void
     {
         $response = $this->actingAs($this->superAdmin, 'web')
-            ->post(route('admin.logs.search-website'), ['q' => 'www', 'p' => null]);
+            ->json(
+                'GET',
+                route('admin.logs.search-website'),
+                ['q' => 'www', 'p' => null]
+            );
 
         $response->assertJsonFragment(
             [
@@ -153,7 +157,11 @@ class SearchWebsiteListRouteTest extends TestCase
                 'spid_sessionIndex' => 'fake-session-index',
                 'tenant_id' => $this->firstPublicAdministration->id,
             ])
-            ->post(route('logs.search-website'), ['q' => 'www']);
+            ->json(
+                'GET',
+                route('logs.search-website'),
+                ['q' => 'www']
+            );
 
         $response->assertExactJson([
             [
@@ -184,7 +192,11 @@ class SearchWebsiteListRouteTest extends TestCase
                 'spid_sessionIndex' => 'fake-session-index',
                 'tenant_id' => $this->secondPublicAdministration->id,
             ])
-            ->post(route('logs.search-website'), ['q' => 'www']);
+            ->json(
+                'GET',
+                route('logs.search-website'),
+                ['q' => 'www']
+            );
 
         $response->assertExactJson([
             [
@@ -211,7 +223,11 @@ class SearchWebsiteListRouteTest extends TestCase
     public function testIPACodeFilteringOnSuperAdmin(): void
     {
         $response = $this->actingAs($this->superAdmin, 'web')
-            ->post(route('admin.logs.search-website'), ['q' => 'www', 'p' => $this->firstPublicAdministration->ipa_code]);
+            ->json(
+                'GET',
+                route('admin.logs.search-website'),
+                ['q' => 'www', 'p' => $this->firstPublicAdministration->ipa_code]
+            );
 
         $response->assertExactJson([
             [
@@ -242,7 +258,11 @@ class SearchWebsiteListRouteTest extends TestCase
                 'spid_sessionIndex' => 'fake-session-index',
                 'tenant_id' => $this->firstPublicAdministration->id,
             ])
-            ->post(route('logs.search-website'), ['q' => 'www', 'p' => $this->secondPublicAdministration->ipa_code]);
+            ->json(
+                'GET',
+                route('logs.search-website'),
+                ['q' => 'www', 'p' => $this->secondPublicAdministration->ipa_code]
+            );
 
         $response->assertExactJson([
             [

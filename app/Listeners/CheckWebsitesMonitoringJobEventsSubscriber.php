@@ -19,7 +19,7 @@ class CheckWebsitesMonitoringJobEventsSubscriber implements ShouldQueue
      */
     public function onCompleted(WebsitesMonitoringCheckCompleted $event): void
     {
-        logger()->info(
+        logger()->notice(
             'Website tracking check completed: ' . count($event->getArchiving()) . ' website/s not tracking ' . count($event->getArchived()) . ' website/s archived, ' . count($event->getFailed()) . ' website/s check failed',
             [
                 'event' => EventType::TRACKING_WEBSITES_CHECK_COMPLETED,

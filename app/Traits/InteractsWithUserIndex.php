@@ -40,16 +40,13 @@ trait InteractsWithUserIndex
                 ->getDocuments();
         } catch (Exception $exception) {
             // RediSearch returned an error, probably malformed query or index not found.
-            // TODO: Please notify me!
-            if (!app()->environment('testing')) {
-                logger()->error(
-                    'Unable to search into User index: ' . $exception->getMessage(),
-                    [
-                        'event' => EventType::EXCEPTION,
-                        'type' => ExceptionType::USER_INDEX_SEARCH,
-                    ]
-                );
-            }
+            logger()->error(
+                'Unable to search into User index: ' . $exception->getMessage(),
+                [
+                    'event' => EventType::EXCEPTION,
+                    'type' => ExceptionType::USER_INDEX_SEARCH,
+                ]
+            );
         }
 
         return $results ?? [];

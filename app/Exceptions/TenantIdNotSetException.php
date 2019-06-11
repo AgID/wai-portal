@@ -22,7 +22,6 @@ class TenantIdNotSetException extends Exception
                 'exception' => $this,
             ]
         );
-        // TODO: Notify me!!
     }
 
     /**

@@ -17,7 +17,7 @@ class CommandErrorException extends Exception
      */
     public function report(): void
     {
-        logger()->error(
+        logger()->critical(
             'Analytics Service command error: ' . $this->getMessage(),
             [
                 'event' => EventType::EXCEPTION,
@@ -25,7 +25,6 @@ class CommandErrorException extends Exception
                 'exception' => $this,
             ]
         );
-        // TODO: Notify me!!
     }
 
     /**

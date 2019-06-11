@@ -99,7 +99,11 @@ class SearchUserListRouteTest extends TestCase
     public function testSuperAdminSearch(): void
     {
         $response = $this->actingAs($this->superAdmin, 'web')
-            ->post(route('admin.logs.search-user'), ['q' => 'Mario', 'p' => null]);
+            ->json(
+                'GET',
+                route('admin.logs.search-user'),
+                ['q' => 'Mario', 'p' => null]
+            );
 
         $response->assertJsonFragment(
             [
@@ -131,7 +135,11 @@ class SearchUserListRouteTest extends TestCase
                 'spid_sessionIndex' => 'fake-session-index',
                 'tenant_id' => $this->firstPublicAdministration->id,
             ])
-            ->post(route('logs.search-user'), ['q' => 'Mario']);
+            ->json(
+                'GET',
+                route('logs.search-user'),
+                ['q' => 'Mario']
+            );
 
         $response->assertExactJson([
             [
@@ -164,7 +172,11 @@ class SearchUserListRouteTest extends TestCase
                 'spid_sessionIndex' => 'fake-session-index',
                 'tenant_id' => $this->secondPublicAdministration->id,
             ])
-            ->post(route('logs.search-user'), ['q' => 'Mario']);
+            ->json(
+                'GET',
+                route('logs.search-user'),
+                ['q' => 'Mario']
+            );
 
         $response->assertExactJson([
             [
@@ -193,7 +205,11 @@ class SearchUserListRouteTest extends TestCase
     public function testIPACodeFilteringOnSuperAdmin(): void
     {
         $response = $this->actingAs($this->superAdmin, 'web')
-            ->post(route('admin.logs.search-user'), ['q' => 'Mario', 'p' => $this->firstPublicAdministration->ipa_code]);
+            ->json(
+                'GET',
+                route('admin.logs.search-user'),
+                ['q' => 'Mario', 'p' => $this->firstPublicAdministration->ipa_code]
+            );
 
         $response->assertExactJson([
             [
@@ -226,7 +242,11 @@ class SearchUserListRouteTest extends TestCase
                 'spid_sessionIndex' => 'fake-session-index',
                 'tenant_id' => $this->firstPublicAdministration->id,
             ])
-            ->post(route('logs.search-user'), ['q' => 'Mario', 'p' => $this->secondPublicAdministration->ipa_code]);
+            ->json(
+                'GET',
+                route('logs.search-user'),
+                ['q' => 'Mario', 'p' => $this->secondPublicAdministration->ipa_code]
+            );
 
         $response->assertExactJson([
             [

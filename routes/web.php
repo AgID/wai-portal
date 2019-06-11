@@ -198,7 +198,7 @@ Route::middleware('spid.auth', 'auth', 'verified')->group(function () {
                 'uses' => 'DashboardController@index',
             ]);
 
-            Route::post('/search-ipa-list', [
+            Route::get('/search-ipa-list', [
                 'as' => 'search-ipa-list',
                 'uses' => 'SearchIPAListController@search',
             ]);
@@ -213,12 +213,12 @@ Route::middleware('spid.auth', 'auth', 'verified')->group(function () {
                         'as' => 'logs.data',
                         'uses' => 'Logs\LogController@data',
                     ]);
-                    Route::post('/search-website-list', [
+                    Route::get('/search-website-list', [
                         'as' => 'logs.search-website',
                         'uses' => 'Logs\SearchWebsiteListController@search',
                     ]);
 
-                    Route::post('/search-user-list', [
+                    Route::get('/search-user-list', [
                         'as' => 'logs.search-user',
                         'uses' => 'Logs\SearchUserListController@search',
                     ]);
@@ -367,15 +367,15 @@ Route::middleware('admin.auth', 'verified:admin.verification.notice')->group(fun
                     'as' => 'admin.logs.data',
                     'uses' => 'Logs\LogController@data',
                 ]);
-                Route::post('/search-ipa-list', [
+                Route::get('/search-ipa-list', [
                     'as' => 'admin.logs.search-ipa-list',
                     'uses' => 'SearchIPAListController@search',
                 ]);
-                Route::post('/search-website-list', [
+                Route::get('/search-website-list', [
                     'as' => 'admin.logs.search-website',
                     'uses' => 'Logs\SearchWebsiteListController@search',
                 ]);
-                Route::post('/search-user-list', [
+                Route::get('/search-user-list', [
                     'as' => 'admin.logs.search-user',
                     'uses' => 'Logs\SearchUserListController@search',
                 ]);

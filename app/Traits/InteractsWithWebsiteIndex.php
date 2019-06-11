@@ -5,6 +5,8 @@ namespace App\Traits;
 use App\Enums\Logs\EventType;
 use App\Enums\Logs\ExceptionType;
 use App\Jobs\ProcessWebsitesList;
+use App\Models\Website;
+use Ehann\RediSearch\Exceptions\FieldNotInSchemaException;
 use Ehann\RediSearch\Index;
 use Ehann\RedisRaw\PredisAdapter;
 use Exception;
@@ -48,18 +50,47 @@ trait InteractsWithWebsiteIndex
             }
         } catch (Exception $exception) {
             // RediSearch returned an error, probably malformed query or index not found.
-            // TODO: Please notify me!
-            if (!app()->environment('testing')) {
-                logger()->error(
-                    'Unable to search into Website index: ' . $exception->getMessage(),
-                    [
-                        'event' => EventType::EXCEPTION,
-                        'type' => ExceptionType::WEBSITE_INDEX_SEARCH,
-                    ]
-                );
-            }
+            logger()->error(
+                'Unable to search into Website index: ' . $exception->getMessage(),
+                [
+                    'event' => EventType::EXCEPTION,
+                    'type' => ExceptionType::WEBSITE_INDEX_SEARCH,
+                ]
+            );
         }
 
         return $results ?? [];
+    }
+
+    /**
+     * Update websites index.
+     *
+     * @param Website $website the website to update
+     */
+    private function updateWebsiteIndex(Website $website): void
+    {
+        $websiteIndex = new Index(
+            (new PredisAdapter())->connect(config('database.redis.indexes.host'), config('database.redis.indexes.port'), config('database.redis.indexes.database')),
+            ProcessWebsitesList::WEBSITE_INDEX_NAME
+        );
+
+        try {
+            $websiteIndex->addTagField('pa')
+                ->addTextField('slug', 2.0, true)
+                ->addTextField('name', 2.0, true)
+                ->create();
+        } catch (Exception $e) {
+            // Index already exists, it's ok!
+        }
+
+        try {
+            $websiteDocument = $websiteIndex->makeDocument($website->id);
+            $websiteDocument->slug->setValue($website->slug);
+            $websiteDocument->name->setValue($website->name);
+            $websiteDocument->pa->setValue($website->publicAdministration->ipa_code);
+            $websiteIndex->replace($websiteDocument);
+        } catch (FieldNotInSchemaException $exception) {
+            report($exception);
+        }
     }
 }

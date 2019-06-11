@@ -33,13 +33,13 @@ class UserEventsSubscriber
         $this->updateUsersIndex($event->user);
 
         //NOTE: user isn't connected to any P.A. yet
-        logger()->info(
+        logger()->notice(
             'New user registered: ' . $event->user->getInfo(),
             [
                 'event' => EventType::USER_REGISTERED,
                 'user' => $event->user->uuid,
             ]
-        ); //TODO: notify me!
+        );
     }
 
     /**
@@ -61,10 +61,10 @@ class UserEventsSubscriber
         if (null !== $event->getPublicAdministration()) {
             $context['pa'] = $event->getPublicAdministration()->ipa_code;
         }
-        logger()->info(
+        logger()->notice(
             'New user invited: ' . $user->getInfo() . ' by ' . $invitedBy->getInfo(),
             $context
-        ); //TODO: notify me!
+        );
         //TODO: if the new user is invited as an admin then notify the public administration via PEC
     }
 
@@ -92,7 +92,7 @@ class UserEventsSubscriber
     public function onActivated(UserActivated $event): void
     {
         $user = $event->getUser();
-        logger()->info(
+        logger()->notice(
             'User ' . $user->getInfo() . ' activated',
             [
                 'event' => EventType::USER_ACTIVATED,
@@ -148,7 +148,7 @@ class UserEventsSubscriber
         $user = $event->getUser();
         $website = $event->getWebsite();
         $accessType = $event->getAccessType();
-        logger()->info(
+        logger()->notice(
             'Granted "' . $accessType->description . '" access for website ' . $website->getInfo() . ' to user ' . $user->getInfo(),
             [
                 'event' => EventType::USER_WEBSITE_ACCESS_CHANGED,

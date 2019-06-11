@@ -1,6 +1,6 @@
 <?php
 
-use App\Services\ElasticSearchClientSetup;
+use App\Services\ElasticSearchService;
 use Monolog\Formatter\ElasticaFormatter;
 use Monolog\Handler\ElasticSearchHandler;
 use Monolog\Handler\StreamHandler;
@@ -65,7 +65,7 @@ return [
             'level' => 'debug',
             'handler' => ElasticSearchHandler::class,
             'handler_with' => [
-                'client' => app(ElasticSearchClientSetup::class)->getElasticSearchClient(),
+                'client' => app(ElasticSearchService::class)->getClient(),
                 'options' => [
                     'index' => config('elastic-search.index_name'),
                     /*
@@ -93,8 +93,12 @@ return [
             'driver' => 'slack',
             'url' => env('LOG_SLACK_WEBHOOK_URL', ''),
             'username' => env('LOG_SLACK_USERNAME', 'WAI Portal'),
-            'emoji' => ':boom:',
-            'level' => 'critical',
+            'emoji' => ':robot_face:',
+            'tap' => [App\Logging\SlackLogger::class],
+            'level' => 'notice',
+            'exclude_fields' => [
+                'context.exception',
+            ],
         ],
 
         'papertrail' => [

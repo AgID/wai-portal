@@ -33,16 +33,13 @@ trait InteractsWithIPAIndex
                 ->getDocuments();
         } catch (Exception $exception) {
             // RediSearch returned an error, probably malformed query or index not found.
-            // TODO: Please notify me!
-            if (!app()->environment('testing')) {
-                logger()->error(
-                    'Unable to search into IPA index: ' . $exception->getMessage(),
-                    [
-                        'event' => EventType::EXCEPTION,
-                        'type' => ExceptionType::IPA_INDEX_SEARCH,
-                    ]
-                );
-            }
+            logger()->error(
+                'Unable to search into IPA index: ' . $exception->getMessage(),
+                [
+                    'event' => EventType::EXCEPTION,
+                    'type' => ExceptionType::IPA_INDEX_SEARCH,
+                ]
+            );
         }
 
         return $result ?? [];
@@ -61,12 +58,9 @@ trait InteractsWithIPAIndex
             $redisSearchClient = new RediSearchRedisClient((new PredisAdapter())->connect(config('database.redis.ipaindex.host'), config('database.redis.ipaindex.port'), config('database.redis.ipaindex.database')));
             $rawResult = $redisSearchClient->rawCommand('FT.GET', ['IPAIndex', $ipaCode]);
             $result = SearchResult::makeSearchResult($rawResult ? [1, $ipaCode, $rawResult] : [], true);
-        } catch (Exception $e) {
+        } catch (Exception $exception) {
             // RediSearch returned an error, probably malformed query or index not found.
-            // TODO: Please notify me!
-            if (!app()->environment('testing')) {
-                logger()->error($e);
-            }
+            logger()->error($exception);
         }
 
         return empty($result) ? null : $result->getDocuments()[0];
@@ -89,12 +83,9 @@ trait InteractsWithIPAIndex
                 ->verbatim()
                 ->search(str_replace([':', '-', '@'], ['\:', '\-', '\@'], $url), true)
                 ->getDocuments();
-        } catch (Exception $e) {
+        } catch (Exception $exception) {
             // RediSearch returned an error, probably malformed query or index not found.
-            // TODO: Please notify me!
-            if (!app()->environment('testing')) {
-                logger()->error($e);
-            }
+            logger()->error($exception);
         }
 
         return empty($result) ? null : $result[0];

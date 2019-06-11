@@ -127,9 +127,9 @@ export default (() => {
                 }
                 publicAdministrationAutocomplete.cancelCall = window.axios.CancelToken.source();
                 window.axios({
-                    method: 'POST',
+                    method: 'GET',
                     url: $publicAdministration.getAttribute('data-source'),
-                    data: { q: term },
+                    params: { q: term },
                 }).then((response) => {
                     suggest(response.data);
                     $('.autocomplete-suggestions .pa').hide();
@@ -208,9 +208,9 @@ export default (() => {
                 websiteAutocomplete.cancelCall = window.axios.CancelToken.source();
                 window.axios({
                     cancelToken: websiteAutocomplete.cancelCall.token,
-                    method: 'POST',
+                    method: 'GET',
                     url: $website.getAttribute('data-source'),
-                    data: {
+                    params: {
                         q: term,
                         p: filters.pa_ipa_code || null,
                     },
@@ -302,9 +302,9 @@ export default (() => {
                 userAutocomplete.cancelCall = window.axios.CancelToken.source();
                 window.axios({
                     cancelToken: userAutocomplete.cancelCall.token,
-                    method: 'POST',
+                    method: 'GET',
                     url: $user.getAttribute('data-source'),
-                    data: {
+                    params: {
                         q: term,
                         p: filters.pa_ipa_code || null,
                     },

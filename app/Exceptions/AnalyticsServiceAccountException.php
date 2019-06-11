@@ -16,7 +16,7 @@ class AnalyticsServiceAccountException extends Exception
      */
     public function report(): void
     {
-        logger()->error(
+        logger()->critical(
             'Analytics Service account exception: ' . $this->getMessage(),
             [
                 'event' => EventType::EXCEPTION,
@@ -24,6 +24,5 @@ class AnalyticsServiceAccountException extends Exception
                 'exception' => $this,
             ]
         );
-        // TODO: Notify me!!
     }
 }

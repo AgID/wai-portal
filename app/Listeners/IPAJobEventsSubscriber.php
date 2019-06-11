@@ -19,7 +19,7 @@ class IPAJobEventsSubscriber implements ShouldQueue
      */
     public function onCompleted(IPAUpdateCompleted $event): void
     {
-        logger()->info(
+        logger()->notice(
             'Completed update of Public administrations from IPA list: ' . count($event->getUpdates()) . ' registered Public Administration/s updated',
             [
                 'event' => EventType::IPA_UPDATE_COMPLETED,

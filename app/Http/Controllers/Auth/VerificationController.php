@@ -123,7 +123,7 @@ class VerificationController extends Controller
                 ]);
                 $newStatus = UserStatus::ACTIVE;
 
-                event(new UserActivated($user, $user->publicAdministrations()->first()));
+                event(new UserActivated($user, current_public_administration()));
             }
         }
 
