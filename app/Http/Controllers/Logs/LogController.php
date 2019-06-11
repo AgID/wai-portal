@@ -107,10 +107,11 @@ class LogController extends Controller
             }
         } catch (Exception $exception) {
             report($exception);
-            $response['error'] = __('ui.pages.500.elasticsearch_description');
+            $response['errors'] = __('ui.pages.500.elasticsearch_description');
+            $responseCode = 500;
         }
 
-        return response()->json($response);
+        return response()->json($response, $responseCode ?? 200);
     }
 
     /**
@@ -151,8 +152,8 @@ class LogController extends Controller
         $params['filters'][] = ['term' => ['channel' => config('app.env')]];
 
         if (auth()->user()->isA(UserRole::SUPER_ADMIN)) {
-            if (!empty($data['pa_ipa_code'])) {
-                $params['filters'][] = ['term' => ['context.pa' => $data['pa_ipa_code']]];
+            if (!empty($data['ipa_code'])) {
+                $params['filters'][] = ['term' => ['context.pa' => $data['ipa_code']]];
             }
         } else {
             $params['filters'][] = ['term' => ['context.pa' => current_public_administration()->ipa_code]];
