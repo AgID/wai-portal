@@ -58,7 +58,7 @@ class SendVerificationEmail implements ShouldQueue
         Mail::to($this->user->email)->send($email);
 
         logger()->info(
-            'Activation mail sent to ' . $this->user->getInfo(),
+            'Activation mail sent to ' . $this->user->uuid,
             [
                 'user' => $this->user->uuid,
                 'job' => JobType::SEND_EMAIL_VERIFICATION_TOKEN,

@@ -23,7 +23,7 @@ class SPIDEventSubscriber
             auth()->login($user);
 
             logger()->info(
-                'User ' . $user->getInfo() . ' logged in.',
+                'User ' . $user->uuid . ' logged in.',
                 [
                     'event' => EventType::USER_SPID_LOGIN,
                     'user' => $user->uuid,
@@ -43,7 +43,7 @@ class SPIDEventSubscriber
             $user = auth()->user();
 
             logger()->info(
-                'User ' . $user->getInfo() . ' logged out.',
+                'User ' . $user->uuid . ' logged out.',
                 [
                     'event' => EventType::USER_SPID_LOGOUT,
                     'user' => $user->uuid,

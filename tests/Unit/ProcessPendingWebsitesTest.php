@@ -245,8 +245,6 @@ class ProcessPendingWebsitesTest extends TestCase
         $this->app->make('analytics-service')->deleteSite($website->analytics_id, config('analytics-service.admin_token'));
 
         Event::assertDispatched(UserWebsiteAccessChanged::class, function ($event) use ($userAdmin, $userWrite, $userView, $userNoAccess, $website) {
-            logger($event->getUser()->getInfo() . ' ' . $event->getWebsite()->getInfo() . ' ' . $event->getAccessType()->description);
-
             return ($event->getUser()->id === $userAdmin->id && $event->getWebsite()->id === $website->id && $event->getAccessType()->is(WebsiteAccessType::ADMIN))
                 || ($event->getUser()->id === $userWrite->id && $event->getWebsite()->id === $website->id && $event->getAccessType()->is(WebsiteAccessType::WRITE))
                 || ($event->getUser()->id === $userView->id && $event->getWebsite()->id === $website->id && $event->getAccessType()->is(WebsiteAccessType::VIEW))

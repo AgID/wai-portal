@@ -34,7 +34,7 @@ class UserEventsSubscriber
 
         //NOTE: user isn't connected to any P.A. yet
         logger()->notice(
-            'New user registered: ' . $event->user->getInfo(),
+            'New user registered: ' . $event->user->uuid,
             [
                 'event' => EventType::USER_REGISTERED,
                 'user' => $event->user->uuid,
@@ -62,7 +62,7 @@ class UserEventsSubscriber
             $context['pa'] = $event->getPublicAdministration()->ipa_code;
         }
         logger()->notice(
-            'New user invited: ' . $user->getInfo() . ' by ' . $invitedBy->getInfo(),
+            'New user invited: ' . $user->uuid . ' by ' . $invitedBy->uuid,
             $context
         );
         //TODO: if the new user is invited as an admin then notify the public administration via PEC
@@ -76,7 +76,7 @@ class UserEventsSubscriber
     public function onVerified(Verified $event): void
     {
         logger()->info(
-            'User ' . $event->user->getInfo() . ' confirmed email address.',
+            'User ' . $event->user->uuid . ' confirmed email address.',
             [
                 'event' => EventType::USER_VERIFIED,
                 'user' => $event->user->uuid,
@@ -93,7 +93,7 @@ class UserEventsSubscriber
     {
         $user = $event->getUser();
         logger()->notice(
-            'User ' . $user->getInfo() . ' activated',
+            'User ' . $user->uuid . ' activated',
             [
                 'event' => EventType::USER_ACTIVATED,
                 'user' => $user->uuid,
@@ -149,7 +149,7 @@ class UserEventsSubscriber
         $website = $event->getWebsite();
         $accessType = $event->getAccessType();
         logger()->notice(
-            'Granted "' . $accessType->description . '" access for website ' . $website->getInfo() . ' to user ' . $user->getInfo(),
+            'Granted "' . $accessType->description . '" access for website ' . $website->getInfo() . ' to user ' . $user->uuid,
             [
                 'event' => EventType::USER_WEBSITE_ACCESS_CHANGED,
                 'user' => $user->uuid,

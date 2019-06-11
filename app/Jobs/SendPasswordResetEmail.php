@@ -55,7 +55,7 @@ class SendPasswordResetEmail implements ShouldQueue
         Mail::to($this->user->email)->send($email);
 
         logger()->info(
-            'Password reset mail sent to ' . $this->user->getInfo(),
+            'Password reset mail sent to ' . $this->user->uuid,
             [
                 'user' => $this->user->uuid,
                 'job' => JobType::SEND_RESET_PASSWORD_TOKEN,

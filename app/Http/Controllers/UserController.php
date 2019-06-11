@@ -172,7 +172,7 @@ class UserController extends Controller
 
         $user->assign($request->input('role'));
 
-        logger()->info('User ' . auth()->user()->getInfo() . ' updated user ' . $user->getInfo());
+        logger()->info('User ' . auth()->user()->uuid . ' updated user ' . $user->getInfo());
 
         return redirect()->route('users-index')->withMessage(['success' => "L'utente " . $user->getInfo() . ' è stato modificato.']); //TODO: put message in lang file
     }

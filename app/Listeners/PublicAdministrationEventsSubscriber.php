@@ -28,7 +28,7 @@ class PublicAdministrationEventsSubscriber implements ShouldQueue
         $user = $event->getUser();
         //TODO: inviare PEC a PA per la notifica?
         logger()->notice(
-            'User ' . $user->getInfo() . ' registered Public Administration ' . $publicAdministration->getInfo(),
+            'User ' . $user->uuid . ' registered Public Administration ' . $publicAdministration->getInfo(),
             [
                 'event' => EventType::PUBLIC_ADMINISTRATION_REGISTERED,
                 'pa' => $publicAdministration->ipa_code,

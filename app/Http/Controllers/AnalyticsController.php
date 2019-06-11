@@ -21,7 +21,7 @@ class AnalyticsController extends Controller
         }
 
         logger()->info(
-            'User ' . auth()->user()->getInfo() . ' logged in the Analytics Service.',
+            'User ' . auth()->user()->uuid . ' logged in the Analytics Service.',
             [
                 'user' => auth()->user()->uuid,
                 'pa' => current_public_administration()->ipa_code,

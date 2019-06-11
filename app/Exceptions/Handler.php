@@ -29,7 +29,7 @@ class Handler extends ExceptionHandler
     public function report(Exception $exception): void
     {
         if ($exception instanceof HttpException) {
-            $user = auth()->check() ? 'User ' . auth()->user()->getInfo() : 'Anonymous user';
+            $user = auth()->check() ? 'User ' . auth()->user()->uuid : 'Anonymous user';
             $statusCode = $exception->getStatusCode();
             switch (true) {
                 case $statusCode < 500:
