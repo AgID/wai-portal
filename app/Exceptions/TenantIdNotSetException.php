@@ -18,7 +18,7 @@ class TenantIdNotSetException extends Exception
             'Tenant id is not set in the user session: ' . $this->getMessage(),
             [
                 'event' => EventType::EXCEPTION,
-                'type' => ExceptionType::TENANT_SELECTION,
+                'exception_type' => ExceptionType::TENANT_SELECTION,
                 'exception' => $this,
             ]
         );

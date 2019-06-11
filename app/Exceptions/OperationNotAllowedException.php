@@ -20,7 +20,7 @@ class OperationNotAllowedException extends Exception
         logger()->error('Operation not allowed: ' . $this->getMessage(),
             [
                 'event' => EventType::EXCEPTION,
-                'type' => ExceptionType::INVALID_OPERATION,
+                'exception_type' => ExceptionType::INVALID_OPERATION,
                 'exception' => $this,
             ]
         );

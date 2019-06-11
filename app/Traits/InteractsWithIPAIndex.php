@@ -37,7 +37,7 @@ trait InteractsWithIPAIndex
                 'Unable to search into IPA index: ' . $exception->getMessage(),
                 [
                     'event' => EventType::EXCEPTION,
-                    'type' => ExceptionType::IPA_INDEX_SEARCH,
+                    'exception_type' => ExceptionType::IPA_INDEX_SEARCH,
                 ]
             );
         }

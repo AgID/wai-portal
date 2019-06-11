@@ -44,7 +44,7 @@ trait InteractsWithUserIndex
                 'Unable to search into User index: ' . $exception->getMessage(),
                 [
                     'event' => EventType::EXCEPTION,
-                    'type' => ExceptionType::USER_INDEX_SEARCH,
+                    'exception_type' => ExceptionType::USER_INDEX_SEARCH,
                 ]
             );
         }

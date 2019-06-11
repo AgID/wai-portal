@@ -148,7 +148,7 @@ class LogsVisualizationTest extends TestCase
                     'website_id' => $this->website->id,
                     'user_uuid' => $this->user->uuid,
                     'event' => EventType::IPA_UPDATE_COMPLETED,
-                    'type' => ExceptionType::TENANT_SELECTION,
+                    'exception_type' => ExceptionType::TENANT_SELECTION,
                     'job' => JobType::SEND_RESET_PASSWORD_TOKEN,
                     'severity' => Logger::ERROR,
                 ]

@@ -113,18 +113,18 @@
             </div>
 
             <div class="Form-field">
-                @error('type')
+                @error('exception_type')
                 <div class="Alert Alert--error Alert--withBg u-padding-r-top u-padding-r-bottom u-padding-r-right">
                     <p class="u-text-p u-padding-r-bottom">{{ $message }}</p>
                     @enderror
                     <label class="Form-label" for="exception">{{ __('ui.pages.logs.form.inputs.exception.label') }}</label>
-                    <select class="Form-input" name="exception" id="exception" disabled aria-disabled="true">
+                    <select class="Form-input" name="exception_type" id="exception_type" disabled aria-disabled="true">
                         <option value="">{{ __('ui.pages.logs.form.inputs.exception.empty-selection') }}</option>
                         @foreach(ExceptionType::toSelectArray() as $value => $label)
-                            <option value="{{ $value }}" {{ !empty(old('exception')) && old('exception') == $value ? 'selected' : '' }}>{{ $label }}</option>
+                            <option value="{{ $value }}" {{ !empty(old('exception_type')) && old('exception_type') == $value ? 'selected' : '' }}>{{ $label }}</option>
                         @endforeach
                     </select>
-                    @error('type')
+                    @error('exception_type')
                 </div>
                 @enderror
             </div>

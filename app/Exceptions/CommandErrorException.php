@@ -21,7 +21,7 @@ class CommandErrorException extends Exception
             'Analytics Service command error: ' . $this->getMessage(),
             [
                 'event' => EventType::EXCEPTION,
-                'type' => ExceptionType::ANALYTICS_COMMAND,
+                'exception_type' => ExceptionType::ANALYTICS_COMMAND,
                 'exception' => $this,
             ]
         );

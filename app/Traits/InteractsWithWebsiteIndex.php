@@ -54,7 +54,7 @@ trait InteractsWithWebsiteIndex
                 'Unable to search into Website index: ' . $exception->getMessage(),
                 [
                     'event' => EventType::EXCEPTION,
-                    'type' => ExceptionType::WEBSITE_INDEX_SEARCH,
+                    'exception_type' => ExceptionType::WEBSITE_INDEX_SEARCH,
                 ]
             );
         }
