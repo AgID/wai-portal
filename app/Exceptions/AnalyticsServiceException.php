@@ -21,7 +21,7 @@ class AnalyticsServiceException extends Exception
             'Analytics Service exception: ' . $this->getMessage(),
             [
                 'event' => EventType::EXCEPTION,
-                'type' => ExceptionType::ANALYTICS_SERVICE,
+                'exception_type' => ExceptionType::ANALYTICS_SERVICE,
                 'exception' => $this,
             ]
         );

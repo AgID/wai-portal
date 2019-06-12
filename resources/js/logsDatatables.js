@@ -1,41 +1,39 @@
 export default (() => {
-    let filters = {};
-    
+    const filters = {};
     let filter;
-    
+
     const initMessageFilter = ($message) => {
         if (!$message) {
             return;
         }
-        
-        let useAsFilter = () => {
-            let length = $message.value.trim().length;
-            return length === 0 || length >= 3;
+
+        const useAsFilter = () => {
+            const length = $message.value.trim().length;
+            return length >= 3;
         }
-        
-        $message.addEventListener('input', (event) => {
+
+        $message.addEventListener('input', () => {
             if (!useAsFilter()) {
-                event.preventDefault();
-                filters.message = '';
+                delete filters.message;
                 return;
             }
             filters.message = $message.value.trim();
             filter && filter();
         });
     }
-    
+
     const initDateFilter = ($date) => {
         if (!$date) {
             return;
         }
-        
+
         filters[$date.name] = $date.value;
-        
+
         $date.addEventListener('input', () => {
             if ($date.hasAttribute('pattern')) {
-                let regexp = new RegExp($date.getAttribute('pattern'));
+                const regexp = new RegExp($date.getAttribute('pattern'));
                 if ($date.value.trim() && !regexp.test($date.value)) {
-                    filters[$date.name] = '';
+                    delete filters[$date.name];
                     return;
                 }
             }
@@ -43,19 +41,19 @@ export default (() => {
             filter && filter();
         });
     }
-    
+
     const initTimeFilter = ($time) => {
         if (!$time) {
             return;
         }
-        
+
         filters[$time.name] = $time.value;
-        
+
         $time.addEventListener('input', () => {
             if ($time.hasAttribute('pattern')) {
-                let regexp = new RegExp($time.getAttribute('pattern'));
+                const regexp = new RegExp($time.getAttribute('pattern'));
                 if ($time.value.trim() && !regexp.test($time.value)) {
-                    filters[$time.name] = '';
+                    delete filters[$time.name];
                     return;
                 }
             }
@@ -63,58 +61,52 @@ export default (() => {
             filter && filter();
         });
     }
-    
-    const initPublicAdministrationFilter = ($publicAdministration, $paIpaCode, $website, $websiteId, $user, $userUuid) => {
-        if (!$publicAdministration || !$paIpaCode) {
+
+    const initPublicAdministrationFilter = ($publicAdministration, $ipaCode, $website, $websiteId, $user, $userUuid) => {
+        if (!$publicAdministration || !$ipaCode) {
             return;
         }
-        
+
         filters.pa = $publicAdministration.value;
-        filters.pa_ipa_code = $paIpaCode.value;
-        
-        $publicAdministration.onkeypress = (event) => {
-            if (13 === event.keyCode) {
-                event.preventDefault();
-            }
-        };
-        
+        filters.ipa_code = $ipaCode.value;
+
         $publicAdministration.addEventListener('input', () => {
-            if ($paIpaCode) {
-                if (filters.pa_ipa_code) {
-                    $paIpaCode.value = '';
-                    filters.pa = '';
-                    filters.pa_ipa_code = '';
-                    
+            if ($ipaCode) {
+                if (filters.ipa_code) {
+                    $ipaCode.value = '';
+                    delete filters.pa;
+                    delete filters.ipa_code;
+
                     if ($website) {
                         $website.value = '';
                         $website.cache = {};
                         $website.last_val = {};
-                        filters.website = ''
+                        delete filters.website;
                     }
-                    
+
                     if ($websiteId) {
                         $websiteId.value = '';
-                        filters.website_id = '';
+                        delete filters.website_id;
                     }
-                    
+
                     if ($user) {
                         $user.value = '';
                         $user.cache = {};
                         $user.last_val = {};
-                        filters.user = '';
+                        delete filters.user;
                     }
-                    
+
                     if ($userUuid) {
                         $userUuid.value = ''
-                        filters.user_uuid = '';
+                        delete filters.user_uuid;
                     }
-                    
+
                     filter && filter();
                 }
             }
         });
-        
-        let publicAdministrationAutocomplete = new window.autoComplete({
+
+        const publicAdministrationAutocomplete = new window.autoComplete({
             selector: $publicAdministration,
             minChars: 3,
             menuClass: 'pa',
@@ -146,7 +138,7 @@ export default (() => {
             },
             renderItem: (item, search) => {
                 search = search.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
-                let re = new RegExp('(' + search.split(' ').join('|') + ')', 'gi');
+                const re = new RegExp('(' + search.split(' ').join('|') + ')', 'gi');
                 return [
                     '<div class="autocomplete-suggestion pa"',
                     'data-ipa_code="' + item.ipa_code + '"',
@@ -156,45 +148,39 @@ export default (() => {
                 ].join('');
             },
             onSelect: (e, term, item) => {
-                $paIpaCode.value = item.getAttribute('data-ipa_code');
+                $ipaCode.value = item.getAttribute('data-ipa_code');
                 filters.pa = $publicAdministration.value;
-                filters.pa_ipa_code = item.getAttribute('data-ipa_code');
+                filters.ipa_code = item.getAttribute('data-ipa_code');
                 filter && filter();
             },
             resetInfo: () => {
-                $paIpaCode.value = '';
-                filters.pa = '';
-                filters.pa_ipa_code = '';
+                $ipaCode.value = '';
+                delete filters.pa;
+                delete filters.ipa_code;
             }
         });
     }
-    
-    const initWebsiteFilter = ($website, $websiteId, $publicAdministration, $paIpaCode) => {
+
+    const initWebsiteFilter = ($website, $websiteId, $publicAdministration, $ipaCode) => {
         if (!$website || !$websiteId) {
             return;
         }
-        
+
         filters.website = $website.value;
         filters.website_id = $websiteId.value;
-        
-        $website.onkeypress = (event) => {
-            if (13 === event.keyCode) {
-                event.preventDefault();
-            }
-        };
-        
+
         $website.addEventListener('input', () => {
             if ($websiteId) {
                 if (filters.website_id) {
                     $websiteId.value = '';
-                    filters.website = '';
-                    filters.website_id = '';
+                    delete filters.website;
+                    delete filters.website_id;
                     filter && filter();
                 }
             }
         });
-        
-        let websiteAutocomplete = new window.autoComplete({
+
+        const websiteAutocomplete = new window.autoComplete({
             selector: $website,
             minChars: 3,
             menuClass: 'website',
@@ -212,7 +198,7 @@ export default (() => {
                     url: $website.getAttribute('data-source'),
                     params: {
                         q: term,
-                        p: filters.pa_ipa_code || null,
+                        p: filters.ipa_code || null,
                     },
                 }).then((response) => {
                     suggest(response.data);
@@ -230,7 +216,7 @@ export default (() => {
             },
             renderItem: (item, search) => {
                 search = search.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
-                let re = new RegExp('(' + search.split(' ').join('|') + ')', 'gi');
+                const re = new RegExp('(' + search.split(' ').join('|') + ')', 'gi');
                 return [
                     '<div class="autocomplete-suggestion website"',
                     'data-id="' + item.id + '"',
@@ -247,48 +233,42 @@ export default (() => {
                 filters.website_id = item.getAttribute('data-id');
                 if ($publicAdministration && !$publicAdministration.value) {
                     $publicAdministration.value = item.getAttribute('data-pa_name');
-                    if ($paIpaCode) {
-                        $paIpaCode.value = item.getAttribute('data-pa');
+                    if ($ipaCode) {
+                        $ipaCode.value = item.getAttribute('data-pa');
                         filters.pa = $publicAdministration.value;
-                        filters.pa_ipa_code = item.getAttribute('data-pa');
+                        filters.ipa_code = item.getAttribute('data-pa');
                     }
                 }
                 filter && filter();
             },
             resetInfo: () => {
                 $websiteId.value = '';
-                filters.website = '';
-                filters.website_id = '';
+                delete filters.website;
+                delete filters.website_id;
             }
         });
     }
-    
+
     const initUserFilter = ($user, $userUuid) => {
         if (!$user || !$userUuid) {
             return;
         }
-        
+
         filters.user = $user.value;
         filters.user_uuid = $userUuid.value;
-        
-        $user.onkeypress = (event) => {
-            if (13 === event.keyCode) {
-                event.preventDefault();
-            }
-        };
-        
+
         $user.addEventListener('input', () => {
             if ($userUuid) {
                 if (filters.user_uuid) {
                     $userUuid.value = '';
-                    filters.user = '';
-                    filters.user_uuid = '';
+                    delete filters.user;
+                    delete filters.user_uuid;
                     filter && filter();
                 }
             }
         });
-        
-        let userAutocomplete = new window.autoComplete({
+
+        const userAutocomplete = new window.autoComplete({
             selector: $user,
             minChars: 3,
             menuClass: 'user',
@@ -306,7 +286,7 @@ export default (() => {
                     url: $user.getAttribute('data-source'),
                     params: {
                         q: term,
-                        p: filters.pa_ipa_code || null,
+                        p: filters.ipa_code || null,
                     },
                 }).then((response) => {
                     suggest(response.data);
@@ -324,7 +304,7 @@ export default (() => {
             },
             renderItem: (item, search) => {
                 search = search.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
-                let re = new RegExp('(' + search.split(' ').join('|') + ')', 'gi');
+                const re = new RegExp('(' + search.split(' ').join('|') + ')', 'gi');
                 return [
                     '<div class="autocomplete-suggestion user"',
                     'data-uuid="' + item.uuid + '"',
@@ -341,52 +321,49 @@ export default (() => {
             },
             resetInfo: () => {
                 $userUuid.value = '';
-                filters.user = '';
-                filters.user_uuid = '';
+                delete filters.user;
+                delete filters.user_uuid;
             }
         });
     }
-    
-    const initInputs = ($form) => {
-        if (!$form) {
+
+    const initInputs = ($filtersContainer) => {
+        if (!$filtersContainer) {
             return;
         }
-        
-        let showPA = $form.getAttribute('data-show-pa');
-        
-        let $message = document.querySelector('input[name="message"]');
-        
-        let $startDate = document.querySelector('input[name="start_date"]');
-        let $startTime = document.querySelector('input[name="start_time"]');
-        let $endDate = document.querySelector('input[name="end_date"]');
-        let $endTime = document.querySelector('input[name="end_time"]');
-        
-        let $publicAdministration = showPA ? document.querySelector('input[name="pa"]') : null;
-        let $paIpaCode = showPA ? document.querySelector('input[name="pa_ipa_code"]') : null;
-        let $website = document.querySelector('input[name="website"]');
-        let $websiteId = document.querySelector('input[name="website_id"]');
-        let $user = document.querySelector('input[name="user"]');
-        let $userUuid = document.querySelector('input[name="user_uuid"]');
-        
+
+        const showPA = $filtersContainer.getAttribute('data-show-pa');
+        const $message = document.querySelector('input[name="message"]');
+        const $startDate = document.querySelector('input[name="start_date"]');
+        const $startTime = document.querySelector('input[name="start_time"]');
+        const $endDate = document.querySelector('input[name="end_date"]');
+        const $endTime = document.querySelector('input[name="end_time"]');
+        const $publicAdministration = showPA ? document.querySelector('input[name="pa"]') : null;
+        const $ipaCode = showPA ? document.querySelector('input[name="ipa_code"]') : null;
+        const $website = document.querySelector('input[name="website"]');
+        const $websiteId = document.querySelector('input[name="website_id"]');
+        const $user = document.querySelector('input[name="user"]');
+        const $userUuid = document.querySelector('input[name="user_uuid"]');
+
         initMessageFilter($message);
         initDateFilter($startDate);
         initDateFilter($endDate);
         initTimeFilter($startTime);
         initTimeFilter($endTime);
-        
+
         if (showPA) {
-            initPublicAdministrationFilter($publicAdministration, $paIpaCode, $website, $websiteId, $user, $userUuid);
+            initPublicAdministrationFilter($publicAdministration, $ipaCode, $website, $websiteId, $user, $userUuid);
         }
-        initWebsiteFilter($website, $websiteId, $publicAdministration, $paIpaCode);
+        initWebsiteFilter($website, $websiteId, $publicAdministration, $ipaCode);
         initUserFilter($user, $userUuid);
     }
-    
+
     const initSelects = () => {
-        let $event = document.querySelector('select[name="event"]');
-        let $exception = document.querySelector('select[name="exception"]');
-        let $job = document.querySelector('select[name="job"]');
-        let $severity = document.querySelector('select[name="severity"]');
-        
+        const $event = document.querySelector('select[name="event"]');
+        const $exceptionType = document.querySelector('select[name="exception_type"]');
+        const $job = document.querySelector('select[name="job"]');
+        const $severity = document.querySelector('select[name="severity"]');
+
         // Enable/disable jobs and events selects
         // since they are mutually exclusive
         if ($event && $job) {
@@ -401,39 +378,39 @@ export default (() => {
                     filters.job = $job && $job.value;
                 }
             });
-            
+
             $job.addEventListener('change', (event) => {
                 if (event.target.value) {
                     $event.setAttribute('disabled', '');
                     $event.setAttribute('aria-disabled', 'true');
                     delete filters.event;
-                    delete filters.exception;
+                    delete filters.exception_type;
                 } else {
                     $event.removeAttribute('disabled');
                     $event.removeAttribute('aria-disabled');
                     filters.event = $event && $event.value;
-                    filters.exception = $exception && $exception.value;
+                    filters.exception_type = $exceptionType && $exceptionType.value;
                 }
             });
         }
-        
+
         // Enable/disable exception select since it can
         // be selected only with event type 'Exception'
-        if ($event && $exception) {
+        if ($event && $exceptionType) {
             $event.addEventListener('change', () => {
-                let option = $event.options[$event.selectedIndex];
+                const option = $event.options[$event.selectedIndex];
                 if (option.getAttribute('type') && option.getAttribute('type') === 'exception') {
-                    $exception.removeAttribute('disabled');
-                    $exception.removeAttribute('aria-disabled');
-                    filters.exception = $exception.value;
+                    $exceptionType.removeAttribute('disabled');
+                    $exceptionType.removeAttribute('aria-disabled');
+                    filters.exception_type = $exceptionType.value;
                 } else {
-                    $exception.setAttribute('disabled', '');
-                    $exception.setAttribute('aria-disabled', 'true');
-                    delete filters.exception;
+                    $exceptionType.setAttribute('disabled', '');
+                    $exceptionType.setAttribute('aria-disabled', 'true');
+                    delete filters.exception_type;
                 }
             });
         }
-        
+
         if ($event) {
             filters.event = $event.value;
             $event.addEventListener('change', () => {
@@ -441,10 +418,10 @@ export default (() => {
                 filter && filter();
             });
         }
-        if ($exception) {
-            filters.exception = $exception.value;
-            $exception.addEventListener('change', () => {
-                filters.exception = $exception.value;
+        if ($exceptionType) {
+            filters.exception_type = $exceptionType.value;
+            $exceptionType.addEventListener('change', () => {
+                filters.exception_type = $exceptionType.value;
                 filter && filter();
             });
         }
@@ -463,50 +440,52 @@ export default (() => {
             });
         }
     }
-    
-    const initFilters = ($form) => {
-        initInputs($form);
+
+    const initFilters = ($filtersContainer) => {
+        initInputs($filtersContainer);
         initSelects();
     }
-    
+
     const addFilters = (data) => {
         Object.keys(filters).forEach((key) => {
             data[key] = filters[key];
         });
         return data;
     }
-    
+
     const preDatatableInit = (datatableApi) => {
-        let $form = document.getElementById('filters');
-        if (!$form) {
+        const $filtersContainer = document.getElementById('filters');
+        if (!$filtersContainer) {
             return;
         }
-        
-        initFilters($form);
-        
+
+        initFilters($filtersContainer);
+
         datatableApi.on('preXhr.dt', (event, settings, data) => {
             addFilters(data);
         }).on('xhr.dt', (event, settings, json, xhr) => {
             if (!json) {
-                let jsonResponse = JSON.parse(xhr.responseText);
-                Object.keys(jsonResponse.errors).forEach((key) => {
-                    let element = document.getElementsByName(key);
-                    if (element && element[0]) {
-                        element[0].setCustomValidity(jsonResponse.errors[key][0]);
-                    }
-                });
-                alert(jsonResponse.message);
+                const jsonResponse = JSON.parse(xhr.responseText);
+                if (typeof jsonResponse.errors === 'object') {
+                    Object.keys(jsonResponse.errors).forEach((key) => {
+                        const element = document.getElementsByName(key);
+                        if (element && element[0]) {
+                            element[0].setCustomValidity(jsonResponse.errors[key][0]);
+                        }
+                    });
+                } else {
+                    console.error(jsonResponse.errors); // eslint-disable-line
+                }
             }
         });
-        
-        $.fn.dataTable.ext.errMode = 'none';
+
         filter = $.fn.dataTable.util.throttle(
             () => {
-                window.dt.ajax.reload();
+                datatableApi.ajax.reload();
             },
             350
         );
     }
-    
+
     return { preDatatableInit };
 })();

@@ -20,7 +20,7 @@ class InvalidWebsiteStatusException extends Exception
         logger()->error('Operation not allowed in current website status: ' . $this->getMessage(),
             [
                 'event' => EventType::EXCEPTION,
-                'type' => ExceptionType::INVALID_WEBSITE_STATUS,
+                'exception_type' => ExceptionType::INVALID_WEBSITE_STATUS,
                 'exception' => $this,
             ]
         );

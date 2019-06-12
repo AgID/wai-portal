@@ -3,6 +3,8 @@
 namespace App\Logging;
 
 use App\Enums\Logs\EventType;
+use App\Enums\Logs\ExceptionType;
+use App\Enums\Logs\JobType;
 
 /**
  * Slack channel data processor.
@@ -22,10 +24,10 @@ class SlackProcessor
             $record['context']['event'] = EventType::getKey($record['context']['event']);
         }
         if (isset($record['context']['job'])) {
-            $record['context']['job'] = EventType::getKey($record['context']['job']);
+            $record['context']['job'] = JobType::getKey($record['context']['job']);
         }
-        if (isset($record['context']['type'])) {
-            $record['context']['type'] = EventType::getKey($record['context']['type']);
+        if (isset($record['context']['exception_type'])) {
+            $record['context']['exception_type'] = ExceptionType::getKey($record['context']['exception_type']);
         }
 
         return $record;

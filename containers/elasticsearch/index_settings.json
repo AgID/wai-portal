@@ -38,7 +38,7 @@
                     "job": {
                         "type": "integer"
                     },
-                    "type": {
+                    "exception_type": {
                         "type": "integer"
                     },
                     "pa": {

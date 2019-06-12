@@ -20,7 +20,7 @@ class AnalyticsServiceAccountException extends Exception
             'Analytics Service account exception: ' . $this->getMessage(),
             [
                 'event' => EventType::EXCEPTION,
-                'type' => ExceptionType::ANALYTICS_ACCOUNT,
+                'exception_type' => ExceptionType::ANALYTICS_ACCOUNT,
                 'exception' => $this,
             ]
         );

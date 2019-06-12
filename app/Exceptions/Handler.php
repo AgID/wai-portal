@@ -37,7 +37,8 @@ class Handler extends ExceptionHandler
                         'A client error (status code: ' . $statusCode . ') occurred [' . request()->url() . ' visited by ' . $user . '].',
                         [
                             'event' => EventType::EXCEPTION,
-                            'type' => ExceptionType::HTTP_CLIENT_ERROR,
+                            'exception_type' => ExceptionType::HTTP_CLIENT_ERROR,
+                            'exception' => $exception,
                         ]
                     );
                     break;
@@ -46,7 +47,8 @@ class Handler extends ExceptionHandler
                         'A server error (status code: ' . $statusCode . ') occurred [' . request()->url() . ' visited by ' . $user . '].',
                         [
                             'event' => EventType::EXCEPTION,
-                            'type' => ExceptionType::SERVER_ERROR,
+                            'exception_type' => ExceptionType::SERVER_ERROR,
+                            'exception' => $exception,
                         ]
                     );
             }
@@ -91,7 +93,7 @@ class Handler extends ExceptionHandler
     {
         $context = [
             'event' => EventType::EXCEPTION,
-            'type' => ExceptionType::GENERIC,
+            'exception_type' => ExceptionType::GENERIC,
         ];
         if (auth()->check()) {
             $context['user'] = auth()->user()->uuid;

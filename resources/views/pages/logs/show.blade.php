@@ -3,8 +3,7 @@
 @section('title', __('ui.pages.logs.title'))
 
 @section('content')
-    <form id="filters" class="Form Form--spaced u-text-r-xs" method="post" action="" data-show-pa="{{ $currentUser->isA(UserRole::SUPER_ADMIN) }}">
-        @csrf
+    <div id="filters" class="Form Form--spaced u-text-r-xs" method="post" action="" data-show-pa="{{ $currentUser->isA(UserRole::SUPER_ADMIN) }}">
         <fieldset class="Form-fieldset">
             <legend class="Form-legend">{{ __('ui.pages.logs.form.legend') }}</legend>
 
@@ -113,18 +112,18 @@
             </div>
 
             <div class="Form-field">
-                @error('type')
+                @error('exception_type')
                 <div class="Alert Alert--error Alert--withBg u-padding-r-top u-padding-r-bottom u-padding-r-right">
                     <p class="u-text-p u-padding-r-bottom">{{ $message }}</p>
                     @enderror
                     <label class="Form-label" for="exception">{{ __('ui.pages.logs.form.inputs.exception.label') }}</label>
-                    <select class="Form-input" name="exception" id="exception" disabled aria-disabled="true">
+                    <select class="Form-input" name="exception_type" id="exception_type" disabled aria-disabled="true">
                         <option value="">{{ __('ui.pages.logs.form.inputs.exception.empty-selection') }}</option>
                         @foreach(ExceptionType::toSelectArray() as $value => $label)
-                            <option value="{{ $value }}" {{ !empty(old('exception')) && old('exception') == $value ? 'selected' : '' }}>{{ $label }}</option>
+                            <option value="{{ $value }}" {{ !empty(old('exception_type')) && old('exception_type') == $value ? 'selected' : '' }}>{{ $label }}</option>
                         @endforeach
                     </select>
-                    @error('type')
+                    @error('exception_type')
                 </div>
                 @enderror
             </div>
@@ -148,14 +147,14 @@
 
             @if($currentUser->isA(UserRole::SUPER_ADMIN))
                 <div class="Form-field">
-                    @error('pa_ipa_code')
+                    @error('ipa_code')
                     <div class="Alert Alert--error Alert--withBg u-padding-r-top u-padding-r-bottom u-padding-r-right">
                         <p class="u-text-p u-padding-r-bottom">{{ $message }}</p>
                         @enderror
                         <label class="Form-label" for="pa">{{ __('ui.pages.logs.form.inputs.pa.label') }}</label>
                         <input class="Form-input autocomplete" type="text" id="pa" name="pa" value="{{ old('pa') }}" data-source="{{ route('admin.logs.search-ipa-list', [], false) }}"/>
-                        <input type="hidden" name="pa_ipa_code" value="{{ old('pa_ipa_code') }}"/>
-                        @error('pa_ipa_code')
+                        <input type="hidden" name="ipa_code" value="{{ old('ipa_code') }}"/>
+                        @error('ipa_code')
                     </div>
                     @enderror
                 </div>
@@ -188,7 +187,7 @@
             </div>
 
         </fieldset>
-    </form>
+    </div>
 
     @include(
         'partials.datatable',
