@@ -1,10 +1,12 @@
 <?php
 
+use App\Services\ElasticSearchService;
+use Monolog\Formatter\ElasticaFormatter;
+use Monolog\Handler\ElasticSearchHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogUdpHandler;
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Default Log Channel
@@ -35,7 +37,7 @@ return [
     'channels' => [
         'stack' => [
             'driver' => 'stack',
-            'channels' => ['single'],
+            'channels' => explode(',', env('LOG_STACK_CHANNELS', 'single')),
             'ignore_exceptions' => false,
         ],
 
@@ -58,12 +60,45 @@ return [
             'days' => 14,
         ],
 
+        'elasticsearch' => [
+            'driver' => 'monolog',
+            'level' => 'debug',
+            'handler' => ElasticSearchHandler::class,
+            'handler_with' => [
+                'client' => app(ElasticSearchService::class)->getClient(),
+                'options' => [
+                    'index' => config('elastic-search.index_name'),
+                    /*
+                     * Index type deprecated from ElasticSearch 6.x and default to _doc in 7.x
+                     * It will be removed in ElasticSearch 8.x
+                     * https://www.elastic.co/guide/en/elasticsearch/reference/current/removal-of-types.html
+                     */
+                    'type' => '_doc',
+                    'ignore_error' => config('elastic-search.ignore_exceptions'),
+                ],
+            ],
+            'formatter' => ElasticaFormatter::class,
+            'formatter_with' => [
+                'index' => config('elastic-search.index_name'),
+                /*
+                 * Index type deprecated from ElasticSearch 6.x and default to _doc in 7.x
+                 * It will be removed in ElasticSearch 8.x
+                 * https://www.elastic.co/guide/en/elasticsearch/reference/current/removal-of-types.html
+                 */
+                'type' => '_doc',
+            ],
+        ],
+
         'slack' => [
             'driver' => 'slack',
-            'url' => env('LOG_SLACK_WEBHOOK_URL'),
-            'username' => 'Laravel Log',
-            'emoji' => ':boom:',
-            'level' => 'critical',
+            'url' => env('LOG_SLACK_WEBHOOK_URL', ''),
+            'username' => env('LOG_SLACK_USERNAME', 'WAI Portal'),
+            'emoji' => ':robot_face:',
+            'tap' => [App\Logging\SlackLogger::class],
+            'level' => 'notice',
+            'exclude_fields' => [
+                'context.exception',
+            ],
         ],
 
         'papertrail' => [
@@ -73,6 +108,14 @@ return [
             'handler_with' => [
                 'host' => env('PAPERTRAIL_URL'),
                 'port' => env('PAPERTRAIL_PORT'),
+            ],
+        ],
+
+        'stdout' => [
+            'driver' => 'monolog',
+            'handler' => StreamHandler::class,
+            'handler_with' => [
+                'stream' => 'php://stdout',
             ],
         ],
 
@@ -95,5 +138,4 @@ return [
             'level' => 'debug',
         ],
     ],
-
 ];

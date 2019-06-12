@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Enums\Logs\EventType;
 use App\Events\Website\WebsiteActivated;
 use App\Events\Website\WebsiteAdded;
 use App\Events\Website\WebsiteArchived;
@@ -9,6 +10,7 @@ use App\Events\Website\WebsiteArchiving;
 use App\Events\Website\WebsitePurged;
 use App\Events\Website\WebsitePurging;
 use App\Events\Website\WebsiteUnarchived;
+use App\Traits\InteractsWithWebsiteIndex;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Events\Dispatcher;
 
@@ -17,6 +19,8 @@ use Illuminate\Events\Dispatcher;
  */
 class WebsiteEventsSubscriber implements ShouldQueue
 {
+    use InteractsWithWebsiteIndex;
+
     /**
      * Website activated event callback.
      *
@@ -31,14 +35,23 @@ class WebsiteEventsSubscriber implements ShouldQueue
 //        //Notify Website administrators
 //        $users = $publicAdministration->getAdministrators();
 //        foreach ($users as $user) {
-//            logger()->info('User: ' . $user->getInfo());
 //            $user->sendWebsiteActivatedNotification($website);
 //        }
 //
 //        //Notify Public Administration
 //        $publicAdministration->sendWebsiteActivatedNotification($website);
 
-        logger()->info('Website ' . $website->getInfo() . ' added of type ' . $website->type->description);
+        //Update Redisearch websites index
+        $this->updateWebsiteIndex($website);
+
+        logger()->notice(
+            'Website ' . $website->getInfo() . ' added of type ' . $website->type->description,
+            [
+                'event' => EventType::WEBSITE_ADDED,
+                'website' => $website->id,
+                'pa' => $website->publicAdministration->ipa_code,
+            ]
+        );
     }
 
     /**
@@ -58,7 +71,14 @@ class WebsiteEventsSubscriber implements ShouldQueue
 //            $user->sendWebsiteActivatedNotification($website);
 //        }
 
-        logger()->info('Website ' . $website->getInfo() . ' activated');
+        logger()->notice(
+            'Website ' . $website->getInfo() . ' activated',
+            [
+                'event' => EventType::WEBSITE_ACTIVATED,
+                'website' => $website->id,
+                'pa' => $website->publicAdministration->ipa_code,
+            ]
+        );
     }
 
     /**
@@ -77,7 +97,14 @@ class WebsiteEventsSubscriber implements ShouldQueue
 //            $user->sendWebsiteArchivingNotification($website, $event->getWebsite());
 //        }
 
-        logger()->info('Website ' . $website->getInfo() . ' reported as not active and scheduled for archiving');
+        logger()->notice(
+            'Website ' . $website->getInfo() . ' reported as not active and scheduled for archiving',
+            [
+                'event' => EventType::WEBSITE_ARCHIVING,
+                'website' => $website->id,
+                'pa' => $website->publicAdministration->ipa_code,
+            ]
+        );
     }
 
     /**
@@ -96,7 +123,14 @@ class WebsiteEventsSubscriber implements ShouldQueue
 //            $user->sendWebsiteArchivedNotification($website);
 //        }
 
-        logger()->info('Website ' . $website->getInfo() . ' archived due to inactivity');
+        logger()->notice(
+            'Website ' . $website->getInfo() . ' archived due to inactivity',
+            [
+                'event' => EventType::WEBSITE_ARCHIVED,
+                'website' => $website->id,
+                'pa' => $website->publicAdministration->ipa_code,
+            ]
+        );
     }
 
     /**
@@ -108,7 +142,14 @@ class WebsiteEventsSubscriber implements ShouldQueue
     {
         $website = $event->getWebsite();
         //TODO: notificare qualcuno? è un'azione solo manuale
-        logger()->info('Website ' . $website->getInfo() . ' manually unarchived');
+        logger()->notice(
+            'Website ' . $website->getInfo() . ' manually unarchived',
+            [
+                'event' => EventType::WEBSITE_UNARCHIVED,
+                'website' => $website->id,
+                'pa' => $website->publicAdministration->ipa_code,
+            ]
+        );
     }
 
     /**
@@ -128,7 +169,14 @@ class WebsiteEventsSubscriber implements ShouldQueue
 //            $user->sendWebsitePurgingNotification($website);
 //        }
 
-        logger()->info('Website ' . $website->getInfo() . ' scheduled purging');
+        logger()->notice(
+            'Website ' . $website->getInfo() . ' scheduled purging',
+            [
+                'event' => EventType::WEBSITE_PURGING,
+                'website' => $website->id,
+                'pa' => $website->publicAdministration->ipa_code,
+            ]
+        );
     }
 
     /**
@@ -140,7 +188,15 @@ class WebsiteEventsSubscriber implements ShouldQueue
     {
         $website = json_decode($event->getWebsiteJson());
         $websiteInfo = '"' . $website->name . '" [' . $website->slug . ']';
-        logger()->info('Website ' . $websiteInfo . ' purged');
+        //NOTE: toJson: relationship attributes are snake_case
+        logger()->notice(
+            'Website ' . $websiteInfo . ' purged',
+            [
+                'event' => EventType::WEBSITE_PURGED,
+                'website' => $website->id,
+                'pa' => $website->public_administration->ipa_code,
+            ]
+        );
     }
 
     /**

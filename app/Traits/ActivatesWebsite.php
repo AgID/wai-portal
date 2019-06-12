@@ -78,7 +78,7 @@ trait ActivatesWebsite
 
                 $pendingUser->save();
 
-                event(new UserActivated($pendingUser));
+                event(new UserActivated($pendingUser, $publicAdministration));
             }
 
             event(new PublicAdministrationActivated($publicAdministration));

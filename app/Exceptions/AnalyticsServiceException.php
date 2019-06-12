@@ -2,9 +2,10 @@
 
 namespace App\Exceptions;
 
+use App\Enums\Logs\EventType;
+use App\Enums\Logs\ExceptionType;
 use Exception;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Response;
 
 /**
  * Analytics Service connection exception.
@@ -16,8 +17,14 @@ class AnalyticsServiceException extends Exception
      */
     public function report(): void
     {
-        logger()->error('Analytics Service exception: ' . $this->getMessage());
-        // TODO: Notify me!!
+        logger()->critical(
+            'Analytics Service exception: ' . $this->getMessage(),
+            [
+                'event' => EventType::EXCEPTION,
+                'exception_type' => ExceptionType::ANALYTICS_SERVICE,
+                'exception' => $this,
+            ]
+        );
     }
 
     /**

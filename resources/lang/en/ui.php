@@ -109,6 +109,63 @@ return [
         'auth-verify' => [
             'title' => 'Verifica indirizzo email'
         ],
+        'logs' => [
+            'title' => 'Log visualization',
+            'form' => [
+                'legend' => 'Log filters',
+                'inputs' => [
+                    'start_date' => [
+                        'label' => 'Starting date (gg/mm/aaaa)',
+                    ],
+                    'start_time' => [
+                        'label' => 'Starting time (HH:mm)',
+                    ],
+                    'end_date' => [
+                        'label' => 'Ending date (gg/mm/aaaa)',
+                    ],
+                    'end_time' => [
+                        'label' => 'Ending time (HH:mm)',
+                    ],
+                    'message' => [
+                        'label' => 'Message',
+                    ],
+                    'severity' => [
+                        'label' => 'Minimum severity',
+                    ],
+                    'event' => [
+                        'label' => 'Event',
+                        'empty-selection' => 'Any',
+                    ],
+                    'exception' => [
+                        'label' => 'Error',
+                        'empty-selection' => 'Any',
+                    ],
+                    'job' => [
+                        'label' => 'Task',
+                        'empty-selection' => 'Any',
+                    ],
+                    'pa' => [
+                        'label' => 'Public Administrations',
+                    ],
+                    'website' => [
+                        'label' => 'Websites',
+                    ],
+                    'user' => [
+                        'label' => 'Users',
+                    ],
+                ],
+                'submit' => 'Show',
+            ],
+            'table' => [
+                'headers' => [
+                    'time' => 'Date and time',
+                    'message' => 'Message',
+                    'level' => 'Severity',
+                    'trace' => 'Stack Trace',
+                ],
+                'caption' => 'Log messages for Web Analytics Italia portal',
+            ],
+        ],
         'admin-login' => [
             'title' => 'Accesso amministratori'
         ],
@@ -154,8 +211,9 @@ return [
         ],
         '500' => [
             'title' => "Errore dell'applicazione",
-            'description' => "Si è verificato un errore inaspettato.\nSe dovesse ripetersi ti preghiamo di contattarci."
-        ]
+            'description' => "Si è verificato un errore inaspettato.\nSe dovesse ripetersi ti preghiamo di contattarci.",
+            'elasticsearch_description' => 'Unable to retrieve logs.',
+        ],
     ],
 
 ];

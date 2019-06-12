@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Enums\Logs\EventType;
 use App\Events\PublicAdministration\PublicAdministrationActivated;
 use App\Events\PublicAdministration\PublicAdministrationActivationFailed;
 use App\Events\PublicAdministration\PublicAdministrationPurged;
@@ -26,7 +27,14 @@ class PublicAdministrationEventsSubscriber implements ShouldQueue
         $publicAdministration = $event->getPublicAdministration();
         $user = $event->getUser();
         //TODO: inviare PEC a PA per la notifica?
-        logger()->info('User ' . $user->getInfo() . ' registered Public Administration ' . $publicAdministration->getInfo());
+        logger()->notice(
+            'User ' . $user->uuid . ' registered Public Administration ' . $publicAdministration->getInfo(),
+            [
+                'event' => EventType::PUBLIC_ADMINISTRATION_REGISTERED,
+                'pa' => $publicAdministration->ipa_code,
+                'user' => $user->uuid,
+            ]
+        );
     }
 
     /**
@@ -37,7 +45,13 @@ class PublicAdministrationEventsSubscriber implements ShouldQueue
     public function onActivated(PublicAdministrationActivated $event): void
     {
         $publicAdministration = $event->getPublicAdministration();
-        logger()->info('Public Administration ' . $publicAdministration->getInfo() . ' activated');
+        logger()->notice(
+            'Public Administration ' . $publicAdministration->getInfo() . ' activated',
+            [
+                'event' => EventType::PUBLIC_ADMINISTRATION_ACTIVATED,
+                'pa' => $publicAdministration->ipa_code,
+            ]
+        );
     }
 
     /**
@@ -48,7 +62,13 @@ class PublicAdministrationEventsSubscriber implements ShouldQueue
     public function onActivationFailed(PublicAdministrationActivationFailed $event): void
     {
         $publicAdministration = $event->getPublicAdministration();
-        logger()->error('Public Administration ' . $publicAdministration->getInfo() . ' activation failed: ' . $event->getMessage());
+        logger()->error(
+            'Public Administration ' . $publicAdministration->getInfo() . ' activation failed: ' . $event->getMessage(),
+            [
+                'event' => EventType::PUBLIC_ADMINISTRATION_ACTIVATION_FAILED,
+                'pa' => $publicAdministration->ipa_code,
+            ]
+        );
     }
 
     /**
@@ -59,7 +79,13 @@ class PublicAdministrationEventsSubscriber implements ShouldQueue
     public function onUpdated(PublicAdministrationUpdated $event): void
     {
         $publicAdministration = $event->getPublicAdministration();
-        logger()->info('Public Administration ' . $publicAdministration->getInfo() . ' updated');
+        logger()->notice(
+            'Public Administration ' . $publicAdministration->getInfo() . ' updated',
+            [
+                'event' => EventType::PUBLIC_ADMINISTRATION_UPDATED,
+                'pa' => $publicAdministration->ipa_code,
+            ]
+        );
     }
 
     /**
@@ -71,7 +97,13 @@ class PublicAdministrationEventsSubscriber implements ShouldQueue
     {
         //TODO: decidere come gestire i cambiamenti del sito istituzionale su IPA
         $publicAdministration = $event->getPublicAdministration();
-        logger()->warning('Public Administration ' . $publicAdministration->getInfo() . ' primary website was changed in IPA list [' . $event->getNewURL() . '].');
+        logger()->warning(
+            'Public Administration ' . $publicAdministration->getInfo() . ' primary website was changed in IPA list [' . $event->getNewURL() . '].',
+            [
+                'event' => EventType::PUBLIC_ADMINISTRATION_PRIMARY_WEBSITE_CHANGED,
+                'pa' => $publicAdministration->ipa_code,
+            ]
+        );
     }
 
     /**
@@ -83,7 +115,13 @@ class PublicAdministrationEventsSubscriber implements ShouldQueue
     {
         $publicAdministration = json_decode($event->getPublicAdministrationJson());
         $publicAdministrationInfo = '"' . $publicAdministration->name . '" [' . $publicAdministration->ipa_code . ']';
-        logger()->info('Public Administration ' . $publicAdministrationInfo . ' purged');
+        logger()->notice(
+            'Public Administration ' . $publicAdministrationInfo . ' purged',
+            [
+                'event' => EventType::PUBLIC_ADMINISTRATION_PURGED,
+                'pa' => $publicAdministration->ipa_code,
+            ]
+        );
     }
 
     /**

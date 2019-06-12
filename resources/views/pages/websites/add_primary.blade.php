@@ -85,7 +85,7 @@
                 input = $(this.selector).addClass('autocomplete-loading');
                 resetInfo = this.resetInfo;
                 $.ajax({
-                    type: 'POST',
+                    type: 'GET',
                     url: '{{ route('search-ipa-list') }}',
                     data: {q: term},
                     dataType: 'json',

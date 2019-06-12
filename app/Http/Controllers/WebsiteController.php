@@ -448,7 +448,7 @@ class WebsiteController extends Controller
         ]);
         $website->save();
 
-        logger()->info('User ' . auth()->user()->getInfo() . ' updated website "' . $validatedData['name'] . '" [' . $validatedData['url'] . '] as ' . $validatedData['type'] . ' website of "' . $website->publicAdministration->name . '"');
+        logger()->info('User ' . auth()->user()->uuid . ' updated website "' . $validatedData['name'] . '" [' . $validatedData['url'] . '] as ' . $validatedData['type'] . ' website of "' . $website->publicAdministration->name . '"');
 
         return redirect()->route('websites-index')->withMessage(['success' => 'Il sito "' . $validatedData['name'] . '" è stato modificato.']); //TODO: put message in lang file
     }

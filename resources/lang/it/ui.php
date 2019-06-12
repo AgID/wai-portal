@@ -114,6 +114,63 @@ return [
         'auth-verify' => [
             'title' => 'Verifica indirizzo email',
         ],
+        'logs' => [
+            'title' => 'Visualizzazione log',
+            'form' => [
+                'legend' => 'Filtri di ricerca',
+                'inputs' => [
+                    'start_date' => [
+                        'label' => 'Data di inizio (gg/mm/aaaa)',
+                    ],
+                    'start_time' => [
+                        'label' => 'Orario di inizio (HH:mm)',
+                    ],
+                    'end_date' => [
+                        'label' => 'Data di fine (gg/mm/aaaa)',
+                    ],
+                    'end_time' => [
+                        'label' => 'Orario di fine (HH:mm)',
+                    ],
+                    'message' => [
+                        'label' => 'Messaggio',
+                    ],
+                    'severity' => [
+                        'label' => 'Gravità minima',
+                    ],
+                    'event' => [
+                        'label' => 'Evento',
+                        'empty-selection' => 'Tutti',
+                    ],
+                    'exception' => [
+                        'label' => 'Errore',
+                        'empty-selection' => 'Tutte',
+                    ],
+                    'job' => [
+                        'label' => 'Attività',
+                        'empty-selection' => 'Tutte',
+                    ],
+                    'pa' => [
+                        'label' => 'Pubbliche Amministrazioni',
+                    ],
+                    'website' => [
+                        'label' => 'Siti web',
+                    ],
+                    'user' => [
+                        'label' => 'Utenti',
+                    ],
+                ],
+                'submit' => 'Visualizza',
+            ],
+            'table' => [
+                'headers' => [
+                    'time' => 'Orario',
+                    'message' => 'Messaggio',
+                    'level' => 'Gravità',
+                    'trace' => 'Pila Chiamate',
+                ],
+                'caption' => 'Messaggi di log del portale Web Analytics Italia',
+            ],
+        ],
         'admin-login' => [
             'title' => 'Accesso amministratori',
         ],
@@ -160,6 +217,7 @@ return [
         '500' => [
             'title' => "Errore dell'applicazione",
             'description' => "Si è verificato un errore inaspettato.\nSe dovesse ripetersi ti preghiamo di contattarci.",
+            'elasticsearch_description' => 'Si è verificato un errore nel recupero dei log.',
         ]
     ],
 

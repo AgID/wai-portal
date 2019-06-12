@@ -13,6 +13,15 @@ APP_DEBUG=true
 # --------
 HOSTNAME=localhost
 
+# Logging stack
+# -------------
+LOG_STACK_CHANNELS=
+
+# Slack notifications
+# -------------------
+LOG_SLACK_WEBHOOK_URL=
+LOG_SLACK_USERNAME=
+
 # SPID Service Provider
 # ---------------------
 
@@ -97,6 +106,17 @@ ANALYTICS_API_SSL_VERIFY=false
 
 # The public URL for your Analytics Service.
 ANALYTICS_PUBLIC_URL=https://localhost:9443
+
+# Elastic Search Service URLs
+# ---------------------------
+
+ELASTICSEARCH_HOST=elasticsearch
+ELASTICSEARCH_INDEX_PREFIX=wai
+ELASTICSEARCH_INDEX_NAME=log
+ELASTICSEARCH_SEARCH_TEMPLATE_NAME=log_search
+ELASTICSEARCH_IGNORE_EXCEPTIONS=false
+
+KIBANA_PORT=5601
 
 # Debugging
 # ---------

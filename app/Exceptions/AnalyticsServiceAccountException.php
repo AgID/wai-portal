@@ -2,6 +2,8 @@
 
 namespace App\Exceptions;
 
+use App\Enums\Logs\EventType;
+use App\Enums\Logs\ExceptionType;
 use Exception;
 
 /**
@@ -14,7 +16,13 @@ class AnalyticsServiceAccountException extends Exception
      */
     public function report(): void
     {
-        logger()->error('Analytics Service account exception: ' . $this->getMessage());
-        // TODO: Notify me!!
+        logger()->critical(
+            'Analytics Service account exception: ' . $this->getMessage(),
+            [
+                'event' => EventType::EXCEPTION,
+                'exception_type' => ExceptionType::ANALYTICS_ACCOUNT,
+                'exception' => $this,
+            ]
+        );
     }
 }

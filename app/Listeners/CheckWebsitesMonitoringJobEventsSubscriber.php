@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Enums\Logs\EventType;
 use App\Events\Jobs\WebsitesMonitoringCheckCompleted;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Events\Dispatcher;
@@ -18,7 +19,12 @@ class CheckWebsitesMonitoringJobEventsSubscriber implements ShouldQueue
      */
     public function onCompleted(WebsitesMonitoringCheckCompleted $event): void
     {
-        logger()->info('Website tracking check completed: ' . count($event->getArchiving()) . ' website/s not tracking ' . count($event->getArchived()) . ' website/s archived, ' . count($event->getFailed()) . ' website/s check failed');
+        logger()->notice(
+            'Website tracking check completed: ' . count($event->getArchiving()) . ' website/s not tracking ' . count($event->getArchived()) . ' website/s archived, ' . count($event->getFailed()) . ' website/s check failed',
+            [
+                'event' => EventType::TRACKING_WEBSITES_CHECK_COMPLETED,
+            ]
+        );
     }
 
     /**

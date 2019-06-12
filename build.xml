@@ -27,6 +27,9 @@
                     <token key="APP_DEBUG" value="${APP_DEBUG}" />
                     <token key="APP_SALT" value="${APP_SALT}" />
                     <token key="HOSTNAME" value="${HOSTNAME}" />
+                    <token key="LOG_STACK_CHANNELS" value="${LOG_STACK_CHANNELS}" />
+                    <token key="LOG_SLACK_WEBHOOK_URL" value="${LOG_SLACK_WEBHOOK_URL}" />
+                    <token key="LOG_SLACK_USERNAME" value="${LOG_SLACK_USERNAME}" />
                     <token key="APP_VERSION" value="${APP_VERSION}" />
                     <token key="CRON_TOKEN" value="${CRON_TOKEN}" />
                     <token key="PENDING_WEBSITE_WARNING" value="${PENDING_WEBSITE_WARNING}" />
@@ -35,6 +38,10 @@
                     <token key="ARCHIVING_WEBSITE_ARCHIVE" value="${ARCHIVING_WEBSITE_ARCHIVE}" />
                     <token key="ARCHIVING_WEBSITE_NOTIFICATION_WEEK_DAY" value="${ARCHIVING_WEBSITE_NOTIFICATION_WEEK_DAY}" />
                     <token key="ARCHIVING_WEBSITE_DAILY_NOTIFICATION" value="${ARCHIVING_WEBSITE_DAILY_NOTIFICATION}" />
+                    <token key="ELASTICSEARCH_INDEX_PREFIX" value="${ELASTICSEARCH_INDEX_PREFIX}" />
+                    <token key="ELASTICSEARCH_INDEX_NAME" value="${ELASTICSEARCH_INDEX_PREFIX}-${ELASTICSEARCH_INDEX_NAME}" />
+                    <token key="ELASTICSEARCH_IGNORE_EXCEPTIONS" value="${ELASTICSEARCH_IGNORE_EXCEPTIONS}" />
+                    <token key="ELASTICSEARCH_SEARCH_TEMPLATE_NAME" value="${ELASTICSEARCH_SEARCH_TEMPLATE_NAME}" />
                     <token key="MARIADB_DATABASE" value="${MARIADB_DATABASE}" />
                     <token key="MARIADB_USER" value="${MARIADB_USER}" />
                     <token key="MARIADB_PASSWORD" value="${MARIADB_PASSWORD}" />
@@ -229,10 +236,10 @@
         <if>
             <equals arg1="${env.APP_ENV}" arg2="testing"/>
             <then>
-                <exec command="docker-compose up -d --build nginx mariadb redis ipa-redisearch php-fpm matomo" dir="containers" passthru="true" checkreturn="true"/>
+                <exec command="docker-compose up -d --build nginx mariadb redis ipa-redisearch elasticsearch php-fpm matomo" dir="containers" passthru="true" checkreturn="true"/>
             </then>
             <else>
-                <exec command="docker-compose up -d --build nginx mariadb redis ipa-redisearch mailhog php-fpm matomo queue-worker spid-testenv" dir="containers" passthru="true" checkreturn="true"/>
+                <exec command="docker-compose up -d --build nginx mariadb redis ipa-redisearch mailhog php-fpm matomo queue-worker elasticsearch spid-testenv" dir="containers" passthru="true" checkreturn="true"/>
             </else>
         </if>
         <!-- Wait for mariadb container to start gracefully -->
@@ -250,6 +257,22 @@
                 <exec command="docker-compose exec mariadb bash /opt/matomo-install/install_disable_tracking_plugin.sh" dir="containers" checkreturn="true"/>
                 <exec command="docker-compose exec php-fpm rm -Rf /opt/matomo-install/" dir="containers" checkreturn="true"/>
                 <exec command="docker-compose exec php-fpm chown -R www-data:www-data /opt/matomo" dir="containers" passthru="true" checkreturn="true"/>
+            </then>
+        </if>
+        <!-- Initialize ElasticSearch -->
+        <echo msg="Waiting for ElasticSearch to start..." />
+        <exec command="docker-compose exec elasticsearch bash /opt/check_index.sh" dir="containers" returnProperty="checkElasticSearch" />
+        <if>
+            <not><equals arg1="${checkElasticSearch}" arg2="0" /></not>
+            <then>
+                <echo msg="Initializing ElasticSearch cluster..."/>
+                <retry retryDelay="5" retryCount="12">
+                    <exec command="docker-compose exec elasticsearch bash /opt/elasticsearch-init/initialize_index.sh" dir="containers" checkreturn="true"/>
+                </retry>
+                <echo msg="Initializing ElasticSearch search template..."/>
+                <retry retryDelay="5" retryCount="12">
+                    <exec command="docker-compose exec elasticsearch bash /opt/elasticsearch-init/initialize_search_template.sh" dir="containers" checkreturn="true"/>
+                </retry>
             </then>
         </if>
         <!-- Run migrations -->
@@ -280,6 +303,12 @@
         <exec command="docker-compose exec php-fpm php artisan config:clear" dir="containers" passthru="true" checkreturn="true"/>
         <exec command="docker-compose exec php-fpm php artisan cache:clear" dir="containers" passthru="true" checkreturn="true"/>
         <exec command="docker-compose exec php-fpm php artisan clear-compiled" dir="containers" passthru="true" checkreturn="true"/>
+        <!-- Populate Website list -->
+        <echo msg="Populating Websites list..."/>
+        <exec command="docker-compose exec php-fpm php artisan app:update-websites" dir="containers" passthru="true" checkreturn="true"/>
+        <!-- Populate User list -->
+        <echo msg="Populating Users list..."/>
+        <exec command="docker-compose exec php-fpm php artisan app:update-users" dir="containers" passthru="true" checkreturn="true"/>
         <echo msg="Deleting sessions..."/>
         <delete>
             <fileset dir="storage/framework/sessions">
@@ -316,6 +345,16 @@
         <!-- Execute dusk to run browser tests -->
         <echo msg="Running browser tests [Laravel Dusk]..."/>
         <exec command="docker-compose exec php-fpm php artisan dusk" dir="containers" passthru="true" checkreturn="true"/>
+        <!-- Restore the Users/Websites indexes after tests -->
+        <if>
+            <equals arg1="${env.APP_ENV}" arg2="local"/>
+            <then>
+                <echo msg="Restoring User list after tests..."/>
+                <exec command="docker-compose exec php-fpm php artisan app:update-users" dir="containers" passthru="true" checkreturn="true"/>
+                <echo msg="Restoring Website list after tests..."/>
+                <exec command="docker-compose exec php-fpm php artisan app:update-websites" dir="containers" passthru="true" checkreturn="true"/>
+            </then>
+        </if>
     </target>
 
     <!-- Target: stop -->
@@ -340,7 +379,7 @@
             <available file="containers" type="dir" property="ignored"/>
             <then>
                 <echo msg="Starting Docker containers..."/>
-                <exec command="docker-compose up -d nginx mariadb redis ipa-redisearch mailhog php-fpm queue-worker spid-testenv" dir="containers" passthru="true" checkreturn="true"/>
+                <exec command="docker-compose up -d nginx mariadb redis ipa-redisearch mailhog php-fpm queue-worker elasticsearch spid-testenv" dir="containers" passthru="true" checkreturn="true"/>
                 <echo msg="Web Analytics Italia up and running!"/>
             </then>
         </if>
@@ -353,6 +392,29 @@
             <then>
                 <echo msg="Running phpMyAdmin..."/>
                 <exec command="docker-compose up -d phpmyadmin" dir="containers" passthru="true"/>
+            </then>
+        </if>
+    </target>
+
+    <!-- Target: start Kibana -->
+    <target name="kibana">
+        <if>
+            <available file="containers" type="dir" property="ignored"/>
+            <then>
+                <echo msg="Running Kibana..."/>
+                <exec command="docker-compose up --build -d kibana" dir="containers" passthru="true"/>
+                <echo msg="Waiting for Kibana to start..." />
+                <exec command="docker-compose exec kibana bash /opt/check_index_pattern.sh" dir="containers" returnProperty="checkKibana"/>
+                <if>
+                    <not><equals arg1="${checkKibana}" arg2="0"/></not>
+                    <then>
+                        <echo msg="Initializing Index Pattern..."/>
+                        <retry retryDelay="5" retryCount="12">
+                            <exec command="docker-compose exec kibana bash /opt/kibana-init/initialize_index_pattern.sh" dir="containers" checkreturn="true"/>
+                        </retry>
+                        <exec command="docker-compose exec -u root kibana rm -Rf /opt/kibana-init" dir="containers" checkreturn="true"/>
+                    </then>
+                </if>
             </then>
         </if>
     </target>

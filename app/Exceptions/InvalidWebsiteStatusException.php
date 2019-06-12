@@ -2,6 +2,8 @@
 
 namespace App\Exceptions;
 
+use App\Enums\Logs\EventType;
+use App\Enums\Logs\ExceptionType;
 use Exception;
 use Illuminate\Http\RedirectResponse;
 
@@ -15,7 +17,13 @@ class InvalidWebsiteStatusException extends Exception
      */
     public function report(): void
     {
-        logger()->error('Operation not allowed in current website status: ' . $this->getMessage());
+        logger()->error('Operation not allowed in current website status: ' . $this->getMessage(),
+            [
+                'event' => EventType::EXCEPTION,
+                'exception_type' => ExceptionType::INVALID_WEBSITE_STATUS,
+                'exception' => $this,
+            ]
+        );
     }
 
     /**

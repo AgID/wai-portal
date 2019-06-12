@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Enums\Logs\JobType;
 use App\Mail\PasswordReset;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
@@ -53,6 +54,12 @@ class SendPasswordResetEmail implements ShouldQueue
         $email = new PasswordReset($this->user, $this->token);
         Mail::to($this->user->email)->send($email);
 
-        logger()->info('Password reset mail sent to ' . $this->user->getInfo());
+        logger()->info(
+            'Password reset mail sent to ' . $this->user->uuid,
+            [
+                'user' => $this->user->uuid,
+                'job' => JobType::SEND_RESET_PASSWORD_TOKEN,
+            ]
+        );
     }
 }

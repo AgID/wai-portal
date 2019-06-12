@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Enums\Logs\JobType;
 use App\Models\PasswordResetToken;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -37,7 +38,13 @@ class ClearPasswordResetToken implements ShouldQueue
      */
     public function handle()
     {
-        logger()->info('Deleting expired token ' . $this->token->token);
+        logger()->info(
+            'Deleting expired token ' . $this->token->token,
+            [
+                'user' => $this->user->uuid,
+                'job' => JobType::CLEAR_PASSWORD_TOKEN,
+            ]
+        );
         $this->token->delete();
     }
 }

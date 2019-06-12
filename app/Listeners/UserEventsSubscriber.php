@@ -2,11 +2,18 @@
 
 namespace App\Listeners;
 
+use App\Enums\Logs\EventType;
 use App\Events\User\UserActivated;
 use App\Events\User\UserInvited;
 use App\Events\User\UserUpdated;
 use App\Events\User\UserUpdating;
 use App\Events\User\UserWebsiteAccessChanged;
+use App\Jobs\ProcessUsersList;
+use App\Models\User;
+use Ehann\RediSearch\Exceptions\FieldNotInSchemaException;
+use Ehann\RediSearch\Index;
+use Ehann\RedisRaw\PredisAdapter;
+use Exception;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Events\Dispatcher;
@@ -23,7 +30,16 @@ class UserEventsSubscriber
      */
     public function onRegistered(Registered $event): void
     {
-        logger()->info('New user registered: ' . $event->user->getInfo()); //TODO: notify me!
+        $this->updateUsersIndex($event->user);
+
+        //NOTE: user isn't connected to any P.A. yet
+        logger()->notice(
+            'New user registered: ' . $event->user->uuid,
+            [
+                'event' => EventType::USER_REGISTERED,
+                'user' => $event->user->uuid,
+            ]
+        );
     }
 
     /**
@@ -35,7 +51,20 @@ class UserEventsSubscriber
     {
         $user = $event->getUser();
         $invitedBy = $event->getInvitedBy();
-        logger()->info('New user invited: ' . $user->getInfo() . ' by ' . $invitedBy->getInfo()); //TODO: notify me!
+
+        $this->updateUsersIndex($user);
+
+        $context = [
+            'event' => EventType::USER_INVITED,
+            'user' => $user->uuid,
+        ];
+        if (null !== $event->getPublicAdministration()) {
+            $context['pa'] = $event->getPublicAdministration()->ipa_code;
+        }
+        logger()->notice(
+            'New user invited: ' . $user->uuid . ' by ' . $invitedBy->uuid,
+            $context
+        );
         //TODO: if the new user is invited as an admin then notify the public administration via PEC
     }
 
@@ -46,7 +75,13 @@ class UserEventsSubscriber
      */
     public function onVerified(Verified $event): void
     {
-        logger()->info('User ' . $event->user->getInfo() . ' confirmed email address.'); //TODO: notify me!
+        logger()->info(
+            'User ' . $event->user->uuid . ' confirmed email address.',
+            [
+                'event' => EventType::USER_VERIFIED,
+                'user' => $event->user->uuid,
+            ]
+        ); //TODO: notify me!
     }
 
     /**
@@ -57,7 +92,14 @@ class UserEventsSubscriber
     public function onActivated(UserActivated $event): void
     {
         $user = $event->getUser();
-        logger()->info('User ' . $user->getInfo() . ' activated');
+        logger()->notice(
+            'User ' . $user->uuid . ' activated',
+            [
+                'event' => EventType::USER_ACTIVATED,
+                'user' => $user->uuid,
+                'pa' => $event->getPublicAdministration()->ipa_code,
+            ]
+        );
     }
 
     /**
@@ -77,6 +119,11 @@ class UserEventsSubscriber
      * Handle user update event.
      *
      * @param UserUpdated $event the event
+     *
+     * @throws \App\Exceptions\AnalyticsServiceAccountException if the Analytics Service account doesn't exist
+     * @throws \App\Exceptions\AnalyticsServiceException if unable to connect the Analytics Service
+     * @throws \App\Exceptions\CommandErrorException if command is unsuccessful
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException if unable to bind analytics service
      */
     public function onUpdated(UserUpdated $event): void
     {
@@ -87,6 +134,8 @@ class UserEventsSubscriber
         if ($user->isDirty('email')) {
             $user->sendEmailVerificationNotification();
         }
+
+        $this->updateUsersIndex($user);
     }
 
     /**
@@ -99,7 +148,15 @@ class UserEventsSubscriber
         $user = $event->getUser();
         $website = $event->getWebsite();
         $accessType = $event->getAccessType();
-        logger()->info('Granted "' . $accessType->description . '" access for website ' . $website->getInfo() . ' to user ' . $user->getInfo());
+        logger()->notice(
+            'Granted "' . $accessType->description . '" access for website ' . $website->getInfo() . ' to user ' . $user->uuid,
+            [
+                'event' => EventType::USER_WEBSITE_ACCESS_CHANGED,
+                'user' => $user->uuid,
+                'pa' => $website->publicAdministration->ipa_code,
+                'website' => $website->id,
+            ]
+        );
     }
 
     /**
@@ -143,5 +200,39 @@ class UserEventsSubscriber
             'App\Events\User\UserWebsiteAccessChanged',
             'App\Listeners\UserEventsSubscriber@onWebsiteAccessChanged'
         );
+    }
+
+    /**
+     * Update users index.
+     *
+     * @param User $user the user to update
+     */
+    private function updateUsersIndex(User $user): void
+    {
+        $userIndex = new Index(
+            (new PredisAdapter())->connect(config('database.redis.indexes.host'), config('database.redis.indexes.port'), config('database.redis.indexes.database')),
+            ProcessUsersList::USER_INDEX_NAME
+        );
+
+        try {
+            $userIndex->addTagField('pas')
+                ->addTextField('uuid')
+                ->addTextField('familyName', 2.0, true)
+                ->addTextField('name', 2.0, true)
+                ->create();
+        } catch (Exception $e) {
+            // Index already exists, it's ok!
+        }
+
+        try {
+            $userDocument = $userIndex->makeDocument($user->uuid);
+            $userDocument->uuid->setValue($user->uuid);
+            $userDocument->name->setValue($user->name);
+            $userDocument->familyName->setValue($user->familyName);
+            $userDocument->pas->setValue(implode(',', $user->publicAdministrations()->get()->pluck('ipa_code')->toArray()));
+            $userIndex->replace($userDocument);
+        } catch (FieldNotInSchemaException $exception) {
+            report($exception);
+        }
     }
 }

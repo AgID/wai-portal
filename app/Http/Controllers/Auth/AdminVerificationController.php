@@ -62,11 +62,11 @@ class AdminVerificationController extends Controller
         $user->status = UserStatus::ACTIVE;
         $user->save();
 
-        logger()->info('User ' . $user->getInfo() . ' confirmed email address.'); //TODO: notify me!
+        logger()->info('User ' . $user->uuid . ' confirmed email address.'); //TODO: notify me!
 
         if (!auth()->check()) {
             auth()->login($user);
-            logger()->info('User ' . $user->getInfo() . ' logged in after email address verification.');
+            logger()->info('User ' . $user->uuid . ' logged in after email address verification.');
         }
 
         return redirect()->route('admin-password_change')

@@ -2,9 +2,10 @@
 
 namespace App\Exceptions;
 
+use App\Enums\Logs\EventType;
+use App\Enums\Logs\ExceptionType;
 use Exception;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Response;
 
 /**
  * Analytics Service command error exception.
@@ -16,8 +17,14 @@ class CommandErrorException extends Exception
      */
     public function report(): void
     {
-        logger()->error('Analytics Service command error: ' . $this->getMessage());
-        // TODO: Notify me!!
+        logger()->critical(
+            'Analytics Service command error: ' . $this->getMessage(),
+            [
+                'event' => EventType::EXCEPTION,
+                'exception_type' => ExceptionType::ANALYTICS_COMMAND,
+                'exception' => $this,
+            ]
+        );
     }
 
     /**

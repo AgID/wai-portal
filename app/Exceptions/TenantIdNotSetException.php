@@ -2,6 +2,8 @@
 
 namespace App\Exceptions;
 
+use App\Enums\Logs\EventType;
+use App\Enums\Logs\ExceptionType;
 use Exception;
 use Illuminate\Http\RedirectResponse;
 
@@ -12,8 +14,14 @@ class TenantIdNotSetException extends Exception
      */
     public function report(): void
     {
-        logger()->error('Tenant id is not set in the user session: ' . $this->getMessage());
-        // TODO: Notify me!!
+        logger()->error(
+            'Tenant id is not set in the user session: ' . $this->getMessage(),
+            [
+                'event' => EventType::EXCEPTION,
+                'exception_type' => ExceptionType::TENANT_SELECTION,
+                'exception' => $this,
+            ]
+        );
     }
 
     /**
