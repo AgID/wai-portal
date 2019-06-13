@@ -52,6 +52,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'status',
         'partial_analytics_password',
         'password_changed_at',
+        'last_access_at',
     ];
 
     /**

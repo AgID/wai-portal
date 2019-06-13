@@ -66,14 +66,14 @@ class EventType extends Enum implements LocalizedEnum
     public const PUBLIC_ADMINISTRATION_PURGED = 10;
 
     /**
-     * User SPID login event.
+     * User login event.
      */
-    public const USER_SPID_LOGIN = 11;
+    public const USER_LOGIN = 11;
 
     /**
-     * User SPID logout event.
+     * User logout event.
      */
-    public const USER_SPID_LOGOUT = 12;
+    public const USER_LOGOUT = 12;
 
     /**
      * New user registered event.
