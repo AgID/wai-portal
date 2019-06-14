@@ -3,32 +3,65 @@
 namespace App\Http\Middleware;
 
 use App\Enums\UserStatus;
-use Closure;
+use Illuminate\Auth\AuthenticationException;
+use Illuminate\Auth\Middleware\Authenticate as Middleware;
 
 /**
  * User authentication.
  */
-class Authenticate
+class Authenticate extends Middleware
 {
     /**
-     * Handle an incoming request. User is already authenticated with SPID.
+     * Determine if the user is logged in to any of the given guards
+     * and is not suspended.
      *
-     * @param \Illuminate\Http\Request $request the request
-     * @param \Closure $next the next closure
+     * @param \Illuminate\Http\Request $request
+     * @param array $guards
      *
-     * @return mixed the check result
+     * @throws \Illuminate\Auth\AuthenticationException
+     *
+     * @return void
      */
-    public function handle($request, Closure $next)
+    protected function authenticate($request, array $guards)
     {
-        if (!$request->user()) {
-            return redirect()->route('auth-register')
-                ->withMessage(['warning' => "Prima di usare l'applicazione è necessario completare la registrazione"]); //TODO: put message in lang file
-        }
+        parent::authenticate($request, $guards);
 
         if ($request->user()->status->is(UserStatus::SUSPENDED)) {
-            abort(403, "L'utenza è stata sospesa."); // TODO: put in lang file
+            throw new AuthenticationException(
+                'Suspended.', $guards, $this->redirectSuspendedTo($request)
+            );
         }
+    }
 
-        return $next($request);
+    /**
+     * Get the path the user should be redirected to when they are not authenticated.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return string
+     */
+    protected function redirectTo($request): string
+    {
+        $request->session()->flash('message', [
+            'warning' => "Prima di usare l'applicazione è necessario completare la registrazione",
+        ]);
+
+        return route('auth-register');
+    }
+
+    /**
+     * Get the path the user should be redirected to when they are suspended.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return string
+     */
+    protected function redirectSuspendedTo($request): string
+    {
+        $request->session()->flash('message', [
+            'error' => "L'utenza è stata sospesa.",
+        ]);
+
+        return route('home');
     }
 }
