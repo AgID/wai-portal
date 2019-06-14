@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class VerificationController extends Controller
 {
@@ -48,8 +49,8 @@ class VerificationController extends Controller
             throw new AuthorizationException();
         }
 
-        if (($request->route('uuid') != $user->getAttribute($user->getRouteKeyName()))) {
-            throw new AuthorizationException("L'utente non corrisponde all'invito.");
+        if (!Hash::check($user->email, base64_decode($request->route('hash'), true)) || $request->route('uuid') !== $user->getAttribute($user->getRouteKeyName())) {
+            throw new AuthorizationException("L'utente non corrisponde all'invito."); //TODO: put message in lang file
         }
 
         if ($user->hasVerifiedEmail()) {

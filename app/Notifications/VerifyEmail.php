@@ -11,6 +11,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\URL;
 
 /**
@@ -93,7 +94,10 @@ class VerifyEmail extends Notification implements ShouldQueue
         return URL::temporarySignedRoute(
             $verificationRoute,
             Carbon::now()->addMinutes(Config::get('auth.verification.expire', 60)),
-            ['uuid' => $notifiable->getAttribute($notifiable->getRouteKeyName())]
+            [
+                'uuid' => $notifiable->getAttribute($notifiable->getRouteKeyName()),
+                'hash' => base64_encode(Hash::make($notifiable->email)),
+            ]
         );
     }
 }
