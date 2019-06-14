@@ -1,4 +1,7 @@
+import axios from 'axios';
+import { cacheAdapterEnhancer } from 'axios-extensions';
 import 'bootstrap-italia';
+import Notification from './notification';
 
 /**
  * Keep jQuery in the window object for legacy scripts
@@ -12,9 +15,34 @@ window.$ = jQuery;
  * CSRF token as a header based on the value of the "XSRF" token cookie.
  */
 
-window.axios = require('axios');
+window.axios = axios.create({
+    headers: {
+      'X-Requested-With': 'XMLHttpRequest',
+      'Cache-Control': 'no-cache',
+      'Content-Type': 'application/json'
+    },
+    adapter: cacheAdapterEnhancer(axios.defaults.adapter)
+});
+window.axios.interceptors.response.use(
+    response => response,
+    error => {
+        if (401 === error.response.status) {
+            Notification.showNotification(
+                'Sessione scaduta',
+                'La sessione è scaduta a causa di inattività sulla pagina. <a href="#" onclick="location.reload(true);return false;">Ricarica la pagina</a> per continuare.',
+                'error',
+                'close-circle',
+                false,
+                'top-fix'
+            );
+        }
+        return Promise.reject(error);
+    }
+);
 
-window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+// See https://github.com/axios/axios/issues/1445
+window.axios.isCancel = axios.isCancel;
+window.axios.CancelToken = axios.CancelToken;
 
 /**
  * Next we will register the CSRF Token as a common header with Axios so that
