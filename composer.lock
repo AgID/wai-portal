@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "70f3b53ca142c9489f6189705ec60350",
+    "content-hash": "c99c6d3203daccbd6160a17863bbd884",
     "packages": [
         {
             "name": "bensampo/laravel-enum",
@@ -982,16 +982,16 @@
         },
         {
             "name": "italia/spid-laravel",
-            "version": "v0.2.0-beta",
+            "version": "v0.3.0-beta",
             "source": {
                 "type": "git",
                 "url": "https://github.com/italia/spid-laravel.git",
-                "reference": "97cfff4ab1fd5216a832a3ce3635e2357e4667ae"
+                "reference": "dd16673a7deeec85ef6738db6298a46efa594e3f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/italia/spid-laravel/zipball/97cfff4ab1fd5216a832a3ce3635e2357e4667ae",
-                "reference": "97cfff4ab1fd5216a832a3ce3635e2357e4667ae",
+                "url": "https://api.github.com/repos/italia/spid-laravel/zipball/dd16673a7deeec85ef6738db6298a46efa594e3f",
+                "reference": "dd16673a7deeec85ef6738db6298a46efa594e3f",
                 "shasum": ""
             },
             "require": {
@@ -999,7 +999,7 @@
                 "illuminate/config": "~5.0",
                 "illuminate/support": "~5.0",
                 "onelogin/php-saml": "^3.1",
-                "php": ">=7.0.0"
+                "php": "^7.2.0"
             },
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "^2.11",
@@ -1007,7 +1007,7 @@
                 "mockery/mockery": "^1.0",
                 "orchestra/testbench": "~3.0",
                 "pds/skeleton": "~1.0",
-                "phpunit/phpunit": "^7.0"
+                "phpunit/phpunit": "^8.0"
             },
             "type": "library",
             "extra": {
@@ -1044,7 +1044,7 @@
                 "laravel",
                 "laravel 5"
             ],
-            "time": "2019-03-11T10:36:24+00:00"
+            "time": "2019-06-14T13:32:24+00:00"
         },
         {
             "name": "jakub-onderka/php-console-color",
@@ -1713,6 +1713,11 @@
                 "ext-openssl": "Install openssl lib in order to handle with x509 certs (require to support sign and encryption)"
             },
             "type": "library",
+            "extra": {
+                "patches_applied": {
+                    "Compatibility with SPID": "https://rawgit.com/italia/spid-laravel/master/patches/php-saml-3-spid.patch"
+                }
+            },
             "autoload": {
                 "psr-4": {
                     "OneLogin\\": "src/"
@@ -1729,12 +1734,7 @@
                 "onelogin",
                 "saml"
             ],
-            "time": "2019-03-11T09:41:32+00:00",
-            "extra": {
-                "patches_applied": {
-                    "Compatibility with SPID": "https://rawgit.com/italia/spid-laravel/master/patches/php-saml-3-spid.patch"
-                }
-            }
+            "time": "2019-03-11T09:41:32+00:00"
         },
         {
             "name": "opis/closure",
@@ -3218,7 +3218,7 @@
                 },
                 {
                     "name": "Gert de Pagter",
-                    "email": "BackEndTea@gmail.com"
+                    "email": "backendtea@gmail.com"
                 }
             ],
             "description": "Symfony polyfill for ctype functions",
