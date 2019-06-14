@@ -43,6 +43,7 @@ mix.js('resources/js/app.js', 'public/js')
 
 mix.copyDirectory('resources/images', 'public/images');
 mix.copyDirectory('node_modules/bootstrap-italia/dist/fonts', 'public/fonts');
+mix.copyDirectory('node_modules/bootstrap-italia/dist/svg', 'public/svg');
 
 if (!mix.inProduction()) {
     mix.webpackConfig({
