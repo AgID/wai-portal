@@ -99,7 +99,7 @@ Route::middleware('admin.auth')->group(function () {
             'uses' => 'Auth\VerificationController@resend',
         ])->middleware('throttle:5,1');
 
-        Route::get('/{uuid}', [
+        Route::get('/{uuid}/{hash}', [
             'as' => 'admin.verification.verify',
             'uses' => 'Auth\VerificationController@verify',
         ])->middleware('signed', 'throttle:5,1');
@@ -157,7 +157,7 @@ Route::middleware('spid.auth')->group(function () {
             'uses' => 'Auth\VerificationController@resend',
         ])->middleware('throttle:5,1');
 
-        Route::get('/{uuid}', [
+        Route::get('/{uuid}/{hash}', [
             'as' => 'verification.verify',
             'uses' => 'Auth\VerificationController@verify',
         ])->middleware('signed', 'throttle:5,1');
