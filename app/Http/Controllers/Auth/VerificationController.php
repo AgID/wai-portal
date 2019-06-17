@@ -50,7 +50,7 @@ class VerificationController extends Controller
         }
 
         if (!Hash::check($user->email, base64_decode($request->route('hash'), true)) || $request->route('uuid') !== $user->getAttribute($user->getRouteKeyName())) {
-            throw new AuthorizationException("L'utente non corrisponde all'invito."); //TODO: put message in lang file
+            throw new AuthorizationException(__("L'utente non corrisponde all'invito."));
         }
 
         if ($user->hasVerifiedEmail()) {
