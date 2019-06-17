@@ -1713,11 +1713,6 @@
                 "ext-openssl": "Install openssl lib in order to handle with x509 certs (require to support sign and encryption)"
             },
             "type": "library",
-            "extra": {
-                "patches_applied": {
-                    "Compatibility with SPID": "https://rawgit.com/italia/spid-laravel/master/patches/php-saml-3-spid.patch"
-                }
-            },
             "autoload": {
                 "psr-4": {
                     "OneLogin\\": "src/"
@@ -1734,7 +1729,12 @@
                 "onelogin",
                 "saml"
             ],
-            "time": "2019-03-11T09:41:32+00:00"
+            "time": "2019-03-11T09:41:32+00:00",
+            "extra": {
+                "patches_applied": {
+                    "Compatibility with SPID": "https://rawgit.com/italia/spid-laravel/master/patches/php-saml-3-spid.patch"
+                }
+            }
         },
         {
             "name": "opis/closure",
@@ -3218,7 +3218,7 @@
                 },
                 {
                     "name": "Gert de Pagter",
-                    "email": "backendtea@gmail.com"
+                    "email": "BackEndTea@gmail.com"
                 }
             ],
             "description": "Symfony polyfill for ctype functions",
@@ -4068,16 +4068,16 @@
         },
         {
             "name": "vlucas/phpdotenv",
-            "version": "v3.3.3",
+            "version": "v3.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/vlucas/phpdotenv.git",
-                "reference": "dbcc609971dd9b55f48b8008b553d79fd372ddde"
+                "reference": "5084b23845c24dbff8ac6c204290c341e4776c92"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/vlucas/phpdotenv/zipball/dbcc609971dd9b55f48b8008b553d79fd372ddde",
-                "reference": "dbcc609971dd9b55f48b8008b553d79fd372ddde",
+                "url": "https://api.github.com/repos/vlucas/phpdotenv/zipball/5084b23845c24dbff8ac6c204290c341e4776c92",
+                "reference": "5084b23845c24dbff8ac6c204290c341e4776c92",
                 "shasum": ""
             },
             "require": {
@@ -4091,7 +4091,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.3-dev"
+                    "dev-master": "3.4-dev"
                 }
             },
             "autoload": {
@@ -4116,7 +4116,7 @@
                 "env",
                 "environment"
             ],
-            "time": "2019-03-06T09:39:45+00:00"
+            "time": "2019-06-15T22:40:20+00:00"
         },
         {
             "name": "yajra/laravel-datatables-fractal",
@@ -4610,16 +4610,16 @@
         },
         {
             "name": "facebook/webdriver",
-            "version": "1.7.0",
+            "version": "1.7.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/facebook/php-webdriver.git",
-                "reference": "9a52b1ac036743c31bc127fd7f2f4710e2bc968a"
+                "reference": "e43de70f3c7166169d0f14a374505392734160e5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/facebook/php-webdriver/zipball/9a52b1ac036743c31bc127fd7f2f4710e2bc968a",
-                "reference": "9a52b1ac036743c31bc127fd7f2f4710e2bc968a",
+                "url": "https://api.github.com/repos/facebook/php-webdriver/zipball/e43de70f3c7166169d0f14a374505392734160e5",
+                "reference": "e43de70f3c7166169d0f14a374505392734160e5",
                 "shasum": ""
             },
             "require": {
@@ -4666,7 +4666,7 @@
                 "selenium",
                 "webdriver"
             ],
-            "time": "2019-06-10T14:32:25+00:00"
+            "time": "2019-06-13T08:02:18+00:00"
         },
         {
             "name": "filp/whoops",
@@ -4965,22 +4965,22 @@
         },
         {
             "name": "laravel/dusk",
-            "version": "v5.1.0",
+            "version": "v5.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/dusk.git",
-                "reference": "a6ac3e6489dc774445aa9459cdc332104591634a"
+                "reference": "5bb851989171601b7fc7a031ba173d6cd23d3801"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/dusk/zipball/a6ac3e6489dc774445aa9459cdc332104591634a",
-                "reference": "a6ac3e6489dc774445aa9459cdc332104591634a",
+                "url": "https://api.github.com/repos/laravel/dusk/zipball/5bb851989171601b7fc7a031ba173d6cd23d3801",
+                "reference": "5bb851989171601b7fc7a031ba173d6cd23d3801",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
                 "ext-zip": "*",
-                "facebook/webdriver": "^1.3",
+                "facebook/webdriver": "^1.7",
                 "illuminate/console": "~5.7.0|~5.8.0|~5.9.0",
                 "illuminate/support": "~5.7.0|~5.8.0|~5.9.0",
                 "nesbot/carbon": "^1.20|^2.0",
@@ -5026,7 +5026,7 @@
                 "testing",
                 "webdriver"
             ],
-            "time": "2019-05-02T15:08:14+00:00"
+            "time": "2019-06-14T12:51:18+00:00"
         },
         {
             "name": "maximebf/debugbar",
