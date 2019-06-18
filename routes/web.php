@@ -252,52 +252,66 @@ Route::middleware('spid.auth', 'auth', 'verified')->group(function () {
                     'uses' => 'WebsiteController@storePrimary',
                 ]);
 
-                Route::get('/add', [
-                    'as' => 'websites.create',
-                    'uses' => 'WebsiteController@create',
-                ])->middleware('authorize.analytics:' . UserPermission::MANAGE_WEBSITES);
+                Route::middleware('authorize.analytics:' . UserPermission::MANAGE_WEBSITES)->group(function () {
+                    Route::get('/add', [
+                        'as' => 'websites.create',
+                        'uses' => 'WebsiteController@create',
+                    ]);
 
-                Route::get('/websites-data', [
-                    'as' => 'websites.users.permissions.data',
-                    'uses' => 'WebsiteController@dataUsersPermissionsJson',
-                ])->middleware('authorize.analytics:' . UserPermission::MANAGE_WEBSITES);
+                    Route::get('/websites-data', [
+                        'as' => 'websites.users.permissions.data',
+                        'uses' => 'WebsiteController@dataUsersPermissionsJson',
+                    ]);
 
-                Route::post('/store', [
-                    'as' => 'websites.store',
-                    'uses' => 'WebsiteController@store',
-                ])->middleware('authorize.analytics:' . UserPermission::MANAGE_WEBSITES);
+                    Route::post('/store', [
+                        'as' => 'websites.store',
+                        'uses' => 'WebsiteController@store',
+                    ]);
 
-                Route::get('/{website}/check', [
-                    'as' => 'websites.tracking.check',
-                    'uses' => 'WebsiteController@checkTracking',
-                    // Authorization for specific websites is handled in the middleware
-                ])->middleware('authorize.analytics:' . UserPermission::READ_ANALYTICS);
+                    Route::get('/{website}/show', [
+                        'as' => 'websites.show',
+                        'uses' => 'WebsiteController@show',
+                    ]);
 
-                Route::patch('/{website}/archive', [
-                    'as' => 'website.archive',
-                    'uses' => 'WebsiteController@archive',
-                ])->middleware('authorize.analytics:' . UserPermission::MANAGE_WEBSITES);
+                    Route::patch('/{website}/archive', [
+                        'as' => 'website.archive',
+                        'uses' => 'WebsiteController@archive',
+                    ]);
 
-                Route::patch('/{website}/unarchive', [
-                    'as' => 'website.unarchive',
-                    'uses' => 'WebsiteController@unarchive',
-                ])->middleware('authorize.analytics:' . UserPermission::MANAGE_WEBSITES);
+                    Route::patch('/{website}/unarchive', [
+                        'as' => 'website.unarchive',
+                        'uses' => 'WebsiteController@unarchive',
+                    ]);
 
-                Route::get('/{website}/edit', [
-                    'as' => 'websites.edit',
-                    'uses' => 'WebsiteController@edit',
-                ])->middleware('authorize.analytics:' . UserPermission::MANAGE_WEBSITES);
+                    Route::get('/{website}/edit', [
+                        'as' => 'websites.edit',
+                        'uses' => 'WebsiteController@edit',
+                    ]);
 
-                Route::post('/{website}/update', [
-                    'as' => 'websites.update',
-                    'uses' => 'WebsiteController@update',
-                ])->middleware('authorize.analytics:' . UserPermission::MANAGE_WEBSITES);
+                    Route::post('/{website}/update', [
+                        'as' => 'websites.update',
+                        'uses' => 'WebsiteController@update',
+                    ]);
 
-                Route::get('/{website}/javascript-snippet', [
-                    'as' => 'websites.snippet.javascript',
-                    'uses' => 'WebsiteController@showJavascriptSnippet',
-                    // Authorization for specific websites is handled in the middleware
-                ])->middleware('authorize.analytics:' . UserPermission::READ_ANALYTICS);
+                    Route::post('/{website}/delete', [
+                        'as' => 'websites.delete',
+                        'uses' => 'WebsiteController@destroy',
+                    ]);
+                });
+
+                Route::middleware('authorize.analytics:' . UserPermission::READ_ANALYTICS)->group(function () {
+                    Route::get('/{website}/check', [
+                        'as' => 'websites.tracking.check',
+                        'uses' => 'WebsiteController@checkTracking',
+                        // Authorization for specific websites is handled in the middleware
+                    ]);
+
+                    Route::get('/{website}/javascript-snippet', [
+                        'as' => 'websites.snippet.javascript',
+                        'uses' => 'WebsiteController@showJavascriptSnippet',
+                        // Authorization for specific websites is handled in the middleware
+                    ]);
+                });
 
                 Route::get('/data', [
                     'as' => 'websites.data.json',
