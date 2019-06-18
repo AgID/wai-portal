@@ -52,7 +52,7 @@ class WebsiteController extends Controller
                 ['data' => 'last_month_visits', 'name' => 'Visite*'],
                 ['data' => 'buttons', 'name' => 'Azioni'],
             ],
-            'source' => route('websites-data-json'),
+            'source' => route('websites.data.json'),
             'caption' => 'Elenco dei siti web abilitati su Web Analytics Italia', //TODO: set title in lang file
             'footer' => '*Il numero di visite si riferisce agli ultimi 30 giorni.',
             'columnsOrder' => [['added_at', 'asc'], ['last_month_visits', 'desc']],
@@ -64,7 +64,7 @@ class WebsiteController extends Controller
     public function createPrimary()
     {
         if (auth()->user()->publicAdministrations->isNotEmpty()) {
-            return redirect()->route('websites-index');
+            return redirect()->route('websites.index');
         }
 
         return view('pages.websites.add_primary');
@@ -122,7 +122,7 @@ class WebsiteController extends Controller
         event(new PublicAdministrationRegistered($publicAdministration, $request->user()));
         event(new WebsiteAdded($website));
 
-        return redirect()->route('websites-index')->withMessage(['success' => 'Il sito è stato aggiunto al progetto Web Analytics Italia.']); //TODO: put message in lang file
+        return redirect()->route('websites.index')->withMessage(['success' => 'Il sito è stato aggiunto al progetto Web Analytics Italia.']); //TODO: put message in lang file
     }
 
     /**
@@ -202,7 +202,7 @@ class WebsiteController extends Controller
             }
         });
 
-        return redirect()->route('websites-index')->withMessage(['success' => 'Il sito è stato aggiunto al progetto Web Analytics Italia.']); //TODO: put message in lang file
+        return redirect()->route('websites.index')->withMessage(['success' => 'Il sito è stato aggiunto al progetto Web Analytics Italia.']); //TODO: put message in lang file
     }
 
     /**
@@ -450,7 +450,7 @@ class WebsiteController extends Controller
 
         logger()->info('User ' . auth()->user()->uuid . ' updated website "' . $validatedData['name'] . '" [' . $validatedData['url'] . '] as ' . $validatedData['type'] . ' website of "' . $website->publicAdministration->name . '"');
 
-        return redirect()->route('websites-index')->withMessage(['success' => 'Il sito "' . $validatedData['name'] . '" è stato modificato.']); //TODO: put message in lang file
+        return redirect()->route('websites.index')->withMessage(['success' => 'Il sito "' . $validatedData['name'] . '" è stato modificato.']); //TODO: put message in lang file
     }
 
     /**

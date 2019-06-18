@@ -12,7 +12,7 @@
         @include('partials.user_info')
         @include('partials.link_button', [
             'label' => __('ui.pages.dashboard.websites'),
-            'href' => route('websites-index', [], false)
+            'href' => route('websites.index', [], false)
         ])
         @include('partials.link_button', [
             'label' => __('ui.pages.dashboard.users'),
