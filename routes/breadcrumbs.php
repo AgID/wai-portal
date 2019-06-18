@@ -30,33 +30,33 @@ Breadcrumbs::for('dashboard', function ($trail) {
 });
 
 // Web Analytics Italia > Dashboard > Websites
-Breadcrumbs::for('websites-index', function ($trail) {
+Breadcrumbs::for('websites.index', function ($trail) {
     $trail->parent('dashboard');
-    $trail->push(__('ui.pages.websites.index.title'), route('websites-index', [], false));
+    $trail->push(__('ui.pages.websites.index.title'), route('websites.index', [], false));
 });
 
 // Web Analytics Italia > Dashboard > Websites > Add primary website
-Breadcrumbs::for('websites-add-primary', function ($trail) {
-    $trail->parent('websites-index');
-    $trail->push(__('ui.pages.websites.add-primary.title'), route('websites-add-primary', [], false));
+Breadcrumbs::for('websites.create.primary', function ($trail) {
+    $trail->parent('websites.index');
+    $trail->push(__('ui.pages.websites.add-primary.title'), route('websites.create.primary', [], false));
 });
 
 // Web Analytics Italia > Dashboard > Websites > Add website
-Breadcrumbs::for('websites-add', function ($trail) {
-    $trail->parent('websites-index');
-    $trail->push(__('ui.pages.websites.add.title'), route('websites-add', [], false));
+Breadcrumbs::for('websites.create', function ($trail) {
+    $trail->parent('websites.index');
+    $trail->push(__('ui.pages.websites.add.title'), route('websites.create', [], false));
 });
 
 // Web Analytics Italia > Dashboard > Websites > Edit website
-Breadcrumbs::for('websites-edit', function ($trail, $website) {
-    $trail->parent('websites-index');
-    $trail->push(__('ui.pages.websites.edit.title'), route('websites-edit', ['website' => $website], false));
+Breadcrumbs::for('websites.edit', function ($trail, $website) {
+    $trail->parent('websites.index');
+    $trail->push(__('ui.pages.websites.edit.title'), route('websites.edit', ['website' => $website], false));
 });
 
 // Web Analytics Italia > Dashboard > Websites > Javascript snippet
-Breadcrumbs::for('website-javascript-snippet', function ($trail, $website) {
-    $trail->parent('websites-index');
-    $trail->push(__('ui.pages.websites.javascript-snippet.title'), route('website-javascript-snippet', ['website' => $website], false));
+Breadcrumbs::for('websites.snippet.javascript', function ($trail, $website) {
+    $trail->parent('websites.index');
+    $trail->push(__('ui.pages.websites.javascript-snippet.title'), route('websites.snippet.javascript', ['website' => $website], false));
 });
 
 // Web Analytics Italia > Dashboard > Users

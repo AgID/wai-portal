@@ -238,37 +238,37 @@ Route::middleware('spid.auth', 'auth', 'verified')->group(function () {
 
             Route::prefix('/websites')->group(function () {
                 Route::get('/', [
-                    'as' => 'websites-index',
+                    'as' => 'websites.index',
                     'uses' => 'WebsiteController@index',
                 ]);
 
                 Route::get('/add-primary', [
-                    'as' => 'websites-add-primary',
+                    'as' => 'websites.create.primary',
                     'uses' => 'WebsiteController@createPrimary',
                 ]);
 
                 Route::post('/store-primary', [
-                    'as' => 'websites-store-primary',
+                    'as' => 'websites.store.primary',
                     'uses' => 'WebsiteController@storePrimary',
                 ]);
 
                 Route::get('/add', [
-                    'as' => 'websites-add',
+                    'as' => 'websites.create',
                     'uses' => 'WebsiteController@create',
                 ])->middleware('authorize.analytics:' . UserPermission::MANAGE_WEBSITES);
 
-                Route::get('/webistes-data', [
+                Route::get('/websites-data', [
                     'as' => 'websites.users.permissions.data',
                     'uses' => 'WebsiteController@dataUsersPermissionsJson',
                 ])->middleware('authorize.analytics:' . UserPermission::MANAGE_WEBSITES);
 
                 Route::post('/store', [
-                    'as' => 'websites-store',
+                    'as' => 'websites.store',
                     'uses' => 'WebsiteController@store',
                 ])->middleware('authorize.analytics:' . UserPermission::MANAGE_WEBSITES);
 
                 Route::get('/{website}/check', [
-                    'as' => 'website-check_tracking',
+                    'as' => 'websites.tracking.check',
                     'uses' => 'WebsiteController@checkTracking',
                     // Authorization for specific websites is handled in the middleware
                 ])->middleware('authorize.analytics:' . UserPermission::READ_ANALYTICS);
@@ -284,23 +284,23 @@ Route::middleware('spid.auth', 'auth', 'verified')->group(function () {
                 ])->middleware('authorize.analytics:' . UserPermission::MANAGE_WEBSITES);
 
                 Route::get('/{website}/edit', [
-                    'as' => 'websites-edit',
+                    'as' => 'websites.edit',
                     'uses' => 'WebsiteController@edit',
                 ])->middleware('authorize.analytics:' . UserPermission::MANAGE_WEBSITES);
 
                 Route::post('/{website}/update', [
-                    'as' => 'websites-update',
+                    'as' => 'websites.update',
                     'uses' => 'WebsiteController@update',
                 ])->middleware('authorize.analytics:' . UserPermission::MANAGE_WEBSITES);
 
                 Route::get('/{website}/javascript-snippet', [
-                    'as' => 'website-javascript-snippet',
+                    'as' => 'websites.snippet.javascript',
                     'uses' => 'WebsiteController@showJavascriptSnippet',
                     // Authorization for specific websites is handled in the middleware
                 ])->middleware('authorize.analytics:' . UserPermission::READ_ANALYTICS);
 
                 Route::get('/data', [
-                    'as' => 'websites-data-json',
+                    'as' => 'websites.data.json',
                     'uses' => 'WebsiteController@dataJson',
                 ]);
             });

@@ -7,7 +7,7 @@
     @can(UserPermission::MANAGE_WEBSITES)
         @include('partials.link_button', [
             'label' => __('ui.pages.websites.index.add_website'),
-            'href' => route('websites-add', [], false)
+            'href' => route('websites.create', [], false)
         ])
     @endcan
 @endsection

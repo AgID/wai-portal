@@ -25,7 +25,7 @@ class WebsiteTransformer extends TransformerAbstract
             'last_month_visits' => 'N/A',
             'buttons' => [
                 [
-                    'link' => route('website-javascript-snippet', ['website' => $website], false),
+                    'link' => route('websites.snippet.javascript', ['website' => $website], false),
                     'label' => __('ui.pages.websites.index.view_javascript_snippet'),
                 ],
             ],
@@ -45,7 +45,7 @@ class WebsiteTransformer extends TransformerAbstract
 
         if ($website->status->is(WebsiteStatus::PENDING) && auth()->user()->can(UserPermission::READ_ANALYTICS, $website)) {
             $data['buttons'][] = [
-                'link' => route('website-check_tracking', ['website' => $website->slug], false),
+                'link' => route('websites.tracking.check', ['website' => $website->slug], false),
                 'label' => __('ui.pages.websites.index.check_tracking'),
                 'dataAttributes' => [
                     'type' => 'checkTracking',
@@ -75,7 +75,7 @@ class WebsiteTransformer extends TransformerAbstract
 
         if (($website->status->is(WebsiteStatus::PENDING) || auth()->user()->can(UserPermission::MANAGE_WEBSITES)) && !$website->type->is(WebsiteType::PRIMARY)) {
             $data['buttons'][] = [
-                'link' => route('websites-edit', ['website' => $website], false),
+                'link' => route('websites.edit', ['website' => $website], false),
                 'label' => __('ui.pages.websites.index.edit_website'),
             ];
         }
