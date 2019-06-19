@@ -488,7 +488,7 @@ class WebsiteController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function dataUsersPermissionsJson()
+    public function dataUsersPermissionsJson(Website $website)
     {
         return Datatables::of(current_public_administration()->users)
             ->setTransformer(new UsersPermissionsTransformer())
