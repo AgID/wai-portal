@@ -6,6 +6,7 @@ use App\Enums\UserPermission;
 use App\Enums\WebsiteType;
 use App\Traits\InteractsWithIPAIndex;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
 
@@ -90,6 +91,13 @@ class StoreWebsiteRequest extends FormRequest
     {
         $publicAdministration = $this->getPublicAdministrationEntryByPrimaryWebsiteUrl($url);
 
-        return empty($result) || $url !== $publicAdministration->site;
+        if (empty($publicAdministration)) {
+            return true;
+        }
+
+        $publicAdministrationSite = Str::slug(preg_replace('/^http(s)?:\/\/(www\.)?(.+)$/i', '$3', $publicAdministration['site']));
+        $receivedUrl = Str::slug(preg_replace('/^http(s)?:\/\/(www\.)?(.+)$/i', '$3', $url));
+
+        return $publicAdministrationSite !== $receivedUrl;
     }
 }
