@@ -258,7 +258,7 @@ Route::middleware('spid.auth', 'auth', 'verified')->group(function () {
                         'uses' => 'WebsiteController@create',
                     ]);
 
-                    Route::get('/websites-data', [
+                    Route::get('/users-data/{website?}', [
                         'as' => 'websites.users.permissions.data',
                         'uses' => 'WebsiteController@dataUsersPermissionsJson',
                     ]);
