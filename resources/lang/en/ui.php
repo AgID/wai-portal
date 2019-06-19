@@ -62,20 +62,24 @@ return [
         ],
         'websites' => [
             'index' => [
-                'title' => 'Siti web tracciati',
-                'view_javascript_snippet' => 'vedi snippet JS',
-                'go_to_analytics_service' => 'vai agli analytics',
-                'add_website' => 'aggiungi sito',
-                'edit_website' => 'modifica sito',
+                'title' => 'Tracked websites',
+                'view_javascript_snippet' => 'show JS snippet',
+                'go_to_analytics_service' => 'go to analytics',
+                'show_website' => 'show website',
+                'add_website' => 'add website',
+                'edit_website' => 'edit website',
                 'check_tracking' => 'check activation',
                 'archive' => 'archive',
-                'enable' => 're-enable',
+                'enable' => 'un-archive',
             ],
             'add-primary' => [
-                'title' => 'Sito istituzionale'
+                'title' => 'Institutional website',
             ],
             'add' => [
-                'title' => 'Nuovo sito'
+                'title' => 'New website',
+            ],
+            'show' => [
+                'title' => 'Show website',
             ],
             'edit' => [
                 'title' => 'Modifica sito'

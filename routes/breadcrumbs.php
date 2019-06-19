@@ -47,6 +47,12 @@ Breadcrumbs::for('websites.create', function ($trail) {
     $trail->push(__('ui.pages.websites.add.title'), route('websites.create', [], false));
 });
 
+// Web Analytics Italia > Dashboard > Websites > Show website
+Breadcrumbs::for('websites.show', function ($trail, $website) {
+    $trail->parent('websites.index');
+    $trail->push(__('ui.pages.websites.show.title'), route('websites.show', ['website' => $website], false));
+});
+
 // Web Analytics Italia > Dashboard > Websites > Edit website
 Breadcrumbs::for('websites.edit', function ($trail, $website) {
     $trail->parent('websites.index');

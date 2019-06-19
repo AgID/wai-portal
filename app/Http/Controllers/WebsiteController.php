@@ -45,17 +45,17 @@ class WebsiteController extends Controller
     {
         $websitesDatatable = [
             'columns' => [
+                ['data' => 'name', 'name' => 'Nome'],
                 ['data' => 'url', 'name' => 'URL'],
                 ['data' => 'type', 'name' => 'Tipo'],
                 ['data' => 'added_at', 'name' => 'Aggiunto il'],
                 ['data' => 'status', 'name' => 'Stato'],
-                ['data' => 'last_month_visits', 'name' => 'Visite*'],
                 ['data' => 'buttons', 'name' => 'Azioni'],
             ],
             'source' => route('websites.data.json'),
             'caption' => 'Elenco dei siti web abilitati su Web Analytics Italia', //TODO: set title in lang file
             'footer' => '*Il numero di visite si riferisce agli ultimi 30 giorni.',
-            'columnsOrder' => [['added_at', 'asc'], ['last_month_visits', 'desc']],
+            'columnsOrder' => [['added_at', 'asc'], ['name', 'asc']],
         ];
 
         return view('pages.websites.index')->with($websitesDatatable);
@@ -378,9 +378,28 @@ class WebsiteController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Website $website)
     {
-        //
+        $data = [
+            'columns' => [
+                ['data' => 'name', 'name' => 'Cognome e nome'],
+                ['data' => 'email', 'name' => 'Email'],
+                ['data' => 'added_at', 'name' => 'Iscritto dal'],
+                ['data' => 'status', 'name' => 'Stato'],
+                ['data' => 'checkboxes', 'name' => 'Abilitato'],
+                ['data' => 'radios', 'name' => 'Permessi'],
+            ],
+            'source' => route('websites.users.permissions.data', ['website' => $website]) . '?readOnly=true',
+            'caption' => 'Elenco degli utenti presenti su Web Analytics Italia', //TODO: set title in lang file
+            'columnsOrder' => [['added_at', 'asc']],
+            'website' => $website,
+        ];
+
+        if (!$website->status->is(WebsiteStatus::PENDING) && auth()->user()->can(UserPermission::READ_ANALYTICS, $website)) {
+            $data['lastMonthVisits'] = (int) app()->make('analytics-service')->getSiteLastMonthVisits($website->analytics_id, current_user_auth_token());
+        }
+
+        return view('pages.websites.show')->with($data);
     }
 
     /**

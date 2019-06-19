@@ -65,6 +65,7 @@ return [
                 'title' => 'Siti web tracciati',
                 'view_javascript_snippet' => 'vedi snippet JS',
                 'go_to_analytics_service' => 'vai agli analytics',
+                'show_website' => 'dettaglio sito',
                 'add_website' => 'aggiungi sito',
                 'edit_website' => 'modifica sito',
                 'check_tracking' => 'verifica attivazione',
@@ -76,6 +77,9 @@ return [
             ],
             'add' => [
                 'title' => 'Nuovo sito',
+            ],
+            'show' => [
+                'title' => 'Dettaglio sito',
             ],
             'edit' => [
                 'title' => 'Modifica sito',
