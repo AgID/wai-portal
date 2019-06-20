@@ -288,7 +288,7 @@ Route::middleware('spid.auth', 'auth', 'verified')->group(function () {
                         'uses' => 'WebsiteController@edit',
                     ]);
 
-                    Route::post('/{website}/update', [
+                    Route::put('/{website}', [
                         'as' => 'websites.update',
                         'uses' => 'WebsiteController@update',
                     ]);

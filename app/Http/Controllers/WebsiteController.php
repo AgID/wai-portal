@@ -19,6 +19,7 @@ use App\Exceptions\InvalidWebsiteStatusException;
 use App\Exceptions\OperationNotAllowedException;
 use App\Http\Requests\StorePrimaryWebsiteRequest;
 use App\Http\Requests\StoreWebsiteRequest;
+use App\Http\Requests\UpdateWebsiteRequest;
 use App\Models\PublicAdministration;
 use App\Models\Website;
 use App\Traits\ActivatesWebsite;
@@ -158,21 +159,23 @@ class WebsiteController extends Controller
      */
     public function store(StoreWebsiteRequest $request)
     {
+        $validatedData = $request->validated();
+
         $publicAdministration = current_public_administration();
 
-        $analyticsId = app()->make('analytics-service')->registerSite($request->input('name') . ' [' . $request->input('type') . ']', $request->input('url'), $publicAdministration->name); //TODO: put string in lang file
+        $analyticsId = app()->make('analytics-service')->registerSite($validatedData['name'] . ' [' . $validatedData['type'] . ']', $validatedData['url'], $publicAdministration->name); //TODO: put string in lang file
 
         if (empty($analyticsId)) {
             abort(500, 'Il servizio Analytics non è disponibile'); //TODO: put error message in lang file
         }
 
         $website = Website::create([
-            'name' => $request->input('name'),
-            'url' => $request->input('url'),
-            'type' => (int) $request->input('type'),
+            'name' => $validatedData['name'],
+            'url' => $validatedData['url'],
+            'type' => (int) $validatedData['type'],
             'public_administration_id' => $publicAdministration->id,
             'analytics_id' => $analyticsId,
-            'slug' => Str::slug($request->input('url')),
+            'slug' => Str::slug($validatedData['url']),
             'status' => WebsiteStatus::PENDING,
         ]);
 
@@ -182,25 +185,8 @@ class WebsiteController extends Controller
             $administrator->setWriteAccessForWebsite($website);
             $administrator->syncWebsitesPermissionsToAnalyticsService();
         });
-        $usersEnabled = $request->input('usersEnabled', []);
-        $usersPermissions = $request->input('usersPermissions', []);
-        $publicAdministration->getNotAdministrators()->map(function ($user) use ($website, $usersEnabled, $usersPermissions) {
-            if (!empty($usersPermissions[$user->id]) && UserPermission::MANAGE_ANALYTICS === $usersPermissions[$user->id]) {
-                $user->setWriteAccessForWebsite($website);
-            }
 
-            if (!empty($usersPermissions[$user->id]) && UserPermission::READ_ANALYTICS === $usersPermissions[$user->id]) {
-                $user->setViewAccessForWebsite($website);
-            }
-
-            if (empty($usersEnabled[$user->id])) {
-                $user->setNoAccessForWebsite($website);
-            }
-
-            if ($user->status->is(UserStatus::ACTIVE)) {
-                $user->syncWebsitesPermissionsToAnalyticsService();
-            }
-        });
+        $this->manageWebsitePermissionsOnNotAdministrators($validatedData, $publicAdministration, $website);
 
         return redirect()->route('websites.index')->withMessage(['success' => 'Il sito è stato aggiunto al progetto Web Analytics Italia.']); //TODO: put message in lang file
     }
@@ -420,7 +406,7 @@ class WebsiteController extends Controller
                 ['data' => 'checkboxes', 'name' => 'Abilitato'],
                 ['data' => 'radios', 'name' => 'Permessi'],
             ],
-            'source' => route('websites.users.permissions.data'),
+            'source' => route('websites.users.permissions.data', ['website' => $website]),
             'caption' => 'Elenco degli utenti presenti su Web Analytics Italia', //TODO: set title in lang file
             'columnsOrder' => [['added_at', 'asc']],
         ];
@@ -440,36 +426,37 @@ class WebsiteController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Website $website)
+    public function update(UpdateWebsiteRequest $request, Website $website)
     {
-        $validatedData = $request->validate([
-            'name' => 'required',
-            'url' => [
-                'required',
-                Rule::unique('websites')->ignore($website->id),
-                'url',
-            ],
-            'type' => 'required|in:secondary,webapp,testing',
-        ]);
+        try {
+            if ($website->type->is(WebsiteType::PRIMARY)) {
+                throw new OperationNotAllowedException('Primary website ' . $website->getInfo() . ' update not allowed');
+            }
 
-        $tokenAuth = current_user_auth_token();
-        $updated = app()->make('analytics-service')->updateSite($website->analytics_id, $validatedData['name'] . ' [' . $validatedData['type'] . ']', $validatedData['url'], $website->publicAdministration->name, $tokenAuth); //TODO: put string in lang file
+            $validatedData = $request->validated();
 
-        if (!$updated) {
-            abort(500, 'Il servizio Analytics non è disponibile'); //TODO: put error message in lang file
+            if ($website->slug !== Str::slug($validatedData['url'])) {
+                app()->make('analytics-service')->updateSite($website->analytics_id, $validatedData['name'] . ' [' . $validatedData['type'] . ']', $validatedData['url'], $website->publicAdministration->name); //TODO: put string in lang file
+            }
+
+            $website->fill([
+                'name' => $validatedData['name'],
+                'url' => $validatedData['url'],
+                'type' => $validatedData['type'],
+                'slug' => Str::slug($validatedData['url']),
+            ]);
+            $website->save();
+
+            if (null !== ($publicAdministration = current_public_administration())) {
+                $this->manageWebsitePermissionsOnNotAdministrators($validatedData, $publicAdministration, $website);
+            }
+        } catch (OperationNotAllowedException $exception) {
+            report($exception);
+
+            return redirect()->route('websites.index')->withMessage(['error' => 'Il sito primario ' . $website->getInfo() . ' non può essere modificato']); //TODO: put message in lang file
         }
 
-        $website->fill([
-            'name' => $validatedData['name'],
-            'url' => $validatedData['url'],
-            'type' => $validatedData['type'],
-            'slug' => Str::slug($validatedData['url']),
-        ]);
-        $website->save();
-
-        logger()->info('User ' . auth()->user()->uuid . ' updated website "' . $validatedData['name'] . '" [' . $validatedData['url'] . '] as ' . $validatedData['type'] . ' website of "' . $website->publicAdministration->name . '"');
-
-        return redirect()->route('websites.index')->withMessage(['success' => 'Il sito "' . $validatedData['name'] . '" è stato modificato.']); //TODO: put message in lang file
+        return redirect()->route('websites.index')->withMessage(['success' => 'Il sito "' . $website->getInfo() . '" è stato modificato.']); //TODO: put message in lang file
     }
 
     /**
@@ -528,5 +515,28 @@ class WebsiteController extends Controller
         $javascriptSnippet = app()->make('analytics-service')->getJavascriptSnippet($website->analytics_id, $tokenAuth);
 
         return view('pages.websites.javascript_snippet')->with(['javascriptSnippet' => trim($javascriptSnippet)]);
+    }
+
+    private function manageWebsitePermissionsOnNotAdministrators(array $validatedData, PublicAdministration $publicAdministration, Website $website): void
+    {
+        $usersEnabled = $validatedData['usersEnabled'] ?? [];
+        $usersPermissions = $validatedData['usersPermissions'] ?? [];
+        $publicAdministration->getNotAdministrators()->map(function ($user) use ($website, $usersEnabled, $usersPermissions) {
+            if (!empty($usersPermissions[$user->id]) && UserPermission::MANAGE_ANALYTICS === $usersPermissions[$user->id]) {
+                $user->setWriteAccessForWebsite($website);
+            }
+
+            if (!empty($usersPermissions[$user->id]) && UserPermission::READ_ANALYTICS === $usersPermissions[$user->id]) {
+                $user->setViewAccessForWebsite($website);
+            }
+
+            if (empty($usersEnabled[$user->id])) {
+                $user->setNoAccessForWebsite($website);
+            }
+
+            if ($user->hasAnalyticsServiceAccount()) {
+                $user->syncWebsitesPermissionsToAnalyticsService();
+            }
+        });
     }
 }

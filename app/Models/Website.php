@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\WebsiteStatus;
 use App\Enums\WebsiteType;
+use App\Events\Website\WebsiteUpdated;
 use BenSampo\Enum\Traits\CastsEnums;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -51,6 +52,10 @@ class Website extends Model
     protected $enumCasts = [
         'status' => WebsiteStatus::class,
         'type' => WebsiteType::class,
+    ];
+
+    protected $dispatchesEvents = [
+        'updated' => WebsiteUpdated::class,
     ];
 
     /**
