@@ -5,6 +5,7 @@
 @section('content')
     <form class="Form Form--spaced u-text-r-xs" method="post" action="{{ route('websites.update', ['website' => $website], false) }}">
         @csrf
+        @method('PUT')
         @if ($errors->isEmpty())
             <div class="Prose Alert Alert--info">
                 <p class="u-text-p">Tutti i campi sono richiesti salvo dove espressamente indicato.</p>
@@ -76,6 +77,7 @@
                     </div>
                 @endif
             </div>
+            @include('partials.website_user_permissions')
         </fieldset>
         <div class="Form-field Grid-cell u-textRight">
             <button type="submit" class="Button Button--default u-text-xs">

@@ -32,12 +32,11 @@ interface AnalyticsService
      * @param string $siteName the website name
      * @param string $url the website URL
      * @param string $group the website group
-     * @param string $tokenAuth the Analytics authentication token
      *
      * @throws AnalyticsServiceException if unable to connect the Analytics Service
      * @throws CommandErrorException if command is unsuccessful
      */
-    public function updateSite(string $idSite, string $siteName, string $url, string $group, string $tokenAuth): void;
+    public function updateSite(string $idSite, string $siteName, string $url, string $group): void;
 
     /**
      * Change archive status in the Analytics Service.

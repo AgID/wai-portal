@@ -125,43 +125,47 @@ class EventType extends Enum implements LocalizedEnum
      */
     public const WEBSITE_ADDED = 22;
 
+    public const WEBSITE_URL_CHANGED = 23;
+
     /**
      * Website activated event.
      */
-    public const WEBSITE_ACTIVATED = 23;
+    public const WEBSITE_ACTIVATED = 24;
+
+    public const WEBSITE_STATUS_CHANGED = 25;
 
     /**
      * Website scheduled for archiving event.
      */
-    public const WEBSITE_ARCHIVING = 24;
+    public const WEBSITE_ARCHIVING = 26;
 
     /**
      * Website archived event.
      */
-    public const WEBSITE_ARCHIVED = 25;
+    public const WEBSITE_ARCHIVED = 27;
 
     /**
      * Website unarchived event.
      */
-    public const WEBSITE_UNARCHIVED = 26;
+    public const WEBSITE_UNARCHIVED = 28;
 
     /**
      * Website scheduled for removing event.
      */
-    public const WEBSITE_PURGING = 27;
+    public const WEBSITE_PURGING = 29;
 
     /**
      * Website removed event.
      */
-    public const WEBSITE_PURGED = 28;
+    public const WEBSITE_PURGED = 30;
 
     /**
      * Users index updated event.
      */
-    public const USERS_INDEXING_COMPLETED = 29;
+    public const USERS_INDEXING_COMPLETED = 31;
 
     /**
      * Websites index updated event.
      */
-    public const WEBSITES_INDEXING_COMPLETED = 30;
+    public const WEBSITES_INDEXING_COMPLETED = 32;
 }

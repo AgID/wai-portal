@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Enums\Logs\EventType;
+use App\Enums\WebsiteStatus;
 use App\Events\Website\WebsiteActivated;
 use App\Events\Website\WebsiteAdded;
 use App\Events\Website\WebsiteArchived;
@@ -10,6 +11,7 @@ use App\Events\Website\WebsiteArchiving;
 use App\Events\Website\WebsitePurged;
 use App\Events\Website\WebsitePurging;
 use App\Events\Website\WebsiteUnarchived;
+use App\Events\Website\WebsiteUpdated;
 use App\Traits\InteractsWithWebsiteIndex;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Events\Dispatcher;
@@ -79,6 +81,35 @@ class WebsiteEventsSubscriber implements ShouldQueue
                 'pa' => $website->publicAdministration->ipa_code,
             ]
         );
+    }
+
+    public function onUpdated(WebsiteUpdated $event): void
+    {
+        $website = $event->getWebsite();
+        if ($website->isDirty('status')) {
+            logger()->notice(
+                'Website ' . $website->getInfo() . ' status changed from "' . WebsiteStatus::getDescription($website->status->getOriginal()) . '" to "' . $website->status->description . '"',
+                [
+                    'event' => EventType::WEBSITE_STATUS_CHANGED,
+                    'website' => $website->id,
+                    'pa' => $website->publicAdministration->ipa_code,
+                ]
+            );
+        }
+
+        if ($website->isDirty('slug')) {
+            logger()->notice(
+                'Website' . $website->getInfo() . ' URL updated from ' . $website->getOriginal('url') . ' to ' . $website->url,
+                [
+                    'event' => EventType::WEBSITE_URL_CHANGED,
+                    'website' => $website->id,
+                    'pa' => $website->publicAdministration->ipa_code,
+                ]
+            );
+        }
+
+        //Update Redisearch websites index
+        $this->updateWebsiteIndex($website);
     }
 
     /**
@@ -233,6 +264,11 @@ class WebsiteEventsSubscriber implements ShouldQueue
         $events->listen(
             'App\Events\Website\WebsitePurged',
             'App\Listeners\WebsiteEventsSubscriber@onPurged'
+        );
+
+        $events->listen(
+            'App\Events\Website\WebsiteUpdated',
+            'App\Listeners\WebsiteEventsSubscriber@onUpdated'
         );
     }
 }
