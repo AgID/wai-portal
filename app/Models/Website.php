@@ -8,7 +8,6 @@ use App\Events\Website\WebsiteUpdated;
 use BenSampo\Enum\Traits\CastsEnums;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
@@ -78,18 +77,6 @@ class Website extends Model
     public function publicAdministration(): BelongsTo
     {
         return $this->belongsTo(PublicAdministration::class);
-    }
-
-    /**
-     * The keywords connected to this website or null if none.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany the relation to the keywords connected to this website
-     *
-     * @see \App\Models\Keyword
-     */
-    public function keywords(): BelongsToMany
-    {
-        return $this->belongsToMany(Keyword::class);
     }
 
     /**
