@@ -9,4 +9,7 @@
     <a role="button" href="{{ route($user->isA(UserRole::SUPER_ADMIN) ? 'admin.verification.resend' : 'verification.resend', [], false) }}" class="Button Button--default u-text-xs submit">
         Rispedisci mail di verifica{{-- //TODO: put message in lang file --}}
     </a>
+    <a role="button" href="{{ route($user->isA(UserRole::SUPER_ADMIN) ? 'admin.user.profile.edit' : 'user.profile.edit', [], false) }}" class="Button Button--default u-text-xs submit">
+        Modifica indirizzo mail{{-- //TODO: put message in lang file --}}
+    </a>
 @endsection
