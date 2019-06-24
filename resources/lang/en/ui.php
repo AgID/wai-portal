@@ -92,6 +92,8 @@ return [
                 'edit_user' => 'edit user',
                 'suspend_user' => 'suspend user',
                 'reactivate_user' => 'reactivate user',
+                'restore_user' => 'restore user',
+                'delete_user' => 'delete user',
             ],
             'show' => [
                 'title' => 'Show user',

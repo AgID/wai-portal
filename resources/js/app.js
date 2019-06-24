@@ -9,6 +9,7 @@ import CheckWebsiteTracking from './checkWebsiteTracking';
 import UserWebsitesPermissions from './userWebsitesPermissions';
 import ChangeArchiveStatus from './changeArchiveStatus';
 import ChangeSuspendStatus from './changeSuspendStatus';
+import ChangeDeleteStatus from './changeDeleteStatus';
 
 $(document).ready(() => {
     Datatables.init(
@@ -20,6 +21,7 @@ $(document).ready(() => {
             () => UserWebsitesPermissions.initPermissionInputs(),
             () => ChangeArchiveStatus.initArchiveStatusButton(),
             () => ChangeSuspendStatus.initSuspendStatusButton(),
+            () => ChangeDeleteStatus.initDeleteStatusButton(),
         ]
     );
 });

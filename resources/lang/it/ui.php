@@ -92,6 +92,8 @@ return [
                 'edit_user' => 'modifica utente',
                 'suspend_user' => 'sospendi utente',
                 'reactivate_user' => 'riattiva utente',
+                'restore_user' => 'ripristina utente',
+                'delete_user' => 'rimuovi utente',
             ],
             'show' => [
                 'title' => 'Visualizza utente',

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PublicAdministration;
+
 class AdminController extends Controller
 {
     /**
@@ -11,6 +13,6 @@ class AdminController extends Controller
      */
     public function dashboard()
     {
-        return view('pages.admin.dashboard');
+        return view('pages.admin.dashboard')->with(['publicAdministrations' => PublicAdministration::all(['ipa_code', 'name'])]);
     }
 }

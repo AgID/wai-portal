@@ -443,6 +443,35 @@ Route::middleware('admin.auth', 'verified:admin.verification.notice')->group(fun
                     'uses' => 'AdminUserController@reactivate',
                 ]);
             });
+
+            Route::prefix('/{publicAdministration}')->group(function () {
+                Route::get('/', [
+                    'as' => 'admin.publicAdministration.index',
+                    'uses' => 'DashboardController@index',
+                ]);
+
+                Route::prefix('/users')->group(function () {
+                    Route::get('/', [
+                        'as' => 'admin.publicAdministration.users.index',
+                        'uses' => 'UserController@index',
+                    ]);
+
+                    Route::get('/data', [
+                        'as' => 'admin.publicAdministration.users.data.json',
+                        'uses' => 'UserController@dataJson',
+                    ]);
+
+                    Route::patch('/{trashed_user}/restore', [
+                        'as' => 'admin.publicAdministration.users.restore',
+                        'uses' => 'UserController@restore',
+                    ]);
+
+                    Route::patch('/{user}/delete', [
+                        'as' => 'admin.publicAdministration.users.delete',
+                        'uses' => 'UserController@delete',
+                    ]);
+                });
+            });
         });
 
         Route::get('/user/change-password', [

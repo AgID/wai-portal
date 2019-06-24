@@ -5,11 +5,13 @@ namespace App\Http\Controllers;
 use App\Enums\UserPermission;
 use App\Enums\UserRole;
 use App\Enums\UserStatus;
+use App\Events\User\UserDeleted;
 use App\Events\User\UserInvited;
 use App\Exceptions\InvalidUserStatusException;
 use App\Exceptions\OperationNotAllowedException;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
+use App\Models\PublicAdministration;
 use App\Models\User;
 use App\Transformers\UserTransformer;
 use App\Transformers\WebsitesPermissionsTransformer;
@@ -40,7 +42,7 @@ class UserController extends Controller
                 ['data' => 'status', 'name' => 'Stato'],
                 ['data' => 'buttons', 'name' => 'Azioni'],
             ],
-            'source' => route('users.data.json'),
+            'source' => request()->user()->can(UserPermission::ACCESS_ADMIN_AREA) ? route('admin.publicAdministration.users.data.json', ['publicAdministration' => request()->route('publicAdministration')]) : route('users.data.json'),
             'caption' => 'Elenco degli utenti web abilitati su Web Analytics Italia', //TODO: set title in lang file
             'columnsOrder' => [['added_at', 'asc'], ['name', 'asc']],
         ];
@@ -301,7 +303,43 @@ class UserController extends Controller
         });
 
         return response()->json(['result' => 'ok', 'id' => $user->uuid, 'status' => $user->status->description]);
+    }
 
+    public function delete(PublicAdministration $publicAdministration, User $user): JsonResponse
+    {
+        try {
+            if ($user->trashed()) {
+                return response()->json(null, 304);
+            }
+
+            if ($user->status->is(UserStatus::PENDING)) {
+                throw new OperationNotAllowedException('Impossibile rimuovere un utente in attesa di attivazione'); //TODO: put message in lang file
+            }
+
+            $validator = validator(request()->all())->after([$this, 'validateNotLastActiveAdministrator']);
+            if ($validator->fails()) {
+                throw new OperationNotAllowedException($validator->errors()->first('isAdmin'));
+            }
+
+            $user->publicAdministrations()->get()->map(function ($publicAdministration) use ($user) {
+                Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user) {
+                    $user->assign(UserRole::REMOVED);
+                });
+            });
+
+            // NOTE: don't use 'user->delete()' directly since
+            //       it cascades delete to roles and permissions
+            // See: https://github.com/JosephSilber/bouncer/issues/439
+            $user->deleted_at = $user->freshTimestamp();
+            $user->save();
+        } catch (OperationNotAllowedException $exception) {
+            report($exception);
+
+            return response()->json(['result' => 'error', 'message' => $exception->getMessage()], 400);
+        }
+        event(new UserDeleted($user));
+
+        return response()->json(['result' => 'ok', 'id' => $user->uuid]);
     }
 
     /**
@@ -311,9 +349,23 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function restore(PublicAdministration $publicAdministration, User $user): JsonResponse
     {
-        //
+        logger()->error('Restoring user' . $user->getInfo());
+
+        if (!$user->trashed()) {
+            return response()->json(null, 304);
+        }
+
+        $user->publicAdministrations()->get()->map(function ($publicAdministration) use ($user) {
+            Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user) {
+                $user->retract(UserRole::REMOVED);
+            });
+        });
+
+        $user->restore();
+
+        return response()->json(['result' => 'ok', 'id' => $user->uuid, 'status' => $user->status->description]);
     }
 
     /**
@@ -324,9 +376,9 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function dataJson()
+    public function dataJson(PublicAdministration $publicAdministration)
     {
-        return Datatables::of(current_public_administration()->users)
+        return Datatables::of(auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA) ? $publicAdministration->users()->withTrashed()->get() : current_public_administration()->users)
             ->setTransformer(new UserTransformer())
             ->make(true);
     }
