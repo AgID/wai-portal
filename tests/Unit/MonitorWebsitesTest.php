@@ -78,7 +78,7 @@ class MonitorWebsitesTest extends TestCase
         $job = new ProcessWebsitesMonitoring();
         $job->handle();
 
-        $this->app->make('analytics-service')->deleteSite($website->analytics_id, config('analytics-service.admin_token'));
+        $this->app->make('analytics-service')->deleteSite($website->analytics_id);
 
         Event::assertDispatched(WebsitesMonitoringCheckCompleted::class, function ($event) use ($website) {
             return in_array(['website' => $website->slug], $event->getArchiving(), true)
@@ -132,7 +132,7 @@ class MonitorWebsitesTest extends TestCase
         $job = new ProcessWebsitesMonitoring();
         $job->handle();
 
-        $this->app->make('analytics-service')->deleteSite($website->analytics_id, config('analytics-service.admin_token'));
+        $this->app->make('analytics-service')->deleteSite($website->analytics_id);
 
         Event::assertDispatched(WebsitesMonitoringCheckCompleted::class, function ($event) use ($website) {
             return in_array(['website' => $website->slug], $event->getArchiving(), true)
@@ -186,7 +186,7 @@ class MonitorWebsitesTest extends TestCase
         $job = new ProcessWebsitesMonitoring();
         $job->handle();
 
-        $this->app->make('analytics-service')->deleteSite($website->analytics_id, config('analytics-service.admin_token'));
+        $this->app->make('analytics-service')->deleteSite($website->analytics_id);
 
         Event::assertDispatched(WebsitesMonitoringCheckCompleted::class, function ($event) {
             return empty($event->getArchiving())
@@ -231,7 +231,7 @@ class MonitorWebsitesTest extends TestCase
         $job = new ProcessWebsitesMonitoring();
         $job->handle();
 
-        $this->app->make('analytics-service')->deleteSite($website->analytics_id, config('analytics-service.admin_token'));
+        $this->app->make('analytics-service')->deleteSite($website->analytics_id);
 
         Event::assertDispatched(WebsitesMonitoringCheckCompleted::class, function ($event) use ($website) {
             return in_array(['website' => $website->slug], $event->getArchived(), true)

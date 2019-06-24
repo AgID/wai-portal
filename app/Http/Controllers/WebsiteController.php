@@ -460,18 +460,6 @@ class WebsiteController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
-
-    /**
      * Get all websites of the specified Public Administration
      * in JSON format (to be consumed by Datatables).
      *

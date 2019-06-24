@@ -178,17 +178,16 @@ class MatomoService implements AnalyticsServiceContract
      * Delete a given site in the Analytics Service.
      *
      * @param string $idSite the Analytics Service website ID
-     * @param string $tokenAuth the Analytics authentication token
      *
      * @throws AnalyticsServiceException if unable to connect the Analytics Service
      * @throws CommandErrorException if command is unsuccessful
      */
-    public function deleteSite(string $idSite, string $tokenAuth): void
+    public function deleteSite(string $idSite): void
     {
         $params = [
             'method' => 'SitesManager.deleteSite',
             'idSite' => $idSite,
-            'token_auth' => $tokenAuth,
+            'token_auth' => config('analytics-service.admin_token'),
         ];
 
         $this->apiCall($params);
