@@ -367,11 +367,11 @@ Route::middleware('admin.auth', 'verified:admin.verification.notice')->group(fun
     Route::prefix('/admin')->group(function () {
         Route::middleware('password.not.expired')->group(function () {
             Route::get('/', function () {
-                return redirect()->route('admin-dashboard');
+                return redirect()->route('admin.dashboard');
             });
 
             Route::get('/dashboard', [
-                'as' => 'admin-dashboard',
+                'as' => 'admin.dashboard',
                 'uses' => 'AdminController@dashboard',
             ]);
 
@@ -398,30 +398,17 @@ Route::middleware('admin.auth', 'verified:admin.verification.notice')->group(fun
                 ]);
             });
 
-            Route::get('/users/add', [
-                'as' => 'admin-user_add',
-                'uses' => 'AdminUserController@create',
-            ]);
+            Route::prefix('/users')->group(function () {
+                Route::get('/add', [
+                    'as' => 'admin.users.create',
+                    'uses' => 'AdminUserController@create',
+                ]);
 
-            Route::post('/users/store', [
-                'as' => 'admin-user_store',
-                'uses' => 'AdminUserController@store',
-            ]);
-
-            Route::get('/users/{user}/show', [
-                'as' => 'admin-user_show',
-                'uses' => 'AdminUserController@show',
-            ]);
-
-            Route::get('/users/{user}/edit', [
-                'as' => 'admin-user_edit',
-                'uses' => 'AdminUserController@edit',
-            ]);
-
-            Route::post('/users/{user}/update', [
-                'as' => 'admin-user_update',
-                'uses' => 'AdminUserController@update',
-            ]);
+                Route::post('/', [
+                    'as' => 'admin.users.store',
+                    'uses' => 'AdminUserController@store',
+                ]);
+            });
         });
 
         Route::get('/user/change-password', [
