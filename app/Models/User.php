@@ -199,9 +199,9 @@ class User extends Authenticatable implements MustVerifyEmail
      *
      * @return mixed the user email address or an array containing email and user name/surname
      */
-    public function sendEmailVerificationNotification()
+    public function sendEmailVerificationNotification(PublicAdministration $publicAdministration = null)
     {
-        $this->notify(new VerifyEmail());
+        $this->notify(new VerifyEmail($publicAdministration));
     }
 
     /**

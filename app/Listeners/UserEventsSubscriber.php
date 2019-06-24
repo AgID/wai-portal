@@ -3,7 +3,9 @@
 namespace App\Listeners;
 
 use App\Enums\Logs\EventType;
+use App\Enums\UserStatus;
 use App\Events\User\UserActivated;
+use App\Events\User\UserDeleted;
 use App\Events\User\UserInvited;
 use App\Events\User\UserLogin;
 use App\Events\User\UserLogout;
@@ -131,11 +133,32 @@ class UserEventsSubscriber
     public function onUpdated(UserUpdated $event): void
     {
         $user = $event->getUser();
+
         if ($user->isDirty('email_verified_at') && !empty($user->email_verified_at) && $user->hasAnalyticsServiceAccount()) {
             $user->updateAnalyticsServiceAccountEmail();
         }
         if ($user->isDirty('email')) {
-            $user->sendEmailVerificationNotification();
+            if ($user->status->is(UserStatus::INVITED)) {
+                $user->sendEmailVerificationNotification($user->publicAdministrations()->first());
+            } else {
+                $user->sendEmailVerificationNotification();
+            }
+
+            logger()->notice('User ' . $user->uuid . ' email address changed',
+                [
+                    'event' => EventType::USER_EMAIL_CHANGED,
+                    'user' => $user->uuid,
+                ]
+            );
+        }
+
+        if ($user->isDirty('status')) {
+            logger()->notice('User ' . $user->uuid . ' status changed from "' . UserStatus::getDescription($user->getOriginal('status')) . '" to "' . $user->status->description . '"',
+                [
+                    'event' => EventType::USER_STATUS_CHANGED,
+                    'user' => $user->uuid,
+                ]
+            );
         }
 
         $this->updateUsersIndex($user);
@@ -184,6 +207,17 @@ class UserEventsSubscriber
             [
                 'user' => $user->uuid,
                 'event' => EventType::USER_LOGOUT,
+            ]
+        );
+    }
+
+    public function onDeleted(UserDeleted $event): void
+    {
+        $user = $event->getUser();
+        logger()->notice('User ' . $user->uuid . ' deleted.',
+            [
+                'event' => EventType::USER_DELETED,
+                'user' => $user->uuid,
             ]
         );
     }
@@ -238,6 +272,11 @@ class UserEventsSubscriber
         $events->listen(
             'App\Events\User\UserLogout',
             'App\Listeners\UserEventsSubscriber@onLogout'
+        );
+
+        $events->listen(
+            'App\Events\User\UserDeleted',
+            'App\Listeners\UserEventsSubscriber@OnDeleted',
         );
     }
 
