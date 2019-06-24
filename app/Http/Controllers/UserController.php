@@ -7,10 +7,15 @@ use App\Enums\UserRole;
 use App\Enums\UserStatus;
 use App\Events\User\UserInvited;
 use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
 use App\Transformers\UserTransformer;
 use App\Transformers\WebsitesPermissionsTransformer;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Validator;
 use Ramsey\Uuid\Uuid;
 use Yajra\Datatables\Datatables;
 
@@ -151,7 +156,22 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        return view('pages.users.edit')->with(['user' => $user]);
+        $data = [
+            'columns' => [
+                ['data' => 'url', 'name' => 'URL'],
+                ['data' => 'type', 'name' => 'Tipo'],
+                ['data' => 'added_at', 'name' => 'Aggiunto il'],
+                ['data' => 'status', 'name' => 'Stato'],
+                ['data' => 'checkboxes', 'name' => 'Abilitato'],
+                ['data' => 'radios', 'name' => 'Permessi'],
+            ],
+            'source' => route('users.websites.permissions.data', ['user' => $user]),
+            'caption' => 'Elenco dei siti web presenti su Web Analytics Italia', //TODO: set title in lang file
+            'columnsOrder' => [['added_at', 'asc']],
+            'user' => $user,
+        ];
+
+        return view('pages.users.edit')->with($data);
     }
 
     /**
@@ -162,34 +182,63 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, User $user)
+    public function update(UpdateUserRequest $request, User $user): RedirectResponse
     {
-        $validator = validator($request->all(), [
-            'role' => 'required|exists:roles,name',
-        ]);
+        $validatedData = $request->validated();
 
-        $validator->after(function ($validator) use ($user, $request) {
-            $lastAdministrator = 1 == current_public_administration()->users()->whereHas('roles', function ($query) {
-                $query->where('name', 'admin');
-            })->count();
-            if ('admin' == $user->roles()->first()->name && 'admin' != $request->input('role') && $lastAdministrator) {
-                $validator->errors()->add('role', 'Deve restare almeno un utente amministratore per ogni PA.'); //TODO: put error message in lang file
+        // Update user information
+        if ($user->email !== $validatedData['email']) {
+            // NOTE: the 'user update' event listener automatically
+            //      sends a new email verification request and
+            //      reset the email verification status
+            $user->email = $validatedData['email'];
+            $user->save();
+
+            //NOTE: remove the try/catch if matomo is configured
+            //      to not send email on user updates using API interface
+            //      See: https://github.com/matomo-org/matomo/pull/14281
+            try {
+                // Update Analytics Service account if needed
+                // NOTE: at this point, user must have an analytics account
+                $user->updateAnalyticsServiceAccountEmail();
+            } catch (CommandErrorException $exception) {
+                if (!Str::contains($exception->getMessage(), 'Unable to send mail.')) {
+                    throw $exception;
+                }
+            }
+        }
+
+        // Update permissions
+        // NOTE: at this point, user must have an analytics account
+        $isAdmin = $validatedData['isAdmin'] ?? false;
+        $websitesEnabled = $validatedData['websitesEnabled'] ?? [];
+        $websitesPermissions = $validatedData['websitesPermissions'] ?? [];
+
+        current_public_administration()->websites->map(function ($website) use ($user, $isAdmin, $websitesEnabled, $websitesPermissions) {
+            if ($isAdmin) {
+                $user->retract(UserRole::DELEGATED);
+                $user->assign(UserRole::ADMIN);
+                $user->setWriteAccessForWebsite($website);
+            } else {
+                $user->retract(UserRole::ADMIN);
+                $user->assign(UserRole::DELEGATED);
+                if (!empty($websitesPermissions[$website->id]) && UserPermission::MANAGE_ANALYTICS === $websitesPermissions[$website->id]) {
+                    $user->setWriteAccessForWebsite($website);
+                }
+
+                if (!empty($websitesPermissions[$website->id]) && UserPermission::READ_ANALYTICS === $websitesPermissions[$website->id]) {
+                    $user->setViewAccessForWebsite($website);
+                }
+
+                if (empty($websitesEnabled[$website->id])) {
+                    $user->setNoAccessForWebsite($website);
+                }
             }
         });
 
-        if ($validator->fails()) {
-            return redirect()->route('users-edit', ['user' => $user])
-                ->withErrors($validator)
-                ->withInput();
-        }
+        $user->syncWebsitesPermissionsToAnalyticsService();
 
-        $user->save();
-
-        $user->assign($request->input('role'));
-
-        logger()->info('User ' . auth()->user()->uuid . ' updated user ' . $user->getInfo());
-
-        return redirect()->route('users-index')->withMessage(['success' => "L'utente " . $user->getInfo() . ' è stato modificato.']); //TODO: put message in lang file
+        return redirect()->route('users.index')->withMessage(['success' => "L'utente " . $user->getInfo() . ' è stato modificato.']); //TODO: put message in lang file
     }
 
     /**
@@ -232,5 +281,17 @@ class UserController extends Controller
         return Datatables::of(current_public_administration()->websites)
             ->setTransformer(new WebsitesPermissionsTransformer())
             ->make(true);
+    }
+
+    public function validateNotLastActiveAdministrator(Validator $validator): void
+    {
+        $publicAdministration = request()->route('publicAdministration');
+        $user = request()->route('user');
+        $isAdmin = Bouncer::scope()->onceTo($publicAdministration ? $publicAdministration->id : current_public_administration()->id, function () use ($user) {
+            return $user->isA(UserRole::ADMIN);
+        });
+        if ($isAdmin && $user->status->is(UserStatus::ACTIVE) && 1 === ($publicAdministration ?? current_public_administration())->getActiveAdministrators()->count()) {
+            $validator->errors()->add('isAdmin', 'Impossibile rimuovere l\'utente ' . $user->getInfo() . ' in quanto ultimo amministratore attivo della P.A.');
+        }
     }
 }
