@@ -6,15 +6,36 @@ use App\Enums\UserRole;
 use App\Enums\UserStatus;
 use App\Events\User\UserInvited;
 use App\Models\User;
+use App\Transformers\SuperAdminTransformer;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Illuminate\View\View;
 use Ramsey\Uuid\Uuid;
+use Yajra\DataTables\DataTables;
 
 class AdminUserController extends Controller
 {
+    public function index(): View
+    {
+        $data = [
+            'columns' => [
+                ['data' => 'name', 'name' => 'Cognome e nome'],
+                ['data' => 'email', 'name' => 'Email'],
+                ['data' => 'added_at', 'name' => 'Iscritto dal'],
+                ['data' => 'status', 'name' => 'Stato'],
+                ['data' => 'buttons', 'name' => 'Azioni'],
+            ],
+            'source' => route('admin.users.data.json'),
+            'caption' => 'Elenco dei super amministratori del Web Analytics Italia', //TODO: set title in lang file
+            'columnsOrder' => [['added_at', 'asc'], ['name', 'asc']],
+        ];
+
+        return view('pages.admin.user.index')->with($data);
+    }
+
     /**
      * Show the form for creating a new user.
      *
@@ -134,5 +155,12 @@ class AdminUserController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function dataJson()
+    {
+        return DataTables::of(User::whereIs(UserRole::SUPER_ADMIN))
+            ->setTransformer(new SuperAdminTransformer())
+            ->make(true);
     }
 }

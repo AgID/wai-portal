@@ -399,6 +399,15 @@ Route::middleware('admin.auth', 'verified:admin.verification.notice')->group(fun
             });
 
             Route::prefix('/users')->group(function () {
+                Route::get('/', [
+                    'as' => 'admin.users.index',
+                    'uses' => 'AdminUserController@index',
+                ]);
+
+                Route::get('/data', [
+                    'as' => 'admin.users.data.json',
+                    'uses' => 'AdminUserController@dataJson',
+                ]);
                 Route::get('/add', [
                     'as' => 'admin.users.create',
                     'uses' => 'AdminUserController@create',

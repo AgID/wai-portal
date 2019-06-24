@@ -177,18 +177,30 @@ return [
                 'caption' => 'Messaggi di log del portale Web Analytics Italia',
             ],
         ],
+        'admin' => [
+            'dashboard' => [
+                'title' => 'Dashboard amministrativa',
+            ],
+            'users' => [
+                'index' => [
+                    'title' => 'Utenti amministratori',
+                    'show_user' => 'dettaglio amministratore',
+                    'add_user' => 'aggiungi amministratore',
+                    'edit_user' => 'modifica amministratore',
+                ],
+                'show' => [
+                    'title' => 'Visualizza amministratore',
+                ],
+                'add' => [
+                    'title' => 'Aggiungi amministratore',
+                ],
+                'edit' => [
+                    'title' => 'Modifica amministratore',
+                ],
+            ],
+        ],
         'admin-login' => [
             'title' => 'Accesso amministratori',
-        ],
-        'admin-dashboard' => [
-            'title' => 'Dashboard amministrativa',
-        ],
-        'admin-user_show' => [
-            'title' => 'Profilo utente amministratore',
-            'update' => 'Modifica'
-        ],
-        'admin-user_edit' => [
-            'title' => 'Modifica utente amministratore',
         ],
         'admin-password_forgot' => [
             'title' => 'Password dimenticata',
@@ -198,9 +210,6 @@ return [
         ],
         'admin-password_change' => [
             'title' => 'Cambio della password',
-        ],
-        'admin-user_add' => [
-            'title' => 'Nuovo utente amministratore',
         ],
         'admin-verify' => [
             'title' => 'Verifica indirizzo email',

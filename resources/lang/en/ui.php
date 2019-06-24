@@ -175,15 +175,27 @@ return [
         'admin-login' => [
             'title' => 'Accesso amministratori'
         ],
-        'admin-dashboard' => [
-            'title' => 'Dashboard amministrativa'
-        ],
-        'admin-user_show' => [
-            'title' => 'Profilo utente amministratore',
-            'update' => 'Modifica'
-        ],
-        'admin-user_edit' => [
-            'title' => 'Modifica utente amministratore'
+        'admin' => [
+            'dashboard' => [
+                'title' => 'Management Dashboard',
+            ],
+            'users' => [
+                'index' => [
+                    'title' => 'Administrators',
+                    'show_user' => 'show administrator',
+                    'add_user' => 'add administrator',
+                    'edit_user' => 'edit administrator',
+                ],
+                'show' => [
+                    'title' => 'Show administrator',
+                ],
+                'add' => [
+                    'title' => 'Add administrator',
+                ],
+                'edit' => [
+                    'title' => 'Edit administrator',
+                ],
+            ],
         ],
         'admin-password_forgot' => [
             'title' => 'Password dimenticata'
@@ -193,9 +205,6 @@ return [
         ],
         'admin-password_change' => [
             'title' => 'Cambio della password'
-        ],
-        'admin-user_add' => [
-            'title' => 'Nuovo utente amministratore'
         ],
         'admin-verify' => [
             'title' => 'Verifica indirizzo email'
