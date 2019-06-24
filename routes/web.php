@@ -417,6 +417,11 @@ Route::middleware('admin.auth', 'verified:admin.verification.notice')->group(fun
                     'as' => 'admin.users.store',
                     'uses' => 'AdminUserController@store',
                 ]);
+
+				Route::get('/{user}/show', [
+                    'as' => 'admin.users.show',
+                    'uses' => 'AdminUserController@show',
+                ]);
             });
         });
 
