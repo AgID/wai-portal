@@ -34,6 +34,7 @@ return [
         UserRole::ADMIN => 'Admin of own Public Administation',
         UserRole::DELEGATED => 'Delegated user',
         UserRole::REGISTERED => 'Registered user',
+        UserRole::REMOVED => 'Suspended user',
     ],
 
     UserStatus::class => [

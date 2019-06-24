@@ -29,4 +29,6 @@ final class UserRole extends Enum implements LocalizedEnum
      * Registered user role constant.
      */
     public const REGISTERED = 'registered';
+
+    public const REMOVED = 'removed';
 }

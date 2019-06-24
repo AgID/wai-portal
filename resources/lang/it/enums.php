@@ -34,6 +34,7 @@ return [
         UserRole::ADMIN => 'Amministarore della propria PA',
         UserRole::DELEGATED => 'Incaricato della propria PA',
         UserRole::REGISTERED => 'Utente registrato',
+        UserRole::REMOVED => 'Utente sospeso',
     ],
 
     UserStatus::class => [
