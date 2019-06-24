@@ -81,7 +81,7 @@ class AdminUserController extends Controller
 
         event(new UserInvited($user, $request->user()));
 
-        return redirect()->route('admin-dashboard')
+        return redirect()->route('admin.users.index')
             ->withMessages([
                 ['success' => 'Il nuovo utente è stato invitato come amministratore al progetto Web Analytics Italia.'],
                 ['info' => 'Comunica al nuovo utente la sua password temporanea ' . $temporaryPassword . ' usando un canale diverso dalla mail ' . $validatedData['email'] . '.'],
