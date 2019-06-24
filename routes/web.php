@@ -296,39 +296,42 @@ Route::middleware('spid.auth', 'auth', 'verified')->group(function () {
 
             Route::prefix('/users')->group(function () {
                 Route::get('/', [
-                    'as' => 'users-index',
+                    'as' => 'users.index',
                     'uses' => 'UserController@index',
                 ]);
 
                 Route::get('/data', [
-                    'as' => 'users-data-json',
+                    'as' => 'users.data.json',
                     'uses' => 'UserController@dataJson',
                 ]);
 
-                Route::get('/add', [
-                    'as' => 'users-create',
-                    'uses' => 'UserController@create',
-                ])->middleware('authorize.analytics:' . UserPermission::MANAGE_USERS);
+                Route::middleware('authorize.analytics:' . UserPermission::MANAGE_USERS)->group(function () {
+                    Route::get('/add', [
+                        'as' => 'users.create',
+                        'uses' => 'UserController@create',
+                    ]);
 
-                Route::get('/webistes-data', [
-                    'as' => 'users.websites.permissions.data',
-                    'uses' => 'UserController@dataWebsitesPermissionsJson',
-                ])->middleware('authorize.analytics:' . UserPermission::MANAGE_USERS);
+                    Route::get('/websites-data/{user?}', [
+                        'as' => 'users.websites.permissions.data',
+                        'uses' => 'UserController@dataWebsitesPermissionsJson',
+                    ]);
 
-                Route::post('/store', [
-                    'as' => 'users-store',
-                    'uses' => 'UserController@store',
-                ])->middleware('authorize.analytics:' . UserPermission::MANAGE_USERS);
+                    Route::post('/', [
+                        'as' => 'users.store',
+                        'uses' => 'UserController@store',
+                    ]);
 
-                Route::get('/{user}/edit', [
-                    'as' => 'users-edit',
-                    'uses' => 'UserController@edit',
-                ])->middleware('authorize.analytics:' . UserPermission::MANAGE_USERS);
+                    Route::get('/{user}/edit', [
+                        'as' => 'users.edit',
+                        'uses' => 'UserController@edit',
+                    ]);
 
-                Route::post('/{user}/update', [
-                    'as' => 'users-update',
-                    'uses' => 'UserController@update',
-                ])->middleware('authorize.analytics:' . UserPermission::MANAGE_USERS);
+                    Route::patch('/{user}/update', [
+                        'as' => 'users.update',
+                        'uses' => 'UserController@update',
+                    ]);
+
+                });
             });
         });
 

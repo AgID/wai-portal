@@ -95,7 +95,7 @@ return [
             ],
             'edit' => [
                 'title' => 'Modifica utente',
-            ]
+            ],
         ],
         'spid-auth_login' => [
             'title' => 'Accesso con SPID',

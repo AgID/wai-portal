@@ -86,16 +86,16 @@ return [
         ],
         'users' => [
             'index' => [
-                'title' => 'Utenti',
-                'add_user' => 'aggiungi utente',
-                'edit_user' => 'modifica utente'
+                'title' => 'Users',
+                'add_user' => 'add user',
+                'edit_user' => 'edit user',
             ],
             'add' => [
-                'title' => 'Nuovo utente'
+                'title' => 'New user',
             ],
             'edit' => [
-                'title' => 'Modifica utente'
-            ]
+                'title' => 'Edit user',
+            ],
         ],
         'spid-auth_login' => [
             'title' => 'Accesso con SPID'

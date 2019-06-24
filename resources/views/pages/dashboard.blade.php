@@ -10,6 +10,6 @@
     ])
     @include('partials.link_button', [
         'label' => __('ui.pages.dashboard.users'),
-        'href' => route('users-index', [], false)
+        'href' => route('users.index', [], false)
     ])
 @endsection

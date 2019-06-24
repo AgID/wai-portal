@@ -32,7 +32,7 @@ class UserController extends Controller
                 ['data' => 'status', 'name' => 'Stato'],
                 ['data' => 'buttons', 'name' => 'Azioni'],
             ],
-            'source' => route('users-data-json'),
+            'source' => route('users.data.json'),
             'caption' => 'Elenco degli utenti web abilitati su Web Analytics Italia', //TODO: set title in lang file
             'columnsOrder' => [['added_at', 'asc'], ['name', 'asc']],
         ];
@@ -112,7 +112,7 @@ class UserController extends Controller
 
         event(new UserInvited($user, $request->user(), current_public_administration()));
 
-        return redirect()->route('users-index')->withMessage(['success' => 'Il nuovo utente è stato invitato al progetto Web Analytics Italia']); //TODO: put message in lang file
+        return redirect()->route('users.index')->withMessage(['success' => 'Il nuovo utente è stato invitato al progetto Web Analytics Italia']); //TODO: put message in lang file
     }
 
     /**

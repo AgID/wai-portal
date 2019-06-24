@@ -28,7 +28,7 @@ class UserTransformer extends TransformerAbstract
 
         if (auth()->user()->can(UserPermission::MANAGE_USERS)) {
             $data['buttons'][] = [
-                'link' => route('users-edit', ['user' => $user], false),
+                'link' => route('users.edit', ['user' => $user], false),
                 'label' => __('ui.pages.users.index.edit_user'),
             ];
         }

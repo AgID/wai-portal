@@ -3,7 +3,7 @@
 @section('title', __('ui.pages.users.add.title'))
 
 @section('content')
-    <form class="Form Form--spaced u-text-r-xs" method="post" action="{{ route('users-store', [], false) }}">
+    <form class="Form Form--spaced u-text-r-xs" method="post" action="{{ route('users.store', [], false) }}">
         @csrf
         @if ($errors->isEmpty())
             <div class="Prose Alert Alert--info">

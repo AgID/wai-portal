@@ -1,10 +1,11 @@
 @extends('layouts.default')
 
-@section('title', __('ui.pages.users.add.title'))
+@section('title', __('ui.pages.users.edit.title'))
 
 @section('content')
-    <form class="Form Form--spaced u-text-r-xs" method="post" action="{{ route('users-update', ['user' => $user], false) }}">
+    <form class="Form Form--spaced u-text-r-xs" method="post" action="{{ route('users.update', ['user' => $user], false) }}">
         @csrf
+        @method('PATCH')
         @if ($errors->isEmpty())
             <div class="Prose Alert Alert--info">
                 <p class="u-text-p">Tutti i campi sono richiesti salvo dove espressamente indicato.</p>

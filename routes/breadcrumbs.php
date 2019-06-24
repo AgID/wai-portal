@@ -60,21 +60,21 @@ Breadcrumbs::for('website-javascript-snippet', function ($trail, $website) {
 });
 
 // Web Analytics Italia > Dashboard > Users
-Breadcrumbs::for('users-index', function ($trail) {
+Breadcrumbs::for('users.index', function ($trail) {
     $trail->parent('dashboard');
-    $trail->push(__('ui.pages.users.index.title'), route('users-index', [], false));
+    $trail->push(__('ui.pages.users.index.title'), route('users.index', [], false));
 });
 
 // Web Analytics Italia > Dashboard > Users > Add user
-Breadcrumbs::for('users-create', function ($trail) {
-    $trail->parent('users-index');
-    $trail->push(__('ui.pages.users.add.title'), route('users-create', [], false));
+Breadcrumbs::for('users.create', function ($trail) {
+    $trail->parent('users.index');
+    $trail->push(__('ui.pages.users.add.title'), route('users.create', [], false));
 });
 
-// Web Analytics Italia > Dashboard > Users > Add user
-Breadcrumbs::for('users-edit', function ($trail, $user) {
-    $trail->parent('users-index');
-    $trail->push(__('ui.pages.users.edit.title'), route('users-edit', ['user' => $user], false));
+// Web Analytics Italia > Dashboard > Users > Edit user
+Breadcrumbs::for('users.edit', function ($trail, $user) {
+    $trail->parent('users.index');
+    $trail->push(__('ui.pages.users.edit.title'), route('users.edit', ['user' => $user], false));
 });
 
 // Web Analytics Italia > User profile
