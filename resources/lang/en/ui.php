@@ -90,6 +90,8 @@ return [
                 'show_user' => 'show user',
                 'add_user' => 'add user',
                 'edit_user' => 'edit user',
+                'suspend_user' => 'suspend user',
+                'reactivate_user' => 'reactivate user',
             ],
             'show' => [
                 'title' => 'Show user',

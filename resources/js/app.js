@@ -8,6 +8,7 @@ import LogsDatatables from './logsDatatables'
 import CheckWebsiteTracking from './checkWebsiteTracking';
 import UserWebsitesPermissions from './userWebsitesPermissions';
 import ChangeArchiveStatus from './changeArchiveStatus';
+import ChangeSuspendStatus from './changeSuspendStatus';
 
 $(document).ready(() => {
     Datatables.init(
@@ -18,6 +19,7 @@ $(document).ready(() => {
             () => CheckWebsiteTracking.initWebsiteCheckButton(),
             () => UserWebsitesPermissions.initPermissionInputs(),
             () => ChangeArchiveStatus.initArchiveStatusButton(),
+            () => ChangeSuspendStatus.initSuspendStatusButton(),
         ]
     );
 });

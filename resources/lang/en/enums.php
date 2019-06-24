@@ -107,6 +107,7 @@ return [
         ExceptionType::USER_INDEX_SEARCH => 'User index search error',
         ExceptionType::INVALID_WEBSITE_STATUS => 'Invalid website status error',
         ExceptionType::INVALID_OPERATION => 'Invalid operation error',
+        ExceptionType::INVALID_USER_STATUS => 'Invalid user status error',
     ],
 
     JobType::class => [

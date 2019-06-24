@@ -336,6 +336,15 @@ Route::middleware('spid.auth', 'auth', 'verified')->group(function () {
                         'uses' => 'UserController@update',
                     ]);
 
+                    Route::patch('/{user}/suspend', [
+                        'as' => 'users.suspend',
+                        'uses' => 'UserController@suspend',
+                    ]);
+
+                    Route::patch('/{user}/reactivate', [
+                        'as' => 'users.reactivate',
+                        'uses' => 'UserController@reactivate',
+                    ]);
                 });
             });
         });

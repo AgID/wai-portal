@@ -35,6 +35,23 @@ class UserTransformer extends TransformerAbstract
                 'link' => route('users.edit', ['user' => $user], false),
                 'label' => __('ui.pages.users.index.edit_user'),
             ];
+            if ($user->status->is(UserStatus::SUSPENDED)) {
+                $data['buttons'][] = [
+                    'link' => route('users.reactivate', ['user' => $user], false),
+                    'label' => __('ui.pages.users.index.reactivate_user'),
+                    'dataAttributes' => [
+                        'type' => 'suspendStatus',
+                    ],
+                ];
+            } else {
+                $data['buttons'][] = [
+                    'link' => route('users.suspend', ['user' => $user], false),
+                    'label' => __('ui.pages.users.index.suspend_user'),
+                    'dataAttributes' => [
+                        'type' => 'suspendStatus',
+                    ],
+                ];
+            }
         }
 
         return $data;

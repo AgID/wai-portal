@@ -6,6 +6,8 @@ use App\Enums\UserPermission;
 use App\Enums\UserRole;
 use App\Enums\UserStatus;
 use App\Events\User\UserInvited;
+use App\Exceptions\InvalidUserStatusException;
+use App\Exceptions\OperationNotAllowedException;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
@@ -17,6 +19,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Validator;
 use Ramsey\Uuid\Uuid;
+use Silber\Bouncer\BouncerFacade as Bouncer;
 use Yajra\Datatables\Datatables;
 
 class UserController extends Controller
@@ -239,6 +242,66 @@ class UserController extends Controller
         $user->syncWebsitesPermissionsToAnalyticsService();
 
         return redirect()->route('users.index')->withMessage(['success' => "L'utente " . $user->getInfo() . ' è stato modificato.']); //TODO: put message in lang file
+    }
+
+    public function suspend(User $user): JsonResponse
+    {
+        try {
+            if ($user->status->is(UserStatus::SUSPENDED)) {
+                return response()->json(null, 304);
+            }
+
+            if ($user->status->is(UserStatus::PENDING)) {
+                throw new InvalidUserStatusException('Impossibile sospendere un utente in attesa di attivazione'); //TODO: put message in lang file
+            }
+
+            $validator = validator(request()->all())->after([$this, 'validateNotLastActiveAdministrator']);
+            if ($validator->fails()) {
+                throw new OperationNotAllowedException($validator->errors()->first('isAdmin'));
+            }
+
+            $user->status = UserStatus::SUSPENDED;
+            $user->save();
+
+            $user->publicAdministrations()->get()->map(function ($publicAdministration) use ($user) {
+                Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user) {
+                    $user->assign(UserRole::REMOVED);
+                });
+            });
+
+            return response()->json(['result' => 'ok', 'id' => $user->uuid, 'status' => $user->status->description]);
+        } catch (InvalidUserStatusException $exception) {
+            report($exception);
+            $code = $exception->getCode();
+            $message = 'Invalid operation for current user status';
+            $httpStatusCode = 400;
+        } catch (OperationNotAllowedException $exception) {
+            report($exception);
+            $code = $exception->getCode();
+            $message = 'Invalid operation for current user';
+            $httpStatusCode = 400;
+        }
+
+        return response()->json(['result' => 'error', 'message' => $message, 'code' => $code], $httpStatusCode);
+    }
+
+    public function reactivate(User $user): JsonResponse
+    {
+        if (!$user->status->is(UserStatus::SUSPENDED)) {
+            return response()->json(null, 304);
+        }
+
+        $user->status = $user->hasVerifiedEmail() ? UserStatus::ACTIVE : UserStatus::INVITED;
+        $user->save();
+
+        $user->publicAdministrations()->get()->map(function ($publicAdministration) use ($user) {
+            Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user) {
+                $user->retract(UserRole::REMOVED);
+            });
+        });
+
+        return response()->json(['result' => 'ok', 'id' => $user->uuid, 'status' => $user->status->description]);
+
     }
 
     /**

@@ -107,6 +107,7 @@ return [
         ExceptionType::USER_INDEX_SEARCH => 'Errore ricerca indice utenti',
         ExceptionType::INVALID_WEBSITE_STATUS => 'Errore stato sito web non valido',
         ExceptionType::INVALID_OPERATION => 'Errore comando non valido',
+        ExceptionType::INVALID_USER_STATUS => 'Error stato utente non valido',
     ],
 
     JobType::class => [

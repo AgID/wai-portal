@@ -90,6 +90,8 @@ return [
                 'show_user' => 'dettaglio utente',
                 'add_user' => 'aggiungi utente',
                 'edit_user' => 'modifica utente',
+                'suspend_user' => 'sospendi utente',
+                'reactivate_user' => 'riattiva utente',
             ],
             'show' => [
                 'title' => 'Visualizza utente',
