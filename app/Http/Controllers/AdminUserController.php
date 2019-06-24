@@ -5,13 +5,17 @@ namespace App\Http\Controllers;
 use App\Enums\UserRole;
 use App\Enums\UserStatus;
 use App\Events\User\UserInvited;
+use App\Exceptions\OperationNotAllowedException;
 use App\Models\User;
 use App\Transformers\SuperAdminTransformer;
 use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Validator;
 use Illuminate\View\View;
 use Ramsey\Uuid\Uuid;
 use Yajra\DataTables\DataTables;
@@ -141,7 +145,44 @@ class AdminUserController extends Controller
         $user->save();
 
         return redirect()->route('admin.users.index')->withMessage(['success' => "L'utente amministratore " . $user->getInfo() . ' è stato modificato.']); //TODO: put message in lang file
+    }
 
+    public function suspend(User $user): JsonResponse
+    {
+        try {
+            if ($user->status->is(UserStatus::SUSPENDED)) {
+                return response()->json(null, 304);
+            }
+
+            $validator = validator(request()->all())->after([$this, 'validateNotLastActiveAdministrator']);
+            if ($validator->fails()) {
+                throw new OperationNotAllowedException($validator->errors()->first('isAdmin'));
+            }
+
+            $user->status = UserStatus::SUSPENDED;
+            $user->save();
+
+            return response()->json(['result' => 'ok', 'id' => $user->uuid, 'status' => $user->status->description]);
+        } catch (OperationNotAllowedException $exception) {
+            report($exception);
+            $code = $exception->getCode();
+            $message = 'Invalid operation for current user';
+            $httpStatusCode = 400;
+        }
+
+        return response()->json(['result' => 'error', 'message' => $message, 'code' => $code], $httpStatusCode);
+    }
+
+    public function reactivate(User $user): JsonResponse
+    {
+        if (!$user->status->is(UserStatus::SUSPENDED)) {
+            return response()->json(null, 304);
+        }
+
+        $user->status = $user->hasVerifiedEmail() ? UserStatus::ACTIVE : UserStatus::INVITED;
+        $user->save();
+
+        return response()->json(['result' => 'ok', 'id' => $user->uuid, 'status' => $user->status->description]);
     }
 
     /**
@@ -161,5 +202,13 @@ class AdminUserController extends Controller
         return DataTables::of(User::whereIs(UserRole::SUPER_ADMIN))
             ->setTransformer(new SuperAdminTransformer())
             ->make(true);
+    }
+
+    public function validateNotLastActiveAdministrator(Validator $validator): void
+    {
+        $user = request()->route('user');
+        if ($user->status->is(UserStatus::ACTIVE) && 1 === User::where('status', UserStatus::ACTIVE)->whereIs(UserRole::SUPER_ADMIN)->count()) {
+            $validator->errors()->add('lastAdmin', 'Impossibile rimuovere l\'utente ' . $user->getInfo() . ' in quanto unico amministratore attivo del portale');
+        }
     }
 }

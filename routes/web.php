@@ -432,6 +432,16 @@ Route::middleware('admin.auth', 'verified:admin.verification.notice')->group(fun
                     'as' => 'admin.users.update',
                     'uses' => 'AdminUserController@update',
                 ]);
+
+				Route::patch('/{user}/suspend', [
+                    'as' => 'admin.users.suspend',
+                    'uses' => 'AdminUserController@suspend',
+                ]);
+
+                Route::patch('/{user}/reactivate', [
+                    'as' => 'admin.users.reactivate',
+                    'uses' => 'AdminUserController@reactivate',
+                ]);
             });
         });
 

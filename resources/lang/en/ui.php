@@ -185,6 +185,8 @@ return [
                     'show_user' => 'show administrator',
                     'add_user' => 'add administrator',
                     'edit_user' => 'edit administrator',
+                    'suspend_user' => 'suspend administrator',
+                    'reactivate_user' => 'reactivate administrator',
                 ],
                 'show' => [
                     'title' => 'Show administrator',

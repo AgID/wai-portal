@@ -187,6 +187,8 @@ return [
                     'show_user' => 'dettaglio amministratore',
                     'add_user' => 'aggiungi amministratore',
                     'edit_user' => 'modifica amministratore',
+                    'suspend_user' => 'sospendi amministratore',
+                    'reactivate_user' => 'riattiva amministratore',
                 ],
                 'show' => [
                     'title' => 'Visualizza amministratore',

@@ -2,6 +2,7 @@
 
 namespace App\Transformers;
 
+use App\Enums\UserStatus;
 use App\Models\User;
 use League\Fractal\TransformerAbstract;
 
@@ -36,6 +37,24 @@ class SuperAdminTransformer extends TransformerAbstract
             ],
             'control' => '',
         ];
+
+        if ($user->status->is(UserStatus::SUSPENDED)) {
+            $data['buttons'][] = [
+                'link' => route('admin.users.reactivate', ['user' => $user], false),
+                'label' => __('ui.pages.admin.users.index.reactivate_user'),
+                'dataAttributes' => [
+                    'type' => 'suspendStatus',
+                ],
+            ];
+        } else {
+            $data['buttons'][] = [
+                'link' => route('admin.users.suspend', ['user' => $user], false),
+                'label' => __('ui.pages.admin.users.index.suspend_user'),
+                'dataAttributes' => [
+                    'type' => 'suspendStatus',
+                ],
+            ];
+        }
 
         return $data;
     }
