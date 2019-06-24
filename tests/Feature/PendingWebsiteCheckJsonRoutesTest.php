@@ -86,9 +86,8 @@ class PendingWebsiteCheckJsonRoutesTest extends TestCase
      */
     protected function tearDown(): void
     {
-        $tokenAuth = config('analytics-service.admin_token');
         $this->user->deleteAnalyticsServiceAccount();
-        $this->app->make('analytics-service')->deleteSite($this->website->analytics_id, $tokenAuth);
+        $this->app->make('analytics-service')->deleteSite($this->website->analytics_id);
         parent::tearDown();
     }
 

@@ -69,12 +69,11 @@ interface AnalyticsService
      * Delete a given site in the Analytics Service.
      *
      * @param string $idSite the Analytics Service website ID
-     * @param string $tokenAuth the Analytics authentication token
      *
      * @throws AnalyticsServiceException if unable to connect the Analytics Service
      * @throws CommandErrorException if command is unsuccessful
      */
-    public function deleteSite(string $idSite, string $tokenAuth): void;
+    public function deleteSite(string $idSite): void;
 
     /**
      * Register a new user in the Analytics Service.

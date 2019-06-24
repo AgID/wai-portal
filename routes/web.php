@@ -292,11 +292,6 @@ Route::middleware('spid.auth', 'auth', 'verified')->group(function () {
                         'as' => 'websites.update',
                         'uses' => 'WebsiteController@update',
                     ]);
-
-                    Route::post('/{website}/delete', [
-                        'as' => 'websites.delete',
-                        'uses' => 'WebsiteController@destroy',
-                    ]);
                 });
 
                 Route::middleware('authorize.analytics:' . UserPermission::READ_ANALYTICS)->group(function () {

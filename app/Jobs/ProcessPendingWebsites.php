@@ -95,7 +95,7 @@ class ProcessPendingWebsites implements ShouldQueue
                         $website->forceDelete();
                     }
 
-                    $analyticsService->deleteSite($website->analytics_id, $this->tokenAuth);
+                    $analyticsService->deleteSite($website->analytics_id);
 
                     event(new WebsitePurged($website->toJson()));
 

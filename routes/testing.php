@@ -64,7 +64,7 @@ Route::get('/_test/_delete_analytics_user/{userId}', function ($userId) {
 
 Route::get('/_test/_delete_analytics_site/{websiteId}', function ($websiteId) {
     $website = Website::find($websiteId);
-    app()->make('analytics-service')->deleteSite($website->analytics_id, config('analytics-service.admin_token'));
+    app()->make('analytics-service')->deleteSite($website->analytics_id);
 });
 
 Route::get('/_test/_session_put/{key}/{value}', function ($key, $value) {
