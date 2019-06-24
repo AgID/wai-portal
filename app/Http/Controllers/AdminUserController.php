@@ -140,9 +140,8 @@ class AdminUserController extends Controller
         ]);
         $user->save();
 
-        logger()->info('User ' . auth()->user()->uuid . ' updated administrator ' . $user->uuid);
+        return redirect()->route('admin.users.index')->withMessage(['success' => "L'utente amministratore " . $user->getInfo() . ' è stato modificato.']); //TODO: put message in lang file
 
-        return redirect()->route('admin-dashboard')->withMessage(['success' => "L'utente amministratore " . $user->getInfo() . ' è stato modificato.']); //TODO: put message in lang file
     }
 
     /**

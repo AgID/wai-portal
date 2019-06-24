@@ -422,6 +422,16 @@ Route::middleware('admin.auth', 'verified:admin.verification.notice')->group(fun
                     'as' => 'admin.users.show',
                     'uses' => 'AdminUserController@show',
                 ]);
+				
+				Route::get('/{user}/edit', [
+                    'as' => 'admin.users.edit',
+                    'uses' => 'AdminUserController@edit',
+                ]);
+
+                Route::patch('/{user}/update', [
+                    'as' => 'admin.users.update',
+                    'uses' => 'AdminUserController@update',
+                ]);
             });
         });
 
