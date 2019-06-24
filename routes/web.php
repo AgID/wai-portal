@@ -321,6 +321,11 @@ Route::middleware('spid.auth', 'auth', 'verified')->group(function () {
                         'uses' => 'UserController@store',
                     ]);
 
+                    Route::get('/{user}/show', [
+                        'as' => 'users.show',
+                        'uses' => 'UserController@show',
+                    ]);
+
                     Route::get('/{user}/edit', [
                         'as' => 'users.edit',
                         'uses' => 'UserController@edit',

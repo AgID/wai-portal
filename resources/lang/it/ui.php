@@ -87,8 +87,12 @@ return [
         'users' => [
             'index' => [
                 'title' => 'Utenti',
+                'show_user' => 'dettaglio utente',
                 'add_user' => 'aggiungi utente',
                 'edit_user' => 'modifica utente',
+            ],
+            'show' => [
+                'title' => 'Visualizza utente',
             ],
             'add' => [
                 'title' => 'Nuovo utente',

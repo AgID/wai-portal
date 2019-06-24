@@ -71,6 +71,12 @@ Breadcrumbs::for('users.create', function ($trail) {
     $trail->push(__('ui.pages.users.add.title'), route('users.create', [], false));
 });
 
+// Web Analytics Italia > Dashboard > Users > Show user
+Breadcrumbs::for('users.show', function ($trail, $user) {
+    $trail->parent('users.index');
+    $trail->push(__('ui.pages.users.show.title'), route('users.show', ['user' => $user], false));
+});
+
 // Web Analytics Italia > Dashboard > Users > Edit user
 Breadcrumbs::for('users.edit', function ($trail, $user) {
     $trail->parent('users.index');

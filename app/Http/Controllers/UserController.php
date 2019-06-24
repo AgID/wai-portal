@@ -124,7 +124,22 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        //
+        $data = [
+            'columns' => [
+                ['data' => 'url', 'name' => 'URL'],
+                ['data' => 'type', 'name' => 'Tipo', 'visible' => false],
+                ['data' => 'added_at', 'name' => 'Aggiunto il', 'visible' => false],
+                ['data' => 'status', 'name' => 'Stato', 'visible' => false],
+                ['data' => 'checkboxes', 'name' => 'Abilitato'],
+                ['data' => 'radios', 'name' => 'Permessi'],
+            ],
+            'source' => route('users.websites.permissions.data', ['user' => $user]) . '?readOnly=true',
+            'caption' => 'Elenco dei siti web presenti su Web Analytics Italia', //TODO: set title in lang file
+            'columnsOrder' => [['added_at', 'asc']],
+            'user' => $user,
+        ];
+
+        return view('pages.users.show')->with($data);
     }
 
     /**

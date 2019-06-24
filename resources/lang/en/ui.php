@@ -87,8 +87,12 @@ return [
         'users' => [
             'index' => [
                 'title' => 'Users',
+                'show_user' => 'show user',
                 'add_user' => 'add user',
                 'edit_user' => 'edit user',
+            ],
+            'show' => [
+                'title' => 'Show user',
             ],
             'add' => [
                 'title' => 'New user',
