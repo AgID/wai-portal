@@ -3,7 +3,7 @@
 namespace App\Events\User;
 
 /**
- * User activated event.
+ * User updated event.
  */
 class UserUpdated extends AbstractUserEvent
 {

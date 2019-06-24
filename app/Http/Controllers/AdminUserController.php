@@ -20,8 +20,16 @@ use Illuminate\View\View;
 use Ramsey\Uuid\Uuid;
 use Yajra\DataTables\DataTables;
 
+/**
+ * Super-admin users management controller.
+ */
 class AdminUserController extends Controller
 {
+    /**
+     * Display super-admin user list.
+     *
+     * @return View the view
+     */
     public function index(): View
     {
         $data = [
@@ -43,21 +51,23 @@ class AdminUserController extends Controller
     /**
      * Show the form for creating a new user.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View the view
      */
-    public function create()
+    public function create(): View
     {
         return view('pages.admin.user.add');
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Create a new user.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param \Illuminate\Http\Request $request the incoming request
      *
-     * @return \Illuminate\Http\Response
+     * @throws \Exception if unable to generate user UUID
+     *
+     * @return \Illuminate\Http\RedirectResponse the server redirect response
      */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $validatedData = $request->validate([
             'name' => 'required',
@@ -94,38 +104,38 @@ class AdminUserController extends Controller
     }
 
     /**
-     * Show the profile page.
+     * Show the user details page.
      *
-     * @param User $user
+     * @param User $user the user to display
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View the view
      */
-    public function show(User $user)
+    public function show(User $user): View
     {
         return view('pages.admin.user.show')->with(['user' => $user]);
     }
 
     /**
-     * Show the profile edit form.
+     * Show the form to edit an existing user.
      *
-     * @param User $user
+     * @param User $user the user to edit
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View the view
      */
-    public function edit(User $user)
+    public function edit(User $user): View
     {
         return view('pages.admin.user.edit')->with(['user' => $user]);
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the user information.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param User $user
+     * @param \Illuminate\Http\Request $request the incoming request
+     * @param User $user the user to update
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse the server redirect response
      */
-    public function update(Request $request, User $user)
+    public function update(Request $request, User $user): RedirectResponse
     {
         $validatedData = $request->validate([
             'name' => 'required',
@@ -147,6 +157,13 @@ class AdminUserController extends Controller
         return redirect()->route('admin.users.index')->withMessage(['success' => "L'utente amministratore " . $user->getInfo() . ' è stato modificato.']); //TODO: put message in lang file
     }
 
+    /**
+     * Suspend an existing user.
+     *
+     * @param User $user the user to suspend
+     *
+     * @return \Illuminate\Http\JsonResponse the JSON response
+     */
     public function suspend(User $user): JsonResponse
     {
         try {
@@ -173,6 +190,13 @@ class AdminUserController extends Controller
         return response()->json(['result' => 'error', 'message' => $message, 'code' => $code], $httpStatusCode);
     }
 
+    /**
+     * Reactivate an existing user.
+     *
+     * @param User $user the user to reactivate
+     *
+     * @return \Illuminate\Http\JsonResponse the JSON response
+     */
     public function reactivate(User $user): JsonResponse
     {
         if (!$user->status->is(UserStatus::SUSPENDED)) {
@@ -186,17 +210,12 @@ class AdminUserController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Get the super-admin users data.
      *
-     * @param int $id
+     * @throws \Exception if unable to initialize the datatable
      *
-     * @return \Illuminate\Http\Response
+     * @return mixed the response the JSON format
      */
-    public function destroy($id)
-    {
-        //
-    }
-
     public function dataJson()
     {
         return DataTables::of(User::whereIs(UserRole::SUPER_ADMIN))
@@ -204,6 +223,11 @@ class AdminUserController extends Controller
             ->make(true);
     }
 
+    /**
+     * Validate user isn't the last active super-admin.
+     *
+     * @param Validator $validator the validator
+     */
     public function validateNotLastActiveAdministrator(Validator $validator): void
     {
         $user = request()->route('user');

@@ -69,5 +69,9 @@ class ExceptionType extends Enum implements LocalizedEnum
      * Invalid operation related exception.
      */
     public const INVALID_OPERATION = 11;
+
+    /**
+     * Invalid user status related exception.
+     */
     public const INVALID_USER_STATUS = 12;
 }

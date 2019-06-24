@@ -5,19 +5,23 @@ namespace App\Http\Controllers\Auth;
 use App\Enums\UserRole;
 use App\Exceptions\CommandErrorException;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
+/**
+ * User profile controller.
+ */
 class ProfileController extends Controller
 {
     /**
      * Show the profile page.
      *
-     * @param Request $request
+     * @param Request $request the incoming request
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View the view
      */
     public function show(Request $request): View
     {
@@ -27,7 +31,9 @@ class ProfileController extends Controller
     /**
      * Show the profile form.
      *
-     * @return \Illuminate\Http\Response
+     * @param Request $request the incoming request
+     *
+     * @return \Illuminate\View\View the view
      */
     public function edit(Request $request): View
     {
@@ -37,12 +43,13 @@ class ProfileController extends Controller
     /**
      * Update the specified user profile.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \App\Models\User $user
+     * @param Request $request the incoming request
      *
-     * @return \Illuminate\Http\Response
+     * @throws CommandErrorException if command is unsuccessful
+     *
+     * @return \Illuminate\Http\RedirectResponse the server redirect response
      */
-    public function update(Request $request)
+    public function update(Request $request): RedirectResponse
     {
         $user = $request->user();
         $validator = validator($request->all(), [

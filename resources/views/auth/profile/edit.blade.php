@@ -43,10 +43,10 @@
                 <input class="Form-input {{ $user->isA(UserRole::SUPER_ADMIN) ? '' : 'is-disabled' }}" id="familyName" name="familyName" type="text" aria-required="true" value="{{ $user->familyName }}" required {{ $user->isA(UserRole::SUPER_ADMIN) ? '' : 'readonly' }}>
             </div>
             <div class="Form-field {{ $errors->has('email') ? 'is-invalid' : '' }}">
-                @if ($errors->has('email'))
+                @error('email')
                 <div class="Alert Alert--error Alert--withBg u-padding-r-top u-padding-r-bottom u-padding-r-right">
                     <p class="u-text-p u-padding-r-bottom">{{ $errors->first('email') }}</p>
-                @endif
+                @enderror
                     <label class="Form-label is-required" for="email">
                         Indirizzo email istituzionale{{-- //TODO: put message in lang file --}}
                     </label>
@@ -54,9 +54,9 @@
                     <p class="Form-message">
                         Inserisci la mail di lavoro fornita dalla tua PA (es. nome.cognome@agid.gov.it).{{-- //TODO: put message in lang file --}}
                     </p>
-                @if ($errors->has('email'))
+                @error('email')
                 </div>
-                @endif
+                @enderror
             </div>
         </fieldset>
         <div class="Form-field Grid-cell u-textRight">

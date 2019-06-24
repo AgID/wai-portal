@@ -5,19 +5,22 @@ namespace App\Events\User;
 use App\Models\PublicAdministration;
 use App\Models\User;
 
+/**
+ * User invited event.
+ */
 class UserInvited extends AbstractUserEvent
 {
     /**
      * The public administration selected for the invitation.
      *
-     * @var PublicAdministration
+     * @var PublicAdministration the public administration
      */
     protected $publicAdministration;
 
     /**
      * The user issuing the invitation.
      *
-     * @var User
+     * @var User the user issuing the invitation
      */
     protected $invitedBy;
 

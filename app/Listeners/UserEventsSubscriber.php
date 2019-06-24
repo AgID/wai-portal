@@ -185,6 +185,11 @@ class UserEventsSubscriber
         );
     }
 
+    /**
+     * Handle user login events.
+     *
+     * @param UserLogin $event the event
+     */
     public function onLogin(UserLogin $event): void
     {
         $user = $event->getUser();
@@ -199,6 +204,11 @@ class UserEventsSubscriber
         );
     }
 
+    /**
+     * Handle user logout events.
+     *
+     * @param UserLogout $event the event
+     */
     public function onLogout(UserLogout $event): void
     {
         $user = $event->getUser();
@@ -211,6 +221,11 @@ class UserEventsSubscriber
         );
     }
 
+    /**
+     * Handle user deleted events.
+     *
+     * @param UserDeleted $event the event
+     */
     public function onDeleted(UserDeleted $event): void
     {
         $user = $event->getUser();

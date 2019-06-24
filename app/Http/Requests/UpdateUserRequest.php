@@ -7,8 +7,16 @@ use App\Enums\UserStatus;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
 
+/**
+ * Update user request.
+ */
 class UpdateUserRequest extends StoreUserRequest
 {
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array the validation rules
+     */
     public function rules(): array
     {
         $rules = parent::rules();
@@ -22,6 +30,11 @@ class UpdateUserRequest extends StoreUserRequest
         return $rules;
     }
 
+    /**
+     * Configure the validator instance.
+     *
+     * @param Validator $validator the validator instance
+     */
     public function withValidator(Validator $validator): void
     {
         parent::withValidator($validator);

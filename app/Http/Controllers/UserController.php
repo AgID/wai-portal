@@ -7,6 +7,7 @@ use App\Enums\UserRole;
 use App\Enums\UserStatus;
 use App\Events\User\UserDeleted;
 use App\Events\User\UserInvited;
+use App\Exceptions\CommandErrorException;
 use App\Exceptions\InvalidUserStatusException;
 use App\Exceptions\OperationNotAllowedException;
 use App\Http\Requests\StoreUserRequest;
@@ -15,23 +16,26 @@ use App\Models\PublicAdministration;
 use App\Models\User;
 use App\Transformers\UserTransformer;
 use App\Transformers\WebsitesPermissionsTransformer;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Validator;
+use Illuminate\View\View;
 use Ramsey\Uuid\Uuid;
 use Silber\Bouncer\BouncerFacade as Bouncer;
 use Yajra\Datatables\Datatables;
 
+/**
+ * User management controller.
+ */
 class UserController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display super-admin user list.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View the view
      */
-    public function index()
+    public function index(): View
     {
         $usersDatatable = [
             'columns' => [
@@ -51,11 +55,11 @@ class UserController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show the form for creating a new user.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View the view
      */
-    public function create()
+    public function create(): View
     {
         $websitesPermissionsDatatable = [
             'columns' => [
@@ -75,13 +79,15 @@ class UserController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Create a new user.
      *
-     * @param StoreUserRequest $request
+     * @param \Illuminate\Http\Request $request the incoming request
      *
-     * @return \Illuminate\Http\Response
+     * @throws \Exception if unable to generate user UUID
+     *
+     * @return \Illuminate\Http\RedirectResponse the server redirect response
      */
-    public function store(StoreUserRequest $request)
+    public function store(StoreUserRequest $request): RedirectResponse
     {
         $currentPublicAdministration = current_public_administration();
 
@@ -126,13 +132,13 @@ class UserController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Show the user details page.
      *
-     * @param int $id
+     * @param User $user the user to display
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View the view
      */
-    public function show(User $user)
+    public function show(User $user): View
     {
         $data = [
             'columns' => [
@@ -153,13 +159,13 @@ class UserController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Show the form to edit an existing user.
      *
-     * @param User $user
+     * @param User $user the user to edit
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View the view
      */
-    public function edit(User $user)
+    public function edit(User $user): View
     {
         $data = [
             'columns' => [
@@ -180,12 +186,18 @@ class UserController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the user information.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param User $user
+     * @param UpdateUserRequest $request the incoming request
+     * @param User $user the user to update
      *
-     * @return \Illuminate\Http\Response
+     * @throws \App\Exceptions\CommandErrorException if command is unsuccessful
+     * @throws \App\Exceptions\AnalyticsServiceAccountException if the Analytics Service account doesn't exist
+     * @throws \App\Exceptions\AnalyticsServiceException if unable to connect the Analytics Service
+     * @throws \App\Exceptions\TenantIdNotSetException if the tenant id is not set in the current session
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException if unable to bind to the service
+     *
+     * @return \Illuminate\Http\RedirectResponse the server redirect response
      */
     public function update(UpdateUserRequest $request, User $user): RedirectResponse
     {
@@ -246,6 +258,13 @@ class UserController extends Controller
         return redirect()->route('users.index')->withMessage(['success' => "L'utente " . $user->getInfo() . ' è stato modificato.']); //TODO: put message in lang file
     }
 
+    /**
+     * Suspend an existing user.
+     *
+     * @param User $user the user to suspend
+     *
+     * @return \Illuminate\Http\JsonResponse the JSON response
+     */
     public function suspend(User $user): JsonResponse
     {
         try {
@@ -287,6 +306,13 @@ class UserController extends Controller
         return response()->json(['result' => 'error', 'message' => $message, 'code' => $code], $httpStatusCode);
     }
 
+    /**
+     * Reactivate an existing suspended user.
+     *
+     * @param User $user the user to reactivate
+     *
+     * @return \Illuminate\Http\JsonResponse the JSON response
+     */
     public function reactivate(User $user): JsonResponse
     {
         if (!$user->status->is(UserStatus::SUSPENDED)) {
@@ -305,6 +331,17 @@ class UserController extends Controller
         return response()->json(['result' => 'ok', 'id' => $user->uuid, 'status' => $user->status->description]);
     }
 
+    /**
+     * Remove a user.
+     * NOTE: Super-admin only.
+     *
+     * @param PublicAdministration $publicAdministration the public administration the user belongs to
+     * @param User $user the user to delete
+     *
+     * @throws \Exception if unable to delete
+     *
+     * @return \Illuminate\Http\JsonResponse the JSON response
+     */
     public function delete(PublicAdministration $publicAdministration, User $user): JsonResponse
     {
         try {
@@ -343,11 +380,13 @@ class UserController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Restore a soft-deleted user.
+     * NOTE: Super-admin only.
      *
-     * @param int $id
+     * @param PublicAdministration $publicAdministration the public administration the user belongs to
+     * @param User $user the user to restore
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse the JSON response
      */
     public function restore(PublicAdministration $publicAdministration, User $user): JsonResponse
     {
@@ -369,12 +408,11 @@ class UserController extends Controller
     }
 
     /**
-     * Get all websites of the specified Public Administration
-     * in JSON format (to be consumed by Datatables).
+     * Get the users data.
      *
-     * @throws \Exception
+     * @throws \Exception if unable to initialize the datatable
      *
-     * @return \Illuminate\Http\Response
+     * @return mixed the response the JSON format
      */
     public function dataJson(PublicAdministration $publicAdministration)
     {
@@ -384,12 +422,13 @@ class UserController extends Controller
     }
 
     /**
-     * Get all websites of the specified Public Administration
-     * in JSON format (to be consumed by Datatables).
+     * Get the user permissions on websites.
      *
-     * @throws \Exception
+     * @param User $user the user
      *
-     * @return \Illuminate\Http\Response
+     * @throws \Exception if unable to initialize the datatable
+     *
+     * @return mixed the response the JSON format
      */
     public function dataWebsitesPermissionsJson(User $user)
     {
@@ -398,6 +437,11 @@ class UserController extends Controller
             ->make(true);
     }
 
+    /**
+     * Validate user isn't the last active admin.
+     *
+     * @param Validator $validator the validator
+     */
     public function validateNotLastActiveAdministrator(Validator $validator): void
     {
         $publicAdministration = request()->route('publicAdministration');

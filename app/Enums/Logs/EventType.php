@@ -95,10 +95,19 @@ class EventType extends Enum implements LocalizedEnum
      */
     public const USER_ACTIVATED = 16;
 
+    /**
+     * User email address changed event.
+     */
     public const USER_EMAIL_CHANGED = 17;
 
+    /**
+     * User status changed event.
+     */
     public const USER_STATUS_CHANGED = 18;
 
+    /**
+     * User removed event.
+     */
     public const USER_DELETED = 19;
 
     /**

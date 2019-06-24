@@ -9,12 +9,17 @@ use App\Models\User;
 use League\Fractal\TransformerAbstract;
 use Silber\Bouncer\BouncerFacade as Bouncer;
 
+/**
+ * User transformer.
+ */
 class UserTransformer extends TransformerAbstract
 {
     /**
-     * @param \App\Models\User $user
+     * Transform the user for datatable.
      *
-     * @return array
+     * @param User $user the user
+     *
+     * @return array the response
      */
     public function transform(User $user): array
     {

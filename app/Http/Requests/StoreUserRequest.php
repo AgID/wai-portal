@@ -8,6 +8,9 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
 
+/**
+ * Store user request.
+ */
 class StoreUserRequest extends FormRequest
 {
     /**
@@ -15,7 +18,7 @@ class StoreUserRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
@@ -23,9 +26,9 @@ class StoreUserRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array
+     * @return array the validation rules
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'email' => 'required|email|unique:users',
@@ -50,9 +53,7 @@ class StoreUserRequest extends FormRequest
     /**
      * Configure the validator instance.
      *
-     * @param Validator $validator
-     *
-     * @return void
+     * @param Validator $validator the validator instance
      */
     public function withValidator(Validator $validator): void
     {
@@ -65,7 +66,7 @@ class StoreUserRequest extends FormRequest
 
     /**
      * Check whether the websitesPermission array contains keys belonging to
-     * websites of the current selected public administation.
+     * websites of the current selected public administration.
      *
      * @param array $websitesPermissions The websitesPermissions array
      *

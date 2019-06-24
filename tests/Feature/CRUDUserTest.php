@@ -6,7 +6,6 @@ use App\Enums\UserPermission;
 use App\Enums\UserRole;
 use App\Enums\UserStatus;
 use App\Enums\WebsiteAccessType;
-use App\Events\User\UserDeleted;
 use App\Events\User\UserInvited;
 use App\Events\User\UserUpdated;
 use App\Events\User\UserWebsiteAccessChanged;

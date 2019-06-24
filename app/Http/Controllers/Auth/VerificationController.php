@@ -7,19 +7,24 @@ use App\Enums\UserRole;
 use App\Enums\UserStatus;
 use App\Events\User\UserActivated;
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\Events\Verified;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
+/**
+ * Email verification controller.
+ */
 class VerificationController extends Controller
 {
     /**
      * Show the email verification notice.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param \Illuminate\Http\Request $request the incoming request
      *
-     * @return \Illuminate\Http\Response
+     * @return mixed the view for verification notice or a redirect if user is already verified
      */
     public function show(Request $request)
     {
@@ -35,13 +40,14 @@ class VerificationController extends Controller
     /**
      * Mark the authenticated user's email address as verified.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param \Illuminate\Http\Request $request the incoming request
      *
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException if unable to bind to SPID service
+     * @throws \Illuminate\Auth\Access\AuthorizationException if verification link is invalid
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse the server redirect response
      */
-    public function verify(Request $request)
+    public function verify(Request $request): RedirectResponse
     {
         $user = $request->user();
 
@@ -70,11 +76,11 @@ class VerificationController extends Controller
     /**
      * Resend the email verification notification.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param \Illuminate\Http\Request $request the incoming request
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse the server redirect response
      */
-    public function resend(Request $request)
+    public function resend(Request $request): RedirectResponse
     {
         $user = $request->user();
 
@@ -88,9 +94,13 @@ class VerificationController extends Controller
     }
 
     /**
-     * Redirect home already verified users.
+     * Redirect an already verified user.
+     *
+     * @param User $user the user
+     *
+     * @return \Illuminate\Http\RedirectResponse the server redirect response
      */
-    protected function alreadyVerifiedUser($user)
+    protected function alreadyVerifiedUser(User $user): RedirectResponse
     {
         return redirect()->home()
             ->withMessage(['info' => "L'indirizzo email dell'utente " . $user->getInfo() . ' è già stato verificato.']); //TODO: put message in lang file
@@ -98,8 +108,14 @@ class VerificationController extends Controller
 
     /**
      * Update a verified user.
+     *
+     * @param User $user
+     *
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException if unable to bind to SPID service
+     *
+     * @return bool true if user is successfully updated, false otherwise
      */
-    protected function verifyUser($user)
+    protected function verifyUser(User $user): bool
     {
         if ($user->status->is(UserStatus::INACTIVE)) {
             $newStatus = UserStatus::PENDING;

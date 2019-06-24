@@ -20,17 +20,31 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
+/**
+ * Super-Admin authentication controller.
+ */
 class AdminAuthController extends Controller
 {
     use ThrottlesLogins;
 
+    /**
+     * The maximum failed login attempt.
+     *
+     * @var int max login attempts
+     */
     protected $maxAttempts = 3;
+
+    /**
+     * The failed attempt reset decay (in minutes).
+     *
+     * @var int the lockout minutes
+     */
     protected $decayMinutes = 5;
 
     /**
      * Show the login form or redirect to admin dashboard.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\View\View the server redirect response or the login view
      */
     public function showLogin()
     {
@@ -48,7 +62,7 @@ class AdminAuthController extends Controller
      *
      * @throws ValidationException
      *
-     * @return \Illuminate\Http\Response|void
+     * @return mixed the server redirect response or a validation exception redirect
      */
     public function login(Request $request)
     {
@@ -81,9 +95,9 @@ class AdminAuthController extends Controller
     /**
      * Log the user out of the application.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse the server redirect response
      */
-    public function logout()
+    public function logout(): RedirectResponse
     {
         if (auth()->check() && auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)) {
             $user = auth()->user();
@@ -99,7 +113,7 @@ class AdminAuthController extends Controller
     /**
      * Display the password reset form.
      *
-     * @return \Illuminate\View\View
+     * @return \Illuminate\View\View the view
      */
     public function showPasswordForgot(): View
     {
@@ -109,9 +123,9 @@ class AdminAuthController extends Controller
     /**
      * Send a reset link to the given user.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param \Illuminate\Http\Request $request the incoming request
      *
-     * @return \Illuminate\Http\RedirectResponse
+     * @return \Illuminate\Http\RedirectResponse the server redirect response
      */
     public function sendPasswordForgot(Request $request): RedirectResponse
     {
@@ -144,10 +158,10 @@ class AdminAuthController extends Controller
     /**
      * Display the password reset view for the given token.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param string|null $token
+     * @param \Illuminate\Http\Request $request the incoming request
+     * @param string|null $token the reset token
      *
-     * @return \Illuminate\View\View
+     * @return \Illuminate\View\View the view
      */
     public function showPasswordReset(Request $request, $token = null): View
     {
@@ -159,11 +173,11 @@ class AdminAuthController extends Controller
     /**
      * Reset the given user's password.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param \Illuminate\Http\Request $request the incoming request
      *
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\RedirectResponse the server redirect response
      */
-    public function passwordReset(Request $request)
+    public function passwordReset(Request $request): RedirectResponse
     {
         $validatedData = $request->validate([
             'token' => 'required',
@@ -201,7 +215,7 @@ class AdminAuthController extends Controller
     /**
      * Display the password change view.
      *
-     * @return \Illuminate\View\View
+     * @return \Illuminate\View\View the view
      */
     public function showPasswordChange(): View
     {
@@ -211,11 +225,11 @@ class AdminAuthController extends Controller
     /**
      * Change the user's password.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param \Illuminate\Http\Request $request the incoming request
      *
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\RedirectResponse the server redirect response
      */
-    public function passwordChange(Request $request)
+    public function passwordChange(Request $request): RedirectResponse
     {
         $validatedData = $request->validate([
             'password' => [
@@ -238,21 +252,21 @@ class AdminAuthController extends Controller
     /**
      * Get the login username to be used by the controller.
      *
-     * @return string
+     * @return string the username to use
      */
-    public function username()
+    public function username(): string
     {
         return 'email';
     }
 
     /**
-     * Send the response after the user was authenticated.
+     * Send the response after the user is authenticated.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param \Illuminate\Http\Request $request the incoming request
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse the server redirect response
      */
-    protected function sendLoginResponse(Request $request)
+    protected function sendLoginResponse(Request $request): RedirectResponse
     {
         $this->clearLoginAttempts($request);
 

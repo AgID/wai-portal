@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Route;
 | - general public routes;
 | - authentication routes;
 | - registration routes;
-| - email varification routes;
+| - email verification routes;
 | - application routes;
 | - admin-only application routes.
 |
