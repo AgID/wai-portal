@@ -51,7 +51,7 @@ class AdminVerificationController extends Controller
         }
 
         if (!$user->status->is(UserStatus::INVITED)) {
-            return redirect()->route('admin-dashboard')
+            return redirect()->route('admin.dashboard')
                 ->withMessage(['info' => "L'indirizzo email è già stato verificato"]); //TODO: put message in lang file
         }
 

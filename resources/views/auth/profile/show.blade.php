@@ -12,7 +12,7 @@
         <div class="Grid-cell u-size1of3">Indirizzo email</div>
         <div class="Grid-cell u-size2of3 u-textWeight-600">{{ $user->email }}</div>
     </div>
-    <a role="button" href="{{ route($user->isA(UserRole::SUPER_ADMIN) ? 'admin.profile.edit' : 'user.profile.edit') }}" class="Button Button--default u-text-xs submit">
+    <a role="button" href="{{ route($user->isA(UserRole::SUPER_ADMIN) ? 'admin.user.profile.edit' : 'user.profile.edit') }}" class="Button Button--default u-text-xs submit">
         Modifica{{-- //TODO: put message in lang file --}}
     </a>
 @endsection

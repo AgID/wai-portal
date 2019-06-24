@@ -3,7 +3,7 @@
 @section('title', __('ui.pages.profile.edit.title'))
 
 @section('content')
-    <form class="Form Form--spaced u-text-r-xs" method="post" action="{{ route($user->isA(UserRole::SUPER_ADMIN) ? 'admin.profile.update' : 'user.profile.update') }}">
+    <form class="Form Form--spaced u-text-r-xs" method="post" action="{{ route($user->isA(UserRole::SUPER_ADMIN) ? 'admin.user.profile.update' : 'user.profile.update') }}">
         @method('patch')
         @csrf
         @if ($user->isA(UserRole::SUPER_ADMIN))
@@ -34,13 +34,13 @@
                 <label class="Form-label" for="name">
                     Nome{{-- //TODO: put message in lang file --}}
                 </label>
-                <input class="Form-input is-disabled" id="name" name="name" type="text" aria-required="true" value="{{ $user->name }}" required readonly>
+                <input class="Form-input {{ $user->isA(UserRole::SUPER_ADMIN) ? '' : 'is-disabled' }}" id="name" name="name" type="text" aria-required="true" value="{{ $user->name }}" required {{ $user->isA(UserRole::SUPER_ADMIN) ? '' : 'readonly' }}>
             </div>
             <div class="Form-field">
                 <label class="Form-label" for="familyName">
                     Cognome{{-- //TODO: put message in lang file --}}
                 </label>
-                <input class="Form-input is-disabled" id="familyName" name="familyName" type="text" aria-required="true" value="{{ $user->familyName }}" required readonly>
+                <input class="Form-input {{ $user->isA(UserRole::SUPER_ADMIN) ? '' : 'is-disabled' }}" id="familyName" name="familyName" type="text" aria-required="true" value="{{ $user->familyName }}" required {{ $user->isA(UserRole::SUPER_ADMIN) ? '' : 'readonly' }}>
             </div>
             <div class="Form-field {{ $errors->has('email') ? 'is-invalid' : '' }}">
                 @if ($errors->has('email'))

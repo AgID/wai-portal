@@ -114,10 +114,12 @@ return [
             ],
             'edit' => [
                 'title' => 'Profilo utente',
-            ]
+            ],
         ],
-        'auth-register' => [
-            'title' => 'Registrazione',
+        'auth' => [
+            'register' => [
+                'title' => 'Registrazione',
+            ],
         ],
         'auth-verify' => [
             'title' => 'Verifica indirizzo email',

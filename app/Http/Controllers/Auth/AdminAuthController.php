@@ -13,10 +13,12 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use Illuminate\View\View;
 
 class AdminAuthController extends Controller
 {
@@ -30,10 +32,10 @@ class AdminAuthController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function showLoginForm()
+    public function showLogin()
     {
         if (auth()->check() && auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)) {
-            return redirect()->intended(route('admin-dashboard'));
+            return redirect()->intended(route('admin.dashboard'));
         }
 
         return view('auth.admin_login');
@@ -73,7 +75,7 @@ class AdminAuthController extends Controller
 
         $this->incrementLoginAttempts($request);
 
-        return redirect()->route('admin-login')->withMessage(['error' => __('auth.failed')])->withInput();
+        return redirect()->route('admin.login.show')->withMessage(['error' => __('auth.failed')])->withInput();
     }
 
     /**
@@ -99,7 +101,7 @@ class AdminAuthController extends Controller
      *
      * @return \Illuminate\View\View
      */
-    public function showPasswordForgotForm()
+    public function showPasswordForgot(): View
     {
         return view('auth.admin_password_forgot');
     }
@@ -111,7 +113,7 @@ class AdminAuthController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function sendPasswordForgotEmail(Request $request)
+    public function sendPasswordForgot(Request $request): RedirectResponse
     {
         $request->validate(['email' => 'required|email']);
         $email = $request->input('email');
@@ -147,7 +149,7 @@ class AdminAuthController extends Controller
      *
      * @return \Illuminate\View\View
      */
-    public function showPasswordResetForm(Request $request, $token = null)
+    public function showPasswordReset(Request $request, $token = null): View
     {
         $token = $token ?: $request->input('token');
 
@@ -177,11 +179,11 @@ class AdminAuthController extends Controller
         $user = User::where('email', $validatedData['email'])->first();
 
         if (empty($user)) {
-            return redirect()->route('admin-password_reset')->withMessage(['error' => "L'indirizzo email inserito non corrisponde ad un'utenza oppure il codice è scaduto o errato."])->withInput(); //TODO: put message in lang file
+            return redirect()->route('admin.password.reset.show')->withMessage(['error' => "L'indirizzo email inserito non corrisponde ad un'utenza oppure il codice è scaduto o errato."])->withInput(); //TODO: put message in lang file
         }
 
         if (empty($user->passwordResetToken) || !Hash::check($validatedData['token'], $user->passwordResetToken->token)) {
-            return redirect()->route('admin-password_reset')->withMessage(['error' => "L'indirizzo email inserito non corrisponde ad un'utenza oppure il codice è scaduto o errato."])->withInput(); //TODO: put message in lang file
+            return redirect()->route('admin.password.reset.show')->withMessage(['error' => "L'indirizzo email inserito non corrisponde ad un'utenza oppure il codice è scaduto o errato."])->withInput(); //TODO: put message in lang file
         }
 
         $user->password = Hash::make($validatedData['password']);
@@ -193,7 +195,7 @@ class AdminAuthController extends Controller
 
         auth()->login($user);
 
-        return redirect()->route('admin-dashboard')->withMessage(['success' => __('auth.password.reset')]);
+        return redirect()->route('admin.dashboard')->withMessage(['success' => __('auth.password.reset')]);
     }
 
     /**
@@ -201,7 +203,7 @@ class AdminAuthController extends Controller
      *
      * @return \Illuminate\View\View
      */
-    public function showPasswordChangeForm()
+    public function showPasswordChange(): View
     {
         return view('auth.admin_password_change');
     }
@@ -230,7 +232,7 @@ class AdminAuthController extends Controller
         $user->password_changed_at = Carbon::now();
         $user->save();
 
-        return redirect()->intended(route('admin-dashboard'))->withMessage(['success' => __('auth.password.changed')]);
+        return redirect()->intended(route('admin.dashboard'))->withMessage(['success' => __('auth.password.changed')]);
     }
 
     /**
@@ -256,6 +258,6 @@ class AdminAuthController extends Controller
 
         event(new UserLogin(auth()->user()));
 
-        return redirect()->intended(route('admin-dashboard'));
+        return redirect()->intended(route('admin.dashboard'));
     }
 }

@@ -22,7 +22,7 @@ class AdminAuthenticate
     public function handle($request, Closure $next)
     {
         if (!$request->user()) {
-            return redirect()->guest(route('admin-login'));
+            return redirect()->guest(route('admin.login.show'));
         }
 
         if (!$request->user()->can(UserPermission::ACCESS_ADMIN_AREA)) {

@@ -3,7 +3,7 @@
 @section('title', __('ui.pages.admin-login.title'))
 
 @section('content')
-    <form class="Form Form--spaced u-text-r-xs" method="post" action="{{ route('admin-do_login', [], false) }}">
+    <form class="Form Form--spaced u-text-r-xs" method="post" action="{{ route('admin.login', [], false) }}">
         @csrf
         <fieldset class="Form-fieldset">
             <div class="Form-field">
@@ -23,7 +23,7 @@
             </button>
             <br>
             <div class="Prose">
-                <a href="{{ route('admin-password_forgot', [], false) }}">
+                <a href="{{ route('admin.password.forgot.show', [], false) }}">
                     <small>Password dimenticata?</small>
                 </a>
             </div>

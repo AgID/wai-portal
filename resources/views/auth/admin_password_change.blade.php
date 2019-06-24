@@ -3,7 +3,7 @@
 @section('title', __('ui.pages.admin-password_change.title'))
 
 @section('content')
-    <form class="Form Form--spaced u-text-r-xs" method="post" action="{{ route('admin-do_password_change', [], false) }}">
+    <form class="Form Form--spaced u-text-r-xs" method="post" action="{{ route('admin.password.change', [], false) }}">
         @csrf
         <fieldset class="Form-fieldset">
             <div class="Form-field {{ $errors->has('password') ? 'is-invalid' : '' }}">

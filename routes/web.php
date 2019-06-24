@@ -47,37 +47,37 @@ Route::get('/faq', [
  */
 Route::prefix('/admin/user')->group(function () {
     Route::get('/login', [
-        'as' => 'admin-login',
-        'uses' => 'Auth\AdminAuthController@showLoginForm',
+        'as' => 'admin.login.show',
+        'uses' => 'Auth\AdminAuthController@showLogin',
     ])->middleware('guest');
 
     Route::post('/login', [
-        'as' => 'admin-do_login',
+        'as' => 'admin.login',
         'uses' => 'Auth\AdminAuthController@login',
     ])->middleware('guest');
 
     Route::get('/logout', [
-        'as' => 'admin-logout',
+        'as' => 'admin.logout',
         'uses' => 'Auth\AdminAuthController@logout',
     ])->middleware('admin.auth');
 
     Route::get('/password-forgot', [
-        'as' => 'admin-password_forgot',
-        'uses' => 'Auth\AdminAuthController@showPasswordForgotForm',
+        'as' => 'admin.password.forgot.show',
+        'uses' => 'Auth\AdminAuthController@showPasswordForgot',
     ])->middleware('guest');
 
     Route::post('/password-forgot', [
-        'as' => 'admin-send_reset_password',
-        'uses' => 'Auth\AdminAuthController@sendPasswordForgotEmail',
+        'as' => 'admin.password.reset.send',
+        'uses' => 'Auth\AdminAuthController@sendPasswordForgot',
     ])->middleware('guest', 'throttle:5,1');
 
     Route::get('/password-reset/{token?}', [
-        'as' => 'admin-password_reset',
-        'uses' => 'Auth\AdminAuthController@showPasswordResetForm',
+        'as' => 'admin.password.reset.show',
+        'uses' => 'Auth\AdminAuthController@showPasswordReset',
     ])->middleware('guest');
 
     Route::post('/password-reset', [
-        'as' => 'admin-do_password_reset',
+        'as' => 'admin.password.reset',
         'uses' => 'Auth\AdminAuthController@passwordReset',
     ])->middleware('guest', 'throttle:5,1');
 });
@@ -105,20 +105,22 @@ Route::middleware('admin.auth')->group(function () {
         ])->middleware('signed', 'throttle:5,1');
     });
 
-    Route::get('/admin/user/profile', [
-        'as' => 'admin.profile',
-        'uses' => 'Auth\ProfileController@showProfile',
-    ]);
+    Route::prefix('/admin/user/profile')->group(function () {
+        Route::get('/', [
+            'as' => 'admin.user.profile',
+            'uses' => 'Auth\ProfileController@show',
+        ]);
 
-    Route::get('/admin/user/profile/edit', [
-        'as' => 'admin.profile.edit',
-        'uses' => 'Auth\ProfileController@showProfileForm',
-    ]);
+        Route::get('/edit', [
+            'as' => 'admin.user.profile.edit',
+            'uses' => 'Auth\ProfileController@edit',
+        ]);
 
-    Route::patch('/admin/user/profile', [
-        'as' => 'admin.profile.update',
-        'uses' => 'Auth\ProfileController@update',
-    ]);
+        Route::patch('/', [
+            'as' => 'admin.user.profile.update',
+            'uses' => 'Auth\ProfileController@update',
+        ]);
+    });
 });
 
 /*
@@ -129,12 +131,12 @@ Route::middleware('admin.auth')->group(function () {
 Route::middleware('spid.auth', 'guest')->group(function () {
     Route::prefix('/register')->group(function () {
         Route::get('/', [
-            'as' => 'auth-register',
+            'as' => 'auth.register.show',
             'uses' => 'Auth\RegisterController@showRegistrationForm',
         ]);
 
         Route::post('/', [
-            'as' => 'auth-do_register',
+            'as' => 'auth.register',
             'uses' => 'Auth\RegisterController@register',
         ]);
     });
@@ -143,7 +145,7 @@ Route::middleware('spid.auth', 'guest')->group(function () {
 /*
  * Email verification routes.
  *
- * Both SPID and application authentication required.
+ * SPID authentication required.
  */
 Route::middleware('spid.auth')->group(function () {
     Route::prefix('/user/verify')->group(function () {
@@ -162,21 +164,30 @@ Route::middleware('spid.auth')->group(function () {
             'uses' => 'Auth\VerificationController@verify',
         ])->middleware('signed', 'throttle:5,1');
     });
+});
 
-    Route::get('/user/profile', [
-        'as' => 'user.profile',
-        'uses' => 'Auth\ProfileController@showProfile',
-    ]);
+/*
+ * User profile routes.
+ *
+ * Both SPID and application authentication required
+ */
+Route::middleware('spid.auth', 'auth')->group(function () {
+    Route::prefix('/user/profile')->group(function () {
+        Route::get('/', [
+            'as' => 'user.profile',
+            'uses' => 'Auth\ProfileController@show',
+        ]);
 
-    Route::get('/user/profile/edit', [
-        'as' => 'user.profile.edit',
-        'uses' => 'Auth\ProfileController@showProfileForm',
-    ]);
+        Route::get('/edit', [
+            'as' => 'user.profile.edit',
+            'uses' => 'Auth\ProfileController@edit',
+        ]);
 
-    Route::patch('/user/profile', [
-        'as' => 'user.profile.update',
-        'uses' => 'Auth\ProfileController@update',
-    ]);
+        Route::patch('/', [
+            'as' => 'user.profile.update',
+            'uses' => 'Auth\ProfileController@update',
+        ]);
+    });
 });
 
 /*
@@ -408,6 +419,7 @@ Route::middleware('admin.auth', 'verified:admin.verification.notice')->group(fun
                     'as' => 'admin.users.data.json',
                     'uses' => 'AdminUserController@dataJson',
                 ]);
+
                 Route::get('/add', [
                     'as' => 'admin.users.create',
                     'uses' => 'AdminUserController@create',
@@ -418,12 +430,12 @@ Route::middleware('admin.auth', 'verified:admin.verification.notice')->group(fun
                     'uses' => 'AdminUserController@store',
                 ]);
 
-				Route::get('/{user}/show', [
+                Route::get('/{user}/show', [
                     'as' => 'admin.users.show',
                     'uses' => 'AdminUserController@show',
                 ]);
-				
-				Route::get('/{user}/edit', [
+
+                Route::get('/{user}/edit', [
                     'as' => 'admin.users.edit',
                     'uses' => 'AdminUserController@edit',
                 ]);
@@ -433,7 +445,7 @@ Route::middleware('admin.auth', 'verified:admin.verification.notice')->group(fun
                     'uses' => 'AdminUserController@update',
                 ]);
 
-				Route::patch('/{user}/suspend', [
+                Route::patch('/{user}/suspend', [
                     'as' => 'admin.users.suspend',
                     'uses' => 'AdminUserController@suspend',
                 ]);
@@ -475,12 +487,12 @@ Route::middleware('admin.auth', 'verified:admin.verification.notice')->group(fun
         });
 
         Route::get('/user/change-password', [
-            'as' => 'admin-password_change',
-            'uses' => 'Auth\AdminAuthController@showPasswordChangeForm',
+            'as' => 'admin.password.change.show',
+            'uses' => 'Auth\AdminAuthController@showPasswordChange',
         ]);
 
         Route::post('/user/change-password', [
-            'as' => 'admin-do_password_change',
+            'as' => 'admin.password.change',
             'uses' => 'Auth\AdminAuthController@passwordChange',
         ]);
     });

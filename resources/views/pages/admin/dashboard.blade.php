@@ -1,6 +1,6 @@
 @extends('layouts.default')
 
-@section('title', __('ui.pages.admin-dashboard.title'))
+@section('title', __('ui.pages.admin.dashboard.title'))
 
 @section('content')
     <label class="Form-label is-required" for="type">

@@ -54,7 +54,7 @@ class Authenticate extends Middleware
             'warning' => "Prima di usare l'applicazione è necessario completare la registrazione",
         ]);
 
-        return route('auth-register');
+        return route('auth.register.show');
     }
 
     /**

@@ -109,10 +109,17 @@ return [
             'title' => 'Accesso con SPID'
         ],
         'profile' => [
-            'title' => 'Profilo utente'
+            'show' => [
+                'title' => 'User profile',
+            ],
+            'edit' => [
+                'title' => 'User profile',
+            ],
         ],
-        'auth-register' => [
-            'title' => 'Registrazione'
+        'auth' => [
+            'register' => [
+                'title' => 'Register',
+            ],
         ],
         'auth-verify' => [
             'title' => 'Verifica indirizzo email'

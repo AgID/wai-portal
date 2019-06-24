@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Enums\UserRole;
+use App\Exceptions\CommandErrorException;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Illuminate\View\View;
 
 class ProfileController extends Controller
 {
@@ -16,7 +19,7 @@ class ProfileController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function showProfile(Request $request)
+    public function show(Request $request): View
     {
         return view('auth.profile.show')->with(['user' => $request->user()]);
     }
@@ -26,7 +29,7 @@ class ProfileController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function showProfileForm(Request $request)
+    public function edit(Request $request): View
     {
         return view('auth.profile.edit')->with(['user' => $request->user()]);
     }
@@ -48,6 +51,14 @@ class ProfileController extends Controller
                 'email',
                 Rule::unique('users')->ignore($user->id),
             ],
+            'name' => [
+                'required',
+                'string',
+            ],
+            'familyName' => [
+                'required',
+                'string',
+            ],
         ]);
 
         $validator->after(function ($validator) use ($user, $request) {
@@ -61,10 +72,35 @@ class ProfileController extends Controller
                 ->withErrors($validator)
                 ->withInput();
         }
-        $user->email = $request->input('email');
+
+        $validatedData = $validator->validated();
+
+        // NOTE: the 'user update' event listener automatically
+        //      sends a new email verification request and
+        //      reset the email verification status
+        $user->email = $validatedData['email'];
+        if ($user->isA(UserRole::SUPER_ADMIN)) {
+            $user->name = $validatedData['name'];
+            $user->familyName = $validatedData['familyName'];
+        }
         $user->save();
 
-        $redirectRoute = $user->isA(UserRole::SUPER_ADMIN) ? 'admin.profile' : 'user.profile';
+        if ($user->hasAnalyticsServiceAccount()) {
+            //NOTE: remove the try/catch if matomo is configured
+            //      to not send email on user updates using API interface
+            //      See: https://github.com/matomo-org/matomo/pull/14281
+            try {
+                // Update Analytics Service account if needed
+                // NOTE: at this point, user must have an analytics account
+                $user->updateAnalyticsServiceAccountEmail();
+            } catch (CommandErrorException $exception) {
+                if (!Str::contains($exception->getMessage(), 'Unable to send mail.')) {
+                    throw $exception;
+                }
+            }
+        }
+
+        $redirectRoute = $user->isA(UserRole::SUPER_ADMIN) ? 'admin.user.profile' : 'user.profile';
 
         return redirect()->route($redirectRoute)
             ->withMessage([
