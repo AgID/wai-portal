@@ -484,7 +484,7 @@ class WebsiteController extends Controller
      */
     public function dataUsersPermissionsJson(Website $website)
     {
-        return Datatables::of(current_public_administration()->users)
+        return Datatables::of(current_public_administration()->users()->where('status', '!=', UserStatus::SUSPENDED))
             ->setTransformer(new UsersPermissionsTransformer())
             ->make(true);
     }
