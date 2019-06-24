@@ -212,7 +212,7 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function dataWebsitesPermissionsJson()
+    public function dataWebsitesPermissionsJson(User $user)
     {
         return Datatables::of(current_public_administration()->websites)
             ->setTransformer(new WebsitesPermissionsTransformer())
