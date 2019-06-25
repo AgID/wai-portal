@@ -24,14 +24,14 @@ class VerifyEmail extends Notification implements ShouldQueue
     /**
      * The public administration selected for the invitation.
      *
-     * @var \App\Models\PublicAdministration
+     * @var \App\Models\PublicAdministration the public administration
      */
     public $publicAdministration;
 
     /**
      * The user issuing the invitation.
      *
-     * @var \App\Models\User
+     * @var \App\Models\User the inviting user
      */
     public $invitedBy;
 
@@ -50,9 +50,9 @@ class VerifyEmail extends Notification implements ShouldQueue
     /**
      * Get the notification's channels.
      *
-     * @param mixed $notifiable
+     * @param mixed $notifiable the source
      *
-     * @return array|string
+     * @return array|string the channels array or the channel name
      */
     public function via($notifiable)
     {
@@ -81,9 +81,9 @@ class VerifyEmail extends Notification implements ShouldQueue
     /**
      * Get the verification URL for the given notifiable.
      *
-     * @param mixed $notifiable
+     * @param mixed $notifiable the notification source
      *
-     * @return string
+     * @return string the URL
      */
     protected function verificationUrl($notifiable): string
     {

@@ -109,7 +109,7 @@ class VerificationController extends Controller
     /**
      * Update a verified user.
      *
-     * @param User $user
+     * @param User $user the user
      *
      * @throws \Illuminate\Contracts\Container\BindingResolutionException if unable to bind to SPID service
      *
@@ -119,7 +119,7 @@ class VerificationController extends Controller
     {
         if ($user->status->is(UserStatus::INACTIVE)) {
             $newStatus = UserStatus::PENDING;
-            $user->assign('registered');
+            $user->assign(UserRole::REGISTERED);
         }
 
         if ($user->status->is(UserStatus::INVITED)) {

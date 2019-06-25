@@ -4,10 +4,10 @@
 
 @section('content')
     @include('partials.datatable')
-    @can(UserPermission::MANAGE_USERS)
+    @if (auth()->user()->can(UserPermission::MANAGE_USERS) && auth()->user()->cannot(UserPermission::ACCESS_ADMIN_AREA))
         @include('partials.link_button', [
             'label' => __('ui.pages.users.index.add_user'),
             'href' => route('users.create', [], false)
         ])
-    @endcan
+    @endif
 @endsection

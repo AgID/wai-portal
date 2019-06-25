@@ -390,8 +390,6 @@ class UserController extends Controller
      */
     public function restore(PublicAdministration $publicAdministration, User $user): JsonResponse
     {
-        logger()->error('Restoring user' . $user->getInfo());
-
         if (!$user->trashed()) {
             return response()->json(null, 304);
         }
@@ -410,6 +408,8 @@ class UserController extends Controller
     /**
      * Get the users data.
      *
+     * @param PublicAdministration|null $publicAdministration
+     *
      * @throws \Exception if unable to initialize the datatable
      *
      * @return mixed the response the JSON format
@@ -424,7 +424,7 @@ class UserController extends Controller
     /**
      * Get the user permissions on websites.
      *
-     * @param User $user the user
+     * @param User|null $user the user to initialize permissions or null for default
      *
      * @throws \Exception if unable to initialize the datatable
      *
