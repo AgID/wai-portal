@@ -86,6 +86,7 @@ return [
         EventType::USER_EMAIL_CHANGED => 'User email changed',
         EventType::USER_STATUS_CHANGED => 'User status changed',
         EventType::USER_DELETED => 'User deleted',
+        EventType::USER_RESTORED => 'User restored',
         EventType::USER_WEBSITE_ACCESS_CHANGED => 'User access level to website changed',
         EventType::WEBSITE_ADDED => 'Website added',
         EventType::WEBSITE_ACTIVATED => 'Website activated',

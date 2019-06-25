@@ -7,6 +7,7 @@ use App\Enums\UserRole;
 use App\Enums\UserStatus;
 use App\Events\User\UserDeleted;
 use App\Events\User\UserInvited;
+use App\Events\User\UserRestored;
 use App\Events\User\UserUpdated;
 use App\Models\PublicAdministration;
 use App\Models\User;
@@ -332,6 +333,10 @@ class CRUDAdminUserTest extends TestCase
                 route('admin.publicAdministration.users.delete', ['publicAdministration' => $publicAdministration, 'user' => $user]))
             ->assertOk();
 
+        Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user) {
+            $this->assertTrue($user->isA(UserRole::REMOVED));
+        });
+
         Event::assertDispatched(UserDeleted::class, function ($event) use ($user) {
             return $user->uuid === $event->getUser()->uuid;
         });
@@ -391,5 +396,46 @@ class CRUDAdminUserTest extends TestCase
             ]);
 
         Event::assertNotDispatched(UserDeleted::class);
+    }
+
+    /**
+     * Test normal user restore successful.
+     */
+    public function testRestoreUserSuccessful(): void
+    {
+        $publicAdministration = factory(PublicAdministration::class)
+            ->state('active')
+            ->create();
+        $user = factory(User::class)->create([
+            'status' => UserStatus::PENDING,
+            'deleted_at' => Date::now(),
+        ]);
+        $publicAdministration->users()->sync([$user->id]);
+        Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user) {
+            $user->assign(UserRole::DELEGATED);
+            $user->assign(UserRole::REMOVED);
+        });
+
+        $this->actingAs($this->user)
+            ->patch(
+                route('admin.publicAdministration.users.restore', ['publicAdministration' => $publicAdministration, 'trashed_user' => $user]))
+            ->assertOk()
+            ->assertJson([
+                'result' => 'ok',
+                'id' => $user->uuid,
+                'status' => $user->status->description,
+            ]);
+
+        $user->refresh();
+
+        $this->assertFalse($user->trashed());
+
+        Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user) {
+            $this->assertFalse($user->isA(UserRole::REMOVED));
+        });
+
+        Event::assertDispatched(UserRestored::class, function ($event) use ($user) {
+            return $user->uuid === $event->getUser()->uuid;
+        });
     }
 }

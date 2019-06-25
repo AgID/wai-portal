@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\UserStatus;
+use App\Events\User\UserRestored;
 use App\Events\User\UserUpdated;
 use App\Events\User\UserUpdating;
 use App\Notifications\VerifyEmail;
@@ -94,6 +95,7 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $dispatchesEvents = [
         'updating' => UserUpdating::class,
         'updated' => UserUpdated::class,
+        'restored' => UserRestored::class,
     ];
 
     /**

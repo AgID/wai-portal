@@ -111,52 +111,57 @@ class EventType extends Enum implements LocalizedEnum
     public const USER_DELETED = 19;
 
     /**
+     * User restored event.
+     */
+    public const USER_RESTORED = 20;
+
+    /**
      * User website access changed event.
      */
-    public const USER_WEBSITE_ACCESS_CHANGED = 20;
+    public const USER_WEBSITE_ACCESS_CHANGED = 21;
 
     /**
      * New website registered event.
      */
-    public const WEBSITE_ADDED = 21;
+    public const WEBSITE_ADDED = 22;
 
     /**
      * Website activated event.
      */
-    public const WEBSITE_ACTIVATED = 22;
+    public const WEBSITE_ACTIVATED = 23;
 
     /**
      * Website scheduled for archiving event.
      */
-    public const WEBSITE_ARCHIVING = 23;
+    public const WEBSITE_ARCHIVING = 24;
 
     /**
      * Website archived event.
      */
-    public const WEBSITE_ARCHIVED = 24;
+    public const WEBSITE_ARCHIVED = 25;
 
     /**
      * Website unarchived event.
      */
-    public const WEBSITE_UNARCHIVED = 25;
+    public const WEBSITE_UNARCHIVED = 26;
 
     /**
      * Website scheduled for removing event.
      */
-    public const WEBSITE_PURGING = 26;
+    public const WEBSITE_PURGING = 27;
 
     /**
      * Website removed event.
      */
-    public const WEBSITE_PURGED = 27;
+    public const WEBSITE_PURGED = 28;
 
     /**
      * Users index updated event.
      */
-    public const USERS_INDEXING_COMPLETED = 28;
+    public const USERS_INDEXING_COMPLETED = 29;
 
     /**
      * Websites index updated event.
      */
-    public const WEBSITES_INDEXING_COMPLETED = 29;
+    public const WEBSITES_INDEXING_COMPLETED = 30;
 }

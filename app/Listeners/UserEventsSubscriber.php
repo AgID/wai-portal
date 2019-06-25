@@ -9,6 +9,7 @@ use App\Events\User\UserDeleted;
 use App\Events\User\UserInvited;
 use App\Events\User\UserLogin;
 use App\Events\User\UserLogout;
+use App\Events\User\UserRestored;
 use App\Events\User\UserUpdated;
 use App\Events\User\UserUpdating;
 use App\Events\User\UserWebsiteAccessChanged;
@@ -238,6 +239,22 @@ class UserEventsSubscriber
     }
 
     /**
+     * Handle user restored events.
+     *
+     * @param UserRestored $event the event
+     */
+    public function onRestored(UserRestored $event): void
+    {
+        $user = $event->getUser();
+        logger()->notice('User ' . $user->uuid . ' restored.',
+            [
+                'event' => EventType::USER_RESTORED,
+                'user' => $user->uuid,
+            ]
+        );
+    }
+
+    /**
      * Register the listeners for the subscriber.
      *
      * @param Dispatcher $events the dispatcher
@@ -293,6 +310,11 @@ class UserEventsSubscriber
             'App\Events\User\UserDeleted',
             'App\Listeners\UserEventsSubscriber@OnDeleted',
         );
+
+        $events->listen(
+            'App\Events\User\UserRestored',
+            'App\Listeners\UserEventsSubscriber@OnRestored',
+            );
     }
 
     /**
