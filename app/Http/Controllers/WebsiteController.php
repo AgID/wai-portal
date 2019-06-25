@@ -411,10 +411,6 @@ class WebsiteController extends Controller
             'columnsOrder' => [['added_at', 'asc']],
         ];
 
-        if ($website->type->is(WebsiteType::PRIMARY)) {
-            abort(403, 'Non è permesso effettuare modifiche al sito istituzionale.');
-        }
-
         return view('pages.websites.edit')->with(['website' => $website])->with($usersPermissionsDatatable);
     }
 
@@ -428,13 +424,9 @@ class WebsiteController extends Controller
      */
     public function update(UpdateWebsiteRequest $request, Website $website)
     {
-        try {
-            if ($website->type->is(WebsiteType::PRIMARY)) {
-                throw new OperationNotAllowedException('Primary website ' . $website->getInfo() . ' update not allowed');
-            }
+        $validatedData = $request->validated();
 
-            $validatedData = $request->validated();
-
+        if (!$website->type->is(WebsiteType::PRIMARY)) {
             if ($website->slug !== Str::slug($validatedData['url'])) {
                 app()->make('analytics-service')->updateSite($website->analytics_id, $validatedData['name'] . ' [' . $validatedData['type'] . ']', $validatedData['url'], $website->publicAdministration->name); //TODO: put string in lang file
             }
@@ -446,14 +438,10 @@ class WebsiteController extends Controller
                 'slug' => Str::slug($validatedData['url']),
             ]);
             $website->save();
+        }
 
-            if (null !== ($publicAdministration = current_public_administration())) {
-                $this->manageWebsitePermissionsOnNotAdministrators($validatedData, $publicAdministration, $website);
-            }
-        } catch (OperationNotAllowedException $exception) {
-            report($exception);
-
-            return redirect()->route('websites.index')->withMessage(['error' => 'Il sito primario ' . $website->getInfo() . ' non può essere modificato']); //TODO: put message in lang file
+        if (null !== ($publicAdministration = current_public_administration())) {
+            $this->manageWebsitePermissionsOnNotAdministrators($validatedData, $publicAdministration, $website);
         }
 
         return redirect()->route('websites.index')->withMessage(['success' => 'Il sito "' . $website->getInfo() . '" è stato modificato.']); //TODO: put message in lang file

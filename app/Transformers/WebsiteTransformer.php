@@ -49,34 +49,32 @@ class WebsiteTransformer extends TransformerAbstract
             ];
         }
 
-        if (!$website->type->is(WebsiteType::PRIMARY) && auth()->user()->can(UserPermission::MANAGE_WEBSITES)) {
-            if ($website->status->is(WebsiteStatus::ACTIVE)) {
-                $data['buttons'][] = [
-                    'link' => route('website.archive', ['website' => $website], false),
-                    'label' => __('ui.pages.websites.index.archive'),
-                    'dataAttributes' => [
-                        'type' => 'archiveStatus',
-                    ],
-                ];
-            } elseif ($website->status->is(WebsiteStatus::ARCHIVED)) {
-                $data['buttons'][] = [
-                    'link' => route('website.unarchive', ['website' => $website], false),
-                    'label' => __('ui.pages.websites.index.enable'),
-                    'dataAttributes' => [
-                        'type' => 'archiveStatus',
-                    ],
-                ];
-            }
-        }
-
         if (auth()->user()->can(UserPermission::MANAGE_WEBSITES)) {
+            if (!$website->type->is(WebsiteType::PRIMARY)) {
+                if ($website->status->is(WebsiteStatus::ACTIVE)) {
+                    $data['buttons'][] = [
+                        'link' => route('website.archive', ['website' => $website], false),
+                        'label' => __('ui.pages.websites.index.archive'),
+                        'dataAttributes' => [
+                            'type' => 'archiveStatus',
+                        ],
+                    ];
+                } elseif ($website->status->is(WebsiteStatus::ARCHIVED)) {
+                    $data['buttons'][] = [
+                        'link' => route('website.unarchive', ['website' => $website], false),
+                        'label' => __('ui.pages.websites.index.enable'),
+                        'dataAttributes' => [
+                            'type' => 'archiveStatus',
+                        ],
+                    ];
+                }
+            }
+
             $data['buttons'][] = [
                 'link' => route('websites.show', ['website' => $website], false),
                 'label' => __('ui.pages.websites.index.show_website'),
             ];
-        }
 
-        if (($website->status->is(WebsiteStatus::PENDING) || auth()->user()->can(UserPermission::MANAGE_WEBSITES)) && !$website->type->is(WebsiteType::PRIMARY)) {
             $data['buttons'][] = [
                 'link' => route('websites.edit', ['website' => $website], false),
                 'label' => __('ui.pages.websites.index.edit_website'),
