@@ -4,6 +4,8 @@ namespace App\Models;
 
 use App\Enums\WebsiteStatus;
 use App\Enums\WebsiteType;
+use App\Events\Website\WebsiteDeleted;
+use App\Events\Website\WebsiteRestored;
 use App\Events\Website\WebsiteUpdated;
 use BenSampo\Enum\Traits\CastsEnums;
 use Illuminate\Database\Eloquent\Model;
@@ -55,6 +57,8 @@ class Website extends Model
 
     protected $dispatchesEvents = [
         'updated' => WebsiteUpdated::class,
+        'deleted' => WebsiteDeleted::class,
+        'restored' => WebsiteRestored::class,
     ];
 
     /**

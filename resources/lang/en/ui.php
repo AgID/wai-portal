@@ -71,6 +71,8 @@ return [
                 'check_tracking' => 'check activation',
                 'archive' => 'archive',
                 'enable' => 'un-archive',
+                'restore_website' => 'restore website',
+                'delete_website' => 'delete website',
             ],
             'add-primary' => [
                 'title' => 'Institutional website',

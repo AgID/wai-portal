@@ -96,6 +96,8 @@ return [
         EventType::WEBSITE_ARCHIVED => 'Sito web archiviato',
         EventType::WEBSITE_PURGING => 'Rimozione sito web programmata',
         EventType::WEBSITE_PURGED => 'Sito web rimosso',
+        EventType::WEBSITE_DELETED => 'Sito web cancellato',
+        EventType::WEBSITE_RESTORED => 'Sito web ripristinato',
         EventType::USERS_INDEXING_COMPLETED => 'Aggiornamento indice utenti completato',
         EventType::WEBSITES_INDEXING_COMPLETED => 'Aggiornamento indice siti web completato',
     ],

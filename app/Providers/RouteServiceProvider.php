@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\User;
+use App\Models\Website;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Route;
 
@@ -30,6 +31,10 @@ class RouteServiceProvider extends ServiceProvider
         // admin.publicAdministration.users.restore route
         Route::bind('trashed_user', function ($id) {
             return User::onlyTrashed()->where('uuid', $id)->first();
+        });
+
+        Route::bind('trashed_website', function ($id) {
+            return Website::onlyTrashed()->where('slug', $id)->first();
         });
     }
 

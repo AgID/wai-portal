@@ -8,8 +8,10 @@ use App\Events\Website\WebsiteActivated;
 use App\Events\Website\WebsiteAdded;
 use App\Events\Website\WebsiteArchived;
 use App\Events\Website\WebsiteArchiving;
+use App\Events\Website\WebsiteDeleted;
 use App\Events\Website\WebsitePurged;
 use App\Events\Website\WebsitePurging;
+use App\Events\Website\WebsiteRestored;
 use App\Events\Website\WebsiteUnarchived;
 use App\Events\Website\WebsiteUpdated;
 use App\Traits\InteractsWithWebsiteIndex;
@@ -230,6 +232,32 @@ class WebsiteEventsSubscriber implements ShouldQueue
         );
     }
 
+    public function onDeleted(WebsiteDeleted $event): void
+    {
+        $website = $event->getWebsite();
+        logger()->notice(
+            'Website ' . $website->getInfo() . ' deleted.',
+            [
+                'event' => EventType::WEBSITE_DELETED,
+                'website' => $website->id,
+                'pa' => $website->publicAdministration->ipa_code,
+            ]
+        );
+    }
+
+    public function onRestored(WebsiteRestored $event): void
+    {
+        $website = $event->getWebsite();
+        logger()->notice(
+            'Website ' . $website->getInfo() . ' restored.',
+            [
+                'event' => EventType::WEBSITE_RESTORED,
+                'website' => $website->id,
+                'pa' => $website->publicAdministration->ipa_code,
+            ]
+        );
+    }
+
     /**
      * Register the listeners for the subscriber.
      *
@@ -269,6 +297,16 @@ class WebsiteEventsSubscriber implements ShouldQueue
         $events->listen(
             'App\Events\Website\WebsiteUpdated',
             'App\Listeners\WebsiteEventsSubscriber@onUpdated'
+        );
+
+        $events->listen(
+            'App\Events\Website\WebsiteDeleted',
+            'App\Listeners\WebsiteEventsSubscriber@onDeleted'
+        );
+
+        $events->listen(
+            'App\Events\Website\WebsiteRestored',
+            'App\Listeners\WebsiteEventsSubscriber@onRestored'
         );
     }
 }

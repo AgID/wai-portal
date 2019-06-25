@@ -96,6 +96,8 @@ return [
         EventType::WEBSITE_ARCHIVED => 'Website archived',
         EventType::WEBSITE_PURGING => 'Website scheduled for removing',
         EventType::WEBSITE_PURGED => 'Website removed',
+        EventType::WEBSITE_DELETED => 'Website manually deleted',
+        EventType::WEBSITE_RESTORED => 'Website restored',
         EventType::USERS_INDEXING_COMPLETED => 'Users index update completed',
         EventType::WEBSITES_INDEXING_COMPLETED => 'Websites index update completed',
     ],
