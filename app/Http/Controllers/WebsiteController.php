@@ -53,7 +53,7 @@ class WebsiteController extends Controller
                 ['data' => 'status', 'name' => 'Stato'],
                 ['data' => 'buttons', 'name' => 'Azioni'],
             ],
-            'source' => route('websites.data.json'),
+            'source' => request()->user()->can(UserPermission::ACCESS_ADMIN_AREA) ? route('admin.publicAdministration.websites.data.json', ['publicAdministration' => request()->route('publicAdministration')]) : route('websites.data.json'),
             'caption' => 'Elenco dei siti web abilitati su Web Analytics Italia', //TODO: set title in lang file
             'footer' => '*Il numero di visite si riferisce agli ultimi 30 giorni.',
             'columnsOrder' => [['added_at', 'asc'], ['name', 'asc']],
@@ -447,6 +447,64 @@ class WebsiteController extends Controller
         return redirect()->route('websites.index')->withMessage(['success' => 'Il sito "' . $website->getInfo() . '" è stato modificato.']); //TODO: put message in lang file
     }
 
+    public function delete(PublicAdministration $publicAdministration, Website $website): JsonResponse
+    {
+        try {
+            if ($website->type->is(WebsiteType::PRIMARY)) {
+                throw new OperationNotAllowedException('Impossibile eliminare un sito istituzionale');
+            }
+
+            app()->make('analytics-service')->changeArchiveStatus($website->analytics_id, WebsiteStatus::ARCHIVED);
+            $website->delete();
+
+            return response()->json(['result' => 'ok', 'id' => $website->slug, 'status' => $website->status->description]);
+        } catch (AnalyticsServiceException | BindingResolutionException $exception) {
+            report($exception);
+            $code = $exception->getCode();
+            $message = 'Internal Server Error';
+            $httpStatusCode = 500;
+        } catch (OperationNotAllowedException $exception) {
+            report($exception);
+            $code = $exception->getCode();
+            $message = $exception->getMessage();
+            $httpStatusCode = 400;
+        } catch (CommandErrorException $exception) {
+            report($exception);
+            $code = $exception->getCode();
+            $message = 'Bad Request';
+            $httpStatusCode = 400;
+        }
+
+        return response()->json(['result' => 'error', 'message' => $message, 'code' => $code], $httpStatusCode);
+    }
+
+    public function restore(PublicAdministration $publicAdministration, Website $website): JsonResponse
+    {
+        try {
+            if (!$website->trashed()) {
+                return response()->json(null, 304);
+            }
+
+            //NOTE: 'ACTIVE' status is for re-enabling tracking on Analytics Service: actual website status on WAI isn't changed
+            app()->make('analytics-service')->changeArchiveStatus($website->analytics_id, WebsiteStatus::ACTIVE);
+            $website->restore();
+
+            return response()->json(['result' => 'ok', 'id' => $website->slug, 'status' => $website->status->description]);
+        } catch (AnalyticsServiceException | BindingResolutionException $exception) {
+            report($exception);
+            $code = $exception->getCode();
+            $message = 'Internal Server Error';
+            $httpStatusCode = 500;
+        } catch (CommandErrorException $exception) {
+            report($exception);
+            $code = $exception->getCode();
+            $message = 'Bad Request';
+            $httpStatusCode = 400;
+        }
+
+        return response()->json(['result' => 'error', 'message' => $message, 'code' => $code], $httpStatusCode);
+    }
+
     /**
      * Get all websites of the specified Public Administration
      * in JSON format (to be consumed by Datatables).
@@ -455,9 +513,9 @@ class WebsiteController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function dataJson()
+    public function dataJson(PublicAdministration $publicAdministration)
     {
-        return Datatables::of(current_public_administration()->websites())
+        return Datatables::of(auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA) ? $publicAdministration->websites()->withTrashed()->get() : current_public_administration()->websites())
             ->setTransformer(new WebsiteTransformer())
             ->make(true);
     }

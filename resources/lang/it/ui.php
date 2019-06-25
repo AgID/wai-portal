@@ -71,6 +71,8 @@ return [
                 'check_tracking' => 'verifica attivazione',
                 'archive' => 'archivia',
                 'enable' => 'riabilita',
+                'restore_website' => 'ripristina sito',
+                'delete_website' => 'elimina sito',
             ],
             'add-primary' => [
                 'title' => 'Sito istituzionale',

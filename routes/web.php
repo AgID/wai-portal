@@ -492,6 +492,28 @@ Route::middleware('admin.auth', 'verified:admin.verification.notice')->group(fun
                         'uses' => 'UserController@delete',
                     ]);
                 });
+
+                Route::prefix('/websites')->group(function () {
+                    Route::get('/', [
+                        'as' => 'admin.publicAdministration.websites.index',
+                        'uses' => 'WebsiteController@index',
+                    ]);
+
+                    Route::get('/data', [
+                        'as' => 'admin.publicAdministration.websites.data.json',
+                        'uses' => 'WebsiteController@dataJson',
+                    ]);
+
+                    Route::patch('/{trashed_website}/restore', [
+                        'as' => 'admin.publicAdministration.websites.restore',
+                        'uses' => 'WebsiteController@restore',
+                    ]);
+
+                    Route::patch('/{website}/delete', [
+                        'as' => 'admin.publicAdministration.websites.delete',
+                        'uses' => 'WebsiteController@delete',
+                    ]);
+                });
             });
         });
 

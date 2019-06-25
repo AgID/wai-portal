@@ -159,13 +159,17 @@ class EventType extends Enum implements LocalizedEnum
      */
     public const WEBSITE_PURGED = 30;
 
+    public const WEBSITE_DELETED = 31;
+
+    public const WEBSITE_RESTORED = 32;
+
     /**
      * Users index updated event.
      */
-    public const USERS_INDEXING_COMPLETED = 31;
+    public const USERS_INDEXING_COMPLETED = 33;
 
     /**
      * Websites index updated event.
      */
-    public const WEBSITES_INDEXING_COMPLETED = 32;
+    public const WEBSITES_INDEXING_COMPLETED = 34;
 }
