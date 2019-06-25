@@ -8,14 +8,19 @@ use App\Enums\WebsiteType;
 use App\Models\Website;
 use League\Fractal\TransformerAbstract;
 
+/**
+ * Website transformer.
+ */
 class WebsiteTransformer extends TransformerAbstract
 {
     /**
-     * @param Website $website
+     * Transform the website for datatable.
      *
-     * @return array
+     * @param Website $website the website
+     *
+     * @return array the response
      */
-    public function transform(Website $website)
+    public function transform(Website $website): array
     {
         $data = [
             'name' => $website->name,

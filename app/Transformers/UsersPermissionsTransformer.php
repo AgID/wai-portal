@@ -7,14 +7,19 @@ use App\Enums\UserRole;
 use App\Models\User;
 use League\Fractal\TransformerAbstract;
 
+/**
+ * User permissions transformer.
+ */
 class UsersPermissionsTransformer extends TransformerAbstract
 {
     /**
-     * @param User $user
+     * Transform the user permission for datatable.
      *
-     * @return array
+     * @param User $user the user
+     *
+     * @return array the response
      */
-    public function transform(User $user)
+    public function transform(User $user): array
     {
         $website = request()->route('website');
         $readOnly = request()->filled('readOnly');

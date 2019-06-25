@@ -17,19 +17,24 @@ class WebsiteArchivingUserEmail extends Notification implements ShouldQueue
     use Queueable;
 
     /**
-     * The activated website.
+     * The website.
      *
      * @var Website the website
      */
     protected $website;
 
+    /**
+     * Number of days remaining before archiving.
+     *
+     * @var int the number of days
+     */
     protected $daysLeft;
 
     /**
      * Notification constructor.
      *
      * @param Website $website the website
-     * @param int $daysLeft
+     * @param int $daysLeft the remaining days
      */
     public function __construct(Website $website, int $daysLeft)
     {
