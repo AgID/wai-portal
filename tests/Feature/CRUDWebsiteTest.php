@@ -23,18 +23,48 @@ use Italia\SPIDAuth\SPIDUser;
 use Silber\Bouncer\BouncerFacade as Bouncer;
 use Tests\TestCase;
 
+/**
+ * Website CRUD test.
+ */
 class CRUDWebsiteTest extends TestCase
 {
     use RefreshDatabase;
 
+    /**
+     * The user.
+     *
+     * @var User the user
+     */
     private $user;
 
+    /**
+     * The SPID user.
+     *
+     * @var SPIDUser the SPID user
+     */
     private $spidUser;
 
+    /**
+     * The public administration.
+     *
+     * @var PublicAdministration the public administration
+     */
     private $publicAdministration;
 
+    /**
+     * The website.
+     *
+     * @var Website the website
+     */
     private $website;
 
+    /**
+     * Pre-test setup.
+     *
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException if unable to bind to the service
+     * @throws \App\Exceptions\AnalyticsServiceException if unable to connect the Analytics Service
+     * @throws \App\Exceptions\CommandErrorException if command is unsuccessful
+     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -69,12 +99,22 @@ class CRUDWebsiteTest extends TestCase
         $this->user->allow(UserPermission::MANAGE_WEBSITES);
     }
 
+    /**
+     * Post- test tear down.
+     *
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException if unable to bind to the service
+     * @throws \App\Exceptions\AnalyticsServiceException if unable to connect the Analytics Service
+     * @throws \App\Exceptions\CommandErrorException if command is unsuccessful
+     */
     public function tearDown(): void
     {
         $this->user->deleteAnalyticsServiceAccount();
         parent::tearDown();
     }
 
+    /**
+     * Test JSON data for datatable successful.
+     */
     public function testDatatableData(): void
     {
         $this->actingAs($this->user)
@@ -92,6 +132,13 @@ class CRUDWebsiteTest extends TestCase
             ]);
     }
 
+    /**
+     * Test primary website creation successful.
+     *
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException if unable to bind to the service
+     * @throws \App\Exceptions\AnalyticsServiceException if unable to connect the Analytics Service
+     * @throws \App\Exceptions\CommandErrorException if command is unsuccessful
+     */
     public function testStorePrimaryWebsiteSuccessful(): void
     {
         $user = factory(User::class)->create([
@@ -131,6 +178,9 @@ class CRUDWebsiteTest extends TestCase
         $this->assertEquals('camera', $user->publicAdministrations()->first()->ipa_code);
     }
 
+    /**
+     * Test primary website creation fail due to fields validation.
+     */
     public function testStorePrimaryWebsiteFailValidation(): void
     {
         $user = factory(User::class)->create([
@@ -166,6 +216,13 @@ class CRUDWebsiteTest extends TestCase
         $this->assertEmpty($user->publicAdministrations()->get());
     }
 
+    /**
+     * Test website creation successful.
+     *
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException if unable to bind to the service
+     * @throws \App\Exceptions\AnalyticsServiceException if unable to connect the Analytics Service
+     * @throws \App\Exceptions\CommandErrorException if command is unsuccessful
+     */
     public function testStoreWebsiteSuccessful(): void
     {
         $secondUser = factory(User::class)->create([
@@ -235,6 +292,9 @@ class CRUDWebsiteTest extends TestCase
         });
     }
 
+    /**
+     * Test website creation fail due to fields validation.
+     */
     public function testStoreWebsiteFailValidation(): void
     {
         $this->actingAs($this->user)
@@ -262,6 +322,13 @@ class CRUDWebsiteTest extends TestCase
         Event::assertNotDispatched(UserWebsiteAccessChanged::class);
     }
 
+    /**
+     * Test website update successful.
+     *
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException if unable to bind to the service
+     * @throws \App\Exceptions\AnalyticsServiceException if unable to connect the Analytics Service
+     * @throws \App\Exceptions\CommandErrorException if command is unsuccessful
+     */
     public function testUpdateWebsiteSuccessful(): void
     {
         $secondUser = factory(User::class)->create([
@@ -336,6 +403,9 @@ class CRUDWebsiteTest extends TestCase
         });
     }
 
+    /**
+     * Test website update fail due to fields validation.
+     */
     public function testUpdateWebsiteFailValidation(): void
     {
         $secondWebsite = factory(Website::class)->create([
@@ -367,6 +437,13 @@ class CRUDWebsiteTest extends TestCase
         Event::assertNotDispatched(WebsiteUpdated::class);
     }
 
+    /**
+     * Test primary website update successful.
+     *
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException if unable to bind to the service
+     * @throws \App\Exceptions\AnalyticsServiceException if unable to connect the Analytics Service
+     * @throws \App\Exceptions\CommandErrorException if command is unsuccessful
+     */
     public function testUpdatePrimaryWebsiteSuccessful(): void
     {
         $secondUser = factory(User::class)->create([
@@ -432,6 +509,9 @@ class CRUDWebsiteTest extends TestCase
         });
     }
 
+    /**
+     * Test primary website update fail due to fields validation.
+     */
     public function testUpdatePrimaryWebsiteFailValidation(): void
     {
         $secondUser = factory(User::class)->create([

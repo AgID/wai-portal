@@ -17,6 +17,7 @@ use App\Exceptions\AnalyticsServiceException;
 use App\Exceptions\CommandErrorException;
 use App\Exceptions\InvalidWebsiteStatusException;
 use App\Exceptions\OperationNotAllowedException;
+use App\Exceptions\TenantIdNotSetException;
 use App\Http\Requests\StorePrimaryWebsiteRequest;
 use App\Http\Requests\StoreWebsiteRequest;
 use App\Http\Requests\UpdateWebsiteRequest;
@@ -27,22 +28,25 @@ use App\Transformers\UsersPermissionsTransformer;
 use App\Transformers\WebsiteTransformer;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Str;
-use Illuminate\Validation\Rule;
+use Illuminate\View\View;
 use Silber\Bouncer\BouncerFacade as Bouncer;
 use Yajra\Datatables\Datatables;
 
+/**
+ * Website management controller.
+ */
 class WebsiteController extends Controller
 {
     use ActivatesWebsite;
 
     /**
-     * Display a listing of the resource.
+     * Display website list.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View the view
      */
-    public function index()
+    public function index(): View
     {
         $websitesDatatable = [
             'columns' => [
@@ -62,6 +66,12 @@ class WebsiteController extends Controller
         return view('pages.websites.index')->with($websitesDatatable);
     }
 
+    /**
+     * Show the form for creating a new primary website.
+     *
+     * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse the view or the server redirect
+     *                                                                 if a primary website already exists
+     */
     public function createPrimary()
     {
         if (auth()->user()->publicAdministrations->isNotEmpty()) {
@@ -72,13 +82,18 @@ class WebsiteController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Create a new primary website.
      *
-     * @param StorePrimaryWebsiteRequest $request
+     * @param StorePrimaryWebsiteRequest $request the request
      *
-     * @return \Illuminate\Http\Response
+     * @throws BindingResolutionException if unable to bind to the analytics service
+     * @throws CommandErrorException if command is unsuccessful
+     * @throws AnalyticsServiceException if unable to connect the Analytics Service
+     * @throws TenantIdNotSetException if the tenant id is not set in the current session
+     *
+     * @return \Illuminate\Http\RedirectResponse the server redirect response
      */
-    public function storePrimary(StorePrimaryWebsiteRequest $request)
+    public function storePrimary(StorePrimaryWebsiteRequest $request): RedirectResponse
     {
         $publicAdministration = PublicAdministration::make([
             'ipa_code' => $request->publicAdministration['ipa_code'],
@@ -127,11 +142,11 @@ class WebsiteController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show the form for creating a new website.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View the view
      */
-    public function create()
+    public function create(): View
     {
         $usersPermissionsDatatable = [
             'columns' => [
@@ -151,13 +166,18 @@ class WebsiteController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a new website.
      *
-     * @param StoreWebsiteRequest $request
+     * @param StoreWebsiteRequest $request the request
      *
-     * @return \Illuminate\Http\Response
+     * @throws BindingResolutionException if unable to bind to the analytics service
+     * @throws CommandErrorException if command is unsuccessful
+     * @throws AnalyticsServiceException if unable to connect the Analytics Service
+     * @throws TenantIdNotSetException if the tenant id is not set in the current session
+     *
+     * @return \Illuminate\Http\RedirectResponse the server redirect response
      */
-    public function store(StoreWebsiteRequest $request)
+    public function store(StoreWebsiteRequest $request): RedirectResponse
     {
         $validatedData = $request->validated();
 
@@ -358,13 +378,17 @@ class WebsiteController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Display a website information.
      *
-     * @param int $id
+     * @param Website $website the website to show
      *
-     * @return \Illuminate\Http\Response
+     * @throws BindingResolutionException if unable to bind to the analytics service
+     * @throws CommandErrorException if command is unsuccessful
+     * @throws AnalyticsServiceException if unable to connect the Analytics Service
+     *
+     * @return \Illuminate\View\View the view
      */
-    public function show(Website $website)
+    public function show(Website $website): View
     {
         $data = [
             'columns' => [
@@ -389,13 +413,13 @@ class WebsiteController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Show the form for editing a website.
      *
-     * @param Website $website
+     * @param Website $website the website to edit
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View the view
      */
-    public function edit(Website $website)
+    public function edit(Website $website): View
     {
         $usersPermissionsDatatable = [
             'columns' => [
@@ -415,14 +439,20 @@ class WebsiteController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update a website.
+     * NOTE: for primary websites, only updates to user permissions are allowed.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param Website $website
+     * @param UpdateWebsiteRequest $request the request
+     * @param Website $website the website to update
      *
-     * @return \Illuminate\Http\Response
+     * @throws BindingResolutionException if unable to bind to the analytics service
+     * @throws CommandErrorException if command is unsuccessful
+     * @throws AnalyticsServiceException if unable to connect the Analytics Service
+     * @throws TenantIdNotSetException if the tenant id is not set in the current session
+     *
+     * @return \Illuminate\Http\RedirectResponse the server redirect response
      */
-    public function update(UpdateWebsiteRequest $request, Website $website)
+    public function update(UpdateWebsiteRequest $request, Website $website): RedirectResponse
     {
         $validatedData = $request->validated();
 
@@ -447,6 +477,17 @@ class WebsiteController extends Controller
         return redirect()->route('websites.index')->withMessage(['success' => 'Il sito "' . $website->getInfo() . '" è stato modificato.']); //TODO: put message in lang file
     }
 
+    /**
+     * Delete a website.
+     * NOTE: super-admin only.
+     *
+     * @param PublicAdministration $publicAdministration the public administration the website belongs to
+     * @param Website $website the website to delete
+     *
+     * @throws \Exception if unable to delete the website
+     *
+     * @return JsonResponse the JSON response
+     */
     public function delete(PublicAdministration $publicAdministration, Website $website): JsonResponse
     {
         try {
@@ -478,6 +519,15 @@ class WebsiteController extends Controller
         return response()->json(['result' => 'error', 'message' => $message, 'code' => $code], $httpStatusCode);
     }
 
+    /**
+     * Restore a deleted website.
+     * NOTE: super-admin only.
+     *
+     * @param PublicAdministration $publicAdministration the public administration the website belongs to
+     * @param Website $website the website to restore
+     *
+     * @return JsonResponse the JSON response
+     */
     public function restore(PublicAdministration $publicAdministration, Website $website): JsonResponse
     {
         try {
@@ -506,12 +556,13 @@ class WebsiteController extends Controller
     }
 
     /**
-     * Get all websites of the specified Public Administration
-     * in JSON format (to be consumed by Datatables).
+     * Get the websites data.
      *
-     * @throws \Exception
+     * @param PublicAdministration|null $publicAdministration the P.A. to filter websites or null to use current user P.A.
      *
-     * @return \Illuminate\Http\Response
+     * @throws \Exception if unable to initialize the datatable
+     *
+     * @return mixed the response the JSON format
      */
     public function dataJson(PublicAdministration $publicAdministration)
     {
@@ -521,12 +572,13 @@ class WebsiteController extends Controller
     }
 
     /**
-     * Get all users of the specified Public Administration
-     * in JSON format (to be consumed by Datatables).
+     * Get the user permissions on a website.
      *
-     * @throws \Exception
+     * @param Website|null $website the website to use for permissions initialization or null for default
      *
-     * @return \Illuminate\Http\Response
+     * @throws \Exception if unable to initialize the datatable
+     *
+     * @return mixed the response the JSON format
      */
     public function dataUsersPermissionsJson(Website $website)
     {
@@ -536,14 +588,17 @@ class WebsiteController extends Controller
     }
 
     /**
-     * Get Javascript snippet for the specified Website
-     * of the specified Public Administration.
+     * Get Javascript snippet for a website.
      *
-     * @param Website $website
+     * @param Website $website the website
      *
-     * @return $this
+     * @throws BindingResolutionException if unable to bind to the service
+     * @throws AnalyticsServiceException if unable to contact the Analytics Service
+     * @throws CommandErrorException if command finishes with error
+     *
+     * @return \Illuminate\View\View the view
      */
-    public function showJavascriptSnippet(Website $website)
+    public function showJavascriptSnippet(Website $website): View
     {
         $tokenAuth = current_user_auth_token();
         $javascriptSnippet = app()->make('analytics-service')->getJavascriptSnippet($website->analytics_id, $tokenAuth);
@@ -551,6 +606,18 @@ class WebsiteController extends Controller
         return view('pages.websites.javascript_snippet')->with(['javascriptSnippet' => trim($javascriptSnippet)]);
     }
 
+    /**
+     * Manage not-admin users permissions on P.A. website.
+     *
+     * @param array $validatedData the permissions array
+     * @param PublicAdministration $publicAdministration the public administration the website belogns to
+     * @param Website $website the website
+     *
+     * @throws BindingResolutionException if unable to bind to the service
+     * @throws AnalyticsServiceException if unable to contact the Analytics Service
+     * @throws CommandErrorException if command finishes with error
+     * @throws TenantIdNotSetException if the tenant id is not set in the current session
+     */
     private function manageWebsitePermissionsOnNotAdministrators(array $validatedData, PublicAdministration $publicAdministration, Website $website): void
     {
         $usersEnabled = $validatedData['usersEnabled'] ?? [];

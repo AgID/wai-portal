@@ -55,6 +55,11 @@ class Website extends Model
         'type' => WebsiteType::class,
     ];
 
+    /**
+     * The event map for the model.
+     *
+     * @var array dispatched events list
+     */
     protected $dispatchesEvents = [
         'updated' => WebsiteUpdated::class,
         'deleted' => WebsiteDeleted::class,

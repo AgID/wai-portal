@@ -17,16 +17,41 @@ use Illuminate\Support\Facades\Event;
 use Silber\Bouncer\BouncerFacade as Bouncer;
 use Tests\TestCase;
 
+/**
+ * Super-admin website CRUD test.
+ */
 class CRUDAdminWebsiteTest extends TestCase
 {
     use RefreshDatabase;
 
+    /**
+     * The user.
+     *
+     * @var User the user
+     */
     private $user;
 
+    /**
+     * The public administration.
+     *
+     * @var PublicAdministration the public administration
+     */
     private $publicAdministration;
 
+    /**
+     * The website.
+     *
+     * @var Website the website
+     */
     private $website;
 
+    /**
+     * Pre-test setup.
+     *
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException if unable to bind to the service
+     * @throws \App\Exceptions\AnalyticsServiceException if unable to connect the Analytics Service
+     * @throws \App\Exceptions\CommandErrorException if command is unsuccessful
+     */
     public function setUp(): void
     {
         parent::setUp();
@@ -55,12 +80,22 @@ class CRUDAdminWebsiteTest extends TestCase
         $this->user->allow(UserPermission::ACCESS_ADMIN_AREA);
     }
 
+    /**
+     * Post-test tear down.
+     *
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException if unable to bind to the service
+     * @throws \App\Exceptions\AnalyticsServiceException if unable to connect the Analytics Service
+     * @throws \App\Exceptions\CommandErrorException if command is unsuccessful
+     */
     public function tearDown(): void
     {
         $this->app->make('analytics-service')->deleteSite($this->website->analytics_id);
         parent::tearDown();
     }
 
+    /**
+     * Test JSON data for public administration websites datatable successful.
+     */
     public function testPublicAdministrationWebsiteDatatableData(): void
     {
         $this->actingAs($this->user)
@@ -74,6 +109,9 @@ class CRUDAdminWebsiteTest extends TestCase
             ]);
     }
 
+    /**
+     * Test website delete successful.
+     */
     public function testDeleteWebsiteSuccessful(): void
     {
         $this->actingAs($this->user)
@@ -90,6 +128,9 @@ class CRUDAdminWebsiteTest extends TestCase
         });
     }
 
+    /**
+     * Test website delete fail due to primary website.
+     */
     public function testDeleteWebsiteFailPrimary(): void
     {
         Event::fakeFor(function () {
@@ -113,6 +154,9 @@ class CRUDAdminWebsiteTest extends TestCase
         Event::assertNotDispatched(WebsiteDeleted::class);
     }
 
+    /**
+     * Test website restore successful.
+     */
     public function testRestoreWebsiteSuccessful(): void
     {
         Event::fakeFor(function () {

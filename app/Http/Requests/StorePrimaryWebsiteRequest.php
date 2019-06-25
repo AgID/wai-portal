@@ -6,6 +6,9 @@ use App\Traits\InteractsWithIPAIndex;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Validator;
 
+/**
+ * Store primary website request.
+ */
 class StorePrimaryWebsiteRequest extends FormRequest
 {
     use InteractsWithIPAIndex;
@@ -22,7 +25,7 @@ class StorePrimaryWebsiteRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
@@ -30,9 +33,9 @@ class StorePrimaryWebsiteRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array
+     * @return array the validation rules
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'public_administration_name' => 'required',
@@ -46,7 +49,7 @@ class StorePrimaryWebsiteRequest extends FormRequest
     /**
      * Configure the validator instance.
      *
-     * @param Validator $validator
+     * @param Validator $validator the validator reference
      */
     public function withValidator(Validator $validator): void
     {

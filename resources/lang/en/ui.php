@@ -58,7 +58,7 @@ return [
         'dashboard' => [
             'title' => 'Dashboard',
             'websites' => 'Siti web',
-            'users' => 'Utenti'
+            'users' => 'Utenti',
         ],
         'websites' => [
             'index' => [
@@ -84,11 +84,11 @@ return [
                 'title' => 'Show website',
             ],
             'edit' => [
-                'title' => 'Modifica sito'
+                'title' => 'Modifica sito',
             ],
             'javascript-snippet' => [
-                'title' => 'Snippet di codice Javascript'
-            ]
+                'title' => 'Snippet di codice Javascript',
+            ],
         ],
         'users' => [
             'index' => [
@@ -112,7 +112,7 @@ return [
             ],
         ],
         'spid-auth_login' => [
-            'title' => 'Accesso con SPID'
+            'title' => 'Accesso con SPID',
         ],
         'profile' => [
             'show' => [

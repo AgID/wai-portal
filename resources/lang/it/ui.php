@@ -88,7 +88,7 @@ return [
             ],
             'javascript-snippet' => [
                 'title' => 'Snippet di codice Javascript',
-            ]
+            ],
         ],
         'users' => [
             'index' => [
@@ -245,7 +245,7 @@ return [
             'title' => "Errore dell'applicazione",
             'description' => "Si è verificato un errore inaspettato.\nSe dovesse ripetersi ti preghiamo di contattarci.",
             'elasticsearch_description' => 'Si è verificato un errore nel recupero dei log.',
-        ]
+        ],
     ],
 
 ];

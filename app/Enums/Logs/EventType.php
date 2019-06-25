@@ -132,6 +132,9 @@ class EventType extends Enum implements LocalizedEnum
      */
     public const WEBSITE_ACTIVATED = 24;
 
+    /**
+     * Website status changed event.
+     */
     public const WEBSITE_STATUS_CHANGED = 25;
 
     /**
@@ -159,8 +162,14 @@ class EventType extends Enum implements LocalizedEnum
      */
     public const WEBSITE_PURGED = 30;
 
+    /**
+     * Website manually deleted event.
+     */
     public const WEBSITE_DELETED = 31;
 
+    /**
+     * Website restored event.
+     */
     public const WEBSITE_RESTORED = 32;
 
     /**

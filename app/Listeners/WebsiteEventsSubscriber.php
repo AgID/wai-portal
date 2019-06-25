@@ -85,6 +85,11 @@ class WebsiteEventsSubscriber implements ShouldQueue
         );
     }
 
+    /**
+     * Website updated event callback.
+     *
+     * @param WebsiteUpdated $event the event
+     */
     public function onUpdated(WebsiteUpdated $event): void
     {
         $website = $event->getWebsite();
@@ -232,6 +237,11 @@ class WebsiteEventsSubscriber implements ShouldQueue
         );
     }
 
+    /**
+     * Website deleted event callback.
+     *
+     * @param WebsiteDeleted $event the event
+     */
     public function onDeleted(WebsiteDeleted $event): void
     {
         $website = $event->getWebsite();
@@ -245,6 +255,11 @@ class WebsiteEventsSubscriber implements ShouldQueue
         );
     }
 
+    /**
+     * Website restored event callback.
+     *
+     * @param WebsiteRestored $event the event
+     */
     public function onRestored(WebsiteRestored $event): void
     {
         $website = $event->getWebsite();
