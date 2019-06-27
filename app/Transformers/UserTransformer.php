@@ -40,6 +40,14 @@ class UserTransformer extends TransformerAbstract
         ];
 
         if (auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)) {
+            $data['buttons'][] = [
+                'link' => route('admin.publicAdministration.users.show', ['publicAdministration' => request()->route('publicAdministration'), 'user' => $user], false),
+                'label' => __('ui.pages.users.index.show_user'),
+            ];
+            $data['buttons'][] = [
+                'link' => route('admin.publicAdministration.users.edit', ['publicAdministration' => request()->route('publicAdministration'), 'user' => $user], false),
+                'label' => __('ui.pages.users.index.edit_user'),
+            ];
             if (!$user->status->is(UserStatus::PENDING)) {
                 if ($user->trashed()) {
                     $data['buttons'][] = [

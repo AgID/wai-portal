@@ -473,6 +473,36 @@ Route::middleware('admin.auth', 'verified:admin.verification.notice')->group(fun
                         'uses' => 'UserController@dataJson',
                     ]);
 
+                    Route::get('/add', [
+                        'as' => 'admin.publicAdministration.users.create',
+                        'uses' => 'UserController@create',
+                    ]);
+
+                    Route::get('/websites-data/{user?}', [
+                        'as' => 'admin.publicAdministration.users.websites.permissions.data',
+                        'uses' => 'UserController@dataWebsitesPermissionsJson',
+                    ]);
+
+                    Route::post('/', [
+                        'as' => 'admin.publicAdministration.users.store',
+                        'uses' => 'UserController@store',
+                    ]);
+
+                    Route::get('/{user}/show', [
+                        'as' => 'admin.publicAdministration.users.show',
+                        'uses' => 'UserController@show',
+                    ]);
+
+                    Route::get('/{user}/edit', [
+                        'as' => 'admin.publicAdministration.users.edit',
+                        'uses' => 'UserController@edit',
+                    ]);
+
+                    Route::patch('/{user}/update', [
+                        'as' => 'admin.publicAdministration.users.update',
+                        'uses' => 'UserController@update',
+                    ]);
+
                     Route::patch('/{trashed_user}/restore', [
                         'as' => 'admin.publicAdministration.users.restore',
                         'uses' => 'UserController@restore',

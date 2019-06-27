@@ -22,7 +22,9 @@ trait HasWebsitePermissions
      */
     public function setNoAccessForWebsite(Website $website): void
     {
-        $this->ensurePermissionScopeIsSet();
+        if (empty(request()->route('publicAdministration'))) {
+            $this->ensurePermissionScopeIsSet();
+        }
         Bouncer::allow($this)->to(UserPermission::NO_ACCESS, $website);
         Bouncer::disallow($this)->to(UserPermission::READ_ANALYTICS, $website);
         Bouncer::disallow($this)->to(UserPermission::MANAGE_ANALYTICS, $website);
@@ -41,7 +43,9 @@ trait HasWebsitePermissions
      */
     public function setViewAccessForWebsite(Website $website): void
     {
-        $this->ensurePermissionScopeIsSet();
+        if (empty(request()->route('publicAdministration'))) {
+            $this->ensurePermissionScopeIsSet();
+        }
         Bouncer::allow($this)->to(UserPermission::READ_ANALYTICS, $website);
         Bouncer::disallow($this)->to(UserPermission::NO_ACCESS, $website);
         Bouncer::disallow($this)->to(UserPermission::MANAGE_ANALYTICS, $website);
@@ -60,7 +64,9 @@ trait HasWebsitePermissions
      */
     public function setWriteAccessForWebsite(Website $website): void
     {
-        $this->ensurePermissionScopeIsSet();
+        if (empty(request()->route('publicAdministration'))) {
+            $this->ensurePermissionScopeIsSet();
+        }
         Bouncer::allow($this)->to(UserPermission::READ_ANALYTICS, $website);
         Bouncer::allow($this)->to(UserPermission::MANAGE_ANALYTICS, $website);
         Bouncer::disallow($this)->to(UserPermission::NO_ACCESS, $website);
@@ -72,16 +78,20 @@ trait HasWebsitePermissions
     /**
      * Synchronize current user website permission to the analytics service.
      *
+     * @param PublicAdministration|null $publicAdministration the public administration the user belongs to or null to use session tenant
+     *
      * @throws \Illuminate\Contracts\Container\BindingResolutionException if unable to bind to the service
      * @throws \App\Exceptions\AnalyticsServiceException if unable to connect the Analytics Service
      * @throws \App\Exceptions\CommandErrorException if command is unsuccessful
      * @throws TenantIdNotSetException if the tenant id is not set in the current session
      */
-    public function syncWebsitesPermissionsToAnalyticsService(): void
+    public function syncWebsitesPermissionsToAnalyticsService(PublicAdministration $publicAdministration = null): void
     {
-        $this->ensurePermissionScopeIsSet();
+        if (!isset($publicAdministration)) {
+            $this->ensurePermissionScopeIsSet();
 
-        $publicAdministration = PublicAdministration::find(session('tenant_id'));
+            $publicAdministration = PublicAdministration::find(session('tenant_id'));
+        }
 
         $publicAdministration->websites()->get()->map(function ($website) {
             if ($this->can(UserPermission::MANAGE_ANALYTICS, $website)) {

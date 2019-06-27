@@ -13,7 +13,7 @@
         <div class="Grid-cell u-size4of12">Status</div>
         <div class="Grid-cell u-size8of12 u-textWeight-600">{{ $user->status->description }}</div>
         <div class="Grid-cell u-size4of12">Ruolo</div>
-        <div class="Grid-cell u-size8of12 u-textWeight-600">{{ UserRole::getDescription($user->roles()->first()->name) }}</div>
+        <div class="Grid-cell u-size8of12 u-textWeight-600">{{ UserRole::getDescription($role) }}</div>
         <div class="Grid-cell u-size4of12">Data creazione</div>
         <div class="Grid-cell u-size8of12 u-textWeight-600">{{ $user->created_at->format('d/m/Y') }}</div>
         @if(!empty($user->email_verified_at))
@@ -32,10 +32,10 @@
             <div class="Grid-cell u-size4of12">Ultimo accesso</div>
             <div class="Grid-cell u-size8of12 u-textWeight-600">{{ $user->last_access_at->format('d/m/Y H:i') }}</div>
         @endif
-        @includeWhen(!$user->isA(UserRole::ADMIN), 'partials.user_website_permissions')
+        @includeWhen(!$admin, 'partials.user_website_permissions')
         @include('partials.link_button', [
             'label' => __('ui.pages.users.index.edit_user'),
-            'href' => route('users.edit', ['user' => $user], false)
+            'href' => auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA) ? route('admin.publicAdministration.users.edit', ['publicAdministration' => request()->route('publicAdministration'), 'user' => $user], false) : route('users.edit', ['user' => $user], false)
         ])
     </div>
 @endsection

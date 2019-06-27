@@ -46,7 +46,7 @@ class UserController extends Controller
                 ['data' => 'status', 'name' => 'Stato'],
                 ['data' => 'buttons', 'name' => 'Azioni'],
             ],
-            'source' => request()->user()->can(UserPermission::ACCESS_ADMIN_AREA) ? route('admin.publicAdministration.users.data.json', ['publicAdministration' => request()->route('publicAdministration')]) : route('users.data.json'),
+            'source' => auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA) ? route('admin.publicAdministration.users.data.json', ['publicAdministration' => request()->route('publicAdministration')]) : route('users.data.json'),
             'caption' => 'Elenco degli utenti web abilitati su Web Analytics Italia', //TODO: set title in lang file
             'columnsOrder' => [['added_at', 'asc'], ['name', 'asc']],
         ];
@@ -70,7 +70,7 @@ class UserController extends Controller
                 ['data' => 'checkboxes', 'name' => 'Abilitato'],
                 ['data' => 'radios', 'name' => 'Permessi'],
             ],
-            'source' => route('users.websites.permissions.data'),
+            'source' => auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA) ? route('admin.publicAdministration.users.websites.permissions.data', ['publicAdministration' => request()->route('publicAdministration')]) : route('users.websites.permissions.data'),
             'caption' => 'Elenco dei siti web presenti su Web Analytics Italia', //TODO: set title in lang file
             'columnsOrder' => [['added_at', 'asc']],
         ];
@@ -81,15 +81,16 @@ class UserController extends Controller
     /**
      * Create a new user.
      *
-     * @param \Illuminate\Http\Request $request the incoming request
+     * @param StoreUserRequest $request the incoming request
+     * @param PublicAdministration|null $publicAdministration the public administration the user must belong to
      *
      * @throws \Exception if unable to generate user UUID
      *
      * @return \Illuminate\Http\RedirectResponse the server redirect response
      */
-    public function store(StoreUserRequest $request): RedirectResponse
+    public function store(StoreUserRequest $request, PublicAdministration $publicAdministration): RedirectResponse
     {
-        $currentPublicAdministration = current_public_administration();
+        $currentPublicAdministration = auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA) ? $publicAdministration : current_public_administration();
 
         $user = User::create([
             'uuid' => Uuid::uuid4()->toString(),
@@ -101,44 +102,56 @@ class UserController extends Controller
 
         $user->registerAnalyticsServiceAccount();
 
-        $isAdmin = $request->input('isAdmin', false);
-        $websitesEnabled = $request->input('websitesEnabled', []);
-        $websitesPermissions = $request->input('websitesPermissions', []);
-        $currentPublicAdministration->websites->map(function ($website) use ($user, $isAdmin, $websitesEnabled, $websitesPermissions) {
-            if ($isAdmin) {
-                $user->assign(UserRole::ADMIN);
-                $user->setWriteAccessForWebsite($website);
-            } else {
-                $user->assign(UserRole::DELEGATED);
-                if (!empty($websitesPermissions[$website->id]) && UserPermission::MANAGE_ANALYTICS === $websitesPermissions[$website->id]) {
+        Bouncer::scope()->onceTo($currentPublicAdministration->id, function () use ($request, $currentPublicAdministration, $user) {
+            $isAdmin = $request->input('isAdmin', false);
+            $websitesEnabled = $request->input('websitesEnabled', []);
+            $websitesPermissions = $request->input('websitesPermissions', []);
+            $currentPublicAdministration->websites->map(function ($website) use ($user, $isAdmin, $websitesEnabled, $websitesPermissions) {
+                if ($isAdmin) {
+                    $user->assign(UserRole::ADMIN);
                     $user->setWriteAccessForWebsite($website);
-                }
+                } else {
+                    $user->assign(UserRole::DELEGATED);
+                    if (!empty($websitesPermissions[$website->id]) && UserPermission::MANAGE_ANALYTICS === $websitesPermissions[$website->id]) {
+                        $user->setWriteAccessForWebsite($website);
+                    }
 
-                if (!empty($websitesPermissions[$website->id]) && UserPermission::READ_ANALYTICS === $websitesPermissions[$website->id]) {
-                    $user->setViewAccessForWebsite($website);
-                }
+                    if (!empty($websitesPermissions[$website->id]) && UserPermission::READ_ANALYTICS === $websitesPermissions[$website->id]) {
+                        $user->setViewAccessForWebsite($website);
+                    }
 
-                if (empty($websitesEnabled[$website->id])) {
-                    $user->setNoAccessForWebsite($website);
+                    if (empty($websitesEnabled[$website->id])) {
+                        $user->setNoAccessForWebsite($website);
+                    }
                 }
-            }
+            });
+
+            $user->syncWebsitesPermissionsToAnalyticsService($currentPublicAdministration);
         });
 
-        $user->syncWebsitesPermissionsToAnalyticsService();
+        event(new UserInvited($user, $request->user(), $currentPublicAdministration));
 
-        event(new UserInvited($user, $request->user(), current_public_administration()));
+        $route = 'users.index';
+        $parameters = [];
+        if (auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)) {
+            $route = 'admin.publicAdministration.users.index';
+            $parameters = [
+                'publicAdministration' => $publicAdministration,
+            ];
+        }
 
-        return redirect()->route('users.index')->withMessage(['success' => 'Il nuovo utente è stato invitato al progetto Web Analytics Italia']); //TODO: put message in lang file
+        return redirect()->route($route, $parameters)->withMessage(['success' => 'Il nuovo utente è stato invitato al progetto Web Analytics Italia']); //TODO: put message in lang file
     }
 
     /**
      * Show the user details page.
      *
+     * @param PublicAdministration|null $publicAdministration the public administration the user belong to
      * @param User $user the user to display
      *
      * @return \Illuminate\View\View the view
      */
-    public function show(User $user): View
+    public function show(PublicAdministration $publicAdministration, User $user): View
     {
         $data = [
             'columns' => [
@@ -149,10 +162,12 @@ class UserController extends Controller
                 ['data' => 'checkboxes', 'name' => 'Abilitato'],
                 ['data' => 'radios', 'name' => 'Permessi'],
             ],
-            'source' => route('users.websites.permissions.data', ['user' => $user]) . '?readOnly=true',
+            'source' => (auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA) ? route('admin.publicAdministration.users.websites.permissions.data', ['publicAdministration' => $publicAdministration, 'user' => $user]) : route('users.websites.permissions.data', ['user' => $user])) . '?readOnly=true',
             'caption' => 'Elenco dei siti web presenti su Web Analytics Italia', //TODO: set title in lang file
             'columnsOrder' => [['added_at', 'asc']],
             'user' => $user,
+            'role' => auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA) ? Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user) { return $user->roles()->first()->name; }) : $user->roles()->first()->name,
+            'admin' => auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA) ? Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user) { return $user->isA(UserRole::ADMIN); }) : $user->isA(UserRole::ADMIN),
         ];
 
         return view('pages.users.show')->with($data);
@@ -161,11 +176,12 @@ class UserController extends Controller
     /**
      * Show the form to edit an existing user.
      *
+     * @param PublicAdministration|null $publicAdministration the public administration the user belong to
      * @param User $user the user to edit
      *
      * @return \Illuminate\View\View the view
      */
-    public function edit(User $user): View
+    public function edit(PublicAdministration $publicAdministration, User $user): View
     {
         $data = [
             'columns' => [
@@ -176,10 +192,11 @@ class UserController extends Controller
                 ['data' => 'checkboxes', 'name' => 'Abilitato'],
                 ['data' => 'radios', 'name' => 'Permessi'],
             ],
-            'source' => route('users.websites.permissions.data', ['user' => $user]),
+            'source' => auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA) ? route('admin.publicAdministration.users.websites.permissions.data', ['publicAdministration' => $publicAdministration, 'user' => $user]) : route('users.websites.permissions.data', ['user' => $user]),
             'caption' => 'Elenco dei siti web presenti su Web Analytics Italia', //TODO: set title in lang file
             'columnsOrder' => [['added_at', 'asc']],
             'user' => $user,
+            'admin' => auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA) ? Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user) { return $user->isA(UserRole::ADMIN); }) : $user->isA(UserRole::ADMIN),
         ];
 
         return view('pages.users.edit')->with($data);
@@ -189,6 +206,7 @@ class UserController extends Controller
      * Update the user information.
      *
      * @param UpdateUserRequest $request the incoming request
+     * @param PublicAdministration|null $publicAdministration the public administration the user belong to
      * @param User $user the user to update
      *
      * @throws \App\Exceptions\CommandErrorException if command is unsuccessful
@@ -199,9 +217,11 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse the server redirect response
      */
-    public function update(UpdateUserRequest $request, User $user): RedirectResponse
+    public function update(UpdateUserRequest $request, PublicAdministration $publicAdministration, User $user): RedirectResponse
     {
         $validatedData = $request->validated();
+
+        $currentPublicAdministration = auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA) ? $publicAdministration : current_public_administration();
 
         // Update user information
         if ($user->email !== $validatedData['email']) {
@@ -225,37 +245,47 @@ class UserController extends Controller
             }
         }
 
-        // Update permissions
-        // NOTE: at this point, user must have an analytics account
-        $isAdmin = $validatedData['isAdmin'] ?? false;
-        $websitesEnabled = $validatedData['websitesEnabled'] ?? [];
-        $websitesPermissions = $validatedData['websitesPermissions'] ?? [];
+        Bouncer::scope()->onceTo($currentPublicAdministration->id, function () use ($currentPublicAdministration, $user, $validatedData) {
+            // Update permissions
+            // NOTE: at this point, user must have an analytics account
+            $isAdmin = $validatedData['isAdmin'] ?? false;
+            $websitesEnabled = $validatedData['websitesEnabled'] ?? [];
+            $websitesPermissions = $validatedData['websitesPermissions'] ?? [];
 
-        current_public_administration()->websites->map(function ($website) use ($user, $isAdmin, $websitesEnabled, $websitesPermissions) {
-            if ($isAdmin) {
-                $user->retract(UserRole::DELEGATED);
-                $user->assign(UserRole::ADMIN);
-                $user->setWriteAccessForWebsite($website);
-            } else {
-                $user->retract(UserRole::ADMIN);
-                $user->assign(UserRole::DELEGATED);
-                if (!empty($websitesPermissions[$website->id]) && UserPermission::MANAGE_ANALYTICS === $websitesPermissions[$website->id]) {
+            $currentPublicAdministration->websites->map(function ($website) use ($user, $isAdmin, $websitesEnabled, $websitesPermissions) {
+                if ($isAdmin) {
+                    $user->retract(UserRole::DELEGATED);
+                    $user->assign(UserRole::ADMIN);
                     $user->setWriteAccessForWebsite($website);
-                }
+                } else {
+                    $user->retract(UserRole::ADMIN);
+                    $user->assign(UserRole::DELEGATED);
+                    if (!empty($websitesPermissions[$website->id]) && UserPermission::MANAGE_ANALYTICS === $websitesPermissions[$website->id]) {
+                        $user->setWriteAccessForWebsite($website);
+                    }
 
-                if (!empty($websitesPermissions[$website->id]) && UserPermission::READ_ANALYTICS === $websitesPermissions[$website->id]) {
-                    $user->setViewAccessForWebsite($website);
-                }
+                    if (!empty($websitesPermissions[$website->id]) && UserPermission::READ_ANALYTICS === $websitesPermissions[$website->id]) {
+                        $user->setViewAccessForWebsite($website);
+                    }
 
-                if (empty($websitesEnabled[$website->id])) {
-                    $user->setNoAccessForWebsite($website);
+                    if (empty($websitesEnabled[$website->id])) {
+                        $user->setNoAccessForWebsite($website);
+                    }
                 }
-            }
+            });
+            $user->syncWebsitesPermissionsToAnalyticsService($currentPublicAdministration);
         });
 
-        $user->syncWebsitesPermissionsToAnalyticsService();
+        $route = 'users.index';
+        $parameters = [];
+        if (auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)) {
+            $route = 'admin.publicAdministration.users.index';
+            $parameters = [
+                'publicAdministration' => $publicAdministration,
+            ];
+        }
 
-        return redirect()->route('users.index')->withMessage(['success' => "L'utente " . $user->getInfo() . ' è stato modificato.']); //TODO: put message in lang file
+        return redirect()->route($route, $parameters)->withMessage(['success' => "L'utente " . $user->getInfo() . ' è stato modificato.']); //TODO: put message in lang file
     }
 
     /**
@@ -408,7 +438,7 @@ class UserController extends Controller
     /**
      * Get the users data.
      *
-     * @param PublicAdministration|null $publicAdministration
+     * @param PublicAdministration|null $publicAdministration the public administration the user belongs to
      *
      * @throws \Exception if unable to initialize the datatable
      *
@@ -424,15 +454,16 @@ class UserController extends Controller
     /**
      * Get the user permissions on websites.
      *
+     * @param PublicAdministration|null $publicAdministration the public administration the user belongs to
      * @param User|null $user the user to initialize permissions or null for default
      *
      * @throws \Exception if unable to initialize the datatable
      *
      * @return mixed the response the JSON format
      */
-    public function dataWebsitesPermissionsJson(User $user)
+    public function dataWebsitesPermissionsJson(PublicAdministration $publicAdministration, ?User $user)
     {
-        return Datatables::of(current_public_administration()->websites)
+        return Datatables::of((auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA) ? $publicAdministration : current_public_administration())->websites)
             ->setTransformer(new WebsitesPermissionsTransformer())
             ->make(true);
     }
@@ -444,12 +475,12 @@ class UserController extends Controller
      */
     public function validateNotLastActiveAdministrator(Validator $validator): void
     {
-        $publicAdministration = request()->route('publicAdministration');
+        $publicAdministration = request()->route('publicAdministration', current_public_administration());
         $user = request()->route('user');
-        $isAdmin = Bouncer::scope()->onceTo($publicAdministration ? $publicAdministration->id : current_public_administration()->id, function () use ($user) {
+        $isAdmin = Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user) {
             return $user->isA(UserRole::ADMIN);
         });
-        if ($isAdmin && $user->status->is(UserStatus::ACTIVE) && 1 === ($publicAdministration ?? current_public_administration())->getActiveAdministrators()->count()) {
+        if ($isAdmin && $user->status->is(UserStatus::ACTIVE) && 1 === $publicAdministration->getActiveAdministrators()->count()) {
             $validator->errors()->add('isAdmin', 'Impossibile rimuovere l\'utente ' . $user->getInfo() . ' in quanto ultimo amministratore attivo della P.A.');
         }
     }

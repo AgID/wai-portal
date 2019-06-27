@@ -5,7 +5,7 @@
             @endif
             <legend class="Form-legend">Ruolo</legend>
             <label class="Form-label Form-label--block" for="isAdmin">
-                <input type="checkbox" class="Form-input" name="isAdmin" id="isAdmin" value="1" {{ old('isAdmin') || (isset($user) && $user->isA(UserRole::ADMIN)) ? 'checked' : '' }}>
+                <input type="checkbox" class="Form-input" name="isAdmin" id="isAdmin" value="1" {{ old('isAdmin') || (isset($admin) && $admin) ? 'checked' : '' }}>
                 <span class="Form-fieldIcon" role="presentation"></span>Amministratore
             </label>
             @if ($errors->has('isAdmin'))

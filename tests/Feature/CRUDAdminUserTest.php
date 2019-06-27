@@ -5,12 +5,15 @@ namespace Tests\Feature;
 use App\Enums\UserPermission;
 use App\Enums\UserRole;
 use App\Enums\UserStatus;
+use App\Enums\WebsiteAccessType;
 use App\Events\User\UserDeleted;
 use App\Events\User\UserInvited;
 use App\Events\User\UserRestored;
 use App\Events\User\UserUpdated;
+use App\Events\User\UserWebsiteAccessChanged;
 use App\Models\PublicAdministration;
 use App\Models\User;
+use App\Models\Website;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Event;
@@ -313,9 +316,326 @@ class CRUDAdminUserTest extends TestCase
     }
 
     /**
+     * Test public administration admin creation successful.
+     *
+     * @throws \App\Exceptions\AnalyticsServiceException if unable to connect the Analytics Service
+     * @throws \App\Exceptions\CommandErrorException if command is unsuccessful
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException if unable to bind to the service
+     */
+    public function testPublicAdministrationCreateAdminUserSuccessful(): void
+    {
+        $email = 'new@user.local';
+        $fiscalNumber = 'ESXLKY44P09I168D';
+        $publicAdministration = factory(PublicAdministration::class)
+            ->state('active')
+            ->create();
+
+        $this->actingAs($this->user)
+            ->post(
+                route('admin.publicAdministration.users.store', ['publicAdministration' => $publicAdministration]),
+                [
+                    '_token' => 'test',
+                    'email' => $email,
+                    'fiscalNumber' => $fiscalNumber,
+                    'isAdmin' => '1',
+                ],
+                )
+            ->assertSessionDoesntHaveErrors(
+                [
+                    'email',
+                    'fiscalNumber',
+                    'isAdmin',
+                ]
+            )
+            ->assertRedirect(route('admin.publicAdministration.users.index', ['publicAdministration' => $publicAdministration]));
+
+        Event::assertDispatched(UserInvited::class, function ($event) use ($email, $publicAdministration) {
+            return
+                $email === $event->getUser()->email
+                && $publicAdministration->ipa_code === $event->getPublicAdministration()->ipa_code
+                && $event->getInvitedBy()->uuid === $this->user->uuid;
+        });
+
+        User::findByFiscalNumber($fiscalNumber)->deleteAnalyticsServiceAccount();
+    }
+
+    /**
+     * Test public administration user creation successful.
+     *
+     * @throws \App\Exceptions\AnalyticsServiceException if unable to connect the Analytics Service
+     * @throws \App\Exceptions\CommandErrorException if command is unsuccessful
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException if unable to bind to the service
+     */
+    public function testPublicAdministrationCreateUserSuccessful(): void
+    {
+        $email = 'new@user.local';
+        $fiscalNumber = 'ESXLKY44P09I168D';
+        $publicAdministration = factory(PublicAdministration::class)
+            ->state('active')
+            ->create();
+        $website = factory(Website::class)->create([
+            'public_administration_id' => $publicAdministration->id,
+        ]);
+
+        $this->actingAs($this->user)
+            ->post(
+                route('admin.publicAdministration.users.store', ['publicAdministration' => $publicAdministration]),
+                [
+                    '_token' => 'test',
+                    'email' => $email,
+                    'fiscalNumber' => $fiscalNumber,
+                    'websiteEnabled' => [
+                        $website->id => 'enabled',
+                    ],
+                    'websitesPermissions' => [
+                        $website->id => UserPermission::MANAGE_ANALYTICS,
+                    ],
+                ]
+            )
+            ->assertSessionDoesntHaveErrors(
+                [
+                    'email',
+                    'fiscalNumber',
+                    'isAdmin',
+                    'websitesEnabled',
+                    'websitesEnabled.*',
+                    'websitesPermissions',
+                    'websitesPermissions.*',
+                ]
+            )
+            ->assertRedirect(route('admin.publicAdministration.users.index', ['publicAdministration' => $publicAdministration]));
+
+        Event::assertDispatched(UserInvited::class, function ($event) use ($email, $publicAdministration) {
+            return
+                $email === $event->getUser()->email
+                && $publicAdministration->ipa_code === $event->getPublicAdministration()->ipa_code
+                && $event->getInvitedBy()->uuid === $this->user->uuid;
+        });
+
+        User::findByFiscalNumber($fiscalNumber)->deleteAnalyticsServiceAccount();
+    }
+
+    /**
+     * Test user creation fails due to fields validation.
+     */
+    public function testPublicAdministrationCreateUserFailValidation(): void
+    {
+        $user = factory(User::class)->create();
+        $publicAdministration = factory(PublicAdministration::class)
+            ->state('active')
+            ->create();
+        $publicAdministration->users()->sync([$user->id]);
+
+        $this->actingAs($this->user)
+            ->from(route('admin.publicAdministration.users.create', ['publicAdministration' => $publicAdministration]))
+            ->post(
+                route('admin.publicAdministration.users.store', ['publicAdministration' => $publicAdministration]),
+                [
+                    '_token' => 'test',
+                    'email' => $user->email,
+                    'fiscalNumber' => $user->fiscalNumber,
+                ]
+            )
+            ->assertRedirect(route('admin.publicAdministration.users.create', ['publicAdministration' => $publicAdministration]))
+            ->assertSessionHasErrors([
+                'email',
+                'fiscalNumber',
+                'websitesPermissions',
+            ]);
+
+        Event::assertNotDispatched(UserInvited::class);
+    }
+
+    /**
+     * Test user email update successful.
+     *
+     * @throws \App\Exceptions\AnalyticsServiceException if unable to connect the Analytics Service
+     * @throws \App\Exceptions\CommandErrorException if command is unsuccessful
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException if unable to bind to the service
+     */
+    public function testPublicAdministrationUpdateUserEmailSuccessful(): void
+    {
+        $user = factory(User::class)->create();
+        $publicAdministration = factory(PublicAdministration::class)
+            ->state('active')
+            ->create();
+        $publicAdministration->users()->sync([$user->id]);
+        $website = factory(Website::class)->create([
+            'public_administration_id' => $publicAdministration->id,
+        ]);
+        Bouncer::scope()->to($publicAdministration->id);
+        $user->assign(UserRole::ADMIN);
+        $user->registerAnalyticsServiceAccount();
+
+        $this->actingAs($this->user)
+            ->patch(
+                route('admin.publicAdministration.users.update', ['publicAdministration' => $publicAdministration, 'user' => $this->user]),
+                [
+                    '_token' => 'test',
+                    'email' => 'new@email.local',
+                    'isAdmin' => '1',
+                ]
+            )
+            ->assertSessionDoesntHaveErrors([
+                    'email',
+                    'isAdmin',
+                    'websitesPermissions',
+                ]
+            );
+
+        $this->user->refresh();
+        Event::assertDispatched(UserUpdated::class, function ($event) {
+            return 'new@email.local' === $event->getUser()->email;
+        });
+
+        $user->deleteAnalyticsServiceAccount();
+    }
+
+    /**
+     * Test public administration user change role to admin from delegate successful.
+     */
+    public function testPublicAdministrationUpdateUserToAdminSuccessful(): void
+    {
+        $user = factory(User::class)->state('invited')->create([
+            'email_verified_at' => Date::now(),
+        ]);
+        $publicAdministration = factory(PublicAdministration::class)
+            ->state('active')
+            ->create();
+        $publicAdministration->users()->sync([$user->id], false);
+        $website = factory(Website::class)->create([
+            'public_administration_id' => $publicAdministration->id,
+        ]);
+        $user->registerAnalyticsServiceAccount();
+
+        Bouncer::scope()->to($publicAdministration->id);
+        $user->assign(UserRole::DELEGATED);
+        $user->allow(UserPermission::READ_ANALYTICS, $website);
+
+        $this->actingAs($this->user)
+            ->patch(
+                route('admin.publicAdministration.users.update', ['publicAdministration' => $publicAdministration, 'user' => $user]),
+                [
+                    '_token' => 'test',
+                    'email' => $user->email,
+                    'isAdmin' => '1',
+                ]
+            )
+            ->assertSessionDoesntHaveErrors([
+                    'email',
+                    'isAdmin',
+                    'websitesPermissions',
+                ]
+            )
+            ->assertRedirect(route('admin.publicAdministration.users.index', ['publicAdministration' => $publicAdministration]));
+
+        $this->assertTrue($user->isA(UserRole::ADMIN));
+        Event::assertDispatched(UserWebsiteAccessChanged::class, function ($event) use ($user, $website) {
+            return $user->uuid === $event->getUser()->uuid
+                && $website->slug === $event->getWebsite()->slug
+                && $event->getAccessType()->is(WebsiteAccessType::WRITE);
+        });
+
+        $user->deleteAnalyticsServiceAccount();
+    }
+
+    /**
+     * Test public administration user change role to delegate from admin successful.
+     */
+    public function testPublicAdministrationUpdateUserToDelegateSuccessful(): void
+    {
+        $user = factory(User::class)->create();
+        $publicAdministration = factory(PublicAdministration::class)
+            ->state('active')
+            ->create();
+        $publicAdministration->users()->sync([$user->id], false);
+        $website = factory(Website::class)->create([
+            'public_administration_id' => $publicAdministration->id,
+        ]);
+        $user->registerAnalyticsServiceAccount();
+
+        Bouncer::scope()->to($publicAdministration->id);
+        $user->assign(UserRole::ADMIN);
+
+        $this->actingAs($this->user)
+            ->patch(
+                route('admin.publicAdministration.users.update', ['publicAdministration' => $publicAdministration, 'user' => $user]),
+                [
+                    '_token' => 'test',
+                    'email' => $user->email,
+                    'websiteEnabled' => [
+                        $website->id => 'enabled',
+                    ],
+                    'websitesPermissions' => [
+                        $website->id => UserPermission::READ_ANALYTICS,
+                    ],
+                ]
+            )
+            ->assertSessionDoesntHaveErrors([
+                'email',
+                'isAdmin',
+                'websitesEnabled',
+                'websitesEnabled.*',
+                'websitesPermissions',
+                'websitesPermissions.*',
+            ])
+            ->assertRedirect(route('admin.publicAdministration.users.index', ['publicAdministration' => $publicAdministration]));
+
+        Bouncer::refreshFor($user);
+        $this->assertTrue($user->isA(UserRole::DELEGATED));
+        Event::assertDispatched(UserWebsiteAccessChanged::class, function ($event) use ($user, $website) {
+            return $user->uuid === $event->getUser()->uuid
+                && $website->slug === $event->getWebsite()->slug
+                && $event->getAccessType()->is(WebsiteAccessType::VIEW);
+        });
+
+        $user->deleteAnalyticsServiceAccount();
+    }
+
+    /**
+     * Test user update fail due to field validation.
+     */
+    public function testPublicAdministrationUpdateUserFailValidation(): void
+    {
+        $user = factory(User::class)->state('active')->create();
+        $publicAdministration = factory(PublicAdministration::class)
+            ->state('active')
+            ->create();
+        $publicAdministration->users()->sync([$user->id], false);
+        $website = factory(Website::class)->create([
+            'public_administration_id' => $publicAdministration->id,
+        ]);
+        Bouncer::scope()->to($publicAdministration->id);
+        $user->assign(UserRole::ADMIN);
+        $user->allow(UserPermission::MANAGE_USERS);
+
+        $this->actingAs($this->user)
+            ->from(route('admin.publicAdministration.users.edit', ['publicAdministration' => $publicAdministration, 'user' => $user]))
+            ->patch(
+                route('admin.publicAdministration.users.update', ['publicAdministration' => $publicAdministration, 'user' => $user]),
+                [
+                    '_token' => 'test',
+                    'email' => $user->email,
+                    'websiteEnabled' => [
+                        $website->id => 'enabled',
+                    ],
+                    'websitesPermissions' => [
+                        $website->id => UserPermission::READ_ANALYTICS,
+                    ],
+                ]
+            )
+            ->assertRedirect(route('admin.publicAdministration.users.edit', ['publicAdministration' => $publicAdministration, 'user' => $user]))
+            ->assertSessionHasErrors([
+                'isAdmin',
+            ]);
+
+        Event::assertNotDispatched(UserWebsiteAccessChanged::class);
+    }
+
+    /**
      * Test normal user removal successful.
      */
-    public function testDeleteUserSuccessful(): void
+    public function testPublicAdministrationDeleteUserSuccessful(): void
     {
         $publicAdministration = factory(PublicAdministration::class)
             ->state('active')
@@ -345,7 +665,7 @@ class CRUDAdminUserTest extends TestCase
     /**
      * Test normal user removal fail due to last public administration admin.
      */
-    public function testDeleteUserFailLastAdmin(): void
+    public function testPublicAdministrationDeleteUserFailLastAdmin(): void
     {
         $publicAdministration = factory(PublicAdministration::class)
             ->state('active')
@@ -373,7 +693,7 @@ class CRUDAdminUserTest extends TestCase
     /**
      * Test normal user removal fail due to user in 'pending' status.
      */
-    public function testDeleteUserFailPending(): void
+    public function testPublicAdministrationDeleteUserFailPending(): void
     {
         $publicAdministration = factory(PublicAdministration::class)
             ->state('active')
@@ -401,7 +721,7 @@ class CRUDAdminUserTest extends TestCase
     /**
      * Test normal user restore successful.
      */
-    public function testRestoreUserSuccessful(): void
+    public function testPublicAdministrationRestoreUserSuccessful(): void
     {
         $publicAdministration = factory(PublicAdministration::class)
             ->state('active')

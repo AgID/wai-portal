@@ -40,7 +40,7 @@ class UpdateUserRequest extends StoreUserRequest
         parent::withValidator($validator);
         $validator->after(function (Validator $validator) {
             $user = $this->route('user');
-            $lastAdministrator = 1 === current_public_administration()->getActiveAdministrators()->count();
+            $lastAdministrator = 1 === request()->route('publicAdministration', current_public_administration())->getActiveAdministrators()->count();
             if ($lastAdministrator && $user->status->is(UserStatus::ACTIVE) && $user->isA(UserRole::ADMIN) && !$this->input('isAdmin')) {
                 $validator->errors()->add('isAdmin', 'Deve restare almeno un utente amministratore per ogni PA.'); //TODO: put error message in lang file
             }

@@ -3,7 +3,7 @@
 @section('title', __('ui.pages.users.edit.title'))
 
 @section('content')
-    <form class="Form Form--spaced u-text-r-xs" method="post" action="{{ route('users.update', ['user' => $user], false) }}">
+    <form class="Form Form--spaced u-text-r-xs" method="post" action="{{ auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA) ? route('admin.publicAdministration.users.update', ['publicAdministration' => request()->route('publicAdministration'), 'user' => $user], false) : route('users.update', ['user' => $user], false) }}">
         @csrf
         @method('PATCH')
         @if ($errors->isEmpty())
@@ -64,7 +64,7 @@
                 </div>
                 @endif
             </div>
-            @include('partials.user_full_website_permissions', ['user' => $user])
+            @include('partials.user_full_website_permissions', ['admin' => $admin])
         </fieldset>
         <div class="Form-field Grid-cell u-textRight">
             <button type="submit" class="Button Button--default u-text-xs">

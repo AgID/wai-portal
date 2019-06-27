@@ -129,7 +129,6 @@ class CRUDUserTest extends TestCase
      */
     public function testCreateAdminUserSuccessful(): void
     {
-        Event::fake();
         $email = $this->faker->unique()->safeEmail;
         $fiscalNumber = 'ESXLKY44P09I168D';
 
