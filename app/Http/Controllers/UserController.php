@@ -291,11 +291,12 @@ class UserController extends Controller
     /**
      * Suspend an existing user.
      *
+     * @param PublicAdministration|null $publicAdministration the public administration the user belong to
      * @param User $user the user to suspend
      *
      * @return \Illuminate\Http\JsonResponse the JSON response
      */
-    public function suspend(User $user): JsonResponse
+    public function suspend(PublicAdministration $publicAdministration, User $user): JsonResponse
     {
         try {
             if ($user->status->is(UserStatus::SUSPENDED)) {
@@ -306,9 +307,12 @@ class UserController extends Controller
                 throw new InvalidUserStatusException('Impossibile sospendere un utente in attesa di attivazione'); //TODO: put message in lang file
             }
 
-            $validator = validator(request()->all())->after([$this, 'validateNotLastActiveAdministrator']);
-            if ($validator->fails()) {
-                throw new OperationNotAllowedException($validator->errors()->first('isAdmin'));
+            //NOTE: super-admin are allowed to suspend the last active P.A. administrator
+            if (auth()->user()->cannot(UserPermission::ACCESS_ADMIN_AREA)) {
+                $validator = validator(request()->all())->after([$this, 'validateNotLastActiveAdministrator']);
+                if ($validator->fails()) {
+                    throw new OperationNotAllowedException($validator->errors()->first('isAdmin'));
+                }
             }
 
             $user->status = UserStatus::SUSPENDED;
@@ -339,11 +343,12 @@ class UserController extends Controller
     /**
      * Reactivate an existing suspended user.
      *
+     * @param PublicAdministration|null $publicAdministration the public administration the user belong to
      * @param User $user the user to reactivate
      *
      * @return \Illuminate\Http\JsonResponse the JSON response
      */
-    public function reactivate(User $user): JsonResponse
+    public function reactivate(PublicAdministration $publicAdministration, User $user): JsonResponse
     {
         if (!$user->status->is(UserStatus::SUSPENDED)) {
             return response()->json(null, 304);
@@ -480,7 +485,7 @@ class UserController extends Controller
         $isAdmin = Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user) {
             return $user->isA(UserRole::ADMIN);
         });
-        if ($isAdmin && $user->status->is(UserStatus::ACTIVE) && 1 === $publicAdministration->getActiveAdministrators()->count()) {
+        if ($isAdmin && $user->status->is(UserStatus::ACTIVE) && (1 === $publicAdministration->getActiveAdministrators()->count())) {
             $validator->errors()->add('isAdmin', 'Impossibile rimuovere l\'utente ' . $user->getInfo() . ' in quanto ultimo amministratore attivo della P.A.');
         }
     }

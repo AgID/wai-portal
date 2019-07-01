@@ -39,57 +39,58 @@ class UserTransformer extends TransformerAbstract
             'control' => '',
         ];
 
-        if (auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)) {
+        if (auth()->user()->can(UserPermission::MANAGE_USERS) || auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)) {
             $data['buttons'][] = [
-                'link' => route('admin.publicAdministration.users.show', ['publicAdministration' => request()->route('publicAdministration'), 'user' => $user], false),
+                'link' => auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA) ?
+                    route('admin.publicAdministration.users.show', ['publicAdministration' => request()->route('publicAdministration'), 'user' => $user], false) :
+                    route('users.show', ['user' => $user], false),
                 'label' => __('ui.pages.users.index.show_user'),
             ];
             $data['buttons'][] = [
-                'link' => route('admin.publicAdministration.users.edit', ['publicAdministration' => request()->route('publicAdministration'), 'user' => $user], false),
+                'link' => auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA) ?
+                    route('admin.publicAdministration.users.edit', ['publicAdministration' => request()->route('publicAdministration'), 'user' => $user], false) :
+                    route('users.edit', ['user' => $user], false),
                 'label' => __('ui.pages.users.index.edit_user'),
             ];
-            if (!$user->status->is(UserStatus::PENDING)) {
-                if ($user->trashed()) {
+            if (!$user->trashed()) {
+                if ($user->status->is(UserStatus::SUSPENDED)) {
                     $data['buttons'][] = [
-                        'link' => route('admin.publicAdministration.users.restore', ['publicAdministration' => request()->route('publicAdministration'), 'user' => $user], false),
-                        'label' => __('ui.pages.users.index.restore_user'),
+                        'link' => auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA) ?
+                            route('admin.publicAdministration.users.reactivate', ['publicAdministration' => request()->route('publicAdministration'), 'user' => $user], false) :
+                            route('users.reactivate', ['user' => $user], false),
+                        'label' => __('ui.pages.users.index.reactivate_user'),
                         'dataAttributes' => [
-                            'type' => 'deleteStatus',
+                            'type' => 'suspendStatus',
                         ],
                     ];
                 } else {
                     $data['buttons'][] = [
-                        'link' => route('admin.publicAdministration.users.delete', ['publicAdministration' => request()->route('publicAdministration'), 'user' => $user], false),
-                        'label' => __('ui.pages.users.index.delete_user'),
+                        'link' => auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA) ?
+                            route('admin.publicAdministration.users.suspend', ['publicAdministration' => request()->route('publicAdministration'), 'user' => $user], false) :
+                            route('users.suspend', ['user' => $user], false),
+                        'label' => __('ui.pages.users.index.suspend_user'),
                         'dataAttributes' => [
-                            'type' => 'deleteStatus',
+                            'type' => 'suspendStatus',
                         ],
                     ];
                 }
             }
-        } elseif (auth()->user()->can(UserPermission::MANAGE_USERS)) {
-            $data['buttons'][] = [
-                'link' => route('users.show', ['user' => $user], false),
-                'label' => __('ui.pages.users.index.show_user'),
-            ];
-            $data['buttons'][] = [
-                'link' => route('users.edit', ['user' => $user], false),
-                'label' => __('ui.pages.users.index.edit_user'),
-            ];
-            if ($user->status->is(UserStatus::SUSPENDED)) {
+        }
+        if (!$user->status->is(UserStatus::PENDING) && auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)) {
+            if ($user->trashed()) {
                 $data['buttons'][] = [
-                    'link' => route('users.reactivate', ['user' => $user], false),
-                    'label' => __('ui.pages.users.index.reactivate_user'),
+                    'link' => route('admin.publicAdministration.users.restore', ['publicAdministration' => request()->route('publicAdministration'), 'user' => $user], false),
+                    'label' => __('ui.pages.users.index.restore_user'),
                     'dataAttributes' => [
-                        'type' => 'suspendStatus',
+                        'type' => 'deleteStatus',
                     ],
                 ];
             } else {
                 $data['buttons'][] = [
-                    'link' => route('users.suspend', ['user' => $user], false),
-                    'label' => __('ui.pages.users.index.suspend_user'),
+                    'link' => route('admin.publicAdministration.users.delete', ['publicAdministration' => request()->route('publicAdministration'), 'user' => $user], false),
+                    'label' => __('ui.pages.users.index.delete_user'),
                     'dataAttributes' => [
-                        'type' => 'suspendStatus',
+                        'type' => 'deleteStatus',
                     ],
                 ];
             }

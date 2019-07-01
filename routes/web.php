@@ -503,6 +503,16 @@ Route::middleware('admin.auth', 'verified:admin.verification.notice')->group(fun
                         'uses' => 'UserController@update',
                     ]);
 
+                    Route::patch('/{user}/suspend', [
+                        'as' => 'admin.publicAdministration.users.suspend',
+                        'uses' => 'UserController@suspend',
+                    ]);
+
+                    Route::patch('/{user}/reactivate', [
+                        'as' => 'admin.publicAdministration.users.reactivate',
+                        'uses' => 'UserController@reactivate',
+                    ]);
+
                     Route::patch('/{trashed_user}/restore', [
                         'as' => 'admin.publicAdministration.users.restore',
                         'uses' => 'UserController@restore',

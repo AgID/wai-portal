@@ -486,11 +486,6 @@ class CRUDUserTest extends TestCase
      */
     public function testSuspendUserFailLastAdmin(): void
     {
-        $user = factory(User::class)->create([
-            'status' => UserStatus::SUSPENDED,
-        ]);
-        $this->publicAdministration->users()->sync([$user->id], false);
-
         $this->actingAs($this->user)
             ->withSession([
                 'spid_sessionIndex' => 'fake-session-index',

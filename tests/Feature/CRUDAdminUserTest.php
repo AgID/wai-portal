@@ -633,6 +633,155 @@ class CRUDAdminUserTest extends TestCase
     }
 
     /**
+     * Test user suspend successful.
+     */
+    public function testSuspendUserSuccessful(): void
+    {
+        $user = factory(User::class)->create([
+            'status' => UserStatus::ACTIVE,
+        ]);
+        $publicAdministration = factory(PublicAdministration::class)
+            ->state('active')
+            ->create();
+        $publicAdministration->users()->sync([$user->id], false);
+
+        $this->actingAs($this->user)
+            ->patch(
+                route('admin.publicAdministration.users.suspend', ['publicAdministration' => $publicAdministration, 'user' => $user]))
+            ->assertJson([
+                'result' => 'ok',
+                'id' => $user->uuid,
+                'status' => UserStatus::getDescription(UserStatus::SUSPENDED),
+            ])
+            ->assertOk();
+
+        Event::assertDispatched(UserUpdated::class, function ($event) {
+            return $event->getUser()->status->is(UserStatus::SUSPENDED);
+        });
+    }
+
+    /**
+     * Test user suspend fail due to wrong user status.
+     */
+    public function testSuspendUserFailAlreadySuspended(): void
+    {
+        $user = factory(User::class)->create([
+            'status' => UserStatus::SUSPENDED,
+        ]);
+        $publicAdministration = factory(PublicAdministration::class)
+            ->state('active')
+            ->create();
+        $publicAdministration->users()->sync([$user->id], false);
+
+        $this->actingAs($this->user)
+            ->patch(
+                route('admin.publicAdministration.users.suspend', ['publicAdministration' => $publicAdministration, 'user' => $user]))
+            ->assertStatus(304);
+
+        Event::assertNotDispatched(UserUpdated::class);
+    }
+
+    /**
+     * Test user suspend fail due to last public administration admin.
+     */
+    public function testSuspendUserSuccessfulEvenLastAdmin(): void
+    {
+        $user = factory(User::class)->create([
+            'status' => UserStatus::ACTIVE,
+        ]);
+        $publicAdministration = factory(PublicAdministration::class)
+            ->state('active')
+            ->create();
+        $publicAdministration->users()->sync([$user->id], false);
+        Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user) {
+            $user->assign(UserRole::ADMIN);
+            $user->allow(UserPermission::MANAGE_USERS);
+        });
+
+        $this->actingAs($this->user)
+            ->patch(
+                route('admin.publicAdministration.users.suspend', ['publicAdministration' => $publicAdministration, 'user' => $user]))
+            ->assertJson([
+                'result' => 'ok',
+                'id' => $user->uuid,
+                'status' => UserStatus::getDescription(UserStatus::SUSPENDED),
+            ])
+            ->assertOk();
+
+        Event::assertDispatched(UserUpdated::class, function ($event) {
+            return $event->getUser()->status->is(UserStatus::SUSPENDED);
+        });
+    }
+
+    /**
+     * Test user suspend fail due to user in 'pending' status.
+     */
+    public function testSuspendUserFailPending(): void
+    {
+        $user = factory(User::class)->create([
+            'status' => UserStatus::PENDING,
+        ]);
+        $publicAdministration = factory(PublicAdministration::class)->create();
+        $publicAdministration->users()->sync([$user->id], false);
+
+        $this->actingAs($this->user)
+            ->patch(
+                route('admin.publicAdministration.users.suspend', ['publicAdministration' => $publicAdministration, 'user' => $user]))
+            ->assertStatus(400)
+            ->assertJson([
+                'result' => 'error',
+                'message' => 'Invalid operation for current user status',
+            ]);
+
+        Event::assertNotDispatched(UserUpdated::class);
+    }
+
+    /**
+     * Test user reactivation successful.
+     */
+    public function testReactivateUserSuccessful(): void
+    {
+        $user = factory(User::class)->create([
+            'status' => UserStatus::SUSPENDED,
+        ]);
+        $publicAdministration = factory(PublicAdministration::class)->create();
+        $publicAdministration->users()->sync([$user->id], false);
+
+        $this->actingAs($this->user)
+            ->patch(
+                route('admin.publicAdministration.users.reactivate', ['publicAdministration' => $publicAdministration, 'user' => $user]))
+            ->assertJson([
+                'result' => 'ok',
+                'id' => $user->uuid,
+                'status' => UserStatus::getDescription(UserStatus::INVITED),
+            ])
+            ->assertOk();
+
+        Event::assertDispatched(UserUpdated::class, function ($event) {
+            return $event->getUser()->status->is(UserStatus::INVITED);
+        });
+    }
+
+    /**
+     * Test user reactivation fail due to wrong user status.
+     */
+    public function testReactivateUserFailAlreadyActive(): void
+    {
+        $user = factory(User::class)->create([
+            'status' => UserStatus::ACTIVE,
+        ]);
+        $publicAdministration = factory(PublicAdministration::class)->create();
+        $publicAdministration->users()->sync([$user->id], false);
+
+        $this->actingAs($this->user)
+            ->patch(
+                route('admin.publicAdministration.users.reactivate', ['publicAdministration' => $publicAdministration, 'user' => $user]))
+            ->assertStatus(304);
+
+        Event::assertNotDispatched(UserUpdated::class);
+    }
+
+    /**
      * Test normal user removal successful.
      */
     public function testPublicAdministrationDeleteUserSuccessful(): void
