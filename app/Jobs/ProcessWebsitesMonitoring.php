@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Enums\WebsiteStatus;
+use App\Enums\WebsiteType;
 use App\Events\Jobs\WebsitesMonitoringCheckCompleted;
 use App\Events\Website\WebsiteArchived;
 use App\Events\Website\WebsiteArchiving;
@@ -70,6 +71,25 @@ class ProcessWebsitesMonitoring implements ShouldQueue
                     });
 
                     if (empty($filteredVisits)) {
+                        // NOTE: primary website cannot be archived
+                        if ($website->type->is(WebsiteType::PRIMARY)) {
+                            // NOTE: prevent daily notifications spam
+                            if (Carbon::now()->dayOfWeek === $notificationDay) {
+                                event(new WebsiteArchiving($website, 0));
+
+                                return [
+                                    'archiving' => [
+                                        'website' => $website->slug,
+                                    ],
+                                ];
+                            }
+
+                            return [
+                                'ignored' => [
+                                    'website' => $website->slug,
+                                ],
+                            ];
+                        }
                         $website->status = WebsiteStatus::ARCHIVED;
 
                         $analyticsService->changeArchiveStatus($website->analytics_id, WebsiteStatus::ARCHIVED);
@@ -87,7 +107,7 @@ class ProcessWebsitesMonitoring implements ShouldQueue
                     $lastVisit = max(array_keys($filteredVisits));
 
                     if (Carbon::now()->subDays($daysWarning)->isAfter($lastVisit)) {
-                        if (Carbon::now()->dayOfWeek === $notificationDay || Carbon::now()->subDays($daysArchive - $daysDailyNotification)->greaterThanOrEqualTo($lastVisit)) {
+                        if (Carbon::now()->dayOfWeek === $notificationDay || (Carbon::now()->subDays($daysArchive - $daysDailyNotification)->greaterThanOrEqualTo($lastVisit) && !$website->type->is(WebsiteType::PRIMARY))) {
                             $daysLeft = $daysArchive - Carbon::now()->diffInDays($lastVisit);
 
                             event(new WebsiteArchiving($website, $daysLeft));

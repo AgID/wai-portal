@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\Enums\WebsiteType;
 use App\Events\Jobs\WebsitesMonitoringCheckCompleted;
 use App\Jobs\ProcessWebsitesMonitoring;
 use App\Models\PublicAdministration;
@@ -55,6 +56,7 @@ class MonitorWebsitesTest extends TestCase
 
         $publicAdministration = factory(PublicAdministration::class)->create();
         $website = factory(Website::class)->state('active')->create([
+            'type' => WebsiteType::SECONDARY,
             'public_administration_id' => $publicAdministration->id,
             'created_at' => now()->subDays((int) config('wai.archive_expire') + 1),
         ]);
@@ -105,6 +107,7 @@ class MonitorWebsitesTest extends TestCase
 
         $publicAdministration = factory(PublicAdministration::class)->create();
         $website = factory(Website::class)->state('active')->create([
+            'type' => WebsiteType::SECONDARY,
             'public_administration_id' => $publicAdministration->id,
             'created_at' => now()->subDays((int) config('wai.archive_expire') + 1),
         ]);
@@ -159,6 +162,7 @@ class MonitorWebsitesTest extends TestCase
 
         $publicAdministration = factory(PublicAdministration::class)->create();
         $website = factory(Website::class)->state('active')->create([
+            'type' => WebsiteType::SECONDARY,
             'public_administration_id' => $publicAdministration->id,
             'created_at' => now()->subDays((int) config('wai.archive_expire') + 1),
         ]);
@@ -209,6 +213,7 @@ class MonitorWebsitesTest extends TestCase
 
         $publicAdministration = factory(PublicAdministration::class)->create();
         $website = factory(Website::class)->state('active')->create([
+            'type' => WebsiteType::SECONDARY,
             'public_administration_id' => $publicAdministration->id,
             'created_at' => now()->subDays((int) config('wai.archive_expire') + 1),
         ]);
@@ -241,12 +246,64 @@ class MonitorWebsitesTest extends TestCase
     }
 
     /**
-     * Test job completed with failed website due to missing website  into Analytics Service.
+     * Test job complete with an archiving website even after expiration due to primary website.
+     *
+     * @throws \App\Exceptions\AnalyticsServiceException if unable to connect to the Analytics Service
+     * @throws \App\Exceptions\CommandErrorException if command finishes with error
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException if unable to bind to the service
+     * @throws \GuzzleHttp\Exception\GuzzleException if unable to inject tracking request
+     */
+    public function testMonitorCheckPrimaryArchiving(): void
+    {
+        $daysToSub = (int) config('wai.archive_expire') + 1;
+        $notificationWeekDay = (int) config('wai.archive_warning_notification_day');
+
+        $publicAdministration = factory(PublicAdministration::class)->create();
+        $website = factory(Website::class)->state('active')->create([
+            'type' => WebsiteType::PRIMARY,
+            'public_administration_id' => $publicAdministration->id,
+            'created_at' => now()->subDays((int) config('wai.archive_expire') + 1),
+        ]);
+        $analyticsId = $this->app->make('analytics-service')->registerSite($website->name, $website->url, $publicAdministration->name);
+
+        $website->analytics_id = $analyticsId;
+        $website->save();
+
+        $client = new TrackingClient(['base_uri' => config('analytics-service.api_base_uri')]);
+        $client->request('GET', 'piwik.php', [
+            'query' => [
+                'rec' => '1',
+                'idsite' => $analyticsId,
+                'cdt' => now()->subDays($daysToSub)->timestamp,
+                'token_auth' => config('analytics-service.admin_token'),
+            ],
+            'verify' => false,
+        ]);
+
+        Carbon::now()->setWeekStartsAt(Carbon::SUNDAY);
+        $date = Carbon::now()->startOfWeek()->addWeek(1)->addDays($notificationWeekDay);
+        Carbon::setTestNow($date);
+
+        $job = new ProcessWebsitesMonitoring();
+        $job->handle();
+
+        $this->app->make('analytics-service')->deleteSite($website->analytics_id);
+
+        Event::assertDispatched(WebsitesMonitoringCheckCompleted::class, function ($event) use ($website) {
+            return in_array(['website' => $website->slug], $event->getArchiving(), true)
+                && empty($event->getArchived())
+                && empty($event->getFailed());
+        });
+    }
+
+    /**
+     * Test job completed with failed website due to missing website into Analytics Service.
      */
     public function testMonitorCheckFailed(): void
     {
         $publicAdministration = factory(PublicAdministration::class)->create();
         $website = factory(Website::class)->state('active')->create([
+            'type' => WebsiteType::SECONDARY,
             'public_administration_id' => $publicAdministration->id,
             'created_at' => now()->subDays((int) config('wai.archive_expire') + 1),
         ]);
