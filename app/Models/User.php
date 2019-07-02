@@ -261,6 +261,9 @@ class User extends Authenticatable implements MustVerifyEmail
         $this->notify(new WebsiteArchivedUserEmail($website));
     }
 
+    /**
+     * Notify primary website not tracking.
+     */
     public function sendPrimaryWebsiteNotTrackingNotification(): void
     {
         $this->notify(new PrimaryWebsiteNotTrackingUserEmail());

@@ -29,6 +29,8 @@ class CronController extends Controller
     /**
      * Check pending websites request.
      *
+     * @param Request $request the incoming request
+     *
      * @return \Illuminate\Http\JsonResponse JSON response with the job submission status
      */
     public function checkPendingWebsites(Request $request): JsonResponse

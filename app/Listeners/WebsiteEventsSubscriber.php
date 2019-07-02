@@ -274,6 +274,11 @@ class WebsiteEventsSubscriber implements ShouldQueue
         );
     }
 
+    /**
+     * Primary website not tracking event callback.
+     *
+     * @param PrimaryWebsiteNotTracking $event the event
+     */
     public function onPrimaryWebsiteNoTracking(PrimaryWebsiteNotTracking $event): void
     {
         $website = $event->getWebsite();
