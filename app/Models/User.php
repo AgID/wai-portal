@@ -6,6 +6,7 @@ use App\Enums\UserStatus;
 use App\Events\User\UserRestored;
 use App\Events\User\UserUpdated;
 use App\Events\User\UserUpdating;
+use App\Notifications\PrimaryWebsiteNotTrackingUserEmail;
 use App\Notifications\VerifyEmail;
 use App\Notifications\WebsiteActivatedUserEmail;
 use App\Notifications\WebsiteArchivedUserEmail;
@@ -258,5 +259,10 @@ class User extends Authenticatable implements MustVerifyEmail
     public function sendWebsiteArchivedNotification(Website $website): void
     {
         $this->notify(new WebsiteArchivedUserEmail($website));
+    }
+
+    public function sendPrimaryWebsiteNotTrackingNotification(): void
+    {
+        $this->notify(new PrimaryWebsiteNotTrackingUserEmail());
     }
 }

@@ -4,6 +4,7 @@ namespace App\Listeners;
 
 use App\Enums\Logs\EventType;
 use App\Enums\WebsiteStatus;
+use App\Events\Website\PrimaryWebsiteNotTracking;
 use App\Events\Website\WebsiteActivated;
 use App\Events\Website\WebsiteAdded;
 use App\Events\Website\WebsiteArchived;
@@ -273,6 +274,28 @@ class WebsiteEventsSubscriber implements ShouldQueue
         );
     }
 
+    public function onPrimaryWebsiteNoTracking(PrimaryWebsiteNotTracking $event): void
+    {
+        $website = $event->getWebsite();
+
+        //TODO: da testare e verificare per attività "Invio mail e PEC"
+//        $publicAdministration = $website->publicAdministration;
+//        //Notify Website administrators
+//        $users = $publicAdministration->getAdministrators();
+//        foreach ($users as $user) {
+//            $user->sendPrimaryWebsiteNotTrackingNotification();
+//        }
+
+        logger()->notice(
+            'Primary website ' . $website->getInfo() . ' tracking inactive.',
+            [
+                'event' => EventType::PRIMARY_WEBSITE_NOT_TRACKING,
+                'website' => $website->id,
+                'pa' => $website->publicAdministration->ipa_code,
+            ]
+        );
+    }
+
     /**
      * Register the listeners for the subscriber.
      *
@@ -322,6 +345,11 @@ class WebsiteEventsSubscriber implements ShouldQueue
         $events->listen(
             'App\Events\Website\WebsiteRestored',
             'App\Listeners\WebsiteEventsSubscriber@onRestored'
+        );
+
+        $events->listen(
+            'App\Events\Website\PrimaryWebsiteNotTracking',
+            'App\Listeners\WebsiteEventsSubscriber@onPrimaryWebsiteNoTracking'
         );
     }
 }
