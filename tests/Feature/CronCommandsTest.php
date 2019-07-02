@@ -56,7 +56,6 @@ class CronCommandsTest extends TestCase
         $response->assertStatus(202);
 
         Queue::assertPushed(ProcessPendingWebsites::class, function ($job) {
-
             return false === $job->executePurgeCheck;
         });
 
@@ -64,7 +63,6 @@ class CronCommandsTest extends TestCase
         $response->assertStatus(202);
 
         Queue::assertPushed(ProcessPendingWebsites::class, function ($job) {
-
             return true === $job->executePurgeCheck;
         });
     }

@@ -33,10 +33,17 @@ class ProcessPendingWebsites implements ShouldQueue
     use SerializesModels;
     use ActivatesWebsite;
 
+    /**
+     * Purge check flag.
+     *
+     * @var bool the flag
+     */
     public $executePurgeCheck;
 
     /**
      * Job constructor.
+     *
+     * @param bool $executePurgeCheck true to execute purge check, false otherwise
      */
     public function __construct(bool $executePurgeCheck = false)
     {

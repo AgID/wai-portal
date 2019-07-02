@@ -8,18 +8,36 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Lang;
 
+/**
+ * User email for primary website tracking failing.
+ */
 class UserPrimaryWebsiteNotTracking extends Mailable
 {
     use Queueable;
     use SerializesModels;
 
+    /**
+     * The user to notify.
+     *
+     * @var User the user
+     */
     protected $user;
 
+    /**
+     * Mail constructor.
+     *
+     * @param User $user the user
+     */
     public function __construct(User $user)
     {
         $this->user = $user;
     }
 
+    /**
+     * Build the mail.
+     *
+     * @return UserPrimaryWebsiteNotTracking the mail
+     */
     public function build(): UserPrimaryWebsiteNotTracking
     {
         return $this->from(config('mail.from.address'), config('mail.from.name'))

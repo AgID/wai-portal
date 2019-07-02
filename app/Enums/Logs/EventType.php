@@ -125,6 +125,9 @@ class EventType extends Enum implements LocalizedEnum
      */
     public const WEBSITE_ADDED = 22;
 
+    /**
+     * Website URL change event.
+     */
     public const WEBSITE_URL_CHANGED = 23;
 
     /**
@@ -172,6 +175,9 @@ class EventType extends Enum implements LocalizedEnum
      */
     public const WEBSITE_RESTORED = 32;
 
+    /**
+     * Primary website tracking failing event.
+     */
     public const PRIMARY_WEBSITE_NOT_TRACKING = 33;
 
     /**
