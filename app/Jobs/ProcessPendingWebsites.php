@@ -33,19 +33,14 @@ class ProcessPendingWebsites implements ShouldQueue
     use SerializesModels;
     use ActivatesWebsite;
 
-    /**
-     * The authentication token to use for Analytics Service.
-     *
-     * @var string the authentication token
-     */
-    protected $tokenAuth;
+    public $executePurgeCheck;
 
     /**
      * Job constructor.
      */
-    public function __construct()
+    public function __construct(bool $executePurgeCheck = false)
     {
-        $this->tokenAuth = config('analytics-service.admin_token');
+        $this->executePurgeCheck = $executePurgeCheck;
     }
 
     /**
@@ -58,7 +53,7 @@ class ProcessPendingWebsites implements ShouldQueue
         $websites = $pendingWebsites->mapToGroups(function ($website) {
             try {
                 $analyticsService = app()->make('analytics-service');
-                if ($this->hasActivated($website, $this->tokenAuth)) {
+                if ($this->hasActivated($website, config('analytics-service.admin_token'))) {
                     $this->activate($website);
 
                     event(new WebsiteActivated($website));
@@ -70,40 +65,44 @@ class ProcessPendingWebsites implements ShouldQueue
                     ];
                 }
 
-                if ((int) config('wai.purge_warning') === $website->created_at->diffInDays(Carbon::now())) {
-                    event(new WebsitePurging($website));
+                // NOTE: job is dispatched hourly but purge check must be executed
+                //       only once a day to avoid 'purging' notification spam
+                if ($this->executePurgeCheck) {
+                    if ((int) config('wai.purge_warning') === $website->created_at->diffInDays(Carbon::now())) {
+                        event(new WebsitePurging($website));
 
-                    return [
-                        'purging' => [
-                            'website' => $website->slug,
-                        ],
-                    ];
-                }
-
-                if ($website->created_at->diffInDays(Carbon::now()) > (int) config('wai.purge_expiry')) {
-                    $publicAdministration = $website->publicAdministration;
-
-                    if ($publicAdministration->status->is(PublicAdministrationStatus::PENDING)) {
-                        $pendingUser = $publicAdministration->users()->where('status', UserStatus::PENDING)->first();
-                        if (null !== $pendingUser) {
-                            $pendingUser->publicAdministrations()->detach($publicAdministration->id);
-                            $pendingUser->deleteAnalyticsServiceAccount();
-                            $publicAdministration->forceDelete();
-                        }
-                        event(new PublicAdministrationPurged($publicAdministration->toJson()));
-                    } else {
-                        $website->forceDelete();
+                        return [
+                            'purging' => [
+                                'website' => $website->slug,
+                            ],
+                        ];
                     }
 
-                    $analyticsService->deleteSite($website->analytics_id);
+                    if ($website->created_at->diffInDays(Carbon::now()) > (int) config('wai.purge_expiry')) {
+                        $publicAdministration = $website->publicAdministration;
 
-                    event(new WebsitePurged($website->toJson()));
+                        if ($publicAdministration->status->is(PublicAdministrationStatus::PENDING)) {
+                            $pendingUser = $publicAdministration->users()->where('status', UserStatus::PENDING)->first();
+                            if (null !== $pendingUser) {
+                                $pendingUser->publicAdministrations()->detach($publicAdministration->id);
+                                $pendingUser->deleteAnalyticsServiceAccount();
+                                $publicAdministration->forceDelete();
+                            }
+                            event(new PublicAdministrationPurged($publicAdministration->toJson()));
+                        } else {
+                            $website->forceDelete();
+                        }
 
-                    return [
-                        'purged' => [
-                            'website' => $website->slug,
-                        ],
-                    ];
+                        $analyticsService->deleteSite($website->analytics_id);
+
+                        event(new WebsitePurged($website->toJson()));
+
+                        return [
+                            'purged' => [
+                                'website' => $website->slug,
+                            ],
+                        ];
+                    }
                 }
             } catch (BindingResolutionException $exception) {
                 report($exception);

@@ -48,14 +48,25 @@ class CronCommandsTest extends TestCase
     }
 
     /**
-     * Test pending websites check job route successful dispatching job.
+     * Test pending websites check job route successful dispatching jobs.
      */
     public function testCheckWebsitesCron(): void
     {
         $response = $this->get('/cron/checkpendingwebsites?token=' . config('cron-auth.cron_token'));
         $response->assertStatus(202);
 
-        Queue::assertPushed(ProcessPendingWebsites::class);
+        Queue::assertPushed(ProcessPendingWebsites::class, function ($job) {
+
+            return false === $job->executePurgeCheck;
+        });
+
+        $response = $this->get('/cron/checkpendingwebsites?token=' . config('cron-auth.cron_token') . '&purge=true');
+        $response->assertStatus(202);
+
+        Queue::assertPushed(ProcessPendingWebsites::class, function ($job) {
+
+            return true === $job->executePurgeCheck;
+        });
     }
 
     /**

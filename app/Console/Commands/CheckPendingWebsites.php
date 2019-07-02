@@ -15,7 +15,7 @@ class CheckPendingWebsites extends Command
      *
      * @var string the command
      */
-    protected $signature = 'app:check-websites';
+    protected $signature = 'app:check-websites {--D|execute-purge-check : Whether the websites purge check should be executed}';
 
     /**
      * The console command description.
@@ -31,8 +31,8 @@ class CheckPendingWebsites extends Command
      */
     public function handle()
     {
-        $this->info('Checking pending websites...');
-        dispatch(new ProcessPendingWebsites())->onConnection('sync');
+        $this->info('Checking pending websites...' . ($this->option('execute-purge-check') ? ' [executing purge check]' : ''));
+        dispatch(new ProcessPendingWebsites($this->option('execute-purge-check')))->onConnection('sync');
         $this->info('Pending websites checked');
     }
 }

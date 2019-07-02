@@ -43,7 +43,7 @@ class ProcessPendingWebsitesTest extends TestCase
      */
     public function testCheckWebsitesCompleted(): void
     {
-        $job = new ProcessPendingWebsites();
+        $job = new ProcessPendingWebsites(true);
         $job->handle();
 
         Event::assertDispatched(PendingWebsitesCheckCompleted::class);
@@ -71,7 +71,7 @@ class ProcessPendingWebsitesTest extends TestCase
         $website->analytics_id = $siteID;
         $website->save();
 
-        $job = new ProcessPendingWebsites();
+        $job = new ProcessPendingWebsites(true);
         $job->handle();
 
         Event::assertDispatched(PublicAdministrationPurged::class, function ($event) use ($publicAdministration) {
@@ -117,7 +117,7 @@ class ProcessPendingWebsitesTest extends TestCase
         $website->analytics_id = $siteID;
         $website->save();
 
-        $job = new ProcessPendingWebsites();
+        $job = new ProcessPendingWebsites(true);
         $job->handle();
 
         $this->app->make('analytics-service')->deleteSite($website->analytics_id);
