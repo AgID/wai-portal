@@ -22,6 +22,7 @@ class Kernel extends ConsoleKernel
     {
         $schedule->job(new ProcessPublicAdministrationsUpdateFromIpa())->dailyAt('06:30')->runInBackground()->onOneServer();
         $schedule->job(new ProcessPendingWebsites())->hourly()->runInBackground()->onOneServer();
+        $schedule->job(new ProcessPendingWebsites(true))->dailyAt('04:30')->runInBackground()->onOneServer();
         $schedule->job(new ProcessWebsitesMonitoring())->daily()->runInBackground()->onOneServer();
     }
 
