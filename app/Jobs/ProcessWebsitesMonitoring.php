@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Enums\WebsiteStatus;
 use App\Enums\WebsiteType;
 use App\Events\Jobs\WebsitesMonitoringCheckCompleted;
+use App\Events\Website\PrimaryWebsiteNotTracking;
 use App\Events\Website\WebsiteArchived;
 use App\Events\Website\WebsiteArchiving;
 use App\Exceptions\AnalyticsServiceException;
@@ -75,7 +76,7 @@ class ProcessWebsitesMonitoring implements ShouldQueue
                         if ($website->type->is(WebsiteType::PRIMARY)) {
                             // NOTE: prevent daily notifications spam
                             if (Carbon::now()->dayOfWeek === $notificationDay) {
-                                event(new WebsiteArchiving($website, 0));
+                                event(new PrimaryWebsiteNotTracking($website));
 
                                 return [
                                     'archiving' => [

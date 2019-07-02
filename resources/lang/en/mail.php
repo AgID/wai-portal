@@ -3,6 +3,12 @@
 return [
 
     'website' => [
+        'primary_not_tracking' => [
+            'user' => [
+                'title' => 'No tracking from primary website',
+                'subject' => '[Warning] - Primary website not tracking',
+            ],
+        ],
         'activated' => [
             'user' => [
                 'title' => 'Website tracking activated',

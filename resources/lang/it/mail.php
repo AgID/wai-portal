@@ -3,6 +3,12 @@
 return [
 
     'website' => [
+        'primary_not_tracking' => [
+            'user' => [
+                'title' => 'Tracciamento non attivo su sito istituzionale',
+                'subject' => '[Warning] - Mancato tracciamento sito istituzionale',
+            ],
+        ],
         'activated' => [
             'user' => [
                 'title' => 'Tracciamento sito web attivo',
