@@ -345,10 +345,12 @@ class CRUDWebsiteTest extends TestCase
         $secondUser->assign(UserRole::DELEGATED);
         $thirdUser->assign(UserRole::DELEGATED);
 
-        $secondWebsite = factory(Website::class)->make([
-            'type' => WebsiteType::WEBAPP,
-            'public_administration_id' => $this->publicAdministration->id,
-        ]);
+        do {
+            $secondWebsite = factory(Website::class)->make([
+                'type' => WebsiteType::WEBAPP,
+                'public_administration_id' => $this->publicAdministration->id,
+            ]);
+        } while ($secondWebsite->slug === $this->website->slug);
 
         $analyticsId = app()->make('analytics-service')->registerSite($secondWebsite->name . ' [' . $secondWebsite->type->value . ']', $secondWebsite->url, $this->publicAdministration->name);
         $secondWebsite->analytics_id = $analyticsId;
@@ -408,10 +410,13 @@ class CRUDWebsiteTest extends TestCase
      */
     public function testUpdateWebsiteFailValidation(): void
     {
-        $secondWebsite = factory(Website::class)->create([
-            'type' => WebsiteType::WEBAPP,
-            'public_administration_id' => $this->publicAdministration->id,
-        ]);
+        do {
+            $secondWebsite = factory(Website::class)->make([
+                'type' => WebsiteType::WEBAPP,
+                'public_administration_id' => $this->publicAdministration->id,
+            ]);
+        } while ($this->website->slug === $secondWebsite->slug);
+        $secondWebsite->save();
 
         $this->actingAs($this->user)
             ->withSession([

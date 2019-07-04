@@ -109,10 +109,13 @@ class SearchWebsiteListRouteTest extends TestCase
             'public_administration_id' => $this->firstPublicAdministration->id,
         ]);
 
-        $this->secondWebsite = factory(Website::class)->create([
-            'slug' => Str::slug('www.sito2.it'),
-            'public_administration_id' => $this->secondPublicAdministration->id,
-        ]);
+        do {
+            $this->secondWebsite = factory(Website::class)->make([
+                'slug' => Str::slug('www.sito2.it'),
+                'public_administration_id' => $this->secondPublicAdministration->id,
+            ]);
+        } while ($this->secondWebsite->slug === $this->firstWebsite->slug);
+        $this->secondWebsite->save();
 
         (new ProcessWebsitesList())->handle();
     }
