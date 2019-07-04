@@ -19,7 +19,7 @@
         "datatables.net-responsive": "^2.2.3",
         "datatables.net-responsive-dt": "^2.2.3",
         "eslint": "^5.16.0",
-        "eslint-loader": "^2.1.2",
+        "eslint-loader": "^2.2.0",
         "eslint-plugin-vue": "^5.2.2",
         "jquery": "^3.4",
         "laravel-mix": "^4.0.16",
