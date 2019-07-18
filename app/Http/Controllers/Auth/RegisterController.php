@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Date;
 use Illuminate\View\View;
 use Ramsey\Uuid\Uuid;
 
@@ -52,6 +53,7 @@ class RegisterController extends Controller
             'uuid' => Uuid::uuid4()->toString(),
             'email' => $request->email,
             'status' => UserStatus::INACTIVE,
+            'last_access_at' => Date::now(),
         ]);
 
         event(new Registered($user));
