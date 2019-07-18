@@ -232,7 +232,7 @@ class AdminUserController extends Controller
     {
         $user = request()->route('user');
         if ($user->status->is(UserStatus::ACTIVE) && 1 === User::where('status', UserStatus::ACTIVE)->whereIs(UserRole::SUPER_ADMIN)->count()) {
-            $validator->errors()->add('lastAdmin', 'Impossibile rimuovere l\'utente ' . $user->getInfo() . ' in quanto unico amministratore attivo del portale');
+            $validator->errors()->add('isAdmin', 'Impossibile rimuovere l\'utente ' . $user->getInfo() . ' in quanto unico amministratore attivo del portale');
         }
     }
 }
