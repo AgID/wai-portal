@@ -833,7 +833,7 @@ class CRUDAdminUserTest extends TestCase
             ->assertStatus(400)
             ->assertJson([
                 'result' => 'error',
-                'message' => 'Impossibile rimuovere l\'utente ' . $user->getInfo() . ' in quanto ultimo amministratore attivo della P.A.',
+                'message' => "Impossibile rimuovere l'utente " . $user->getInfo() . ' in quanto ultimo amministratore attivo della P.A.',
             ]);
 
         Event::assertNotDispatched(UserDeleted::class);

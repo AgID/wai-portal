@@ -486,7 +486,7 @@ class UserController extends Controller
             return $user->isA(UserRole::ADMIN);
         });
         if ($isAdmin && $user->status->is(UserStatus::ACTIVE) && (1 === $publicAdministration->getActiveAdministrators()->count())) {
-            $validator->errors()->add('isAdmin', 'Impossibile rimuovere l\'utente ' . $user->getInfo() . ' in quanto ultimo amministratore attivo della P.A.');
+            $validator->errors()->add('isAdmin', "Impossibile rimuovere l'utente " . $user->getInfo() . ' in quanto ultimo amministratore attivo della P.A.');
         }
     }
 }

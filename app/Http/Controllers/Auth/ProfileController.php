@@ -83,8 +83,8 @@ class ProfileController extends Controller
         $validatedData = $validator->validated();
 
         // NOTE: the 'user update' event listener automatically
-        //      sends a new email verification request and
-        //      reset the email verification status
+        //       sends a new email verification request and
+        //       reset the email verification status
         $user->email = $validatedData['email'];
         if ($user->isA(UserRole::SUPER_ADMIN)) {
             $user->name = $validatedData['name'];

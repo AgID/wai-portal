@@ -35,7 +35,7 @@ return [
     'version' => 'versione',
     'skiplink_goto_content' => 'vai ai contenuti',
     'skiplink_goto_navigation' => 'vai alla navigazione del sito',
-    'scrolltop_label' => 'torna all\'inizio dei contenuti',
+    'scrolltop_label' => "torna all'inizio dei contenuti",
     'cookiebar_msg' => 'Questo sito utilizza cookie tecnici, analytics e di terze parti. Proseguendo nella navigazione accetti l’utilizzo dei cookie.',
     'cookiebar_accept' => 'Accetto',
     'cookiebar_privacy_policy' => 'Privacy policy',
