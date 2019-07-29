@@ -21,14 +21,14 @@ use Silber\Bouncer\BouncerFacade as Bouncer;
 use Tests\TestCase;
 
 /**
- * Super-admin user CRUD test.
+ * Super admin user CRUD test.
  */
 class CRUDAdminUserTest extends TestCase
 {
     use RefreshDatabase;
 
     /**
-     * The super-admin user.
+     * The super admin user.
      *
      * @var User the user
      */
@@ -70,7 +70,7 @@ class CRUDAdminUserTest extends TestCase
     }
 
     /**
-     * Test super-admin creation successful.
+     * Test super admin creation successful.
      */
     public function testCreateSuperAdminUserSuccessful(): void
     {
@@ -102,7 +102,7 @@ class CRUDAdminUserTest extends TestCase
     }
 
     /**
-     * Test super-admin creation fails due to fields validation.
+     * Test super admin creation fails due to fields validation.
      */
     public function testCreateSuperAdminUserFailValidation(): void
     {
@@ -126,7 +126,7 @@ class CRUDAdminUserTest extends TestCase
     }
 
     /**
-     * Test super-admin update successful.
+     * Test super admin update successful.
      */
     public function testUpdateSuperAdminUserSuccessful(): void
     {
@@ -165,7 +165,7 @@ class CRUDAdminUserTest extends TestCase
     }
 
     /**
-     * Test super-admin update fail due to field validation.
+     * Test super admin update fail due to field validation.
      */
     public function testUpdateSuperAdminUserFailValidation(): void
     {
@@ -188,7 +188,7 @@ class CRUDAdminUserTest extends TestCase
     }
 
     /**
-     * Test super-admin suspend successful.
+     * Test super admin suspend successful.
      */
     public function testSuspendSuperAdminUserSuccessful(): void
     {
@@ -215,7 +215,7 @@ class CRUDAdminUserTest extends TestCase
     }
 
     /**
-     * Test super-admin suspend fail due to wrong status.
+     * Test super admin suspend fail due to wrong status.
      */
     public function testSuspendSuperAdminUserFailAlreadySuspended(): void
     {
@@ -235,7 +235,7 @@ class CRUDAdminUserTest extends TestCase
     }
 
     /**
-     * Test super-admin suspend fail due to last super-admin.
+     * Test super admin suspend fail due to last super admin.
      */
     public function testSuspendSuperAdminUserFailLastAdmin(): void
     {
@@ -253,7 +253,7 @@ class CRUDAdminUserTest extends TestCase
     }
 
     /**
-     * Test super-admin reactivation successful.
+     * Test super admin reactivation successful.
      */
     public function testReactivateSuperAdminUserSuccessful(): void
     {
@@ -277,7 +277,7 @@ class CRUDAdminUserTest extends TestCase
     }
 
     /**
-     * Test super-admin reactivation fail due to wrong status.
+     * Test super admin reactivation fail due to wrong status.
      */
     public function testReactivateSuperAdminUserFailAlreadyActive(): void
     {

@@ -7,12 +7,12 @@ use App\Models\User;
 use League\Fractal\TransformerAbstract;
 
 /**
- * Super-admin user transformer.
+ * Super admin user transformer.
  */
 class SuperAdminTransformer extends TransformerAbstract
 {
     /**
-     * Transform the super-admin user for datatable.
+     * Transform the super admin user for datatable.
      *
      * @param User $user the user
      *

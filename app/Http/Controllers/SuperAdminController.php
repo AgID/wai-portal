@@ -21,12 +21,12 @@ use Ramsey\Uuid\Uuid;
 use Yajra\DataTables\DataTables;
 
 /**
- * Super-admin users management controller.
+ * Super admin users management controller.
  */
-class AdminUserController extends Controller
+class SuperAdminController extends Controller
 {
     /**
-     * Display super-admin user list.
+     * Display super admin user list.
      *
      * @return View the view
      */
@@ -210,7 +210,7 @@ class AdminUserController extends Controller
     }
 
     /**
-     * Get the super-admin users data.
+     * Get the super admin users data.
      *
      * @throws \Exception if unable to initialize the datatable
      *
@@ -224,7 +224,7 @@ class AdminUserController extends Controller
     }
 
     /**
-     * Validate user isn't the last active super-admin.
+     * Validate user isn't the last active super admin.
      *
      * @param Validator $validator the validator
      */

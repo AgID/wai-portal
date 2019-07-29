@@ -25,9 +25,9 @@ class LogsVisualizationTest extends TestCase
     use RefreshDatabase;
 
     /**
-     * The super-admin user.
+     * The super admin user.
      *
-     * @var User the super-admin user
+     * @var User the super admin user
      */
     private $superAdmin;
 

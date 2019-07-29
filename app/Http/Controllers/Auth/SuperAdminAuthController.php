@@ -21,9 +21,9 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 /**
- * Super-Admin authentication controller.
+ * Super admin authentication controller.
  */
-class AdminAuthController extends Controller
+class SuperAdminAuthController extends Controller
 {
     use ThrottlesLogins;
 

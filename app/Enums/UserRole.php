@@ -11,7 +11,7 @@ use BenSampo\Enum\Enum;
 final class UserRole extends Enum implements LocalizedEnum
 {
     /**
-     * Super-admin user role constant.
+     * Super admin user role constant.
      */
     public const SUPER_ADMIN = 'super-admin';
 

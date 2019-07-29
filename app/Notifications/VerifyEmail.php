@@ -38,7 +38,7 @@ class VerifyEmail extends Notification implements ShouldQueue
     /**
      * Create a new notification instance.
      *
-     * @param PublicAdministration|null $publicAdministration the public administration this user belongs to or null if it is a super-admin
+     * @param PublicAdministration|null $publicAdministration the public administration this user belongs to or null if it is a super admin
      * @param User|null $invitedBy the inviting user or null if none
      */
     public function __construct(PublicAdministration $publicAdministration = null, User $invitedBy = null)

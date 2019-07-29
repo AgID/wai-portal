@@ -48,37 +48,37 @@ Route::get('/faq', [
 Route::prefix('/admin/user')->group(function () {
     Route::get('/login', [
         'as' => 'admin.login.show',
-        'uses' => 'Auth\AdminAuthController@showLogin',
+        'uses' => 'Auth\SuperAdminAuthController@showLogin',
     ])->middleware('guest');
 
     Route::post('/login', [
         'as' => 'admin.login',
-        'uses' => 'Auth\AdminAuthController@login',
+        'uses' => 'Auth\SuperAdminAuthController@login',
     ])->middleware('guest');
 
     Route::get('/logout', [
         'as' => 'admin.logout',
-        'uses' => 'Auth\AdminAuthController@logout',
+        'uses' => 'Auth\SuperAdminAuthController@logout',
     ])->middleware('admin.auth');
 
     Route::get('/password-forgot', [
         'as' => 'admin.password.forgot.show',
-        'uses' => 'Auth\AdminAuthController@showPasswordForgot',
+        'uses' => 'Auth\SuperAdminAuthController@showPasswordForgot',
     ])->middleware('guest');
 
     Route::post('/password-forgot', [
         'as' => 'admin.password.reset.send',
-        'uses' => 'Auth\AdminAuthController@sendPasswordForgot',
+        'uses' => 'Auth\SuperAdminAuthController@sendPasswordForgot',
     ])->middleware('guest', 'throttle:5,1');
 
     Route::get('/password-reset/{token?}', [
         'as' => 'admin.password.reset.show',
-        'uses' => 'Auth\AdminAuthController@showPasswordReset',
+        'uses' => 'Auth\SuperAdminAuthController@showPasswordReset',
     ])->middleware('guest');
 
     Route::post('/password-reset', [
         'as' => 'admin.password.reset',
-        'uses' => 'Auth\AdminAuthController@passwordReset',
+        'uses' => 'Auth\SuperAdminAuthController@passwordReset',
     ])->middleware('guest', 'throttle:5,1');
 });
 
@@ -383,7 +383,7 @@ Route::middleware('admin.auth', 'verified:admin.verification.notice')->group(fun
 
             Route::get('/dashboard', [
                 'as' => 'admin.dashboard',
-                'uses' => 'AdminController@dashboard',
+                'uses' => 'AdminDashboardController@dashboard',
             ]);
 
             Route::prefix('/logs')->group(function () {
@@ -412,47 +412,47 @@ Route::middleware('admin.auth', 'verified:admin.verification.notice')->group(fun
             Route::prefix('/users')->group(function () {
                 Route::get('/', [
                     'as' => 'admin.users.index',
-                    'uses' => 'AdminUserController@index',
+                    'uses' => 'SuperAdminController@index',
                 ]);
 
                 Route::get('/data', [
                     'as' => 'admin.users.data.json',
-                    'uses' => 'AdminUserController@dataJson',
+                    'uses' => 'SuperAdminController@dataJson',
                 ]);
 
                 Route::get('/add', [
                     'as' => 'admin.users.create',
-                    'uses' => 'AdminUserController@create',
+                    'uses' => 'SuperAdminController@create',
                 ]);
 
                 Route::post('/', [
                     'as' => 'admin.users.store',
-                    'uses' => 'AdminUserController@store',
+                    'uses' => 'SuperAdminController@store',
                 ]);
 
                 Route::get('/{user}/show', [
                     'as' => 'admin.users.show',
-                    'uses' => 'AdminUserController@show',
+                    'uses' => 'SuperAdminController@show',
                 ]);
 
                 Route::get('/{user}/edit', [
                     'as' => 'admin.users.edit',
-                    'uses' => 'AdminUserController@edit',
+                    'uses' => 'SuperAdminController@edit',
                 ]);
 
                 Route::patch('/{user}/update', [
                     'as' => 'admin.users.update',
-                    'uses' => 'AdminUserController@update',
+                    'uses' => 'SuperAdminController@update',
                 ]);
 
                 Route::patch('/{user}/suspend', [
                     'as' => 'admin.users.suspend',
-                    'uses' => 'AdminUserController@suspend',
+                    'uses' => 'SuperAdminController@suspend',
                 ]);
 
                 Route::patch('/{user}/reactivate', [
                     'as' => 'admin.users.reactivate',
-                    'uses' => 'AdminUserController@reactivate',
+                    'uses' => 'SuperAdminController@reactivate',
                 ]);
             });
 
@@ -528,12 +528,12 @@ Route::middleware('admin.auth', 'verified:admin.verification.notice')->group(fun
 
         Route::get('/user/change-password', [
             'as' => 'admin.password.change.show',
-            'uses' => 'Auth\AdminAuthController@showPasswordChange',
+            'uses' => 'Auth\SuperAdminAuthController@showPasswordChange',
         ]);
 
         Route::post('/user/change-password', [
             'as' => 'admin.password.change',
-            'uses' => 'Auth\AdminAuthController@passwordChange',
+            'uses' => 'Auth\SuperAdminAuthController@passwordChange',
         ]);
     });
 });

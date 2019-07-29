@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\PublicAdministration;
 
-class AdminController extends Controller
+class AdminDashboardController extends Controller
 {
     /**
      * Show the admin dashboard.

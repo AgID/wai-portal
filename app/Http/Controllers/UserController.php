@@ -31,7 +31,7 @@ use Yajra\Datatables\Datatables;
 class UserController extends Controller
 {
     /**
-     * Display super-admin user list.
+     * Display super admin user list.
      *
      * @return \Illuminate\View\View the view
      */
@@ -307,7 +307,7 @@ class UserController extends Controller
                 throw new InvalidUserStatusException('Impossibile sospendere un utente in attesa di attivazione'); //TODO: put message in lang file
             }
 
-            //NOTE: super-admin are allowed to suspend the last active P.A. administrator
+            //NOTE: super admin are allowed to suspend the last active P.A. administrator
             if (auth()->user()->cannot(UserPermission::ACCESS_ADMIN_AREA)) {
                 $validator = validator(request()->all())->after([$this, 'validateNotLastActiveAdministrator']);
                 if ($validator->fails()) {
@@ -368,7 +368,7 @@ class UserController extends Controller
 
     /**
      * Remove a user.
-     * NOTE: Super-admin only.
+     * NOTE: Super admin only.
      *
      * @param PublicAdministration $publicAdministration the public administration the user belongs to
      * @param User $user the user to delete
@@ -416,7 +416,7 @@ class UserController extends Controller
 
     /**
      * Restore a soft-deleted user.
-     * NOTE: Super-admin only.
+     * NOTE: Super admin only.
      *
      * @param PublicAdministration $publicAdministration the public administration the user belongs to
      * @param User $user the user to restore

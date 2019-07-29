@@ -20,14 +20,14 @@ use Silber\Bouncer\BouncerFacade as Bouncer;
 use Tests\TestCase;
 
 /**
- * Super-admin password management test.
+ * Super admin password management test.
  */
-class AdminUserPasswordTest extends TestCase
+class SuperAdminUserPasswordTest extends TestCase
 {
     use RefreshDatabase;
 
     /**
-     * Super-admin user.
+     * Super admin user.
      *
      * @var User the user
      */

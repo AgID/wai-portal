@@ -81,7 +81,7 @@ class ProfileTest extends TestCase
     }
 
     /**
-     * Test super-admin profile update successful.
+     * Test super admin profile update successful.
      */
     public function testSuperAdminUserProfileUpdateSuccessful(): void
     {
@@ -116,7 +116,7 @@ class ProfileTest extends TestCase
     }
 
     /**
-     * Test super-admin profile fail due to field validation.
+     * Test super admin profile fail due to field validation.
      */
     public function testSuperAdminUserProfileUpdateFailValidation(): void
     {
