@@ -24,10 +24,10 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
-
         parent::boot();
 
+        // Retrieve trashed users to be injected in the
+        // admin.publicAdministration.users.restore route
         Route::bind('trashed_user', function ($id) {
             return User::onlyTrashed()->where('uuid', $id)->first();
         });
