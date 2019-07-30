@@ -109,10 +109,6 @@ class WebsiteController extends Controller
         $primaryWebsiteURL = $request->publicAdministration['site'];
         $analyticsId = app()->make('analytics-service')->registerSite('Sito istituzionale', $primaryWebsiteURL, $publicAdministration->name); //TODO: put string in lang file
 
-        if (empty($analyticsId)) {
-            abort(500, 'Il servizio Analytics non è disponibile'); //TODO: put error message in lang file
-        }
-
         $publicAdministration->save();
         $website = Website::create([
             'name' => 'Sito istituzionale', //TODO: put in lang file
