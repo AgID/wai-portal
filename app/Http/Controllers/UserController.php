@@ -73,8 +73,8 @@ class UserController extends Controller
                 ['data' => 'radios', 'name' => 'Permessi'],
             ],
             'source' => auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)
-                ? route('admin.publicAdministration.users.websites.permissions.data', ['publicAdministration' => request()->route('publicAdministration')])
-                : route('users.websites.permissions.data'),
+                ? route('admin.publicAdministration.users.websites.permissions.data.json', ['publicAdministration' => request()->route('publicAdministration')])
+                : route('users.websites.permissions.data.json'),
             'caption' => 'Elenco dei siti web presenti su Web Analytics Italia', //TODO: set title in lang file
             'columnsOrder' => [['added_at', 'asc']],
         ];
@@ -169,8 +169,8 @@ class UserController extends Controller
                 ['data' => 'radios', 'name' => 'Permessi'],
             ],
             'source' => (auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)
-                ? route('admin.publicAdministration.users.websites.permissions.data', ['publicAdministration' => $publicAdministration, 'user' => $user])
-                : route('users.websites.permissions.data', ['user' => $user])) . '?readOnly=true',
+                ? route('admin.publicAdministration.users.websites.permissions.data.json', ['publicAdministration' => $publicAdministration, 'user' => $user])
+                : route('users.websites.permissions.data.json', ['user' => $user])) . '?readOnly=true',
             'caption' => 'Elenco dei siti web presenti su Web Analytics Italia', //TODO: set title in lang file
             'columnsOrder' => [['added_at', 'asc']],
             'user' => $user,
@@ -209,8 +209,8 @@ class UserController extends Controller
                 ['data' => 'radios', 'name' => 'Permessi'],
             ],
             'source' => auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)
-                ? route('admin.publicAdministration.users.websites.permissions.data', ['publicAdministration' => $publicAdministration, 'user' => $user])
-                : route('users.websites.permissions.data', ['user' => $user]),
+                ? route('admin.publicAdministration.users.websites.permissions.data.json', ['publicAdministration' => $publicAdministration, 'user' => $user])
+                : route('users.websites.permissions.data.json', ['user' => $user]),
             'caption' => 'Elenco dei siti web presenti su Web Analytics Italia', //TODO: set title in lang file
             'columnsOrder' => [['added_at', 'asc']],
             'user' => $user,

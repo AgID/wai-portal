@@ -323,7 +323,7 @@ Route::middleware('spid.auth', 'auth', 'verified')->group(function () {
                     ]);
 
                     Route::get('/websites-data/{user?}', [
-                        'as' => 'users.websites.permissions.data',
+                        'as' => 'users.websites.permissions.data.json',
                         'uses' => 'UserController@dataWebsitesPermissionsJson',
                     ]);
 
@@ -479,7 +479,7 @@ Route::middleware('admin.auth', 'verified:admin.verification.notice')->group(fun
                     ]);
 
                     Route::get('/websites-data/{user?}', [
-                        'as' => 'admin.publicAdministration.users.websites.permissions.data',
+                        'as' => 'admin.publicAdministration.users.websites.permissions.data.json',
                         'uses' => 'UserController@dataWebsitesPermissionsJson',
                     ]);
 
