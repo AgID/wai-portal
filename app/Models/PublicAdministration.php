@@ -171,21 +171,21 @@ class PublicAdministration extends Model
     }
 
     /**
-     * Get all the administrators users of this public administration.
+     * Get all the non administrators users of this public administration.
      *
      * @return Collection the users list
      */
-    public function getNotAdministrators(): Collection
+    public function getNonAdministrators(): Collection
     {
         if ($this->status->is(PublicAdministrationStatus::PENDING)) {
             return collect([]);
         }
 
         Bouncer::scope()->to($this->id);
-        $notAdministrators = User::whereIs(UserRole::DELEGATED)->get();
+        $nonAdministrators = User::whereIs(UserRole::DELEGATED)->get();
         Bouncer::scope()->to(session('tenant_id'));
 
-        return $notAdministrators;
+        return $nonAdministrators;
     }
 
     /**

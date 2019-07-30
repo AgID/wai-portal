@@ -57,7 +57,9 @@ class WebsiteController extends Controller
                 ['data' => 'status', 'name' => 'Stato'],
                 ['data' => 'buttons', 'name' => 'Azioni'],
             ],
-            'source' => request()->user()->can(UserPermission::ACCESS_ADMIN_AREA) ? route('admin.publicAdministration.websites.data.json', ['publicAdministration' => request()->route('publicAdministration')]) : route('websites.data.json'),
+            'source' => request()->user()->can(UserPermission::ACCESS_ADMIN_AREA)
+                ? route('admin.publicAdministration.websites.data.json', ['publicAdministration' => request()->route('publicAdministration')])
+                : route('websites.data.json'),
             'caption' => 'Elenco dei siti web abilitati su Web Analytics Italia', //TODO: set title in lang file
             'footer' => '*Il numero di visite si riferisce agli ultimi 30 giorni.',
             'columnsOrder' => [['added_at', 'asc'], ['name', 'asc']],
@@ -202,7 +204,7 @@ class WebsiteController extends Controller
             $administrator->syncWebsitesPermissionsToAnalyticsService();
         });
 
-        $this->manageWebsitePermissionsOnNotAdministrators($validatedData, $publicAdministration, $website);
+        $this->manageWebsitePermissionsOnNonAdministrators($validatedData, $publicAdministration, $website);
 
         return redirect()->route('websites.index')->withMessage(['success' => 'Il sito è stato aggiunto al progetto Web Analytics Italia.']); //TODO: put message in lang file
     }
@@ -467,7 +469,7 @@ class WebsiteController extends Controller
         }
 
         if (null !== ($publicAdministration = current_public_administration())) {
-            $this->manageWebsitePermissionsOnNotAdministrators($validatedData, $publicAdministration, $website);
+            $this->manageWebsitePermissionsOnNonAdministrators($validatedData, $publicAdministration, $website);
         }
 
         return redirect()->route('websites.index')->withMessage(['success' => 'Il sito "' . $website->getInfo() . '" è stato modificato.']); //TODO: put message in lang file
@@ -603,7 +605,7 @@ class WebsiteController extends Controller
     }
 
     /**
-     * Manage not-admin users permissions on P.A. website.
+     * Manage non-admin users permissions on P.A. website.
      *
      * @param array $validatedData the permissions array
      * @param PublicAdministration $publicAdministration the public administration the website belogns to
@@ -614,11 +616,11 @@ class WebsiteController extends Controller
      * @throws CommandErrorException if command finishes with error
      * @throws TenantIdNotSetException if the tenant id is not set in the current session
      */
-    private function manageWebsitePermissionsOnNotAdministrators(array $validatedData, PublicAdministration $publicAdministration, Website $website): void
+    private function manageWebsitePermissionsOnNonAdministrators(array $validatedData, PublicAdministration $publicAdministration, Website $website): void
     {
         $usersEnabled = $validatedData['usersEnabled'] ?? [];
         $usersPermissions = $validatedData['usersPermissions'] ?? [];
-        $publicAdministration->getNotAdministrators()->map(function ($user) use ($website, $usersEnabled, $usersPermissions) {
+        $publicAdministration->getNonAdministrators()->map(function ($user) use ($website, $usersEnabled, $usersPermissions) {
             if (!empty($usersPermissions[$user->id]) && UserPermission::MANAGE_ANALYTICS === $usersPermissions[$user->id]) {
                 $user->setWriteAccessForWebsite($website);
             }

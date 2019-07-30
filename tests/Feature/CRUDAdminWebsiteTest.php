@@ -99,10 +99,9 @@ class CRUDAdminWebsiteTest extends TestCase
     public function testPublicAdministrationWebsiteDatatableData(): void
     {
         $this->actingAs($this->user)
-            ->json(
-                'GET',
-                route('admin.publicAdministration.websites.data.json', ['publicAdministration' => $this->publicAdministration]),
-                )
+            ->json('GET', route('admin.publicAdministration.websites.data.json', [
+                'publicAdministration' => $this->publicAdministration,
+            ]))
             ->assertOk()
             ->assertJsonFragment([
                 'name' => $this->website->name,
@@ -115,8 +114,10 @@ class CRUDAdminWebsiteTest extends TestCase
     public function testDeleteWebsiteSuccessful(): void
     {
         $this->actingAs($this->user)
-            ->patch(
-                route('admin.publicAdministration.websites.delete', ['publicAdministration' => $this->publicAdministration, 'website' => $this->website]))
+            ->patch(route('admin.publicAdministration.websites.delete', [
+                'publicAdministration' => $this->publicAdministration,
+                'website' => $this->website,
+            ]))
             ->assertOk();
 
         $this->website->refresh();
@@ -131,7 +132,7 @@ class CRUDAdminWebsiteTest extends TestCase
     /**
      * Test website delete fail due to primary website.
      */
-    public function testDeleteWebsiteFailPrimary(): void
+    public function testDeleteWebsitePrimaryFail(): void
     {
         Event::fakeFor(function () {
             $this->website->type = WebsiteType::PRIMARY;
@@ -139,8 +140,10 @@ class CRUDAdminWebsiteTest extends TestCase
         });
 
         $this->actingAs($this->user)
-            ->patch(
-                route('admin.publicAdministration.websites.delete', ['publicAdministration' => $this->publicAdministration, 'website' => $this->website]))
+            ->patch(route('admin.publicAdministration.websites.delete', [
+                'publicAdministration' => $this->publicAdministration,
+                'website' => $this->website,
+            ]))
             ->assertStatus(400)
             ->assertJson([
                 'result' => 'error',
@@ -164,8 +167,10 @@ class CRUDAdminWebsiteTest extends TestCase
         });
 
         $this->actingAs($this->user)
-            ->patch(
-                route('admin.publicAdministration.websites.restore', ['publicAdministration' => $this->publicAdministration, 'website' => $this->website]))
+            ->patch(route('admin.publicAdministration.websites.restore', [
+                'publicAdministration' => $this->publicAdministration,
+                'website' => $this->website,
+            ]))
             ->assertOk();
 
         $this->website->refresh();

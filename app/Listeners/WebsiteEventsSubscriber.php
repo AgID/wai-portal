@@ -279,7 +279,7 @@ class WebsiteEventsSubscriber implements ShouldQueue
      *
      * @param PrimaryWebsiteNotTracking $event the event
      */
-    public function onPrimaryWebsiteNoTracking(PrimaryWebsiteNotTracking $event): void
+    public function onPrimaryWebsiteNotTracking(PrimaryWebsiteNotTracking $event): void
     {
         $website = $event->getWebsite();
 
@@ -354,7 +354,7 @@ class WebsiteEventsSubscriber implements ShouldQueue
 
         $events->listen(
             'App\Events\Website\PrimaryWebsiteNotTracking',
-            'App\Listeners\WebsiteEventsSubscriber@onPrimaryWebsiteNoTracking'
+            'App\Listeners\WebsiteEventsSubscriber@onPrimaryWebsiteNotTracking'
         );
     }
 }

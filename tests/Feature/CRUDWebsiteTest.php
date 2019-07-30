@@ -100,7 +100,7 @@ class CRUDWebsiteTest extends TestCase
     }
 
     /**
-     * Post- test tear down.
+     * Post-test tear down.
      *
      * @throws \Illuminate\Contracts\Container\BindingResolutionException if unable to bind to the service
      * @throws \App\Exceptions\AnalyticsServiceException if unable to connect the Analytics Service
@@ -122,10 +122,7 @@ class CRUDWebsiteTest extends TestCase
                 'spid_sessionIndex' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
             ])
-            ->json(
-                'GET',
-                route('websites.data.json'),
-                )
+            ->json('GET', route('websites.data.json'))
             ->assertOk()
             ->assertJsonFragment([
                 'name' => $this->website->name,
@@ -151,15 +148,12 @@ class CRUDWebsiteTest extends TestCase
                 'spid_user' => $this->spidUser,
             ])
             ->from(route('websites.create.primary'))
-            ->post(
-                route('websites.store.primary'),
-                [
+            ->post(route('websites.store.primary'), [
                     'public_administration_name' => 'Camera dei Deputati',
                     'url' => 'www.camera.it',
                     'ipa_code' => 'camera',
                     'accept_terms' => 'enabled',
-                ]
-            )
+            ])
             ->assertSessionHasNoErrors()
             ->assertRedirect(route('websites.index'));
 
@@ -193,13 +187,10 @@ class CRUDWebsiteTest extends TestCase
                 'spid_user' => $this->spidUser,
             ])
             ->from(route('websites.create.primary'))
-            ->post(
-                route('websites.store.primary'),
-                [
+            ->post(route('websites.store.primary'), [
                     'url' => $this->website->url,
                     'ipa_code' => $this->publicAdministration->ipa_code,
-                ]
-            )
+            ])
             ->assertSessionHasErrors([
                 'public_administration_name',
                 'url',
@@ -246,9 +237,7 @@ class CRUDWebsiteTest extends TestCase
                 'spid_user' => $this->spidUser,
             ])
             ->from(route('websites.create'))
-            ->post(
-                route('websites.store'),
-                [
+            ->post(route('websites.store'), [
                     'name' => 'Sito secondario',
                     'url' => 'https://www.test.local',
                     'type' => WebsiteType::TESTING,
@@ -258,8 +247,7 @@ class CRUDWebsiteTest extends TestCase
                     'usersPermissions' => [
                         $secondUser->id => UserPermission::READ_ANALYTICS,
                     ],
-                ]
-            )
+            ])
             ->assertSessionHasNoErrors()
             ->assertRedirect(route('websites.index'));
 
@@ -304,13 +292,10 @@ class CRUDWebsiteTest extends TestCase
                 'spid_user' => $this->spidUser,
             ])
             ->from(route('websites.create'))
-            ->post(
-                route('websites.store'),
-                [
+            ->post(route('websites.store'), [
                     'url' => 'www.camera.it',
                     'type' => WebsiteType::PRIMARY,
-                ]
-            )
+            ])
             ->assertSessionHasErrors([
                 'name',
                 'url',
@@ -363,9 +348,7 @@ class CRUDWebsiteTest extends TestCase
                 'spid_user' => $this->spidUser,
             ])
             ->from(route('websites.edit', ['website' => $secondWebsite->slug]))
-            ->put(
-                route('websites.update', ['website' => $secondWebsite->slug]),
-                [
+            ->put(route('websites.update', ['website' => $secondWebsite->slug]), [
                     'name' => 'Nuovo nome sito secondario',
                     'url' => 'https://www.test.local',
                     'type' => WebsiteType::TESTING,
@@ -375,8 +358,7 @@ class CRUDWebsiteTest extends TestCase
                     'usersPermissions' => [
                         $secondUser->id => UserPermission::READ_ANALYTICS,
                     ],
-                ]
-            )
+            ])
             ->assertSessionHasNoErrors()
             ->assertRedirect(route('websites.index'));
 
@@ -425,13 +407,10 @@ class CRUDWebsiteTest extends TestCase
                 'spid_user' => $this->spidUser,
             ])
             ->from(route('websites.edit', ['website' => $secondWebsite->slug]))
-            ->put(
-                route('websites.update', ['website' => $secondWebsite->slug]),
-                [
+            ->put(route('websites.update', ['website' => $secondWebsite->slug]), [
                     'url' => 'www.camera.it',
                     'type' => WebsiteType::PRIMARY,
-                ]
-            )
+            ])
             ->assertSessionHasErrors([
                 'name',
                 'url',
@@ -478,9 +457,7 @@ class CRUDWebsiteTest extends TestCase
                 'spid_user' => $this->spidUser,
             ])
             ->from(route('websites.edit', ['website' => $this->website->slug]))
-            ->put(
-                route('websites.update', ['website' => $this->website->slug]),
-                [
+            ->put(route('websites.update', ['website' => $this->website->slug]), [
                     'name' => $this->website->name,
                     'url' => $this->website->url,
                     'type' => WebsiteType::getDescription(WebsiteType::PRIMARY),
@@ -490,8 +467,7 @@ class CRUDWebsiteTest extends TestCase
                     'usersPermissions' => [
                         $secondUser->id => UserPermission::READ_ANALYTICS,
                     ],
-                ]
-            )
+            ])
             ->assertSessionHasNoErrors()
             ->assertRedirect(route('websites.index'));
 
@@ -535,9 +511,7 @@ class CRUDWebsiteTest extends TestCase
                 'spid_user' => $this->spidUser,
             ])
             ->from(route('websites.edit', ['website' => $this->website->slug]))
-            ->put(
-                route('websites.update', ['website' => $this->website->slug]),
-                [
+            ->put(route('websites.update', ['website' => $this->website->slug]), [
                     'url' => 'https://www.test.local',
                     'type' => WebsiteType::TESTING,
                     'usersEnabled' => [
@@ -546,8 +520,7 @@ class CRUDWebsiteTest extends TestCase
                     'usersPermissions' => [
                         $secondUser->id => UserPermission::READ_ANALYTICS,
                     ],
-                ]
-            )
+            ])
             ->assertSessionHasErrors([
                 'name',
                 'url',
@@ -556,7 +529,6 @@ class CRUDWebsiteTest extends TestCase
             ->assertRedirect(route('websites.edit', ['website' => $this->website->slug]));
 
         Event::assertNotDispatched(WebsiteUpdated::class);
-
         Event::assertNotDispatched(UserWebsiteAccessChanged::class);
     }
 }

@@ -5,7 +5,7 @@
 @section('content')
     <form class="Form Form--spaced u-text-r-xs" method="post" action="{{ route('websites.update', ['website' => $website], false) }}">
         @csrf
-        @method('PUT')
+        @method('put')
         @if ($errors->isEmpty())
             <div class="Prose Alert Alert--info">
                 <p class="u-text-p">Tutti i campi sono richiesti salvo dove espressamente indicato.</p>
