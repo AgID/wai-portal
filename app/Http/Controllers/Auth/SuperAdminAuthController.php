@@ -13,27 +13,43 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use Illuminate\View\View;
 
-class AdminAuthController extends Controller
+/**
+ * Super admin authentication controller.
+ */
+class SuperAdminAuthController extends Controller
 {
     use ThrottlesLogins;
 
+    /**
+     * The maximum failed login attempt.
+     *
+     * @var int max login attempts
+     */
     protected $maxAttempts = 3;
+
+    /**
+     * The failed attempt reset decay (in minutes).
+     *
+     * @var int the lockout minutes
+     */
     protected $decayMinutes = 5;
 
     /**
      * Show the login form or redirect to admin dashboard.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\View\View the server redirect response or the login view
      */
-    public function showLoginForm()
+    public function showLogin()
     {
         if (auth()->check() && auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)) {
-            return redirect()->intended(route('admin-dashboard'));
+            return redirect()->intended(route('admin.dashboard'));
         }
 
         return view('auth.admin_login');
@@ -46,7 +62,7 @@ class AdminAuthController extends Controller
      *
      * @throws ValidationException
      *
-     * @return \Illuminate\Http\Response|void
+     * @return mixed the server redirect response or a validation exception redirect
      */
     public function login(Request $request)
     {
@@ -73,15 +89,15 @@ class AdminAuthController extends Controller
 
         $this->incrementLoginAttempts($request);
 
-        return redirect()->route('admin-login')->withMessage(['error' => __('auth.failed')])->withInput();
+        return redirect()->route('admin.login.show')->withMessage(['error' => __('auth.failed')])->withInput();
     }
 
     /**
      * Log the user out of the application.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse the server redirect response
      */
-    public function logout()
+    public function logout(): RedirectResponse
     {
         if (auth()->check() && auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)) {
             $user = auth()->user();
@@ -97,9 +113,9 @@ class AdminAuthController extends Controller
     /**
      * Display the password reset form.
      *
-     * @return \Illuminate\View\View
+     * @return \Illuminate\View\View the view
      */
-    public function showPasswordForgotForm()
+    public function showPasswordForgot(): View
     {
         return view('auth.admin_password_forgot');
     }
@@ -107,11 +123,11 @@ class AdminAuthController extends Controller
     /**
      * Send a reset link to the given user.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param \Illuminate\Http\Request $request the incoming request
      *
-     * @return \Illuminate\Http\RedirectResponse
+     * @return \Illuminate\Http\RedirectResponse the server redirect response
      */
-    public function sendPasswordForgotEmail(Request $request)
+    public function sendPasswordForgot(Request $request): RedirectResponse
     {
         $request->validate(['email' => 'required|email']);
         $email = $request->input('email');
@@ -142,12 +158,12 @@ class AdminAuthController extends Controller
     /**
      * Display the password reset view for the given token.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param string|null $token
+     * @param \Illuminate\Http\Request $request the incoming request
+     * @param string|null $token the reset token
      *
-     * @return \Illuminate\View\View
+     * @return \Illuminate\View\View the view
      */
-    public function showPasswordResetForm(Request $request, $token = null)
+    public function showPasswordReset(Request $request, $token = null): View
     {
         $token = $token ?: $request->input('token');
 
@@ -157,11 +173,11 @@ class AdminAuthController extends Controller
     /**
      * Reset the given user's password.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param \Illuminate\Http\Request $request the incoming request
      *
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\RedirectResponse the server redirect response
      */
-    public function passwordReset(Request $request)
+    public function passwordReset(Request $request): RedirectResponse
     {
         $validatedData = $request->validate([
             'token' => 'required',
@@ -177,11 +193,11 @@ class AdminAuthController extends Controller
         $user = User::where('email', $validatedData['email'])->first();
 
         if (empty($user)) {
-            return redirect()->route('admin-password_reset')->withMessage(['error' => "L'indirizzo email inserito non corrisponde ad un'utenza oppure il codice è scaduto o errato."])->withInput(); //TODO: put message in lang file
+            return redirect()->route('admin.password.reset.show')->withMessage(['error' => "L'indirizzo email inserito non corrisponde ad un'utenza oppure il codice è scaduto o errato."])->withInput(); //TODO: put message in lang file
         }
 
         if (empty($user->passwordResetToken) || !Hash::check($validatedData['token'], $user->passwordResetToken->token)) {
-            return redirect()->route('admin-password_reset')->withMessage(['error' => "L'indirizzo email inserito non corrisponde ad un'utenza oppure il codice è scaduto o errato."])->withInput(); //TODO: put message in lang file
+            return redirect()->route('admin.password.reset.show')->withMessage(['error' => "L'indirizzo email inserito non corrisponde ad un'utenza oppure il codice è scaduto o errato."])->withInput(); //TODO: put message in lang file
         }
 
         $user->password = Hash::make($validatedData['password']);
@@ -193,15 +209,15 @@ class AdminAuthController extends Controller
 
         auth()->login($user);
 
-        return redirect()->route('admin-dashboard')->withMessage(['success' => __('auth.password.reset')]);
+        return redirect()->route('admin.dashboard')->withMessage(['success' => __('auth.password.reset')]);
     }
 
     /**
      * Display the password change view.
      *
-     * @return \Illuminate\View\View
+     * @return \Illuminate\View\View the view
      */
-    public function showPasswordChangeForm()
+    public function showPasswordChange(): View
     {
         return view('auth.admin_password_change');
     }
@@ -209,11 +225,11 @@ class AdminAuthController extends Controller
     /**
      * Change the user's password.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param \Illuminate\Http\Request $request the incoming request
      *
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\RedirectResponse the server redirect response
      */
-    public function passwordChange(Request $request)
+    public function passwordChange(Request $request): RedirectResponse
     {
         $validatedData = $request->validate([
             'password' => [
@@ -230,32 +246,32 @@ class AdminAuthController extends Controller
         $user->password_changed_at = Carbon::now();
         $user->save();
 
-        return redirect()->intended(route('admin-dashboard'))->withMessage(['success' => __('auth.password.changed')]);
+        return redirect()->intended(route('admin.dashboard'))->withMessage(['success' => __('auth.password.changed')]);
     }
 
     /**
      * Get the login username to be used by the controller.
      *
-     * @return string
+     * @return string the username to use
      */
-    public function username()
+    public function username(): string
     {
         return 'email';
     }
 
     /**
-     * Send the response after the user was authenticated.
+     * Send the response after the user is authenticated.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param \Illuminate\Http\Request $request the incoming request
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse the server redirect response
      */
-    protected function sendLoginResponse(Request $request)
+    protected function sendLoginResponse(Request $request): RedirectResponse
     {
         $this->clearLoginAttempts($request);
 
         event(new UserLogin(auth()->user()));
 
-        return redirect()->intended(route('admin-dashboard'));
+        return redirect()->intended(route('admin.dashboard'));
     }
 }

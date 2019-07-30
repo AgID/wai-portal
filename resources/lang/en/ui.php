@@ -35,7 +35,7 @@ return [
     'version' => 'versione',
     'skiplink_goto_content' => 'vai ai contenuti',
     'skiplink_goto_navigation' => 'vai alla navigazione del sito',
-    'scrolltop_label' => 'torna all\'inizio dei contenuti',
+    'scrolltop_label' => "torna all'inizio dei contenuti",
     'cookiebar_msg' => 'Questo sito utilizza cookie tecnici, analytics e di terze parti. Proseguendo nella navigazione accetti l’utilizzo dei cookie.',
     'cookiebar_accept' => 'Accetto',
     'cookiebar_privacy_policy' => 'Privacy policy',
@@ -86,25 +86,40 @@ return [
         ],
         'users' => [
             'index' => [
-                'title' => 'Utenti',
-                'add_user' => 'aggiungi utente',
-                'edit_user' => 'modifica utente'
+                'title' => 'Users',
+                'show_user' => 'show user',
+                'add_user' => 'add user',
+                'edit_user' => 'edit user',
+                'suspend_user' => 'suspend user',
+                'reactivate_user' => 'reactivate user',
+                'restore_user' => 'restore user',
+                'delete_user' => 'delete user',
+            ],
+            'show' => [
+                'title' => 'Show user',
             ],
             'add' => [
-                'title' => 'Nuovo utente'
+                'title' => 'New user',
             ],
             'edit' => [
-                'title' => 'Modifica utente'
-            ]
+                'title' => 'Edit user',
+            ],
         ],
         'spid-auth_login' => [
             'title' => 'Accesso con SPID'
         ],
         'profile' => [
-            'title' => 'Profilo utente'
+            'show' => [
+                'title' => 'User profile',
+            ],
+            'edit' => [
+                'title' => 'User profile',
+            ],
         ],
-        'auth-register' => [
-            'title' => 'Registrazione'
+        'auth' => [
+            'register' => [
+                'title' => 'Register',
+            ],
         ],
         'auth-verify' => [
             'title' => 'Verifica indirizzo email'
@@ -169,15 +184,29 @@ return [
         'admin-login' => [
             'title' => 'Accesso amministratori'
         ],
-        'admin-dashboard' => [
-            'title' => 'Dashboard amministrativa'
-        ],
-        'admin-user_show' => [
-            'title' => 'Profilo utente amministratore',
-            'update' => 'Modifica'
-        ],
-        'admin-user_edit' => [
-            'title' => 'Modifica utente amministratore'
+        'admin' => [
+            'dashboard' => [
+                'title' => 'Management Dashboard',
+            ],
+            'users' => [
+                'index' => [
+                    'title' => 'Administrators',
+                    'show_user' => 'show administrator',
+                    'add_user' => 'add administrator',
+                    'edit_user' => 'edit administrator',
+                    'suspend_user' => 'suspend administrator',
+                    'reactivate_user' => 'reactivate administrator',
+                ],
+                'show' => [
+                    'title' => 'Show administrator',
+                ],
+                'add' => [
+                    'title' => 'Add administrator',
+                ],
+                'edit' => [
+                    'title' => 'Edit administrator',
+                ],
+            ],
         ],
         'admin-password_forgot' => [
             'title' => 'Password dimenticata'
@@ -187,9 +216,6 @@ return [
         ],
         'admin-password_change' => [
             'title' => 'Cambio della password'
-        ],
-        'admin-user_add' => [
-            'title' => 'Nuovo utente amministratore'
         ],
         'admin-verify' => [
             'title' => 'Verifica indirizzo email'

@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\UserPermission;
+use App\Models\PublicAdministration;
+
 class DashboardController extends Controller
 {
     /**
@@ -11,10 +14,12 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        if (auth()->user()->publicAdministrations->isEmpty()) {
+        if (auth()->user()->publicAdministrations->isEmpty() && auth()->user()->cannot(UserPermission::ACCESS_ADMIN_AREA)) {
             return redirect()->route('websites-add-primary');
         }
 
-        return view('pages.dashboard');
+        $publicAdministration = !empty(request()->route('publicAdministration')) ? PublicAdministration::findByIPACode(request()->route('publicAdministration')) : null;
+
+        return view('pages.dashboard')->with(['publicAdministration' => $publicAdministration]);
     }
 }

@@ -7,17 +7,23 @@ use App\Enums\UserStatus;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Date;
+use Illuminate\View\View;
 use Ramsey\Uuid\Uuid;
 
+/**
+ * User registration controller.
+ */
 class RegisterController extends Controller
 {
     /**
      * Show the registration form.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View the view
      */
-    public function showRegistrationForm()
+    public function showRegistrationForm(): View
     {
         return view('auth.register');
     }
@@ -25,11 +31,13 @@ class RegisterController extends Controller
     /**
      * Perform registration and login.
      *
-     * @param Request $request
+     * @param Request $request the incoming request
      *
-     * @return \Illuminate\Http\Response
+     * @throws \Exception if unable to generate user UUID
+     *
+     * @return \Illuminate\Http\RedirectResponse the server redirect response
      */
-    public function register(Request $request)
+    public function register(Request $request): RedirectResponse
     {
         $request->validate([
             'email' => 'required|unique:users|email',
@@ -45,6 +53,7 @@ class RegisterController extends Controller
             'uuid' => Uuid::uuid4()->toString(),
             'email' => $request->email,
             'status' => UserStatus::INACTIVE,
+            'last_access_at' => Date::now(),
         ]);
 
         event(new Registered($user));

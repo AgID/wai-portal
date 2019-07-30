@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\UserStatus;
+use App\Events\User\UserRestored;
 use App\Events\User\UserUpdated;
 use App\Events\User\UserUpdating;
 use App\Notifications\VerifyEmail;
@@ -89,11 +90,12 @@ class User extends Authenticatable implements MustVerifyEmail
     /**
      * The event map for the model.
      *
-     * @var array
+     * @var array dispatched events list
      */
     protected $dispatchesEvents = [
         'updating' => UserUpdating::class,
         'updated' => UserUpdated::class,
+        'restored' => UserRestored::class,
     ];
 
     /**
@@ -197,11 +199,14 @@ class User extends Authenticatable implements MustVerifyEmail
     /**
      * Configure information for notifications over mail channel.
      *
+     * @param PublicAdministration|null $publicAdministration the public administration the user belongs to
+     *                                                        or null if user is registering a new P.A.
+     *
      * @return mixed the user email address or an array containing email and user name/surname
      */
-    public function sendEmailVerificationNotification()
+    public function sendEmailVerificationNotification(PublicAdministration $publicAdministration = null)
     {
-        $this->notify(new VerifyEmail());
+        $this->notify(new VerifyEmail($publicAdministration));
     }
 
     /**

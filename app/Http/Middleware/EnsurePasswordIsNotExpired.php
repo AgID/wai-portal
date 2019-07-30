@@ -18,7 +18,7 @@ class EnsurePasswordIsNotExpired
     public function handle($request, Closure $next)
     {
         if ($request->user() && $request->user()->isPasswordExpired()) {
-            return redirect()->guest(route('admin-password_change'))
+            return redirect()->guest(route('admin.password.change.show'))
                 ->withMessage(['warning' => 'La password è scaduta e deve essere cambiata.']);
         }
 

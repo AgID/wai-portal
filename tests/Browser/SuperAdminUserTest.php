@@ -5,7 +5,7 @@ namespace Tests\Browser;
 use Laravel\Dusk\Browser;
 use Tests\DuskTestCase;
 
-class AdminUserTest extends DuskTestCase
+class SuperAdminUserTest extends DuskTestCase
 {
     /**
      * A basic browser test example.
@@ -31,7 +31,7 @@ class AdminUserTest extends DuskTestCase
                     ->assertSee('Dashboard amministrativa')
                     ->assertSee('Area amministrativa')
                     ->visit('/admin/users/add')
-                    ->assertSee('Nuovo utente amministratore')
+                    ->assertSee(__('ui.pages.admin.users.add.title'))
                     ->type('name', 'Nome')
                     ->type('familyName', 'Cognome')
                     ->type('email', $mailAddress)

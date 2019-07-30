@@ -157,6 +157,19 @@ class PublicAdministration extends Model
         return $administrators;
     }
 
+    public function getActiveAdministrators(): Collection
+    {
+        if ($this->status->is(PublicAdministrationStatus::PENDING)) {
+            return $this->users()->where('status', UserStatus::PENDING)->get();
+        }
+
+        Bouncer::scope()->to($this->id);
+        $administrators = User::where('status', UserStatus::ACTIVE)->whereIs(UserRole::ADMIN)->get();
+        Bouncer::scope()->to(session('tenant_id'));
+
+        return $administrators;
+    }
+
     /**
      * Get all the administrators users of this public administration.
      *

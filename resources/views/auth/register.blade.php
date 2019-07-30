@@ -1,9 +1,9 @@
 @extends('layouts.page')
 
-@section('title', __('ui.pages.auth-register.title'))
+@section('title', __('ui.pages.auth.register.title'))
 
 @section('page-content')
-<form class="Form Form--spaced u-text-r-xs" method="post" action="{{ route('auth-do_register', [], false) }}">
+<form class="Form Form--spaced u-text-r-xs" method="post" action="{{ route('auth.register', [], false) }}">
     @csrf
     @if ($errors->isEmpty())
     <div class="Prose Alert Alert--info">

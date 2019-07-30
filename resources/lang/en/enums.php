@@ -34,6 +34,7 @@ return [
         UserRole::ADMIN => 'Admin of own Public Administation',
         UserRole::DELEGATED => 'Delegated user',
         UserRole::REGISTERED => 'Registered user',
+        UserRole::REMOVED => 'Suspended user',
     ],
 
     UserStatus::class => [
@@ -82,6 +83,10 @@ return [
         EventType::USER_INVITED => 'User invited',
         EventType::USER_VERIFIED => 'User email verified',
         EventType::USER_ACTIVATED => 'User activated',
+        EventType::USER_EMAIL_CHANGED => 'User email changed',
+        EventType::USER_STATUS_CHANGED => 'User status changed',
+        EventType::USER_DELETED => 'User deleted',
+        EventType::USER_RESTORED => 'User restored',
         EventType::USER_WEBSITE_ACCESS_CHANGED => 'User access level to website changed',
         EventType::WEBSITE_ADDED => 'Website added',
         EventType::WEBSITE_ACTIVATED => 'Website activated',
@@ -106,6 +111,7 @@ return [
         ExceptionType::USER_INDEX_SEARCH => 'User index search error',
         ExceptionType::INVALID_WEBSITE_STATUS => 'Invalid website status error',
         ExceptionType::INVALID_OPERATION => 'Invalid operation error',
+        ExceptionType::INVALID_USER_STATUS => 'Invalid user status error',
     ],
 
     JobType::class => [

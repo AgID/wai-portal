@@ -87,15 +87,23 @@ return [
         'users' => [
             'index' => [
                 'title' => 'Utenti',
+                'show_user' => 'dettaglio utente',
                 'add_user' => 'aggiungi utente',
                 'edit_user' => 'modifica utente',
+                'suspend_user' => 'sospendi utente',
+                'reactivate_user' => 'riattiva utente',
+                'restore_user' => 'ripristina utente',
+                'delete_user' => 'rimuovi utente',
+            ],
+            'show' => [
+                'title' => 'Visualizza utente',
             ],
             'add' => [
                 'title' => 'Nuovo utente',
             ],
             'edit' => [
                 'title' => 'Modifica utente',
-            ]
+            ],
         ],
         'spid-auth_login' => [
             'title' => 'Accesso con SPID',
@@ -106,10 +114,12 @@ return [
             ],
             'edit' => [
                 'title' => 'Profilo utente',
-            ]
+            ],
         ],
-        'auth-register' => [
-            'title' => 'Registrazione',
+        'auth' => [
+            'register' => [
+                'title' => 'Registrazione',
+            ],
         ],
         'auth-verify' => [
             'title' => 'Verifica indirizzo email',
@@ -171,18 +181,32 @@ return [
                 'caption' => 'Messaggi di log del portale Web Analytics Italia',
             ],
         ],
+        'admin' => [
+            'dashboard' => [
+                'title' => 'Dashboard amministrativa',
+            ],
+            'users' => [
+                'index' => [
+                    'title' => 'Utenti amministratori',
+                    'show_user' => 'dettaglio amministratore',
+                    'add_user' => 'aggiungi amministratore',
+                    'edit_user' => 'modifica amministratore',
+                    'suspend_user' => 'sospendi amministratore',
+                    'reactivate_user' => 'riattiva amministratore',
+                ],
+                'show' => [
+                    'title' => 'Visualizza amministratore',
+                ],
+                'add' => [
+                    'title' => 'Aggiungi amministratore',
+                ],
+                'edit' => [
+                    'title' => 'Modifica amministratore',
+                ],
+            ],
+        ],
         'admin-login' => [
             'title' => 'Accesso amministratori',
-        ],
-        'admin-dashboard' => [
-            'title' => 'Dashboard amministrativa',
-        ],
-        'admin-user_show' => [
-            'title' => 'Profilo utente amministratore',
-            'update' => 'Modifica'
-        ],
-        'admin-user_edit' => [
-            'title' => 'Modifica utente amministratore',
         ],
         'admin-password_forgot' => [
             'title' => 'Password dimenticata',
@@ -192,9 +216,6 @@ return [
         ],
         'admin-password_change' => [
             'title' => 'Cambio della password',
-        ],
-        'admin-user_add' => [
-            'title' => 'Nuovo utente amministratore',
         ],
         'admin-verify' => [
             'title' => 'Verifica indirizzo email',

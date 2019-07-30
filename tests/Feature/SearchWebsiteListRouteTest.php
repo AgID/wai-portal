@@ -22,9 +22,9 @@ class SearchWebsiteListRouteTest extends TestCase
     use RefreshDatabase;
 
     /**
-     * The super-admin user.
+     * The super admin user.
      *
-     * @var User super-admin user
+     * @var User super admin user
      */
     private $superAdmin;
 
@@ -118,7 +118,7 @@ class SearchWebsiteListRouteTest extends TestCase
     }
 
     /**
-     * Test super-admin user search capabilities.
+     * Test super admin user search capabilities.
      */
     public function testSuperAdminSearch(): void
     {
@@ -218,7 +218,7 @@ class SearchWebsiteListRouteTest extends TestCase
     }
 
     /**
-     * Test super-admin user search capabilities using an I.P.A. code.
+     * Test super admin user search capabilities using an I.P.A. code.
      */
     public function testIPACodeFilteringOnSuperAdmin(): void
     {

@@ -34,6 +34,7 @@ return [
         UserRole::ADMIN => 'Amministarore della propria PA',
         UserRole::DELEGATED => 'Incaricato della propria PA',
         UserRole::REGISTERED => 'Utente registrato',
+        UserRole::REMOVED => 'Utente sospeso',
     ],
 
     UserStatus::class => [
@@ -82,6 +83,10 @@ return [
         EventType::USER_INVITED => 'Utente invitato',
         EventType::USER_VERIFIED => 'Email utente verificata',
         EventType::USER_ACTIVATED => 'Utente attivato',
+        EventType::USER_EMAIL_CHANGED => 'Email utente modificato',
+        EventType::USER_STATUS_CHANGED => 'Stato utente modificato',
+        EventType::USER_DELETED => 'Utente eliminato',
+        EventType::USER_RESTORED => 'Utente ripristinato',
         EventType::USER_WEBSITE_ACCESS_CHANGED => 'Livello di accesso a sito per utente modificato',
         EventType::WEBSITE_ADDED => 'Sito web aggiunto',
         EventType::WEBSITE_ACTIVATED => 'Sito web attivato',
@@ -106,6 +111,7 @@ return [
         ExceptionType::USER_INDEX_SEARCH => 'Errore ricerca indice utenti',
         ExceptionType::INVALID_WEBSITE_STATUS => 'Errore stato sito web non valido',
         ExceptionType::INVALID_OPERATION => 'Errore comando non valido',
+        ExceptionType::INVALID_USER_STATUS => 'Error stato utente non valido',
     ],
 
     JobType::class => [

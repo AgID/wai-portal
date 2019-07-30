@@ -60,21 +60,27 @@ Breadcrumbs::for('website-javascript-snippet', function ($trail, $website) {
 });
 
 // Web Analytics Italia > Dashboard > Users
-Breadcrumbs::for('users-index', function ($trail) {
+Breadcrumbs::for('users.index', function ($trail) {
     $trail->parent('dashboard');
-    $trail->push(__('ui.pages.users.index.title'), route('users-index', [], false));
+    $trail->push(__('ui.pages.users.index.title'), route('users.index', [], false));
 });
 
 // Web Analytics Italia > Dashboard > Users > Add user
-Breadcrumbs::for('users-create', function ($trail) {
-    $trail->parent('users-index');
-    $trail->push(__('ui.pages.users.add.title'), route('users-create', [], false));
+Breadcrumbs::for('users.create', function ($trail) {
+    $trail->parent('users.index');
+    $trail->push(__('ui.pages.users.add.title'), route('users.create', [], false));
 });
 
-// Web Analytics Italia > Dashboard > Users > Add user
-Breadcrumbs::for('users-edit', function ($trail, $user) {
-    $trail->parent('users-index');
-    $trail->push(__('ui.pages.users.edit.title'), route('users-edit', ['user' => $user], false));
+// Web Analytics Italia > Dashboard > Users > Show user
+Breadcrumbs::for('users.show', function ($trail, $user) {
+    $trail->parent('users.index');
+    $trail->push(__('ui.pages.users.show.title'), route('users.show', ['user' => $user], false));
+});
+
+// Web Analytics Italia > Dashboard > Users > Edit user
+Breadcrumbs::for('users.edit', function ($trail, $user) {
+    $trail->parent('users.index');
+    $trail->push(__('ui.pages.users.edit.title'), route('users.edit', ['user' => $user], false));
 });
 
 // Web Analytics Italia > User profile
@@ -102,57 +108,63 @@ Breadcrumbs::for('auth-verify', function ($trail) {
 });
 
 // Web Analytics Italia > Register
-Breadcrumbs::for('auth-register', function ($trail) {
+Breadcrumbs::for('auth.register.show', function ($trail) {
     $trail->parent('home');
-    $trail->push(__('ui.pages.auth-register.title'), route('auth-register', [], false));
+    $trail->push(__('ui.pages.auth.register.title'), route('auth.register.show', [], false));
 });
 
 // Web Analytics Italia > Admin login
-Breadcrumbs::for('admin-login', function ($trail) {
+Breadcrumbs::for('admin.login.show', function ($trail) {
     $trail->parent('home');
-    $trail->push(__('ui.pages.admin-login.title'), route('admin-login', [], false));
+    $trail->push(__('ui.pages.admin-login.title'), route('admin.login.show', [], false));
 });
 
-// Web Analytics Italia > Admin User profile
-Breadcrumbs::for('admin-user_show', function ($trail, $user) {
-    $trail->parent('home');
-    $trail->push(__('ui.pages.admin-user_show.title'), route('admin-user_show', ['user' => $user], false));
+// Web Analytics Italia > Admin Users
+Breadcrumbs::for('admin.users.index', function ($trail) {
+    $trail->parent('admin.dashboard');
+    $trail->push(__('ui.pages.admin.users.index.title'), route('admin.users.index', [], false));
 });
 
-// Web Analytics Italia > Admin User profile edit
-Breadcrumbs::for('admin-user_edit', function ($trail, $user) {
-    $trail->parent('home');
-    $trail->push(__('ui.pages.admin-user_edit.title'), route('admin-user_edit', ['user' => $user], false));
+// Web Analytics Italia > Admin Users > Show user
+Breadcrumbs::for('admin.users.show', function ($trail, $user) {
+    $trail->parent('admin.users.index');
+    $trail->push(__('ui.pages.admin.users.show.title'), route('admin.users.show', ['user' => $user], false));
+});
+
+// Web Analytics Italia > Admin Users > Add user
+Breadcrumbs::for('admin.users.create', function ($trail) {
+    $trail->parent('admin.dashboard');
+    $trail->push(__('ui.pages.admin.users.add.title'), route('admin.users.create', [], false));
+});
+
+// Web Analytics Italia > Admin Users > Edit user
+Breadcrumbs::for('admin.users.edit', function ($trail, $user) {
+    $trail->parent('admin.users.index');
+    $trail->push(__('ui.pages.admin.users.edit.title'), route('admin.users.edit', ['user' => $user], false));
 });
 
 // Web Analytics Italia > Admin forgot password
-Breadcrumbs::for('admin-password_forgot', function ($trail) {
+Breadcrumbs::for('admin.password.forgot.show', function ($trail) {
     $trail->parent('home');
-    $trail->push(__('ui.pages.admin-password_forgot.title'), route('admin-password_forgot', [], false));
+    $trail->push(__('ui.pages.admin-password_forgot.title'), route('admin.password.forgot.show', [], false));
 });
 
 // Web Analytics Italia > Admin password change
-Breadcrumbs::for('admin-password_change', function ($trail) {
+Breadcrumbs::for('admin.password.change.show', function ($trail) {
     $trail->parent('home');
-    $trail->push(__('ui.pages.admin-password_change.title'), route('admin-password_change', [], false));
+    $trail->push(__('ui.pages.admin-password_change.title'), route('admin.password.change.show', [], false));
 });
 
 // Web Analytics Italia > Admin password reset
-Breadcrumbs::for('admin-password_reset', function ($trail) {
+Breadcrumbs::for('admin.password.reset.show', function ($trail) {
     $trail->parent('home');
-    $trail->push(__('ui.pages.admin-password_reset.title'), route('admin-password_reset', [], false));
+    $trail->push(__('ui.pages.admin-password_reset.title'), route('admin.password.reset.show', [], false));
 });
 
 // Web Analytics Italia > Admin dashboard
-Breadcrumbs::for('admin-dashboard', function ($trail) {
+Breadcrumbs::for('admin.dashboard', function ($trail) {
     $trail->parent('home');
-    $trail->push(__('ui.pages.admin-dashboard.title'), route('admin-dashboard', [], false));
-});
-
-// Web Analytics Italia > Admin dashboard > Add user
-Breadcrumbs::for('admin-user_add', function ($trail) {
-    $trail->parent('admin-dashboard');
-    $trail->push(__('ui.pages.admin-user_add.title'), route('admin-user_add', [], false));
+    $trail->push(__('ui.pages.admin.dashboard.title'), route('admin.dashboard', [], false));
 });
 
 // Web Analytics Italia > Admin email verification

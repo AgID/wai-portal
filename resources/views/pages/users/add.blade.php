@@ -3,7 +3,10 @@
 @section('title', __('ui.pages.users.add.title'))
 
 @section('content')
-    <form class="Form Form--spaced u-text-r-xs" method="post" action="{{ route('users-store', [], false) }}">
+    <form class="Form Form--spaced u-text-r-xs" method="post"
+        action="{{ auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)
+            ? route('admin.publicAdministration.users.store', ['publicAdministration' => request()->route('publicAdministration')], false)
+            : route('users.store', [], false) }}">
         @csrf
         @if ($errors->isEmpty())
             <div class="Prose Alert Alert--info">
@@ -50,33 +53,7 @@
                 </div>
                 @endif
             </div>
-            <div class="Form-field Form-field--choose {{ $errors->has('isAdmin') ? 'is-invalid' : '' }}">
-                @if ($errors->has('isAdmin'))
-                <div class="Alert Alert--error Alert--withBg u-padding-r-top u-padding-r-bottom u-padding-r-right">
-                    <p class="u-text-p u-padding-r-bottom">{{ $errors->first('isAdmin') }}</p>
-                @endif
-                    <legend class="Form-legend">Ruolo</legend>
-                    <label class="Form-label Form-label--block" for="isAdmin">
-                        <input type="checkbox" class="Form-input" name="isAdmin" id="isAdmin" value="1" {{ old('isAdmin') ? 'checked' : '' }}>
-                        <span class="Form-fieldIcon" role="presentation"></span>Amministratore
-                    </label>
-                @if ($errors->has('isAdmin'))
-                </div>
-                @endif
-            </div>
-            <div class="Form-field {{ $errors->has('websitesPermissions') ? 'is-invalid' : '' }}">
-                @if ($errors->has('websitesPermissions'))
-                <div class="Alert Alert--error Alert--withBg u-padding-r-top u-padding-r-bottom u-padding-r-right">
-                    <p class="u-text-p u-padding-r-bottom">{{ $errors->first('websitesPermissions') }}</p>
-                @endif
-                    <label class="Form-label is-required" for="websitesPermissions">
-                        Permessi{{-- //TODO: put message in lang file --}}
-                    </label>
-                    @include('partials.datatable')
-                @if ($errors->has('websitesPermissions'))
-                </div>
-                @endif
-            </div>
+            @include('partials.user_full_website_permissions')
         </fieldset>
         <div class="Form-field Grid-cell u-textRight">
             <button type="submit" class="Button Button--default u-text-xs">
