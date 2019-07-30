@@ -597,16 +597,16 @@
         },
         {
             "name": "ethanhann/redisearch-php",
-            "version": "1.5.0",
+            "version": "1.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ethanhann/redisearch-php.git",
-                "reference": "b3c9ed043753b2d63e1c5ad032cddaa2a63133b6"
+                "reference": "c5c90bf4c9edaf66e5dced089006a9016d2af77b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ethanhann/redisearch-php/zipball/b3c9ed043753b2d63e1c5ad032cddaa2a63133b6",
-                "reference": "b3c9ed043753b2d63e1c5ad032cddaa2a63133b6",
+                "url": "https://api.github.com/repos/ethanhann/redisearch-php/zipball/c5c90bf4c9edaf66e5dced089006a9016d2af77b",
+                "reference": "c5c90bf4c9edaf66e5dced089006a9016d2af77b",
                 "shasum": ""
             },
             "require": {
@@ -640,7 +640,7 @@
                     "email": "ethanhann@gmail.com"
                 }
             ],
-            "time": "2019-02-19T02:18:12+00:00"
+            "time": "2019-06-04T10:24:48+00:00"
         },
         {
             "name": "fideloper/proxy",
@@ -5777,8 +5777,8 @@
             "authors": [
                 {
                     "name": "Sebastian Bergmann",
-                    "email": "sebastian@phpunit.de",
-                    "role": "lead"
+                    "role": "lead",
+                    "email": "sebastian@phpunit.de"
                 }
             ],
             "description": "Library that provides collection, processing, and rendering functionality for PHP code coverage information.",
@@ -6049,8 +6049,8 @@
             "authors": [
                 {
                     "name": "Sebastian Bergmann",
-                    "email": "sebastian@phpunit.de",
-                    "role": "lead"
+                    "role": "lead",
+                    "email": "sebastian@phpunit.de"
                 }
             ],
             "description": "The PHP Unit Testing framework.",
