@@ -64,9 +64,9 @@
                     <div id="auth-user-options" class="u-borderShadow-m u-background-white auth-user-options" role="menu" aria-hidden="true">
                         <span class="Icon-drop-down Dropdown-arrow u-color-white"></span>
                         <ul class="Linklist">
-                            @if (auth()->check())
+                            @auth
                                 <li><a href="{{ route('user.profile', [], false) }}" class="u-color-50 u-padding-r-all u-block u-linkClean">Profilo</a></li>
-                            @endif
+                            @endauth
                             <li><a href="{{ route('spid-auth_logout', [], false) }}" class="u-color-50 u-padding-r-all u-block u-linkClean">Disconnetti</a></li>
                         </ul>
                     </div>
