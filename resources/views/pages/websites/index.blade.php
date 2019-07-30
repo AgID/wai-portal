@@ -4,10 +4,10 @@
 
 @section('content')
     @include('partials.datatable')
-    @can(UserPermission::MANAGE_WEBSITES)
+    @if (auth()->user()->can(UserPermission::MANAGE_WEBSITES) && auth()->user()->cannot(UserPermission::ACCESS_ADMIN_AREA))
         @include('partials.link_button', [
             'label' => __('ui.pages.websites.index.add_website'),
-            'href' => route('websites-add', [], false)
+            'href' => route('websites.create', [], false)
         ])
-    @endcan
+    @endif
 @endsection

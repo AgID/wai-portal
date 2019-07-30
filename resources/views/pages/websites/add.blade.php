@@ -3,7 +3,7 @@
 @section('title', __('ui.pages.websites.add.title'))
 
 @section('content')
-    <form class="Form Form--spaced u-text-r-xs" method="post" action="{{ route('websites-store', [], false) }}">
+    <form class="Form Form--spaced u-text-r-xs" method="post" action="{{ route('websites.store', [], false) }}">
         @csrf
         @if ($errors->isEmpty())
             <div class="Prose Alert Alert--info">
@@ -76,19 +76,7 @@
                 </div>
                 @endif
             </div>
-            <div class="Form-field {{ $errors->has('usersPermissions') ? 'is-invalid' : '' }}">
-                @if ($errors->has('usersPermissions'))
-                <div class="Alert Alert--error Alert--withBg u-padding-r-top u-padding-r-bottom u-padding-r-right">
-                    <p class="u-text-p u-padding-r-bottom">{{ $errors->first('usersPermissions') }}</p>
-                @endif
-                    <label class="Form-label is-required" for="usersPermissions">
-                        Permessi{{-- //TODO: put message in lang file --}}
-                    </label>
-                    @include('partials.datatable')
-                @if ($errors->has('usersPermissions'))
-                </div>
-                @endif
-            </div>
+            @include('partials.website_user_permissions')
         </fieldset>
         <div class="Form-field Grid-cell u-textRight">
             <button type="submit" class="Button Button--default u-text-xs">

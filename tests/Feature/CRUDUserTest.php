@@ -192,7 +192,7 @@ class CRUDUserTest extends TestCase
                     '_token' => 'test',
                     'email' => $email,
                     'fiscalNumber' => $fiscalNumber,
-                    'websiteEnabled' => [
+                    'websitesEnabled' => [
                         $this->website->id => 'enabled',
                     ],
                     'websitesPermissions' => [
@@ -248,6 +248,7 @@ class CRUDUserTest extends TestCase
             ->assertSessionHasErrors([
                 'email',
                 'fiscalNumber',
+                'websitesEnabled',
                 'websitesPermissions',
             ]);
 
@@ -367,7 +368,7 @@ class CRUDUserTest extends TestCase
                 [
                     '_token' => 'test',
                     'email' => $user->email,
-                    'websiteEnabled' => [
+                    'websitesEnabled' => [
                         $this->website->id => 'enabled',
                     ],
                     'websitesPermissions' => [

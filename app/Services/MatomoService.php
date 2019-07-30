@@ -107,19 +107,18 @@ class MatomoService implements AnalyticsServiceContract
      * @param string $siteName the website name
      * @param string $url the website URL
      * @param string $group the website group
-     * @param string $tokenAuth the Analytics authentication token
      *
      * @throws AnalyticsServiceException if unable to connect the Analytics Service
      * @throws CommandErrorException if command is unsuccessful
      */
-    public function updateSite(string $idSite, string $siteName, string $url, string $group, string $tokenAuth): void
+    public function updateSite(string $idSite, string $siteName, string $url, string $group): void
     {
         $params = [
             'method' => 'SitesManager.updateSite',
             'idSite' => $idSite,
             'siteName' => $siteName,
             'urls' => $url,
-            'token_auth' => $tokenAuth,
+            'token_auth' => config('analytics-service.admin_token'),
         ];
 
         $this->apiCall($params);
@@ -179,17 +178,16 @@ class MatomoService implements AnalyticsServiceContract
      * Delete a given site in the Analytics Service.
      *
      * @param string $idSite the Analytics Service website ID
-     * @param string $tokenAuth the Analytics authentication token
      *
      * @throws AnalyticsServiceException if unable to connect the Analytics Service
      * @throws CommandErrorException if command is unsuccessful
      */
-    public function deleteSite(string $idSite, string $tokenAuth): void
+    public function deleteSite(string $idSite): void
     {
         $params = [
             'method' => 'SitesManager.deleteSite',
             'idSite' => $idSite,
-            'token_auth' => $tokenAuth,
+            'token_auth' => config('analytics-service.admin_token'),
         ];
 
         $this->apiCall($params);

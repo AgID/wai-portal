@@ -43,9 +43,9 @@ class StoreUserRequest extends FormRequest
                 },
             ],
             'isAdmin' => 'boolean',
-            'websitesEnabled' => 'array',
+            'websitesEnabled' => 'required_without:isAdmin|array',
             'websitesEnabled.*' => 'in:enabled',
-            'websitesPermissions' => 'required_without:isAdmin|array',
+            'websitesPermissions' => 'required_without:isAdmin|required_with:websitesEnabled|array',
             'websitesPermissions.*' => Rule::in([UserPermission::MANAGE_ANALYTICS, UserPermission::READ_ANALYTICS]),
         ];
     }

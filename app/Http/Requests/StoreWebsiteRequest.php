@@ -6,9 +6,13 @@ use App\Enums\UserPermission;
 use App\Enums\WebsiteType;
 use App\Traits\InteractsWithIPAIndex;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
 
+/**
+ * Store website request.
+ */
 class StoreWebsiteRequest extends FormRequest
 {
     use InteractsWithIPAIndex;
@@ -18,7 +22,7 @@ class StoreWebsiteRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
@@ -39,7 +43,7 @@ class StoreWebsiteRequest extends FormRequest
             ],
             'usersEnabled' => 'array',
             'usersEnabled.*' => 'in:enabled',
-            'usersPermissions' => 'array',
+            'usersPermissions' => 'required_with:usersEnabled|array',
             'usersPermissions.*' => Rule::in([UserPermission::MANAGE_ANALYTICS, UserPermission::READ_ANALYTICS]),
         ];
     }
@@ -47,9 +51,7 @@ class StoreWebsiteRequest extends FormRequest
     /**
      * Configure the validator instance.
      *
-     * @param Validator $validator the validator instance
-     *
-     * @return void
+     * @param Validator $validator the validator reference
      */
     public function withValidator(Validator $validator): void
     {
@@ -66,16 +68,16 @@ class StoreWebsiteRequest extends FormRequest
     }
 
     /**
-     * Check whether the usersPermissions array contains keys belonging to
-     * users of the current selected public administation.
+     * Check whether the 'usersPermissions' array contains keys belonging to
+     * users of the current selected public administration.
      *
-     * @param array $usersPermissions The usersPermissions array
+     * @param array $usersPermissions The users permissions array
      *
-     * @return bool true if the provided user permissions contains keys belonging to users in the current public administration
+     * @return bool true if the provided user permissions contains keys belonging to users in the current public administration, false otherwise
      */
     protected function checkUsersIds(array $usersPermissions): bool
     {
-        return empty(array_diff(array_keys($usersPermissions), current_public_administration()->users->pluck('id')->all()));
+        return empty(array_diff(array_keys($usersPermissions), request()->route('publicAdministration', current_public_administration())->users->pluck('id')->all()));
     }
 
     /**
@@ -90,6 +92,13 @@ class StoreWebsiteRequest extends FormRequest
     {
         $publicAdministration = $this->getPublicAdministrationEntryByPrimaryWebsiteUrl($url);
 
-        return empty($result) || $url !== $publicAdministration->site;
+        if (empty($publicAdministration)) {
+            return true;
+        }
+
+        $publicAdministrationSite = Str::slug(preg_replace('/^http(s)?:\/\/(www\.)?(.+)$/i', '$3', $publicAdministration['site']));
+        $receivedUrl = Str::slug(preg_replace('/^http(s)?:\/\/(www\.)?(.+)$/i', '$3', $url));
+
+        return $publicAdministrationSite !== $receivedUrl;
     }
 }

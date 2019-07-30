@@ -3,7 +3,6 @@
 namespace Tests\Unit;
 
 use App\Enums\WebsiteStatus;
-use App\Models\Keyword;
 use App\Models\PublicAdministration;
 use App\Models\Website;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -124,54 +123,5 @@ class WebsiteTest extends TestCase
 
         $this->assertEquals($firstPA->ipa_code, $searchedFirstWebsite->publicAdministration->ipa_code);
         $this->assertEquals($secondPA->ipa_code, $searchedSecondWebsite->publicAdministration->ipa_code);
-    }
-
-    /**
-     * Test keyword - website relationship.
-     */
-    public function testKeywordRelation(): void
-    {
-        $firstKeyword = factory(Keyword::class)->create();
-        do {
-            $secondKeyword = factory(Keyword::class)->make();
-        } while ($firstKeyword->vocabulary === $secondKeyword->vocabulary && $firstKeyword->id_vocabulary === $secondKeyword->id_vocabulary);
-        $secondKeyword->save();
-
-        $publicAdministration = factory(PublicAdministration::class)->create();
-
-        $firstWebsite = factory(Website::class)->create([
-            'public_administration_id' => $publicAdministration->id,
-        ]);
-
-        do {
-            $secondWebsite = factory(Website::class)->make([
-                'public_administration_id' => $publicAdministration->id,
-            ]);
-        } while ($secondWebsite->slug === $firstWebsite->slug);
-        $secondWebsite->save();
-
-        $firstWebsite->keywords()->sync([$firstKeyword->id, $secondKeyword->id]);
-        $secondWebsite->keywords()->sync($secondKeyword->id);
-
-        $this->assertDatabaseHas('keyword_website', [
-            'keyword_id' => $firstKeyword->id,
-            'website_id' => $firstWebsite->id,
-        ]);
-
-        $this->assertDatabaseHas('keyword_website', [
-            'keyword_id' => $secondKeyword->id,
-            'website_id' => $firstWebsite->id,
-        ]);
-
-        $this->assertDatabaseHas('keyword_website', [
-            'keyword_id' => $secondKeyword->id,
-            'website_id' => $secondWebsite->id,
-        ]);
-
-        $searchedFirstWebsite = Website::where('id', $firstWebsite->id)->first();
-        $searchedSecondWebsite = Website::where('id', $secondWebsite->id)->first();
-
-        $this->assertCount(2, $searchedFirstWebsite->keywords()->get());
-        $this->assertCount(1, $searchedSecondWebsite->keywords()->get());
     }
 }

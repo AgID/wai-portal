@@ -43,7 +43,7 @@ class ProcessPendingWebsitesTest extends TestCase
      */
     public function testCheckWebsitesCompleted(): void
     {
-        $job = new ProcessPendingWebsites();
+        $job = new ProcessPendingWebsites(true);
         $job->handle();
 
         Event::assertDispatched(PendingWebsitesCheckCompleted::class);
@@ -71,7 +71,7 @@ class ProcessPendingWebsitesTest extends TestCase
         $website->analytics_id = $siteID;
         $website->save();
 
-        $job = new ProcessPendingWebsites();
+        $job = new ProcessPendingWebsites(true);
         $job->handle();
 
         Event::assertDispatched(PublicAdministrationPurged::class, function ($event) use ($publicAdministration) {
@@ -117,10 +117,10 @@ class ProcessPendingWebsitesTest extends TestCase
         $website->analytics_id = $siteID;
         $website->save();
 
-        $job = new ProcessPendingWebsites();
+        $job = new ProcessPendingWebsites(true);
         $job->handle();
 
-        $this->app->make('analytics-service')->deleteSite($website->analytics_id, config('analytics-service.admin_token'));
+        $this->app->make('analytics-service')->deleteSite($website->analytics_id);
 
         Event::assertDispatched(WebsitePurging::class, function ($event) use ($website) {
             return $event->getWebsite()->id === $website->id;
@@ -170,7 +170,7 @@ class ProcessPendingWebsitesTest extends TestCase
         $job->handle();
 
         $user->deleteAnalyticsServiceAccount();
-        $this->app->make('analytics-service')->deleteSite($website->analytics_id, config('analytics-service.admin_token'));
+        $this->app->make('analytics-service')->deleteSite($website->analytics_id);
 
         Event::assertDispatched(UserActivated::class, function ($event) use ($user) {
             return $event->getUser()->id === $user->id;
@@ -242,7 +242,7 @@ class ProcessPendingWebsitesTest extends TestCase
         $userWrite->deleteAnalyticsServiceAccount();
         $userView->deleteAnalyticsServiceAccount();
         $userNoAccess->deleteAnalyticsServiceAccount();
-        $this->app->make('analytics-service')->deleteSite($website->analytics_id, config('analytics-service.admin_token'));
+        $this->app->make('analytics-service')->deleteSite($website->analytics_id);
 
         Event::assertDispatched(UserWebsiteAccessChanged::class, function ($event) use ($userAdmin, $userWrite, $userView, $userNoAccess, $website) {
             return ($event->getUser()->id === $userAdmin->id && $event->getWebsite()->id === $website->id && $event->getAccessType()->is(WebsiteAccessType::ADMIN))

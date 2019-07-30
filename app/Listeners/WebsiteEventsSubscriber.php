@@ -3,13 +3,18 @@
 namespace App\Listeners;
 
 use App\Enums\Logs\EventType;
+use App\Enums\WebsiteStatus;
+use App\Events\Website\PrimaryWebsiteNotTracking;
 use App\Events\Website\WebsiteActivated;
 use App\Events\Website\WebsiteAdded;
 use App\Events\Website\WebsiteArchived;
 use App\Events\Website\WebsiteArchiving;
+use App\Events\Website\WebsiteDeleted;
 use App\Events\Website\WebsitePurged;
 use App\Events\Website\WebsitePurging;
+use App\Events\Website\WebsiteRestored;
 use App\Events\Website\WebsiteUnarchived;
+use App\Events\Website\WebsiteUpdated;
 use App\Traits\InteractsWithWebsiteIndex;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Events\Dispatcher;
@@ -79,6 +84,40 @@ class WebsiteEventsSubscriber implements ShouldQueue
                 'pa' => $website->publicAdministration->ipa_code,
             ]
         );
+    }
+
+    /**
+     * Website updated event callback.
+     *
+     * @param WebsiteUpdated $event the event
+     */
+    public function onUpdated(WebsiteUpdated $event): void
+    {
+        $website = $event->getWebsite();
+        if ($website->isDirty('status')) {
+            logger()->notice(
+                'Website ' . $website->getInfo() . ' status changed from "' . WebsiteStatus::getDescription($website->status->getOriginal()) . '" to "' . $website->status->description . '"',
+                [
+                    'event' => EventType::WEBSITE_STATUS_CHANGED,
+                    'website' => $website->id,
+                    'pa' => $website->publicAdministration->ipa_code,
+                ]
+            );
+        }
+
+        if ($website->isDirty('slug')) {
+            logger()->notice(
+                'Website' . $website->getInfo() . ' URL updated from ' . $website->getOriginal('url') . ' to ' . $website->url,
+                [
+                    'event' => EventType::WEBSITE_URL_CHANGED,
+                    'website' => $website->id,
+                    'pa' => $website->publicAdministration->ipa_code,
+                ]
+            );
+        }
+
+        //Update Redisearch websites index
+        $this->updateWebsiteIndex($website);
     }
 
     /**
@@ -200,6 +239,69 @@ class WebsiteEventsSubscriber implements ShouldQueue
     }
 
     /**
+     * Website deleted event callback.
+     *
+     * @param WebsiteDeleted $event the event
+     */
+    public function onDeleted(WebsiteDeleted $event): void
+    {
+        $website = $event->getWebsite();
+        logger()->notice(
+            'Website ' . $website->getInfo() . ' deleted.',
+            [
+                'event' => EventType::WEBSITE_DELETED,
+                'website' => $website->id,
+                'pa' => $website->publicAdministration->ipa_code,
+            ]
+        );
+    }
+
+    /**
+     * Website restored event callback.
+     *
+     * @param WebsiteRestored $event the event
+     */
+    public function onRestored(WebsiteRestored $event): void
+    {
+        $website = $event->getWebsite();
+        logger()->notice(
+            'Website ' . $website->getInfo() . ' restored.',
+            [
+                'event' => EventType::WEBSITE_RESTORED,
+                'website' => $website->id,
+                'pa' => $website->publicAdministration->ipa_code,
+            ]
+        );
+    }
+
+    /**
+     * Primary website not tracking event callback.
+     *
+     * @param PrimaryWebsiteNotTracking $event the event
+     */
+    public function onPrimaryWebsiteNotTracking(PrimaryWebsiteNotTracking $event): void
+    {
+        $website = $event->getWebsite();
+
+        //TODO: da testare e verificare per attività "Invio mail e PEC"
+//        $publicAdministration = $website->publicAdministration;
+//        //Notify Website administrators
+//        $users = $publicAdministration->getAdministrators();
+//        foreach ($users as $user) {
+//            $user->sendPrimaryWebsiteNotTrackingNotification();
+//        }
+
+        logger()->notice(
+            'Primary website ' . $website->getInfo() . ' tracking inactive.',
+            [
+                'event' => EventType::PRIMARY_WEBSITE_NOT_TRACKING,
+                'website' => $website->id,
+                'pa' => $website->publicAdministration->ipa_code,
+            ]
+        );
+    }
+
+    /**
      * Register the listeners for the subscriber.
      *
      * @param Dispatcher $events the dispatcher
@@ -233,6 +335,26 @@ class WebsiteEventsSubscriber implements ShouldQueue
         $events->listen(
             'App\Events\Website\WebsitePurged',
             'App\Listeners\WebsiteEventsSubscriber@onPurged'
+        );
+
+        $events->listen(
+            'App\Events\Website\WebsiteUpdated',
+            'App\Listeners\WebsiteEventsSubscriber@onUpdated'
+        );
+
+        $events->listen(
+            'App\Events\Website\WebsiteDeleted',
+            'App\Listeners\WebsiteEventsSubscriber@onDeleted'
+        );
+
+        $events->listen(
+            'App\Events\Website\WebsiteRestored',
+            'App\Listeners\WebsiteEventsSubscriber@onRestored'
+        );
+
+        $events->listen(
+            'App\Events\Website\PrimaryWebsiteNotTracking',
+            'App\Listeners\WebsiteEventsSubscriber@onPrimaryWebsiteNotTracking'
         );
     }
 }

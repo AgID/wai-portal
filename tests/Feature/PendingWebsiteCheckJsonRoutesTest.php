@@ -86,9 +86,8 @@ class PendingWebsiteCheckJsonRoutesTest extends TestCase
      */
     protected function tearDown(): void
     {
-        $tokenAuth = config('analytics-service.admin_token');
         $this->user->deleteAnalyticsServiceAccount();
-        $this->app->make('analytics-service')->deleteSite($this->website->analytics_id, $tokenAuth);
+        $this->app->make('analytics-service')->deleteSite($this->website->analytics_id);
         parent::tearDown();
     }
 
@@ -102,7 +101,7 @@ class PendingWebsiteCheckJsonRoutesTest extends TestCase
                 'spid_sessionIndex' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
             ])
-            ->get(route('website-check_tracking', ['website' => $this->website->slug]));
+            ->get(route('websites.tracking.check', ['website' => $this->website->slug]));
 
         $response->assertStatus(304);
 
@@ -130,7 +129,7 @@ class PendingWebsiteCheckJsonRoutesTest extends TestCase
                 'spid_sessionIndex' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
             ])
-            ->get(route('website-check_tracking', ['website' => $this->website->slug]));
+            ->get(route('websites.tracking.check', ['website' => $this->website->slug]));
 
         $response->assertJson([
             'result' => 'ok',
@@ -160,7 +159,7 @@ class PendingWebsiteCheckJsonRoutesTest extends TestCase
                 'spid_sessionIndex' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
             ])
-            ->get(route('website-check_tracking', ['website' => $website->slug]));
+            ->get(route('websites.tracking.check', ['website' => $website->slug]));
 
         $response->assertJson([
             'result' => 'error',

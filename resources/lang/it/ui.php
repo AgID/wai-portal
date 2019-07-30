@@ -65,11 +65,14 @@ return [
                 'title' => 'Siti web tracciati',
                 'view_javascript_snippet' => 'vedi snippet JS',
                 'go_to_analytics_service' => 'vai agli analytics',
+                'show_website' => 'dettaglio sito',
                 'add_website' => 'aggiungi sito',
                 'edit_website' => 'modifica sito',
                 'check_tracking' => 'verifica attivazione',
                 'archive' => 'archivia',
                 'enable' => 'riabilita',
+                'restore_website' => 'ripristina sito',
+                'delete_website' => 'elimina sito',
             ],
             'add-primary' => [
                 'title' => 'Sito istituzionale',
@@ -77,12 +80,15 @@ return [
             'add' => [
                 'title' => 'Nuovo sito',
             ],
+            'show' => [
+                'title' => 'Dettaglio sito',
+            ],
             'edit' => [
                 'title' => 'Modifica sito',
             ],
             'javascript-snippet' => [
                 'title' => 'Snippet di codice Javascript',
-            ]
+            ],
         ],
         'users' => [
             'index' => [
@@ -239,7 +245,7 @@ return [
             'title' => "Errore dell'applicazione",
             'description' => "Si è verificato un errore inaspettato.\nSe dovesse ripetersi ti preghiamo di contattarci.",
             'elasticsearch_description' => 'Si è verificato un errore nel recupero dei log.',
-        ]
+        ],
     ],
 
 ];

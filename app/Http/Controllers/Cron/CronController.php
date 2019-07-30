@@ -7,6 +7,7 @@ use App\Jobs\ProcessPendingWebsites;
 use App\Jobs\ProcessPublicAdministrationsUpdateFromIpa;
 use App\Jobs\ProcessWebsitesMonitoring;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 /**
  * CronJobs submission controller.
@@ -28,11 +29,13 @@ class CronController extends Controller
     /**
      * Check pending websites request.
      *
+     * @param Request $request the incoming request
+     *
      * @return \Illuminate\Http\JsonResponse JSON response with the job submission status
      */
-    public function checkPendingWebsites(): JsonResponse
+    public function checkPendingWebsites(Request $request): JsonResponse
     {
-        dispatch(new ProcessPendingWebsites());
+        dispatch(new ProcessPendingWebsites($request->input('purge', false)));
 
         return response()->json(['message' => 'Pending check submitted'], 202);
     }

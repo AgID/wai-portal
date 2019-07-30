@@ -3,8 +3,9 @@
 @section('title', __('ui.pages.websites.edit.title'))
 
 @section('content')
-    <form class="Form Form--spaced u-text-r-xs" method="post" action="{{ route('websites-update', ['website' => $website], false) }}">
+    <form class="Form Form--spaced u-text-r-xs" method="post" action="{{ route('websites.update', ['website' => $website], false) }}">
         @csrf
+        @method('put')
         @if ($errors->isEmpty())
             <div class="Prose Alert Alert--info">
                 <p class="u-text-p">Tutti i campi sono richiesti salvo dove espressamente indicato.</p>
@@ -35,7 +36,7 @@
                         <label class="Form-label is-required" for="name">
                             Nome del sito web{{-- //TODO: put message in lang file --}}
                         </label>
-                        <input class="Form-input" id="name" name="name" aria-required="true" value="{{ old('name') ?? $website->name }}" required/>
+                        <input class="Form-input {{ $website->type->is(WebsiteType::PRIMARY) ? 'is-disabled' : '' }}" id="name" name="name" aria-required="true" value="{{ old('name') ?? $website->name }}" required {{ $website->type->is(WebsiteType::PRIMARY) ? 'readonly' : '' }}/>
                         @if ($errors->has('name'))
                     </div>
                 @endif
@@ -48,7 +49,7 @@
                         <label class="Form-label is-required" for="url">
                             Indirizzo del sito web{{-- //TODO: put message in lang file --}}
                         </label>
-                        <input class="Form-input" id="url" name="url" aria-required="true" value="{{ old('url') ?? $website->url }}" required/>
+                        <input class="Form-input {{ $website->type->is(WebsiteType::PRIMARY) ? 'is-disabled' : '' }}" id="url" name="url" aria-required="true" value="{{ old('url') ?? $website->url }}" required {{ $website->type->is(WebsiteType::PRIMARY) ? 'readonly' : '' }}/>
                         <p class="Form-message">
                             Inserisci l'indirizzo del sito completo del protocollo <code>http://</code> o <code>https://</code> (es. https://www.agid.gov.it).{{-- //TODO: put message in lang file --}}
                         </p>
@@ -64,18 +65,24 @@
                         <label class="Form-label is-required" for="type">
                             Tipologia{{-- //TODO: put message in lang file --}}
                         </label>
-                        <select class="Form-input" id="type" name="type" aria-required="true" required>
-                            <option value="">seleziona</option>{{-- //TODO: use localized enum --}}
-                            @foreach(WebsiteType::toSelectArray() as $value => $label)
-                                @if ($value !== WebsiteType::PRIMARY)
-                                    <option value="{{ $value }}" {{ (old('type') ?? $website->type->value) == $value ? "selected" : "" }}>{{ $label }}</option>
-                                @endif
-                            @endforeach
-                        </select>
+                        @if ($website->type->is(WebsiteType::PRIMARY))
+                            <input class="Form-input is-disabled" id="type" name="type" aria-required="true" value="{{  $website->type->description }}" required readonly />
+                        @else
+                            <select class="Form-input {{ $website->type->is(WebsiteType::PRIMARY) ? 'is-disabled' : '' }}" id="type" name="type" aria-required="true" required {{ $website->type->is(WebsiteType::PRIMARY) ? 'readonly' : '' }}>
+                                <option value="">seleziona</option>{{-- //TODO: use localized enum --}}
+                                @foreach(WebsiteType::toSelectArray() as $value => $label)
+                                    @if ($value !== WebsiteType::PRIMARY)
+                                        <option value="{{ $value }}" {{ (old('type') ?? $website->type->value) == $value ? "selected" : "" }}>{{ $label }}</option>
+                                    @endif
+                                @endforeach
+
+                            </select>
+                        @endif
                         @if ($errors->has('type'))
                     </div>
                 @endif
             </div>
+            @include('partials.website_user_permissions')
         </fieldset>
         <div class="Form-field Grid-cell u-textRight">
             <button type="submit" class="Button Button--default u-text-xs">

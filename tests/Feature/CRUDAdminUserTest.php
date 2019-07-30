@@ -384,7 +384,7 @@ class CRUDAdminUserTest extends TestCase
                     '_token' => 'test',
                     'email' => $email,
                     'fiscalNumber' => $fiscalNumber,
-                    'websiteEnabled' => [
+                    'websitesEnabled' => [
                         $website->id => 'enabled',
                     ],
                     'websitesPermissions' => [
@@ -440,7 +440,7 @@ class CRUDAdminUserTest extends TestCase
             ->assertSessionHasErrors([
                 'email',
                 'fiscalNumber',
-                'websitesPermissions',
+                'websitesEnabled',
             ]);
 
         Event::assertNotDispatched(UserInvited::class);
@@ -563,7 +563,7 @@ class CRUDAdminUserTest extends TestCase
                 [
                     '_token' => 'test',
                     'email' => $user->email,
-                    'websiteEnabled' => [
+                    'websitesEnabled' => [
                         $website->id => 'enabled',
                     ],
                     'websitesPermissions' => [
