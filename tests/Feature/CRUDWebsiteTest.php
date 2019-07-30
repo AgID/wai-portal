@@ -149,10 +149,10 @@ class CRUDWebsiteTest extends TestCase
             ])
             ->from(route('websites.create.primary'))
             ->post(route('websites.store.primary'), [
-                    'public_administration_name' => 'Camera dei Deputati',
-                    'url' => 'www.camera.it',
-                    'ipa_code' => 'camera',
-                    'accept_terms' => 'enabled',
+                'public_administration_name' => 'Camera dei Deputati',
+                'url' => 'www.camera.it',
+                'ipa_code' => 'camera',
+                'accept_terms' => 'enabled',
             ])
             ->assertSessionHasNoErrors()
             ->assertRedirect(route('websites.index'));
@@ -188,8 +188,8 @@ class CRUDWebsiteTest extends TestCase
             ])
             ->from(route('websites.create.primary'))
             ->post(route('websites.store.primary'), [
-                    'url' => $this->website->url,
-                    'ipa_code' => $this->publicAdministration->ipa_code,
+                'url' => $this->website->url,
+                'ipa_code' => $this->publicAdministration->ipa_code,
             ])
             ->assertSessionHasErrors([
                 'public_administration_name',
@@ -238,15 +238,15 @@ class CRUDWebsiteTest extends TestCase
             ])
             ->from(route('websites.create'))
             ->post(route('websites.store'), [
-                    'name' => 'Sito secondario',
-                    'url' => 'https://www.test.local',
-                    'type' => WebsiteType::TESTING,
-                    'usersEnabled' => [
-                        $secondUser->id => 'enabled',
-                    ],
-                    'usersPermissions' => [
-                        $secondUser->id => UserPermission::READ_ANALYTICS,
-                    ],
+                'name' => 'Sito secondario',
+                'url' => 'https://www.test.local',
+                'type' => WebsiteType::TESTING,
+                'usersEnabled' => [
+                    $secondUser->id => 'enabled',
+                ],
+                'usersPermissions' => [
+                    $secondUser->id => UserPermission::READ_ANALYTICS,
+                ],
             ])
             ->assertSessionHasNoErrors()
             ->assertRedirect(route('websites.index'));
@@ -293,13 +293,17 @@ class CRUDWebsiteTest extends TestCase
             ])
             ->from(route('websites.create'))
             ->post(route('websites.store'), [
-                    'url' => 'www.camera.it',
-                    'type' => WebsiteType::PRIMARY,
+                'url' => 'www.camera.it',
+                'type' => WebsiteType::PRIMARY,
+                'usersEnabled' => [
+                    $this->user->id => 'enabled',
+                ],
             ])
             ->assertSessionHasErrors([
                 'name',
                 'url',
                 'type',
+                'usersPermissions',
             ])
             ->assertRedirect(route('websites.create'));
 
@@ -349,15 +353,15 @@ class CRUDWebsiteTest extends TestCase
             ])
             ->from(route('websites.edit', ['website' => $secondWebsite->slug]))
             ->put(route('websites.update', ['website' => $secondWebsite->slug]), [
-                    'name' => 'Nuovo nome sito secondario',
-                    'url' => 'https://www.test.local',
-                    'type' => WebsiteType::TESTING,
-                    'usersEnabled' => [
-                        $secondUser->id => 'enabled',
-                    ],
-                    'usersPermissions' => [
-                        $secondUser->id => UserPermission::READ_ANALYTICS,
-                    ],
+                'name' => 'Nuovo nome sito secondario',
+                'url' => 'https://www.test.local',
+                'type' => WebsiteType::TESTING,
+                'usersEnabled' => [
+                    $secondUser->id => 'enabled',
+                ],
+                'usersPermissions' => [
+                    $secondUser->id => UserPermission::READ_ANALYTICS,
+                ],
             ])
             ->assertSessionHasNoErrors()
             ->assertRedirect(route('websites.index'));
@@ -408,8 +412,8 @@ class CRUDWebsiteTest extends TestCase
             ])
             ->from(route('websites.edit', ['website' => $secondWebsite->slug]))
             ->put(route('websites.update', ['website' => $secondWebsite->slug]), [
-                    'url' => 'www.camera.it',
-                    'type' => WebsiteType::PRIMARY,
+                'url' => 'www.camera.it',
+                'type' => WebsiteType::PRIMARY,
             ])
             ->assertSessionHasErrors([
                 'name',
@@ -419,6 +423,44 @@ class CRUDWebsiteTest extends TestCase
             ->assertRedirect(route('websites.edit', ['website' => $secondWebsite->slug]));
 
         Event::assertNotDispatched(WebsiteUpdated::class);
+    }
+
+    /**
+     * Test website update fail due to last website enabled validation rule.
+     */
+    public function testUpdateWebsiteFailLastWebsiteEnabledValidation(): void
+    {
+        $secondUser = factory(User::class)->create([
+            'status' => UserStatus::INVITED,
+        ]);
+        $this->publicAdministration->users()->sync([$secondUser->id], false);
+
+        $secondUser->registerAnalyticsServiceAccount();
+
+        $secondUser->assign(UserRole::DELEGATED);
+        Bouncer::allow($secondUser)->to(UserPermission::READ_ANALYTICS, $this->website);
+        Bouncer::allow($secondUser)->to(UserPermission::MANAGE_ANALYTICS, $this->website);
+        Bouncer::disallow($secondUser)->to(UserPermission::NO_ACCESS, $this->website);
+
+        $this->actingAs($this->user)
+            ->withSession([
+                'spid_sessionIndex' => 'fake-session-index',
+                'tenant_id' => $this->publicAdministration->id,
+                'spid_user' => $this->spidUser,
+            ])
+            ->from(route('websites.edit', ['website' => $this->website->slug]))
+            ->put(route('websites.update', ['website' => $this->website->slug]), [
+                'name' => $this->website->name,
+                'url' => $this->website->url,
+                'type' => $this->website->type->description,
+            ])
+            ->assertSessionHasErrors([
+                'usersPermissions',
+            ])
+            ->assertRedirect(route('websites.edit', ['website' => $this->website->slug]));
+
+        Event::assertNotDispatched(WebsiteUpdated::class);
+        Event::assertNotDispatched(UserWebsiteAccessChanged::class);
     }
 
     /**
@@ -458,15 +500,15 @@ class CRUDWebsiteTest extends TestCase
             ])
             ->from(route('websites.edit', ['website' => $this->website->slug]))
             ->put(route('websites.update', ['website' => $this->website->slug]), [
-                    'name' => $this->website->name,
-                    'url' => $this->website->url,
-                    'type' => WebsiteType::getDescription(WebsiteType::PRIMARY),
-                    'usersEnabled' => [
-                        $secondUser->id => 'enabled',
-                    ],
-                    'usersPermissions' => [
-                        $secondUser->id => UserPermission::READ_ANALYTICS,
-                    ],
+                'name' => $this->website->name,
+                'url' => $this->website->url,
+                'type' => WebsiteType::getDescription(WebsiteType::PRIMARY),
+                'usersEnabled' => [
+                    $secondUser->id => 'enabled',
+                ],
+                'usersPermissions' => [
+                    $secondUser->id => UserPermission::READ_ANALYTICS,
+                ],
             ])
             ->assertSessionHasNoErrors()
             ->assertRedirect(route('websites.index'));
@@ -512,14 +554,14 @@ class CRUDWebsiteTest extends TestCase
             ])
             ->from(route('websites.edit', ['website' => $this->website->slug]))
             ->put(route('websites.update', ['website' => $this->website->slug]), [
-                    'url' => 'https://www.test.local',
-                    'type' => WebsiteType::TESTING,
-                    'usersEnabled' => [
-                        $secondUser->id => 'enabled',
-                    ],
-                    'usersPermissions' => [
-                        $secondUser->id => UserPermission::READ_ANALYTICS,
-                    ],
+                'url' => 'https://www.test.local',
+                'type' => WebsiteType::TESTING,
+                'usersEnabled' => [
+                    $secondUser->id => 'enabled',
+                ],
+                'usersPermissions' => [
+                    $secondUser->id => UserPermission::READ_ANALYTICS,
+                ],
             ])
             ->assertSessionHasErrors([
                 'name',

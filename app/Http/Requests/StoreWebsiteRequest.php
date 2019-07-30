@@ -43,7 +43,7 @@ class StoreWebsiteRequest extends FormRequest
             ],
             'usersEnabled' => 'array',
             'usersEnabled.*' => 'in:enabled',
-            'usersPermissions' => 'array',
+            'usersPermissions' => 'required_with:usersEnabled|array',
             'usersPermissions.*' => Rule::in([UserPermission::MANAGE_ANALYTICS, UserPermission::READ_ANALYTICS]),
         ];
     }
@@ -77,7 +77,7 @@ class StoreWebsiteRequest extends FormRequest
      */
     protected function checkUsersIds(array $usersPermissions): bool
     {
-        return empty(array_diff(array_keys($usersPermissions), current_public_administration()->users->pluck('id')->all()));
+        return empty(array_diff(array_keys($usersPermissions), request()->route('publicAdministration', current_public_administration())->users->pluck('id')->all()));
     }
 
     /**

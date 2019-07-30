@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use App\Enums\UserPermission;
+use App\Enums\UserRole;
+use App\Enums\UserStatus;
 use App\Enums\WebsiteStatus;
 use App\Enums\WebsiteType;
 use App\Events\Website\WebsiteDeleted;
@@ -11,6 +14,7 @@ use BenSampo\Enum\Traits\CastsEnums;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Collection;
 
 /**
  * Website model.
@@ -96,6 +100,19 @@ class Website extends Model
     public function getInfo(): string
     {
         return '"' . $this->name . '" [' . $this->slug . ']';
+    }
+
+    /**
+     * Return the collection of non adminstrator users enabled for this website.
+     *
+     * @return Collection the non adminstrator users for whom this website is enabled
+     */
+    public function getEnabledNonAdministratorUsers(): Collection
+    {
+        return User::whereIsNot(UserRole::ADMIN)->where('status', '!=', UserStatus::SUSPENDED)->whereHas('abilities', function ($query) {
+            $query->where('abilities.entity_id', $this->id);
+            $query->where('abilities.name', '!=', UserPermission::NO_ACCESS);
+        })->with('abilities')->get();
     }
 
     /**
