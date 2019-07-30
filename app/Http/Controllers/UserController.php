@@ -46,7 +46,9 @@ class UserController extends Controller
                 ['data' => 'status', 'name' => 'Stato'],
                 ['data' => 'buttons', 'name' => 'Azioni'],
             ],
-            'source' => auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA) ? route('admin.publicAdministration.users.data.json', ['publicAdministration' => request()->route('publicAdministration')]) : route('users.data.json'),
+            'source' => auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)
+                ? route('admin.publicAdministration.users.data.json', ['publicAdministration' => request()->route('publicAdministration')])
+                : route('users.data.json'),
             'caption' => 'Elenco degli utenti web abilitati su Web Analytics Italia', //TODO: set title in lang file
             'columnsOrder' => [['added_at', 'asc'], ['name', 'asc']],
         ];
@@ -70,7 +72,9 @@ class UserController extends Controller
                 ['data' => 'checkboxes', 'name' => 'Abilitato'],
                 ['data' => 'radios', 'name' => 'Permessi'],
             ],
-            'source' => auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA) ? route('admin.publicAdministration.users.websites.permissions.data', ['publicAdministration' => request()->route('publicAdministration')]) : route('users.websites.permissions.data'),
+            'source' => auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)
+                ? route('admin.publicAdministration.users.websites.permissions.data', ['publicAdministration' => request()->route('publicAdministration')])
+                : route('users.websites.permissions.data'),
             'caption' => 'Elenco dei siti web presenti su Web Analytics Italia', //TODO: set title in lang file
             'columnsOrder' => [['added_at', 'asc']],
         ];
@@ -90,7 +94,9 @@ class UserController extends Controller
      */
     public function store(StoreUserRequest $request, PublicAdministration $publicAdministration): RedirectResponse
     {
-        $currentPublicAdministration = auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA) ? $publicAdministration : current_public_administration();
+        $currentPublicAdministration = auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)
+            ? $publicAdministration
+            : current_public_administration();
 
         $user = User::create([
             'uuid' => Uuid::uuid4()->toString(),
@@ -162,12 +168,22 @@ class UserController extends Controller
                 ['data' => 'checkboxes', 'name' => 'Abilitato'],
                 ['data' => 'radios', 'name' => 'Permessi'],
             ],
-            'source' => (auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA) ? route('admin.publicAdministration.users.websites.permissions.data', ['publicAdministration' => $publicAdministration, 'user' => $user]) : route('users.websites.permissions.data', ['user' => $user])) . '?readOnly=true',
+            'source' => (auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)
+                ? route('admin.publicAdministration.users.websites.permissions.data', ['publicAdministration' => $publicAdministration, 'user' => $user])
+                : route('users.websites.permissions.data', ['user' => $user])) . '?readOnly=true',
             'caption' => 'Elenco dei siti web presenti su Web Analytics Italia', //TODO: set title in lang file
             'columnsOrder' => [['added_at', 'asc']],
             'user' => $user,
-            'role' => auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA) ? Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user) { return $user->roles()->first()->name; }) : $user->roles()->first()->name,
-            'admin' => auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA) ? Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user) { return $user->isA(UserRole::ADMIN); }) : $user->isA(UserRole::ADMIN),
+            'role' => auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)
+                ? Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user) {
+                    return $user->roles()->first()->name;
+                })
+                : $user->roles()->first()->name,
+            'admin' => auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)
+                ? Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user) {
+                    return $user->isA(UserRole::ADMIN);
+                })
+                : $user->isA(UserRole::ADMIN),
         ];
 
         return view('pages.users.show')->with($data);
@@ -192,11 +208,17 @@ class UserController extends Controller
                 ['data' => 'checkboxes', 'name' => 'Abilitato'],
                 ['data' => 'radios', 'name' => 'Permessi'],
             ],
-            'source' => auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA) ? route('admin.publicAdministration.users.websites.permissions.data', ['publicAdministration' => $publicAdministration, 'user' => $user]) : route('users.websites.permissions.data', ['user' => $user]),
+            'source' => auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)
+                ? route('admin.publicAdministration.users.websites.permissions.data', ['publicAdministration' => $publicAdministration, 'user' => $user])
+                : route('users.websites.permissions.data', ['user' => $user]),
             'caption' => 'Elenco dei siti web presenti su Web Analytics Italia', //TODO: set title in lang file
             'columnsOrder' => [['added_at', 'asc']],
             'user' => $user,
-            'admin' => auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA) ? Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user) { return $user->isA(UserRole::ADMIN); }) : $user->isA(UserRole::ADMIN),
+            'admin' => auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)
+                ? Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user) {
+                    return $user->isA(UserRole::ADMIN);
+                })
+                : $user->isA(UserRole::ADMIN),
         ];
 
         return view('pages.users.edit')->with($data);
@@ -226,8 +248,8 @@ class UserController extends Controller
         // Update user information
         if ($user->email !== $validatedData['email']) {
             // NOTE: the 'user update' event listener automatically
-            //      sends a new email verification request and
-            //      reset the email verification status
+            //       sends a new email verification request and
+            //       reset the email verification status
             $user->email = $validatedData['email'];
             $user->save();
 
@@ -273,6 +295,7 @@ class UserController extends Controller
                     }
                 }
             });
+
             $user->syncWebsitesPermissionsToAnalyticsService($currentPublicAdministration);
         });
 
@@ -307,7 +330,7 @@ class UserController extends Controller
                 throw new InvalidUserStatusException('Impossibile sospendere un utente in attesa di attivazione'); //TODO: put message in lang file
             }
 
-            //NOTE: super admin are allowed to suspend the last active P.A. administrator
+            //NOTE: super admin are allowed to suspend the last active PA administrator
             if (auth()->user()->cannot(UserPermission::ACCESS_ADMIN_AREA)) {
                 $validator = validator(request()->all())->after([$this, 'validateNotLastActiveAdministrator']);
                 if ($validator->fails()) {

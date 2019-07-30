@@ -35,7 +35,9 @@
         @includeWhen(!$admin, 'partials.user_website_permissions')
         @include('partials.link_button', [
             'label' => __('ui.pages.users.index.edit_user'),
-            'href' => auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA) ? route('admin.publicAdministration.users.edit', ['publicAdministration' => request()->route('publicAdministration'), 'user' => $user], false) : route('users.edit', ['user' => $user], false)
+            'href' => auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)
+                ? route('admin.publicAdministration.users.edit', ['publicAdministration' => request()->route('publicAdministration'), 'user' => $user], false)
+                : route('users.edit', ['user' => $user], false)
         ])
     </div>
 @endsection

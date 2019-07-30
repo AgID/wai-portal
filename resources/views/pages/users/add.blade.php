@@ -3,7 +3,10 @@
 @section('title', __('ui.pages.users.add.title'))
 
 @section('content')
-    <form class="Form Form--spaced u-text-r-xs" method="post" action="{{ auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA) ? route('admin.publicAdministration.users.store', ['publicAdministration' => request()->route('publicAdministration')], false) : route('users.store', [], false) }}">
+    <form class="Form Form--spaced u-text-r-xs" method="post"
+        action="{{ auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)
+            ? route('admin.publicAdministration.users.store', ['publicAdministration' => request()->route('publicAdministration')], false)
+            : route('users.store', [], false) }}">
         @csrf
         @if ($errors->isEmpty())
             <div class="Prose Alert Alert--info">

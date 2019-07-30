@@ -1,6 +1,6 @@
 <form class="Form Form--spaced u-text-r-xs" method="post" action="{{ $route }}">
     @csrf
-    @if (isset($method) && ('POST' !== $method) && ('GET' !== $method))
+    @if (isset($method) && ('post' !== $method) && ('get' !== $method))
         @method($method)
     @endif
     @if ($errors->isEmpty())
