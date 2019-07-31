@@ -146,7 +146,7 @@ class UserController extends Controller
             ];
         }
 
-        return redirect()->route($route, $parameters)->withMessage(['success' => 'Il nuovo utente è stato invitato al progetto Web Analytics Italia']); //TODO: put message in lang file
+        return redirect()->route($route, $parameters)->withAlert(['success' => 'Il nuovo utente è stato invitato al progetto Web Analytics Italia']); //TODO: put message in lang file
     }
 
     /**
@@ -308,7 +308,7 @@ class UserController extends Controller
             ];
         }
 
-        return redirect()->route($route, $parameters)->withMessage(['success' => "L'utente " . $user->getInfo() . ' è stato modificato.']); //TODO: put message in lang file
+        return redirect()->route($route, $parameters)->withAlert(['success' => "L'utente " . $user->getInfo() . ' è stato modificato.']); //TODO: put message in lang file
     }
 
     /**

@@ -96,10 +96,10 @@ class SuperAdminController extends Controller
         event(new UserInvited($user, $request->user()));
 
         return redirect()->route('admin.users.index')
-            ->withMessages([
-                ['success' => 'Il nuovo utente è stato invitato come amministratore al progetto Web Analytics Italia.'],
-                ['info' => 'Comunica al nuovo utente la sua password temporanea ' . $temporaryPassword . ' usando un canale diverso dalla mail ' . $validatedData['email'] . '.'],
-                ['warning' => 'Attenzione! Questa password non sarà più visualizzata.'],
+            ->withAlert([
+                'success' => 'Il nuovo utente è stato invitato come amministratore al progetto Web Analytics Italia.',
+                'info' => 'Comunica al nuovo utente la sua password temporanea ' . $temporaryPassword . ' usando un canale diverso dalla mail ' . $validatedData['email'] . '.',
+                'warning' => 'Attenzione! Questa password non sarà più visualizzata.',
             ]); //TODO: put message in lang file
     }
 
@@ -154,7 +154,7 @@ class SuperAdminController extends Controller
         ]);
         $user->save();
 
-        return redirect()->route('admin.users.index')->withMessage(['success' => "L'utente amministratore " . $user->getInfo() . ' è stato modificato.']); //TODO: put message in lang file
+        return redirect()->route('admin.users.index')->withAlert(['success' => "L'utente amministratore " . $user->getInfo() . ' è stato modificato.']); //TODO: put message in lang file
     }
 
     /**

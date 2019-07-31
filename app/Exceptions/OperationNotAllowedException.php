@@ -33,6 +33,6 @@ class OperationNotAllowedException extends Exception
      */
     public function render(): RedirectResponse
     {
-        return redirect()->home()->withMessage(['error' => 'Il comando richiesto non è consentito']); //TODO: put message in lang file
+        return redirect()->home()->withAlert(['error' => 'Il comando richiesto non è consentito']); //TODO: put message in lang file
     }
 }

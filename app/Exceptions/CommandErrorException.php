@@ -34,6 +34,6 @@ class CommandErrorException extends Exception
      */
     public function render(): RedirectResponse
     {
-        return redirect()->home()->withMessage(['error' => 'Il comando inviato al servizio di Analytics ha ritornato un errore. Riprovare successivamente.']); //TODO: put message in lang file
+        return redirect()->home()->withAlert(['error' => 'Il comando inviato al servizio di Analytics ha ritornato un errore. Riprovare successivamente.']); //TODO: put message in lang file
     }
 }

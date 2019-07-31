@@ -206,7 +206,7 @@ class WebsiteController extends Controller
 
         $this->manageWebsitePermissionsOnNonAdministrators($validatedData, $publicAdministration, $website);
 
-        return redirect()->route('websites.index')->withMessage(['success' => 'Il sito è stato aggiunto al progetto Web Analytics Italia.']); //TODO: put message in lang file
+        return redirect()->route('websites.index')->withAlert(['success' => 'Il sito è stato aggiunto al progetto Web Analytics Italia.']); //TODO: put message in lang file
     }
 
     /**
@@ -472,7 +472,7 @@ class WebsiteController extends Controller
             $this->manageWebsitePermissionsOnNonAdministrators($validatedData, $publicAdministration, $website);
         }
 
-        return redirect()->route('websites.index')->withMessage(['success' => 'Il sito "' . $website->getInfo() . '" è stato modificato.']); //TODO: put message in lang file
+        return redirect()->route('websites.index')->withAlert(['success' => 'Il sito "' . $website->getInfo() . '" è stato modificato.']); //TODO: put message in lang file
     }
 
     /**

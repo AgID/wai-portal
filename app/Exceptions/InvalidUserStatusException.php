@@ -33,6 +33,6 @@ class InvalidUserStatusException extends Exception
      */
     public function render(): RedirectResponse
     {
-        return redirect()->home()->withMessage(['error' => "Il comando richiesto non è valido per lo stato attuale dell'utente"]); //TODO: put message in lang file
+        return redirect()->home()->withAlert(['error' => "Il comando richiesto non è valido per lo stato attuale dell'utente"]); //TODO: put message in lang file
     }
 }

@@ -74,11 +74,11 @@ class Handler extends ExceptionHandler
         }
 
         if ($exception instanceof TokenMismatchException) {
-            return redirect()->home()->withMessage(['warning' => __('ui.session_expired')]);
+            return redirect()->home()->withAlert(['warning' => __('ui.session_expired')]);
         }
 
         if ($exception instanceof SPIDLoginException) {
-            return redirect()->home()->withMessage(['error' => __('auth.spid_failed')]);
+            return redirect()->home()->withAlert(['error' => __('auth.spid_failed')]);
         }
 
         return parent::render($request, $exception);

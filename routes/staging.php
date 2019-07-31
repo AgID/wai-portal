@@ -30,7 +30,7 @@ Route::get('/_reset_all', function () {
     Artisan::call('app:init-permissions');
     Artisan::call('db:seed');
 
-    return redirect()->home()->withMessage(['info' => "L'istanza di " . config('app.name') . ' è stata ripristinata allo stato iniziale.']);
+    return redirect()->home()->withAlert(['info' => "L'istanza di " . config('app.name') . ' è stata ripristinata allo stato iniziale.']);
 });
 
 Route::get('/_activate_websites', function () {
@@ -51,5 +51,5 @@ Route::get('/_activate_websites', function () {
     });
     Artisan::call('app:check-websites');
 
-    return redirect()->home()->withMessage(['success' => 'I siti web in attesa sono stati attivati.']);
+    return redirect()->home()->withAlert(['success' => 'I siti web in attesa sono stati attivati.']);
 });

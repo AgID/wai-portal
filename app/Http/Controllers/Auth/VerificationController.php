@@ -70,7 +70,7 @@ class VerificationController extends Controller
         $dashboard = $request->user()->can(UserPermission::ACCESS_ADMIN_AREA) ? '/admin/dashboard' : '/dashboard';
 
         return redirect($dashboard)
-            ->withMessage(['success' => "L'indirizzo email è stato verificato correttamente."]); //TODO: put message in lang file
+            ->withAlert(['success' => "L'indirizzo email è stato verificato correttamente."]); //TODO: put message in lang file
     }
 
     /**
@@ -90,7 +90,7 @@ class VerificationController extends Controller
 
         $user->sendEmailVerificationNotification();
 
-        return back()->withMessage(['info' => "Una nuova email di verifica è stata inviata all'indirizzo " . $user->email]); //TODO: put message in lang file;
+        return back()->withAlert(['info' => "Una nuova email di verifica è stata inviata all'indirizzo " . $user->email]); //TODO: put message in lang file;
     }
 
     /**
@@ -103,7 +103,7 @@ class VerificationController extends Controller
     protected function alreadyVerifiedUser(User $user): RedirectResponse
     {
         return redirect()->home()
-            ->withMessage(['info' => "L'indirizzo email dell'utente " . $user->getInfo() . ' è già stato verificato.']); //TODO: put message in lang file
+            ->withAlert(['info' => "L'indirizzo email dell'utente " . $user->getInfo() . ' è già stato verificato.']); //TODO: put message in lang file
     }
 
     /**
