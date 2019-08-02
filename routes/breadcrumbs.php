@@ -8,7 +8,13 @@ Breadcrumbs::for('home', function ($trail) {
 // Web Analytics Italia > FAQs
 Breadcrumbs::for('faq', function ($trail) {
     $trail->parent('home');
-    $trail->push(__('ui.pages.faq.title'), route('faq', [], false));
+    $trail->push(__('FAQ - Domande ricorrenti'), route('faq', [], false));
+});
+
+// Web Analytics Italia > Contattaci
+Breadcrumbs::for('contacts', function ($trail) {
+    $trail->parent('home');
+    $trail->push(__('Contattaci'), route('contacts', [], false));
 });
 
 // Web Analytics Italia > Privacy

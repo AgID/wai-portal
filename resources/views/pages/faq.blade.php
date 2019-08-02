@@ -1,24 +1,47 @@
-@extends('layouts.default')
+@extends('layouts.page')
 
-@section('title', __('ui.pages.faq.title'))
+@section('title', __('FAQ - Domande ricorrenti'))
 
 @section('content')
-    <div class="Accordion Accordion--default fr-accordion js-fr-accordion u-color-grey-30">
-        @foreach ($faqs as $faq)
-            <div class="Faq">
-                <h2 class="Accordion-header js-fr-accordion__header fr-accordion__header" id="accordion-header-{{ $loop->iteration }}">
-                <span class="Accordion-link u-linkClean">
-                    {{ $faq['question'] }}
-                    <a class="u-color-50 u-textClean u-margin-left-m u-text-s" href="#faq-{{ $loop->iteration }}">
-                        <span class="Icon Icon-link"></span>
-                    </a>
-                </span>
-                    <span id="faq-{{ $loop->iteration }}"></span>
-                </h2>
-                <div id="accordion-panel-{{ $loop->iteration }}" class="Accordion-panel fr-accordion__panel js-fr-accordion__panel">
-                    <div class="Prose u-text-p u-padding-r-bottom u-textSecondary">{{ $faq['answer'] }}</div>
+<div class="text-serif mb-5">{{ __('Naviga per tema, per trovare le risposte che stai cercando. Non riesci a risolvere il tuo dubbio?') }} <a href="{{ route('contacts', [], false) }}">{{ __('Scrivici') }}</a>.</div>
+<div class="row no-gutters">
+    <div class="col-sm-3">
+        <div class="faqs-sidebar sidebar-wrapper">
+            <div class="sidebar-linklist-wrapper">
+                <div class="link-list-wrapper">
+                    <ul class="link-list">
+                        <li>
+                            <h3>{{ __('Indice dei contenuti') }}</h3>
+                        </li>
+                        @foreach ($themes as $theme)
+                        <li>
+                            <a class="list-item" href="#{{ $theme }}">{{ ucfirst($theme) }}</a>
+                        </li>
+                        @endforeach
+                    </ul>
                 </div>
             </div>
-        @endforeach
+        </div>
     </div>
+    <div class="col-sm-9">
+        <div class="faqs-wrapper">
+            <div class="faqs collapse-div ml-5" role="tablist">
+                @foreach ($faqs as $faq)
+                <div class="faq" data-theme="{{ $faq['theme'] }}">
+                    <div class="collapse-header" id="faq-heading-{{ $loop->iteration }}">
+                        <button class="text-secondary" data-toggle="collapse" data-target="#faq-body-{{ $loop->iteration }}" aria-expanded="false" aria-controls="faq-body-{{ $loop->iteration }}">
+                        {{ $faq['question'] }}
+                        </button>
+                    </div>
+                    <div id="faq-body-{{ $loop->iteration }}" class="collapse" role="tabpanel" aria-labelledby="faq-heading-{{ $loop->iteration }}">
+                        <div class="collapse-body">
+                        {{ $faq['answer'] }}
+                        </div>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+        </div>
+    </div>
+</div>
 @endsection

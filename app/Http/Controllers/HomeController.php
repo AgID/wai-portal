@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Arr;
 use Symfony\Component\Yaml\Yaml;
 
 class HomeController extends Controller
@@ -24,8 +25,19 @@ class HomeController extends Controller
     public function faq()
     {
         $faqs = Yaml::parseFile(resource_path('views/pages/faqs.yml'));
+        $themes = array_unique(Arr::pluck($faqs, 'theme'));
 
-        return view('pages.faq')->with('faqs', $faqs);
+        return view('pages.faq')->with(compact('faqs', 'themes'));
+    }
+
+    /**
+     * Show the application contacts page.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function contacts()
+    {
+        return view('pages.contacts');
     }
 
     /**
