@@ -15,7 +15,7 @@ class DashboardController extends Controller
     public function index()
     {
         if (auth()->user()->publicAdministrations->isEmpty() && auth()->user()->cannot(UserPermission::ACCESS_ADMIN_AREA)) {
-            return redirect()->route('websites.create.primary');
+            return redirect()->route('websites.index');
         }
 
         $publicAdministration = !empty(request()->route('publicAdministration')) ? PublicAdministration::findByIPACode(request()->route('publicAdministration')) : null;
