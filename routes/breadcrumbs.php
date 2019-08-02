@@ -65,12 +65,6 @@ Breadcrumbs::for('websites.edit', function ($trail, $website) {
     $trail->push(__('ui.pages.websites.edit.title'), route('websites.edit', ['website' => $website], false));
 });
 
-// Web Analytics Italia > Dashboard > Websites > Javascript snippet
-Breadcrumbs::for('websites.snippet.javascript', function ($trail, $website) {
-    $trail->parent('websites.index');
-    $trail->push(__('ui.pages.websites.javascript-snippet.title'), route('websites.snippet.javascript', ['website' => $website], false));
-});
-
 // Web Analytics Italia > Dashboard > Users
 Breadcrumbs::for('users.index', function ($trail) {
     $trail->parent('dashboard');
