@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "bensampo/laravel-enum",
-            "version": "v1.22",
+            "version": "v1.23",
             "source": {
                 "type": "git",
                 "url": "https://github.com/BenSampo/laravel-enum.git",
-                "reference": "61fd9fb1631c8dd39da0e5c0377b8f99e49fede5"
+                "reference": "a91b8d770d858bd151a63f739202fcaf1bff650e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/BenSampo/laravel-enum/zipball/61fd9fb1631c8dd39da0e5c0377b8f99e49fede5",
-                "reference": "61fd9fb1631c8dd39da0e5c0377b8f99e49fede5",
+                "url": "https://api.github.com/repos/BenSampo/laravel-enum/zipball/a91b8d770d858bd151a63f739202fcaf1bff650e",
+                "reference": "a91b8d770d858bd151a63f739202fcaf1bff650e",
                 "shasum": ""
             },
             "require": {
@@ -69,7 +69,7 @@
                 "package",
                 "validation"
             ],
-            "time": "2019-08-05T16:53:42+00:00"
+            "time": "2019-08-11T11:09:21+00:00"
         },
         {
             "name": "cweagans/composer-patches",
@@ -1692,16 +1692,16 @@
         },
         {
             "name": "nikic/php-parser",
-            "version": "v4.2.2",
+            "version": "v4.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nikic/PHP-Parser.git",
-                "reference": "1bd73cc04c3843ad8d6b0bfc0956026a151fc420"
+                "reference": "e612609022e935f3d0337c1295176505b41188c8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/1bd73cc04c3843ad8d6b0bfc0956026a151fc420",
-                "reference": "1bd73cc04c3843ad8d6b0bfc0956026a151fc420",
+                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/e612609022e935f3d0337c1295176505b41188c8",
+                "reference": "e612609022e935f3d0337c1295176505b41188c8",
                 "shasum": ""
             },
             "require": {
@@ -1709,7 +1709,7 @@
                 "php": ">=7.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "^6.5 || ^7.0"
+                "phpunit/phpunit": "^6.5 || ^7.0 || ^8.0"
             },
             "bin": [
                 "bin/php-parse"
@@ -1739,7 +1739,7 @@
                 "parser",
                 "php"
             ],
-            "time": "2019-05-25T20:07:01+00:00"
+            "time": "2019-08-12T20:17:41+00:00"
         },
         {
             "name": "onelogin/php-saml",
@@ -7133,8 +7133,8 @@
             "authors": [
                 {
                     "name": "Arne Blankerts",
-                    "email": "arne@blankerts.de",
-                    "role": "Developer"
+                    "role": "Developer",
+                    "email": "arne@blankerts.de"
                 }
             ],
             "description": "A small library for converting tokenized PHP source code into XML and potentially other formats",
