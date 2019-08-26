@@ -30,7 +30,7 @@ class UserTransformer extends TransformerAbstract
             });
         }
         $data = [
-            'name' => implode(' ', [$user->familyName, $user->name]),
+            'name' => implode(' ', [$user->family_name, $user->name]),
             'email' => $user->email,
             'admin' => $isAdmin,
             'added_at' => $user->created_at->format('d/m/Y'),

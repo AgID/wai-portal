@@ -11,10 +11,10 @@ $factory->define(User::class, function (Faker $faker) {
     $faker->addProvider(new \Faker\Provider\it_IT\Person($faker));
 
     return [
-        'spidCode' => Str::random(14),
+        'spid_code' => Str::random(14),
         'name' => $faker->firstName,
-        'familyName' => $faker->lastName,
-        'fiscalNumber' => $faker->taxId(),
+        'family_name' => $faker->lastName,
+        'fiscal_number' => $faker->taxId(),
         'email' => $faker->unique()->safeEmail,
         'uuid' => Uuid::uuid4()->toString(),
         'password_changed_at' => Carbon::now()->format('Y-m-d H:i:s'),

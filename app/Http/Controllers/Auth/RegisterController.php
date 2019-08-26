@@ -46,10 +46,10 @@ class RegisterController extends Controller
 
         $SPIDUser = session()->get('spid_user');
         $user = User::create([
-            'spidCode' => $SPIDUser->spidCode,
+            'spid_code' => $SPIDUser->spidCode,
             'name' => $SPIDUser->name,
-            'familyName' => $SPIDUser->familyName,
-            'fiscalNumber' => $SPIDUser->fiscalNumber,
+            'family_name' => $SPIDUser->familyName,
+            'fiscal_number' => $SPIDUser->fiscalNumber,
             'uuid' => Uuid::uuid4()->toString(),
             'email' => $request->email,
             'status' => UserStatus::INACTIVE,

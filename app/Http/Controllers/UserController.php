@@ -100,7 +100,7 @@ class UserController extends Controller
 
         $user = User::create([
             'uuid' => Uuid::uuid4()->toString(),
-            'fiscalNumber' => $request->input('fiscalNumber'),
+            'fiscal_number' => $request->input('fiscal_number'),
             'email' => $request->input('email'),
             'status' => UserStatus::INVITED,
         ]);

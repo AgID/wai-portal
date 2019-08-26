@@ -65,7 +65,7 @@ class CRUDAdminUserTest extends TestCase
                 )
             ->assertOk()
             ->assertJsonFragment([
-                'name' => implode(' ', [$this->user->familyName, $this->user->name]),
+                'name' => implode(' ', [$this->user->family_name, $this->user->name]),
             ]);
     }
 
@@ -81,13 +81,13 @@ class CRUDAdminUserTest extends TestCase
                     '_token' => 'test',
                     'email' => 'new@email.local',
                     'name' => 'Mario',
-                    'familyName' => 'Rossi',
+                    'family_name' => 'Rossi',
                 ],
                 )
             ->assertSessionDoesntHaveErrors(
                 [
                     'name',
-                    'familyName',
+                    'family_name',
                     'email',
                 ]
             )
@@ -119,7 +119,7 @@ class CRUDAdminUserTest extends TestCase
             ->assertSessionHasErrors([
                 'email',
                 'name',
-                'familyName',
+                'family_name',
             ]);
 
         Event::assertNotDispatched(UserInvited::class);
@@ -146,7 +146,7 @@ class CRUDAdminUserTest extends TestCase
                     '_token' => 'test',
                     'email' => 'new@email.local',
                     'name' => 'Mario',
-                    'familyName' => 'Rossi',
+                    'family_name' => 'Rossi',
                 ]
             )
             ->assertSessionDoesntHaveErrors([
@@ -160,7 +160,7 @@ class CRUDAdminUserTest extends TestCase
 
             return 'new@email.local' === $user->email
                 && 'Mario' === $user->name
-                && 'Rossi' === $user->familyName;
+                && 'Rossi' === $user->family_name;
         });
     }
 
@@ -180,7 +180,7 @@ class CRUDAdminUserTest extends TestCase
             ->assertRedirect(route('admin.users.edit', ['user' => $this->user]))
             ->assertSessionHasErrors([
                 'name',
-                'familyName',
+                'family_name',
                 'email',
             ]);
 
@@ -311,7 +311,7 @@ class CRUDAdminUserTest extends TestCase
                 )
             ->assertOk()
             ->assertJsonFragment([
-                'name' => implode(' ', [$user->familyName, $user->name]),
+                'name' => implode(' ', [$user->family_name, $user->name]),
             ]);
     }
 
@@ -336,14 +336,14 @@ class CRUDAdminUserTest extends TestCase
                 [
                     '_token' => 'test',
                     'email' => $email,
-                    'fiscalNumber' => $fiscalNumber,
+                    'fiscal_number' => $fiscalNumber,
                     'isAdmin' => '1',
                 ],
                 )
             ->assertSessionDoesntHaveErrors(
                 [
                     'email',
-                    'fiscalNumber',
+                    'fiscal_number',
                     'isAdmin',
                 ]
             )
@@ -383,7 +383,7 @@ class CRUDAdminUserTest extends TestCase
                 [
                     '_token' => 'test',
                     'email' => $email,
-                    'fiscalNumber' => $fiscalNumber,
+                    'fiscal_number' => $fiscalNumber,
                     'websitesEnabled' => [
                         $website->id => 'enabled',
                     ],
@@ -395,7 +395,7 @@ class CRUDAdminUserTest extends TestCase
             ->assertSessionDoesntHaveErrors(
                 [
                     'email',
-                    'fiscalNumber',
+                    'fiscal_number',
                     'isAdmin',
                     'websitesEnabled',
                     'websitesEnabled.*',
@@ -433,13 +433,13 @@ class CRUDAdminUserTest extends TestCase
                 [
                     '_token' => 'test',
                     'email' => $user->email,
-                    'fiscalNumber' => $user->fiscalNumber,
+                    'fiscal_number' => $user->fiscal_number,
                 ]
             )
             ->assertRedirect(route('admin.publicAdministration.users.create', ['publicAdministration' => $publicAdministration]))
             ->assertSessionHasErrors([
                 'email',
-                'fiscalNumber',
+                'fiscal_number',
                 'websitesEnabled',
             ]);
 

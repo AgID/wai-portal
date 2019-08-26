@@ -131,8 +131,8 @@ return [
     'attributes' => [
         'name' => 'first name',
         'username' => 'user name',
-        'familyName' => 'last name',
-        'fiscalNumber' => 'fiscal code',
+        'family_name' => 'last name',
+        'fiscal_number' => 'fiscal number',
         'password_confirmation' => 'confirm password',
         'email' => 'email address',
         'city' => 'city',

@@ -41,7 +41,7 @@ class ProfileTest extends TestCase
                 route('user.profile.update'),
                 [
                     'name' => $user->name,
-                    'familyName' => $user->familyName,
+                    'family_name' => $user->family_name,
                     'email' => 'new@email.local',
                 ]
             )
@@ -95,13 +95,13 @@ class ProfileTest extends TestCase
                 route('admin.user.profile.update'),
                 [
                     'name' => 'Mario',
-                    'familyName' => 'Rossi',
+                    'family_name' => 'Rossi',
                     'email' => 'new@email.local',
                 ]
             )
             ->assertSessionDoesntHaveErrors([
                 'name',
-                'familyName',
+                'family_name',
                 'email',
             ])
             ->assertRedirect(route('admin.user.profile'));
@@ -111,7 +111,7 @@ class ProfileTest extends TestCase
 
             return 'new@email.local' === $user->email
                 && 'Mario' === $user->name
-                && 'Rossi' === $user->familyName;
+                && 'Rossi' === $user->family_name;
         });
     }
 
@@ -130,7 +130,7 @@ class ProfileTest extends TestCase
             ->patch(route('admin.user.profile.update'))
             ->assertSessionHasErrors([
                 'name',
-                'familyName',
+                'family_name',
                 'email',
             ])
             ->assertRedirect(route('admin.user.profile.edit'));

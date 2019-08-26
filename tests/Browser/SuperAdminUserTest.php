@@ -33,7 +33,7 @@ class SuperAdminUserTest extends DuskTestCase
                     ->visit('/admin/users/add')
                     ->assertSee(__('ui.pages.admin.users.add.title'))
                     ->type('name', 'Nome')
-                    ->type('familyName', 'Cognome')
+                    ->type('family_name', 'Cognome')
                     ->type('email', $mailAddress)
                     ->press('INVIA')
                     ->assertSee('Il nuovo utente è stato invitato come amministratore al progetto Web Analytics Italia.')

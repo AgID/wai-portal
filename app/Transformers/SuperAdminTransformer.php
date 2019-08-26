@@ -21,7 +21,7 @@ class SuperAdminTransformer extends TransformerAbstract
     public function transform(User $user): array
     {
         $data = [
-            'name' => implode(' ', [$user->familyName, $user->name]),
+            'name' => implode(' ', [$user->family_name, $user->name]),
             'email' => $user->email,
             'added_at' => $user->created_at->format('d/m/Y'),
             'status' => $user->status->description,

@@ -71,7 +71,7 @@ class SuperAdminController extends Controller
     {
         $validatedData = $request->validate([
             'name' => 'required',
-            'familyName' => 'required',
+            'family_name' => 'required',
             'email' => 'required|unique:users|email',
         ]);
 
@@ -79,7 +79,7 @@ class SuperAdminController extends Controller
 
         $user = User::create([
             'name' => $validatedData['name'],
-            'familyName' => $validatedData['familyName'],
+            'family_name' => $validatedData['family_name'],
             'email' => $validatedData['email'],
             'uuid' => Uuid::uuid4()->toString(),
             'password' => Hash::make($temporaryPassword),
@@ -139,7 +139,7 @@ class SuperAdminController extends Controller
     {
         $validatedData = $request->validate([
             'name' => 'required',
-            'familyName' => 'required',
+            'family_name' => 'required',
             'email' => [
                 'required',
                 Rule::unique('users')->ignore($user->id),
@@ -149,7 +149,7 @@ class SuperAdminController extends Controller
 
         $user->fill([
             'name' => $validatedData['name'],
-            'familyName' => $validatedData['familyName'],
+            'family_name' => $validatedData['family_name'],
             'email' => $validatedData['email'],
         ]);
         $user->save();

@@ -308,8 +308,8 @@ export default (() => {
                 return [
                     '<div class="autocomplete-suggestion user"',
                     'data-uuid="' + item.uuid + '"',
-                    'data-val="' + item.familyName + ' ' + item.name + '">',
-                    item.familyName.replace(re, "<b>$1</b>") + ' ' + item.name.replace(re, "<b>$1</b>"),
+                    'data-val="' + item.family_name + ' ' + item.name + '">',
+                    item.family_name.replace(re, "<b>$1</b>") + ' ' + item.name.replace(re, "<b>$1</b>"),
                     '</div>'
                 ].join('');
             },

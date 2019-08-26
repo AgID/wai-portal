@@ -110,7 +110,7 @@ class SearchUserListRouteTest extends TestCase
                 'id' => $this->firstUser->uuid,
                 'pas' => $this->firstPublicAdministration->ipa_code,
                 'uuid' => $this->firstUser->uuid,
-                'familyName' => $this->firstUser->familyName,
+                'family_name' => $this->firstUser->family_name,
                 'name' => $this->firstUser->name,
             ]
         );
@@ -119,7 +119,7 @@ class SearchUserListRouteTest extends TestCase
                 'id' => $this->secondUser->uuid,
                 'pas' => $this->secondPublicAdministration->ipa_code,
                 'uuid' => $this->secondUser->uuid,
-                'familyName' => $this->secondUser->familyName,
+                'family_name' => $this->secondUser->family_name,
                 'name' => $this->secondUser->name,
             ]
         );
@@ -146,7 +146,7 @@ class SearchUserListRouteTest extends TestCase
                 'id' => $this->firstUser->uuid,
                 'pas' => $this->firstPublicAdministration->ipa_code,
                 'uuid' => $this->firstUser->uuid,
-                'familyName' => $this->firstUser->familyName,
+                'family_name' => $this->firstUser->family_name,
                 'name' => $this->firstUser->name,
             ],
         ]);
@@ -156,7 +156,7 @@ class SearchUserListRouteTest extends TestCase
                 'id' => $this->secondUser->uuid,
                 'pas' => $this->secondPublicAdministration->ipa_code,
                 'uuid' => $this->secondUser->uuid,
-                'familyName' => $this->secondUser->familyName,
+                'family_name' => $this->secondUser->family_name,
                 'name' => $this->secondUser->name,
             ]
         ));
@@ -183,7 +183,7 @@ class SearchUserListRouteTest extends TestCase
                 'id' => $this->secondUser->uuid,
                 'pas' => $this->secondPublicAdministration->ipa_code,
                 'uuid' => $this->secondUser->uuid,
-                'familyName' => $this->secondUser->familyName,
+                'family_name' => $this->secondUser->family_name,
                 'name' => $this->secondUser->name,
             ],
         ]);
@@ -193,7 +193,7 @@ class SearchUserListRouteTest extends TestCase
                 'id' => $this->firstUser->uuid,
                 'pas' => $this->firstPublicAdministration->ipa_code,
                 'uuid' => $this->firstUser->uuid,
-                'familyName' => $this->firstUser->familyName,
+                'family_name' => $this->firstUser->family_name,
                 'name' => $this->firstUser->name,
             ]
         ));
@@ -216,7 +216,7 @@ class SearchUserListRouteTest extends TestCase
                 'id' => $this->firstUser->uuid,
                 'pas' => $this->firstPublicAdministration->ipa_code,
                 'uuid' => $this->firstUser->uuid,
-                'familyName' => $this->firstUser->familyName,
+                'family_name' => $this->firstUser->family_name,
                 'name' => $this->firstUser->name,
             ],
         ]);
@@ -226,7 +226,7 @@ class SearchUserListRouteTest extends TestCase
                 'id' => $this->secondUser->uuid,
                 'pas' => $this->secondPublicAdministration->ipa_code,
                 'uuid' => $this->secondUser->uuid,
-                'familyName' => $this->secondUser->familyName,
+                'family_name' => $this->secondUser->family_name,
                 'name' => $this->secondUser->name,
             ]
         ));
@@ -253,7 +253,7 @@ class SearchUserListRouteTest extends TestCase
                 'id' => $this->firstUser->uuid,
                 'pas' => $this->firstPublicAdministration->ipa_code,
                 'uuid' => $this->firstUser->uuid,
-                'familyName' => $this->firstUser->familyName,
+                'family_name' => $this->firstUser->family_name,
                 'name' => $this->firstUser->name,
             ],
         ]);
@@ -263,7 +263,7 @@ class SearchUserListRouteTest extends TestCase
                 'id' => $this->secondUser->uuid,
                 'pas' => $this->secondPublicAdministration->ipa_code,
                 'uuid' => $this->secondUser->uuid,
-                'familyName' => $this->secondUser->familyName,
+                'family_name' => $this->secondUser->family_name,
                 'name' => $this->secondUser->name,
             ]
         ));

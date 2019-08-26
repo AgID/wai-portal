@@ -18,11 +18,11 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('spidCode')->unique()->nullable();
+            $table->string('spid_code')->unique()->nullable();
             $table->string('name')->nullable();
             $table->string('uuid')->index();
-            $table->string('familyName')->nullable();
-            $table->string('fiscalNumber')->nullable();
+            $table->string('family_name')->nullable();
+            $table->string('fiscal_number')->nullable();
             $table->string('email')->unique();
             $table->string('password')->nullable();
             $table->integer('public_administration_id')->unsigned()->nullable();

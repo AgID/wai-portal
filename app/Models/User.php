@@ -44,11 +44,11 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array mass assignable attributes
      */
     protected $fillable = [
-        'spidCode',
+        'spid_code',
         'name',
         'uuid',
-        'familyName',
-        'fiscalNumber',
+        'family_name',
+        'fiscal_number',
         'email',
         'password',
         'status',
@@ -100,27 +100,27 @@ class User extends Authenticatable implements MustVerifyEmail
     ];
 
     /**
-     * Find a User instance by Fiscal Number.
+     * Find a User instance by fiscal number.
      *
-     * @param string $fiscalNumber fiscal Number
+     * @param string $fiscalNumber fiscal number
      *
      * @return User|null the User or null if not found
      */
     public static function findByFiscalNumber(string $fiscalNumber): ?User
     {
-        return User::where('fiscalNumber', $fiscalNumber)->first();
+        return User::where('fiscal_number', $fiscalNumber)->first();
     }
 
     /**
-     * Find a deleted User instance by Fiscal Number.
+     * Find a deleted User instance by fiscal number.
      *
-     * @param string $fiscalNumber fiscal Number
+     * @param string $fiscalNumber fiscal number
      *
      * @return User|null the User or null if not found
      */
     public static function findTrashedByFiscalNumber(string $fiscalNumber): ?User
     {
-        return User::onlyTrashed()->where('fiscalNumber', $fiscalNumber)->first();
+        return User::onlyTrashed()->where('fiscal_number', $fiscalNumber)->first();
     }
 
     /**
@@ -184,17 +184,17 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function getFullNameAttribute(): string
     {
-        return trim((null === $this->name ? '' : $this->name . ' ') . ($this->familyName ?? ''));
+        return $this->name ? implode(' ', [trim($this->name), trim($this->family_name)]) : $this->fiscal_number;
     }
 
     /**
-     * Return name, familyName and email of this user in printable format.
+     * Return name, family_name and email of this user in printable format.
      *
      * @return string the printable user representation
      */
     public function getInfo(): string
     {
-        return (null === $this->name ? '' : $this->name . ' ') . (null === $this->familyName ? '' : $this->familyName . ' ') . '[' . $this->email . ']';
+        return (null === $this->name ? '' : $this->name . ' ') . (null === $this->family_name ? '' : $this->family_name . ' ') . '[' . $this->email . ']';
     }
 
     /**

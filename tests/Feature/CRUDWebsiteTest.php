@@ -84,8 +84,8 @@ class CRUDWebsiteTest extends TestCase
         $this->publicAdministration->users()->sync([$this->user->id]);
 
         $this->spidUser = new SPIDUser([
-            'fiscalNumber' => $this->user->fiscalNumber,
-            'familyName' => $this->user->familyName,
+            'fiscalNumber' => $this->user->fiscal_number,
+            'familyName' => $this->user->family_name,
             'name' => $this->user->name,
         ]);
 

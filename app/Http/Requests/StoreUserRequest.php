@@ -32,7 +32,7 @@ class StoreUserRequest extends FormRequest
     {
         return [
             'email' => 'required|email|unique:users',
-            'fiscalNumber' => [
+            'fiscal_number' => [
                 'required',
                 'unique:users',
                 function ($attribute, $value, $fail) {

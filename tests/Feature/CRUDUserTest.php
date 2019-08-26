@@ -85,8 +85,8 @@ class CRUDUserTest extends TestCase
         ]);
 
         $this->spidUser = new SPIDUser([
-            'fiscalNumber' => $this->user->fiscalNumber,
-            'familyName' => $this->user->familyName,
+            'fiscalNumber' => $this->user->fiscal_number,
+            'familyName' => $this->user->family_name,
             'name' => $this->user->name,
         ]);
 
@@ -116,7 +116,7 @@ class CRUDUserTest extends TestCase
                 )
             ->assertOk()
             ->assertJsonFragment([
-                'name' => implode(' ', [$this->user->familyName, $this->user->name]),
+                'name' => implode(' ', [$this->user->family_name, $this->user->name]),
             ]);
     }
 
@@ -144,14 +144,14 @@ class CRUDUserTest extends TestCase
                 [
                     '_token' => 'test',
                     'email' => $email,
-                    'fiscalNumber' => $fiscalNumber,
+                    'fiscal_number' => $fiscalNumber,
                     'isAdmin' => '1',
                 ],
                 )
             ->assertSessionDoesntHaveErrors(
                 [
                     'email',
-                    'fiscalNumber',
+                    'fiscal_number',
                     'isAdmin',
                 ]
             )
@@ -191,7 +191,7 @@ class CRUDUserTest extends TestCase
                 [
                     '_token' => 'test',
                     'email' => $email,
-                    'fiscalNumber' => $fiscalNumber,
+                    'fiscal_number' => $fiscalNumber,
                     'websitesEnabled' => [
                         $this->website->id => 'enabled',
                     ],
@@ -203,7 +203,7 @@ class CRUDUserTest extends TestCase
             ->assertSessionDoesntHaveErrors(
                 [
                     'email',
-                    'fiscalNumber',
+                    'fiscal_number',
                     'isAdmin',
                     'websitesEnabled',
                     'websitesEnabled.*',
@@ -241,13 +241,13 @@ class CRUDUserTest extends TestCase
                 [
                     '_token' => 'test',
                     'email' => $this->user->email,
-                    'fiscalNumber' => $this->user->fiscalNumber,
+                    'fiscal_number' => $this->user->fiscal_number,
                 ]
             )
             ->assertRedirect(route('users.create'))
             ->assertSessionHasErrors([
                 'email',
-                'fiscalNumber',
+                'fiscal_number',
                 'websitesEnabled',
                 'websitesPermissions',
             ]);

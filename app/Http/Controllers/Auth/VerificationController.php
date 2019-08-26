@@ -128,15 +128,15 @@ class VerificationController extends Controller
             if ($user->isNotA(UserRole::SUPER_ADMIN)) {
                 $SPIDUser = session()->get('spid_user');
 
-                if ($user->fiscalNumber !== $SPIDUser->fiscalNumber) {
+                if ($user->fiscal_number !== $SPIDUser->fiscalNumber) {
                     session()->flash('message', ['error' => "L'utente non corrisponde all'invito."]);
 
                     return app()->make('SPIDAuth')->logout();
                 }
                 $user->fill([
-                    'spidCode' => $SPIDUser->spidCode,
+                    'spid_code' => $SPIDUser->spidCode,
                     'name' => $SPIDUser->name,
-                    'familyName' => $SPIDUser->familyName,
+                    'family_name' => $SPIDUser->familyName,
                 ]);
                 $newStatus = UserStatus::ACTIVE;
 
