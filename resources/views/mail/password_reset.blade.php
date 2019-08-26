@@ -1,7 +1,7 @@
 @component('mail::message')
 # Reset della password
 
-Ciao {{ $user->name }} {{ $user->familyName }},
+Ciao {{ $user->name }} {{ $user->family_name }},
 ci è pervenuta una richiesta di reset della tua password su {{ config('app.name') }}.
 
 Se sei stato tu a fare la richiesta perché non riesci ad accedere,

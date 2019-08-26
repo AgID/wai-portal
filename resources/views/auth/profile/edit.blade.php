@@ -37,10 +37,10 @@
                 <input class="Form-input {{ $user->isA(UserRole::SUPER_ADMIN) ? '' : 'is-disabled' }}" id="name" name="name" type="text" aria-required="true" value="{{ $user->name }}" required {{ $user->isA(UserRole::SUPER_ADMIN) ? '' : 'readonly' }}>
             </div>
             <div class="Form-field">
-                <label class="Form-label" for="familyName">
+                <label class="Form-label" for="family_name">
                     Cognome{{-- //TODO: put message in lang file --}}
                 </label>
-                <input class="Form-input {{ $user->isA(UserRole::SUPER_ADMIN) ? '' : 'is-disabled' }}" id="familyName" name="familyName" type="text" aria-required="true" value="{{ $user->familyName }}" required {{ $user->isA(UserRole::SUPER_ADMIN) ? '' : 'readonly' }}>
+                <input class="Form-input {{ $user->isA(UserRole::SUPER_ADMIN) ? '' : 'is-disabled' }}" id="family_name" name="family_name" type="text" aria-required="true" value="{{ $user->family_name }}" required {{ $user->isA(UserRole::SUPER_ADMIN) ? '' : 'readonly' }}>
             </div>
             <div class="Form-field {{ $errors->has('email') ? 'is-invalid' : '' }}">
                 @error('email')

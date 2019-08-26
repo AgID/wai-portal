@@ -13,7 +13,7 @@ $factory->define(User::class, function (Faker $faker) {
     return [
         'spidCode' => Str::random(14),
         'name' => $faker->firstName,
-        'familyName' => $faker->lastName,
+        'family_name' => $faker->lastName,
         'fiscal_number' => $faker->taxId(),
         'email' => $faker->unique()->safeEmail,
         'uuid' => Uuid::uuid4()->toString(),

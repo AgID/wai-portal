@@ -38,16 +38,16 @@
                     </div>
                 @endif
             </div>
-            <div class="Form-field {{ $errors->has('familyName') ? 'is-invalid' : '' }}">
-                @if ($errors->has('familyName'))
+            <div class="Form-field {{ $errors->has('family_name') ? 'is-invalid' : '' }}">
+                @if ($errors->has('family_name'))
                     <div class="Alert Alert--error Alert--withBg u-padding-r-top u-padding-r-bottom u-padding-r-right">
-                        <p class="u-text-p u-padding-r-bottom">{{ $errors->first('familyName') }}</p>
+                        <p class="u-text-p u-padding-r-bottom">{{ $errors->first('family_name') }}</p>
                         @endif
-                        <label class="Form-label is-required" for="familyName">
+                        <label class="Form-label is-required" for="family_name">
                             Cognome{{-- //TODO: put message in lang file --}}
                         </label>
-                        <input class="Form-input is-disabled" id="familyName" name="familyName" type="text" aria-required="true" value="{{ $user->familyName }}" required readonly>
-                        @if ($errors->has('familyName'))
+                        <input class="Form-input is-disabled" id="family_name" name="family_name" type="text" aria-required="true" value="{{ $user->family_name }}" required readonly>
+                        @if ($errors->has('family_name'))
                     </div>
                 @endif
             </div>

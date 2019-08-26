@@ -48,7 +48,7 @@ class ProcessUsersList implements ShouldQueue
         try {
             $userIndex->addTagField('pas')
                 ->addTextField('uuid')
-                ->addTextField('familyName', 2.0, true)
+                ->addTextField('family_name', 2.0, true)
                 ->addTextField('name', 2.0, true)
                 ->create();
         } catch (Exception $e) {
@@ -58,7 +58,7 @@ class ProcessUsersList implements ShouldQueue
         $results = User::withTrashed()->get()->mapToGroups(function ($user) use ($userIndex) {
             $userDocument = $userIndex->makeDocument($user->uuid);
             $userDocument->uuid->setValue($user->uuid);
-            $userDocument->familyName->setValue($user->familyName);
+            $userDocument->family_name->setValue($user->family_name);
             $userDocument->name->setValue($user->name);
             $userDocument->pas->setValue(implode(',', $user->publicAdministrations()->get()->pluck('ipa_code')->toArray()));
             if ($userIndex->replace($userDocument)) {

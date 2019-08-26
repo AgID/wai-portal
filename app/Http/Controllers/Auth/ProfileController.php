@@ -62,7 +62,7 @@ class ProfileController extends Controller
                 'required',
                 'string',
             ],
-            'familyName' => [
+            'family_name' => [
                 'required',
                 'string',
             ],
@@ -88,7 +88,7 @@ class ProfileController extends Controller
         $user->email = $validatedData['email'];
         if ($user->isA(UserRole::SUPER_ADMIN)) {
             $user->name = $validatedData['name'];
-            $user->familyName = $validatedData['familyName'];
+            $user->family_name = $validatedData['family_name'];
         }
         $user->save();
 

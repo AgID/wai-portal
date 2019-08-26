@@ -332,7 +332,7 @@ class UserEventsSubscriber
         try {
             $userIndex->addTagField('pas')
                 ->addTextField('uuid')
-                ->addTextField('familyName', 2.0, true)
+                ->addTextField('family_name', 2.0, true)
                 ->addTextField('name', 2.0, true)
                 ->create();
         } catch (Exception $e) {
@@ -343,7 +343,7 @@ class UserEventsSubscriber
             $userDocument = $userIndex->makeDocument($user->uuid);
             $userDocument->uuid->setValue($user->uuid);
             $userDocument->name->setValue($user->name);
-            $userDocument->familyName->setValue($user->familyName);
+            $userDocument->family_name->setValue($user->family_name);
             $userDocument->pas->setValue(implode(',', $user->publicAdministrations()->get()->pluck('ipa_code')->toArray()));
             $userIndex->replace($userDocument);
         } catch (FieldNotInSchemaException $exception) {

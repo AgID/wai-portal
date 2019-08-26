@@ -131,7 +131,7 @@ return [
     'attributes' => [
         'name' => 'first name',
         'username' => 'user name',
-        'familyName' => 'last name',
+        'family_name' => 'last name',
         'fiscal_number' => 'fiscal number',
         'password_confirmation' => 'confirm password',
         'email' => 'email address',

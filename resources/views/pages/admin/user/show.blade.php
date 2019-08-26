@@ -9,7 +9,7 @@
         <div class="Grid-cell u-size1of3">Nome</div>
         <div class="Grid-cell u-size2of3 u-textWeight-600">{{ $user->name }}</div>
         <div class="Grid-cell u-size1of3">Cognome</div>
-        <div class="Grid-cell u-size2of3 u-textWeight-600">{{ $user->familyName }}</div>
+        <div class="Grid-cell u-size2of3 u-textWeight-600">{{ $user->family_name }}</div>
         <div class="Grid-cell u-size1of3">Indirizzo email</div>
         <div class="Grid-cell u-size2of3 u-textWeight-600">{{ $user->email }}</div>
         <div class="Grid-cell u-size1of3">Data creazione</div>

@@ -1,7 +1,7 @@
 @component('mail::message')
 # Account creato
 
-Ciao {{ $user->name }} {{ $user->familyName }},
+Ciao {{ $user->name }} {{ $user->family_name }},
 grazie per esserti registrato su {{ config('app.name') }}!
 
 Per completare la tua iscrizione è necessaria la

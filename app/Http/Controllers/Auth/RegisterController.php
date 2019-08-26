@@ -48,7 +48,7 @@ class RegisterController extends Controller
         $user = User::create([
             'spidCode' => $SPIDUser->spidCode,
             'name' => $SPIDUser->name,
-            'familyName' => $SPIDUser->familyName,
+            'family_name' => $SPIDUser->familyName,
             'fiscal_number' => $SPIDUser->fiscalNumber,
             'uuid' => Uuid::uuid4()->toString(),
             'email' => $request->email,

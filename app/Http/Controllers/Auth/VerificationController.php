@@ -136,7 +136,7 @@ class VerificationController extends Controller
                 $user->fill([
                     'spidCode' => $SPIDUser->spidCode,
                     'name' => $SPIDUser->name,
-                    'familyName' => $SPIDUser->familyName,
+                    'family_name' => $SPIDUser->familyName,
                 ]);
                 $newStatus = UserStatus::ACTIVE;
 

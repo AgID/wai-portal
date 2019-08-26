@@ -74,9 +74,9 @@
                     @can(UserPermission::ACCESS_ADMIN_AREA)
                     <button class="auth-user" aria-controls="auth-user-options" aria-haspopup="true" role="button">
                         <span aria-hidden="true" class="auth-icon">
-                            <span class="auth-icon-text">{{ substr(auth()->user()->name, 0, 1) }}{{ substr(auth()->user()->familyName, 0, 1) }}</span>
+                            <span class="auth-icon-text">{{ substr(auth()->user()->name, 0, 1) }}{{ substr(auth()->user()->family_name, 0, 1) }}</span>
                         </span>
-                        <span class="auth-text">{{ auth()->user()->name }} {{ auth()->user()->familyName }}</span>
+                        <span class="auth-text">{{ auth()->user()->name }} {{ auth()->user()->family_name }}</span>
                     </button>
                     <div id="auth-user-options" class="u-borderShadow-m u-background-white auth-user-options" role="menu" aria-hidden="true">
                         <span class="Icon-drop-down Dropdown-arrow u-color-white"></span>

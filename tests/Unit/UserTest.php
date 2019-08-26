@@ -38,7 +38,7 @@ class UserTest extends TestCase
 
         $this->assertNotNull($searchedUser);
 
-        $this->assertEquals($user->name . ' ' . $user->familyName . ' [' . $user->email . ']', $searchedUser->getInfo());
+        $this->assertEquals($user->name . ' ' . $user->family_name . ' [' . $user->email . ']', $searchedUser->getInfo());
 
         $analytics_password = md5($partialAnalyticsPassword . config('app.salt'));
 

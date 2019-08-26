@@ -47,7 +47,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'spidCode',
         'name',
         'uuid',
-        'familyName',
+        'family_name',
         'fiscal_number',
         'email',
         'password',
@@ -184,17 +184,17 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function getFullNameAttribute(): string
     {
-        return $this->name ? implode(' ', [trim($this->name), trim($this->familyName)]) : $this->fiscal_number;
+        return $this->name ? implode(' ', [trim($this->name), trim($this->family_name)]) : $this->fiscal_number;
     }
 
     /**
-     * Return name, familyName and email of this user in printable format.
+     * Return name, family_name and email of this user in printable format.
      *
      * @return string the printable user representation
      */
     public function getInfo(): string
     {
-        return (null === $this->name ? '' : $this->name . ' ') . (null === $this->familyName ? '' : $this->familyName . ' ') . '[' . $this->email . ']';
+        return (null === $this->name ? '' : $this->name . ' ') . (null === $this->family_name ? '' : $this->family_name . ' ') . '[' . $this->email . ']';
     }
 
     /**

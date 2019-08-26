@@ -21,7 +21,7 @@ class UsersTableSeeder extends Seeder
     {
         DB::table('users')->insert([
             'name' => 'Nome',
-            'familyName' => 'Cognome',
+            'family_name' => 'Cognome',
             'fiscal_number' => 'FSCLNB17A01H501X',
             'email' => 'nome.cognome@example.com',
             'uuid' => Uuid::uuid4()->toString(),

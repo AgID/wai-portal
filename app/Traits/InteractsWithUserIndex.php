@@ -34,8 +34,8 @@ trait InteractsWithUserIndex
         );
         try {
             $results = $userIndex->limit(0, 100)
-                ->sortBy('familyName')
-                ->inFields(2, ['familyName', 'name'])
+                ->sortBy('family_name')
+                ->inFields(2, ['family_name', 'name'])
                 ->search($query . (!empty($ipaCode) ? ' @pas:{' . $ipaCode . '}' : ''))
                 ->getDocuments();
         } catch (Exception $exception) {

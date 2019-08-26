@@ -86,7 +86,7 @@ class CRUDUserTest extends TestCase
 
         $this->spidUser = new SPIDUser([
             'fiscalNumber' => $this->user->fiscal_number,
-            'familyName' => $this->user->familyName,
+            'familyName' => $this->user->family_name,
             'name' => $this->user->name,
         ]);
 
@@ -116,7 +116,7 @@ class CRUDUserTest extends TestCase
                 )
             ->assertOk()
             ->assertJsonFragment([
-                'name' => implode(' ', [$this->user->familyName, $this->user->name]),
+                'name' => implode(' ', [$this->user->family_name, $this->user->name]),
             ]);
     }
 

@@ -39,16 +39,16 @@
                 </div>
             @enderror
         </div>
-        <div class="Form-field {{ $errors->has('familyName') ? 'is-invalid' : '' }}">
-            @error('familyName')
+        <div class="Form-field {{ $errors->has('family_name') ? 'is-invalid' : '' }}">
+            @error('family_name')
                 <div class="Alert Alert--error Alert--withBg u-padding-r-top u-padding-r-bottom u-padding-r-right">
-                    <p class="u-text-p u-padding-r-bottom">{{ $errors->first('familyName') }}</p>
+                    <p class="u-text-p u-padding-r-bottom">{{ $errors->first('family_name') }}</p>
                     @enderror
-                    <label class="Form-label is-required" for="familyName">
+                    <label class="Form-label is-required" for="family_name">
                         Cognome{{-- //TODO: put message in lang file --}}
                     </label>
-                    <input class="Form-input" id="familyName" name="familyName" type="text" aria-required="true" value="{{ old('familyName') ?? (isset($user) ? $user->familyName : '') }}" required>
-                    @error('familyName')
+                    <input class="Form-input" id="family_name" name="family_name" type="text" aria-required="true" value="{{ old('family_name') ?? (isset($user) ? $user->family_name : '') }}" required>
+                    @error('family_name')
                 </div>
             @enderror
         </div>

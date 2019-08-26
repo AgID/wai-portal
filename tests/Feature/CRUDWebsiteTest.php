@@ -85,7 +85,7 @@ class CRUDWebsiteTest extends TestCase
 
         $this->spidUser = new SPIDUser([
             'fiscalNumber' => $this->user->fiscal_number,
-            'familyName' => $this->user->familyName,
+            'familyName' => $this->user->family_name,
             'name' => $this->user->name,
         ]);
 
