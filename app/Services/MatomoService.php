@@ -94,8 +94,11 @@ class MatomoService implements AnalyticsServiceContract
             'timezone' => 'Europe/Rome',
             'currency' => 'EUR',
             'token_auth' => config('analytics-service.admin_token'),
-            //'excludeUnknownUrls' => true //TODO: enable in production!
         ];
+
+        if (app()->environment('production')) {
+            $params['excludeUnknownUrls'] = true;
+        }
 
         return $this->apiCall($params)['value'];
     }
