@@ -14,7 +14,7 @@ $factory->define(User::class, function (Faker $faker) {
         'spidCode' => Str::random(14),
         'name' => $faker->firstName,
         'familyName' => $faker->lastName,
-        'fiscalNumber' => $faker->taxId(),
+        'fiscal_number' => $faker->taxId(),
         'email' => $faker->unique()->safeEmail,
         'uuid' => Uuid::uuid4()->toString(),
         'password_changed_at' => Carbon::now()->format('Y-m-d H:i:s'),

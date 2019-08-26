@@ -132,7 +132,7 @@ return [
         'name' => 'first name',
         'username' => 'user name',
         'familyName' => 'last name',
-        'fiscalNumber' => 'fiscal code',
+        'fiscal_number' => 'fiscal number',
         'password_confirmation' => 'confirm password',
         'email' => 'email address',
         'city' => 'city',

@@ -48,7 +48,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'name',
         'uuid',
         'familyName',
-        'fiscalNumber',
+        'fiscal_number',
         'email',
         'password',
         'status',
@@ -100,27 +100,27 @@ class User extends Authenticatable implements MustVerifyEmail
     ];
 
     /**
-     * Find a User instance by Fiscal Number.
+     * Find a User instance by fiscal number.
      *
-     * @param string $fiscalNumber fiscal Number
+     * @param string $fiscalNumber fiscal number
      *
      * @return User|null the User or null if not found
      */
     public static function findByFiscalNumber(string $fiscalNumber): ?User
     {
-        return User::where('fiscalNumber', $fiscalNumber)->first();
+        return User::where('fiscal_number', $fiscalNumber)->first();
     }
 
     /**
-     * Find a deleted User instance by Fiscal Number.
+     * Find a deleted User instance by fiscal number.
      *
-     * @param string $fiscalNumber fiscal Number
+     * @param string $fiscalNumber fiscal number
      *
      * @return User|null the User or null if not found
      */
     public static function findTrashedByFiscalNumber(string $fiscalNumber): ?User
     {
-        return User::onlyTrashed()->where('fiscalNumber', $fiscalNumber)->first();
+        return User::onlyTrashed()->where('fiscal_number', $fiscalNumber)->first();
     }
 
     /**
@@ -184,7 +184,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function getFullNameAttribute(): string
     {
-        return trim((null === $this->name ? '' : $this->name . ' ') . ($this->familyName ?? ''));
+        return $this->name ? implode(' ', [trim($this->name), trim($this->familyName)]) : $this->fiscal_number;
     }
 
     /**

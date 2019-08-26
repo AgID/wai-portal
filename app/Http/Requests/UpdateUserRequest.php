@@ -25,7 +25,7 @@ class UpdateUserRequest extends StoreUserRequest
             'email',
             Rule::unique('users')->ignore($this->route('user')->id),
         ];
-        unset($rules['fiscalNumber']);
+        unset($rules['fiscal_number']);
 
         return $rules;
     }

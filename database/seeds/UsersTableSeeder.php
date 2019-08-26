@@ -22,7 +22,7 @@ class UsersTableSeeder extends Seeder
         DB::table('users')->insert([
             'name' => 'Nome',
             'familyName' => 'Cognome',
-            'fiscalNumber' => 'FSCLNB17A01H501X',
+            'fiscal_number' => 'FSCLNB17A01H501X',
             'email' => 'nome.cognome@example.com',
             'uuid' => Uuid::uuid4()->toString(),
             'password' => Hash::make('password'),

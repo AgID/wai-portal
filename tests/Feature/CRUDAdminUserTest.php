@@ -336,14 +336,14 @@ class CRUDAdminUserTest extends TestCase
                 [
                     '_token' => 'test',
                     'email' => $email,
-                    'fiscalNumber' => $fiscalNumber,
+                    'fiscal_number' => $fiscalNumber,
                     'isAdmin' => '1',
                 ],
                 )
             ->assertSessionDoesntHaveErrors(
                 [
                     'email',
-                    'fiscalNumber',
+                    'fiscal_number',
                     'isAdmin',
                 ]
             )
@@ -383,7 +383,7 @@ class CRUDAdminUserTest extends TestCase
                 [
                     '_token' => 'test',
                     'email' => $email,
-                    'fiscalNumber' => $fiscalNumber,
+                    'fiscal_number' => $fiscalNumber,
                     'websitesEnabled' => [
                         $website->id => 'enabled',
                     ],
@@ -395,7 +395,7 @@ class CRUDAdminUserTest extends TestCase
             ->assertSessionDoesntHaveErrors(
                 [
                     'email',
-                    'fiscalNumber',
+                    'fiscal_number',
                     'isAdmin',
                     'websitesEnabled',
                     'websitesEnabled.*',
@@ -433,13 +433,13 @@ class CRUDAdminUserTest extends TestCase
                 [
                     '_token' => 'test',
                     'email' => $user->email,
-                    'fiscalNumber' => $user->fiscalNumber,
+                    'fiscal_number' => $user->fiscal_number,
                 ]
             )
             ->assertRedirect(route('admin.publicAdministration.users.create', ['publicAdministration' => $publicAdministration]))
             ->assertSessionHasErrors([
                 'email',
-                'fiscalNumber',
+                'fiscal_number',
                 'websitesEnabled',
             ]);
 

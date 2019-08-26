@@ -49,7 +49,7 @@ class RegisterController extends Controller
             'spidCode' => $SPIDUser->spidCode,
             'name' => $SPIDUser->name,
             'familyName' => $SPIDUser->familyName,
-            'fiscalNumber' => $SPIDUser->fiscalNumber,
+            'fiscal_number' => $SPIDUser->fiscalNumber,
             'uuid' => Uuid::uuid4()->toString(),
             'email' => $request->email,
             'status' => UserStatus::INACTIVE,

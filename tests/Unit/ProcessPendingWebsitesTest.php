@@ -78,7 +78,7 @@ class ProcessPendingWebsitesTest extends TestCase
             return json_decode($event->getPublicAdministrationJson())->ipa_code === $publicAdministration->ipa_code;
         });
 
-        $purgedUser = User::findByFiscalNumber($user->fiscalNumber);
+        $purgedUser = User::findByFiscalNumber($user->fiscal_number);
         $this->assertFalse($purgedUser->hasAnalyticsServiceAccount());
 
         $this->expectException(CommandErrorException::class);
