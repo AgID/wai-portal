@@ -1035,23 +1035,23 @@
         },
         {
             "name": "italia/spid-laravel",
-            "version": "v0.3.0-beta",
+            "version": "v0.4.0-beta",
             "source": {
                 "type": "git",
                 "url": "https://github.com/italia/spid-laravel.git",
-                "reference": "dd16673a7deeec85ef6738db6298a46efa594e3f"
+                "reference": "0adc1a9b2df90aac706d1db24c2a595e1387542e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/italia/spid-laravel/zipball/dd16673a7deeec85ef6738db6298a46efa594e3f",
-                "reference": "dd16673a7deeec85ef6738db6298a46efa594e3f",
+                "url": "https://api.github.com/repos/italia/spid-laravel/zipball/0adc1a9b2df90aac706d1db24c2a595e1387542e",
+                "reference": "0adc1a9b2df90aac706d1db24c2a595e1387542e",
                 "shasum": ""
             },
             "require": {
                 "cweagans/composer-patches": "^1.6",
                 "illuminate/config": "~5.0",
                 "illuminate/support": "~5.0",
-                "onelogin/php-saml": "^3.1",
+                "onelogin/php-saml": "3.2.1",
                 "php": "^7.2.0"
             },
             "require-dev": {
@@ -1086,7 +1086,7 @@
             ],
             "authors": [
                 {
-                    "name": "Davide Porrovecchio - Agenzia per l'Italia Digitale - Team per la Trasformazione Digitale",
+                    "name": "Davide Porrovecchio - Agenzia per l'Italia Digitale",
                     "email": "davide.porrovecchio@agid.gov.it"
                 }
             ],
@@ -1097,7 +1097,7 @@
                 "laravel",
                 "laravel 5"
             ],
-            "time": "2019-06-14T13:32:24+00:00"
+            "time": "2019-08-24T09:22:08+00:00"
         },
         {
             "name": "jakub-onderka/php-console-color",
@@ -1743,16 +1743,16 @@
         },
         {
             "name": "onelogin/php-saml",
-            "version": "3.1.1",
+            "version": "3.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/onelogin/php-saml.git",
-                "reference": "c9026b26395a65184550055d9a01bdf9dbd30861"
+                "reference": "845a6ce39e839ed9e687f80bffb02ffde16a70d0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/onelogin/php-saml/zipball/c9026b26395a65184550055d9a01bdf9dbd30861",
-                "reference": "c9026b26395a65184550055d9a01bdf9dbd30861",
+                "url": "https://api.github.com/repos/onelogin/php-saml/zipball/845a6ce39e839ed9e687f80bffb02ffde16a70d0",
+                "reference": "845a6ce39e839ed9e687f80bffb02ffde16a70d0",
                 "shasum": ""
             },
             "require": {
@@ -1789,7 +1789,7 @@
                 "onelogin",
                 "saml"
             ],
-            "time": "2019-03-11T09:41:32+00:00",
+            "time": "2019-06-25T10:28:20+00:00",
             "extra": {
                 "patches_applied": {
                     "Compatibility with SPID": "https://rawgit.com/italia/spid-laravel/master/patches/php-saml-3-spid.patch"
