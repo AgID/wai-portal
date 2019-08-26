@@ -46,7 +46,7 @@ class RegisterController extends Controller
 
         $SPIDUser = session()->get('spid_user');
         $user = User::create([
-            'spidCode' => $SPIDUser->spidCode,
+            'spid_code' => $SPIDUser->spidCode,
             'name' => $SPIDUser->name,
             'family_name' => $SPIDUser->familyName,
             'fiscal_number' => $SPIDUser->fiscalNumber,

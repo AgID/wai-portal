@@ -11,7 +11,7 @@ $factory->define(User::class, function (Faker $faker) {
     $faker->addProvider(new \Faker\Provider\it_IT\Person($faker));
 
     return [
-        'spidCode' => Str::random(14),
+        'spid_code' => Str::random(14),
         'name' => $faker->firstName,
         'family_name' => $faker->lastName,
         'fiscal_number' => $faker->taxId(),

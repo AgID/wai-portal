@@ -44,7 +44,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array mass assignable attributes
      */
     protected $fillable = [
-        'spidCode',
+        'spid_code',
         'name',
         'uuid',
         'family_name',

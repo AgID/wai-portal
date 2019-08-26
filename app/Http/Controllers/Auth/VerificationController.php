@@ -134,7 +134,7 @@ class VerificationController extends Controller
                     return app()->make('SPIDAuth')->logout();
                 }
                 $user->fill([
-                    'spidCode' => $SPIDUser->spidCode,
+                    'spid_code' => $SPIDUser->spidCode,
                     'name' => $SPIDUser->name,
                     'family_name' => $SPIDUser->familyName,
                 ]);
