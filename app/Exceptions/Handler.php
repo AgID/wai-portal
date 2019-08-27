@@ -70,11 +70,16 @@ class Handler extends ExceptionHandler
         if ($exception instanceof NotFoundHttpException ||
             $exception instanceof ModelNotFoundException ||
             $exception instanceof MethodNotAllowedHttpException) {
-            return response()->view('errors.404', ['not_found_path' => request()->path()]);
+            return response()->view('errors.404', ['not_found_path' => request()->path()], $exception->getStatusCode());
         }
 
         if ($exception instanceof TokenMismatchException) {
-            return redirect()->home()->withAlert(['warning' => __('ui.session_expired')]);
+            return redirect()->home()->withNotification([
+                'title' => __('sessione scaduta'),
+                'message' => __("La sessione è scaduta per inattività.\nAccedi di nuovo per continuare da dove eri rimasto."),
+                'status' => 'warning',
+                'icon' => 'it-error',
+            ]);
         }
 
         if ($exception instanceof SPIDLoginException) {
