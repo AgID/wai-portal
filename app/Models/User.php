@@ -194,7 +194,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function getInfo(): string
     {
-        return (null === $this->name ? '' : $this->name . ' ') . (null === $this->family_name ? '' : $this->family_name . ' ') . '[' . $this->email . ']';
+        return $this->full_name . ' [' . $this->email . ']';
     }
 
     /**
@@ -218,6 +218,19 @@ class User extends Authenticatable implements MustVerifyEmail
     public function isPasswordExpired(): bool
     {
         return Carbon::now()->diffInDays($this->password_changed_at) >= config('auth.password_expiry');
+    }
+
+    /**
+     * Check whether this user is the last active administrator of the specified public administration.
+     *
+     * @param PublicAdministration $publicAdministration the user
+     *
+     * @return bool true if the specified user is the last active administrator
+     */
+    public function isTheLastActiveAdministratorOf(PublicAdministration $publicAdministration): bool
+    {
+        $activeAdministrators = $publicAdministration->getActiveAdministrators();
+        return (1 === $activeAdministrators->count() && $activeAdministrators->first()->uuid === $this->uuid);
     }
 
     /**
