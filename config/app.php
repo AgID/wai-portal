@@ -15,6 +15,8 @@ return [
 
     'name' => env('APP_NAME'),
 
+    'name_short' => env('APP_NAME_SHORT'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Version

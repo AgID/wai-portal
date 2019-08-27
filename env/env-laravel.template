@@ -1,4 +1,5 @@
 APP_NAME="Web Analytics Italia"
+APP_NAME_SHORT="WAI"
 APP_ENV=@ENV@
 APP_KEY=
 APP_SALT=@APP_SALT@
