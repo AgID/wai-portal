@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Enums\UserRole;
 use Closure;
 
 class SelectTenant
@@ -15,12 +16,25 @@ class SelectTenant
      *
      * @return mixed
      */
-    public function handle($request, Closure $next, $guard = null)
+    public function handle($request, Closure $next)
     {
-        if (empty(session('tenant_id'))) {
-            if ($request->user() && $request->user()->publicAdministrations->isNotEmpty()) {
-                session()->put('tenant_id', $request->user()->publicAdministrations()->first()->id);
-                // return redirect('/select-public-administration');
+        $authUser = $request->user();
+
+        if ($authUser) {
+            if (empty(session('tenant_id')) && $authUser->publicAdministrations->isNotEmpty()) {
+                session()->put('tenant_id', $authUser->publicAdministrations()->first()->id);
+                // return redirect()->route('publicAdministration.tenant.select');
+            }
+
+            if ($authUser->isA(UserRole::SUPER_ADMIN)) {
+                $selectedPublicAdministrationIpaCode = $request->route('publicAdministration');
+                if (is_object($selectedPublicAdministrationIpaCode)) {
+                    $selectedPublicAdministrationIpaCode = $selectedPublicAdministrationIpaCode->ipa_code;
+                }
+
+                if (empty(session('super_admin_tenant_ipa_code')) && $selectedPublicAdministrationIpaCode) {
+                    session()->put('super_admin_tenant_ipa_code', $selectedPublicAdministrationIpaCode);
+                }
             }
         }
 

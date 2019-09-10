@@ -14,7 +14,7 @@ class Authenticate extends Middleware
 {
     /**
      * Determine if the user is logged in to any of the given guards
-     * and is not suspended.
+     * and is not suspended or deleted.
      *
      * @param \Illuminate\Http\Request $request
      * @param array $guards
@@ -34,7 +34,7 @@ class Authenticate extends Middleware
 
         parent::authenticate($request, $guards);
 
-        if ($request->user()->status->is(UserStatus::SUSPENDED)) {
+        if ($request->user()->status->is(UserStatus::SUSPENDED) && !$request->routeIs('admin.logout')) {
             throw new AuthenticationException(
                 'Suspended.', $guards, $this->redirectSuspendedTo($request)
             );
@@ -50,10 +50,6 @@ class Authenticate extends Middleware
      */
     protected function redirectTo($request): string
     {
-        $request->session()->flash('message', [
-            'warning' => "Prima di usare l'applicazione è necessario completare la registrazione",
-        ]);
-
         return route('auth.register.show');
     }
 
@@ -66,8 +62,11 @@ class Authenticate extends Middleware
      */
     protected function redirectSuspendedTo($request): string
     {
-        $request->session()->flash('message', [
-            'error' => "L'utenza è stata sospesa.",
+        $request->session()->flash('notification', [
+            'title' => __('accesso negato'),
+            'message' => __("L'utenza è stata sospesa."),
+            'status' => 'error',
+            'icon' => 'it-close-circle',
         ]);
 
         return route('home');
@@ -75,8 +74,11 @@ class Authenticate extends Middleware
 
     protected function redirectTrashedTo($request): string
     {
-        $request->session()->flash('message', [
-            'error' => "L'utenza è stata rimossa.",
+        $request->session()->flash('notification', [
+            'title' => __('accesso negato'),
+            'message' => __("L'utenza è stata rimossa."),
+            'status' => 'error',
+            'icon' => 'it-close-circle',
         ]);
 
         return route('home');
