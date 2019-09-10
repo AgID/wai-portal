@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use App\Enums\UserRole;
 use App\Enums\UserStatus;
-use Illuminate\Validation\Rule;
+use App\Models\User;
 use Illuminate\Validation\Validator;
 
 /**
@@ -20,11 +20,6 @@ class UpdateUserRequest extends StoreUserRequest
     public function rules(): array
     {
         $rules = parent::rules();
-        $rules['email'] = [
-            'required',
-            'email',
-            Rule::unique('users')->ignore($this->route('user')->id),
-        ];
         unset($rules['fiscal_number']);
 
         return $rules;
@@ -37,7 +32,14 @@ class UpdateUserRequest extends StoreUserRequest
      */
     public function withValidator(Validator $validator): void
     {
-        parent::withValidator($validator);
+        $validator->after(function (Validator $validator) {
+            if (User::where('email', $this->input('email'))->where('id', '<>', $this->route('user')->id)->whereDoesntHave('roles', function ($query) {
+                $query->where('name', UserRole::SUPER_ADMIN);
+            })->get()->isNotEmpty()) {
+                $validator->errors()->add('email', __('validation.unique', ['attribute' => __('validation.attributes.email')]));
+            }
+        });
+
         $validator->after(function (Validator $validator) {
             $user = $this->route('user');
             $lastAdministrator = 1 === request()->route('publicAdministration', current_public_administration())->getActiveAdministrators()->count();

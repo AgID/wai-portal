@@ -23,7 +23,7 @@ class CreateUsersTable extends Migration
             $table->string('uuid')->index();
             $table->string('family_name')->nullable();
             $table->string('fiscal_number')->nullable();
-            $table->string('email')->unique();
+            $table->string('email')->index();
             $table->string('password')->nullable();
             $table->integer('public_administration_id')->unsigned()->nullable();
             $table->foreign('public_administration_id')->references('id')->on('public_administrations');

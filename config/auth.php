@@ -62,12 +62,13 @@ return [
     | be assigned to any extra authentication guards you have defined.
     |
     | Supported: "database", "eloquent"
+    | Custom provider: "app"
     |
     */
 
     'providers' => [
         'users' => [
-            'driver' => 'eloquent',
+            'driver' => 'app',
             'model' => App\Models\User::class,
         ],
     ],

@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 use App\Enums\UserPermission;
+use App\Enums\UserRole;
+use App\Models\User;
 use CodiceFiscale\Checker as FiscalNumberChecker;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -31,7 +33,7 @@ class StoreUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => 'required|email|unique:users',
+            'email' => 'required|email|max:255',
             'fiscal_number' => [
                 'required',
                 'unique:users',
@@ -57,6 +59,16 @@ class StoreUserRequest extends FormRequest
      */
     public function withValidator(Validator $validator): void
     {
+        if (!$this->route()->hasParameter('user')) {
+            $validator->after(function (Validator $validator) {
+                if (User::where('email', $this->input('email'))->whereDoesntHave('roles', function ($query) {
+                    $query->where('name', UserRole::SUPER_ADMIN);
+                })->get()->isNotEmpty()) {
+                    $validator->errors()->add('email', __('validation.unique', ['attribute' => __('validation.attributes.email')]));
+                }
+            });
+        }
+
         $validator->after(function (Validator $validator) {
             if (is_array($this->input('websitesPermissions')) && !$this->checkWebsitesIds($this->input('websitesPermissions'))) {
                 $validator->errors()->add('websitesPermissions', 'È necessario selezionare tutti i permessi correttamente'); //TODO: put in lang file
