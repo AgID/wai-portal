@@ -63,6 +63,13 @@ class MatomoService implements AnalyticsServiceContract
     protected $SSLVerify;
 
     /**
+     * Authentication token for API calls.
+     *
+     * @var string the authentication toke
+     */
+    protected $tokenAuth;
+
+    /**
      * Create a new Matomo Service instance.
      */
     public function __construct()
@@ -70,6 +77,7 @@ class MatomoService implements AnalyticsServiceContract
         $this->serviceBaseUri = config('analytics-service.api_base_uri');
         $this->servicePublicUrl = config('analytics-service.public_url');
         $this->SSLVerify = config('analytics-service.ssl_verify');
+        $this->tokenAuth = config('analytics-service.admin_token');
     }
 
     /**
@@ -93,7 +101,7 @@ class MatomoService implements AnalyticsServiceContract
             'group' => $group,
             'timezone' => 'Europe/Rome',
             'currency' => 'EUR',
-            'token_auth' => config('analytics-service.admin_token'),
+            'token_auth' => $this->tokenAuth,
         ];
 
         if (app()->environment('production')) {
@@ -121,7 +129,7 @@ class MatomoService implements AnalyticsServiceContract
             'idSite' => $idSite,
             'siteName' => $siteName,
             'urls' => $url,
-            'token_auth' => config('analytics-service.admin_token'),
+            'token_auth' => $this->tokenAuth,
         ];
 
         $this->apiCall($params);
@@ -147,7 +155,7 @@ class MatomoService implements AnalyticsServiceContract
         $params = [
             'method' => 'DisableTracking.changeDisableState',
             'idSites' => $idSites,
-            'token_auth' => config('analytics-service.admin_token'),
+            'token_auth' => $this->tokenAuth,
             'disable' => self::ARCHIVE_STATUS_MAPPINGS[$status],
         ];
 
@@ -159,19 +167,18 @@ class MatomoService implements AnalyticsServiceContract
      * registered in the Analytics Service.
      *
      * @param string $idSite the Analytics Service website ID
-     * @param string $tokenAuth the Analytics authentication token
      *
      * @throws AnalyticsServiceException if unable to connect the Analytics Service
      * @throws CommandErrorException if command is unsuccessful
      *
      * @return string the site tracking code
      */
-    public function getJavascriptSnippet(string $idSite, string $tokenAuth): string
+    public function getJavascriptSnippet(string $idSite): string
     {
         $params = [
             'method' => 'SitesManager.getJavascriptTag',
             'idSite' => $idSite,
-            'token_auth' => $tokenAuth,
+            'token_auth' => $this->tokenAuth,
         ];
 
         return $this->apiCall($params)['value'];
@@ -190,7 +197,7 @@ class MatomoService implements AnalyticsServiceContract
         $params = [
             'method' => 'SitesManager.deleteSite',
             'idSite' => $idSite,
-            'token_auth' => config('analytics-service.admin_token'),
+            'token_auth' => $this->tokenAuth,
         ];
 
         $this->apiCall($params);
@@ -202,19 +209,18 @@ class MatomoService implements AnalyticsServiceContract
      * @param string $userLogin the Analytics Service user ID
      * @param string $password the Analytics Service user password
      * @param string $email the Analytics Service user email
-     * @param string $tokenAuth the Analytics authentication token
      *
      * @throws AnalyticsServiceException if unable to connect the Analytics Service
      * @throws CommandErrorException if command is unsuccessful
      */
-    public function registerUser(string $userLogin, string $password, string $email, string $tokenAuth): void
+    public function registerUser(string $userLogin, string $password, string $email): void
     {
         $params = [
             'method' => 'UsersManager.addUser',
             'userLogin' => $userLogin,
             'password' => $password,
             'email' => $email,
-            'token_auth' => $tokenAuth,
+            'token_auth' => $this->tokenAuth,
         ];
 
         $this->apiCall($params);
@@ -224,19 +230,18 @@ class MatomoService implements AnalyticsServiceContract
      * Get a specified user in the Analytics Service.
      *
      * @param string $email the Analytics Service user email
-     * @param string $tokenAuth the Analytics authentication token
      *
      * @throws CommandErrorException if command is unsuccessful
      * @throws AnalyticsServiceException if unable to connect the Analytics Service
      *
      * @return array the Analytics Service user
      */
-    public function getUserByEmail(string $email, string $tokenAuth): array
+    public function getUserByEmail(string $email): array
     {
         $params = [
             'method' => 'UsersManager.getUserByEmail',
             'userEmail' => $email,
-            'token_auth' => $tokenAuth,
+            'token_auth' => $this->tokenAuth,
         ];
 
         return $this->apiCall($params);
@@ -266,17 +271,16 @@ class MatomoService implements AnalyticsServiceContract
      * Delete a specified user in the Analytics Service.
      *
      * @param string $userLogin the Analytics Service user ID
-     * @param string $tokenAuth the Analytics authentication token
      *
      * @throws AnalyticsServiceException if unable to connect the Analytics Service
      * @throws CommandErrorException if command is unsuccessful
      */
-    public function deleteUser(string $userLogin, string $tokenAuth): void
+    public function deleteUser(string $userLogin): void
     {
         $params = [
             'method' => 'UsersManager.deleteUser',
             'userLogin' => $userLogin,
-            'token_auth' => $tokenAuth,
+            'token_auth' => $this->tokenAuth,
         ];
 
         $this->apiCall($params);
@@ -288,19 +292,18 @@ class MatomoService implements AnalyticsServiceContract
      * @param string $userLogin the Analytics Service user ID
      * @param string $updatedEmail the updated email address
      * @param string $passwordConfirmation the user password needed to confirm the email change
-     * @param string $tokenAuth the Analytics authentication token
      *
      * @throws AnalyticsServiceException if unable to connect the Analytics Service
      * @throws CommandErrorException if command is unsuccessful
      */
-    public function updateUserEmail(string $userLogin, string $updatedEmail, string $passwordConfirmation, string $tokenAuth): void
+    public function updateUserEmail(string $userLogin, string $updatedEmail, string $passwordConfirmation): void
     {
         $params = [
             'method' => 'UsersManager.updateUser',
             'userLogin' => $userLogin,
             'email' => $updatedEmail,
             'passwordConfirmation' => $passwordConfirmation,
-            'token_auth' => $tokenAuth,
+            'token_auth' => config('analytics-service.admin_token'),
         ];
 
         $this->apiCall($params);
@@ -326,21 +329,20 @@ class MatomoService implements AnalyticsServiceContract
      * @param string $userLogin the Analytics Service user ID
      * @param int $access the Analytics Service access level
      * @param string $idSites the Analytics Service website ID
-     * @param string $tokenAuth the Analytics authentication token
      *
      * @throws AnalyticsServiceException if unable to connect the Analytics Service
      * @throws CommandErrorException if command is unsuccessful
      *
      * @see \App\Enums\WebsiteAccessType
      */
-    public function setWebsiteAccess(string $userLogin, int $access, string $idSites, string $tokenAuth): void
+    public function setWebsiteAccess(string $userLogin, int $access, string $idSites): void
     {
         $params = [
             'method' => 'UsersManager.setUserAccess',
             'userLogin' => $userLogin,
             'access' => self::ACCESS_LEVELS_MAPPINGS[$access],
             'idSites' => $idSites,
-            'token_auth' => $tokenAuth,
+            'token_auth' => $this->tokenAuth,
         ];
 
         $this->apiCall($params);
@@ -349,20 +351,19 @@ class MatomoService implements AnalyticsServiceContract
     /**
      * @param string $idSite the Analytics Service website ID
      * @param int $minutes the minutes period
-     * @param string $tokenAuth the Analytics authentication token
      *
      * @throws CommandErrorException if command is unsuccessful
      * @throws AnalyticsServiceException if unable to connect the Analytics Service
      *
      * @return int the live number of website visits
      */
-    public function getLiveVisits(string $idSite, int $minutes, string $tokenAuth): int
+    public function getLiveVisits(string $idSite, int $minutes): int
     {
         $params = [
             'method' => 'Live.getCounters',
             'idSite' => $idSite,
             'lastMinutes' => $minutes,
-            'token_auth' => $tokenAuth,
+            'token_auth' => $this->tokenAuth,
         ];
         $response = $this->apiCall($params);
         if (!empty($response)) {
@@ -378,21 +379,20 @@ class MatomoService implements AnalyticsServiceContract
      *
      * @param string $idSite the Analytics Service website ID
      * @param string $from the date range
-     * @param string $tokenAuth the Analytics authentication token
      *
      * @throws CommandErrorException if command is unsuccessful
      * @throws AnalyticsServiceException if unable to connect the Analytics Service
      *
      * @return int the total reported website visits
      */
-    public function getSiteTotalVisitsFrom(string $idSite, string $from, string $tokenAuth): int
+    public function getSiteTotalVisitsFrom(string $idSite, string $from): int
     {
         $params = [
             'method' => 'VisitsSummary.get',
             'idSite' => $idSite,
             'period' => 'range',
             'date' => $from . ',' . now()->format('Y-m-d'),
-            'token_auth' => $tokenAuth,
+            'token_auth' => $this->tokenAuth,
         ];
         $response = $this->apiCall($params);
 
@@ -404,21 +404,20 @@ class MatomoService implements AnalyticsServiceContract
      * registered last month in the Analytics Service.
      *
      * @param string $idSite the Analytics Service website ID
-     * @param string $tokenAuth the Analytics authentication token
      *
      * @throws CommandErrorException if command is unsuccessful
      * @throws AnalyticsServiceException if unable to connect the Analytics Service
      *
      * @return int the reported website visits from last month
      */
-    public function getSiteLastMonthVisits(string $idSite, string $tokenAuth): int
+    public function getSiteLastMonthVisits(string $idSite): int
     {
         $params = [
             'method' => 'VisitsSummary.get',
             'idSite' => $idSite,
             'period' => 'month',
             'date' => 'yesterday',
-            'token_auth' => $tokenAuth,
+            'token_auth' => $this->tokenAuth,
         ];
         $response = $this->apiCall($params);
 
@@ -430,21 +429,20 @@ class MatomoService implements AnalyticsServiceContract
      *
      * @param string $idSite the Analytics Service website ID
      * @param int $days the requested number of days
-     * @param string $tokenAuth the Analytics authentication token
      *
      * @throws CommandErrorException if command is unsuccessful
      * @throws AnalyticsServiceException if unable to connect the Analytics Service
      *
      * @return array the list of days with the number of visits
      */
-    public function getSiteLastDaysVisits(string $idSite, int $days, string $tokenAuth): array
+    public function getSiteLastDaysVisits(string $idSite, int $days): array
     {
         $params = [
             'method' => 'VisitsSummary.getVisits',
             'idSite' => $idSite,
             'period' => 'day',
             'date' => 'last' . $days,
-            'token_auth' => $tokenAuth,
+            'token_auth' => $this->tokenAuth,
         ];
 
         return $this->apiCall($params);
@@ -474,7 +472,9 @@ class MatomoService implements AnalyticsServiceContract
         } catch (GuzzleException $exception) {
             throw new AnalyticsServiceException($exception->getMessage());
         }
+
         $response = json_decode($res->getBody(), true);
+
         if (!empty($response['result']) && 'error' === $response['result']) {
             throw new CommandErrorException($response['message']);
         }

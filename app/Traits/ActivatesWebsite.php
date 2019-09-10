@@ -20,10 +20,9 @@ use Silber\Bouncer\BouncerFacade as Bouncer;
 trait ActivatesWebsite
 {
     /**
-     * Get if a website started receiving tracking requests.
+     * Check wether a website started receiving tracking requests.
      *
      * @param Website $website the website
-     * @param string $tokenAuth the authentication token
      *
      * @throws \Illuminate\Contracts\Container\BindingResolutionException if unable to bind to the service
      * @throws \App\Exceptions\AnalyticsServiceException if unable to connect the Analytics Service
@@ -31,11 +30,14 @@ trait ActivatesWebsite
      *
      * @return bool true if received tracking requests, false otherwise
      */
-    public function hasActivated(Website $website, string $tokenAuth): bool
+    public function hasActivated(Website $website): bool
     {
         $analyticsService = app()->make('analytics-service');
 
-        return $analyticsService->getLiveVisits($website->analytics_id, 60, $tokenAuth) > 0 || $analyticsService->getSiteTotalVisitsFrom($website->analytics_id, $website->created_at->format('Y-m-d'), $tokenAuth) > 0;
+        $liveVisits = $analyticsService->getLiveVisits($website->analytics_id, 60);
+        $totalVisits = $analyticsService->getSiteTotalVisitsFrom($website->analytics_id, $website->created_at->format('Y-m-d'));
+
+        return $liveVisits > 0 || $totalVisits > 0;
     }
 
     /**
@@ -72,7 +74,7 @@ trait ActivatesWebsite
                 Bouncer::disallow($pendingUser)->to(UserPermission::NO_ACCESS, $website);
                 Bouncer::refreshFor($pendingUser);
 
-                app()->make('analytics-service')->setWebsiteAccess($pendingUser->uuid, WebsiteAccessType::WRITE, $website->analytics_id, config('analytics-service.admin_token'));
+                app()->make('analytics-service')->setWebsiteAccess($pendingUser->uuid, WebsiteAccessType::WRITE, $website->analytics_id);
 
                 event(new UserWebsiteAccessChanged($pendingUser, $website, WebsiteAccessType::WRITE()));
 

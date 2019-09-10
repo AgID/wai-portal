@@ -47,7 +47,7 @@ trait HasAnalyticsServiceAccount
     {
         $this->partial_analytics_password = Str::random(rand(32, 48));
         $this->save();
-        app()->make('analytics-service')->registerUser($this->uuid, $this->analytics_password, $this->email, config('analytics-service.admin_token'));
+        app()->make('analytics-service')->registerUser($this->uuid, $this->analytics_password, $this->email);
     }
 
     /**
@@ -60,7 +60,7 @@ trait HasAnalyticsServiceAccount
      */
     public function updateAnalyticsServiceAccountEmail(): void
     {
-        app()->make('analytics-service')->updateUserEmail($this->uuid, $this->email, $this->analytics_password, $this->getAnalyticsServiceAccountTokenAuth());
+        app()->make('analytics-service')->updateUserEmail($this->uuid, $this->email, $this->analytics_password);
     }
 
     /**
@@ -74,6 +74,6 @@ trait HasAnalyticsServiceAccount
     {
         $this->partial_analytics_password = null;
         $this->save();
-        app()->make('analytics-service')->deleteUser($this->uuid, config('analytics-service.admin_token'));
+        app()->make('analytics-service')->deleteUser($this->uuid);
     }
 }
