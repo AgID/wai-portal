@@ -2,6 +2,7 @@
 
 namespace App\Enums;
 
+use App\Traits\HasEnumLongDescription;
 use BenSampo\Enum\Contracts\LocalizedEnum;
 use BenSampo\Enum\Enum;
 
@@ -10,6 +11,8 @@ use BenSampo\Enum\Enum;
  */
 final class WebsiteStatus extends Enum implements LocalizedEnum
 {
+    use HasEnumLongDescription;
+
     /**
      * Website status pending constant.
      */

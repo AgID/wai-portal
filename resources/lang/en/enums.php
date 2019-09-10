@@ -20,35 +20,74 @@ return [
     ],
 
     UserPermission::class => [
-        UserPermission::ACCESS_ADMIN_AREA => 'Access to admin area',
-        UserPermission::MANAGE_USERS => 'Manage users',
-        UserPermission::MANAGE_WEBSITES => 'Manage websites',
-        UserPermission::VIEW_LOGS => 'View logs',
-        UserPermission::MANAGE_ANALYTICS => 'Manage analytics',
-        UserPermission::READ_ANALYTICS => 'Read analytics',
-        UserPermission::DO_NOTHING => 'No permissions',
+        UserPermission::ACCESS_ADMIN_AREA => 'access to admin area',
+        UserPermission::MANAGE_USERS => 'manage users',
+        UserPermission::MANAGE_WEBSITES => 'manage websites',
+        UserPermission::VIEW_LOGS => 'view logs',
+        UserPermission::MANAGE_ANALYTICS => 'manage analytics',
+        UserPermission::READ_ANALYTICS => 'read analytics',
+        UserPermission::DO_NOTHING => 'no permissions',
     ],
 
     UserRole::class => [
-        UserRole::SUPER_ADMIN => 'Super admin of ' . config('app.name'),
-        UserRole::ADMIN => 'Admin of own Public Administation',
-        UserRole::DELEGATED => 'Delegated user',
-        UserRole::REGISTERED => 'Registered user',
-        UserRole::REMOVED => 'Suspended user',
+        UserRole::SUPER_ADMIN => [
+            'short' => 'super admin of ' . config('app.name_short'),
+            'long' => 'The super administrator can manage all the data in Web Analytics Italia.',
+        ],
+        UserRole::ADMIN => [
+            'short' => 'administrator',
+            'long' => 'The administrator can manage all websites and users of his Public Administratio.',
+        ],
+        UserRole::DELEGATED => [
+            'short' => 'delegate',
+            'long' => 'The delegate user can read or manage the analytics data according to the permissions assigned by the administrator.',
+        ],
+        UserRole::REGISTERED => [
+            'short' => 'registered',
+            'long' => 'The registered user has to continue the procedure by indicating his Public Administration.',
+        ],
+        UserRole::DELETED => [
+            'short' => 'deleted',
+            'long' => 'The deleted user does not have access to Web Analytics Italia',
+        ],
     ],
 
     UserStatus::class => [
-        UserStatus::INVITED => 'invited',
-        UserStatus::INACTIVE => 'inactive',
-        UserStatus::PENDING => 'pending',
-        UserStatus::ACTIVE => 'active',
-        UserStatus::SUSPENDED => 'suspended',
+        UserStatus::INVITED => [
+            'short' => 'invited',
+            'long' => 'The user has not yet accepted the invitation to Web Analytics Italia.',
+        ],
+        UserStatus::INACTIVE => [
+            'short' => 'inactive',
+            'long' => 'The user has not yet registered his Public Administratio on Web Analytics Italia.',
+        ],
+        UserStatus::PENDING => [
+            'short' => 'pending',
+            'long' => 'The user is waiting for the activation on Web Analytics Italia.',
+        ],
+        UserStatus::ACTIVE => [
+            'short' => 'active',
+            'long' => 'The user is active and can use the services provided by Web Analytics Italia.',
+        ],
+        UserStatus::SUSPENDED => [
+            'short' => 'suspended',
+            'long' => 'The user has been suspended and cannot use the services provided by Web Analytics Italia.',
+        ],
     ],
 
     WebsiteStatus::class => [
-        WebsiteStatus::PENDING => 'pending',
-        WebsiteStatus::ACTIVE => 'active',
-        WebsiteStatus::ARCHIVED => 'archived',
+        WebsiteStatus::PENDING => [
+            'short' => 'pending',
+            'long' => "The website isn't tracking traffic yet. 😕",
+        ],
+        WebsiteStatus::ACTIVE => [
+            'short' => 'active',
+            'long' => 'The website is now tracking traffic! 🎉',
+        ],
+        WebsiteStatus::ARCHIVED => [
+            'short' => 'archived',
+            'long' => 'The website has been archived. 🛑'
+        ],
     ],
 
     WebsiteType::class => [
@@ -125,5 +164,4 @@ return [
         JobType::SEND_RESET_PASSWORD_TOKEN => 'Send password reset token',
         JobType::SEND_EMAIL_VERIFICATION_TOKEN => 'Send email verification token',
     ],
-
 ];

@@ -20,35 +20,74 @@ return [
     ],
 
     UserPermission::class => [
-        UserPermission::ACCESS_ADMIN_AREA => "Accesso all'area amministrativa",
-        UserPermission::MANAGE_USERS => 'Gestione utenti',
-        UserPermission::MANAGE_WEBSITES => 'Gestione siti',
-        UserPermission::VIEW_LOGS => 'Visualizzare i log',
-        UserPermission::MANAGE_ANALYTICS => 'Gestione analytics',
-        UserPermission::READ_ANALYTICS => 'Lettura analytics',
-        UserPermission::DO_NOTHING => 'Nessun permesso',
+        UserPermission::ACCESS_ADMIN_AREA => "accesso all'area amministrativa",
+        UserPermission::MANAGE_USERS => 'gestione utenti',
+        UserPermission::MANAGE_WEBSITES => 'gestione siti',
+        UserPermission::VIEW_LOGS => 'visualizzare i log',
+        UserPermission::MANAGE_ANALYTICS => 'gestione',
+        UserPermission::READ_ANALYTICS => 'lettura',
+        UserPermission::DO_NOTHING => 'nessun permesso',
     ],
 
     UserRole::class => [
-        UserRole::SUPER_ADMIN => 'Super amministatore di ' . config('app.name'),
-        UserRole::ADMIN => 'Amministarore della propria PA',
-        UserRole::DELEGATED => 'Incaricato della propria PA',
-        UserRole::REGISTERED => 'Utente registrato',
-        UserRole::REMOVED => 'Utente sospeso',
+        UserRole::SUPER_ADMIN => [
+            'short' => 'super amministratore di ' . config('app.name_short'),
+            'long' => 'Il super amministratore può gestire tutti i dati presenti in Web Analytics Italia.',
+        ],
+        UserRole::ADMIN => [
+            'short' => 'amministratore',
+            'long' => "L'amministratore può gestire tutti i siti web e gli utenti della sua PA.",
+        ],
+        UserRole::DELEGATED => [
+            'short' => 'incaricato',
+            'long' => "L'utente incaricato può leggere o gestire i dati analytics secondo i permessi assegnati dall'amministratore.",
+        ],
+        UserRole::REGISTERED => [
+            'short' => 'registrato',
+            'long' => "L'utente registrato deve continuare la procedura indicando la sua PA di appartenenza.",
+        ],
+        UserRole::DELETED => [
+            'short' => 'eliminato',
+            'long' => "L'utente eliminato non ha accesso a Web Analytics Italia.",
+        ],
     ],
 
     UserStatus::class => [
-        UserStatus::INVITED => 'invitato',
-        UserStatus::INACTIVE => 'inattivo',
-        UserStatus::PENDING => 'in attesa',
-        UserStatus::ACTIVE => 'attivo',
-        UserStatus::SUSPENDED => 'sospeso',
+        UserStatus::INVITED => [
+            'short' => 'invitato',
+            'long' => "L'utente non ha ancora accettato l'invito a Web Analytics Italia.",
+        ],
+        UserStatus::INACTIVE => [
+            'short' => 'inattivo',
+            'long' => "L'utente non ha ancora registrato la sua PA su Web Analytics Italia.",
+        ],
+        UserStatus::PENDING => [
+            'short' => 'in attesa',
+            'long' => "L'utente è in attesa dell'attivazione su Web Analytics Italia.",
+        ],
+        UserStatus::ACTIVE => [
+            'short' => 'attivo',
+            'long' => "L'utente è attivo e può utilizzare i servizi di Web Analytics Italia.",
+        ],
+        UserStatus::SUSPENDED => [
+            'short' => 'sospeso',
+            'long' => "L'utente è stato sospeso e non può utilizzare i servizi di Web Analytics Italia.",
+        ],
     ],
 
     WebsiteStatus::class => [
-        WebsiteStatus::PENDING => 'in attesa',
-        WebsiteStatus::ACTIVE => 'attivo',
-        WebsiteStatus::ARCHIVED => 'archiviato',
+        WebsiteStatus::PENDING => [
+            'short' => 'in attesa',
+            'long' => 'Il sito web non sta ancora tracciando il traffico. 😕',
+        ],
+        WebsiteStatus::ACTIVE => [
+            'short' => 'attivo',
+            'long' => 'Il sito web sta già tracciando il traffico! 🎉',
+        ],
+        WebsiteStatus::ARCHIVED => [
+            'short' => 'archiviato',
+            'long' => 'Il sito web è stato archiviato. 🛑'
+        ],
     ],
 
     WebsiteType::class => [
