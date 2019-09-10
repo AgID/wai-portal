@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Traits\InteractsWithIPAIndex;
+use App\Traits\InteractsWithRedisIndex;
 use Illuminate\Http\Request;
 
-class SearchIPAListController extends Controller
+class SearchIpaIndexController extends Controller
 {
-    use InteractsWithIPAIndex;
+    use InteractsWithRedisIndex;
 
     /**
-     * Return elements found in IPA list.
+     * Return elements found in IPA index.
      *
      * @param Request $request
      *

@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Traits\InteractsWithIPAIndex;
+use App\Traits\InteractsWithRedisIndex;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Validator;
 
@@ -11,7 +11,7 @@ use Illuminate\Validation\Validator;
  */
 class StorePrimaryWebsiteRequest extends FormRequest
 {
-    use InteractsWithIPAIndex;
+    use InteractsWithRedisIndex;
 
     /**
      * The validated public administration array in this request.

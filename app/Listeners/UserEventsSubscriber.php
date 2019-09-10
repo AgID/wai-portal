@@ -13,12 +13,8 @@ use App\Events\User\UserRestored;
 use App\Events\User\UserUpdated;
 use App\Events\User\UserUpdating;
 use App\Events\User\UserWebsiteAccessChanged;
-use App\Jobs\ProcessUsersList;
 use App\Models\User;
-use Ehann\RediSearch\Exceptions\FieldNotInSchemaException;
-use Ehann\RediSearch\Index;
-use Ehann\RedisRaw\PredisAdapter;
-use Exception;
+use App\Traits\InteractsWithRedisIndex;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Events\Dispatcher;
@@ -29,6 +25,8 @@ use Illuminate\Support\Facades\Date;
  */
 class UserEventsSubscriber
 {
+    use InteractsWithRedisIndex;
+
     /**
      * Handle user registration events.
      *
@@ -139,11 +137,7 @@ class UserEventsSubscriber
             $user->updateAnalyticsServiceAccountEmail();
         }
         if ($user->isDirty('email')) {
-            if ($user->status->is(UserStatus::INVITED)) {
-                $user->sendEmailVerificationNotification($user->publicAdministrations()->first());
-            } else {
-                $user->sendEmailVerificationNotification();
-            }
+            $user->sendEmailVerificationNotification($user->status->is(UserStatus::INVITED) ? $user->publicAdministrations()->first() : null);
 
             logger()->notice('User ' . $user->uuid . ' email address changed',
                 [
@@ -315,39 +309,5 @@ class UserEventsSubscriber
             'App\Events\User\UserRestored',
             'App\Listeners\UserEventsSubscriber@OnRestored',
             );
-    }
-
-    /**
-     * Update users index.
-     *
-     * @param User $user the user to update
-     */
-    private function updateUsersIndex(User $user): void
-    {
-        $userIndex = new Index(
-            (new PredisAdapter())->connect(config('database.redis.indexes.host'), config('database.redis.indexes.port'), config('database.redis.indexes.database')),
-            ProcessUsersList::USER_INDEX_NAME
-        );
-
-        try {
-            $userIndex->addTagField('pas')
-                ->addTextField('uuid')
-                ->addTextField('family_name', 2.0, true)
-                ->addTextField('name', 2.0, true)
-                ->create();
-        } catch (Exception $e) {
-            // Index already exists, it's ok!
-        }
-
-        try {
-            $userDocument = $userIndex->makeDocument($user->uuid);
-            $userDocument->uuid->setValue($user->uuid);
-            $userDocument->name->setValue($user->name);
-            $userDocument->family_name->setValue($user->family_name);
-            $userDocument->pas->setValue(implode(',', $user->publicAdministrations()->get()->pluck('ipa_code')->toArray()));
-            $userIndex->replace($userDocument);
-        } catch (FieldNotInSchemaException $exception) {
-            report($exception);
-        }
     }
 }

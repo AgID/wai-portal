@@ -7,7 +7,7 @@ use App\Events\Jobs\IPAUpdateCompleted;
 use App\Events\PublicAdministration\PublicAdministrationUpdated;
 use App\Events\PublicAdministration\PublicAdministrationWebsiteUpdated;
 use App\Models\PublicAdministration;
-use App\Traits\InteractsWithIPAIndex;
+use App\Traits\InteractsWithRedisIndex;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -24,7 +24,7 @@ class ProcessPublicAdministrationsUpdateFromIpa implements ShouldQueue
     use InteractsWithQueue;
     use Queueable;
     use SerializesModels;
-    use InteractsWithIPAIndex;
+    use InteractsWithRedisIndex;
 
     /**
      * Execute the job.

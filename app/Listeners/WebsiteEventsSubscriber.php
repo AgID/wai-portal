@@ -15,7 +15,7 @@ use App\Events\Website\WebsitePurging;
 use App\Events\Website\WebsiteRestored;
 use App\Events\Website\WebsiteUnarchived;
 use App\Events\Website\WebsiteUpdated;
-use App\Traits\InteractsWithWebsiteIndex;
+use App\Traits\InteractsWithRedisIndex;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Events\Dispatcher;
 
@@ -24,7 +24,7 @@ use Illuminate\Events\Dispatcher;
  */
 class WebsiteEventsSubscriber implements ShouldQueue
 {
-    use InteractsWithWebsiteIndex;
+    use InteractsWithRedisIndex;
 
     /**
      * Website activated event callback.
@@ -47,7 +47,7 @@ class WebsiteEventsSubscriber implements ShouldQueue
 //        $publicAdministration->sendWebsiteActivatedNotification($website);
 
         //Update Redisearch websites index
-        $this->updateWebsiteIndex($website);
+        $this->updateWebsitesIndex($website);
 
         logger()->notice(
             'Website ' . $website->getInfo() . ' added of type ' . $website->type->description,
@@ -107,7 +107,7 @@ class WebsiteEventsSubscriber implements ShouldQueue
 
         if ($website->isDirty('slug')) {
             logger()->notice(
-                'Website' . $website->getInfo() . ' URL updated from ' . $website->getOriginal('url') . ' to ' . $website->url,
+                'Website' . $website->getInfo() . ' URL updated from ' . $website->getOriginal('url') . ' to ' . e($website->url),
                 [
                     'event' => EventType::WEBSITE_URL_CHANGED,
                     'website' => $website->id,
@@ -117,7 +117,7 @@ class WebsiteEventsSubscriber implements ShouldQueue
         }
 
         //Update Redisearch websites index
-        $this->updateWebsiteIndex($website);
+        $this->updateWebsitesIndex($website);
     }
 
     /**
@@ -154,16 +154,18 @@ class WebsiteEventsSubscriber implements ShouldQueue
     public function onArchived(WebsiteArchived $event): void
     {
         $website = $event->getWebsite();
+        $manual = $event->isManual();
+        $reason = $manual ? 'manually' : 'due to inactivity';
 
         //TODO: da testare e verificare per attività "Invio mail e PEC"
 //        //Notify website administrators
-//        $users = $website->getAdministrators($website);
+//        $users = $website->getAdministrators($website,);
 //        foreach ($users as $user) {
-//            $user->sendWebsiteArchivedNotification($website);
+//            $user->sendWebsiteArchivedNotification($website, $manual);
 //        }
 
         logger()->notice(
-            'Website ' . $website->getInfo() . ' archived due to inactivity',
+            'Website ' . $website->getInfo() . ' archived ' . $reason,
             [
                 'event' => EventType::WEBSITE_ARCHIVED,
                 'website' => $website->id,
@@ -182,7 +184,7 @@ class WebsiteEventsSubscriber implements ShouldQueue
         $website = $event->getWebsite();
         //TODO: notificare qualcuno? è un'azione solo manuale
         logger()->notice(
-            'Website ' . $website->getInfo() . ' manually unarchived',
+            'Website ' . $website->getInfo() . ' unarchived manually',
             [
                 'event' => EventType::WEBSITE_UNARCHIVED,
                 'website' => $website->id,
@@ -226,7 +228,7 @@ class WebsiteEventsSubscriber implements ShouldQueue
     public function onPurged(WebsitePurged $event): void
     {
         $website = json_decode($event->getWebsiteJson());
-        $websiteInfo = '"' . $website->name . '" [' . $website->slug . ']';
+        $websiteInfo = '"' . e($website->name) . '" [' . $website->slug . ']';
         //NOTE: toJson: relationship attributes are snake_case
         logger()->notice(
             'Website ' . $websiteInfo . ' purged',

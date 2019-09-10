@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use App\Enums\UserPermission;
 use App\Enums\WebsiteType;
-use App\Traits\InteractsWithIPAIndex;
+use App\Traits\InteractsWithRedisIndex;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -15,7 +15,7 @@ use Illuminate\Validation\Validator;
  */
 class StoreWebsiteRequest extends FormRequest
 {
-    use InteractsWithIPAIndex;
+    use InteractsWithRedisIndex;
 
     /**
      * Determine if the user is authorized to make this request.
