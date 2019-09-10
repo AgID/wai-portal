@@ -99,8 +99,8 @@ class SuperAdminAuthController extends Controller
      */
     public function logout(): RedirectResponse
     {
-        if (auth()->check() && auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)) {
             $user = auth()->user();
+        if ($user && $user->can(UserPermission::ACCESS_ADMIN_AREA)) {
             auth()->logout();
             session()->invalidate();
 
