@@ -66,7 +66,7 @@ class PublicAdministration extends Model
      *
      * @return PublicAdministration|null The Public Administration found or null if not found
      */
-    public static function findByIPACode(string $ipa_code): ?PublicAdministration
+    public static function findByIpaCode(string $ipa_code): ?PublicAdministration
     {
         return PublicAdministration::where('ipa_code', $ipa_code)->first();
     }
@@ -78,7 +78,7 @@ class PublicAdministration extends Model
      *
      * @return PublicAdministration|null The Public Administration found or null if not found
      */
-    public static function findTrashedByIPACode(string $ipa_code): ?PublicAdministration
+    public static function findTrashedByIpaCode(string $ipa_code): ?PublicAdministration
     {
         return PublicAdministration::onlyTrashed()->where('ipa_code', $ipa_code)->first();
     }
