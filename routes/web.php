@@ -568,3 +568,7 @@ Route::middleware('admin.auth', 'verified:admin.verification.notice')->group(fun
         ]);
     });
 });
+
+Route::fallback(function () {
+    return response()->view('errors.404');
+});
