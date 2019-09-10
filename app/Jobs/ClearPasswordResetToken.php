@@ -45,6 +45,7 @@ class ClearPasswordResetToken implements ShouldQueue
                 'job' => JobType::CLEAR_PASSWORD_TOKEN,
             ]
         );
+
         $this->token->delete();
     }
 }

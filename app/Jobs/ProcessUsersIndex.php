@@ -2,10 +2,11 @@
 
 namespace App\Jobs;
 
+use App\Enums\Logs\JobType;
 use App\Events\Jobs\UserIndexUpdateCompleted;
 use App\Models\User;
+use App\Traits\InteractsWithRedisIndex;
 use Ehann\RediSearch\Index;
-use Ehann\RedisRaw\PredisAdapter;
 use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -16,27 +17,27 @@ use Illuminate\Queue\SerializesModels;
 /**
  * Users index update job.
  */
-class ProcessUsersList implements ShouldQueue
+class ProcessUsersIndex implements ShouldQueue
 {
     use Dispatchable;
     use InteractsWithQueue;
     use Queueable;
     use SerializesModels;
-
-    /**
-     * Redisearch index name.
-     */
-    public const USER_INDEX_NAME = 'UserIndex';
+    use InteractsWithRedisIndex;
 
     /**
      * Execute the job.
      */
     public function handle(): void
     {
-        $userIndex = new Index(
-            (new PredisAdapter())->connect(config('database.redis.indexes.host'), config('database.redis.indexes.port'), config('database.redis.indexes.database')),
-            self::USER_INDEX_NAME
+        logger()->info(
+            'Processing users for redis index update',
+            [
+                'job' => JobType::PROCESS_USERS_INDEX,
+            ]
         );
+
+        $userIndex = $this->getRedisIndex('users');
 
         try {
             // Drop the current index as we want a fresh update

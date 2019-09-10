@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Enums\Logs\JobType;
 use App\Enums\WebsiteStatus;
 use App\Enums\WebsiteType;
 use App\Events\Jobs\WebsitesMonitoringCheckCompleted;
@@ -22,7 +23,7 @@ use Illuminate\Queue\SerializesModels;
 /**
  * Monitor websites activity job.
  */
-class ProcessWebsitesMonitoring implements ShouldQueue
+class MonitorWebsitesTracking implements ShouldQueue
 {
     use Dispatchable;
     use InteractsWithQueue;
@@ -30,25 +31,17 @@ class ProcessWebsitesMonitoring implements ShouldQueue
     use SerializesModels;
 
     /**
-     * The authentication token to use for Analytics Service.
-     *
-     * @var string the authentication token
-     */
-    protected $tokenAuth;
-
-    /**
-     * Job constructor.
-     */
-    public function __construct()
-    {
-        $this->tokenAuth = config('analytics-service.admin_token');
-    }
-
-    /**
      * Execute the job.
      */
     public function handle(): void
     {
+        logger()->info(
+            'Monitoring websites tracking status',
+            [
+                'job' => JobType::MONITOR_WEBSITES_TRACKING,
+            ]
+        );
+
         $activeWebsites = Website::where('status', WebsiteStatus::ACTIVE)->get();
 
         $websites = $activeWebsites->mapToGroups(function ($website) {
@@ -64,8 +57,8 @@ class ProcessWebsitesMonitoring implements ShouldQueue
                 // - visits the last 24 hours
                 // - website created at least 'archive_expire' days before
                 //NOTE: Matomo report contains information for all the requested days, regardless of when the website was created
-                if (0 === $analyticsService->getLiveVisits($website->analytics_id, 1440, $this->tokenAuth) && Carbon::now()->subDays($daysArchive)->greaterThanOrEqualTo($website->created_at)) {
-                    $visits = $analyticsService->getSiteLastDaysVisits($website->analytics_id, $daysArchive, $this->tokenAuth);
+                if (0 === $analyticsService->getLiveVisits($website->analytics_id, 1440) && Carbon::now()->subDays($daysArchive)->greaterThanOrEqualTo($website->created_at)) {
+                    $visits = $analyticsService->getSiteLastDaysVisits($website->analytics_id, $daysArchive);
 
                     $filteredVisits = array_filter($visits, function ($visitCount) {
                         return $visitCount > 0;

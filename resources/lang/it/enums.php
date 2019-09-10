@@ -109,7 +109,7 @@ return [
         EventType::ANALYTICS_LOGIN => 'Login Servizio Analytics',
         EventType::PENDING_WEBSITES_CHECK_COMPLETED => 'Verifica siti web in attesa completata',
         EventType::TRACKING_WEBSITES_CHECK_COMPLETED => 'Verifica tracciamento siti web completata',
-        EventType::IPA_UPDATE_COMPLETED => 'Aggiornamento I.P.A. completato',
+        EventType::UPDATE_PA_FROM_IPA_COMPLETED => 'Aggiornamento IPA completato',
         EventType::PUBLIC_ADMINISTRATION_REGISTERED => 'Pubblica Amministrazione registrata',
         EventType::PUBLIC_ADMINISTRATION_ACTIVATED => 'Pubblica Amministrazione attivata',
         EventType::PUBLIC_ADMINISTRATION_ACTIVATION_FAILED => 'Attivazione Pubblica Amministrazione fallita',
@@ -133,6 +133,7 @@ return [
         EventType::WEBSITE_STATUS_CHANGED => 'Stato sito web aggiornato',
         EventType::WEBSITE_ARCHIVING => 'Archiviazione sito web programmata',
         EventType::WEBSITE_ARCHIVED => 'Sito web archiviato',
+        EventType::WEBSITE_UNARCHIVED => 'Sito web riattivato',
         EventType::WEBSITE_PURGING => 'Rimozione sito web programmata',
         EventType::WEBSITE_PURGED => 'Sito web rimosso',
         EventType::WEBSITE_DELETED => 'Sito web cancellato',
@@ -149,8 +150,8 @@ return [
         ExceptionType::ANALYTICS_COMMAND => 'Errore comando a Servizio Analytics',
         ExceptionType::HTTP_CLIENT_ERROR => 'Errore HTTP del client (4xx)',
         ExceptionType::SERVER_ERROR => 'Errore interno del server',
-        ExceptionType::TENANT_SELECTION => 'Errore P.A. non selezionata',
-        ExceptionType::IPA_INDEX_SEARCH => 'Errore ricerca indice I.P.A.',
+        ExceptionType::TENANT_SELECTION => 'Errore pubblica amministrazione non selezionata',
+        ExceptionType::IPA_INDEX_SEARCH => 'Errore ricerca indice IPA',
         ExceptionType::WEBSITE_INDEX_SEARCH => 'Errore ricerca indice siti web',
         ExceptionType::USER_INDEX_SEARCH => 'Errore ricerca indice utenti',
         ExceptionType::INVALID_WEBSITE_STATUS => 'Errore stato sito web non valido',
@@ -160,9 +161,13 @@ return [
 
     JobType::class => [
         JobType::CLEAR_PASSWORD_TOKEN => 'Rimozione token reset password',
-        JobType::UPDATE_IPA => 'Aggiornamento indice I.P.A.',
+        JobType::UPDATE_PA_FROM_IPA => 'Aggiornamento pubbliche amministrazioni da indice IPA',
         JobType::SEND_RESET_PASSWORD_TOKEN => 'Invio token reset password',
         JobType::SEND_EMAIL_VERIFICATION_TOKEN => 'Invio token verifica email',
+        JobType::PROCESS_PENDING_WEBSITES => 'Verifica siti web in attesa',
+        JobType::PROCESS_USERS_INDEX => 'Aggiornamento indice utenti',
+        JobType::PROCESS_WEBSITES_INDEX => 'Aggiornamento indice siti web',
+        JobType::MONITOR_WEBSITES_TRACKING => 'Monitoraggio del tracciamento dei siti web',
     ],
 
 ];

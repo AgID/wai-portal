@@ -22,7 +22,7 @@ class UpdatePublicAdministrationsFromIpa extends Command
      *
      * @var string the command description
      */
-    protected $description = 'Update Public Administrations from IPA list for Web Analytics Italia';
+    protected $description = 'Update Public Administrations from IPA index for Web Analytics Italia';
 
     /**
      * Execute the console command.
@@ -31,7 +31,7 @@ class UpdatePublicAdministrationsFromIpa extends Command
      */
     public function handle()
     {
-        $this->info('Updating Public Administrations list...');
+        $this->info('Updating Public Administrations index...');
         dispatch(new ProcessPublicAdministrationsUpdateFromIpa())->onConnection('sync');
         $this->info('Public Administrations updated');
     }

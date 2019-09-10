@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Enums\Logs\JobType;
 use App\Enums\PublicAdministrationStatus;
 use App\Enums\UserStatus;
 use App\Enums\WebsiteStatus;
@@ -55,12 +56,19 @@ class ProcessPendingWebsites implements ShouldQueue
      */
     public function handle(): void
     {
+        logger()->info(
+            'Processing pending websites',
+            [
+                'job' => JobType::PROCESS_PENDING_WEBSITES,
+            ]
+        );
+
         $pendingWebsites = Website::where('status', WebsiteStatus::PENDING)->get();
 
         $websites = $pendingWebsites->mapToGroups(function ($website) {
             try {
                 $analyticsService = app()->make('analytics-service');
-                if ($this->hasActivated($website, config('analytics-service.admin_token'))) {
+                if ($this->hasActivated($website)) {
                     $this->activate($website);
 
                     event(new WebsiteActivated($website));

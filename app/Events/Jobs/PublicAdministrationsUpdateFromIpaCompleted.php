@@ -3,9 +3,9 @@
 namespace App\Events\Jobs;
 
 /**
- * IPA update job completed event.
+ * Public administration update from IPA index job completed event.
  */
-class IPAUpdateCompleted
+class PublicAdministrationsUpdateFromIpaCompleted
 {
     /**
      * The updates list.

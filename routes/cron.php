@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Route;
  */
 Route::get('/updateipa', [
     'as' => 'cron.ipa.update',
-    'uses' => 'Cron\CronController@updateIPA',
+    'uses' => 'Cron\CronController@updateIpa',
 ]);
 
 /*

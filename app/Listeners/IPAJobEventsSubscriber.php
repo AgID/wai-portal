@@ -3,26 +3,26 @@
 namespace App\Listeners;
 
 use App\Enums\Logs\EventType;
-use App\Events\Jobs\IPAUpdateCompleted;
+use App\Events\Jobs\PublicAdministrationsUpdateFromIpaCompleted;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Events\Dispatcher;
 
 /**
  * IPA update job events listener.
  */
-class IPAJobEventsSubscriber implements ShouldQueue
+class UpdatePublicAdministrationsFromIpaJobEventsSubscriber implements ShouldQueue
 {
     /**
      * Job completed callback.
      *
-     * @param IPAUpdateCompleted $event the job completed event
+     * @param PublicAdministrationsUpdateFromIpaCompleted $event the job completed event
      */
-    public function onCompleted(IPAUpdateCompleted $event): void
+    public function onCompleted(PublicAdministrationsUpdateFromIpaCompleted $event): void
     {
         logger()->notice(
-            'Completed update of Public administrations from IPA list: ' . count($event->getUpdates()) . ' registered Public Administration/s updated',
+            'Completed update of Public administrations from IPA index: ' . count($event->getUpdates()) . ' registered Public Administration/s updated',
             [
-                'event' => EventType::IPA_UPDATE_COMPLETED,
+                'event' => EventType::UPDATE_PA_FROM_IPA_COMPLETED,
             ]
         );
     }
@@ -35,8 +35,8 @@ class IPAJobEventsSubscriber implements ShouldQueue
     public function subscribe($events): void
     {
         $events->listen(
-            'App\Events\Jobs\IPAUpdateCompleted',
-            'App\Listeners\IPAJobEventsSubscriber@onCompleted'
+            'App\Events\Jobs\PublicAdministrationsUpdateFromIpaCompleted',
+            'App\Listeners\UpdatePublicAdministrationsFromIpaJobEventsSubscriber@onCompleted'
         );
     }
 }

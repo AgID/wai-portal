@@ -2,27 +2,27 @@
 
 namespace App\Console\Commands;
 
-use App\Jobs\ProcessUsersList;
+use App\Jobs\ProcessWebsitesIndex;
 use Illuminate\Console\Command;
 
 /**
- * Update users index.
+ * Update websites index.
  */
-class UpdateUsersList extends Command
+class UpdateWebsitesIndex extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string the command
      */
-    protected $signature = 'app:update-users';
+    protected $signature = 'app:update-websites';
 
     /**
      * The console command description.
      *
      * @var string the command description
      */
-    protected $description = 'Update Users list for Web Analytics Italia';
+    protected $description = 'Update Websites index for Web Analytics Italia';
 
     /**
      * Execute the console command.
@@ -31,8 +31,8 @@ class UpdateUsersList extends Command
      */
     public function handle()
     {
-        $this->info('Updating Users list...');
-        dispatch(new ProcessUsersList())->onConnection('sync');
-        $this->info('Users list updated');
+        $this->info('Updating Websites index...');
+        dispatch(new ProcessWebsitesIndex())->onConnection('sync');
+        $this->info('Websites index updated');
     }
 }

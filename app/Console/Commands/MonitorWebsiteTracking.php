@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Jobs\ProcessWebsitesMonitoring;
+use App\Jobs\MonitorWebsitesTracking;
 use Illuminate\Console\Command;
 
 /**
@@ -32,7 +32,7 @@ class MonitorWebsiteTracking extends Command
     public function handle(): void
     {
         $this->info('Checking websites activity...');
-        dispatch(new ProcessWebsitesMonitoring())->onConnection('sync');
+        dispatch(new MonitorWebsitesTracking())->onConnection('sync');
         $this->info('Websites activity checked');
     }
 }

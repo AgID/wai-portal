@@ -98,7 +98,7 @@ class PublicAdministrationEventsSubscriber implements ShouldQueue
         //TODO: decidere come gestire i cambiamenti del sito istituzionale su IPA
         $publicAdministration = $event->getPublicAdministration();
         logger()->warning(
-            'Public Administration ' . $publicAdministration->getInfo() . ' primary website was changed in IPA list [' . $event->getNewURL() . '].',
+            'Public Administration ' . $publicAdministration->getInfo() . ' primary website was changed in IPA index [' . $event->getNewURL() . '].',
             [
                 'event' => EventType::PUBLIC_ADMINISTRATION_PRIMARY_WEBSITE_CHANGED,
                 'pa' => $publicAdministration->ipa_code,
