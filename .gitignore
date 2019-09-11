@@ -33,6 +33,7 @@ TODO
 /public/images
 /public/fonts
 /public/svg
+/public/mix-manifest.json
 
 # ignored for security reasons
 /env/build.properties.*
