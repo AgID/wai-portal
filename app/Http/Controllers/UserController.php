@@ -14,10 +14,14 @@ use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\PublicAdministration;
 use App\Models\User;
+use App\Traits\HasRoleAwareUrls;
+use App\Traits\SendsResponse;
 use App\Transformers\UserTransformer;
 use App\Transformers\WebsitesPermissionsTransformer;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Validator;
 use Illuminate\View\View;
@@ -30,63 +34,69 @@ use Yajra\Datatables\Datatables;
  */
 class UserController extends Controller
 {
+    use SendsResponse;
+    use HasRoleAwareUrls;
+
     /**
-     * Display super admin user list.
+     * Display the users list.
+     *
+     * @param PublicAdministration $publicAdministration the public administration the users belong to
      *
      * @return \Illuminate\View\View the view
      */
-    public function index(): View
+    public function index(PublicAdministration $publicAdministration): View
     {
         $usersDatatable = [
-            'columns' => [
-                ['data' => 'name', 'name' => 'Cognome e nome'],
-                ['data' => 'email', 'name' => 'Email'],
-                ['data' => 'admin', 'name' => 'Amministratore'],
-                ['data' => 'added_at', 'name' => 'Iscritto dal'],
-                ['data' => 'status', 'name' => 'Stato'],
-                ['data' => 'buttons', 'name' => 'Azioni'],
+            'datatableOptions' => [
+                'searching' => true,
+                'columnFilters' => [
+                    'status' => [
+                        'filterLabel' => __('stato'),
+                    ],
+                ],
             ],
-            'source' => auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)
-                ? route('admin.publicAdministration.users.data.json', ['publicAdministration' => request()->route('publicAdministration')])
-                : route('users.data.json'),
-            'caption' => 'Elenco degli utenti web abilitati su Web Analytics Italia', //TODO: set title in lang file
+            'columns' => [
+                ['data' => 'name', 'name' => 'nome e cognome'],
+                ['data' => 'email', 'name' => 'email'],
+                ['data' => 'added_at', 'name' => 'iscritto dal'],
+                ['data' => 'status', 'name' => 'stato'],
+                ['data' => 'icons', 'name' => '', 'orderable' => false],
+                ['data' => 'buttons', 'name' => '', 'orderable' => false],
+            ],
+            'source' => $this->getRoleAwareUrl('users.data.json', [], $publicAdministration),
+            'caption' => __('elenco degli utenti presenti su Web Analytics Italia'),
             'columnsOrder' => [['added_at', 'asc'], ['name', 'asc']],
         ];
 
-        return view('pages.users.index')->with($usersDatatable);
+        $userCreateUrl = $this->getRoleAwareUrl('users.create', [], $publicAdministration);
+
+        return view('pages.users.index')->with(compact('userCreateUrl'))->with($usersDatatable);
     }
 
     /**
      * Show the form for creating a new user.
      *
+     * @param PublicAdministration $publicAdministration the public administration the new user will belong to
+     *
      * @return \Illuminate\View\View the view
      */
-    public function create(): View
+    public function create(PublicAdministration $publicAdministration): View
     {
-        $websitesPermissionsDatatable = [
-            'columns' => [
-                ['data' => 'url', 'name' => 'URL'],
-                ['data' => 'type', 'name' => 'Tipo'],
-                ['data' => 'added_at', 'name' => 'Aggiunto il'],
-                ['data' => 'status', 'name' => 'Stato'],
-                ['data' => 'checkboxes', 'name' => 'Abilitato'],
-                ['data' => 'radios', 'name' => 'Permessi'],
-            ],
-            'source' => auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)
-                ? route('admin.publicAdministration.users.websites.permissions.data.json', ['publicAdministration' => request()->route('publicAdministration')])
-                : route('users.websites.permissions.data.json'),
-            'caption' => 'Elenco dei siti web presenti su Web Analytics Italia', //TODO: set title in lang file
-            'columnsOrder' => [['added_at', 'asc']],
-        ];
+        $websitesPermissionsDatatableSource = $this->getRoleAwareUrl('users.websites.permissions.data.json', [
+            'user' => null,
+            'oldPermissions' => old('permissions'),
+        ], $publicAdministration);
+        $userStoreUrl = $this->getRoleAwareUrl('users.store', [], $publicAdministration);
+        $websitesPermissionsDatatable = $this->getDatatableWebsitesPermissionsParams($websitesPermissionsDatatableSource);
 
-        return view('pages.users.add')->with($websitesPermissionsDatatable);
+        return view('pages.users.add')->with(compact('userStoreUrl'))->with($websitesPermissionsDatatable);
     }
 
     /**
      * Create a new user.
      *
      * @param StoreUserRequest $request the incoming request
-     * @param PublicAdministration|null $publicAdministration the public administration the user must belong to
+     * @param PublicAdministration $publicAdministration the public administration the user will belong to
      *
      * @throws \Exception if unable to generate user UUID
      *
@@ -94,141 +104,94 @@ class UserController extends Controller
      */
     public function store(StoreUserRequest $request, PublicAdministration $publicAdministration): RedirectResponse
     {
-        $currentPublicAdministration = auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)
+        $authUser = auth()->user();
+        $validatedData = $request->validated();
+        $currentPublicAdministration = $authUser->can(UserPermission::ACCESS_ADMIN_AREA)
             ? $publicAdministration
             : current_public_administration();
 
         $user = User::create([
             'uuid' => Uuid::uuid4()->toString(),
-            'fiscal_number' => $request->input('fiscal_number'),
-            'email' => $request->input('email'),
+            'fiscal_number' => $validatedData['fiscal_number'],
+            'email' => $validatedData['email'],
             'status' => UserStatus::INVITED,
         ]);
-        $user->publicAdministrations()->attach($currentPublicAdministration->id);
 
+        $user->publicAdministrations()->attach($currentPublicAdministration->id);
         $user->registerAnalyticsServiceAccount();
 
-        Bouncer::scope()->onceTo($currentPublicAdministration->id, function () use ($request, $currentPublicAdministration, $user) {
-            $isAdmin = $request->input('isAdmin', false);
-            $websitesEnabled = $request->input('websitesEnabled', []);
-            $websitesPermissions = $request->input('websitesPermissions', []);
-            $currentPublicAdministration->websites->map(function ($website) use ($user, $isAdmin, $websitesEnabled, $websitesPermissions) {
-                if ($isAdmin) {
-                    $user->assign(UserRole::ADMIN);
-                    $user->setWriteAccessForWebsite($website);
-                } else {
-                    $user->assign(UserRole::DELEGATED);
-                    if (!empty($websitesPermissions[$website->id]) && UserPermission::MANAGE_ANALYTICS === $websitesPermissions[$website->id]) {
-                        $user->setWriteAccessForWebsite($website);
-                    }
+        $this->manageUserPermissions($validatedData, $currentPublicAdministration, $user);
 
-                    if (!empty($websitesPermissions[$website->id]) && UserPermission::READ_ANALYTICS === $websitesPermissions[$website->id]) {
-                        $user->setViewAccessForWebsite($website);
-                    }
+        event(new UserInvited($user, $authUser, $currentPublicAdministration));
 
-                    if (empty($websitesEnabled[$website->id])) {
-                        $user->setNoAccessForWebsite($website);
-                    }
-                }
-            });
+        $redirectUrl = $this->getRoleAwareUrl('users.index', [], $publicAdministration);
 
-            $user->syncWebsitesPermissionsToAnalyticsService($currentPublicAdministration);
-        });
-
-        event(new UserInvited($user, $request->user(), $currentPublicAdministration));
-
-        $route = 'users.index';
-        $parameters = [];
-        if (auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)) {
-            $route = 'admin.publicAdministration.users.index';
-            $parameters = [
-                'publicAdministration' => $publicAdministration,
-            ];
-        }
-
-        return redirect()->route($route, $parameters)->withAlert(['success' => 'Il nuovo utente è stato invitato al progetto Web Analytics Italia']); //TODO: put message in lang file
+        return redirect()->to($redirectUrl)->withModal([
+            'title' => __('Invito inoltrato'),
+            'icon' => 'it-clock',
+            'message' => __("Abbiamo appena inviato un invito all'indirizzo email <strong>:email</strong>.", ['email' => $user->email]),
+            'image' => 'https://placeholder.pics/svg/180',
+        ]);
     }
 
     /**
      * Show the user details page.
      *
-     * @param PublicAdministration|null $publicAdministration the public administration the user belong to
+     * @param PublicAdministration|null $publicAdministration the public administration the user belongs to
      * @param User $user the user to display
      *
      * @return \Illuminate\View\View the view
      */
     public function show(PublicAdministration $publicAdministration, User $user): View
     {
-        $data = [
-            'columns' => [
-                ['data' => 'url', 'name' => 'URL'],
-                ['data' => 'type', 'name' => 'Tipo', 'visible' => false],
-                ['data' => 'added_at', 'name' => 'Aggiunto il', 'visible' => false],
-                ['data' => 'status', 'name' => 'Stato', 'visible' => false],
-                ['data' => 'checkboxes', 'name' => 'Abilitato'],
-                ['data' => 'radios', 'name' => 'Permessi'],
-            ],
-            'source' => (auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)
-                ? route('admin.publicAdministration.users.websites.permissions.data.json', ['publicAdministration' => $publicAdministration, 'user' => $user])
-                : route('users.websites.permissions.data.json', ['user' => $user])) . '?readOnly=true',
-            'caption' => 'Elenco dei siti web presenti su Web Analytics Italia', //TODO: set title in lang file
-            'columnsOrder' => [['added_at', 'asc']],
+        $websitesPermissionsDatatableSource = $this->getRoleAwareUrl('users.websites.permissions.data.json', [
             'user' => $user,
-            'role' => auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)
-                ? Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user) {
-                    return $user->roles()->first()->name;
-                })
-                : $user->roles()->first()->name,
-            'admin' => auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)
-                ? Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user) {
-                    return $user->isA(UserRole::ADMIN);
-                })
-                : $user->isA(UserRole::ADMIN),
-        ];
+        ], $publicAdministration);
+        $roleAwareUrls = $this->getRoleAwareUrlArray([
+            'userEditUrl' => 'users.edit',
+            'userVerificationResendUrl' => 'users.verification.resend',
+            'userSuspendUrl' => 'users.suspend',
+            'userReactivateUrl' => 'users.reactivate',
+        ], [
+            'user' => $user,
+        ], $publicAdministration);
+        $allRoles = $this->getAllRoles($user, $publicAdministration);
 
-        return view('pages.users.show')->with($data);
+        $websitesPermissionsDatatable = $this->getDatatableWebsitesPermissionsParams($websitesPermissionsDatatableSource, true);
+
+        return view('pages.users.show')->with(compact('user', 'allRoles'))->with($roleAwareUrls)->with($websitesPermissionsDatatable);
     }
 
     /**
      * Show the form to edit an existing user.
      *
-     * @param PublicAdministration|null $publicAdministration the public administration the user belong to
+     * @param Request $request the incoming request
+     * @param PublicAdministration $publicAdministration the public administration the user belongs to
      * @param User $user the user to edit
      *
      * @return \Illuminate\View\View the view
      */
-    public function edit(PublicAdministration $publicAdministration, User $user): View
+    public function edit(Request $request, PublicAdministration $publicAdministration, User $user): View
     {
-        $data = [
-            'columns' => [
-                ['data' => 'url', 'name' => 'URL'],
-                ['data' => 'type', 'name' => 'Tipo'],
-                ['data' => 'added_at', 'name' => 'Aggiunto il'],
-                ['data' => 'status', 'name' => 'Stato'],
-                ['data' => 'checkboxes', 'name' => 'Abilitato'],
-                ['data' => 'radios', 'name' => 'Permessi'],
-            ],
-            'source' => auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)
-                ? route('admin.publicAdministration.users.websites.permissions.data.json', ['publicAdministration' => $publicAdministration, 'user' => $user])
-                : route('users.websites.permissions.data.json', ['user' => $user]),
-            'caption' => 'Elenco dei siti web presenti su Web Analytics Italia', //TODO: set title in lang file
-            'columnsOrder' => [['added_at', 'asc']],
+        $oldPermissions = old('permissions', $request->session()->hasOldInput() ? [] : null);
+        $websitesPermissionsDatatableSource = $this->getRoleAwareUrl('users.websites.permissions.data.json', [
             'user' => $user,
-            'admin' => auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)
-                ? Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user) {
-                    return $user->isA(UserRole::ADMIN);
-                })
-                : $user->isA(UserRole::ADMIN),
-        ];
+            'oldPermissions' => $oldPermissions,
+        ], $publicAdministration);
+        $userUpdateUrl = $this->getRoleAwareUrl('users.update', [
+            'user' => $user,
+        ], $publicAdministration);
 
-        return view('pages.users.edit')->with($data);
+        $websitesPermissionsDatatable = $this->getDatatableWebsitesPermissionsParams($websitesPermissionsDatatableSource);
+
+        return view('pages.users.edit')->with(compact('user', 'userUpdateUrl'))->with($websitesPermissionsDatatable);
     }
 
     /**
      * Update the user information.
      *
      * @param UpdateUserRequest $request the incoming request
-     * @param PublicAdministration|null $publicAdministration the public administration the user belong to
+     * @param PublicAdministration $publicAdministration the public administration the user belongs to
      * @param User $user the user to update
      *
      * @throws \App\Exceptions\CommandErrorException if command is unsuccessful
@@ -242,8 +205,9 @@ class UserController extends Controller
     public function update(UpdateUserRequest $request, PublicAdministration $publicAdministration, User $user): RedirectResponse
     {
         $validatedData = $request->validated();
-
-        $currentPublicAdministration = auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA) ? $publicAdministration : current_public_administration();
+        $currentPublicAdministration = auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)
+            ? $publicAdministration
+            : current_public_administration();
 
         // Update user information
         if ($user->email !== $validatedData['email']) {
@@ -261,132 +225,22 @@ class UserController extends Controller
                 // NOTE: at this point, user must have an analytics account
                 $user->updateAnalyticsServiceAccountEmail();
             } catch (CommandErrorException $exception) {
-                if (!Str::contains($exception->getMessage(), 'Unable to send mail.')) {
+                if (!Str::contains($exception->getMessage(), 'unable to send mail')) {
                     throw $exception;
                 }
             }
         }
 
-        Bouncer::scope()->onceTo($currentPublicAdministration->id, function () use ($currentPublicAdministration, $user, $validatedData) {
-            // Update permissions
-            // NOTE: at this point, user must have an analytics account
-            $isAdmin = $validatedData['isAdmin'] ?? false;
-            $websitesEnabled = $validatedData['websitesEnabled'] ?? [];
-            $websitesPermissions = $validatedData['websitesPermissions'] ?? [];
+        $this->manageUserPermissions($validatedData, $currentPublicAdministration, $user);
 
-            $currentPublicAdministration->websites->map(function ($website) use ($user, $isAdmin, $websitesEnabled, $websitesPermissions) {
-                if ($isAdmin) {
-                    $user->retract(UserRole::DELEGATED);
-                    $user->assign(UserRole::ADMIN);
-                    $user->setWriteAccessForWebsite($website);
-                } else {
-                    $user->retract(UserRole::ADMIN);
-                    $user->assign(UserRole::DELEGATED);
-                    if (!empty($websitesPermissions[$website->id]) && UserPermission::MANAGE_ANALYTICS === $websitesPermissions[$website->id]) {
-                        $user->setWriteAccessForWebsite($website);
-                    }
+        $redirectUrl = $this->getRoleAwareUrl('users.index', [], $publicAdministration);
 
-                    if (!empty($websitesPermissions[$website->id]) && UserPermission::READ_ANALYTICS === $websitesPermissions[$website->id]) {
-                        $user->setViewAccessForWebsite($website);
-                    }
-
-                    if (empty($websitesEnabled[$website->id])) {
-                        $user->setNoAccessForWebsite($website);
-                    }
-                }
-            });
-
-            $user->syncWebsitesPermissionsToAnalyticsService($currentPublicAdministration);
-        });
-
-        $route = 'users.index';
-        $parameters = [];
-        if (auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)) {
-            $route = 'admin.publicAdministration.users.index';
-            $parameters = [
-                'publicAdministration' => $publicAdministration,
-            ];
-        }
-
-        return redirect()->route($route, $parameters)->withAlert(['success' => "L'utente " . $user->getInfo() . ' è stato modificato.']); //TODO: put message in lang file
-    }
-
-    /**
-     * Suspend an existing user.
-     *
-     * @param PublicAdministration|null $publicAdministration the public administration the user belong to
-     * @param User $user the user to suspend
-     *
-     * @return \Illuminate\Http\JsonResponse the JSON response
-     */
-    public function suspend(PublicAdministration $publicAdministration, User $user): JsonResponse
-    {
-        try {
-            if ($user->status->is(UserStatus::SUSPENDED)) {
-                return response()->json(null, 304);
-            }
-
-            if ($user->status->is(UserStatus::PENDING)) {
-                throw new InvalidUserStatusException('Impossibile sospendere un utente in attesa di attivazione'); //TODO: put message in lang file
-            }
-
-            //NOTE: super admin are allowed to suspend the last active PA administrator
-            if (auth()->user()->cannot(UserPermission::ACCESS_ADMIN_AREA)) {
-                $validator = validator(request()->all())->after([$this, 'validateNotLastActiveAdministrator']);
-                if ($validator->fails()) {
-                    throw new OperationNotAllowedException($validator->errors()->first('isAdmin'));
-                }
-            }
-
-            $user->status = UserStatus::SUSPENDED;
-            $user->save();
-
-            $user->publicAdministrations()->get()->map(function ($publicAdministration) use ($user) {
-                Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user) {
-                    $user->assign(UserRole::REMOVED);
-                });
-            });
-
-            return response()->json(['result' => 'ok', 'id' => $user->uuid, 'status' => $user->status->description]);
-        } catch (InvalidUserStatusException $exception) {
-            report($exception);
-            $code = $exception->getCode();
-            $message = 'Invalid operation for current user status';
-            $httpStatusCode = 400;
-        } catch (OperationNotAllowedException $exception) {
-            report($exception);
-            $code = $exception->getCode();
-            $message = 'Invalid operation for current user';
-            $httpStatusCode = 400;
-        }
-
-        return response()->json(['result' => 'error', 'message' => $message, 'code' => $code], $httpStatusCode);
-    }
-
-    /**
-     * Reactivate an existing suspended user.
-     *
-     * @param PublicAdministration|null $publicAdministration the public administration the user belong to
-     * @param User $user the user to reactivate
-     *
-     * @return \Illuminate\Http\JsonResponse the JSON response
-     */
-    public function reactivate(PublicAdministration $publicAdministration, User $user): JsonResponse
-    {
-        if (!$user->status->is(UserStatus::SUSPENDED)) {
-            return response()->json(null, 304);
-        }
-
-        $user->status = $user->hasVerifiedEmail() ? UserStatus::ACTIVE : UserStatus::INVITED;
-        $user->save();
-
-        $user->publicAdministrations()->get()->map(function ($publicAdministration) use ($user) {
-            Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user) {
-                $user->retract(UserRole::REMOVED);
-            });
-        });
-
-        return response()->json(['result' => 'ok', 'id' => $user->uuid, 'status' => $user->status->description]);
+        return redirect()->to($redirectUrl)->withNotification([
+            'title' => __('modifica sito web'),
+            'message' => __("La modifica dell'utente è andata a buon fine.\nSe è stato modificato l'indirizzo email, l'utente riceverà un messaggio per effettuarne la verifica."),
+            'status' => 'success',
+            'icon' => 'it-check-circle',
+        ]);
     }
 
     /**
@@ -398,27 +252,27 @@ class UserController extends Controller
      *
      * @throws \Exception if unable to delete
      *
-     * @return \Illuminate\Http\JsonResponse the JSON response
+     * @return JsonResponse|RedirectResponse the response in json or http redirect format
      */
-    public function delete(PublicAdministration $publicAdministration, User $user): JsonResponse
+    public function delete(PublicAdministration $publicAdministration, User $user)
     {
         try {
             if ($user->trashed()) {
-                return response()->json(null, 304);
+                return $this->notModifiedResponse();
             }
 
             if ($user->status->is(UserStatus::PENDING)) {
-                throw new OperationNotAllowedException('Impossibile rimuovere un utente in attesa di attivazione'); //TODO: put message in lang file
+                throw new OperationNotAllowedException('pending users cannot be deleted');
             }
 
             $validator = validator(request()->all())->after([$this, 'validateNotLastActiveAdministrator']);
             if ($validator->fails()) {
-                throw new OperationNotAllowedException($validator->errors()->first('isAdmin'));
+                throw new OperationNotAllowedException($validator->errors()->first('is_admin'));
             }
 
             $user->publicAdministrations()->get()->map(function ($publicAdministration) use ($user) {
                 Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user) {
-                    $user->assign(UserRole::REMOVED);
+                    $user->assign(UserRole::DELETED);
                 });
             });
 
@@ -430,11 +284,12 @@ class UserController extends Controller
         } catch (OperationNotAllowedException $exception) {
             report($exception);
 
-            return response()->json(['result' => 'error', 'message' => $exception->getMessage()], 400);
+            return $this->errorResponse($exception->getMessage(), $exception->getCode(), 400);
         }
+
         event(new UserDeleted($user));
 
-        return response()->json(['result' => 'ok', 'id' => $user->uuid]);
+        return $this->userResponse($user);
     }
 
     /**
@@ -444,37 +299,111 @@ class UserController extends Controller
      * @param PublicAdministration $publicAdministration the public administration the user belongs to
      * @param User $user the user to restore
      *
-     * @return \Illuminate\Http\JsonResponse the JSON response
+     * @return JsonResponse|RedirectResponse the response in json or http redirect format
      */
-    public function restore(PublicAdministration $publicAdministration, User $user): JsonResponse
+    public function restore(PublicAdministration $publicAdministration, User $user)
     {
         if (!$user->trashed()) {
-            return response()->json(null, 304);
+            return $this->notModifiedResponse();
         }
 
         $user->publicAdministrations()->get()->map(function ($publicAdministration) use ($user) {
             Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user) {
-                $user->retract(UserRole::REMOVED);
+                $user->retract(UserRole::DELETED);
             });
         });
 
         $user->restore();
 
-        return response()->json(['result' => 'ok', 'id' => $user->uuid, 'status' => $user->status->description]);
+        return $this->userResponse($user);
+    }
+
+    /**
+     * Suspend an existing user.
+     *
+     * @param Request $request the incoming request
+     * @param PublicAdministration $publicAdministration the public administration the user belongs to
+     * @param User $user the user to suspend
+     *
+     * @return JsonResponse|RedirectResponse the response in json or http redirect format
+     */
+    public function suspend(Request $request, PublicAdministration $publicAdministration, User $user)
+    {
+        if ($user->status->is(UserStatus::SUSPENDED)) {
+            return $this->notModifiedResponse();
+        }
+
+        try {
+            if ($user->is($request->user())) {
+                throw new OperationNotAllowedException('cannot suspend the current authenticated user');
+            }
+
+            if ($user->status->is(UserStatus::PENDING)) {
+                throw new InvalidUserStatusException('pending users cannot be suspended');
+            }
+
+            //NOTE: super admin are allowed to suspend the last active PA administrator
+            if (auth()->user()->cannot(UserPermission::ACCESS_ADMIN_AREA)) {
+                $validator = validator(request()->all())->after([$this, 'validateNotLastActiveAdministrator']);
+                if ($validator->fails()) {
+                    throw new OperationNotAllowedException($validator->errors()->first('is_admin'));
+                }
+            }
+
+            $user->status = UserStatus::SUSPENDED;
+            $user->save();
+
+            return $this->userResponse($user);
+        } catch (InvalidUserStatusException $exception) {
+            report($exception);
+            $code = $exception->getCode();
+            $message = 'invalid operation for current user status';
+            $httpStatusCode = 400;
+        } catch (OperationNotAllowedException $exception) {
+            report($exception);
+            $code = $exception->getCode();
+            $message = 'invalid operation for current user';
+            $httpStatusCode = 403;
+        }
+
+        return $this->errorResponse($message, $code, $httpStatusCode);
+    }
+
+    /**
+     * Reactivate an existing suspended user.
+     *
+     * @param PublicAdministration|null $publicAdministration the public administration the user belong to
+     * @param User $user the user to reactivate
+     *
+     * @return JsonResponse|RedirectResponse the response in json or http redirect format
+     */
+    public function reactivate(?PublicAdministration $publicAdministration, User $user)
+    {
+        if (!$user->status->is(UserStatus::SUSPENDED)) {
+            return $this->notModifiedResponse();
+        }
+
+        $user->status = $user->hasVerifiedEmail() ? UserStatus::ACTIVE : UserStatus::INVITED;
+        $user->save();
+
+        return $this->userResponse($user);
     }
 
     /**
      * Get the users data.
      *
-     * @param PublicAdministration|null $publicAdministration the public administration the user belongs to
+     * @param Request $request the incoming request
+     * @param PublicAdministration $publicAdministration the public administration the user belongs to
      *
      * @throws \Exception if unable to initialize the datatable
      *
      * @return mixed the response the JSON format
      */
-    public function dataJson(PublicAdministration $publicAdministration)
+    public function dataJson(Request $request, PublicAdministration $publicAdministration)
     {
-        return Datatables::of(auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA) ? $publicAdministration->users()->withTrashed()->get() : current_public_administration()->users)
+        return Datatables::of($request->user()->can(UserPermission::ACCESS_ADMIN_AREA)
+                ? $publicAdministration->users()->withTrashed()->get()
+                : optional(current_public_administration())->users ?? collect([]))
             ->setTransformer(new UserTransformer())
             ->make(true);
     }
@@ -482,16 +411,19 @@ class UserController extends Controller
     /**
      * Get the user permissions on websites.
      *
-     * @param PublicAdministration|null $publicAdministration the public administration the user belongs to
-     * @param User|null $user the user to initialize permissions or null for default
+     * @param PublicAdministration $publicAdministration the public administration the user belongs to
+     * @param User $user the user to initialize permissions or null for default
      *
      * @throws \Exception if unable to initialize the datatable
      *
      * @return mixed the response the JSON format
      */
-    public function dataWebsitesPermissionsJson(PublicAdministration $publicAdministration, ?User $user)
+    public function dataWebsitesPermissionsJson(PublicAdministration $publicAdministration, User $user)
     {
-        return Datatables::of((auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA) ? $publicAdministration : current_public_administration())->websites)
+        return Datatables::of((auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)
+                ? $publicAdministration
+                : current_public_administration())
+            ->websites)
             ->setTransformer(new WebsitesPermissionsTransformer())
             ->make(true);
     }
@@ -505,11 +437,111 @@ class UserController extends Controller
     {
         $publicAdministration = request()->route('publicAdministration', current_public_administration());
         $user = request()->route('user');
-        $isAdmin = Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user) {
-            return $user->isA(UserRole::ADMIN);
-        });
-        if ($isAdmin && $user->status->is(UserStatus::ACTIVE) && (1 === $publicAdministration->getActiveAdministrators()->count())) {
-            $validator->errors()->add('isAdmin', "Impossibile rimuovere l'utente " . $user->getInfo() . ' in quanto ultimo amministratore attivo della P.A.');
+
+        if ($user->isTheLastActiveAdministratorOf($publicAdministration)) {
+            $validator->errors()->add('is_admin', 'the last administrator cannot be removed or suspended');
         }
+    }
+
+    /**
+     * Return all roles in for the specified user.
+     *
+     * @param User $user the user
+     * @param PublicAdministration $publicAdministration the public administration scope
+     *
+     * @return Collection the collection of all the user roles
+     */
+    public function getAllRoles(User $user, PublicAdministration $publicAdministration): Collection
+    {
+        $scope = $publicAdministration->id ?? Bouncer::scope()->get();
+
+        return Bouncer::scope()->onceTo($scope, function () use ($user) {
+            return $user->getAllRoles();
+        });
+    }
+
+    /**
+     * Get the datatable parameters for websites permission with specified source.
+     *
+     * @param string $source the source paramater for the websites permission datatable
+     * @param bool|null $readonly wether the datatable is readonly
+     *
+     * @return array the datatable parameters
+     */
+    public function getDatatableWebsitesPermissionsParams(string $source, bool $readonly = false): array
+    {
+        return [
+            'datatableOptions' => [
+                'searching' => true,
+                'columnFilters' => [
+                    'type' => [
+                        'filterLabel' => __('tipologia'),
+                    ],
+                    'status' => [
+                        'filterLabel' => __('stato'),
+                    ],
+                ],
+            ],
+            'columns' => [
+                ['data' => 'website_name', 'name' => __('nome del sito'), 'className' => 'text-wrap'],
+                ['data' => 'type', 'name' => __('tipologia')],
+                ['data' => 'status', 'name' => __('stato')],
+                ['data' => ($readonly ? 'icons' : 'toggles'), 'name' => __('permessi sui dati analytics'), 'orderable' => false, 'searchable' => false],
+            ],
+            'source' => $source . ($readonly ? '?readOnly' : ''),
+            'caption' => __('elenco dei siti web presenti su Web Analytics Italia'),
+            'columnsOrder' => [['website_name', 'asc']],
+        ];
+    }
+
+    /**
+     * Manage websites permissions for a user.
+     *
+     * @param array $validatedData the permissions array
+     * @param PublicAdministration $publicAdministration the public administration the website belongs to
+     * @param User $user the user
+     *
+     * @throws BindingResolutionException if unable to bind to the service
+     * @throws AnalyticsServiceException if unable to contact the Analytics Service
+     * @throws CommandErrorException if command finishes with error
+     * @throws TenantIdNotSetException if the tenant id is not set in the current session
+     */
+    private function manageUserPermissions(array $validatedData, PublicAdministration $publicAdministration, User $user): void
+    {
+        Bouncer::scope()->onceTo($publicAdministration->id, function () use ($validatedData, $publicAdministration, $user) {
+            $isAdmin = $validatedData['is_admin'] ?? false;
+            $websitesPermissions = $validatedData['permissions'] ?? [];
+            $publicAdministration->websites->map(function ($website) use ($user, $isAdmin, $websitesPermissions) {
+                if ($isAdmin) {
+                    $user->assign(UserRole::ADMIN);
+                    $user->setWriteAccessForWebsite($website);
+
+                    return $user;
+                } else {
+                    $user->assign(UserRole::DELEGATED);
+                    if (empty($websitesPermissions[$website->id])) {
+                        $user->setNoAccessForWebsite($website);
+
+                        return $user;
+                    }
+
+                    if (in_array(UserPermission::MANAGE_ANALYTICS, $websitesPermissions[$website->id])) {
+                        $user->setWriteAccessForWebsite($website);
+
+                        return $user;
+                    }
+
+                    if (in_array(UserPermission::READ_ANALYTICS, $websitesPermissions[$website->id])) {
+                        $user->setViewAccessForWebsite($website);
+
+                        return $user;
+                    }
+                }
+            })->map(function ($user) use ($publicAdministration) {
+                if ($user->hasAnalyticsServiceAccount()) {
+                    $user->syncWebsitesPermissionsToAnalyticsService($publicAdministration);
+                }
+            });
+        });
     }
 }

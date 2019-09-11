@@ -7,14 +7,14 @@ use App\Enums\UserStatus;
 use App\Events\User\UserInvited;
 use App\Exceptions\OperationNotAllowedException;
 use App\Models\User;
-use App\Transformers\SuperAdminTransformer;
+use App\Traits\SendsResponse;
+use App\Transformers\SuperAdminUserTransformer;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
-use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
 use Illuminate\View\View;
 use Ramsey\Uuid\Uuid;
@@ -23,8 +23,10 @@ use Yajra\DataTables\DataTables;
 /**
  * Super admin users management controller.
  */
-class SuperAdminController extends Controller
+class SuperAdminUserController extends Controller
 {
+    use SendsResponse;
+
     /**
      * Display super admin user list.
      *
@@ -32,55 +34,70 @@ class SuperAdminController extends Controller
      */
     public function index(): View
     {
-        $data = [
+        $superUsersDatatable = [
+            'datatableOptions' => [
+                'searching' => true,
+                'columnFilters' => [
+                    'status' => [
+                        'filterLabel' => __('stato'),
+                    ],
+                ],
+            ],
             'columns' => [
-                ['data' => 'name', 'name' => 'Cognome e nome'],
-                ['data' => 'email', 'name' => 'Email'],
-                ['data' => 'added_at', 'name' => 'Iscritto dal'],
-                ['data' => 'status', 'name' => 'Stato'],
-                ['data' => 'buttons', 'name' => 'Azioni'],
+                ['data' => 'name', 'name' => 'nome e cognome'],
+                ['data' => 'email', 'name' => 'email'],
+                ['data' => 'added_at', 'name' => 'iscritto dal'],
+                ['data' => 'status', 'name' => 'stato'],
+                ['data' => 'icons', 'name' => '', 'orderable' => false],
+                ['data' => 'buttons', 'name' => '', 'orderable' => false],
             ],
             'source' => route('admin.users.data.json'),
-            'caption' => 'Elenco dei super amministratori del Web Analytics Italia', //TODO: set title in lang file
+            'caption' => __('elenco degli utenti super amministratori presenti su Web Analytics Italia'),
             'columnsOrder' => [['added_at', 'asc'], ['name', 'asc']],
         ];
 
-        return view('pages.admin.user.index')->with($data);
+        return view('pages.admin.users.index')->with($superUsersDatatable);
     }
 
     /**
      * Show the form for creating a new user.
      *
-     * @return \Illuminate\View\View the view
+     * @return View the view
      */
     public function create(): View
     {
-        return view('pages.admin.user.add');
+        return view('pages.admin.users.add');
     }
 
     /**
      * Create a new user.
      *
-     * @param \Illuminate\Http\Request $request the incoming request
+     * @param Request $request the incoming request
      *
      * @throws \Exception if unable to generate user UUID
      *
-     * @return \Illuminate\Http\RedirectResponse the server redirect response
+     * @return RedirectResponse the server redirect response
      */
     public function store(Request $request): RedirectResponse
     {
-        $validatedData = $request->validate([
+        $input = $request->all();
+        $validator = validator($input, [
             'name' => 'required',
             'family_name' => 'required',
-            'email' => 'required|unique:users|email',
-        ]);
+            'email' => 'required|email',
+        ])->after(function ($validator) use ($input) {
+            if (array_key_exists('email', $input) && User::where('email', $input['email'])
+                ->whereIs(UserRole::SUPER_ADMIN)->get()->isNotEmpty()) {
+                $validator->errors()->add('email', __('validation.unique', ['attribute' => __('validation.attributes.email')]));
+            }
+        })->validate();
 
         $temporaryPassword = Str::random(16);
 
         $user = User::create([
-            'name' => $validatedData['name'],
-            'family_name' => $validatedData['family_name'],
-            'email' => $validatedData['email'],
+            'name' => $input['name'],
+            'family_name' => $input['family_name'],
+            'email' => $input['email'],
             'uuid' => Uuid::uuid4()->toString(),
             'password' => Hash::make($temporaryPassword),
             'password_changed_at' => Carbon::now()->subDays(1 + config('auth.password_expiry')),
@@ -96,11 +113,16 @@ class SuperAdminController extends Controller
         event(new UserInvited($user, $request->user()));
 
         return redirect()->route('admin.users.index')
-            ->withAlert([
-                'success' => 'Il nuovo utente è stato invitato come amministratore al progetto Web Analytics Italia.',
-                'info' => 'Comunica al nuovo utente la sua password temporanea ' . $temporaryPassword . ' usando un canale diverso dalla mail ' . $validatedData['email'] . '.',
-                'warning' => 'Attenzione! Questa password non sarà più visualizzata.',
-            ]); //TODO: put message in lang file
+            ->withModal([
+                'title' => __('Nuovo utente super amministratore creato'),
+                'icon' => 'it-check-circle',
+                'message' => implode("\n", [
+                    __(':user è stato aggiunto come amministratore di Web Analytics Italia.', ['user' => e($user->full_name)]),
+                    __('Comunica al nuovo utente la sua password temporanea <code>:password</code> usando un canale diverso dalla mail :email.', ['password' => $temporaryPassword, 'email' => $input['email']]),
+                    __('<strong>Attenzione! Questa password non sarà mai più visualizzata.</strong>'),
+                ]),
+                'image' => 'https://placeholder.pics/svg/180',
+            ]);
     }
 
     /**
@@ -108,11 +130,11 @@ class SuperAdminController extends Controller
      *
      * @param User $user the user to display
      *
-     * @return \Illuminate\View\View the view
+     * @return View the view
      */
     public function show(User $user): View
     {
-        return view('pages.admin.user.show')->with(['user' => $user]);
+        return view('pages.admin.users.show')->with(['user' => $user]);
     }
 
     /**
@@ -124,33 +146,35 @@ class SuperAdminController extends Controller
      */
     public function edit(User $user): View
     {
-        return view('pages.admin.user.edit')->with(['user' => $user]);
+        return view('pages.admin.users.edit')->with(['user' => $user]);
     }
 
     /**
      * Update the user information.
      *
-     * @param \Illuminate\Http\Request $request the incoming request
+     * @param Request $request the incoming request
      * @param User $user the user to update
      *
-     * @return \Illuminate\Http\RedirectResponse the server redirect response
+     * @return RedirectResponse the server redirect response
      */
     public function update(Request $request, User $user): RedirectResponse
     {
-        $validatedData = $request->validate([
+        $input = $request->all();
+        $validator = validator($input, [
             'name' => 'required',
             'family_name' => 'required',
-            'email' => [
-                'required',
-                Rule::unique('users')->ignore($user->id),
-                'email',
-            ],
-        ]);
+            'email' => 'required|email',
+        ])->after(function ($validator) use ($input, $user) {
+            if (array_key_exists('email', $input) && User::where('email', $input['email'])
+                ->where('id', '<>', $user->id)->whereIs(UserRole::SUPER_ADMIN)->get()->isNotEmpty()) {
+                $validator->errors()->add('email', __('validation.unique', ['attribute' => __('validation.attributes.email')]));
+            }
+        })->validate();
 
         $user->fill([
-            'name' => $validatedData['name'],
-            'family_name' => $validatedData['family_name'],
-            'email' => $validatedData['email'],
+            'name' => $input['name'],
+            'family_name' => $input['family_name'],
+            'email' => $input['email'],
         ]);
         $user->save();
 
@@ -160,26 +184,31 @@ class SuperAdminController extends Controller
     /**
      * Suspend an existing user.
      *
+     * @param Request $request the incoming request
      * @param User $user the user to suspend
      *
      * @return \Illuminate\Http\JsonResponse the JSON response
      */
-    public function suspend(User $user): JsonResponse
+    public function suspend(Request $request, User $user): JsonResponse
     {
+        if ($user->status->is(UserStatus::SUSPENDED)) {
+            return $this->notModifiedResponse();
+        }
+
         try {
-            if ($user->status->is(UserStatus::SUSPENDED)) {
-                return response()->json(null, 304);
+            if ($user->is($request->user())) {
+                throw new OperationNotAllowedException('cannot suspend the current authenticated user');
             }
 
             $validator = validator(request()->all())->after([$this, 'validateNotLastActiveAdministrator']);
             if ($validator->fails()) {
-                throw new OperationNotAllowedException($validator->errors()->first('isAdmin'));
+                throw new OperationNotAllowedException($validator->errors()->first('last_admin'));
             }
 
             $user->status = UserStatus::SUSPENDED;
             $user->save();
 
-            return response()->json(['result' => 'ok', 'id' => $user->uuid, 'status' => $user->status->description]);
+            return $this->userResponse($user);
         } catch (OperationNotAllowedException $exception) {
             report($exception);
             $code = $exception->getCode();
@@ -187,7 +216,7 @@ class SuperAdminController extends Controller
             $httpStatusCode = 400;
         }
 
-        return response()->json(['result' => 'error', 'message' => $message, 'code' => $code], $httpStatusCode);
+        return $this->errorResponse($message, $code, $httpStatusCode);
     }
 
     /**
@@ -200,13 +229,13 @@ class SuperAdminController extends Controller
     public function reactivate(User $user): JsonResponse
     {
         if (!$user->status->is(UserStatus::SUSPENDED)) {
-            return response()->json(null, 304);
+            return $this->notModifiedResponse();
         }
 
         $user->status = $user->hasVerifiedEmail() ? UserStatus::ACTIVE : UserStatus::INVITED;
         $user->save();
 
-        return response()->json(['result' => 'ok', 'id' => $user->uuid, 'status' => $user->status->description]);
+        return $this->userResponse($user);
     }
 
     /**
@@ -219,7 +248,7 @@ class SuperAdminController extends Controller
     public function dataJson()
     {
         return DataTables::of(User::whereIs(UserRole::SUPER_ADMIN))
-            ->setTransformer(new SuperAdminTransformer())
+            ->setTransformer(new SuperAdminUserTransformer())
             ->make(true);
     }
 
@@ -232,7 +261,7 @@ class SuperAdminController extends Controller
     {
         $user = request()->route('user');
         if ($user->status->is(UserStatus::ACTIVE) && 1 === User::where('status', UserStatus::ACTIVE)->whereIs(UserRole::SUPER_ADMIN)->count()) {
-            $validator->errors()->add('isAdmin', "Impossibile rimuovere l'utente " . $user->getInfo() . ' in quanto unico amministratore attivo del portale');
+            $validator->errors()->add('last_admin', 'the last super administrator cannot be suspended');
         }
     }
 }
