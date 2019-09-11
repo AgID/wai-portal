@@ -1,0 +1,27 @@
+.page-container {
+  @extend .container;
+  position: relative;
+  background: $white;
+  padding: 1em 2em;
+  margin: calc(#{$header-center-max-height-mob} / 2 * -1) auto calc(#{$header-center-max-height-mob} / 2);
+
+  @include media-breakpoint-down(sm) {
+    max-width: none;
+  }
+
+  @include media-breakpoint-up(md) {
+    border-radius: 1em;
+    box-shadow: $default-shadow;
+    padding: 2em 3em;
+  }
+
+  @include media-breakpoint-up(lg) {
+    margin: calc(#{$header-center-max-height} / 2 * -1) auto calc(#{$header-center-max-height} / 2);
+    padding: 3em 4em;
+  }
+
+  @include media-breakpoint-up(xl) {
+    max-width: 960px;
+    padding: 4em 5em;
+  }
+}

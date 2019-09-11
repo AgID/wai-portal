@@ -1,0 +1,64 @@
+.faqs-wrapper {
+  border-left: 1px solid $gray-100;
+  padding-bottom: 5rem;
+
+  .faqs {
+    .collapse-header {
+      *[data-toggle=collapse] {
+        font-size: $display3-size;
+        &::before {
+          margin-right: 0.5rem;
+          width: 2.5rem;
+          transform: none;
+          float: left;
+          content: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHRpdGxlPml0LXBsdXM8L3RpdGxlPjxnPjxwYXRoIGZpbGw9IiMwMDRkOTkiIGQ9Ik0xNy4yNSwxMS4yNWgtNC41VjYuNzVhLjc1Ljc1LDAsMCwwLTEuNSwwdjQuNUg2Ljc1YS43NS43NSwwLDAsMCwwLDEuNWg0LjV2NC41YS43NS43NSwwLDAsMCwxLjUsMHYtNC41aDQuNWEuNzUuNzUsMCwwLDAsMC0xLjVaIi8+PC9nPjwvc3ZnPg==);
+        }
+
+        &[aria-expanded=true] {
+          &::before {
+            content: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHRpdGxlPml0LW1pbnVzPC90aXRsZT48Zz48cmVjdCBmaWxsPSIjMDA0ZDk5IiB4PSI2IiB5PSIxMS4yNSIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEuNSIgcng9IjAuNzUiLz48L2c+PC9zdmc+);
+          }
+        }
+      }
+    }
+  }
+}
+
+.faqs-sidebar {
+  .link-list {
+    h3 {
+      margin-bottom: 2rem !important;
+
+      &::after {
+        content: "";
+        width: 65px;
+        height: 2px;
+        background: $color-primary;
+        display: block;
+        margin-top: 24px;
+      }
+    }
+
+    li a {
+      color: $color-primary;
+
+      &.active {
+        color: $primary;
+        font-weight: 600;
+        background-color: $lightgrey-a1;
+      }
+    }
+  }
+}
+
+.faq-selector {
+  .icon {
+    display: none;
+  }
+
+  &.selected {
+    .icon {
+      display: block;
+    }
+  }
+}
