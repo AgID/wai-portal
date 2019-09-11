@@ -1,8 +1,20 @@
 // Variables
-//@import "variables";
+@import "variables";
 
 // Framework
 @import "~bootstrap-italia/src/scss/bootstrap-italia.scss";
 
 // Components
+@import "borders";
+@import "buttons";
+@import "header";
+@import "page";
+@import "content";
+@import "form";
+@import "spid-button";
+@import "user-dropdown";
+@import "alert";
+@import "overlay";
+@import "faq";
+@import "box";
 @import "notifications";

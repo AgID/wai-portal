@@ -1,0 +1,29 @@
+.agid-spid-enter-button {
+  .agid-spid-enter {
+    .agid-spid-enter-text {
+      padding: 0.8em 0.85em;
+    }
+  }
+
+  .it-access-top-wrapper &[data-size="s"] {
+    line-height: 0;
+    width: 8em;
+    text-align: right;
+
+    .agid-spid-enter {
+      border-radius: 0;
+
+      @include media-breakpoint-down(md) {
+        padding-top: 0.9em !important;
+        padding-bottom: 0.9em !important;
+      }
+    }
+  }
+}
+
+
+#agid-spid-panel-content {
+  #agid-spid-enter-title-page {
+    letter-spacing: 0;
+  }
+}
