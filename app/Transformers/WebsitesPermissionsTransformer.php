@@ -3,7 +3,6 @@
 namespace App\Transformers;
 
 use App\Enums\UserPermission;
-use App\Enums\UserRole;
 use App\Models\Website;
 use League\Fractal\TransformerAbstract;
 use Silber\Bouncer\BouncerFacade as Bouncer;
@@ -22,53 +21,68 @@ class WebsitesPermissionsTransformer extends TransformerAbstract
      */
     public function transform(Website $website): array
     {
-        return Bouncer::scope()->onceTo(request()->route('publicAdministration', current_public_administration())->id, function () use ($website) {
+        $publicAdministration = request()->route('publicAdministration', current_public_administration());
+
+        return Bouncer::scope()->onceTo($publicAdministration->id, function () use ($website) {
             $user = request()->route('user');
-            $readOnly = request()->filled('readOnly');
+            $readOnly = request()->has('readOnly');
+            $oldPermissions = request()->query('oldPermissions');
+            $canRead = !is_array($oldPermissions) && optional($user)->can(UserPermission::READ_ANALYTICS, $website);
+            $canManage = !is_array($oldPermissions) && optional($user)->can(UserPermission::MANAGE_ANALYTICS, $website);
 
             $data = [
-                'url' => '<a href="http://' . $website->url . '">' . $website->url . '</a>',
-                'type' => $website->type->description,
-                'added_at' => $website->created_at->format('d/m/Y'),
-                'status' => $website->status->description,
-                'checkboxes' => [
-                    [
-                        'name' => 'websitesEnabled[' . $website->id . ']',
-                        'value' => 'enabled',
-                        'type' => 'websiteEnabled',
-                        'disabled' => $readOnly || (isset($user) && $user->isA(UserRole::ADMIN)),
-                        'checked' => isset($user) && (!$user->isA(UserRole::ADMIN)) && ($user->can(UserPermission::MANAGE_ANALYTICS, $website) || $user->can(UserPermission::READ_ANALYTICS, $website)),
-                        'dataAttributes' => [
-                            'website' => $website->id,
-                        ],
-                    ],
+                'website_name' => [
+                    'display' => implode('', [
+                        '<span>',
+                        '<strong>' . e($website->name) . '</strong>',
+                        '<br>',
+                        '<small><a href="' . e($website->url) . '">' . e($website->url) . '</a></small>',
+                        '</span>',
+                    ]),
+                    'raw' => e($website->name),
                 ],
-                'radios' => [
+                'type' => $website->type->description,
+                'status' => [
+                    'display' => '<span class="badge website-status ' . strtolower($website->status->key) . '">' . strtoupper($website->status->description) . '</span>',
+                    'raw' => $website->status->description,
+                ],
+            ];
+
+            if ($readOnly) {
+                $data['icons'] = [
                     [
-                        'name' => 'websitesPermissions[' . $website->id . ']',
+                        'icon' => $canRead ? 'it-check-circle' : 'it-close-circle',
+                        'color' => $canRead ? 'success' : 'danger',
+                        'label' => UserPermission::getDescription(UserPermission::READ_ANALYTICS),
+                    ],
+                    [
+                        'icon' => $canManage ? 'it-check-circle' : 'it-close-circle',
+                        'color' => $canManage ? 'success' : 'danger',
+                        'label' => UserPermission::getDescription(UserPermission::MANAGE_ANALYTICS),
+                    ],
+                ];
+            } else {
+                $data['toggles'] = [
+                    [
+                        'name' => 'permissions[' . $website->id . '][]',
                         'value' => UserPermission::READ_ANALYTICS,
                         'label' => UserPermission::getDescription(UserPermission::READ_ANALYTICS),
-                        'checked' => !isset($user) || (!$user->isA(UserRole::ADMIN) && $user->can(UserPermission::READ_ANALYTICS, $website) && $user->cannot(UserPermission::MANAGE_ANALYTICS, $website)),
-                        'disabled' => $readOnly || !isset($user) || $user->isA(UserRole::ADMIN),
-                        'type' => 'websitePermission',
+                        'checked' => in_array(UserPermission::READ_ANALYTICS, $oldPermissions[$website->id] ?? []) || $canRead,
                         'dataAttributes' => [
-                            'website' => $website->id,
+                            'entity' => $website->id,
                         ],
                     ],
                     [
-                        'name' => 'websitesPermissions[' . $website->id . ']',
+                        'name' => 'permissions[' . $website->id . '][]',
                         'value' => UserPermission::MANAGE_ANALYTICS,
                         'label' => UserPermission::getDescription(UserPermission::MANAGE_ANALYTICS),
-                        'disabled' => $readOnly || !isset($user) || $user->isA(UserRole::ADMIN),
-                        'checked' => isset($user) && !$user->isA(UserRole::ADMIN) && $user->can(UserPermission::MANAGE_ANALYTICS, $website),
-                        'type' => 'websitePermission',
+                        'checked' => in_array(UserPermission::MANAGE_ANALYTICS, $oldPermissions[$website->id] ?? []) || $canManage,
                         'dataAttributes' => [
-                            'website' => $website->id,
+                            'entity' => $website->id,
                         ],
                     ],
-                ],
-                'control' => '',
-            ];
+                ];
+            }
 
             return $data;
         });
