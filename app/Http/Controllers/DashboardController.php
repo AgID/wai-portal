@@ -4,21 +4,27 @@ namespace App\Http\Controllers;
 
 use App\Enums\UserPermission;
 use App\Models\PublicAdministration;
+use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
     /**
-     * Show the application dashboard.
+     * Show the application dashboard or redirect to websites index page.
      *
-     * @return \Illuminate\Http\Response
+     * @param Request $request the incoming request
+     *
+     * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
      */
-    public function index()
+    public function index(Request $request)
     {
-        if (auth()->user()->publicAdministrations->isEmpty() && auth()->user()->cannot(UserPermission::ACCESS_ADMIN_AREA)) {
+        $user = auth()->user();
+        if ($user->publicAdministrations->isEmpty() && $user->cannot(UserPermission::ACCESS_ADMIN_AREA)) {
+            $request->session()->reflash();
+
             return redirect()->route('websites.index');
         }
 
-        $publicAdministration = !empty(request()->route('publicAdministration')) ? PublicAdministration::findByIPACode(request()->route('publicAdministration')) : null;
+        $publicAdministration = !empty(request()->route('publicAdministration')) ? PublicAdministration::findByIpaCode(request()->route('publicAdministration')) : null;
 
         return view('pages.dashboard')->with(['publicAdministration' => $publicAdministration]);
     }

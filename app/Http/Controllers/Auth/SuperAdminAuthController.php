@@ -99,7 +99,7 @@ class SuperAdminAuthController extends Controller
      */
     public function logout(): RedirectResponse
     {
-            $user = auth()->user();
+        $user = auth()->user();
         if ($user && $user->can(UserPermission::ACCESS_ADMIN_AREA)) {
             auth()->logout();
             session()->invalidate();
@@ -163,9 +163,9 @@ class SuperAdminAuthController extends Controller
      *
      * @return \Illuminate\View\View the view
      */
-    public function showPasswordReset(Request $request, $token = null): View
+    public function showPasswordReset(Request $request, ?string $token = null): View
     {
-        $token = $token ?: $request->input('token');
+        $token = $token ?? $request->input('token');
 
         return view('auth.admin_password_reset')->with(['token' => $token]);
     }
