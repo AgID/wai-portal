@@ -1,57 +1,67 @@
 site:
-  theme_color: "#0066cc"
-  css_theme: t-Pac
-  owner_link: http://www.agid.gov.it
-  owner_logo: /images/agid-logo.svg
-  partner_link: https://teamdigitale.governo.it
-  privacy_link: https://developers.italia.it/it/privacy-policy
-  gov_logo: /images/governo.svg
-  partner_logo: /images/dt-logo.svg
+  owner:
+    name: Agenzia per l'Italia Digitale
+    name_short: AGID
+    link: http://www.agid.gov.it
+    logo: /images/agid-logo.svg
+  privacy_policy: /privacy
+  logo: /images/wai-logo.svg
   pill: alpha
 
   menu_items:
-    - name: dashboard
-      url: /dashboard
-    - name: faq
-      url: /faq
+    primary:
+      - name: Dashboard
+        route: dashboard
+      - name: Siti web
+        route: websites.index
+      - name: Utenti
+        route: users.index
+    secondary:
+      - name: Open data
+        route: open-data
+      - name: FAQ
+        route: faq
+      - name: Contattaci
+        route: contacts
 
-  network_links:
-    trasformazione_digitale:
-      title: header_link_trasformazione
-      url: 'https://pianotriennale-ict.italia.it'
+  slim_header_links:
+    - name: Piano triennale
+      url: https://pianotriennale-ict.italia.it
       class: delimiter
-      li_markup_pre: '<span class="u-block u-padding-all-s u-margin-top-xs u-color-grey-50 u-textUppercase">il programma</span>'
-    developers:
-      title: header_link_developers
-      url: 'https://developers.italia.it/'
-      li_markup_pre: '<span class="u-block u-padding-all-s u-margin-top-xs u-color-grey-50 u-textUppercase">le community</span>'
-    design:
-      title: header_link_design
-      url: 'http://designers.italia.it'
+    - name: Developers
+      url: https://developers.italia.it/
+    - name: Designers
+      url: http://designers.italia.it
       class: delimiter
-    forum:
-      title: header_link_forum
-      url: 'https://forum.italia.it/'
-      li_markup_pre: '<span class="u-block u-padding-all-s u-margin-top-xs u-color-grey-50 u-textUppercase">gli strumenti</span>'
-    docs:
-      title: header_link_docs
-      url: 'https://docs.developers.italia.it/'
-    github:
-      title: header_link_github
-      url: 'https://github.com/italia/'
+    - name: Forum
+      url: https://forum.italia.it/
+    - name: Docs
+      url: https://docs.italia.it/
+    - name: GitHub
+      url: https://github.com/italia/
 
   footer_links:
-    privacy:
-      title: footer_link_privacy
-      url: '/privacy'
-    legal_notes:
-      title: footer_link_legal_notes
-      url: '/legal-notes'
+    - name: Privacy policy
+      route: privacy
+    - name: Note legali
+      route: legal-notes
+    - name: Open data
+      route: open-data
+    - name: FAQ
+      route: faq
+    - name: Contattaci
+      route: contacts
 
   social:
-    twitter:
-      name: twitter
-      link: https://twitter.com/DesignersITA
-    medium:
-      name: medium
-      link: https://medium.com/designers-italia
+    - name: facebook
+      url: https://www.facebook.com/AgIDGovIT/
+    - name: twitter
+      url: https://twitter.com/AgidGov
+    - name: youtube
+      url: https://www.youtube.com/channel/UCxJmOWf__YcLgB19gy5dGQQ
+    - name: medium
+      url: https://medium.com/designers-italia
+
+  trackers:
+    matomo: 1
+    ga: UA-140404450-1
