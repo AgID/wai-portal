@@ -2,9 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Jobs\MonitorWebsitesTracking;
 use App\Jobs\ProcessPendingWebsites;
 use App\Jobs\ProcessPublicAdministrationsUpdateFromIpa;
-use App\Jobs\ProcessWebsitesMonitoring;
 use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
 
@@ -25,7 +25,7 @@ class CronCommandsTest extends TestCase
     /**
      * Test update IPA job route successful dispatching job.
      */
-    public function testUpdateIPACron(): void
+    public function testUpdateIpaCron(): void
     {
         $response = $this->get('/cron/updateipa?token=' . config('cron-auth.cron_token'));
         $response->assertStatus(202);
@@ -36,7 +36,7 @@ class CronCommandsTest extends TestCase
     /**
      * Test unauthorized access on update IPA job route blocked.
      */
-    public function testUnauthorizedIPACron(): void
+    public function testUnauthorizedIpaCron(): void
     {
         $response = $this->get('/cron/updateipa');
         $response->assertForbidden();
@@ -86,17 +86,17 @@ class CronCommandsTest extends TestCase
         $response = $this->get('/cron/monitorwebsites?token=' . config('cron-auth.cron_token'));
         $response->assertStatus(202);
 
-        Queue::assertPushed(ProcessWebsitesMonitoring::class);
+        Queue::assertPushed(MonitorWebsitesTracking::class);
     }
 
     public function testUnauthorizedMonitorWebsitesCron(): void
     {
         $response = $this->get('/cron/monitorwebsites');
         $response->assertForbidden();
-        Queue::assertNotPushed(ProcessWebsitesMonitoring::class);
+        Queue::assertNotPushed(MonitorWebsitesTracking::class);
 
         $response = $this->get('/cron/monitorwebsites?token=' . md5('wrong_token'));
         $response->assertForbidden();
-        Queue::assertNotPushed(ProcessWebsitesMonitoring::class);
+        Queue::assertNotPushed(MonitorWebsitesTracking::class);
     }
 }

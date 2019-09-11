@@ -110,13 +110,10 @@ class CRUDUserTest extends TestCase
                 'tenant_id' => $this->publicAdministration->id,
                 'spid_user' => $this->spidUser,
             ])
-            ->json(
-                'GET',
-                route('users.data.json'),
-                )
+            ->json('GET', route('users.data.json'))
             ->assertOk()
             ->assertJsonFragment([
-                'name' => implode(' ', [$this->user->family_name, $this->user->name]),
+                'raw' => e($this->user->full_name),
             ]);
     }
 
@@ -139,29 +136,31 @@ class CRUDUserTest extends TestCase
                 'spid_user' => $this->spidUser,
                 '_token' => 'test',
             ])
-            ->post(
-                route('users.store'),
-                [
-                    '_token' => 'test',
-                    'email' => $email,
-                    'fiscal_number' => $fiscalNumber,
-                    'isAdmin' => '1',
+            ->post(route('users.store'), [
+                '_token' => 'test',
+                'email' => $email,
+                'fiscal_number' => $fiscalNumber,
+                'is_admin' => '1',
+                'permissions' => [
+                    $this->website->id => [
+                        UserPermission::MANAGE_ANALYTICS,
+                        UserPermission::READ_ANALYTICS,
+                    ],
                 ],
-                )
-            ->assertSessionDoesntHaveErrors(
-                [
-                    'email',
-                    'fiscal_number',
-                    'isAdmin',
-                ]
-            )
+            ])
+            ->assertSessionDoesntHaveErrors([
+                'email',
+                'fiscal_number',
+                'is_admin',
+                'permissions',
+            ])
             ->assertRedirect(route('users.index'));
 
         Event::assertDispatched(UserInvited::class, function ($event) use ($email) {
             return
                 $email === $event->getUser()->email
                 && $this->publicAdministration->ipa_code === $event->getPublicAdministration()->ipa_code
-                && $event->getInvitedBy()->uuid === $this->user->uuid;
+                && $this->user->is($event->getInvitedBy());
         });
 
         User::findByFiscalNumber($fiscalNumber)->deleteAnalyticsServiceAccount();
@@ -186,38 +185,30 @@ class CRUDUserTest extends TestCase
                 'spid_user' => $this->spidUser,
                 '_token' => 'test',
             ])
-            ->post(
-                route('users.store'),
-                [
-                    '_token' => 'test',
-                    'email' => $email,
-                    'fiscal_number' => $fiscalNumber,
-                    'websitesEnabled' => [
-                        $this->website->id => 'enabled',
+            ->post(route('users.store'), [
+                '_token' => 'test',
+                'email' => $email,
+                'fiscal_number' => $fiscalNumber,
+                'permissions' => [
+                    $this->website->id => [
+                        UserPermission::MANAGE_ANALYTICS,
+                        UserPermission::READ_ANALYTICS,
                     ],
-                    'websitesPermissions' => [
-                        $this->website->id => UserPermission::MANAGE_ANALYTICS,
-                    ],
-                ]
-            )
-            ->assertSessionDoesntHaveErrors(
-                [
-                    'email',
-                    'fiscal_number',
-                    'isAdmin',
-                    'websitesEnabled',
-                    'websitesEnabled.*',
-                    'websitesPermissions',
-                    'websitesPermissions.*',
-                ]
-            )
+                ],
+            ])
+            ->assertSessionDoesntHaveErrors([
+                'email',
+                'fiscal_number',
+                'is_admin',
+                'permissions',
+            ])
             ->assertRedirect(route('users.index'));
 
         Event::assertDispatched(UserInvited::class, function ($event) use ($email) {
             return
                 $email === $event->getUser()->email
                 && $this->publicAdministration->ipa_code === $event->getPublicAdministration()->ipa_code
-                && $event->getInvitedBy()->uuid === $this->user->uuid;
+                && $this->user->is($event->getInvitedBy());
         });
 
         User::findByFiscalNumber($fiscalNumber)->deleteAnalyticsServiceAccount();
@@ -236,20 +227,16 @@ class CRUDUserTest extends TestCase
                 '_token' => 'test',
             ])
             ->from(route('users.create'))
-            ->post(
-                route('users.store'),
-                [
-                    '_token' => 'test',
-                    'email' => $this->user->email,
-                    'fiscal_number' => $this->user->fiscal_number,
-                ]
-            )
+            ->post(route('users.store'), [
+                '_token' => 'test',
+                'email' => $this->user->email,
+                'fiscal_number' => $this->user->fiscal_number,
+            ])
             ->assertRedirect(route('users.create'))
             ->assertSessionHasErrors([
                 'email',
                 'fiscal_number',
-                'websitesEnabled',
-                'websitesPermissions',
+                'permissions',
             ]);
 
         Event::assertNotDispatched(UserInvited::class);
@@ -273,20 +260,22 @@ class CRUDUserTest extends TestCase
                 'spid_user' => $this->spidUser,
                 '_token' => 'test',
             ])
-            ->patch(
-                route('users.update', ['user' => $this->user]),
-                [
-                    '_token' => 'test',
-                    'email' => 'new@email.local',
-                    'isAdmin' => '1',
-                ]
-            )
+            ->put(route('users.update', ['user' => $this->user]), [
+                '_token' => 'test',
+                'email' => 'new@email.local',
+                'is_admin' => '1',
+                'permissions' => [
+                    $this->website->id => [
+                        UserPermission::MANAGE_ANALYTICS,
+                        UserPermission::READ_ANALYTICS,
+                    ],
+                ],
+            ])
             ->assertSessionDoesntHaveErrors([
-                    'email',
-                    'isAdmin',
-                    'websitesPermissions',
-                ]
-            );
+                'email',
+                'is_admin',
+                'permissions',
+            ]);
 
         $this->user->refresh();
         Event::assertDispatched(UserUpdated::class, function ($event) {
@@ -318,25 +307,27 @@ class CRUDUserTest extends TestCase
                 'spid_user' => $this->spidUser,
                 '_token' => 'test',
             ])
-            ->patch(
-                route('users.update', ['user' => $user]),
-                [
-                    '_token' => 'test',
-                    'email' => $user->email,
-                    'isAdmin' => '1',
-                ]
-            )
+            ->put(route('users.update', ['user' => $user]), [
+                '_token' => 'test',
+                'email' => $user->email,
+                'is_admin' => '1',
+                'permissions' => [
+                    $this->website->id => [
+                        UserPermission::MANAGE_ANALYTICS,
+                        UserPermission::READ_ANALYTICS,
+                    ],
+                ],
+            ])
             ->assertSessionDoesntHaveErrors([
-                    'email',
-                    'isAdmin',
-                    'websitesPermissions',
-                ]
-            )
+                'email',
+                'is_admin',
+                'permissions',
+            ])
             ->assertRedirect(route('users.index'));
 
-        $this->assertTrue($user->isA(UserRole::ADMIN));
+        $this->assertTrue($user->isAn(UserRole::ADMIN));
         Event::assertDispatched(UserWebsiteAccessChanged::class, function ($event) use ($user) {
-            return $user->uuid === $event->getUser()->uuid
+            return $user->is($event->getUser())
                 && $this->website->slug === $event->getWebsite()->slug
                 && $event->getAccessType()->is(WebsiteAccessType::WRITE);
         });
@@ -363,33 +354,26 @@ class CRUDUserTest extends TestCase
                 'spid_user' => $this->spidUser,
                 '_token' => 'test',
             ])
-            ->patch(
-                route('users.update', ['user' => $user]),
-                [
-                    '_token' => 'test',
-                    'email' => $user->email,
-                    'websitesEnabled' => [
-                        $this->website->id => 'enabled',
+            ->put(route('users.update', ['user' => $user]), [
+                '_token' => 'test',
+                'email' => $user->email,
+                'permissions' => [
+                    $this->website->id => [
+                        UserPermission::READ_ANALYTICS,
                     ],
-                    'websitesPermissions' => [
-                        $this->website->id => UserPermission::READ_ANALYTICS,
-                    ],
-                ]
-            )
+                ],
+            ])
             ->assertSessionDoesntHaveErrors([
                 'email',
-                'isAdmin',
-                'websitesEnabled',
-                'websitesEnabled.*',
-                'websitesPermissions',
-                'websitesPermissions.*',
+                'is_admin',
+                'permissions',
             ])
             ->assertRedirect(route('users.index'));
 
         Bouncer::refreshFor($user);
         $this->assertTrue($user->isA(UserRole::DELEGATED));
         Event::assertDispatched(UserWebsiteAccessChanged::class, function ($event) use ($user) {
-            return $user->uuid === $event->getUser()->uuid
+            return $user->is($event->getUser())
                 && $this->website->slug === $event->getWebsite()->slug
                 && $event->getAccessType()->is(WebsiteAccessType::VIEW);
         });
@@ -410,22 +394,18 @@ class CRUDUserTest extends TestCase
                 '_token' => 'test',
             ])
             ->from(route('users.edit', ['user' => $this->user]))
-            ->patch(
-                route('users.update', ['user' => $this->user]),
-                [
-                    '_token' => 'test',
-                    'email' => $this->user->email,
-                    'websiteEnabled' => [
-                        $this->website->id => 'enabled',
+            ->put(route('users.update', ['user' => $this->user]), [
+                '_token' => 'test',
+                'email' => $this->user->email,
+                'permissions' => [
+                    $this->website->id => [
+                        UserPermission::READ_ANALYTICS,
                     ],
-                    'websitesPermissions' => [
-                        $this->website->id => UserPermission::READ_ANALYTICS,
-                    ],
-                ]
-            )
+                ],
+            ])
             ->assertRedirect(route('users.edit', ['user' => $this->user]))
             ->assertSessionHasErrors([
-                'isAdmin',
+                'is_admin',
             ]);
 
         Event::assertNotDispatched(UserWebsiteAccessChanged::class);
@@ -446,12 +426,13 @@ class CRUDUserTest extends TestCase
                 'spid_sessionIndex' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
             ])
-            ->patch(
-                route('users.suspend', ['user' => $user]))
+            ->json('patch', route('users.suspend', ['user' => $user]))
             ->assertJson([
                 'result' => 'ok',
+                'user_name' => e($user->full_name),
                 'id' => $user->uuid,
-                'status' => UserStatus::getDescription(UserStatus::SUSPENDED),
+                'status' => UserStatus::getKey(UserStatus::SUSPENDED),
+                'status_description' => UserStatus::getDescription(UserStatus::SUSPENDED),
             ])
             ->assertOk();
 
@@ -475,8 +456,7 @@ class CRUDUserTest extends TestCase
                 'spid_sessionIndex' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
             ])
-            ->patch(
-                route('users.suspend', ['user' => $user]))
+            ->json('patch', route('users.suspend', ['user' => $user]))
             ->assertStatus(304);
 
         Event::assertNotDispatched(UserUpdated::class);
@@ -492,12 +472,11 @@ class CRUDUserTest extends TestCase
                 'spid_sessionIndex' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
             ])
-            ->patch(
-                route('users.suspend', ['user' => $this->user]))
-            ->assertStatus(400)
+            ->json('patch', route('users.suspend', ['user' => $this->user]))
+            ->assertStatus(403)
             ->assertJson([
                 'result' => 'error',
-                'message' => 'Invalid operation for current user',
+                'message' => 'invalid operation for current user',
                 'code' => 0,
             ]);
 
@@ -518,12 +497,11 @@ class CRUDUserTest extends TestCase
                 'spid_sessionIndex' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
             ])
-            ->patch(
-                route('users.suspend', ['user' => $this->user]))
-            ->assertStatus(400)
+            ->json('patch', route('users.suspend', ['user' => $this->user]))
+            ->assertStatus(403)
             ->assertJson([
                 'result' => 'error',
-                'message' => 'Invalid operation for current user status',
+                'message' => 'invalid operation for current user',
             ]);
 
         Event::assertNotDispatched(UserUpdated::class);
@@ -544,12 +522,13 @@ class CRUDUserTest extends TestCase
                 'spid_sessionIndex' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
             ])
-            ->patch(
-                route('users.reactivate', ['user' => $user]))
+            ->json('patch', route('users.reactivate', ['user' => $user]))
             ->assertJson([
                 'result' => 'ok',
                 'id' => $user->uuid,
-                'status' => UserStatus::getDescription(UserStatus::INVITED),
+                'user_name' => e($user->full_name),
+                'status' => UserStatus::getKey(UserStatus::INVITED),
+                'status_description' => UserStatus::getDescription(UserStatus::INVITED),
             ])
             ->assertOk();
 
@@ -575,8 +554,7 @@ class CRUDUserTest extends TestCase
                 'spid_user' => $this->spidUser,
                 '_token' => 'test',
             ])
-            ->patch(
-                route('users.reactivate', ['user' => $user]))
+            ->json('patch', route('users.reactivate', ['user' => $user]))
             ->assertStatus(304);
 
         Event::assertNotDispatched(UserUpdated::class);

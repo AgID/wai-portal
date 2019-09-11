@@ -82,7 +82,7 @@ class ProcessPendingWebsitesTest extends TestCase
         $this->assertFalse($purgedUser->hasAnalyticsServiceAccount());
 
         $this->expectException(CommandErrorException::class);
-        $this->app->make('analytics-service')->getUserByEmail($purgedUser->email, config('analytics-service.admin_token'));
+        $this->app->make('analytics-service')->getUserByEmail($purgedUser->email);
 
         Event::assertDispatched(PendingWebsitesCheckCompleted::class, function ($event) use ($website) {
             return in_array(['website' => $website->slug], $event->getPurged(), true)

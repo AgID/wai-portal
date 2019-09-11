@@ -48,7 +48,8 @@ class ProfileTest extends TestCase
             ->assertSessionDoesntHaveErrors([
                 'email',
             ])
-            ->assertRedirect(route('user.profile'));
+            ->assertRedirect(route('home'))
+            ->assertSessionHas('notification');
 
         Event::assertDispatched(UserUpdated::class, function ($event) {
             return 'new@email.local' === $event->getUser()->email;
@@ -104,7 +105,7 @@ class ProfileTest extends TestCase
                 'family_name',
                 'email',
             ])
-            ->assertRedirect(route('admin.user.profile'));
+            ->assertRedirect(route('home'));
 
         Event::assertDispatched(UserUpdated::class, function ($event) {
             $user = $event->getUser();

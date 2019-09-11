@@ -99,22 +99,18 @@ class LogsVisualizationTest extends TestCase
     protected function tearDown(): void
     {
         $client = new Client(['base_uri' => 'http://' . config('elastic-search.host') . ':' . config('elastic-search.port')]);
-        $client->request(
-            'POST',
-            config('elastic-search.index_name') . '/_delete_by_query',
-            [
-                'headers' => [
-                    'Content-Type' => 'application/json',
-                ],
-                'json' => [
-                    'query' => [
-                        'match' => [
-                            'channel' => config('app.env'),
-                        ],
+        $client->request('POST', config('elastic-search.index_name') . '/_delete_by_query', [
+            'headers' => [
+                'Content-Type' => 'application/json',
+            ],
+            'json' => [
+                'query' => [
+                    'match' => [
+                        'channel' => config('app.env'),
                     ],
                 ],
-            ]
-        );
+            ],
+        ]);
         parent::tearDown();
     }
 
@@ -147,7 +143,7 @@ class LogsVisualizationTest extends TestCase
                     'ipa_code' => $this->firstPublicAdministration->ipa_code,
                     'website_id' => $this->website->id,
                     'user_uuid' => $this->user->uuid,
-                    'event' => EventType::IPA_UPDATE_COMPLETED,
+                    'event' => EventType::UPDATE_PA_FROM_IPA_COMPLETED,
                     'exception_type' => ExceptionType::TENANT_SELECTION,
                     'job' => JobType::SEND_RESET_PASSWORD_TOKEN,
                     'severity' => Logger::ERROR,
@@ -172,27 +168,20 @@ class LogsVisualizationTest extends TestCase
     public function testValidationFail(): void
     {
         $response = $this->actingAs($this->superAdmin)
-            ->json(
-                'GET',
-                route('admin.logs.data'),
-                [
-                    'message' => 0,
-                    'order' => [
-                        [
-                            'dir' => 'failing',
-                        ],
+            ->json('GET', route('admin.logs.data'), [
+                'message' => 0,
+                'order' => [
+                    [
+                        'dir' => 'failing',
                     ],
-                    'start_time' => Carbon::now()->format('H:i'),
-                    'end_time' => Carbon::now()->subMinutes(15)->format('H:i'),
-                    'pa' => $this->firstPublicAdministration->name,
-                    'website' => $this->website->name,
-                    'user' => $this->user->name,
-                    'event' => -1,
-                    'exception' => -1,
-                    'job' => -1,
-                    'severity' => -1,
                 ],
-                );
+                'start_time' => Carbon::now()->format('H:i'),
+                'end_time' => Carbon::now()->subMinutes(15)->format('H:i'),
+                'event' => -1,
+                'exception' => -1,
+                'job' => -1,
+                'severity' => -1,
+            ]);
 
         $response->assertStatus(422);
 
@@ -204,9 +193,6 @@ class LogsVisualizationTest extends TestCase
             'order.0.dir',
             'start_date',
             'end_date',
-            'ipa_code',
-            'website_id',
-            'user_uuid',
             'event',
             'exception',
             'job',
@@ -224,125 +210,105 @@ class LogsVisualizationTest extends TestCase
         $client = new Client(['base_uri' => 'http://' . config('elastic-search.host') . ':' . config('elastic-search.port')]);
 
         $message1 = 'WAI Testing message 1';
-        $client->request(
-            'POST',
-            config('elastic-search.index_name') . '/_doc',
-            [
-                'headers' => [
-                    'Content-Type' => 'application/json',
+        $client->request('POST', config('elastic-search.index_name') . '/_doc', [
+            'headers' => [
+                'Content-Type' => 'application/json',
+            ],
+            'json' => [
+                'message' => $message1,
+                'channel' => config('app.env'),
+                'level' => Logger::INFO,
+                'level_name' => 'INFO',
+                'datetime' => Carbon::now()->toIso8601String(),
+                'context' => [
+                    'pa' => $this->firstPublicAdministration->ipa_code,
                 ],
-                'json' => [
-                    'message' => $message1,
-                    'channel' => config('app.env'),
-                    'level' => Logger::INFO,
-                    'level_name' => 'INFO',
-                    'datetime' => Carbon::now()->toIso8601String(),
-                    'context' => [
-                        'pa' => $this->firstPublicAdministration->ipa_code,
-                    ],
-                ],
-            ]
-        );
+            ],
+        ]);
 
         $message2 = 'WAI Testing message 2';
-        $client->request(
-            'POST',
-            config('elastic-search.index_name') . '/_doc',
-            [
-                'headers' => [
-                    'Content-Type' => 'application/json',
+        $client->request('POST', config('elastic-search.index_name') . '/_doc', [
+            'headers' => [
+                'Content-Type' => 'application/json',
+            ],
+            'json' => [
+                'message' => $message2,
+                'channel' => config('app.env'),
+                'level' => Logger::DEBUG,
+                'level_name' => 'DEBUG',
+                'datetime' => Carbon::now()->toIso8601String(),
+                'context' => [
+                    'pa' => $this->firstPublicAdministration->ipa_code,
                 ],
-                'json' => [
-                    'message' => $message2,
-                    'channel' => config('app.env'),
-                    'level' => Logger::DEBUG,
-                    'level_name' => 'DEBUG',
-                    'datetime' => Carbon::now()->toIso8601String(),
-                    'context' => [
-                        'pa' => $this->firstPublicAdministration->ipa_code,
-                    ],
-                ],
-            ]
-        );
+            ],
+        ]);
 
         $message3 = 'WAI Testing message 3';
-        $client->request(
-            'POST',
-            config('elastic-search.index_name') . '/_doc',
-            [
-                'headers' => [
-                    'Content-Type' => 'application/json',
+        $client->request('POST', config('elastic-search.index_name') . '/_doc', [
+            'headers' => [
+                'Content-Type' => 'application/json',
+            ],
+            'json' => [
+                'message' => $message3,
+                'channel' => config('app.env'),
+                'level' => Logger::INFO,
+                'level_name' => 'INFO',
+                'datetime' => Carbon::now()->toIso8601String(),
+                'context' => [
+                    'pa' => $this->secondPublicAdministration->ipa_code,
                 ],
-                'json' => [
-                    'message' => $message3,
-                    'channel' => config('app.env'),
-                    'level' => Logger::INFO,
-                    'level_name' => 'INFO',
-                    'datetime' => Carbon::now()->toIso8601String(),
-                    'context' => [
-                        'pa' => $this->secondPublicAdministration->ipa_code,
-                    ],
-                ],
-            ]
-        );
+            ],
+        ]);
 
         $message4 = 'WAI Testing message 4';
-        $client->request(
-            'POST',
-            config('elastic-search.index_name') . '/_doc/?refresh=wait_for',
-            [
-                'headers' => [
-                    'Content-Type' => 'application/json',
+        $client->request('POST', config('elastic-search.index_name') . '/_doc/?refresh=wait_for', [
+            'headers' => [
+                'Content-Type' => 'application/json',
+            ],
+            'json' => [
+                'message' => $message4,
+                'channel' => config('app.env'),
+                'level' => Logger::ERROR,
+                'level_name' => 'ERROR',
+                'datetime' => Carbon::now()->toIso8601String(),
+                'context' => [
+                    'user' => $this->user->uuid,
                 ],
-                'json' => [
-                    'message' => $message4,
-                    'channel' => config('app.env'),
-                    'level' => Logger::ERROR,
-                    'level_name' => 'ERROR',
-                    'datetime' => Carbon::now()->toIso8601String(),
-                    'context' => [
-                        'user' => $this->user->uuid,
-                    ],
-                ],
-            ]
-        );
+            ],
+        ]);
 
         $response = $this->actingAs($this->superAdmin)
-            ->json(
-                'GET',
-                route('admin.logs.data'),
-                [
-                    'draw' => 0,
-                    'start' => 0,
-                    'length' => 10,
-                    'order' => [
-                        [
-                            'dir' => 'asc',
-                        ],
+            ->json('GET', route('admin.logs.data'), [
+                'draw' => 0,
+                'start' => 0,
+                'length' => 10,
+                'order' => [
+                    [
+                        'dir' => 'asc',
                     ],
-                ]
-            );
+                ],
+            ]);
 
         $response->assertStatus(200);
 
         $response->assertJsonFragment([
             'message' => $message1,
-            'level_name' => 'INFO',
+            'raw' => 'INFO',
         ]);
 
         $response->assertJsonFragment([
             'message' => $message2,
-            'level_name' => 'DEBUG',
+            'raw' => 'DEBUG',
         ]);
 
         $response->assertJsonFragment([
             'message' => $message3,
-            'level_name' => 'INFO',
+            'raw' => 'INFO',
         ]);
 
         $response->assertJsonFragment([
             'message' => $message4,
-            'level_name' => 'ERROR',
+            'raw' => 'ERROR',
         ]);
 
         $response = $this->actingAs($this->user)
@@ -350,41 +316,37 @@ class LogsVisualizationTest extends TestCase
                 'spid_sessionIndex' => 'fake-session-index',
                 'tenant_id' => $this->firstPublicAdministration->id,
             ])
-            ->json(
-                'GET',
-                route('logs.data'),
-                [
-                    'draw' => 0,
-                    'start' => 0,
-                    'length' => 10,
-                    'order' => [
-                        [
-                            'dir' => 'asc',
-                        ],
+            ->json('GET', route('logs.data'), [
+                'draw' => 0,
+                'start' => 0,
+                'length' => 10,
+                'order' => [
+                    [
+                        'dir' => 'asc',
                     ],
-                ]
-            );
+                ],
+            ]);
 
         $response->assertStatus(200);
 
         $response->assertJsonFragment([
             'message' => $message1,
-            'level_name' => 'INFO',
+            'raw' => 'INFO',
         ]);
 
         $response->assertDontSee(json_encode([
             'message' => $message2,
-            'level_name' => 'DEBUG',
+            'raw' => 'DEBUG',
         ]));
 
         $response->assertDontSee(json_encode([
             'message' => $message3,
-            'level_name' => 'INFO',
+            'raw' => 'INFO',
         ]));
 
         $response->assertDontSee(json_encode([
             'message' => $message4,
-            'level_name' => 'INFO',
+            'raw' => 'INFO',
         ]));
     }
 }

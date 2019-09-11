@@ -3,7 +3,7 @@
 namespace Tests\Unit;
 
 use App\Events\Jobs\WebsiteIndexUpdateCompleted;
-use App\Jobs\ProcessWebsitesList;
+use App\Jobs\ProcessWebsitesIndex;
 use App\Models\PublicAdministration;
 use App\Models\Website;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -13,7 +13,7 @@ use Tests\TestCase;
 /**
  * Update websites index job test.
  */
-class UpdateWebsiteListTest extends TestCase
+class UpdateWebsiteIndexTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -31,7 +31,7 @@ class UpdateWebsiteListTest extends TestCase
      */
     public function testWebsiteIndexUpdatedNoWebsites(): void
     {
-        $job = new ProcessWebsitesList();
+        $job = new ProcessWebsitesIndex();
         $job->handle();
 
         Event::assertDispatched(WebsiteIndexUpdateCompleted::class, function ($event) {
@@ -51,7 +51,7 @@ class UpdateWebsiteListTest extends TestCase
             ]
         );
 
-        $job = new ProcessWebsitesList();
+        $job = new ProcessWebsitesIndex();
         $job->handle();
 
         Event::assertDispatched(WebsiteIndexUpdateCompleted::class, function ($event) use ($website) {
@@ -72,7 +72,7 @@ class UpdateWebsiteListTest extends TestCase
         );
         $website->delete();
 
-        $job = new ProcessWebsitesList();
+        $job = new ProcessWebsitesIndex();
         $job->handle();
 
         Event::assertDispatched(WebsiteIndexUpdateCompleted::class, function ($event) use ($website) {
