@@ -20,7 +20,7 @@ class SPIDEventSubscriber
         auth()->logout();
         $SPIDUser = $event->getSPIDUser();
         $user = User::findByFiscalNumber($SPIDUser->fiscalNumber);
-        if (isset($user)) {
+        if (isset($user) && $user->hasVerifiedEmail()) {
             auth()->login($user);
 
             event(new UserLogin($user));
