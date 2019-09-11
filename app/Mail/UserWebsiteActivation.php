@@ -50,12 +50,11 @@ class UserWebsiteActivation extends Mailable
      */
     public function build(): UserWebsiteActivation
     {
-        return $this->from(config('mail.from.address'), config('mail.from.name'))
-            ->subject(trans('mail.website.activated.user.subject'))
-            ->markdown('mail.website_activated_user_email')->with([
-                'locale' => Lang::getLocale(),
-                'fullName' => $this->user->full_name,
-                'website' => $this->website->name,
-            ]);
+        return $this->subject(__('[Info] - Sito web attivo'))
+                    ->markdown('mail.website_activated_user_email')->with([
+                        'locale' => Lang::getLocale(),
+                        'fullName' => $this->user->full_name,
+                        'website' => $this->website->name,
+                    ]);
     }
 }

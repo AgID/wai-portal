@@ -59,13 +59,12 @@ class UserWebsiteArchiving extends Mailable
      */
     public function build(): UserWebsiteArchiving
     {
-        return $this->from(config('mail.from.address'), config('mail.from.name'))
-            ->subject(trans('mail.website.archiving.user.subject'))
-            ->markdown('mail.website_archiving_user_email')->with([
-                'locale' => Lang::getLocale(),
-                'fullName' => $this->user->full_name,
-                'website' => $this->website->name,
-                'daysLeft' => $this->daysLeft,
-            ]);
+        return $this->subject(__('[Attenzione] - Avviso archiviazione'))
+                    ->markdown('mail.website_archiving_user_email')->with([
+                        'locale' => Lang::getLocale(),
+                        'fullName' => $this->user->full_name,
+                        'website' => $this->website->name,
+                        'daysLeft' => $this->daysLeft,
+                    ]);
     }
 }

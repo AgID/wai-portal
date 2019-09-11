@@ -2,7 +2,6 @@
 
 namespace App\Mail;
 
-use Illuminate\Container\Container;
 use Illuminate\Contracts\Mail\Mailer as MailerContract;
 use Illuminate\Mail\Mailable;
 use Swift_Mailer;
@@ -30,13 +29,6 @@ class PECMailable extends Mailable
         $transport->setPassword($password);
         $mailer->setSwiftMailer(new Swift_Mailer($transport));
 
-        Container::getInstance()->call([$this, 'build']);
-        $mailer->send($this->buildView(), $this->buildViewData(), function ($message) {
-            $this->buildFrom($message)
-                ->buildRecipients($message)
-                ->buildSubject($message)
-                ->buildAttachments($message)
-                ->runCallbacks($message);
-        });
+        return parent::send($mailer);
     }
 }

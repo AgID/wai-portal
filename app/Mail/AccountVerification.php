@@ -51,7 +51,7 @@ class AccountVerification extends Mailable
      * @param PublicAdministration|null $publicAdministration the public administration the user belongs to
      * @param User|null $invitedBy the inviting user or null if none
      */
-    public function __construct(User $user, string $signedUrl, PublicAdministration $publicAdministration = null, User $invitedBy = null)
+    public function __construct(User $user, string $signedUrl, ?PublicAdministration $publicAdministration = null, ?User $invitedBy = null)
     {
         $this->user = $user;
         $this->publicAdministration = $publicAdministration;
@@ -78,8 +78,7 @@ class AccountVerification extends Mailable
             $mailTemplate = 'mail.verification';
         }
         //TODO: make sender configurable
-        return $this->from('noreply@analytics.italia.it')
-                    ->subject('Please verify your email') //TODO: string in lang file
+        return $this->subject(__('Invito per Web Analytics Italia'))
                     ->markdown($mailTemplate)->with([
                         'user' => $this->user,
                         'publicAdministration' => $this->publicAdministration,
