@@ -17,18 +17,6 @@ use Illuminate\View\View;
 class ProfileController extends Controller
 {
     /**
-     * Show the profile page.
-     *
-     * @param Request $request the incoming request
-     *
-     * @return \Illuminate\View\View the view
-     */
-    public function show(Request $request): View
-    {
-        return view('auth.profile.show')->with(['user' => $request->user()]);
-    }
-
-    /**
      * Show the profile form.
      *
      * @param Request $request the incoming request
@@ -37,7 +25,7 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): View
     {
-        return view('auth.profile.edit')->with(['user' => $request->user()]);
+        return view('auth.profile')->with(['user' => $request->user()]);
     }
 
     /**
@@ -70,7 +58,7 @@ class ProfileController extends Controller
 
         $validator->after(function ($validator) use ($user, $request) {
             if ($user->email === $request->input('email')) {
-                $validator->errors()->add('email', 'Il nuovo indirizzo email non può essere uguale a quello attuale.'); //TODO: put error message in lang file
+                $validator->errors()->add('email', __('Il nuovo indirizzo email non può essere uguale a quello attuale.'));
             }
         });
 
@@ -107,12 +95,12 @@ class ProfileController extends Controller
             }
         }
 
-        $redirectRoute = $user->isA(UserRole::SUPER_ADMIN) ? 'admin.user.profile' : 'user.profile';
-
-        return redirect()->route($redirectRoute)
-            ->withMessage([
-                'success' => "L'indirizzo email è stato modificato correttamente.",
-                'info' => "Una nuova email di verifica è stata inviata all'indirizzo " . $user->email . '.',
-            ]); //TODO: put message in lang file
+        return redirect()->home()
+            ->withNotification([
+                'title' => __('modifica utente'),
+                'message' => __("La modifica dell'utente è andata a buon fine.\nSe è stato modificato l'indirizzo email, riceverai un messaggio per effettuarne la verifica."),
+                'status' => 'success',
+                'icon' => 'it-check-circle',
+            ]);
     }
 }
