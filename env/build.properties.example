@@ -2,7 +2,7 @@
 # ^^^^^^^^^^^^^^^^^^^^^
 #
 # This property file is need for phing to build the project.
-# Adjust your settings and copy this file to env/build.properties.
+# Adjust your settings and copy this file to env/build.properties.[environment].
 
 # Application
 # -----------
