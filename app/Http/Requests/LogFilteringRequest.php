@@ -39,56 +39,42 @@ class LogFilteringRequest extends FormRequest
             'draw' => 'required|integer',
             'start' => 'required|integer',
             'length' => 'required|integer',
-            'message' => 'nullable|string|min:3',
-            'order.0.dir' => 'nullable|in:asc,desc',
-            'start_date' => [
-                'nullable',
-                'date_format:d/m/Y',
-                Rule::requiredIf($this->filled('start_time')),
-            ],
-            'start_time' => 'nullable|date_format:H:i',
-            'end_date' => [
-                'nullable',
-                'date_format:d/m/Y',
-                Rule::requiredIf($this->filled('end_time')),
-            ],
-            'end_time' => 'nullable|date_format:H:i',
+            'message' => 'sometimes|required|string|min:3|max:255',
+            'order.0.dir' => 'sometimes|required|in:asc,desc',
+            'start_date' => 'required_with:start_time|date_format:d/m/Y|before_or_equal:end_date',
+            'start_time' => 'sometimes|required|date_format:H:i',
+            'end_date' => 'required_with:end_time|date_format:d/m/Y|after_or_equal:start_date',
+            'end_time' => 'sometimes|required|date_format:H:i',
             //NOTE: can't force public administration existence
             //      since Public Administration purge force delete it
             //      See: ProcessPendingWebsites:handle()
-            'ipa_code' => [
-                'nullable',
-                Rule::requiredIf($this->filled('pa')),
-            ],
+            'ipa_code' => 'sometimes|required',
             //NOTE: can't force website existence
             //      since Website purge force delete it
             //      See: ProcessPendingWebsites:handle()
-            'website_id' => [
-                'nullable',
-                Rule::requiredIf($this->filled('website')),
-            ],
-            'user_uuid' => [
-                'nullable',
-                Rule::requiredIf($this->filled('user')),
-                'exists:users,uuid',
-            ],
+            'website_id' => 'sometimes|required',
+            'user_uuid' => 'sometimes|required',
             'event' => [
-                'nullable',
+                'sometimes',
+                'required',
                 'integer',
                 new EnumValue(EventType::class, false),
             ],
             'exception' => [
-                'nullable',
+                'sometimes',
+                'required',
                 'integer',
                 new EnumValue(ExceptionType::class, false),
             ],
             'job' => [
-                'nullable',
+                'sometimes',
+                'required',
                 'integer',
                 new EnumValue(JobType::class, false),
             ],
             'severity' => [
-                'nullable',
+                'sometimes',
+                'required',
                 'integer',
                 Rule::in(Logger::getLevels()),
             ],
@@ -104,16 +90,13 @@ class LogFilteringRequest extends FormRequest
     {
         $validator->after(function (Validator $validator) {
             if ($this->filled('start_time') && $this->filled('end_time')) {
-                if (!$this->filled('start_date') || !$this->filled('end_date')) {
-                    //NOTE: On 'start_date' or 'end_date' missing, a validation error is already reported
-                    //      and before/after validation cannot be done
-                    return;
-                }
-                $startTime = Carbon::createFromFormat('d/m/Y H:i', $this->input('start_date') . ' ' . $this->input('start_time'));
-                $endTime = Carbon::createFromFormat('d/m/Y H:i', $this->input('end_date') . ' ' . $this->input('end_time'));
-                if (!$startTime->isBefore($endTime)) {
-                    $validator->errors()->add('start_time', __('validation.before', ['attribute' => __('validation.attributes.start_time'), 'date' => $this->input('end_time')]));
-                    $validator->errors()->add('end_time', __('validation.after', ['attribute' => __('validation.attributes.end_time'), 'date' => $this->input('start_time')]));
+                if ($this->filled('start_date') && $this->filled('end_date')) {
+                    $startTime = Carbon::createFromFormat('d/m/Y H:i', $this->input('start_date') . ' ' . $this->input('start_time'));
+                    $endTime = Carbon::createFromFormat('d/m/Y H:i', $this->input('end_date') . ' ' . $this->input('end_time'));
+                    if (!$startTime->isBefore($endTime)) {
+                        $validator->errors()->add('start_time', __('validation.before', ['attribute' => __('validation.attributes.start_time'), 'date' => $this->input('end_time')]));
+                        $validator->errors()->add('end_time', __('validation.after', ['attribute' => __('validation.attributes.end_time'), 'date' => $this->input('start_time')]));
+                    }
                 }
             }
         });
