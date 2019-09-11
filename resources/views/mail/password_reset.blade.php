@@ -1,7 +1,7 @@
 @component('mail::message')
 # Reset della password
 
-Ciao {{ $user->name }} {{ $user->family_name }},
+Ciao {{ $user->name }},
 ci è pervenuta una richiesta di reset della tua password su {{ config('app.name') }}.
 
 Se sei stato tu a fare la richiesta perché non riesci ad accedere,
@@ -17,7 +17,8 @@ ed inserire il seguente codice:
 `{!! $token !!}`
 
 **È possibile effettuare il reset della password entro un'ora dalla richiesta
-(fino alle {{ $user->passwordResetToken->created_at->addHour()->format('H:i:s') }} del {{ $user->passwordResetToken->created_at->addHour()->format('d/m/Y') }})**
+(fino alle {{ $user->passwordResetToken->created_at->addHour()->format('H:i:s') }} del
+{{ $user->passwordResetToken->created_at->addHour()->format('d/m/Y') }})**
 
 **Se non sei stato tu a richiedere il reset la password, puoi ignorare questo messaggio email.**
 @endcomponent

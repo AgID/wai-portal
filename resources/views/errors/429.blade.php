@@ -1,10 +1,12 @@
-@extends('layouts.default')
+@extends('layouts.page_bulk')
 
-@section('title', __('ui.pages.429.title'))
+@section('title', __('Troppe richieste'))
+
+@section('title-after')
+<svg class="icon icon-xl icon-danger mb-1 ml-2"><use xlink:href="{{ asset('svg/sprite.svg#it-error') }}"></use></svg>
+@endsection
 
 @section('content')
-    <div class="u-flex u-flexCol u-flexAlignItemsCenter u-margin-top-xxl">
-        <p class="u-textWeight-600 u-textCenter u-text-xxl">{!! nl2br(__('ui.pages.429.description')) !!}</p>
-        <p><a href="{{ route('home', [], false) }}">{{ __('ui.return_home') }}</a></p>
-    </div>
+<p class="lead text-primary font-weight-semibold">{{ __('Spiacenti, sono pervenute troppe richieste.') }}</p>
+<p><a href="{{ route('home') }}">{{ __('Torna alla pagina iniziale') }}</a>.</p>
 @endsection

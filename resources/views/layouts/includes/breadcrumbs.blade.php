@@ -1,11 +1,14 @@
 @if (count($breadcrumbs) > 1)
-    <nav aria-label="sei qui:" role="navigation">
-        <ul class="Breadcrumb">
+    <nav class="breadcrumb-container" aria-label="{{ __('sei qui:') }}">
+        <ol class="breadcrumb p-0">
             @foreach ($breadcrumbs as $breadcrumb)
-                <li class="Breadcrumb-item">
-                    <a class="Breadcrumb-link u-color-50" href="{{ $loop->last ? '#main' : $breadcrumb->url }}">{{ $breadcrumb->title }}</a>
+                <li class="breadcrumb-item">
+                    <a href="{{ $loop->last ? '#main' : $breadcrumb->url }}">{{ $breadcrumb->title }}</a>
+                    @if (!$loop->last)
+                    <span class="separator">&gt;</span>
+                    @endif
                 </li>
             @endforeach
-        </ul>
+        </ol>
     </nav>
 @endif

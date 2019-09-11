@@ -1,7 +1,27 @@
 @extends('layouts.default')
 
-@section('content')
-    <div class="u-layout-prose">
-        @yield('page-content')
-    </div>
+@section('page-content')
+    @include('layouts.includes.header', [
+        'navbar' => auth()->check() || app()->make('SPIDAuth')->isAuthenticated(),
+        'authUser' => auth()->user(),
+        'hasActivePublicAdministration' => session()->has('tenant_id') && auth()->user()->status->is(UserStatus::ACTIVE),
+    ])
+
+    @empty($fullWidth)<div class="container my-5">@endempty
+        @section('page-inner-container')
+        @if (Breadcrumbs::exists())
+        @include('layouts.includes.breadcrumbs', ['breadcrumbs' => Breadcrumbs::generate()])
+        @endif
+
+        <div id="main">
+
+            @include('layouts.includes.alert')
+
+            <h1>@yield('title')@yield('title-after')</h1>
+
+            @yield('content')
+
+        </div>
+        @show
+    @empty($fullWidth)</div>@endempty
 @endsection

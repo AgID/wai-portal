@@ -1,11 +1,16 @@
-@extends('layouts.default')
+@extends('layouts.page_bulk')
 
-@section('title', __('ui.pages.403.title'))
+@section('title', __('Accesso negato'))
+
+@section('title-after')
+<svg class="icon icon-xl icon-danger mb-1 ml-2"><use xlink:href="{{ asset('svg/sprite.svg#it-error') }}"></use></svg>
+@endsection
 
 @section('content')
-    <div class="u-layoutCenter u-layout-prose u-flex u-flexCol u-flexAlignItemsCenter u-margin-top-xxl">
-        <p class="u-textWeight-600 u-textCenter u-text-xxl">{!! nl2br(__('ui.pages.403.description')) !!}</p>
-        <p class="u-color-90 u-text-xxl u-margin-top-xl">{{ $exception->getMessage() }}</p> {{-- TODO: remove in production --}}
-        <p><a href="{{ route('home', [], false) }}">{{ __('ui.return_home') }}</a></p>
-    </div>
+<p class="lead text-primary font-weight-semibold">{{ __('Non hai le autorizzazioni necessarie per accedere alla pagina.') }}</p>
+<p class="text-primary my-4">{{ $exception->getMessage() }}</p> {{-- TODO: remove in production --}}
+@isset($userMessage)
+<p class="text-primary my-4">{!! nl2br($userMessage) !!}</p>
+@endisset
+<p><a href="{{ route('home') }}">{{ __('Torna alla pagina iniziale') }}</a>.</p>
 @endsection

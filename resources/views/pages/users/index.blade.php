@@ -1,15 +1,22 @@
-@extends('layouts.default')
+@extends('layouts.page', ['fullWidth' => true])
 
-@section('title', __('ui.pages.users.index.title'))
+@section('title', __('Utenti'))
 
-@section('content')
-    @include('partials.datatable')
-    @if (auth()->user()->can(UserPermission::MANAGE_USERS) || auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA))
+@section('page-inner-container')
+<div class="lightgrey-bg-a1">
+    <div class="container py-5">
+        @parent
+        @component('layouts.components.box', ['classes' => 'rounded'])
+        @include('partials.datatable')
+        @if (auth()->user()->can(UserPermission::MANAGE_USERS) || auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA))
         @include('partials.link_button', [
-            'label' => __('ui.pages.users.index.add_user'),
-            'href' => auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)
-                ? route('admin.publicAdministration.users.create', ['publicAdministration' => request()->route('publicAdministration')])
-                : route('users.create', [], false)
+            'label' => __('Aggiungi utente'),
+            'icon' => 'it-plus',
+            'link' => $userCreateUrl,
+            'size' => 'lg',
         ])
-    @endif
+        @endif
+        @endcomponent
+    </div>
+</div>
 @endsection

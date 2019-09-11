@@ -1,14 +1,14 @@
 <li data-megamenu-class="Megamenu-item Megamenu-item--admin u-flexExpandLeft"><a href="#">Area amministrativa</a>
     <ul>
         <li>
-            <a href="{{ route('admin.dashboard', [], false) }}">
+            <a href="{{ route('admin-dashboard') }}">
                 Dashboard amministrativa
                 {{--TODO: put string in lang file--}}
             </a>
         </li>
         <li>
-            <a href="{{ route('admin.users.index', [], false) }}">
-                Gestione utenti amministratori
+            <a href="{{ route('admin-user_add') }}">
+                Aggiungi utente amministratore
                 {{--TODO: put string in lang file--}}
             </a>
         </li>
