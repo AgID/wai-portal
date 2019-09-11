@@ -33,6 +33,8 @@ class StoreUserRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'name' => 'sometimes|required|string|max:255',
+            'family_name' => 'sometimes|required|string|max:255',
             'email' => 'required|email|max:255',
             'fiscal_number' => [
                 'required',
@@ -40,15 +42,14 @@ class StoreUserRequest extends FormRequest
                 function ($attribute, $value, $fail) {
                     $chk = new FiscalNumberChecker();
                     if (!$chk->isFormallyCorrect($value)) {
-                        return $fail('Il codice fiscale non è formalmente valido.');
+                        return $fail(__('Il codice fiscale non è formalmente valido.'));
                     }
                 },
             ],
-            'isAdmin' => 'boolean',
-            'websitesEnabled' => 'required_without:isAdmin|array',
-            'websitesEnabled.*' => 'in:enabled',
-            'websitesPermissions' => 'required_without:isAdmin|required_with:websitesEnabled|array',
-            'websitesPermissions.*' => Rule::in([UserPermission::MANAGE_ANALYTICS, UserPermission::READ_ANALYTICS]),
+            'is_admin' => 'boolean',
+            'permissions' => 'required|array',
+            'permissions.*' => 'array',
+            'permissions.*.*' => Rule::in([UserPermission::MANAGE_ANALYTICS, UserPermission::READ_ANALYTICS]),
         ];
     }
 
@@ -70,8 +71,8 @@ class StoreUserRequest extends FormRequest
         }
 
         $validator->after(function (Validator $validator) {
-            if (is_array($this->input('websitesPermissions')) && !$this->checkWebsitesIds($this->input('websitesPermissions'))) {
-                $validator->errors()->add('websitesPermissions', 'È necessario selezionare tutti i permessi correttamente'); //TODO: put in lang file
+            if (is_array($this->input('permissions')) && !$this->checkWebsitesIds($this->input('permissions'))) {
+                $validator->errors()->add('permissions', __('È necessario selezionare tutti i permessi correttamente'));
             }
         });
     }

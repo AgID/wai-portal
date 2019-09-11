@@ -35,16 +35,15 @@ class StoreWebsiteRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required',
-            'url' => 'required|url|unique:websites',
+            'website_name' => 'required|max:255',
+            'url' => 'required|url|unique:websites|max:255',
             'type' => [
                 'required',
                 Rule::in([WebsiteType::SECONDARY, WebsiteType::WEBAPP, WebsiteType::TESTING]),
             ],
-            'usersEnabled' => 'array',
-            'usersEnabled.*' => 'in:enabled',
-            'usersPermissions' => 'required_with:usersEnabled|array',
-            'usersPermissions.*' => Rule::in([UserPermission::MANAGE_ANALYTICS, UserPermission::READ_ANALYTICS]),
+            'permissions' => 'array',
+            'permissions.*' => 'array',
+            'permissions.*.*' => Rule::in([UserPermission::MANAGE_ANALYTICS, UserPermission::READ_ANALYTICS]),
         ];
     }
 
@@ -56,19 +55,22 @@ class StoreWebsiteRequest extends FormRequest
     public function withValidator(Validator $validator): void
     {
         $validator->after(function (Validator $validator) {
-            if (is_array($this->input('usersPermissions')) && !$this->checkUsersIds($this->input('usersPermissions'))) {
-                $validator->errors()->add('usersPermissions', 'È necessario selezionare tutti i permessi correttamente'); //TODO: put in lang file
+            if (is_array($this->input('permissions')) && !$this->checkUsersIds($this->input('permissions'))) {
+                $validator->errors()->add('permissions', __('È necessario selezionare tutti i permessi correttamente'));
             }
         });
         $validator->after(function (Validator $validator) {
-            if (filled($this->input('url')) && !$this->checkIsNotPrimary($this->input('url'))) {
-                $validator->errors()->add('url', "L'indirizzo inserito appartiene ad un'altra pubblica amministrazione."); //TODO: put error message in lang file
+            if (filled($this->input('url'))) {
+                $host = parse_url($this->input('url'), PHP_URL_HOST);
+                if ($host && !$this->checkIsNotPrimary($host)) {
+                    $validator->errors()->add('url', __("L'indirizzo inserito appartiene ad un'altra pubblica amministrazione."));
+                }
             }
         });
     }
 
     /**
-     * Check whether the 'usersPermissions' array contains keys belonging to
+     * Check whether the 'permissions' array contains keys belonging to
      * users of the current selected public administration.
      *
      * @param array $usersPermissions The users permissions array
@@ -96,9 +98,9 @@ class StoreWebsiteRequest extends FormRequest
             return true;
         }
 
-        $publicAdministrationSite = Str::slug(preg_replace('/^http(s)?:\/\/(www\.)?(.+)$/i', '$3', $publicAdministration['site']));
-        $receivedUrl = Str::slug(preg_replace('/^http(s)?:\/\/(www\.)?(.+)$/i', '$3', $url));
+        $publicAdministrationPrimaryWebsiteHost = Str::slug(preg_replace('/^http(s)?:\/\/(www\.)?(.+)$/i', '$3', $publicAdministration['site']));
+        $inputHost = Str::slug(preg_replace('/^http(s)?:\/\/(www\.)?(.+)$/i', '$3', $url));
 
-        return $publicAdministrationSite !== $receivedUrl;
+        return $publicAdministrationPrimaryWebsiteHost !== $inputHost;
     }
 }

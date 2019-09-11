@@ -43,9 +43,11 @@ class UpdateUserRequest extends StoreUserRequest
         $validator->after(function (Validator $validator) {
             $user = $this->route('user');
             $lastAdministrator = 1 === request()->route('publicAdministration', current_public_administration())->getActiveAdministrators()->count();
-            if ($lastAdministrator && $user->status->is(UserStatus::ACTIVE) && $user->isA(UserRole::ADMIN) && !$this->input('isAdmin')) {
-                $validator->errors()->add('isAdmin', 'Deve restare almeno un utente amministratore per ogni PA.'); //TODO: put error message in lang file
+            if ($lastAdministrator && $user->status->is(UserStatus::ACTIVE) && $user->isAn(UserRole::ADMIN) && !$this->input('is_admin')) {
+                $validator->errors()->add('is_admin', __('Deve restare almeno un utente amministratore per ogni PA.'));
             }
         });
+
+        parent::withValidator($validator);
     }
 }
