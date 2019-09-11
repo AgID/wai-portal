@@ -185,7 +185,7 @@ trait InteractsWithRedisIndex
                 'Unable to search into Redis index ' . $indexName . ': ' . $exception->getMessage(),
                 [
                     'event' => EventType::EXCEPTION,
-                    'exception_type' => ExceptionType::WEBSITE_INDEX_SEARCH,
+                    'exception_type' => ExceptionType::REDIS_INDEX_SEARCH,
                 ]
             );
         }
@@ -205,7 +205,7 @@ trait InteractsWithRedisIndex
     /**
      * Get a RedisSearch index.
      *
-     * @param string $index the index to get as configured in config/database.php
+     * @param string $index the index to get, as configured in config/database.php
      *
      * @return Index the RedisSearch index
      */

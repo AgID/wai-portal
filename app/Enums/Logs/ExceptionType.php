@@ -51,27 +51,22 @@ class ExceptionType extends Enum implements LocalizedEnum
     public const IPA_INDEX_SEARCH = 7;
 
     /**
-     * Websites index search exception.
+     * Redis index search exception.
      */
-    public const WEBSITE_INDEX_SEARCH = 8;
-
-    /**
-     * Users index search exception.
-     */
-    public const USER_INDEX_SEARCH = 9;
+    public const REDIS_INDEX_SEARCH = 8;
 
     /**
      * Invalid website status related exception.
      */
-    public const INVALID_WEBSITE_STATUS = 10;
+    public const INVALID_WEBSITE_STATUS = 9;
 
     /**
      * Invalid operation related exception.
      */
-    public const INVALID_OPERATION = 11;
+    public const INVALID_OPERATION = 10;
 
     /**
      * Invalid user status related exception.
      */
-    public const INVALID_USER_STATUS = 12;
+    public const INVALID_USER_STATUS = 11;
 }
