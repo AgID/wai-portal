@@ -27,7 +27,7 @@ class RouteServiceProvider extends ServiceProvider
     {
         parent::boot();
 
-        // Retrieve trashed users to be injected in the
+        // Retrieve trashed users and websites to be injected in the
         // admin.publicAdministration.users.restore route
         Route::bind('trashed_user', function ($id) {
             return User::onlyTrashed()->where('uuid', $id)->first();
