@@ -2,7 +2,7 @@
     <td class="mail-header">
         <div class="mail-slim-header">
             <div class="container">
-                <a class="d-inline-block text-white py-2" href="http://www.agid.gov.it">{{ config('site.owner.name') }}</a>
+                <a class="d-inline-block text-white py-2" href="{{ config('site.owner.link') }}">{{ config('site.owner.name') }}</a>
             </div>
         </div>
         <div class="mail-main-header primary-bg">

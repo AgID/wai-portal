@@ -8,43 +8,12 @@
         @include('layouts.includes.skiplinks')
         @include('layouts.includes.cookiebar')
 
-        <div class="u-background-95">
-            <div class="u-layout-wide u-layoutCenter">
-
-                @include('layouts.includes.header')
-                @include('layouts.includes.offcanvas')
-                @include('layouts.includes.network')
-                @include('layouts.includes.public_administration_label')
-
-                <div class="Prose u-background-grey-15 u-layout-r-withGutter u-padding-r-top u-padding-bottom-xxl u-posRelative">
-
-                    @if(Breadcrumbs::exists())
-                    @include('layouts.includes.breadcrumbs', ['breadcrumbs' => Breadcrumbs::generate()])
-                    @endif
-
-                    <div id="main" style="min-height: 50vh">{{-- //TODO: remove inline style --}}
-
-                        @include('layouts.includes.alert')
-
-                        <h1 class="u-text-h1">@yield('title')</h1>
-
-                        @yield('content')
-
-                    </div>
-                </div>
-            </div>
-        </div>
+        @yield('page-content')
 
         @include('layouts.includes.scrolltop')
-
-        <div class="u-background-95">
-            <div class="u-layout-wide u-layoutCenter u-layout-r-withGutter u-hiddenPrint">
-
-                @include('layouts.includes.footer')
-
-            </div>
-        </div>
-
+        @include('layouts.includes.footer')
+        @include('layouts.includes.modal')
+        @include('layouts.includes.notification')
         @include('layouts.includes.scripts')
         @stack('scripts')
 

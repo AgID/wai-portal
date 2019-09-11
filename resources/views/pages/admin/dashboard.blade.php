@@ -1,26 +1,7 @@
-@extends('layouts.default')
+@extends('layouts.page')
 
-@section('title', __('ui.pages.admin.dashboard.title'))
+@section('title', __('Dashboard amministrativa'))
 
 @section('content')
-    <label class="Form-label is-required" for="type">
-        Pubbliche Amministrazioni{{-- //TODO: put message in lang file --}}
-    </label>
-    <select class="Form-input" id="ipa_code" name="ipa_code" aria-required="true" required>
-        <option value="">seleziona</option>{{-- //TODO: use localized enum --}}
-        @foreach($publicAdministrations as $publicAdministration)
-            <option value="{{ route('admin.publicAdministration.index', ['publicAdministration' => $publicAdministration['ipa_code']]) }}" >{{ $publicAdministration['name'] }}</option>
-        @endforeach
-    </select>
+    Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam vel delectus animi! Quasi, voluptate. Adipisci nisi ullam eligendi laudantium fugit ipsum facilis. Reprehenderit quibusdam eligendi quaerat? Aperiam, illum? Rem, laborum?
 @endsection
-
-@push('scripts')
-    <script type="text/javascript">
-        $(document).ready(() => {
-            $paSelector = document.getElementById('ipa_code');
-            $paSelector.addEventListener('change', (event) => {
-                window.location = event.target.value;
-            });
-        });
-    </script>
-@endpush

@@ -1,30 +1,34 @@
-@extends('layouts.default')
+@extends('layouts.page_bulk')
 
-@section('title', __('ui.pages.admin-password_forgot.title'))
+@section('title', __('Password dimenticata?'))
 
 @section('content')
-    <div class="Prose u-layout-prose"><p>Se non riesci ad accedere al tuo account amministrativo, puoi richiedere un reset della password inserendo il tuo indirizzo email nel modulo presente in questa pagina.</p></div>
-    <form class="Form Form--spaced u-text-r-xs" method="post" action="{{ route('admin.password.reset.send', [], false) }}">
-        @csrf
-        <fieldset class="Form-fieldset">
-            <div class="Form-field {{ $errors->has('email') ? 'is-invalid' : '' }}">
-                @if ($errors->has('email'))
-                <div class="Alert Alert--error Alert--withBg u-padding-r-top u-padding-r-bottom u-padding-r-right">
-                    <p class="u-text-p u-padding-r-bottom">{{ $errors->first('email') }}</p>
-                @endif
-                    <label class="Form-label is-required" for="email">
-                        Indirizzo email{{-- //TODO: put message in lang file --}}
-                    </label>
-                    <input class="Form-input" id="email" name="email" type="email" aria-required="true" value="{{ old('email') }}" required/>
-                @if ($errors->has('email'))
+<p>{{ __('Se non riesci ad accedere al tuo account amministrativo, puoi richiedere un reset della password inserendo qui il tuo indirizzo email.') }}</p>
+<form method="post" action="{{ route('admin.password.reset.send') }}" class="needs-validation" novalidate>
+    @csrf
+    <div class="mt-5">
+        <div class="form-row">
+            <div class="form-group has-form-text col-md-6">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text"><svg class="icon icon-sm"><use xlink:href="{{ asset('svg/sprite.svg#it-mail') }}"></use></svg></div>
+                    </div>
+                    <label for="email">{{ __('Indirizzo email') }}</label>
+                    <input type="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" id="email" name="email" value="{{ old('email') }}" placeholder="{{ __('inserisci il tuo indirizzo email') }}" aria-labelledby="email-input-help" aria-required="true" required>
+                    @error('email')
+                    <div class="invalid-feedback">{{ $errors->first('email') }}</div>
+                    @else
+                    <div class="invalid-feedback">{{ __('validation.email', ['attribute' => __('validation.attributes.email')]) }}</div>
+                    @enderror
                 </div>
-                @endif
+                <small id="email-input-help" class="form-text text-muted">{{ __("L'indirizzo email con il quale sei registrato.") }}</small>
             </div>
-        </fieldset>
-        <div class="Form-field Grid-cell u-textCenter">
-            <button type="submit" class="Button Button--default u-text-xs submit">
-                Richiedi reset password{{-- //TODO: put message in lang file --}}
-            </button>
         </div>
-    </form>
+        <div class="form-row">
+            <div class="form-group mb-0 col text-center">
+                <button type="submit" class="btn btn-primary">{{ __('Reset password') }}</button>
+            </div>
+        </div>
+    </div>
+</form>
 @endsection

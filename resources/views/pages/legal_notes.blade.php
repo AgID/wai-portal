@@ -1,6 +1,6 @@
-@extends('layouts.default')
+@extends('layouts.page')
 
-@section('title', __('ui.pages.legal-notes.title'))
+@section('title', __('Note legali'))
 
 @section('content')
     Legal notes

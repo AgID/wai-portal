@@ -1,77 +1,84 @@
-@extends('layouts.default')
+@extends('layouts.page_bulk')
 
-@section('title', __('ui.pages.admin-password_reset.title'))
+@section('title', __('Reset della password'))
 
 @section('content')
-    <form class="Form Form--spaced u-text-r-xs" method="post" action="{{ route('admin.password.reset', [], false) }}">
-        @csrf
-        <fieldset class="Form-fieldset">
-            <div class="Form-field {{ $errors->has('email') ? 'is-invalid' : '' }}">
-                @if ($errors->has('email'))
-                <div class="Alert Alert--error Alert--withBg u-padding-r-top u-padding-r-bottom u-padding-r-right">
-                    <p class="u-text-p u-padding-r-bottom">{{ $errors->first('email') }}</p>
-                @endif
-                    <label class="Form-label is-required" for="email">
-                        Indirizzo email{{-- //TODO: put message in lang file --}}
-                    </label>
-                    <input class="Form-input" id="email" name="email" type="email" aria-required="true" value="{{ old('email') }}" required>
-                @if ($errors->has('email'))
+<form method="post" action="{{ route('admin.password.reset') }}" class="needs-validation" novalidate>
+    @csrf
+    <div class="mt-5">
+        <div class="form-row">
+            <div class="form-group has-form-text col-md-6">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text"><svg class="icon icon-sm"><use xlink:href="{{ asset('svg/sprite.svg#it-mail') }}"></use></svg></div>
+                    </div>
+                    <label for="email">{{ __('Indirizzo email') }}</label>
+                    <input type="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" id="email" name="email" value="{{ old('email') }}" placeholder="{{ __('inserisci il tuo indirizzo email') }}" aria-labelledby="email-input-help" aria-required="true" required>
+                    @error('email')
+                    <div class="invalid-feedback">{{ $errors->first('email') }}</div>
+                    @else
+                    <div class="invalid-feedback">{{ __('validation.email', ['attribute' => __('validation.attributes.email')]) }}</div>
+                    @enderror
                 </div>
-                @endif
+                <small id="email-input-help" class="form-text text-muted">{{ __("L'indirizzo email con il quale sei registrato.") }}</small>
             </div>
-            @if (!empty($token))
-            <input type="hidden" id="token" name="token" value="{{ $token }}">
-            @else
-            <div class="Form-field {{ $errors->has('token') ? 'is-invalid' : '' }}">
-                @if ($errors->has('token'))
-                <div class="Alert Alert--error Alert--withBg u-padding-r-top u-padding-r-bottom u-padding-r-right">
-                    <p class="u-text-p u-padding-r-bottom">{{ $errors->first('token') }}</p>
-                @endif
-                    <label class="Form-label is-required" for="token">
-                        Codice{{-- //TODO: put message in lang file --}}
-                    </label>
-                    <input class="Form-input" id="token" name="token" type="token" aria-required="true" value="{{ old('token') }}" required>
-                @if ($errors->has('token'))
-                </div>
-                @endif
-            </div>
-            @endif
-        </fieldset>
-        <fieldset class="Form-fieldset">
-            <div class="Form-field {{ $errors->has('password') ? 'is-invalid' : '' }}">
-                @if ($errors->has('password'))
-                <div class="Alert Alert--error Alert--withBg u-padding-r-top u-padding-r-bottom u-padding-r-right">
-                    <p class="u-text-p u-padding-r-bottom">{{ $errors->first('password') }}</p>
-                @endif
-                    <label class="Form-label is-required" for="password">
-                        Nuova password{{-- //TODO: put message in lang file --}}
-                    </label>
-                    <input class="Form-input" id="password" name="password" type="password" aria-required="true" required>
-                    <p class="Form-message">
-                        Deve essere lunga almeno 8 caratteri e contenere maiuscole, minuscole, numeri e simboli.{{-- //TODO: put message in lang file --}}
-                    </p>
-                @if ($errors->has('password'))
-                </div>
-                @endif
-            </div>
-            <div class="Form-field {{ $errors->has('password') ? 'is-invalid' : '' }}">
-                @if ($errors->has('password'))
-                <div class="Alert Alert--error Alert--withBg u-padding-r-top u-padding-r-bottom u-padding-r-right">
-                    <p class="u-text-p u-padding-r-bottom">{{ $errors->first('password_confirmation') }}</p>
-                @endif
-                    <label class="Form-label is-required" for="password_confirmation">
-                        Conferma password{{-- //TODO: put message in lang file --}}
-                    </label>
-                    <input class="Form-input" id="password_confirmation" name="password_confirmation" type="password" aria-required="true" required>
-                @if ($errors->has('password'))
-                </div>
-                @endif
-            </div>
-        </fieldset>
-        <div class="Form-field Grid-cell u-textCenter">
-            <button type="submit" class="Button Button--default u-text-xs submit">
-                Reimposta password{{-- //TODO: put message in lang file --}}
-            </button>
         </div>
-    </form>
+        @isset($token)
+        <input type="hidden" id="token" name="token" value="{{ $token }}">
+        @else
+        <div class="form-row">
+            <div class="form-group has-form-text col-md-6">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text"><svg class="icon icon-sm"><use xlink:href="{{ asset('svg/sprite.svg#it-code-circle') }}"></use></svg></div>
+                    </div>
+                    <label for="token">{{ __('Codice di reset') }}</label>
+                    <input type="text" class="form-control{{ $errors->has('token') ? ' is-invalid' : '' }}" id="token" name="token" value="{{ old('token') }}" placeholder="{{ __('inserisci codice che hai ricevuto via email') }}" aria-labelledby="token-input-help" aria-required="true" required>
+                    @error('token')
+                    <div class="invalid-feedback">{{ $errors->first('token') }}</div>
+                    @else
+                    <div class="invalid-feedback">{{ __('validation.required', ['attribute' => __('validation.attributes.token')]) }}</div>
+                    @enderror
+                </div>
+                <small id="token-input-help" class="form-text text-muted">{{ __('Il codice di reset che hai ricevuto via email.') }}</small>
+            </div>
+        </div>
+        @endif
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="password">{{ __('Nuova password') }}</label>
+                <input type="password" class="form-control input-password input-password-strength-meter{{ $errors->has('password') ? ' is-invalid' : '' }}" id="password" name="password" placeholder="{{ __('inserisci la tua nuova password') }}" aria-required="true" required>
+                <span class="password-icon" aria-hidden="true">
+                    <svg class="password-icon-visible icon icon-sm"><use xlink:href="{{ asset('svg/sprite.svg#it-password-visible') }}"></use></svg>
+                    <svg class="password-icon-invisible icon icon-sm d-none"><use xlink:href="{{ asset('svg/sprite.svg#it-password-invisible') }}"></use></svg>
+                </span>
+                @error('password')
+                <div class="invalid-feedback">{{ $errors->first('password') }}</div>
+                @else
+                <div class="invalid-feedback">{{ __('validation.required', ['attribute' => __('validation.attributes.password')]) }}</div>
+                @enderror
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="password_confirmation">{{ __('Conferma nuova password') }}</label>
+                <input type="password" class="form-control input-password{{ $errors->has('password_confirmation') ? ' is-invalid' : '' }}" id="password_confirmation" name="password_confirmation" placeholder="{{ __('conferma la tua nuova password') }}" aria-required="true" required>
+                <span class="password-icon" aria-hidden="true">
+                    <svg class="password-icon-visible icon icon-sm"><use xlink:href="{{ asset('svg/sprite.svg#it-password-visible') }}"></use></svg>
+                    <svg class="password-icon-invisible icon icon-sm d-none"><use xlink:href="{{ asset('svg/sprite.svg#it-password-invisible') }}"></use></svg>
+                </span>
+                @error('password_confirmation')
+                <div class="invalid-feedback">{{ $errors->first('password_confirmation') }}</div>
+                @else
+                <div class="invalid-feedback">{{ __('validation.required', ['attribute' => __('validation.attributes.password_confirmation')]) }}</div>
+                @enderror
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group mb-0 col text-center">
+                <button type="submit" class="btn btn-primary">{{ __('Reimposta password') }}</button>
+            </div>
+        </div>
+    </div>
+</form>
 @endsection

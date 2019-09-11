@@ -3,7 +3,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ __('ui.site_title') }} - @yield('title')</title>
+    <title>{{ config('app.name') }} - @yield('title')</title>
 
     <link media="all" rel="stylesheet" href="{{ asset('/css/app.css') }}">
 
@@ -13,10 +13,10 @@
     <link rel="manifest" href="{{ asset('/icons/manifest.json') }}">
     <link rel="mask-icon" href="{{ asset('/icons/safari-pinned-tab.svg') }}">
     <link rel="shortcut icon" href="{{ asset('/icons/favicon.ico') }}">
-    <meta name="apple-mobile-web-app-title" content="{{ __('ui.site_title') }}">
-    <meta name="application-name" content="{{ __('ui.site_title') }}">
+    <meta name="apple-mobile-web-app-title" content="{{ config('app.name') }}">
+    <meta name="application-name" content="{{ config('app.name') }}">
     <meta name="msapplication-config" content="{{ asset('/icons/browserconfig.xml') }}">
-    <meta name="theme-color" content="{{ $site['theme_color'] }}">
+    <meta name="theme-color" content="#0066cc">
 
     @stack('styles')
 

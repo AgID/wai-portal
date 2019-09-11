@@ -1,9 +1,7 @@
-<div id="cookie-bar" class="CookieBar js-CookieBar u-background-95 u-padding-r-all" aria-hidden="true">
-    <p class="u-color-white u-text-r-xs u-lineHeight-m u-padding-r-bottom">
-        {{ __('ui.cookiebar_msg') }}<br>
-    </p>
-    <p>
-        <button class="Button Button--default u-text-r-xxs js-cookieBarAccept u-inlineBlock u-margin-r-all">{{ __('ui.cookiebar_accept') }}</button>
-        <a href="{{ route('privacy', [], false) }}" class="u-text-r-xs u-color-teal-50">{{ __('ui.cookiebar_privacy_policy') }}</a>
-    </p>
+<div class="cookiebar">
+    <p>{{ __('Questo sito utilizza cookie tecnici, analytics e di terze parti.') }}<br>{{ __("L'uso dei cookie richiede il tuo consenso.") }}</p>
+    <div class="cookiebar-buttons">
+    <a href="{{ config('site.privacy_policy') }}" class="cookiebar-btn">{{ __('Privacy policy') }}</a>
+        <button data-accept="cookiebar" class="cookiebar-btn cookiebar-confirm">{{ __('Accetto') }}<span class="sr-only">{{ __(' i cookie') }}</span></button>
+    </div>
 </div>
