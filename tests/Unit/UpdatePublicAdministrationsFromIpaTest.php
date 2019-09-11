@@ -4,7 +4,7 @@ namespace Tests\Unit;
 
 use App\Enums\PublicAdministrationStatus;
 use App\Enums\WebsiteType;
-use App\Events\Jobs\IPAUpdateCompleted;
+use App\Events\Jobs\PublicAdministrationsUpdateFromIpaCompleted;
 use App\Events\PublicAdministration\PublicAdministrationUpdated;
 use App\Events\PublicAdministration\PublicAdministrationWebsiteUpdated;
 use App\Jobs\ProcessPublicAdministrationsUpdateFromIpa;
@@ -16,7 +16,7 @@ use Illuminate\Support\Str;
 use Tests\TestCase;
 
 /**
- * Update IPA job tests.
+ * Update public administrations from IPA job tests.
  */
 class UpdatePublicAdministrationsFromIpaTest extends TestCase
 {
@@ -49,7 +49,7 @@ class UpdatePublicAdministrationsFromIpaTest extends TestCase
         $job = new ProcessPublicAdministrationsUpdateFromIpa();
         $job->handle();
 
-        Event::assertDispatched(IPAUpdateCompleted::class);
+        Event::assertDispatched(PublicAdministrationsUpdateFromIpaCompleted::class);
         Event::assertNotDispatched(PublicAdministrationUpdated::class);
         Event::assertNotDispatched(PublicAdministrationWebsiteUpdated::class);
     }
@@ -82,7 +82,7 @@ class UpdatePublicAdministrationsFromIpaTest extends TestCase
         $job = new ProcessPublicAdministrationsUpdateFromIpa();
         $job->handle();
 
-        Event::assertDispatched(IPAUpdateCompleted::class);
+        Event::assertDispatched(PublicAdministrationsUpdateFromIpaCompleted::class);
         Event::assertDispatched(PublicAdministrationWebsiteUpdated::class, function ($event) use ($public_administration, $website) {
             return $event->getPublicAdministration()->ipa_code === $public_administration->ipa_code && $event->getPrimaryWebsite()->url === $website->url && 'www.camera.it' === $event->getNewURL();
         });

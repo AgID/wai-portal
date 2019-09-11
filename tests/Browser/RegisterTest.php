@@ -26,7 +26,7 @@ class RegisterTest extends DuskTestCase
     {
         $this->browse(function (Browser $browser) {
             $browser->visit(new Home())
-                    ->clickLink('Dashboard')
+                    ->visit('/dashboard')
                     ->assertPathIs('/spid/login')
                     ->waitForText('Entra con SPID')
                     ->click('@spid_login_button')
@@ -40,17 +40,18 @@ class RegisterTest extends DuskTestCase
                 ->assertPathIs('/register')
                 ->assertSee('Registrazione')
                 ->type('email', 'nome.cognome@example.com')
-                ->click('label[for="accept_terms"]')
-                ->press('REGISTRA')
-                ->assertSee("Una email di verifica è stata inviata all'indirizzo");
+                // NOTE: workaround to interact with a bootstrap checkbox with a link in its label
+                ->waitUntil('$("input[name=accept_terms]").prop("checked", true)')
+                ->press(__('Registrati'))
+                ->assertSee(__('Abbiamo inviato un link di conferma al tuo indirizzo'));
         });
         $signedUrl = $this->getSignedUrl(1);
         $this->browse(function (Browser $browser) use ($signedUrl) {
             $browser->visit($signedUrl)
-                    ->assertPathIs('/dashboard/websites/add-primary')
+                    ->assertPathIs('/websites')
                     ->visit('/user/verify')
-                    ->waitForText("L'indirizzo email dell'utente")
-                    ->assertSee('è già stato verificato.');
+                    ->waitForText("L'indirizzo email")
+                    ->assertSee('è già stato verificato');
         });
     }
 }

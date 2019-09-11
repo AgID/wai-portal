@@ -4,7 +4,7 @@ namespace Tests\Feature;
 
 use App\Enums\UserPermission;
 use App\Enums\UserRole;
-use App\Jobs\ProcessWebsitesList;
+use App\Jobs\ProcessWebsitesIndex;
 use App\Models\PublicAdministration;
 use App\Models\User;
 use App\Models\Website;
@@ -17,7 +17,7 @@ use Tests\TestCase;
 /**
  * Websites index controller test.
  */
-class SearchWebsiteListRouteTest extends TestCase
+class SearchWebsiteIndexRouteTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -91,8 +91,14 @@ class SearchWebsiteListRouteTest extends TestCase
         $this->secondUser = factory(User::class)->create([
             'email_verified_at' => Carbon::now(),
         ]);
-        $this->firstPublicAdministration = factory(PublicAdministration::class)->create();
-        $this->secondPublicAdministration = factory(PublicAdministration::class)->create();
+        $this->firstPublicAdministration = factory(PublicAdministration::class)->create([
+            'name' => "Agenzia per L'Italia Digitale",
+            'ipa_code' => 'agid',
+        ]);
+        $this->secondPublicAdministration = factory(PublicAdministration::class)->create([
+            'name' => 'Presidenza del Consiglio dei Ministri',
+            'ipa_code' => 'PCM',
+        ]);
         $this->firstUser->publicAdministrations()->sync($this->firstPublicAdministration->id);
         $this->secondUser->publicAdministrations()->sync($this->secondPublicAdministration->id);
 
@@ -117,7 +123,7 @@ class SearchWebsiteListRouteTest extends TestCase
         } while ($this->secondWebsite->slug === $this->firstWebsite->slug);
         $this->secondWebsite->save();
 
-        (new ProcessWebsitesList())->handle();
+        (new ProcessWebsitesIndex())->handle();
     }
 
     /**
@@ -126,11 +132,10 @@ class SearchWebsiteListRouteTest extends TestCase
     public function testSuperAdminSearch(): void
     {
         $response = $this->actingAs($this->superAdmin, 'web')
-            ->json(
-                'GET',
-                route('admin.logs.search-website'),
-                ['q' => 'www', 'p' => null]
-            );
+            ->json('GET', route('admin.logs.websites.search'), [
+                'q' => 'www',
+                'public_administration' => null,
+            ]);
 
         $response->assertJsonFragment(
             [
@@ -160,11 +165,9 @@ class SearchWebsiteListRouteTest extends TestCase
                 'spid_sessionIndex' => 'fake-session-index',
                 'tenant_id' => $this->firstPublicAdministration->id,
             ])
-            ->json(
-                'GET',
-                route('logs.search-website'),
-                ['q' => 'www']
-            );
+            ->json('GET', route('logs.websites.search'), [
+                'q' => 'www',
+            ]);
 
         $response->assertExactJson([
             [
@@ -172,6 +175,7 @@ class SearchWebsiteListRouteTest extends TestCase
                 'pa' => $this->firstPublicAdministration->ipa_code,
                 'slug' => $this->firstWebsite->slug,
                 'name' => $this->firstWebsite->name,
+                'pa_name' => $this->firstPublicAdministration->name,
             ],
         ]);
 
@@ -195,11 +199,9 @@ class SearchWebsiteListRouteTest extends TestCase
                 'spid_sessionIndex' => 'fake-session-index',
                 'tenant_id' => $this->secondPublicAdministration->id,
             ])
-            ->json(
-                'GET',
-                route('logs.search-website'),
-                ['q' => 'www']
-            );
+            ->json('GET', route('logs.websites.search'), [
+                'q' => 'www',
+            ]);
 
         $response->assertExactJson([
             [
@@ -207,6 +209,7 @@ class SearchWebsiteListRouteTest extends TestCase
                 'pa' => $this->secondPublicAdministration->ipa_code,
                 'slug' => $this->secondWebsite->slug,
                 'name' => $this->secondWebsite->name,
+                'pa_name' => $this->secondPublicAdministration->name,
             ],
         ]);
 
@@ -221,16 +224,15 @@ class SearchWebsiteListRouteTest extends TestCase
     }
 
     /**
-     * Test super admin user search capabilities using an I.P.A. code.
+     * Test super admin user search capabilities using an IPA code.
      */
-    public function testIPACodeFilteringOnSuperAdmin(): void
+    public function testIpaCodeFilteringOnSuperAdmin(): void
     {
         $response = $this->actingAs($this->superAdmin, 'web')
-            ->json(
-                'GET',
-                route('admin.logs.search-website'),
-                ['q' => 'www', 'p' => $this->firstPublicAdministration->ipa_code]
-            );
+            ->json('GET', route('admin.logs.websites.search'), [
+                'q' => 'www',
+                'public_administration' => $this->firstPublicAdministration->ipa_code,
+            ]);
 
         $response->assertExactJson([
             [
@@ -238,6 +240,7 @@ class SearchWebsiteListRouteTest extends TestCase
                 'pa' => $this->firstPublicAdministration->ipa_code,
                 'slug' => $this->firstWebsite->slug,
                 'name' => $this->firstWebsite->name,
+                'pa_name' => $this->firstPublicAdministration->name,
             ],
         ]);
 
@@ -252,20 +255,19 @@ class SearchWebsiteListRouteTest extends TestCase
     }
 
     /**
-     * Test first user search capabilities using an I.P.A. code.
+     * Test first user search capabilities using an IPA code.
      */
-    public function testIPACodeFilteringOnAdmin(): void
+    public function testIpaCodeFilteringOnAdmin(): void
     {
         $response = $this->actingAs($this->firstUser, 'web')
             ->withSession([
                 'spid_sessionIndex' => 'fake-session-index',
                 'tenant_id' => $this->firstPublicAdministration->id,
             ])
-            ->json(
-                'GET',
-                route('logs.search-website'),
-                ['q' => 'www', 'p' => $this->secondPublicAdministration->ipa_code]
-            );
+            ->json('GET', route('logs.websites.search'), [
+                'q' => 'www',
+                'public_administration' => $this->secondPublicAdministration->ipa_code,
+            ]);
 
         $response->assertExactJson([
             [
@@ -273,6 +275,7 @@ class SearchWebsiteListRouteTest extends TestCase
                 'pa' => $this->firstPublicAdministration->ipa_code,
                 'slug' => $this->firstWebsite->slug,
                 'name' => $this->firstWebsite->name,
+                'pa_name' => $this->firstPublicAdministration->name,
             ],
         ]);
 

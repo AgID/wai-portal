@@ -38,7 +38,7 @@ class UserTest extends TestCase
 
         $this->assertNotNull($searchedUser);
 
-        $this->assertEquals($user->name . ' ' . $user->family_name . ' [' . $user->email . ']', $searchedUser->getInfo());
+        $this->assertEquals($user->full_name . ' [' . $user->email . ']', $searchedUser->getInfo());
 
         $analytics_password = md5($partialAnalyticsPassword . config('app.salt'));
 
@@ -120,9 +120,9 @@ class UserTest extends TestCase
         $this->assertCount(1, $searchedSecondUser->publicAdministrations()->get());
         $this->assertCount(1, $searchedThirdUser->publicAdministrations()->get());
 
-        $searchedFirstPA = PublicAdministration::findByIPACode($firstPA->ipa_code);
-        $searchedSecondPA = PublicAdministration::findByIPACode($secondPA->ipa_code);
-        $searchedThirdPA = PublicAdministration::findByIPACode($thirdPA->ipa_code);
+        $searchedFirstPA = PublicAdministration::findByIpaCode($firstPA->ipa_code);
+        $searchedSecondPA = PublicAdministration::findByIpaCode($secondPA->ipa_code);
+        $searchedThirdPA = PublicAdministration::findByIpaCode($thirdPA->ipa_code);
 
         $this->assertCount(1, $searchedFirstPA->users()->get());
         $this->assertCount(1, $searchedSecondPA->users()->get());

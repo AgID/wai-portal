@@ -3,7 +3,7 @@
 namespace Tests\Unit;
 
 use App\Events\Jobs\UserIndexUpdateCompleted;
-use App\Jobs\ProcessUsersList;
+use App\Jobs\ProcessUsersIndex;
 use App\Models\PublicAdministration;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -13,7 +13,7 @@ use Tests\TestCase;
 /**
  * Update users index job test.
  */
-class UpdateUserListTest extends TestCase
+class UpdateUserIndexTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -31,7 +31,7 @@ class UpdateUserListTest extends TestCase
      */
     public function testUserIndexUpdatedNoUsers(): void
     {
-        $job = new ProcessUsersList();
+        $job = new ProcessUsersIndex();
         $job->handle();
 
         Event::assertDispatched(UserIndexUpdateCompleted::class, function ($event) {
@@ -49,7 +49,7 @@ class UpdateUserListTest extends TestCase
         $user = factory(User::class)->create();
         $user->publicAdministrations()->sync($publicAdministration->id);
 
-        $job = new ProcessUsersList();
+        $job = new ProcessUsersIndex();
         $job->handle();
 
         Event::assertDispatched(UserIndexUpdateCompleted::class, function ($event) use ($user) {
@@ -68,7 +68,7 @@ class UpdateUserListTest extends TestCase
         $user->publicAdministrations()->sync($publicAdministration->id);
         $user->delete();
 
-        $job = new ProcessUsersList();
+        $job = new ProcessUsersIndex();
         $job->handle();
 
         Event::assertDispatched(UserIndexUpdateCompleted::class, function ($event) use ($user) {

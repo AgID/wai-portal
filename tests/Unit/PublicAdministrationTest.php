@@ -28,7 +28,7 @@ class PublicAdministrationTest extends TestCase
 
         $this->assertDatabaseHas('public_administrations', ['ipa_code' => $publicAdministration->ipa_code]);
 
-        $searched_pa = PublicAdministration::findByIPACode($publicAdministration->ipa_code);
+        $searched_pa = PublicAdministration::findByIpaCode($publicAdministration->ipa_code);
 
         $this->assertNotNull($searched_pa);
     }
@@ -42,23 +42,23 @@ class PublicAdministrationTest extends TestCase
     {
         $publicAdministration = factory(PublicAdministration::class)->create();
 
-        $searchedPA = PublicAdministration::findByIPACode($publicAdministration->ipa_code);
+        $searchedPA = PublicAdministration::findByIpaCode($publicAdministration->ipa_code);
 
         $searchedPA->delete();
 
         $this->assertSoftDeleted('public_administrations', ['id' => $searchedPA->id]);
 
-        $searchedPA = PublicAdministration::findByIPACode($publicAdministration->ipa_code);
+        $searchedPA = PublicAdministration::findByIpaCode($publicAdministration->ipa_code);
 
         $this->assertNull($searchedPA);
 
-        $searchedPA = PublicAdministration::findTrashedByIPACode($publicAdministration->ipa_code);
+        $searchedPA = PublicAdministration::findTrashedByIpaCode($publicAdministration->ipa_code);
 
         $this->assertNotNull($searchedPA);
 
         $searchedPA->restore();
 
-        $searchedPA = PublicAdministration::findByIPACode($publicAdministration->ipa_code);
+        $searchedPA = PublicAdministration::findByIpaCode($publicAdministration->ipa_code);
 
         $this->assertNotNull($searchedPA);
     }
@@ -100,9 +100,9 @@ class PublicAdministrationTest extends TestCase
             'user_id' => $thirdUser->id,
         ]);
 
-        $searchedFirstPA = PublicAdministration::findByIPACode($firstPA->ipa_code);
-        $searchedSecondPA = PublicAdministration::findByIPACode($secondPA->ipa_code);
-        $searchedThirdPA = PublicAdministration::findByIPACode($thirdPA->ipa_code);
+        $searchedFirstPA = PublicAdministration::findByIpaCode($firstPA->ipa_code);
+        $searchedSecondPA = PublicAdministration::findByIpaCode($secondPA->ipa_code);
+        $searchedThirdPA = PublicAdministration::findByIpaCode($thirdPA->ipa_code);
 
         $this->assertCount(2, $searchedFirstPA->users()->get());
         $this->assertCount(1, $searchedSecondPA->users()->get());
@@ -152,8 +152,8 @@ class PublicAdministrationTest extends TestCase
             'public_administration_id' => $secondPA->id,
         ]);
 
-        $searchedFirstPA = PublicAdministration::findByIPACode($firstPA->ipa_code);
-        $searchedSecondPA = PublicAdministration::findByIPACode($secondPA->ipa_code);
+        $searchedFirstPA = PublicAdministration::findByIpaCode($firstPA->ipa_code);
+        $searchedSecondPA = PublicAdministration::findByIpaCode($secondPA->ipa_code);
 
         $this->assertCount(2, $searchedFirstPA->websites()->get());
         $this->assertCount(1, $searchedSecondPA->websites()->get());

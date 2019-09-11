@@ -4,7 +4,7 @@ namespace Tests\Feature;
 
 use App\Enums\UserPermission;
 use App\Enums\UserRole;
-use App\Jobs\ProcessUsersList;
+use App\Jobs\ProcessUsersIndex;
 use App\Models\PublicAdministration;
 use App\Models\User;
 use Carbon\Carbon;
@@ -15,7 +15,7 @@ use Tests\TestCase;
 /**
  * Users index controller test.
  */
-class SearchUserListRouteTest extends TestCase
+class SearchUserIndexRouteTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -90,7 +90,7 @@ class SearchUserListRouteTest extends TestCase
         $this->secondUser->assign(UserRole::ADMIN);
         $this->secondUser->allow(UserPermission::VIEW_LOGS);
 
-        (new ProcessUsersList())->handle();
+        (new ProcessUsersIndex())->handle();
     }
 
     /**
@@ -99,11 +99,10 @@ class SearchUserListRouteTest extends TestCase
     public function testSuperAdminSearch(): void
     {
         $response = $this->actingAs($this->superAdmin, 'web')
-            ->json(
-                'GET',
-                route('admin.logs.search-user'),
-                ['q' => 'Mario', 'p' => null]
-            );
+            ->json('GET', route('admin.logs.users.search'), [
+                'q' => 'Mario',
+                'public_administration' => null,
+            ]);
 
         $response->assertJsonFragment(
             [
@@ -135,11 +134,9 @@ class SearchUserListRouteTest extends TestCase
                 'spid_sessionIndex' => 'fake-session-index',
                 'tenant_id' => $this->firstPublicAdministration->id,
             ])
-            ->json(
-                'GET',
-                route('logs.search-user'),
-                ['q' => 'Mario']
-            );
+            ->json('GET', route('logs.users.search'), [
+                'q' => 'Mario',
+            ]);
 
         $response->assertExactJson([
             [
@@ -172,11 +169,9 @@ class SearchUserListRouteTest extends TestCase
                 'spid_sessionIndex' => 'fake-session-index',
                 'tenant_id' => $this->secondPublicAdministration->id,
             ])
-            ->json(
-                'GET',
-                route('logs.search-user'),
-                ['q' => 'Mario']
-            );
+            ->json('GET', route('logs.users.search'), [
+                'q' => 'Mario',
+            ]);
 
         $response->assertExactJson([
             [
@@ -200,16 +195,15 @@ class SearchUserListRouteTest extends TestCase
     }
 
     /**
-     * Test super admin user search capabilities using an I.P.A. code.
+     * Test super admin user search capabilities using an IPA code.
      */
-    public function testIPACodeFilteringOnSuperAdmin(): void
+    public function testIpaCodeFilteringOnSuperAdmin(): void
     {
         $response = $this->actingAs($this->superAdmin, 'web')
-            ->json(
-                'GET',
-                route('admin.logs.search-user'),
-                ['q' => 'Mario', 'p' => $this->firstPublicAdministration->ipa_code]
-            );
+            ->json('GET', route('admin.logs.users.search'), [
+                'q' => 'Mario',
+                'public_administration' => $this->firstPublicAdministration->ipa_code,
+            ]);
 
         $response->assertExactJson([
             [
@@ -233,20 +227,19 @@ class SearchUserListRouteTest extends TestCase
     }
 
     /**
-     * Test first user search capabilities using an I.P.A. code.
+     * Test first user search capabilities using an IPA code.
      */
-    public function testIPACodeFilteringOnAdmin(): void
+    public function testIpaCodeFilteringOnAdmin(): void
     {
         $response = $this->actingAs($this->firstUser, 'web')
             ->withSession([
                 'spid_sessionIndex' => 'fake-session-index',
                 'tenant_id' => $this->firstPublicAdministration->id,
             ])
-            ->json(
-                'GET',
-                route('logs.search-user'),
-                ['q' => 'Mario', 'p' => $this->secondPublicAdministration->ipa_code]
-            );
+            ->json('GET', route('logs.users.search'), [
+                'q' => 'Mario',
+                'public_administration' => $this->secondPublicAdministration->ipa_code,
+            ]);
 
         $response->assertExactJson([
             [
