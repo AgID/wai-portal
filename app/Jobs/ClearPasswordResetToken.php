@@ -41,7 +41,7 @@ class ClearPasswordResetToken implements ShouldQueue
         logger()->info(
             'Deleting expired token ' . $this->token->token,
             [
-                'user' => $this->user->uuid,
+                'user' => $this->token->user->uuid,
                 'job' => JobType::CLEAR_PASSWORD_TOKEN,
             ]
         );
