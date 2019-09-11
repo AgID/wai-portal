@@ -1,490 +1,365 @@
+import Autocomplete from './autocomplete';
+
 export default (() => {
     const filters = {};
+    const datePattern = 'dd/MM/yyyy';
+    const datePatternRegEx = new RegExp(/(0[1-9]|1[0-9]|2[0-9]|3[01])\/(0?[1-9]|1[012])\/([0-9]{4})/);
     let filter;
 
-    const initMessageFilter = ($message) => {
-        if (!$message) {
+    const initDateInput = (dateInput, additionalConfiguration) => {
+        const configuration = {
+            inputFormat: datePattern,
+            outputFormat: datePattern,
+            onUpdate: () => { dateInput.dispatchEvent(new Event('input')) },
+        }
+
+        $(dateInput).datepicker({
+            ...configuration,
+            ...additionalConfiguration,
+        });
+    }
+
+    const initMessageFilter = messageInput => {
+        if (messageInput) {
             return;
         }
 
-        const useAsFilter = () => {
-            const length = $message.value.trim().length;
-            return length >= 3;
-        }
-
-        $message.addEventListener('input', () => {
-            if (!useAsFilter()) {
-                delete filters.message;
+        messageInput.addEventListener('input', event => {
+            if (event.isComposing || event.keyCode === 229 || event.keyCode === 13) {
                 return;
             }
-            filters.message = $message.value.trim();
+
+            if (!messageInput.value.trim().length >= 3) {
+                delete filters.message;
+            } else {
+                filters.message = messageInput.value.trim();
+            }
+
             filter && filter();
         });
     }
 
-    const initDateFilter = ($date) => {
-        if (!$date) {
+    const initDateFilter = dateInput => {
+        if (!dateInput) {
             return;
         }
 
-        filters[$date.name] = $date.value;
-
-        $date.addEventListener('input', () => {
-            if ($date.hasAttribute('pattern')) {
-                const regexp = new RegExp($date.getAttribute('pattern'));
-                if ($date.value.trim() && !regexp.test($date.value)) {
-                    delete filters[$date.name];
-                    return;
-                }
+        dateInput.addEventListener('input', () => {
+            if (!dateInput.value.trim()) {
+                delete filters[dateInput.name];
+            } else if (!datePatternRegEx.test(dateInput.value)) {
+                delete filters[dateInput.name];
+                return;
+            } else {
+                filters[dateInput.name] = dateInput.value;
             }
-            filters[$date.name] = $date.value;
+
             filter && filter();
         });
     }
 
-    const initTimeFilter = ($time) => {
-        if (!$time) {
+    const initTimeFilter = timeInput => {
+        if (!timeInput) {
             return;
         }
 
-        filters[$time.name] = $time.value;
-
-        $time.addEventListener('input', () => {
-            if ($time.hasAttribute('pattern')) {
-                const regexp = new RegExp($time.getAttribute('pattern'));
-                if ($time.value.trim() && !regexp.test($time.value)) {
-                    delete filters[$time.name];
-                    return;
-                }
+        timeInput.addEventListener('input', () => {
+            if (!timeInput.value.trim()) {
+                delete filters[timeInput.name];
+            } else {
+                filters[timeInput.name] = timeInput.value;
             }
-            filters[$time.name] = $time.value;
+
             filter && filter();
         });
     }
 
-    const initPublicAdministrationFilter = ($publicAdministration, $ipaCode, $website, $websiteId, $user, $userUuid) => {
-        if (!$publicAdministration || !$ipaCode) {
-            return;
+    const initIpaCodeFilter = ipaCodeInput => {
+        if (ipaCodeInput.value.trim()) {
+            filters.ipa_code = ipaCodeInput.value;
         }
+    }
 
-        filters.pa = $publicAdministration.value;
-        filters.ipa_code = $ipaCode.value;
+    const initIpaCodeFilterResetLink = ipaCodeInput => {
+        const ipaCodeFilterResetLink = document.getElementById('reset-ipa_code-filter');
+        const publicAdministrationSelectedMessage = document.getElementById('public-administration-selected');
+        const publicAdministrationNotSelectedMessage = document.getElementById('public-administration-not-selected');
+        const publicAdministrationSelector = document.querySelector('.navbar select[name="public-administration-nav"]');
 
-        $publicAdministration.addEventListener('input', () => {
-            if ($ipaCode) {
-                if (filters.ipa_code) {
-                    $ipaCode.value = '';
-                    delete filters.pa;
-                    delete filters.ipa_code;
+        ipaCodeFilterResetLink && ipaCodeFilterResetLink.addEventListener('click', event => {
+            event.preventDefault();
+            ipaCodeInput.value = '';
+            publicAdministrationSelector.value = '';
+            publicAdministrationSelectedMessage.classList.add('d-none')
+            publicAdministrationNotSelectedMessage.classList.remove('d-none');
+            delete filters.ipa_code;
 
-                    if ($website) {
-                        $website.value = '';
-                        $website.cache = {};
-                        $website.last_val = {};
-                        delete filters.website;
-                    }
-
-                    if ($websiteId) {
-                        $websiteId.value = '';
-                        delete filters.website_id;
-                    }
-
-                    if ($user) {
-                        $user.value = '';
-                        $user.cache = {};
-                        $user.last_val = {};
-                        delete filters.user;
-                    }
-
-                    if ($userUuid) {
-                        $userUuid.value = ''
-                        delete filters.user_uuid;
-                    }
-
-                    filter && filter();
-                }
-            }
-        });
-
-        const publicAdministrationAutocomplete = new window.autoComplete({
-            selector: $publicAdministration,
-            minChars: 3,
-            menuClass: 'pa',
-            cancelCall: '',
-            source: (term, suggest) => {
-                term = term.toLowerCase();
-                $publicAdministration.classList.add('autocomplete-loading');
-                if (publicAdministrationAutocomplete.cancelCall) {
-                    publicAdministrationAutocomplete.cancelCall.cancel();
-                }
-                publicAdministrationAutocomplete.cancelCall = window.axios.CancelToken.source();
-                window.axios({
-                    method: 'GET',
-                    url: $publicAdministration.getAttribute('data-source'),
-                    params: { q: term },
-                }).then((response) => {
-                    suggest(response.data);
-                    $('.autocomplete-suggestions .pa').hide();
-                    publicAdministrationAutocomplete.resetInfo();
-                }).catch((error) => {
-                    if (!window.axios.isCancel(error)) {
-                        //TODO:
-                    }
-                }).finally(() => {
-                    publicAdministrationAutocomplete.cancelCall = '';
-                    $publicAdministration.classList.remove('autocomplete-loading');
-                    $('.autocomplete-suggestions .pa').show();
-                });
-            },
-            renderItem: (item, search) => {
-                search = search.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
-                const re = new RegExp('(' + search.split(' ').join('|') + ')', 'gi');
-                return [
-                    '<div class="autocomplete-suggestion pa"',
-                    'data-ipa_code="' + item.ipa_code + '"',
-                    'data-val="' + item.name + '">',
-                    item.name.replace(re, "<b>$1</b>") + ' - ' + item.city.replace(re, "<b>$1</b>") + ' (' + item.county + ')',
-                    '</div>'
-                ].join('');
-            },
-            onSelect: (e, term, item) => {
-                $ipaCode.value = item.getAttribute('data-ipa_code');
-                filters.pa = $publicAdministration.value;
-                filters.ipa_code = item.getAttribute('data-ipa_code');
-                filter && filter();
-            },
-            resetInfo: () => {
-                $ipaCode.value = '';
-                delete filters.pa;
-                delete filters.ipa_code;
-            }
+            filter && filter();
         });
     }
 
-    const initWebsiteFilter = ($website, $websiteId, $publicAdministration, $ipaCode) => {
-        if (!$website || !$websiteId) {
+    const initWebsiteFilter = (websiteIdInput, ipaCodeInput)  => {
+        if (!websiteIdInput || !ipaCodeInput) {
             return;
         }
 
-        filters.website = $website.value;
-        filters.website_id = $websiteId.value;
+        const handleSelectedWebsite = selectedWebsite => {
+            filters.website_id = selectedWebsite.id;
+            filter && filter();
+        };
 
-        $website.addEventListener('input', () => {
-            if ($websiteId) {
-                if (filters.website_id) {
-                    $websiteId.value = '';
-                    delete filters.website;
-                    delete filters.website_id;
-                    filter && filter();
-                }
+        const websiteSchema = {
+            title: 'name',
+            subTitle: 'pa_name',
+        }
+
+        Autocomplete.init(websiteIdInput, websiteSchema, {
+            handleSelectedResult: handleSelectedWebsite,
+            queryParameters: {
+                public_administration: ipaCodeInput.value,
             }
         });
 
-        const websiteAutocomplete = new window.autoComplete({
-            selector: $website,
-            minChars: 3,
-            menuClass: 'website',
-            cancelCall: '',
-            source: (term, suggest) => {
-                term = term.toLowerCase();
-                $website.classList.add('autocomplete-loading');
-                if (websiteAutocomplete.cancelCall) {
-                    websiteAutocomplete.cancelCall.cancel();
-                }
-                websiteAutocomplete.cancelCall = window.axios.CancelToken.source();
-                window.axios({
-                    cancelToken: websiteAutocomplete.cancelCall.token,
-                    method: 'GET',
-                    url: $website.getAttribute('data-source'),
-                    params: {
-                        q: term,
-                        p: filters.ipa_code || null,
-                    },
-                }).then((response) => {
-                    suggest(response.data);
-                    $('.autocomplete-suggestions .website').hide();
-                    websiteAutocomplete.resetInfo();
-                }).catch((error) => {
-                    if (!window.axios.isCancel(error)) {
-                        //TODO:
-                    }
-                }).finally(() => {
-                    websiteAutocomplete.cancelCall = '';
-                    $website.classList.remove('autocomplete-loading');
-                    $('.autocomplete-suggestions .website').show();
-                });
-            },
-            renderItem: (item, search) => {
-                search = search.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
-                const re = new RegExp('(' + search.split(' ').join('|') + ')', 'gi');
-                return [
-                    '<div class="autocomplete-suggestion website"',
-                    'data-id="' + item.id + '"',
-                    'data-val="' + item.name + '"',
-                    'data-pa="' + item.pa + '"',
-                    'data-pa_name="' + item.pa_name + '">',
-                    item.name.replace(re, "<b>$1</b>") + ' - ' + item.slug.replace(re, "<b>$1</b>"),
-                    '</div>'
-                ].join('');
-            },
-            onSelect: (e, term, item) => {
-                $websiteId.value = item.getAttribute('data-id');
-                filters.website = $website.value;
-                filters.website_id = item.getAttribute('data-id');
-                if ($publicAdministration && !$publicAdministration.value) {
-                    $publicAdministration.value = item.getAttribute('data-pa_name');
-                    if ($ipaCode) {
-                        $ipaCode.value = item.getAttribute('data-pa');
-                        filters.pa = $publicAdministration.value;
-                        filters.ipa_code = item.getAttribute('data-pa');
-                    }
-                }
-                filter && filter();
-            },
-            resetInfo: () => {
-                $websiteId.value = '';
-                delete filters.website;
+        websiteIdInput.addEventListener('input', () => {
+            if (filters.website_id) {
                 delete filters.website_id;
-            }
-        });
-    }
-
-    const initUserFilter = ($user, $userUuid) => {
-        if (!$user || !$userUuid) {
-            return;
-        }
-
-        filters.user = $user.value;
-        filters.user_uuid = $userUuid.value;
-
-        $user.addEventListener('input', () => {
-            if ($userUuid) {
-                if (filters.user_uuid) {
-                    $userUuid.value = '';
-                    delete filters.user;
-                    delete filters.user_uuid;
-                    filter && filter();
-                }
-            }
-        });
-
-        const userAutocomplete = new window.autoComplete({
-            selector: $user,
-            minChars: 3,
-            menuClass: 'user',
-            cancelCall: '',
-            source: (term, suggest) => {
-                term = term.toLowerCase();
-                $user.classList.add('autocomplete-loading');
-                if (userAutocomplete.cancelCall) {
-                    userAutocomplete.cancelCall.cancel();
-                }
-                userAutocomplete.cancelCall = window.axios.CancelToken.source();
-                window.axios({
-                    cancelToken: userAutocomplete.cancelCall.token,
-                    method: 'GET',
-                    url: $user.getAttribute('data-source'),
-                    params: {
-                        q: term,
-                        p: filters.ipa_code || null,
-                    },
-                }).then((response) => {
-                    suggest(response.data);
-                    $('.autocomplete-suggestions .user').hide();
-                    userAutocomplete.resetInfo();
-                }).catch((error) =>{
-                    if (!window.axios.isCancel(error)) {
-                        //TODO:
-                    }
-                }).finally(() => {
-                    userAutocomplete.cancelCall = '';
-                    $user.classList.remove('autocomplete-loading');
-                    $('.autocomplete-suggestions .user').show();
-                });
-            },
-            renderItem: (item, search) => {
-                search = search.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
-                const re = new RegExp('(' + search.split(' ').join('|') + ')', 'gi');
-                return [
-                    '<div class="autocomplete-suggestion user"',
-                    'data-uuid="' + item.uuid + '"',
-                    'data-val="' + item.family_name + ' ' + item.name + '">',
-                    item.family_name.replace(re, "<b>$1</b>") + ' ' + item.name.replace(re, "<b>$1</b>"),
-                    '</div>'
-                ].join('');
-            },
-            onSelect: (e, term, item) => {
-                $userUuid.value = item.getAttribute('data-uuid');
-                filters.user = $user.value;
-                filters.user_uuid = item.getAttribute('data-uuid');
                 filter && filter();
-            },
-            resetInfo: () => {
-                $userUuid.value = '';
-                delete filters.user;
-                delete filters.user_uuid;
             }
         });
     }
 
-    const initInputs = ($filtersContainer) => {
-        if (!$filtersContainer) {
+    const initUserFilter = (userUuidInput, ipaCodeInput) => {
+        if (!userUuidInput || !ipaCodeInput) {
             return;
         }
 
-        const showPA = $filtersContainer.getAttribute('data-show-pa');
-        const $message = document.querySelector('input[name="message"]');
-        const $startDate = document.querySelector('input[name="start_date"]');
-        const $startTime = document.querySelector('input[name="start_time"]');
-        const $endDate = document.querySelector('input[name="end_date"]');
-        const $endTime = document.querySelector('input[name="end_time"]');
-        const $publicAdministration = showPA ? document.querySelector('input[name="pa"]') : null;
-        const $ipaCode = showPA ? document.querySelector('input[name="ipa_code"]') : null;
-        const $website = document.querySelector('input[name="website"]');
-        const $websiteId = document.querySelector('input[name="website_id"]');
-        const $user = document.querySelector('input[name="user"]');
-        const $userUuid = document.querySelector('input[name="user_uuid"]');
+        const handleSelectedUser = selectedUser => {
+            filters.user_uuid = selectedUser.uuid;
+            filter && filter();
+        };
 
-        initMessageFilter($message);
-        initDateFilter($startDate);
-        initDateFilter($endDate);
-        initTimeFilter($startTime);
-        initTimeFilter($endTime);
-
-        if (showPA) {
-            initPublicAdministrationFilter($publicAdministration, $ipaCode, $website, $websiteId, $user, $userUuid);
+        const userSchema = {
+            title: ['name', 'family_name'],
         }
-        initWebsiteFilter($website, $websiteId, $publicAdministration, $ipaCode);
-        initUserFilter($user, $userUuid);
+
+        Autocomplete.init(userUuidInput, userSchema, {
+            handleSelectedResult: handleSelectedUser,
+            queryParameters: {
+                public_administration: ipaCodeInput.value,
+            }
+        });
+
+        userUuidInput.addEventListener('input', () => {
+            if (filters.user_uuid) {
+                delete filters.user_uuid;
+                filter && filter();
+            }
+        });
     }
 
-    const initSelects = () => {
-        const $event = document.querySelector('select[name="event"]');
-        const $exceptionType = document.querySelector('select[name="exception_type"]');
-        const $job = document.querySelector('select[name="job"]');
-        const $severity = document.querySelector('select[name="severity"]');
+    const initInputs = filtersContainer => {
+        if (!filtersContainer) {
+            return;
+        }
+
+        const messageInput = filtersContainer.querySelector('input[name="message"]');
+        const startDateInput = filtersContainer.querySelector('input[name="start_date"]');
+        const startTimeInput = filtersContainer.querySelector('input[name="start_time"]');
+        const endDateInput = filtersContainer.querySelector('input[name="end_date"]');
+        const endTimeInput = filtersContainer.querySelector('input[name="end_time"]');
+        const ipaCodeInput = filtersContainer.querySelector('input[name="ipa_code"]');
+        const websiteIdInput = filtersContainer.querySelector('input[name="website_id"]');
+        const userUuidInput = filtersContainer.querySelector('input[name="user_uuid"]');
+
+        initMessageFilter(messageInput);
+        initDateInput(startDateInput);
+        initDateInput(endDateInput);
+        initDateFilter(startDateInput);
+        initDateFilter(endDateInput);
+        initTimeFilter(startTimeInput);
+        initTimeFilter(endTimeInput);
+        initIpaCodeFilter(ipaCodeInput);
+        initIpaCodeFilterResetLink(ipaCodeInput);
+        initWebsiteFilter(websiteIdInput, ipaCodeInput);
+        initUserFilter(userUuidInput, ipaCodeInput);
+    }
+
+    const initSelects = filtersContainer => {
+        if (!filtersContainer) {
+            return;
+        }
+
+        const eventSelect = filtersContainer.querySelector('select[name="event"]');
+        const exceptionTypeSelect = filtersContainer.querySelector('select[name="exception_type"]');
+        const jobSelect = filtersContainer.querySelector('select[name="job"]');
+        const severitySelect = filtersContainer.querySelector('select[name="severity"]');
 
         // Enable/disable jobs and events selects
         // since they are mutually exclusive
-        if ($event && $job) {
-            $event.addEventListener('change', (event) => {
-                if (event.target.value) {
-                    $job.setAttribute('disabled', '');
-                    $job.setAttribute('aria-disabled', 'true');
+        if (eventSelect && jobSelect) {
+            eventSelect.addEventListener('change', () => {
+                if (eventSelect.value) {
+                    disableSelect(jobSelect);
                     delete filters.job;
                 } else {
-                    $job.removeAttribute('disabled');
-                    $job.removeAttribute('aria-disabled');
-                    filters.job = $job && $job.value;
+                    enableSelect(jobSelect);
                 }
             });
 
-            $job.addEventListener('change', (event) => {
-                if (event.target.value) {
-                    $event.setAttribute('disabled', '');
-                    $event.setAttribute('aria-disabled', 'true');
+            jobSelect.addEventListener('change', () => {
+                if (jobSelect.value) {
+                    disableSelect(eventSelect);
                     delete filters.event;
                     delete filters.exception_type;
                 } else {
-                    $event.removeAttribute('disabled');
-                    $event.removeAttribute('aria-disabled');
-                    filters.event = $event && $event.value;
-                    filters.exception_type = $exceptionType && $exceptionType.value;
+                    enableSelect(eventSelect);
                 }
             });
         }
 
         // Enable/disable exception select since it can
         // be selected only with event type 'Exception'
-        if ($event && $exceptionType) {
-            $event.addEventListener('change', () => {
-                const option = $event.options[$event.selectedIndex];
-                if (option.getAttribute('type') && option.getAttribute('type') === 'exception') {
-                    $exceptionType.removeAttribute('disabled');
-                    $exceptionType.removeAttribute('aria-disabled');
-                    filters.exception_type = $exceptionType.value;
+        if (eventSelect && exceptionTypeSelect) {
+            eventSelect.addEventListener('change', () => {
+                const option = eventSelect.options[eventSelect.selectedIndex];
+
+                if (option.dataset.type && 'exception' === option.dataset.type) {
+                    enableSelect(exceptionTypeSelect);
+                    exceptionTypeSelect.value && (filters.exception_type = exceptionTypeSelect.value);
                 } else {
-                    $exceptionType.setAttribute('disabled', '');
-                    $exceptionType.setAttribute('aria-disabled', 'true');
+                    disableSelect(exceptionTypeSelect);
                     delete filters.exception_type;
                 }
             });
         }
 
-        if ($event) {
-            filters.event = $event.value;
-            $event.addEventListener('change', () => {
-                filters.event = $event.value;
+        if (eventSelect) {
+            eventSelect.addEventListener('change', () => {
+                if (!eventSelect.value.trim()) {
+                    delete filters.event;
+                } else {
+                    filters.event = eventSelect.value;
+                }
+
                 filter && filter();
             });
         }
-        if ($exceptionType) {
-            filters.exception_type = $exceptionType.value;
-            $exceptionType.addEventListener('change', () => {
-                filters.exception_type = $exceptionType.value;
+
+        if (exceptionTypeSelect) {
+            exceptionTypeSelect.addEventListener('change', () => {
+                if (!exceptionTypeSelect.value.trim()) {
+                    delete filters.exception_type;
+                } else {
+                    filters.exception_type = exceptionTypeSelect.value;
+                }
+
                 filter && filter();
             });
         }
-        if ($job) {
-            filters.job = $job.value;
-            $job.addEventListener('change', () => {
-                filters.job = $job.value;
+
+        if (jobSelect) {
+            jobSelect.addEventListener('change', () => {
+                if (!jobSelect.value.trim()) {
+                    delete filters.job;
+                } else {
+                    filters.job = jobSelect.value;
+                }
+
                 filter && filter();
             });
         }
-        if ($severity) {
-            filters.severity = $severity.value;
-            $severity.addEventListener('change', () => {
-                filters.severity = $severity.value;
+
+        if (severitySelect) {
+            severitySelect.addEventListener('change', () => {
+                if (!severitySelect.value.trim()) {
+                    delete filters.severity;
+                } else {
+                    filters.severity = severitySelect.value;
+                }
+
                 filter && filter();
             });
         }
     }
 
-    const initFilters = ($filtersContainer) => {
-        initInputs($filtersContainer);
-        initSelects();
+    const enableSelect = selectElement => {
+        const bootstrapSelect = selectElement.parentNode.classList.contains('bootstrap-select') && selectElement.parentNode;
+        const bootstrapSelectWrapper = bootstrapSelect.parentNode.classList.contains('bootstrap-select-wrapper') && bootstrapSelect.parentNode;
+        const selectButton = bootstrapSelect.querySelector('button.dropdown-toggle');
+
+        selectElement.disabled = false;
+        selectElement.setAttribute('aria-disabled', false);
+
+        if (bootstrapSelect && bootstrapSelectWrapper && selectButton) {
+            bootstrapSelect.classList.remove('disabled');
+            bootstrapSelectWrapper.classList.remove('disabled');
+            selectButton.classList.remove('disabled');
+            selectButton.setAttribute('aria-disabled', false);
+        }
     }
 
-    const addFilters = (data) => {
-        Object.keys(filters).forEach((key) => {
-            data[key] = filters[key];
+    const disableSelect = selectElement => {
+        const bootstrapSelect = selectElement.parentNode.classList.contains('bootstrap-select') && selectElement.parentNode;
+        const bootstrapSelectWrapper = bootstrapSelect.parentNode.classList.contains('bootstrap-select-wrapper') && bootstrapSelect.parentNode;
+        const selectButton = bootstrapSelect.querySelector('button.dropdown-toggle');
+
+        selectElement.disabled = true;
+        selectElement.setAttribute('aria-disabled', true);
+
+        if (bootstrapSelect && bootstrapSelectWrapper && selectButton) {
+            bootstrapSelect.classList.add('disabled');
+            bootstrapSelectWrapper.classList.add('disabled');
+            selectButton.classList.add('disabled');
+            selectButton.setAttribute('aria-disabled', true);
+        }
+    }
+
+    const initFilters = filtersContainer => {
+        initInputs(filtersContainer);
+        initSelects(filtersContainer);
+    }
+
+    const addFilters = data => {
+        Object.keys(filters).map(filterName => {
+            data[filterName] = filters[filterName];
         });
-        return data;
     }
 
-    const preDatatableInit = (datatableApi) => {
-        const $filtersContainer = document.getElementById('filters');
-        if (!$filtersContainer) {
+    const preDatatableInit = datatableApi => {
+        const filtersContainer = document.getElementById('log-filters');
+        if (!filtersContainer) {
             return;
         }
 
-        initFilters($filtersContainer);
+        initFilters(filtersContainer);
 
         datatableApi.on('preXhr.dt', (event, settings, data) => {
             addFilters(data);
         }).on('xhr.dt', (event, settings, json, xhr) => {
             if (!json) {
                 const jsonResponse = JSON.parse(xhr.responseText);
-                if (typeof jsonResponse.errors === 'object') {
-                    Object.keys(jsonResponse.errors).forEach((key) => {
-                        const element = document.getElementsByName(key);
-                        if (element && element[0]) {
-                            element[0].setCustomValidity(jsonResponse.errors[key][0]);
+                if ('object' === typeof jsonResponse.errors) {
+                    Object.keys(jsonResponse.errors).map(name => {
+                        const element = document.querySelector(`[name="${name}"]`);
+                        if (element) {
+                            const invalidFeedbackElement = element.closest('.form-group').querySelector('.invalid-feedback');
+                            invalidFeedbackElement.textContent = jsonResponse.errors[name][0];
+                            invalidFeedbackElement.style.display = 'block';
                         }
                     });
                 } else {
-                    console.error(jsonResponse.errors); // eslint-disable-line
+                    console.error(jsonResponse.errors); // eslint-disable-line no-console
                 }
             }
         });
 
-        filter = $.fn.dataTable.util.throttle(
-            () => {
-                datatableApi.ajax.reload();
-            },
-            350
-        );
+        filter = $.fn.dataTable.util.throttle(() => {
+            [...filtersContainer.querySelectorAll('.invalid-feedback')].map(invalidFeedbackElement => {
+                invalidFeedbackElement.style.display = 'none';
+            });
+
+            datatableApi.ajax.reload();
+        }, 350);
     }
 
     return { preDatatableInit };

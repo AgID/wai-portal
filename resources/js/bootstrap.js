@@ -2,6 +2,7 @@ import axios from 'axios';
 import { cacheAdapterEnhancer } from 'axios-extensions';
 import 'bootstrap-italia';
 import Notification from './notification';
+import I18n from './i18n';
 
 /**
  * Keep jQuery in the window object for legacy scripts
@@ -26,16 +27,18 @@ window.axios = axios.create({
 window.axios.interceptors.response.use(
     response => response,
     error => {
-        if (401 === error.response.status) {
-            Notification.showNotification(
-                'Sessione scaduta',
-                'La sessione è scaduta a causa di inattività sulla pagina. <a href="#" onclick="location.reload(true);return false;">Ricarica la pagina</a> per continuare.',
-                'error',
-                'close-circle',
-                false,
-                'top-fix'
-            );
+        if (axios.isCancel(error)) {
+            // request deduped
+        } else if (401 === error.response.status) {
+            Notification.showNotification(I18n.t('sessione scaduta'), [
+                I18n.t('La sessione è scaduta a causa di inattività sulla pagina.'),
+                ' <a href="#" onclick="location.reload(true);return false;">',
+                I18n.t('Ricarica la pagina'),
+                '</a> ',
+                I18n.t('per continuare.'),
+            ].join(''), 'error', 'it-close-circle', false);
         }
+
         return Promise.reject(error);
     }
 );
@@ -50,11 +53,11 @@ window.axios.CancelToken = axios.CancelToken;
  * a simple convenience so we don't have to attach every token manually.
  */
 
-let token = document.head.querySelector('meta[name="csrf-token"]');
+const token = document.head.querySelector('meta[name="csrf-token"]');
 
 if (token) {
     window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
 } else {
     // eslint-disable-next-line no-console
-    console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
+    console.error('CSRF token not found');
 }
