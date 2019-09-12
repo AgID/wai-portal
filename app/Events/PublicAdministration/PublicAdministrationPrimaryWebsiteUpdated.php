@@ -8,7 +8,7 @@ use App\Models\Website;
 /**
  * Public Administration primary website changed event.
  */
-class PublicAdministrationWebsiteUpdated extends AbstractPublicAdministrationEvent
+class PublicAdministrationPrimaryWebsiteUpdated extends AbstractPublicAdministrationEvent
 {
     /**
      * The current primary website.
