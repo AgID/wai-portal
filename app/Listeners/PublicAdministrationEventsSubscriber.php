@@ -5,10 +5,10 @@ namespace App\Listeners;
 use App\Enums\Logs\EventType;
 use App\Events\PublicAdministration\PublicAdministrationActivated;
 use App\Events\PublicAdministration\PublicAdministrationActivationFailed;
+use App\Events\PublicAdministration\PublicAdministrationPrimaryWebsiteUpdated;
 use App\Events\PublicAdministration\PublicAdministrationPurged;
 use App\Events\PublicAdministration\PublicAdministrationRegistered;
 use App\Events\PublicAdministration\PublicAdministrationUpdated;
-use App\Events\PublicAdministration\PublicAdministrationWebsiteUpdated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Events\Dispatcher;
 
@@ -91,9 +91,9 @@ class PublicAdministrationEventsSubscriber implements ShouldQueue
     /**
      * Public Administration primary site changed callback.
      *
-     * @param PublicAdministrationWebsiteUpdated $event the public administration primary site updated event
+     * @param PublicAdministrationPrimaryWebsiteUpdated $event the public administration primary site updated event
      */
-    public function onPrimaryWebsiteUpdated(PublicAdministrationWebsiteUpdated $event): void
+    public function onPrimaryWebsiteUpdated(PublicAdministrationPrimaryWebsiteUpdated $event): void
     {
         //TODO: decidere come gestire i cambiamenti del sito istituzionale su IPA
         $publicAdministration = $event->getPublicAdministration();
@@ -149,7 +149,7 @@ class PublicAdministrationEventsSubscriber implements ShouldQueue
         );
 
         $events->listen(
-            'App\Events\PublicAdministration\PublicAdministrationWebsiteUpdated',
+            'App\Events\PublicAdministration\PublicAdministrationPrimaryWebsiteUpdated',
             'App\Listeners\PublicAdministrationEventsSubscriber@onUpdated'
         );
         $events->listen(

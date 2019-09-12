@@ -5,8 +5,8 @@ namespace App\Jobs;
 use App\Enums\Logs\JobType;
 use App\Enums\WebsiteType;
 use App\Events\Jobs\PublicAdministrationsUpdateFromIpaCompleted;
+use App\Events\PublicAdministration\PublicAdministrationPrimaryWebsiteUpdated;
 use App\Events\PublicAdministration\PublicAdministrationUpdated;
-use App\Events\PublicAdministration\PublicAdministrationWebsiteUpdated;
 use App\Models\PublicAdministration;
 use App\Traits\InteractsWithRedisIndex;
 use Illuminate\Bus\Queueable;
@@ -115,7 +115,7 @@ class ProcessPublicAdministrationsUpdateFromIpa implements ShouldQueue
                 'old' => $primaryWebsite->url,
                 'new' => $updatedPublicAdministration['site'],
             ];
-            event(new PublicAdministrationWebsiteUpdated($publicAdministration, $primaryWebsite, $updatedPublicAdministration['site']));
+            event(new PublicAdministrationPrimaryWebsiteUpdated($publicAdministration, $primaryWebsite, $updatedPublicAdministration['site']));
         }
 
         if (!empty($updates)) {

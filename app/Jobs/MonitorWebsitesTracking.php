@@ -84,8 +84,8 @@ class MonitorWebsitesTracking implements ShouldQueue
                                 ],
                             ];
                         }
-                        $website->status = WebsiteStatus::ARCHIVED;
 
+                        $website->status = WebsiteStatus::ARCHIVED;
                         $analyticsService->changeArchiveStatus($website->analytics_id, WebsiteStatus::ARCHIVED);
                         $website->save();
 
