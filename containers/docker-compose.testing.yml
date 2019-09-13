@@ -7,6 +7,12 @@ volumes:
   application-logs:
     driver: local
     external: true
+  application-mariadb-data:
+    driver: local
+    external: true
+  application-elastic-data:
+    driver: local
+    external: true
 
 services:
 # php-fpm
@@ -28,3 +34,13 @@ services:
         volume:
           nocopy: true
       - application-logs:${APP_LOGS_PATH_CONTAINER}
+
+# mariadb
+  mariadb:
+    volumes:
+      - application-mariadb-data:/var/lib/mysql
+
+# elasticsearch
+  elasticsearch:
+    volumes:
+      - application-elastic-data:/usr/share/elasticsearch/data

@@ -201,10 +201,11 @@
             <equals arg1="${env.APP_ENV}" arg2="testing"/>
             <then>
                 <echo msg="Copying application files to application-code volume"/>
-                <exec command="docker run -v application-code:/var/www/ -v application-logs:/var/log/ --name application-container busybox mkdir -p /var/log/nginx" checkreturn="true"/>
+                <exec command="docker run -v application-code:/var/www/ -v application-logs:/var/log/ -v application-mariadb-data:/opt/containers/data/mariadb -v application-elastic-data:/opt/containers/data/elasticsearch --name application-container busybox mkdir -p /var/log/nginx" checkreturn="true"/>
                 <exec command="docker cp app application-container:/var/www/" checkreturn="true"/>
                 <exec command="docker cp bootstrap application-container:/var/www/" checkreturn="true"/>
                 <exec command="docker cp config application-container:/var/www/" checkreturn="true"/>
+                <exec command="docker cp containers application-container:/opt/" checkreturn="true"/>
                 <exec command="docker cp database application-container:/var/www/" checkreturn="true"/>
                 <exec command="docker cp public application-container:/var/www/" checkreturn="true"/>
                 <exec command="docker cp resources application-container:/var/www/" checkreturn="true"/>
@@ -342,6 +343,39 @@
         <!-- Execute phpunit to run unit tests -->
         <echo msg="Running unit tests [PHPUnit]..."/>
         <exec command="docker-compose exec php-fpm vendor/phpunit/phpunit/phpunit" dir="containers" passthru="true" checkreturn="true"/>
+        <!-- Restore the Users/Websites indexes after tests -->
+        <if>
+            <equals arg1="${env.APP_ENV}" arg2="local"/>
+            <then>
+                <echo msg="Restoring User list after tests..."/>
+                <exec command="docker-compose exec php-fpm php artisan app:update-users" dir="containers" passthru="true" checkreturn="true"/>
+                <echo msg="Restoring Website list after tests..."/>
+                <exec command="docker-compose exec php-fpm php artisan app:update-websites" dir="containers" passthru="true" checkreturn="true"/>
+            </then>
+        </if>
+    </target>
+
+    <!-- Target: test -->
+    <target name="browser-test">
+        <echo msg="Browser testing..."/>
+        <!-- Check if we are in the right environment -->
+        <if>
+            <not>
+                <or>
+                    <equals arg1="${env.APP_ENV}" arg2="local"/>
+                    <equals arg1="${env.APP_ENV}" arg2="testing"/>
+                </or>
+            </not>
+            <then>
+                <fail message="Testing not allowed in environments other than local or testing"/>
+            </then>
+        </if>
+        <!-- Set permissions -->
+        <echo msg="Setting permissions..."/>
+        <exec command="docker-compose exec php-fpm bash -c 'rm -f database/testing.sqlite; touch database/testing.sqlite'" dir="containers"/>
+        <exec command="docker-compose exec php-fpm bash -c 'touch storage/logs/testing.log'" dir="containers"/>
+        <exec command="docker-compose exec php-fpm chown -R www-data:www-data storage" dir="containers" passthru="true" checkreturn="true"/>
+        <exec command="docker-compose exec php-fpm chown -R www-data:www-data database" dir="containers" passthru="true" checkreturn="true"/>
         <!-- Execute dusk to run browser tests -->
         <echo msg="Running browser tests [Laravel Dusk]..."/>
         <exec command="docker-compose exec php-fpm php artisan dusk" dir="containers" passthru="true" checkreturn="true"/>

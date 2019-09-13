@@ -83,7 +83,6 @@ services:
     image: mariadb
     volumes:
       - ${DATA_PATH_HOST}/mariadb:/var/lib/mysql
-      - ${APP_LOGS_PATH_HOST}:${APP_LOGS_PATH_CONTAINER}
       - matomo-install:/opt/matomo-install/
     environment:
       - MYSQL_DATABASE=${MARIADB_DATABASE}
@@ -155,8 +154,8 @@ services:
       - "${SPID_TESTENV_PORT}:8088"
     networks:
       - frontend
-      
-# ElasticSearch
+
+# elasticsearch
   elasticsearch:
     image: wai-elasticsearch:dev
     build:
@@ -180,6 +179,7 @@ services:
     networks:
       - backend
 
+# kiabana
   kibana:
     image: wai-kibana:dev
     build:

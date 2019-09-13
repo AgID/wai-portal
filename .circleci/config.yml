@@ -33,7 +33,7 @@ commands:
             bin/php-cs-fixer fix --diff --dry-run --verbose || (echo "Coding standards are not respected. Run PHP-CS-Fixer to fix." && exit 1)
 
   install_node:
-    description: Ensure all javascript dependencies are installed
+    description: Ensure node is installed
     steps:
       - run:
           name: Install node version defined in .node-version
@@ -54,6 +54,17 @@ commands:
           paths:
             - ./node_modules
           key: v1-node-{{ checksum "package-lock.json" }}
+
+  copy_application_data:
+    description: Copy application data from docker to the workspace
+    steps:
+      - run:
+          name: Copy data from docker container
+          command: |
+            mkdir -p containers/data/mariadb/
+            mkdir -p containers/data/elasticsearch/
+            docker cp `docker-compose -f containers/docker-compose.yml --project-directory containers ps -q mariadb`:/var/lib/mysql/. containers/data/mariadb/
+            docker cp `docker-compose -f containers/docker-compose.yml --project-directory containers ps -q elasticsearch`:/usr/share/elasticsearch/data/. containers/data/elasticsearch/
 
   store_test_artifacts:
     description: Save artifacts from tests for debug purposes
@@ -79,7 +90,7 @@ commands:
           destination: unit-tests/coverage/clover.xml
 
 jobs:
-  build_and_test:
+  build:
     docker:
       - image: circleci/php:7.3-cli
     environment:
@@ -96,14 +107,74 @@ jobs:
       - run:
           name: Run build task
           command: bin/phing build
+      - copy_application_data
+      - persist_to_workspace:
+          root: .
+          paths:
+            - containers/data
+
+  test:
+    docker:
+      - image: circleci/php:7.3-cli
+    environment:
+      - APP_ENV: "testing"
+    steps:
+      - checkout
+      - restore_all_caches
+      - composer
+      - install_node
+      - attach_workspace:
+          at: .
+      - setup_remote_docker
+      # prepare
+      - run:
+          name: Run prepare task
+          command: bin/phing prepare
+      # start
+      - run:
+          name: Run start task
+          command: bin/phing start
       # test
       - run:
-          name: Run phpunit and dusk tests
+          name: Run phpunit tests
           command: bin/phing test
+      - store_test_artifacts
+
+  browser-test:
+    docker:
+      - image: circleci/php:7.3-cli
+    environment:
+      - APP_ENV: "testing"
+    steps:
+      - checkout
+      - restore_all_caches
+      - composer
+      - install_node
+      - attach_workspace:
+          at: .
+      - setup_remote_docker
+      # prepare
+      - run:
+          name: Run prepare task
+          command: bin/phing prepare
+       # start
+      - run:
+          name: Run start task
+          command: bin/phing start
+      # browser test
+      - run:
+          name: Run dusk tests
+          command: bin/phing browser-test
       - store_test_artifacts
 
 workflows:
   version: 2
   build_and_test:
     jobs:
-      - build_and_test
+      - build
+      - test:
+          requires:
+            - build
+      - browser-test:
+          requires:
+            - build
