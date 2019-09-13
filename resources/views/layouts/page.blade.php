@@ -2,8 +2,8 @@
 
 @section('page-content')
     @include('layouts.includes.header', [
-        'navbar' => auth()->check() || app()->make('SPIDAuth')->isAuthenticated(),
         'authUser' => auth()->user(),
+        'spidAuthUser' => app()->make('SPIDAuth')->getSPIDUser(),
         'hasActivePublicAdministration' => session()->has('tenant_id') && auth()->user()->status->is(UserStatus::ACTIVE),
     ])
 

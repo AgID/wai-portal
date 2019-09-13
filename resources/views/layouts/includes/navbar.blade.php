@@ -14,6 +14,7 @@
                             <button class="btn close-menu" type="button"><span class="it-close"></span>{{ __('chiudi') }}</button>
                         </div>
                         <div class="menu-wrapper">
+                            @if ($authUser || $spidAuthUser)
                             <ul class="navbar-nav primary">
                                 @foreach ($primaryMenuArray as $primaryMenuItem)
                                 <li class="nav-item">
@@ -25,6 +26,7 @@
                                 </li>
                                 @endforeach
                             </ul>
+                            @endif
                             @unless($isSuperAdmin)
                             <ul class="navbar-nav secondary ml-auto">
                                 @foreach (config('site.menu_items.secondary') as $secondaryMenuItem)
