@@ -52,15 +52,15 @@
                         </div>
                         --}}
                         <div class="it-access-top-wrapper">
-                            @if (app()->make('SPIDAuth')->isAuthenticated())
+                            @if ($spidAuthUser)
                                 @auth
                                 @include('layouts.includes.user_menu')
                                 @else
                                 @include('layouts.includes.user_menu', [
-                                    'authUser' => tap(app()->make('SPIDAuth')->getSPIDUser(), function($authUser) {
-                                        return $authUser->full_name = implode(' ', [
-                                            $authUser->name,
-                                            $authUser->familyName,
+                                    'authUser' => tap($spidAuthUser, function($spidAuthUser) {
+                                        return $spidAuthUser->full_name = implode(' ', [
+                                            $spidAuthUser->name,
+                                            $spidAuthUser->familyName,
                                         ]);
                                     })
                                 ])

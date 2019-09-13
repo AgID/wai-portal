@@ -5,6 +5,7 @@
         'navbar' => false,
         'tallHeader' => true,
         'authUser' => auth()->user(),
+        'spidAuthUser' => app()->make('SPIDAuth')->getSPIDUser(),
         'hasActivePublicAdministration' => session()->has('tenant_id') && auth()->user()->status->is(UserStatus::ACTIVE),
     ])
 

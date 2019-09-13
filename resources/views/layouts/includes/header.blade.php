@@ -7,7 +7,7 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="it-header-center-content-wrapper">
-                            <div class="it-brand-wrapper{{ $navbar ? '' : ' p-0' }}">
+                            <div class="it-brand-wrapper{{ $navbar ?? true ? '' : ' p-0' }}">
                                 <a href="{{ url('/') }}">
                                     <img alt="{{ config('app.name') }} - logo" class="icon" src="{{ asset(config('site.logo')) }}">
                                     <div class="it-brand-text">
@@ -40,7 +40,7 @@
                 </div>
             </div>
         </div>
-        @includeWhen($navbar, 'layouts.includes.navbar', [
+        @includeWhen($navbar ?? true, 'layouts.includes.navbar', [
             $isSuperAdmin = isset($authUser) && $authUser->isA(UserRole::SUPER_ADMIN),
         ])
     </div>
