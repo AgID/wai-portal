@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Events\User\UserInvited;
 use App\Listeners\CheckPendingWebsiteJobsEventsSubscriber;
 use App\Listeners\CheckWebsitesMonitoringJobEventsSubscriber;
+use App\Listeners\LogSentMessage;
 use App\Listeners\PublicAdministrationEventsSubscriber;
 use App\Listeners\SendInvitationNotification;
 use App\Listeners\SPIDEventSubscriber;
@@ -16,6 +17,7 @@ use App\Listeners\WebsitesJobEventSubscriber;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use Illuminate\Mail\Events\MessageSent;
 
 /**
  * The application event provider.
@@ -33,6 +35,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         UserInvited::class => [
             SendInvitationNotification::class,
+        ],
+        MessageSent::class => [
+            LogSentMessage::class,
         ],
     ];
 
