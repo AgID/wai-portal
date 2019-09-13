@@ -178,7 +178,7 @@ class SuperAdminUserController extends Controller
         ]);
         $user->save();
 
-        return redirect()->route('admin.users.index')->withAlert(['success' => "L'utente amministratore " . $user->getInfo() . ' è stato modificato.']); //TODO: put message in lang file
+        return redirect()->route('admin.users.index')->withAlert(['success' => "L'utente amministratore " . $user->info . ' è stato modificato.']); //TODO: put message in lang file
     }
 
     /**

@@ -204,7 +204,7 @@ class User extends Authenticatable implements MustVerifyEmail
      *
      * @return string the printable user representation
      */
-    public function getInfo(): string
+    public function getInfoAttribute(): string
     {
         return $this->full_name . ' [' . $this->email . ']';
     }
