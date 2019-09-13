@@ -71,6 +71,7 @@ class RegisterTest extends TestCase
                 'accept_terms',
             ])
             ->assertRedirect(route('home'));
+
         Event::assertNotDispatched(Registered::class);
     }
 }

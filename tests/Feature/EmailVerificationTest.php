@@ -3,11 +3,12 @@
 namespace Tests\Feature;
 
 use App\Models\User;
+use App\Notifications\VerifyEmail;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\URL;
 use Italia\SPIDAuth\SPIDUser;
 use Tests\TestCase;
@@ -75,20 +76,19 @@ class EmailVerificationTest extends TestCase
      */
     public function testEmailVerificationFailWrongEmail(): void
     {
-        // Avoid mail sending on user update
-        Mail::fake();
+        Notification::fake();
         $oldEmail = $this->user->email;
         $this->user->email = 'new@email.com';
         $this->user->save();
 
+        Notification::assertSentTo($this->user, VerifyEmail::class);
+
         $signedUrl = URL::temporarySignedRoute(
             'verification.verify',
-            Carbon::now()->addMinutes(Config::get('auth.verification.expire', 60)),
-            [
+            Carbon::now()->addMinutes(Config::get('auth.verification.expire', 60)), [
                 'uuid' => $this->user->uuid,
                 'hash' => base64_encode(Hash::make($oldEmail)),
-            ],
-            );
+            ]);
 
         $response = $this->actingAs($this->user)
             ->withSession([
