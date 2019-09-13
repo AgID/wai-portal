@@ -10,6 +10,7 @@ use App\Events\PublicAdministration\PublicAdministrationActivated;
 use App\Events\PublicAdministration\PublicAdministrationPurged;
 use App\Events\User\UserActivated;
 use App\Events\User\UserWebsiteAccessChanged;
+use App\Events\Website\WebsitePurged;
 use App\Events\Website\WebsitePurging;
 use App\Exceptions\CommandErrorException;
 use App\Jobs\ProcessPendingWebsites;
@@ -78,6 +79,10 @@ class ProcessPendingWebsitesTest extends TestCase
             return json_decode($event->getPublicAdministrationJson())->ipa_code === $publicAdministration->ipa_code;
         });
 
+        Event::assertDispatched(WebsitePurged::class, function ($event) use ($website) {
+            return json_decode($event->getWebsiteJson())->slug === $website->slug;
+        });
+
         $purgedUser = User::findByFiscalNumber($user->fiscal_number);
         $this->assertFalse($purgedUser->hasAnalyticsServiceAccount());
 
@@ -93,6 +98,14 @@ class ProcessPendingWebsitesTest extends TestCase
 
         $this->assertDatabaseHas('users', [
             'id' => $user->id,
+        ]);
+
+        $this->assertDatabaseMissing('websites', [
+            'slug' => $website->slug,
+        ]);
+
+        $this->assertDatabaseMissing('public_administrations', [
+            'ipa_code' => $publicAdministration->ipa_code,
         ]);
     }
 
