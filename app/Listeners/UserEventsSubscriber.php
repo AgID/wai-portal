@@ -170,7 +170,7 @@ class UserEventsSubscriber
         $website = $event->getWebsite();
         $accessType = $event->getAccessType();
         logger()->notice(
-            'Granted "' . $accessType->description . '" access for website ' . $website->getInfo() . ' to user ' . $user->uuid,
+            'Granted "' . $accessType->description . '" access for website ' . $website->info . ' to user ' . $user->uuid,
             [
                 'event' => EventType::USER_WEBSITE_ACCESS_CHANGED,
                 'user' => $user->uuid,

@@ -97,7 +97,7 @@ class Website extends Model
      *
      * @return string the printable website representation
      */
-    public function getInfo(): string
+    public function getInfoAttribute(): string
     {
         return '"' . $this->name . '" [' . $this->slug . ']';
     }

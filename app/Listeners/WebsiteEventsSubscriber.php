@@ -50,7 +50,7 @@ class WebsiteEventsSubscriber implements ShouldQueue
         $this->updateWebsitesIndex($website);
 
         logger()->notice(
-            'Website ' . $website->getInfo() . ' added of type ' . $website->type->description,
+            'Website ' . $website->info . ' added of type ' . $website->type->description,
             [
                 'event' => EventType::WEBSITE_ADDED,
                 'website' => $website->id,
@@ -77,7 +77,7 @@ class WebsiteEventsSubscriber implements ShouldQueue
 //        }
 
         logger()->notice(
-            'Website ' . $website->getInfo() . ' activated',
+            'Website ' . $website->info . ' activated',
             [
                 'event' => EventType::WEBSITE_ACTIVATED,
                 'website' => $website->id,
@@ -96,7 +96,7 @@ class WebsiteEventsSubscriber implements ShouldQueue
         $website = $event->getWebsite();
         if ($website->isDirty('status')) {
             logger()->notice(
-                'Website ' . $website->getInfo() . ' status changed from "' . WebsiteStatus::getDescription($website->status->getOriginal()) . '" to "' . $website->status->description . '"',
+                'Website ' . $website->info . ' status changed from "' . WebsiteStatus::getDescription($website->status->getOriginal()) . '" to "' . $website->status->description . '"',
                 [
                     'event' => EventType::WEBSITE_STATUS_CHANGED,
                     'website' => $website->id,
@@ -107,7 +107,7 @@ class WebsiteEventsSubscriber implements ShouldQueue
 
         if ($website->isDirty('slug')) {
             logger()->notice(
-                'Website' . $website->getInfo() . ' URL updated from ' . $website->getOriginal('url') . ' to ' . e($website->url),
+                'Website' . $website->info . ' URL updated from ' . $website->getOriginal('url') . ' to ' . e($website->url),
                 [
                     'event' => EventType::WEBSITE_URL_CHANGED,
                     'website' => $website->id,
@@ -137,7 +137,7 @@ class WebsiteEventsSubscriber implements ShouldQueue
 //        }
 
         logger()->notice(
-            'Website ' . $website->getInfo() . ' reported as not active and scheduled for archiving',
+            'Website ' . $website->info . ' reported as not active and scheduled for archiving',
             [
                 'event' => EventType::WEBSITE_ARCHIVING,
                 'website' => $website->id,
@@ -165,7 +165,7 @@ class WebsiteEventsSubscriber implements ShouldQueue
 //        }
 
         logger()->notice(
-            'Website ' . $website->getInfo() . ' archived ' . $reason,
+            'Website ' . $website->info . ' archived ' . $reason,
             [
                 'event' => EventType::WEBSITE_ARCHIVED,
                 'website' => $website->id,
@@ -184,7 +184,7 @@ class WebsiteEventsSubscriber implements ShouldQueue
         $website = $event->getWebsite();
         //TODO: notificare qualcuno? è un'azione solo manuale
         logger()->notice(
-            'Website ' . $website->getInfo() . ' unarchived manually',
+            'Website ' . $website->info . ' unarchived manually',
             [
                 'event' => EventType::WEBSITE_UNARCHIVED,
                 'website' => $website->id,
@@ -211,7 +211,7 @@ class WebsiteEventsSubscriber implements ShouldQueue
 //        }
 
         logger()->notice(
-            'Website ' . $website->getInfo() . ' scheduled purging',
+            'Website ' . $website->info . ' scheduled purging',
             [
                 'event' => EventType::WEBSITE_PURGING,
                 'website' => $website->id,
@@ -249,7 +249,7 @@ class WebsiteEventsSubscriber implements ShouldQueue
     {
         $website = $event->getWebsite();
         logger()->notice(
-            'Website ' . $website->getInfo() . ' deleted.',
+            'Website ' . $website->info . ' deleted.',
             [
                 'event' => EventType::WEBSITE_DELETED,
                 'website' => $website->id,
@@ -267,7 +267,7 @@ class WebsiteEventsSubscriber implements ShouldQueue
     {
         $website = $event->getWebsite();
         logger()->notice(
-            'Website ' . $website->getInfo() . ' restored.',
+            'Website ' . $website->info . ' restored.',
             [
                 'event' => EventType::WEBSITE_RESTORED,
                 'website' => $website->id,
@@ -294,7 +294,7 @@ class WebsiteEventsSubscriber implements ShouldQueue
 //        }
 
         logger()->notice(
-            'Primary website ' . $website->getInfo() . ' tracking inactive.',
+            'Primary website ' . $website->info . ' tracking inactive.',
             [
                 'event' => EventType::PRIMARY_WEBSITE_NOT_TRACKING,
                 'website' => $website->id,

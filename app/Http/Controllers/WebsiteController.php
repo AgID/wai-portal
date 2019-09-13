@@ -400,7 +400,7 @@ class WebsiteController extends Controller
                 return $this->notModifiedResponse();
             }
 
-            throw new InvalidWebsiteStatusException('Unable to check activation for website ' . $website->getInfo() . ' in status ' . $website->status->key);
+            throw new InvalidWebsiteStatusException('Unable to check activation for website ' . $website->info . ' in status ' . $website->status->key);
         } catch (AnalyticsServiceException | BindingResolutionException $exception) {
             report($exception);
             $code = $exception->getCode();
@@ -448,10 +448,10 @@ class WebsiteController extends Controller
                     return $this->websiteResponse($website);
                 }
 
-                throw new InvalidWebsiteStatusException('Unable to archive website ' . $website->getInfo() . ' in status ' . $website->status->key);
+                throw new InvalidWebsiteStatusException('Unable to archive website ' . $website->info . ' in status ' . $website->status->key);
             }
 
-            throw new OperationNotAllowedException('Archive request not allowed on primary website ' . $website->getInfo());
+            throw new OperationNotAllowedException('Archive request not allowed on primary website ' . $website->info);
         } catch (AnalyticsServiceException | BindingResolutionException $exception) {
             report($exception);
             $code = $exception->getCode();
@@ -504,10 +504,10 @@ class WebsiteController extends Controller
                     return $this->websiteResponse($website);
                 }
 
-                throw new InvalidWebsiteStatusException('Unable to cancel archiving for website ' . $website->getInfo() . ' in status ' . $website->status->key);
+                throw new InvalidWebsiteStatusException('Unable to cancel archiving for website ' . $website->info . ' in status ' . $website->status->key);
             }
 
-            throw new OperationNotAllowedException('Cancel archiving request not allowed on primary website ' . $website->getInfo());
+            throw new OperationNotAllowedException('Cancel archiving request not allowed on primary website ' . $website->info);
         } catch (AnalyticsServiceException | BindingResolutionException $exception) {
             report($exception);
             $code = $exception->getCode();

@@ -28,7 +28,7 @@ class PublicAdministrationEventsSubscriber implements ShouldQueue
         $user = $event->getUser();
         //TODO: inviare PEC a PA per la notifica?
         logger()->notice(
-            'User ' . $user->uuid . ' registered Public Administration ' . $publicAdministration->getInfo(),
+            'User ' . $user->uuid . ' registered Public Administration ' . $publicAdministration->info,
             [
                 'event' => EventType::PUBLIC_ADMINISTRATION_REGISTERED,
                 'pa' => $publicAdministration->ipa_code,
@@ -46,7 +46,7 @@ class PublicAdministrationEventsSubscriber implements ShouldQueue
     {
         $publicAdministration = $event->getPublicAdministration();
         logger()->notice(
-            'Public Administration ' . $publicAdministration->getInfo() . ' activated',
+            'Public Administration ' . $publicAdministration->info . ' activated',
             [
                 'event' => EventType::PUBLIC_ADMINISTRATION_ACTIVATED,
                 'pa' => $publicAdministration->ipa_code,
@@ -63,7 +63,7 @@ class PublicAdministrationEventsSubscriber implements ShouldQueue
     {
         $publicAdministration = $event->getPublicAdministration();
         logger()->error(
-            'Public Administration ' . $publicAdministration->getInfo() . ' activation failed: ' . $event->getMessage(),
+            'Public Administration ' . $publicAdministration->info . ' activation failed: ' . $event->getMessage(),
             [
                 'event' => EventType::PUBLIC_ADMINISTRATION_ACTIVATION_FAILED,
                 'pa' => $publicAdministration->ipa_code,
@@ -80,7 +80,7 @@ class PublicAdministrationEventsSubscriber implements ShouldQueue
     {
         $publicAdministration = $event->getPublicAdministration();
         logger()->notice(
-            'Public Administration ' . $publicAdministration->getInfo() . ' updated',
+            'Public Administration ' . $publicAdministration->info . ' updated',
             [
                 'event' => EventType::PUBLIC_ADMINISTRATION_UPDATED,
                 'pa' => $publicAdministration->ipa_code,
@@ -98,7 +98,7 @@ class PublicAdministrationEventsSubscriber implements ShouldQueue
         //TODO: decidere come gestire i cambiamenti del sito istituzionale su IPA
         $publicAdministration = $event->getPublicAdministration();
         logger()->warning(
-            'Public Administration ' . $publicAdministration->getInfo() . ' primary website was changed in IPA index [' . $event->getNewURL() . '].',
+            'Public Administration ' . $publicAdministration->info . ' primary website was changed in IPA index [' . $event->getNewURL() . '].',
             [
                 'event' => EventType::PUBLIC_ADMINISTRATION_PRIMARY_WEBSITE_CHANGED,
                 'pa' => $publicAdministration->ipa_code,
