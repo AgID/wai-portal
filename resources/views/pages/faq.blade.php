@@ -51,7 +51,7 @@
                         </button>
                     </div>
                     <div id="faq-{{ $loop->iteration }}-body" class="collapse" role="tabpanel" aria-labelledby="faq-{{ $loop->iteration }}-heading">
-                        <div class="collapse-body">
+                        <div class="collapse-body text-serif">
                         {{ $faq['answer'] }}
                         </div>
                     </div>
