@@ -19,7 +19,7 @@ class CronController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse JSON response with job submission status
      */
-    public function updateIpa(): JsonResponse
+    public function updateFromIpa(): JsonResponse
     {
         dispatch(new ProcessPublicAdministrationsUpdateFromIpa());
 
