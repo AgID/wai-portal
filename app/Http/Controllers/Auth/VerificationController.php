@@ -31,7 +31,7 @@ class VerificationController extends Controller
         $user = $request->user();
 
         if ($user->hasVerifiedEmail()) {
-            return $this->alreadyVerifiedUser($user);
+            return $this->alreadyVerifiedUser($request, $user);
         }
 
         return view('auth.verify')->with('user', $user);
@@ -41,69 +41,90 @@ class VerificationController extends Controller
      * Mark the authenticated user's email address as verified.
      *
      * @param \Illuminate\Http\Request $request the incoming request
+     * @param string $uuid the uuid of the user to be verified
      *
      * @throws \Illuminate\Contracts\Container\BindingResolutionException if unable to bind to SPID service
      * @throws \Illuminate\Auth\Access\AuthorizationException if verification link is invalid
      *
      * @return \Illuminate\Http\RedirectResponse the server redirect response
      */
-    public function verify(Request $request): RedirectResponse
+    public function verify(Request $request, string $uuid): RedirectResponse
     {
-        $user = $request->user();
+        $user = User::where('uuid', $uuid)->first();
 
-        if (!$user) {
-            throw new AuthorizationException();
-        }
-
-        if (!Hash::check($user->email, base64_decode($request->route('hash'), true)) || $request->route('uuid') !== $user->getAttribute($user->getRouteKeyName())) {
+        if (!$user || !Hash::check($user->email, base64_decode($request->route('hash'), true))) {
             throw new AuthorizationException(__("L'utente non corrisponde all'invito."));
         }
 
         if ($user->hasVerifiedEmail()) {
-            return $this->alreadyVerifiedUser($user);
+            return $this->alreadyVerifiedUser($request, $user);
         }
 
         if ($this->verifyUser($user)) {
             event(new Verified($user));
         }
 
-        $dashboard = $request->user()->can(UserPermission::ACCESS_ADMIN_AREA) ? '/admin/dashboard' : '/dashboard';
+        $dashboard = $user->can(UserPermission::ACCESS_ADMIN_AREA) ? '/admin/dashboard' : '/dashboard';
 
-        return redirect($dashboard)
-            ->withAlert(['success' => "L'indirizzo email è stato verificato correttamente."]); //TODO: put message in lang file
+        return redirect($dashboard)->withModal([
+            'title' => __('Indirizzo email confermato'),
+            'icon' => 'it-check-circle',
+            'message' => __("Hai appena confermato il tuo indirizzo email <strong>:email</strong>.\nDa adesso puoi iniziare a usare Web Analytics Italia.", ['email' => $user->email]),
+            'image' => 'https://placeholder.pics/svg/180',
+        ]);
     }
 
     /**
      * Resend the email verification notification.
      *
      * @param \Illuminate\Http\Request $request the incoming request
+     * @param User|null $user the user to resend the notification to
      *
      * @return \Illuminate\Http\RedirectResponse the server redirect response
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse the response
      */
-    public function resend(Request $request): RedirectResponse
+    public function resend(Request $request, User $user)
     {
-        $user = $request->user();
+        $user = $user->exists ? $user : $request->user();
 
         if ($user->hasVerifiedEmail()) {
-            return $this->alreadyVerifiedUser($user);
+            return $this->alreadyVerifiedUser($request, $user);
         }
 
-        $user->sendEmailVerificationNotification();
+        $user->sendEmailVerificationNotification($user->status->is(UserStatus::INVITED) ? $user->publicAdministrations()->first() : null);
 
-        return back()->withAlert(['info' => "Una nuova email di verifica è stata inviata all'indirizzo " . $user->email]); //TODO: put message in lang file;
+        return $request->expectsJson()
+            ? response()->json([
+                'result' => 'ok',
+                'id' => $user->uuid,
+                'email' => $user->email,
+            ])
+            : back()->withNotification([
+                'title' => __('verifica indirizzo email'),
+                'message' => __("Una nuova email di verifica è stata inviata all'indirizzo <strong>:email</strong>.", ['email' => $user->email]),
+                'status' => 'success',
+                'icon' => 'it-check-circle',
+            ]);
     }
 
     /**
      * Redirect an already verified user.
      *
      * @param User $user the user
+     * @param Request $request the current request
      *
      * @return \Illuminate\Http\RedirectResponse the server redirect response
      */
-    protected function alreadyVerifiedUser(User $user): RedirectResponse
+    protected function alreadyVerifiedUser(Request $request, User $user): RedirectResponse
     {
-        return redirect()->home()
-            ->withAlert(['info' => "L'indirizzo email dell'utente " . $user->getInfo() . ' è già stato verificato.']); //TODO: put message in lang file
+        return $request->expectsJson()
+            ? response()->json(null, 304)
+            : redirect()->home()->withNotification([
+                'title' => __('verifica indirizzo email'),
+                'message' => __("L'indirizzo email <strong>:email</strong> è già stato verificato dall'utente.", ['email' => $user->email]),
+                'status' => 'warning',
+                'icon' => 'it-warning-circle',
+            ]);
     }
 
     /**
@@ -125,7 +146,7 @@ class VerificationController extends Controller
         if ($user->status->is(UserStatus::INVITED)) {
             $newStatus = UserStatus::ACTIVE;
 
-            if ($user->isNotA(UserRole::SUPER_ADMIN)) {
+            if ($user->isNotAn(UserRole::SUPER_ADMIN)) {
                 $SPIDUser = session()->get('spid_user');
 
                 if ($user->fiscal_number !== $SPIDUser->fiscalNumber) {

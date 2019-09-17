@@ -10,7 +10,6 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\URL;
 
@@ -41,7 +40,7 @@ class VerifyEmail extends Notification implements ShouldQueue
      * @param PublicAdministration|null $publicAdministration the public administration this user belongs to or null if it is a super admin
      * @param User|null $invitedBy the inviting user or null if none
      */
-    public function __construct(PublicAdministration $publicAdministration = null, User $invitedBy = null)
+    public function __construct(?PublicAdministration $publicAdministration = null, ?User $invitedBy = null)
     {
         $this->publicAdministration = $publicAdministration;
         $this->invitedBy = $invitedBy;
@@ -93,7 +92,7 @@ class VerifyEmail extends Notification implements ShouldQueue
 
         return URL::temporarySignedRoute(
             $verificationRoute,
-            Carbon::now()->addMinutes(Config::get('auth.verification.expire', 60)),
+            Carbon::now()->addDays(config('auth.verification.expire', 7)),
             [
                 'uuid' => $notifiable->getAttribute($notifiable->getRouteKeyName()),
                 'hash' => base64_encode(Hash::make($notifiable->email)),
