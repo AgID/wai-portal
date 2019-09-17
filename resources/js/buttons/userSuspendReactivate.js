@@ -9,7 +9,7 @@ export default (() => {
         const userSuspendReactivateButtons = [...document.querySelectorAll('a[role="button"][data-type="userSuspendReactivate"]')];
 
         userSuspendReactivateButtons.map(userSuspendReactivateButton => {
-            const isAjax = 'true' === userSuspendReactivateButton.dataset.ajax;
+            const isAjax = 'ajax' in userSuspendReactivateButton.dataset;
             const currentStatus = userSuspendReactivateButton.dataset.currentStatus.toLowerCase();
             const currentAction = 'active' === currentStatus
                 ? I18n.t('Sospensione')

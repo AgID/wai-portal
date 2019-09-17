@@ -9,7 +9,7 @@ export default (() => {
         const websiteArchiveUnarchiveButtons = [...document.querySelectorAll('a[role="button"][data-type="websiteArchiveUnarchive"]')];
 
         websiteArchiveUnarchiveButtons.map(websiteArchiveUnarchiveButton => {
-            const isAjax = 'true' === websiteArchiveUnarchiveButton.dataset.ajax;
+            const isAjax = 'ajax' in websiteArchiveUnarchiveButton.dataset;
             const currentStatus = websiteArchiveUnarchiveButton.dataset.currentStatus.toLowerCase();
             const currentAction = 'active' === currentStatus
                 ? I18n.t('Archiviazione')

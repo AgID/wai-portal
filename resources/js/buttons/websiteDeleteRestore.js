@@ -9,7 +9,7 @@ export default (() => {
         const websiteDeleteRestoreButtons = [...document.querySelectorAll('a[role="button"][data-type="websiteDeleteRestore"]')];
 
         websiteDeleteRestoreButtons.map(websiteDeleteRestoreButton => {
-            const isAjax = 'true' === websiteDeleteRestoreButton.dataset.ajax;
+            const isAjax = 'ajax' in websiteDeleteRestoreButton.dataset;
             const isTrashed = websiteDeleteRestoreButton.dataset.trashed;
             const currentAction = isTrashed
                 ? I18n.t('Ripristino')
