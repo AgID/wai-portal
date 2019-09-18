@@ -13,7 +13,7 @@
         "@babel/plugin-syntax-dynamic-import": "^7.2.0",
         "axios": "^0.19",
         "babel-eslint": "^10.0.3",
-        "cross-env": "^5.2.1",
+        "cross-env": "^6.0.0",
         "datatables.net": "^1.10.19",
         "datatables.net-dt": "^1.10.19",
         "datatables.net-responsive": "^2.2.3",
