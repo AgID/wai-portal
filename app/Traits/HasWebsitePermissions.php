@@ -112,7 +112,7 @@ trait HasWebsitePermissions
     private function ensurePermissionScopeIsSet(): void
     {
         if (empty(session('tenant_id'))) {
-            throw new TenantIdNotSetException();
+            throw new TenantIdNotSetException('Tenant not set.');
         }
 
         Bouncer::scope()->to(session('tenant_id'));

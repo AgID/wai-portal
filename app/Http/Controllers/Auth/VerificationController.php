@@ -53,7 +53,7 @@ class VerificationController extends Controller
         $user = User::where('uuid', $uuid)->first();
 
         if (!$user || !Hash::check($user->email, base64_decode($request->route('hash'), true))) {
-            throw new AuthorizationException(__("L'utente non corrisponde all'invito."));
+            throw new AuthorizationException('Current user does not match invitation.');
         }
 
         if ($user->hasVerifiedEmail()) {

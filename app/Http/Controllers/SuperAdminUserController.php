@@ -197,7 +197,7 @@ class SuperAdminUserController extends Controller
 
         try {
             if ($user->is($request->user())) {
-                throw new OperationNotAllowedException('cannot suspend the current authenticated user');
+                throw new OperationNotAllowedException('Cannot suspend the current authenticated user.');
             }
 
             $validator = validator(request()->all())->after([$this, 'validateNotLastActiveAdministrator']);
@@ -261,7 +261,7 @@ class SuperAdminUserController extends Controller
     {
         $user = request()->route('user');
         if ($user->status->is(UserStatus::ACTIVE) && 1 === User::where('status', UserStatus::ACTIVE)->whereIs(UserRole::SUPER_ADMIN)->count()) {
-            $validator->errors()->add('last_admin', 'the last super administrator cannot be suspended');
+            $validator->errors()->add('last_admin', 'The last super administrator cannot be suspended.');
         }
     }
 }

@@ -262,7 +262,7 @@ class UserController extends Controller
             }
 
             if ($user->status->is(UserStatus::PENDING)) {
-                throw new OperationNotAllowedException('pending users cannot be deleted');
+                throw new OperationNotAllowedException('Pending users cannot be deleted.');
             }
 
             $validator = validator(request()->all())->after([$this, 'validateNotLastActiveAdministrator']);
@@ -335,11 +335,11 @@ class UserController extends Controller
 
         try {
             if ($user->is($request->user())) {
-                throw new OperationNotAllowedException('cannot suspend the current authenticated user');
+                throw new OperationNotAllowedException('Cannot suspend the current authenticated user.');
             }
 
             if ($user->status->is(UserStatus::PENDING)) {
-                throw new InvalidUserStatusException('pending users cannot be suspended');
+                throw new InvalidUserStatusException('Pending users cannot be suspended.');
             }
 
             //NOTE: super admin are allowed to suspend the last active PA administrator
@@ -439,7 +439,7 @@ class UserController extends Controller
         $user = request()->route('user');
 
         if ($user->isTheLastActiveAdministratorOf($publicAdministration)) {
-            $validator->errors()->add('is_admin', 'the last administrator cannot be removed or suspended');
+            $validator->errors()->add('is_admin', 'The last administrator cannot be removed or suspended.');
         }
     }
 

@@ -20,7 +20,7 @@ class RedirectIfAuthenticated
     public function handle($request, Closure $next, ?string $notSpid = null)
     {
         if ('notspid' === $notSpid && app()->make('SPIDAuth')->isAuthenticated()) {
-            throw new AuthorizationException();
+            throw new AuthorizationException('SPID authenticated users are not authorized for route ' . $request->route()->getName() . '.');
         }
 
         if (auth()->check()) {

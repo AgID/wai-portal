@@ -27,7 +27,7 @@ class AuthenticateAdmin extends AuthenticateMiddleware
         parent::authenticate($request, $guards);
 
         if (!$request->user()->isA(UserRole::SUPER_ADMIN)) {
-            throw new AuthorizationException();
+            throw new AuthorizationException('Current user in not a super administrator.');
         }
     }
 

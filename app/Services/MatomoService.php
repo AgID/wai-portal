@@ -149,7 +149,7 @@ class MatomoService implements AnalyticsServiceContract
     public function changeArchiveStatus(string $idSites, int $status): void
     {
         if (WebsiteStatus::ARCHIVED !== $status && WebsiteStatus::ACTIVE !== $status) {
-            throw new CommandErrorException('Invalid parameter for archiving: must be ' . WebsiteStatus::ACTIVE . ' or ' . WebsiteStatus::ARCHIVED . '. Received: ' . $status);
+            throw new CommandErrorException('Invalid parameter for archiving: must be ' . WebsiteStatus::ACTIVE . ' or ' . WebsiteStatus::ARCHIVED . '. Received: ' . $status . '.');
         }
 
         $params = [

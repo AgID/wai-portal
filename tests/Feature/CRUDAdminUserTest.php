@@ -829,7 +829,7 @@ class CRUDAdminUserTest extends TestCase
             ->assertStatus(400)
             ->assertJson([
                 'result' => 'error',
-                'message' => 'the last administrator cannot be removed or suspended',
+                'message' => 'The last administrator cannot be removed or suspended.',
                 'code' => '0',
             ]);
 
@@ -860,7 +860,7 @@ class CRUDAdminUserTest extends TestCase
             ->assertStatus(400)
             ->assertJson([
                 'result' => 'error',
-                'message' => 'pending users cannot be deleted',
+                'message' => 'Pending users cannot be deleted.',
             ]);
 
         Event::assertNotDispatched(UserDeleted::class);

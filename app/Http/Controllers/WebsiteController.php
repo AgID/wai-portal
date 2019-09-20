@@ -107,7 +107,7 @@ class WebsiteController extends Controller
         ]);
 
         $primaryWebsiteURL = $request->publicAdministration['site'];
-        $analyticsId = app()->make('analytics-service')->registerSite('Sito istituzionale', $primaryWebsiteURL, $publicAdministration->name); //TODO: put string in lang file
+        $analyticsId = app()->make('analytics-service')->registerSite(__('Sito istituzionale'), $primaryWebsiteURL, $publicAdministration->name);
 
         $publicAdministration->save();
         $website = Website::create([
@@ -275,7 +275,7 @@ class WebsiteController extends Controller
 
         if (!$website->type->is(WebsiteType::PRIMARY)) {
             if ($website->slug !== Str::slug($validatedData['url'])) {
-                app()->make('analytics-service')->updateSite($website->analytics_id, $validatedData['website_name'] . ' [' . $validatedData['type'] . ']', $validatedData['url'], $website->publicAdministration->name); //TODO: put string in lang file
+                app()->make('analytics-service')->updateSite($website->analytics_id, $validatedData['website_name'] . ' [' . $validatedData['type'] . ']', $validatedData['url'], $website->publicAdministration->name);
             }
 
             $website->fill([
@@ -314,7 +314,7 @@ class WebsiteController extends Controller
 
         try {
             if ($website->type->is(WebsiteType::PRIMARY)) {
-                throw new OperationNotAllowedException('Impossibile eliminare un sito istituzionale');
+                throw new OperationNotAllowedException('Delete request not allowed on primary website ' . $website->info . '.');
             }
 
             app()->make('analytics-service')->changeArchiveStatus($website->analytics_id, WebsiteStatus::ARCHIVED);
@@ -400,7 +400,7 @@ class WebsiteController extends Controller
                 return $this->notModifiedResponse();
             }
 
-            throw new InvalidWebsiteStatusException('Unable to check activation for website ' . $website->info . ' in status ' . $website->status->key);
+            throw new InvalidWebsiteStatusException('Unable to check activation for website ' . $website->info . ' in status ' . $website->status->key . '.');
         } catch (AnalyticsServiceException | BindingResolutionException $exception) {
             report($exception);
             $code = $exception->getCode();
@@ -448,10 +448,10 @@ class WebsiteController extends Controller
                     return $this->websiteResponse($website);
                 }
 
-                throw new InvalidWebsiteStatusException('Unable to archive website ' . $website->info . ' in status ' . $website->status->key);
+                throw new InvalidWebsiteStatusException('Unable to archive website ' . $website->info . ' in status ' . $website->status->key . '.');
             }
 
-            throw new OperationNotAllowedException('Archive request not allowed on primary website ' . $website->info);
+            throw new OperationNotAllowedException('Archive request not allowed on primary website ' . $website->info . '.');
         } catch (AnalyticsServiceException | BindingResolutionException $exception) {
             report($exception);
             $code = $exception->getCode();
@@ -504,10 +504,10 @@ class WebsiteController extends Controller
                     return $this->websiteResponse($website);
                 }
 
-                throw new InvalidWebsiteStatusException('Unable to cancel archiving for website ' . $website->info . ' in status ' . $website->status->key);
+                throw new InvalidWebsiteStatusException('Unable to cancel archiving for website ' . $website->info . ' in status ' . $website->status->key . '.');
             }
 
-            throw new OperationNotAllowedException('Cancel archiving request not allowed on primary website ' . $website->info);
+            throw new OperationNotAllowedException('Cancel archiving request not allowed on primary website ' . $website->info . '.');
         } catch (AnalyticsServiceException | BindingResolutionException $exception) {
             report($exception);
             $code = $exception->getCode();

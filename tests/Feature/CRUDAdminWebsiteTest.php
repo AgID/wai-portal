@@ -147,7 +147,7 @@ class CRUDAdminWebsiteTest extends TestCase
             ->assertStatus(400)
             ->assertJson([
                 'result' => 'error',
-                'message' => 'Impossibile eliminare un sito istituzionale',
+                'message' => 'Delete request not allowed on primary website ' . $this->website->info . '.',
             ]);
 
         $this->website->refresh();

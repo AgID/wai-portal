@@ -30,7 +30,7 @@ trait HasAnalyticsServiceAccount
     public function getAnalyticsServiceAccountTokenAuth(): string
     {
         if (!$this->hasAnalyticsServiceAccount()) {
-            throw new AnalyticsServiceAccountException('trying to get auth token from non-existing account');
+            throw new AnalyticsServiceAccountException('Trying to get auth token from non-existing analytics service account.');
         }
 
         return app()->make('analytics-service')->getUserAuthToken($this->uuid, md5($this->analytics_password));
