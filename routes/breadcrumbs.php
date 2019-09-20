@@ -141,7 +141,7 @@ Breadcrumbs::for('admin.users.show', function ($trail, $user) {
 
 // Web Analytics Italia > Super admin dashboard > Super admin Users > Add super admin user*
 Breadcrumbs::for('admin.users.create', function ($trail) {
-    $trail->parent('admin.dashboard');
+    $trail->parent('admin.users.index');
     $trail->push(__('Aggiungi un utente super amministratore'), route('admin.users.create'));
 });
 
