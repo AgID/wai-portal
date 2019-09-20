@@ -193,7 +193,7 @@
 
   .it-header-slim-wrapper {
     background: none;
-    border-bottom: $header-slim-ul-border;
+    border-bottom: 1px solid rgba($header-slim-text-color, 0.2);;
 
     .it-header-slim-wrapper-content{
       .nav-mobile {
@@ -203,7 +203,7 @@
       @include media-breakpoint-up(lg) {
         ul.link-list {
           li.delimiter {
-            border-right: $header-slim-ul-border;
+            border-right: 1px solid rgba($header-slim-text-color, 0.2);;
           }
         }
       }
