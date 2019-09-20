@@ -45,25 +45,25 @@ Route::get('/open-data', 'HomeController@openData')
  */
 Route::prefix('/admin/user')->group(function () {
     Route::get('/login', 'Auth\SuperAdminAuthController@showLogin')
-        ->name('admin.login.show')->middleware('guest');
+        ->name('admin.login.show')->middleware('guest:notspid');
 
     Route::post('/login', 'Auth\SuperAdminAuthController@login')
-        ->name('admin.login')->middleware('guest');
+        ->name('admin.login')->middleware('guest:notspid');
 
     Route::get('/logout', 'Auth\SuperAdminAuthController@logout')
         ->name('admin.logout')->middleware('auth.admin');
 
     Route::get('/password-forgot', 'Auth\SuperAdminAuthController@showPasswordForgot')
-        ->name('admin.password.forgot.show')->middleware('guest');
+        ->name('admin.password.forgot.show')->middleware('guest:notspid');
 
     Route::post('/password-forgot', 'Auth\SuperAdminAuthController@sendPasswordForgot')
-        ->name('admin.password.reset.send')->middleware('guest', 'throttle:5,1');
+        ->name('admin.password.reset.send')->middleware('guest:notspid', 'throttle:5,1');
 
     Route::get('/password-reset/{token?}', 'Auth\SuperAdminAuthController@showPasswordReset')
-        ->name('admin.password.reset.show')->middleware('guest');
+        ->name('admin.password.reset.show')->middleware('guest:notspid');
 
     Route::post('/password-reset', 'Auth\SuperAdminAuthController@passwordReset')
-        ->name('admin.password.reset')->middleware('guest', 'throttle:5,1');
+        ->name('admin.password.reset')->middleware('guest:notspid', 'throttle:5,1');
 });
 
 /*

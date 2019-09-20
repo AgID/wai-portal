@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Enums\UserPermission;
 use Closure;
+use Illuminate\Auth\Access\AuthorizationException;
 
 class RedirectIfAuthenticated
 {
@@ -12,13 +13,17 @@ class RedirectIfAuthenticated
      *
      * @param \Illuminate\Http\Request $request
      * @param \Closure $next
-     * @param string|null $guard
+     * @param string|null $notSpid
      *
      * @return mixed
      */
-    public function handle($request, Closure $next, $guard = null)
+    public function handle($request, Closure $next, ?string $notSpid = null)
     {
-        if (auth()->guard($guard)->check()) {
+        if ('notspid' === $notSpid && app()->make('SPIDAuth')->isAuthenticated()) {
+            throw new AuthorizationException();
+        }
+
+        if (auth()->check()) {
             $redirectTo = $request->user()->can(UserPermission::ACCESS_ADMIN_AREA) ? '/admin/dashboard' : '/dashboard';
 
             return redirect($redirectTo);
