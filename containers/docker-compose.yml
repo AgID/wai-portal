@@ -155,7 +155,7 @@ services:
       - "${SPID_TESTENV_PORT}:8088"
     networks:
       - frontend
-      
+
 # ElasticSearch
   elasticsearch:
     image: wai-elasticsearch:dev

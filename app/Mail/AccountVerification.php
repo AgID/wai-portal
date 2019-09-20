@@ -77,7 +77,7 @@ class AccountVerification extends Mailable
         } else {
             $mailTemplate = 'mail.verification';
         }
-        //TODO: make sender configurable
+
         return $this->subject(__('Invito per Web Analytics Italia'))
                     ->markdown($mailTemplate)->with([
                         'user' => $this->user,

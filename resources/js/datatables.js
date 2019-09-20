@@ -291,7 +291,7 @@ export default (() => {
                 column.data,
                 column.title && '</td>',
             ].join(''));
-            
+
             return renderedData;
         }, {});
 

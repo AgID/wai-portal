@@ -44,7 +44,6 @@ class PasswordReset extends Mailable
      */
     public function build()
     {
-        //TODO: make sender configurable
         return $this->subject(__('Reset della password'))
                     ->markdown('mail.password_reset')->with([
                         'user' => $this->user,

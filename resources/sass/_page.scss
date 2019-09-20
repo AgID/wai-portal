@@ -36,7 +36,7 @@
     position: absolute;
     top: 48px;
     left: 0;
-  
+
     .graphic-container {
       width: 12em;
     }
@@ -46,7 +46,7 @@
     position: absolute;
     top: 96px;
     right: 0;
-  
+
     .graphic-container{
       width: 18em;
     }
@@ -56,7 +56,7 @@
     position: absolute;
     top: 16px;
     @include v-bars-right-position();
-  
+
     .graphic-container {
       width: 18em;
     }
