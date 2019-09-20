@@ -89,7 +89,12 @@ class SuperAdminAuthController extends Controller
 
         $this->incrementLoginAttempts($request);
 
-        return redirect()->route('admin.login.show')->withAlert(['error' => __('auth.failed')])->withInput();
+        return redirect()->route('admin.login.show')->withNotification([
+            'title' => __('non autenticato'),
+            'message' => __('auth.failed'),
+            'status' => 'error',
+            'icon' => 'it-close-circle',
+        ])->withInput();
     }
 
     /**
@@ -134,7 +139,12 @@ class SuperAdminAuthController extends Controller
 
         $user = User::where('email', $email)->first();
         if (empty($user) || $user->cant(UserPermission::ACCESS_ADMIN_AREA) || !$user->status->is(UserStatus::ACTIVE)) {
-            return redirect()->home()->withAlert(['info' => "Se l'indirizzo email inserito corrisponde ad un'utenza amministrativa registrata e attiva, riceverai e breve un messaggio con le istruzioni per il reset della password."]);
+            return redirect()->home()->withNotification([
+                'title' => __('reset della password'),
+                'message' => __("Se l'indirizzo email inserito corrisponde ad un'utenza amministrativa registrata e attiva, riceverai e breve un messaggio con le istruzioni per il reset della password."),
+                'status' => 'info',
+                'icon' => 'it-info-circle',
+            ]);
         }
 
         if (!empty($user->passwordResetToken)) {
@@ -152,7 +162,12 @@ class SuperAdminAuthController extends Controller
         dispatch(new SendPasswordResetEmail($user, $token));
         dispatch(new ClearPasswordResetToken($user->passwordResetToken))->delay(now()->addHour());
 
-        return redirect()->home()->withAlert(['info' => "Se l'indirizzo email inserito corrisponde ad un'utenza amministrativa registrata e attiva, riceverai e breve un messaggio con le istruzioni per il reset della password."]);
+        return redirect()->home()->withNotification([
+            'title' => __('reset della password'),
+            'message' => __("Se l'indirizzo email inserito corrisponde ad un'utenza amministrativa registrata e attiva, riceverai e breve un messaggio con le istruzioni per il reset della password."),
+            'status' => 'info',
+            'icon' => 'it-info-circle',
+        ]);
     }
 
     /**
@@ -193,11 +208,21 @@ class SuperAdminAuthController extends Controller
         $user = User::where('email', $validatedData['email'])->first();
 
         if (empty($user)) {
-            return redirect()->route('admin.password.reset.show')->withAlert(['error' => "L'indirizzo email inserito non corrisponde ad un'utenza oppure il codice è scaduto o errato."])->withInput(); //TODO: put message in lang file
+            return redirect()->route('admin.password.reset.show')->withNotification([
+                'title' => __('errore nella richiesta'),
+                'message' => __("L'indirizzo email inserito non corrisponde ad un'utenza oppure il codice è scaduto o errato."),
+                'status' => 'warning',
+                'icon' => 'it-error',
+            ])->withInput();
         }
 
         if (empty($user->passwordResetToken) || !Hash::check($validatedData['token'], $user->passwordResetToken->token)) {
-            return redirect()->route('admin.password.reset.show')->withAlert(['error' => "L'indirizzo email inserito non corrisponde ad un'utenza oppure il codice è scaduto o errato."])->withInput(); //TODO: put message in lang file
+            return redirect()->route('admin.password.reset.show')->withNotification([
+                'title' => __('errore nella richiesta'),
+                'message' => __("L'indirizzo email inserito non corrisponde ad un'utenza oppure il codice è scaduto o errato."),
+                'status' => 'warning',
+                'icon' => 'it-error',
+            ])->withInput();
         }
 
         $user->password = Hash::make($validatedData['password']);
@@ -209,7 +234,12 @@ class SuperAdminAuthController extends Controller
 
         auth()->login($user);
 
-        return redirect()->route('admin.dashboard')->withAlert(['success' => __('auth.password.reset')]);
+        return redirect()->route('admin.dashboard')->withNotification([
+            'title' => __('reset della password'),
+            'message' => __('La password è stata reimpostata.'),
+            'status' => 'success',
+            'icon' => 'it-check-circle',
+        ]);
     }
 
     /**
@@ -246,7 +276,12 @@ class SuperAdminAuthController extends Controller
         $user->password_changed_at = Carbon::now();
         $user->save();
 
-        return redirect()->intended(route('admin.dashboard'))->withAlert(['success' => __('auth.password.changed')]);
+        return redirect()->intended(route('admin.dashboard'))->withNotification([
+            'title' => __('reset della password'),
+            'message' => __('La password è stata cambiata.'),
+            'status' => 'success',
+            'icon' => 'it-check-circle',
+        ]);
     }
 
     /**

@@ -30,7 +30,12 @@ Route::get('/_reset_all', function () {
     Artisan::call('app:init-permissions');
     Artisan::call('db:seed');
 
-    return redirect()->home()->withAlert(['info' => "L'istanza di " . config('app.name') . ' è stata ripristinata allo stato iniziale.']);
+    return redirect()->home()->withNotification([
+        'title' => __('reset applicazione'),
+        'message' => __("L'istanza staging di :app è stata ripristinata allo stato iniziale.", ['app' => config('app.name')]),
+        'status' => 'info',
+        'icon' => 'it-info-circle',
+    ]);
 });
 
 Route::get('/_activate_websites', function () {
@@ -51,5 +56,13 @@ Route::get('/_activate_websites', function () {
     });
     Artisan::call('app:check-websites');
 
-    return redirect()->home()->withAlert(['success' => 'I siti web in attesa sono stati attivati.']);
+    return redirect()->home()->withNotification([
+        'title' => __('generazione visite'),
+        'message' => implode("\n", [
+            __('Sono state generate delle visite di test verso i siti in stato di attesa.'),
+            __("Da adesso è possibile procedere con il check dell'attivazione."),
+        ]),
+        'status' => 'info',
+        'icon' => 'it-info-circle',
+    ]);
 });

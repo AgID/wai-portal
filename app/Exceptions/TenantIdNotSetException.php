@@ -31,6 +31,14 @@ class TenantIdNotSetException extends Exception
      */
     public function render(): RedirectResponse
     {
-        return redirect()->home()->withAlert(['error' => "Qualcosa non ha funzionato nella gestione della sessione. Prova ad eseguire nuovamente l'accesso."]); //TODO: put message in lang file
+        return redirect()->home()->withNotification([
+            'title' => __('errore del server'),
+            'message' => implode("\n", [
+                __('Qualcosa non ha funzionato nella gestione della sessione.'),
+                __("Prova ad eseguire nuovamente l'accesso."),
+            ]),
+            'status' => 'error',
+            'icon' => 'it-close-circle',
+        ]);
     }
 }

@@ -9,14 +9,11 @@
     <div class="position-relative">
         <div class="page-bulk-container">
             <div id="main">
-
-                @include('layouts.includes.alert')
                 @yield('before-title')
 
                 <h1 class="display-2">@yield('title')@yield('title-after')</h1>
 
                 @yield('content')
-
             </div>
         </div>
         <div class="absolute-bottom page-background-image">

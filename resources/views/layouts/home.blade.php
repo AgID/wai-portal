@@ -6,8 +6,6 @@
         'classes' => ['home'],
     ])
 
-    @include('layouts.includes.alert')
-
     <div id="main">
         @yield('content')
     </div>

@@ -9,13 +9,12 @@
         @include('layouts.includes.graphic_background')
         @endif
 
-        <div class="container mt-2 mt-sm-3 mt-lg-5">
+        
         @if (Breadcrumbs::exists())
+        <div class="container mt-2 mt-sm-3 mt-lg-5">
         @include('layouts.includes.breadcrumbs', ['breadcrumbs' => Breadcrumbs::generate()])
-        @endif
-
-        @include('layouts.includes.alert')
         </div>
+        @endif
 
         <div id="main">
             <div class="container">
@@ -27,7 +26,7 @@
             @endunless
 
             @yield('content')
-            
+
             @unless ($fullWidth ?? false)
             </div>
             @endunless
