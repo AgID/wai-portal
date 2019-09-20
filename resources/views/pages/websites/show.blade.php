@@ -164,7 +164,7 @@
                 {{ __('Il sito') }}
                 <strong>{{ $website->name }}</strong>
                 {{ __('sta già tracciando il traffico! 🎉') }}
-                {!! __('Consulta i dati analytics e prendi <em>decisioni basate sui dati</em> per la tua PA.') !!}
+                {!! __('Consulta i dati analytics e prendi :data_driven_decisions per la tua PA.', ['data_driven_decisions' => '<em>' . __('decisioni basate sui dati') . '</em>']) !!}
             </p>
             <p class="text-center">
                 <a role="button" class="btn btn-sm btn-outline-secondary"

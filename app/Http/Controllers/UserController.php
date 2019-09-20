@@ -129,7 +129,7 @@ class UserController extends Controller
         return redirect()->to($redirectUrl)->withModal([
             'title' => __('Invito inoltrato'),
             'icon' => 'it-clock',
-            'message' => __("Abbiamo appena inviato un invito all'indirizzo email <strong>:email</strong>.", ['email' => $user->email]),
+            'message' => __("Abbiamo appena inviato un invito all'indirizzo email :email.", ['email' => '<strong>' . e($user->email) . '</strong>']),
             'image' => asset('images/invitation-email-sent.svg'),
         ]);
     }
@@ -237,7 +237,10 @@ class UserController extends Controller
 
         return redirect()->to($redirectUrl)->withNotification([
             'title' => __('modifica sito web'),
-            'message' => __("La modifica dell'utente è andata a buon fine.\nSe è stato modificato l'indirizzo email, l'utente riceverà un messaggio per effettuarne la verifica."),
+            'message' => implode("\n", [
+                __("La modifica dell'utente è andata a buon fine."),
+                __("Se è stato modificato l'indirizzo email, l'utente riceverà un messaggio per effettuarne la verifica."),
+            ]),
             'status' => 'success',
             'icon' => 'it-check-circle',
         ]);

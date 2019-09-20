@@ -98,7 +98,10 @@ class ProfileController extends Controller
         return redirect()->home()
             ->withNotification([
                 'title' => __('modifica utente'),
-                'message' => __("La modifica dell'utente è andata a buon fine.\nSe è stato modificato l'indirizzo email, riceverai un messaggio per effettuarne la verifica."),
+                'message' => implode("\n", [
+                    __("La modifica dell'utente è andata a buon fine."),
+                    __("Se è stato modificato l'indirizzo email, riceverai un messaggio per effettuarne la verifica."),
+                ]),
                 'status' => 'success',
                 'icon' => 'it-check-circle',
             ]);

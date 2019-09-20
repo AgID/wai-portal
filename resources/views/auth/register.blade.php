@@ -29,7 +29,7 @@
             <div id="tos" class="callout callout-more note">
                 <div class="callout-title">
                     <svg class="icon icon-primary"><use xlink:href="{{ asset('svg/sprite.svg#it-clip') }}"></use></svg>
-                    <span>{{ __('Condizioni del servizio') }}</span>
+                    <span>{{ __('condizioni del servizio') }}</span>
                 </div>
                 <p>Maecenas vulputate ante dictum <a href="#">vestibulum volutpat</a>. Lorem ipsum dolor sit amet, <strong>consectetur adipiscing elit.</strong> Aenean non augue non purus vestibulum varius. Maecenas ullamcorper tincidunt nulla quis laoreet.</p>
                 <div class="collapse-div">
@@ -50,7 +50,7 @@
         <div class="form-row">
             <div class="form-check">
                 <input class="form-control form-check-input" class="{{ $errors->has('accept_terms') ? ' is-invalid' : '' }}" type="checkbox" id="accept_terms" name="accept_terms" aria-required="true" required>
-                <label class="form-check-label" for="accept_terms">{!! __('Accetto le <a href="#tos">condizioni del servizio</a>') !!}</label>
+                <label class="form-check-label" for="accept_terms">{!! __('Accetto le :tos', ['tos' => '<a href="#tos">' . __('condizioni del servizio') . '</a>']) !!}</label>
                 <div class="invalid-feedback">{{ __('validation.accepted', ['attribute' => __('validation.attributes.accept_terms')]) }}</div>
             </div>
         </div>

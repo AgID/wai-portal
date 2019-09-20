@@ -33,11 +33,12 @@ trait SendsResponse
             : back()->withNotification([
                 'title' => __('utente modificato'),
                 'message' => $user->trashed()
-                    ? __("L'utente <strong>:user</strong> è stato eliminato.", ['user' => e($user->full_name)])
-                    : implode(' ', [
-                        __("L'utente <strong>:user</strong> è stato modificato correttamente.\n", ['user' => e($user->full_name)]),
-                        __("Stato dell'utente:"),
-                        '<span class="badge user-status ' . strtolower($user->status->key) . '">' . strtoupper($user->status->description) . '</span>.',
+                    ? __("L'utente :user è stato eliminato.", ['user' => '<strong>' . e($user->full_name) . '</strong>'])
+                    : implode("\n", [
+                        __("L'utente :user è stato modificato correttamente.", ['user' => '<strong>' . e($user->full_name) . '</strong>']),
+                        __("Stato dell'utente: :status", [
+                            'status' => '<span class="badge user-status ' . strtolower($user->status->key) . '">' . strtoupper($user->status->description) . '</span>.',
+                        ]),
                     ]),
                 'status' => 'info',
                 'icon' => 'it-info-circle',
@@ -65,11 +66,12 @@ trait SendsResponse
             : back()->withNotification([
                 'title' => __('sito web modificato'),
                 'message' => $website->trashed()
-                    ? __('Il sito web <strong>:website</strong> è stato eliminato.', ['website' => e($website->name)])
-                    : implode(' ', [
-                        __('Il sito web <strong>:website</strong> è stato modificato correttamente.\n', ['website' => e($website->name)]),
-                        __('Stato del sito web:'),
-                        '<span class="badge website-status ' . strtolower($website->status->key) . '">' . strtoupper($website->status->description) . '</span>.',
+                    ? __('Il sito web :website è stato eliminato.', ['website' => '<strong>' . e($website->name) . '</strong>'])
+                    : implode("\n", [
+                        __('Il sito web :website è stato modificato correttamente.', ['website' => '<strong>' . e($website->name) . '</strong>']),
+                        __('Stato del sito web: :status', [
+                            'status' => '<span class="badge website-status ' . strtolower($website->status->key) . '">' . strtoupper($website->status->description) . '</span>.',
+                        ]),
                     ]),
                 'status' => 'info',
                 'icon' => 'it-info-circle',
@@ -111,10 +113,10 @@ trait SendsResponse
                 'code' => $code,
             ], $httpStatusCode)
             : back()->withNotification([
-                'title' => __('errore'),
-                'message' => implode(' ', [
-                    __('Si è verificato un errore relativamente alla tua richiesta.\n'),
-                    __('Puoi riprovare più tardi o <a href=":contacts">contattare il supporto tecnico</a>.', ['contacts' => route('contacts')]),
+                'title' => __('errore del server'),
+                'message' => implode("\n", [
+                    __('Si è verificato un errore relativamente alla tua richiesta.'),
+                    __('Puoi riprovare più tardi o :contact_support.', ['contact_support' => '<a href="' . route('contacts') . '">' . __('contattare il supporto tecnico') . '</a>']),
                 ]),
                 'status' => 'info',
                 'icon' => 'it-info-circle',

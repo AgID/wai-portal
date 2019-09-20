@@ -165,7 +165,7 @@
             <h3 class="text-center">{{ __('Come iniziare a tracciare il traffico') }}</h3>
             <div class="d-flex justify-content-center pb-5">
                 <p class="text-serif text-center">
-                    {!! __('Il progetto Web Analytics Italia si trova attualmente in fase di <em>closed-beta</em> (versione beta chiusa limitata ad un panel ristretto di amministrazioni).') !!}
+                    {!! __('Il progetto :app si trova attualmente in fase di <em>closed-beta</em> (versione beta chiusa limitata ad un panel ristretto di amministrazioni).', ['app' => config('app.name')]) !!}
                 </p>
             </div>
             <div class="row">
@@ -196,7 +196,7 @@
                             @else
                             {{ __("Hai già effettuato l'accesso a :app.", ['app' => config('app.name')]) }}
                             <br>
-                            {!! __('Consulta i dati analytics e prendi <em>decisioni basate sui dati</em> per la tua PA.') !!}
+                            {!! __('Consulta i dati analytics e prendi :data_driven_decisions per la tua PA.', ['data_driven_decisions' => '<em>' . __('decisioni basate sui dati') . '</em>']) !!}
                             @endguest
                         </p>
                     </div>

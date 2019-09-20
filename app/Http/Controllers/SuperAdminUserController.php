@@ -117,9 +117,9 @@ class SuperAdminUserController extends Controller
                 'title' => __('Nuovo utente super amministratore creato'),
                 'icon' => 'it-check-circle',
                 'message' => implode("\n", [
-                    __(':user è stato aggiunto come amministratore di Web Analytics Italia.', ['user' => e($user->full_name)]),
-                    __('Comunica al nuovo utente la sua password temporanea <code>:password</code> usando un canale diverso dalla mail :email.', ['password' => $temporaryPassword, 'email' => $input['email']]),
-                    __('<strong>Attenzione! Questa password non sarà mai più visualizzata.</strong>'),
+                    __(':user è stato aggiunto come amministratore di :app.', ['user' => '<strong>' . e($user->full_name) . '</strong>', 'app' => config('app.name')]),
+                    __('Comunica al nuovo utente la sua password temporanea :password usando un canale diverso dalla mail :email.', ['password' => '<code>' . $temporaryPassword . '</code>', 'email' => $input['email']]),
+                    "\n<strong>" . __('Attenzione! Questa password non sarà mai più visualizzata.') . '</strong>',
                 ]),
                 'image' => asset('images/invitation-email-sent.svg'),
             ]);

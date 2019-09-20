@@ -67,7 +67,10 @@ class Handler extends ExceptionHandler
         if ($exception instanceof TokenMismatchException) {
             return redirect()->home()->withNotification([
                 'title' => __('sessione scaduta'),
-                'message' => __("La sessione è scaduta per inattività.\nAccedi di nuovo per continuare da dove eri rimasto."),
+                'message' => implode("\n", [
+                    __('La sessione è scaduta per inattività.'),
+                    __('Accedi di nuovo per continuare da dove eri rimasto.'),
+                ]),
                 'status' => 'warning',
                 'icon' => 'it-error',
             ]);

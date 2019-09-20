@@ -69,7 +69,10 @@ class VerificationController extends Controller
         return redirect($dashboard)->withModal([
             'title' => __('Indirizzo email confermato'),
             'icon' => 'it-check-circle',
-            'message' => __("Hai appena confermato il tuo indirizzo email <strong>:email</strong>.\nDa adesso puoi iniziare a usare Web Analytics Italia.", ['email' => $user->email]),
+            'message' => implode("\n", [
+                __('Hai appena confermato il tuo indirizzo email :email.', ['email' => '<strong>' . e($user->email) . '</strong>']),
+                __('Da adesso puoi iniziare a usare :app.', ['app' => config('app.name')]),
+            ]),
         ]);
     }
 
@@ -100,7 +103,7 @@ class VerificationController extends Controller
             ])
             : back()->withNotification([
                 'title' => __('verifica indirizzo email'),
-                'message' => __("Una nuova email di verifica è stata inviata all'indirizzo <strong>:email</strong>.", ['email' => $user->email]),
+                'message' => __("Una nuova email di verifica è stata inviata all'indirizzo :email.", ['email' => '<strong>' . e($user->email) . '</strong>']),
                 'status' => 'success',
                 'icon' => 'it-check-circle',
             ]);
@@ -120,7 +123,7 @@ class VerificationController extends Controller
             ? response()->json(null, 304)
             : redirect()->home()->withNotification([
                 'title' => __('verifica indirizzo email'),
-                'message' => __("L'indirizzo email <strong>:email</strong> è già stato verificato dall'utente.", ['email' => $user->email]),
+                'message' => __("L'indirizzo email :email è già stato verificato dall'utente.", ['email' => '<strong>' . e($user->email) . '</strong>']),
                 'status' => 'warning',
                 'icon' => 'it-warning-circle',
             ]);

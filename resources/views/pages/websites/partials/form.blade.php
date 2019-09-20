@@ -36,7 +36,7 @@
                 <div class="invalid-feedback">{{ __('validation.url', ['attribute' => __('validation.attributes.url')]) }}</div>
                 @enderror
             </div>
-            <small id="url-input-help" class="form-text text-muted">{!! __("Inserisci l'indirizzo del sito web completo del protocollo <code>http://</code> o <code>https://</code> (es. https://www.agid.gov.it).") !!}</small>
+            <small id="url-input-help" class="form-text text-muted">{!! __("Inserisci l'indirizzo del sito web completo del protocollo :http o :https (es. https://www.agid.gov.it).", ['http' => '<code>http://</code>', 'https' => '<code>https://</code>']) !!}</small>
         </div>
     </div>
     @unless (optional($website->type ?? null)->is(WebsiteType::PRIMARY))

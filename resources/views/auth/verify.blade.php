@@ -14,7 +14,7 @@
 @section('content')
 <div class="row">
     <div class="col-sm-8">
-        <p>{!! __('Abbiamo inviato un link di conferma al tuo indirizzo <strong>:email</strong>.', ['email' => e($user->email)]) !!}</p>
+        <p>{!! __('Abbiamo inviato un link di conferma al tuo indirizzo :email.', ['email' => '<strong>' . e($user->email) . '</strong>']) !!}</p>
         <p>{{ __('Per procedere clicca sul link che ti abbiamo inviato.') }}</p>
     </div>
     <div class="col-sm-4 d-flex align-items-center justify-content-center">

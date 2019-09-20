@@ -4,7 +4,7 @@
     <input type="hidden" id="ipa_code" name="ipa_code" value="{{ session('super_admin_tenant_ipa_code') }}">
     <div id="public-administration-selected" class="alert alert-info alert-dismissible rounded fade show{{ session()->has('super_admin_tenant_ipa_code') ? '' : ' d-none' }}" role="alert">
         {{ __('Stai visualizzando i messaggi log relativi alla pubblica amministrazione selezionata nella barra di navigazione.') }}<br>
-        {!! __('In alternativa puoi <a href="#" id="reset-ipa_code-filter">visualizzare i log relativi a tutte le pubbliche amministrazioni</a>.') !!}
+        {!! __('In alternativa puoi :show_all_logs', ['show_all_logs' => '<a href="#" id="reset-ipa_code-filter">' . __('visualizzare i log relativi a tutte le pubbliche amministrazioni') . '</a>.']) !!}
     </div>
     <div id="public-administration-not-selected" class="alert alert-info alert-dismissible rounded fade show{{ session()->has('super_admin_tenant_ipa_code') ? ' d-none' : '' }}" role="alert">
         {{ __('Stai visualizzando i log relativi tutto il portale Web Analytics Italia.') }}<br>
