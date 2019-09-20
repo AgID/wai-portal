@@ -26,6 +26,9 @@ class WebsiteTransformer extends TransformerAbstract
         $publicAdministration = request()->route('publicAdministration');
         $authUser = auth()->user();
         $authUserCanAccessAdminArea = $authUser->can(UserPermission::ACCESS_ADMIN_AREA);
+        $websiteUrlLink = array_key_exists('scheme', parse_url($website->url))
+            ? e($website->url)
+            : 'http://' . e($website->url);
 
         $data = [
             'website_name' => [
@@ -33,7 +36,7 @@ class WebsiteTransformer extends TransformerAbstract
                     '<span>',
                     '<strong>' . e($website->name) . '</strong>',
                     '<br>',
-                    '<small><a href="' . e($website->url) . '">' . e($website->url) . '</a></small>',
+                    '<small><a href="' . $websiteUrlLink . '" target="_blank">' . e($website->url) . '</a></small>',
                     '</span>',
                 ]),
                 'raw' => e($website->name),

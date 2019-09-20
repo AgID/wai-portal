@@ -22,8 +22,11 @@ class WebsitesPermissionsTransformer extends TransformerAbstract
     public function transform(Website $website): array
     {
         $publicAdministration = request()->route('publicAdministration', current_public_administration());
+        $websiteUrlLink = array_key_exists('scheme', parse_url($website->url))
+            ? e($website->url)
+            : 'http://' . e($website->url);
 
-        return Bouncer::scope()->onceTo($publicAdministration->id, function () use ($website) {
+        return Bouncer::scope()->onceTo($publicAdministration->id, function () use ($website, $websiteUrlLink) {
             $user = request()->route('user');
             $readOnly = request()->has('readOnly');
             $oldPermissions = request()->query('oldPermissions');
@@ -36,7 +39,7 @@ class WebsitesPermissionsTransformer extends TransformerAbstract
                         '<span>',
                         '<strong>' . e($website->name) . '</strong>',
                         '<br>',
-                        '<small><a href="' . e($website->url) . '">' . e($website->url) . '</a></small>',
+                        '<small><a href="' . $websiteUrlLink . '" target="_blank">' . e($website->url) . '</a></small>',
                         '</span>',
                     ]),
                     'raw' => e($website->name),
