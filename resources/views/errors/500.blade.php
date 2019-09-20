@@ -11,6 +11,8 @@
     {{ __('Si è verificato un errore inaspettato.') }}<br>
     {{ __('Se dovesse ripetersi ti preghiamo di contattarci.') }}
 </p>
-<p class="text-primary my-4">{{ $exception->getMessage() }}</p> {{-- TODO: remove in production --}}
+@env('local')
+<p class="text-primary my-4">{{ $exception->getMessage() }}</p>
+@endenv
 <p><a href="{{ route('home') }}">{{ __('Torna alla pagina iniziale') }}</a>.</p>
 @endsection

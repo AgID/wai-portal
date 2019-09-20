@@ -8,7 +8,9 @@
 
 @section('content')
 <p class="lead text-primary font-weight-semibold">{{ __('Non hai le autorizzazioni necessarie per accedere alla pagina.') }}</p>
-<p class="text-primary my-4">{{ $exception->getMessage() }}</p> {{-- TODO: remove in production --}}
+@env('local')
+<p class="text-primary my-4">{{ $exception->getMessage() }}</p>
+@endenv
 @isset($userMessage)
 <p class="text-primary my-4">{!! nl2br($userMessage) !!}</p>
 @endisset
