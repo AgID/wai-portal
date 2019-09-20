@@ -358,9 +358,10 @@ export default (() => {
             preInit && preInit.map(preInitFunction => preInitFunction(datatableApi));
         }).on('responsive-display', () => {
             onDraw && onDraw.map(onDrawFunction => onDrawFunction());
-        }).on('draw', () => {
             $('.dataTables_wrapper [data-toggle="tooltip"]').tooltip();
+        }).on('draw', () => {
             onDraw && onDraw.map(onDrawFunction => onDrawFunction());
+            $('.dataTables_wrapper [data-toggle="tooltip"]').tooltip();
         });
     };
 

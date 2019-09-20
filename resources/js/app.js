@@ -35,8 +35,8 @@ $(document).ready(() => {
         () => WebsiteCheckTracking.init(),
         () => PermissionsToggles.init(),
         () => WebsiteArchiveUnarchive.init(),
+        () => WebsiteDeleteRestore.init(),
         () => UserSuspendReactivate.init(),
         () => UserDeleteRestore.init(),
-        () => WebsiteDeleteRestore.init(),
     ]);
 });
