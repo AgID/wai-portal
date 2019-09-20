@@ -10,6 +10,8 @@
 /containers/.env
 /containers/docker-compose.override.yml
 /containers/**/xdebug.ini
+/containers/spid-testenv/conf/config.yaml
+/containers/spid-testenv/conf/sp_metadata.xml
 
 # testing
 /coverage

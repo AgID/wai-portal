@@ -147,6 +147,16 @@
             <property name="templateSrc" value="env/env-laravel.template" />
             <property name="templateDest" value=".env" />
         </phingcall>
+        <!-- Set spid-testnev configuration according to current environment -->
+        <echo message="Setting spid-testenv environment..."/>
+        <phingcall target="compile-template">
+            <property name="templateSrc" value="containers/spid-testenv/conf/config.yaml.template" />
+            <property name="templateDest" value="containers/spid-testenv/conf/config.yaml" />
+        </phingcall>
+        <phingcall target="compile-template">
+            <property name="templateSrc" value="containers/spid-testenv/conf/sp_metadata.xml.template" />
+            <property name="templateDest" value="containers/spid-testenv/conf/sp_metadata.xml" />
+        </phingcall>
         <!-- Create a copy of xdebug.ini -->
         <echo message="Setting xdebug.ini files..."/>
         <copy file="containers/php-fpm/xdebug.template.ini" tofile="containers/php-fpm/xdebug.ini" overwrite="true"/>

@@ -28,13 +28,13 @@
 
         <md:SingleLogoutService
             Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
-            Location="https://localhost/spid/logout" />
+            Location="https://@HOSTNAME@/spid/logout" />
 
         <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</md:NameIDFormat>
 
         <md:AssertionConsumerService
             Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
-            Location="https://localhost/spid/acs"
+            Location="https://@HOSTNAME@/spid/acs"
             index="0"
             isDefault="true" />
 
