@@ -54,10 +54,10 @@
                         <div class="it-access-top-wrapper">
                             @if ($spidAuthUser)
                                 @auth
-                                @include('layouts.includes.user_menu')
+                                @include('layouts.includes.user_menu', ['user' => $authUser])
                                 @else
                                 @include('layouts.includes.user_menu', [
-                                    'authUser' => tap($spidAuthUser, function($spidAuthUser) {
+                                    'user' => tap($spidAuthUser, function($spidAuthUser) {
                                         return $spidAuthUser->full_name = implode(' ', [
                                             $spidAuthUser->name,
                                             $spidAuthUser->familyName,

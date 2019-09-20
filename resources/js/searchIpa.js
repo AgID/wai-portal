@@ -6,6 +6,9 @@ export default (() => {
     const urlInput = document.getElementById('url');
     const rtdNameInput = document.getElementById('rtd_name');
     const rtdMailInput = document.getElementById('rtd_mail');
+    const urlInputLabel = document.querySelector('label[for="url"]');
+    const rtdNameInputLabel = document.querySelector('label[for="rtd_name"]');
+    const rtdMailInputLabel = document.querySelector('label[for="rtd_mail"]');
 
     const handleSelectedIpa = selectedResult => {
         searchIpaInput.dataset.selectedPa = selectedResult.name;
@@ -13,6 +16,9 @@ export default (() => {
         urlInput.value = selectedResult.site;
         rtdNameInput.value = selectedResult.rtd_name || '';
         rtdMailInput.value = selectedResult.rtd_mail || '';
+        urlInputLabel.classList.add('active');
+        rtdNameInputLabel.classList.add('active');
+        rtdMailInputLabel.classList.add('active');
     };
 
     const onIpaSearch = () => {
@@ -23,6 +29,9 @@ export default (() => {
         urlInput.classList.remove('is-invalid', 'is-valid');
         rtdNameInput.classList.remove('is-invalid', 'is-valid');
         rtdMailInput.classList.remove('is-invalid', 'is-valid');
+        urlInputLabel.classList.remove('active');
+        rtdNameInputLabel.classList.remove('active');
+        rtdMailInputLabel.classList.remove('active');
     };
 
     const ipaSchema = {

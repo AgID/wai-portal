@@ -1,6 +1,7 @@
 .it-header-wrapper {
-  background: $header-center-bg-color;
   background: radial-gradient(at top, $header-center-bg-color 50%, $header-center-bg-secondary-color 70%);
+  position: relative;
+  z-index: 3;
 
   .it-nav-wrapper {
     &.tall {
@@ -8,6 +9,14 @@
 
       @include media-breakpoint-up(lg) {
         height: calc(#{$header-center-max-height} + (#{$header-center-max-height} / 2));
+      }
+    }
+
+    &.home {
+      .it-brand-text {
+        h3 {
+          display: none;
+        }
       }
     }
 
@@ -120,14 +129,13 @@
             width: 100%;
 
             .menu-wrapper {
-              align-items: center;
-
               .navbar-nav.primary {
                 position: relative;
 
                 &::after {
                   content: '';
                   position: absolute;
+                  z-index: 1;
                   top: 1.2rem;
                   height: 2.8rem;
                   width: 100%;

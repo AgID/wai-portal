@@ -121,7 +121,7 @@ class SuperAdminUserController extends Controller
                     __('Comunica al nuovo utente la sua password temporanea <code>:password</code> usando un canale diverso dalla mail :email.', ['password' => $temporaryPassword, 'email' => $input['email']]),
                     __('<strong>Attenzione! Questa password non sarà mai più visualizzata.</strong>'),
                 ]),
-                'image' => 'https://placeholder.pics/svg/180',
+                'image' => asset('images/invitation-email-sent.svg'),
             ]);
     }
 

@@ -3,8 +3,8 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content rounded">
             <div class="modal-header">
-                <button class="close" type="button" data-dismiss="modal" aria-label="{{ __('chiudi') }}">
-                    <svg class="icon">
+                <button class="close p-0" type="button" data-dismiss="modal" aria-label="{{ __('chiudi') }}">
+                    <svg class="icon icon-lg">
                         <use xlink:href="{{ asset('svg/sprite.svg#it-close') }}"></use>
                     </svg>
                 </button>
@@ -14,13 +14,15 @@
                     <div class="col-12">
                         <svg class="icon icon-xl icon-primary mb-2"><use xlink:href="{{ asset('svg/sprite.svg') }}#{{ $modal['icon'] }}"></use></svg>
                     </div>
-                    <div class="col-sm-8">
+                    <div class="col-sm-{{ isset($modal['image']) ? '8' : '12' }}">
                         <h3>{{ $modal['title'] }}</h3>
                         <p>{!! nl2br($modal['message']) !!}</p>
                     </div>
+                    @isset($modal['image'])
                     <div class="col-sm-4 d-flex align-items-center justify-content-center">
                         <img src="{{ $modal['image'] }}">
                     </div>
+                    @endisset
                 </div>
             </div>
         </div>

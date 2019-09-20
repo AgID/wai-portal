@@ -1,45 +1,51 @@
-@extends('layouts.page', ['fullWidth' => true])
+@extends('layouts.page', [
+    'fullWidth' => true,
+    'graphicBackground' => true,
+])
 
 @section('title', __('Siti web'))
 
-@section('page-inner-container')
-<div class="lightgrey-bg-a1">
-    <div class="container py-5">
-        @parent
-        @component('layouts.components.box', ['classes' => 'rounded'])
-        @if (session()->has('tenant_id') || auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA))
-        @include('partials.datatable')
-        @can(UserPermission::ACCESS_ADMIN_AREA)
-        @include('partials.link_button', [
-            'label' => __('Aggiungi sito web'),
-            'icon' => 'it-plus',
-            'link' => $websiteCreateUrl,
-            'size' => 'lg',
-        ])
-        @endcan
-        @else
-        @include('pages.websites.partials.add_primary')
-        @endif
-        @endcomponent
+@section('content')
+<div class="container pb-2 pb-sm-3 pb-lg-5">
+    @component('layouts.components.box', ['classes' => 'rounded'])
+    @if (session()->has('tenant_id') || auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA))
+    @include('partials.datatable')
+    @can(UserPermission::ACCESS_ADMIN_AREA)
+    <div class="mt-4 text-center text-sm-left">
+    @component('layouts.components.link_button', [
+        'icon' => 'it-plus',
+        'link' => $websiteCreateUrl,
+        'size' => 'lg',
+    ])
+        {{ __('Aggiungi sito web') }}
+    @endcomponent
     </div>
+    @endcan
+    @else
+    @include('pages.websites.partials.add_primary')
+    @endif
+    @endcomponent
 </div>
 @cannot(UserPermission::ACCESS_ADMIN_AREA)
-<div id="create-websites" class="container py-5{{ auth()->user()->cannot(UserPermission::MANAGE_WEBSITES) ? ' d-none' : '' }}">
-    <div class="row">
-        <div class="col-md-6">
-            <h5 class="section-header">{{ __('Aggiungi altri siti web') }}</h5>
-            <p class="mb-5">
-                {{ __("È possibile aggiungere altri siti web connessi alla tua amministrazione come ad esempio i siti tematici e le piattaforme di servizi.") }}
-            </p>
-                @include('partials.link_button', [
-                    'label' => __('Aggiungi sito'),
+<div id="create-websites" class="py-5{{ auth()->user()->cannot(UserPermission::MANAGE_WEBSITES) ? ' d-none' : '' }}">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <h5 class="section-header">{{ __('Aggiungi altri siti web') }}</h5>
+                <p class="mb-5">
+                    {{ __("È possibile aggiungere altri siti web connessi alla tua amministrazione come ad esempio i siti tematici e le piattaforme di servizi.") }}
+                </p>
+                @component('layouts.components.link_button', [
                     'icon' => 'it-plus',
                     'link' => $websiteCreateUrl,
                     'size' => 'lg',
                 ])
-        </div>
-        <div class="col-md-6 text-center d-none d-md-block">
-            <img src="https://placeholder.pics/svg/180">
+                    {{ __('Aggiungi sito') }}
+                @endcomponent
+            </div>
+            <div class="col-md-6 text-center d-none d-md-block">
+                <img src="{{ asset('images/add-websites.svg') }}">
+            </div>
         </div>
     </div>
 </div>

@@ -38,7 +38,7 @@
     </div>
     <div class="col-sm-9">
         <div class="faqs-wrapper">
-            <div class="faqs collapse-div ml-5" role="tablist">
+            <div class="faqs collapse-div ml-sm-5" role="tablist">
                 @foreach ($faqs as $faq)
                 <div id="faq-{{ $loop->iteration }}" class="faq" data-theme="{{ $faq['theme'] }}">
                     <div class="collapse-header" id="faq-{{ $loop->iteration }}-heading">

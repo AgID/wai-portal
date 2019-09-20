@@ -1,7 +1,7 @@
 <!-- Header -->
 <div class="it-header-wrapper">
     @include('layouts.includes.slim_header')
-    <div class="it-nav-wrapper{{ $tallHeader ?? false ? ' tall' : ''}}">
+    <div class="it-nav-wrapper {{ implode(' ', $classes ?? []) }}">
         <div class="it-header-center-wrapper">
             <div class="container">
                 <div class="row">
@@ -44,5 +44,6 @@
             $isSuperAdmin = isset($authUser) && $authUser->isA(UserRole::SUPER_ADMIN),
         ])
     </div>
+    @yield('after-header')
 </div>
 <!-- End Header -->

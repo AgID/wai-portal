@@ -138,7 +138,7 @@ class WebsiteController extends Controller
             'title' => __('Il sito è stato inserito, adesso procedi ad attivarlo!'),
             'icon' => 'it-check-circle',
             'message' => __('Abbiamo appena inviato al tuo indirizzo email tutte le istruzioni per attivare il sito e iniziare a monitorare il traffico.'),
-            'image' => 'https://placeholder.pics/svg/180',
+            'image' => asset('images/primary-website-added.svg'),
         ]);
     }
 
@@ -200,7 +200,7 @@ class WebsiteController extends Controller
             'title' => __('Il sito è stato inserito, adesso procedi ad attivarlo!'),
             'icon' => 'it-check-circle',
             'message' => __('Abbiamo appena inviato al tuo indirizzo email tutte le istruzioni per attivare il sito e iniziare a monitorare il traffico.'),
-            'image' => 'https://placeholder.pics/svg/180',
+            'image' => asset('images/website-added.svg'),
         ]);
     }
 

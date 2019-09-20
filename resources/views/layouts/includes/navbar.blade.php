@@ -31,7 +31,7 @@
                             <ul class="navbar-nav secondary ml-auto">
                                 @foreach (config('site.menu_items.secondary') as $secondaryMenuItem)
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route($secondaryMenuItem['route']) }}">
+                                    <a class="nav-link{{ request()->route()->named($secondaryMenuItem['route']) ? ' active' : '' }}" href="{{ route($secondaryMenuItem['route']) }}">
                                         <span>{{ __($secondaryMenuItem['name']) }}</span>
                                     </a>
                                 </li>

@@ -15,14 +15,14 @@
                         <div class="input-group-text"><svg class="icon icon-sm"><use xlink:href="{{ asset('svg/sprite.svg#it-mail') }}"></use></svg></div>
                     </div>
                     <label for="email">{{ __('Indirizzo email istituzionale') }}</label>
-                    <input type="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" id="email" name="email" value="{{ old('email') }}" placeholder="{{ __('inserisci il tuo indirizzo email') }}" aria-labelledby="email-input-help" aria-required="true" required>
+                    <input type="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" id="email" name="email" value="{{ old('email') }}" maxlength="255" aria-labelledby="email-input-help" aria-required="true" required>
                     @error('email')
                     <div class="invalid-feedback">{{ $errors->first('email') }}</div>
                     @else
                     <div class="invalid-feedback">{{ __('validation.email', ['attribute' => __('validation.attributes.email')]) }}</div>
                     @enderror
                 </div>
-                <small id="email-input-help" class="form-text text-muted">{{ __("Inserisci l'indirizzo email di lavoro fornito dalla tua PA (es. nome.cognome@agid.gov.it).") }}</small>
+                <small id="email-input-help" class="form-text text-muted">{{ __('Indirizzo email di lavoro (es. nome.cognome@agid.gov.it).') }}</small>
             </div>
         </div>
         <div class="form-row">

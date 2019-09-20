@@ -70,7 +70,6 @@ class VerificationController extends Controller
             'title' => __('Indirizzo email confermato'),
             'icon' => 'it-check-circle',
             'message' => __("Hai appena confermato il tuo indirizzo email <strong>:email</strong>.\nDa adesso puoi iniziare a usare Web Analytics Italia.", ['email' => $user->email]),
-            'image' => 'https://placeholder.pics/svg/180',
         ]);
     }
 
@@ -150,7 +149,12 @@ class VerificationController extends Controller
                 $SPIDUser = session()->get('spid_user');
 
                 if ($user->fiscal_number !== $SPIDUser->fiscalNumber) {
-                    session()->flash('message', ['error' => "L'utente non corrisponde all'invito."]);
+                    session()->flash('notification', [
+                        'title' => __('accesso negato'),
+                        'message' => __("L'utente non corrisponde all'invito."),
+                        'status' => 'error',
+                        'icon' => 'it-close-circle',
+                    ]);
 
                     return app()->make('SPIDAuth')->logout();
                 }

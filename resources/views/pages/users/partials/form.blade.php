@@ -7,7 +7,7 @@
     <h5 class="section-header">{{ __('anagrafica') }}</h5>
     @isset($user)
     <div class="form-row">
-        <div class="form-group col">
+        <div class="form-group col-md-6">
             <div class="input-group">
                 <div class="input-group-prepend">
                     <div class="input-group-text"><svg class="icon icon-sm"><use xlink:href="{{ asset('svg/sprite.svg#it-user') }}"></use></svg></div>
@@ -18,7 +18,7 @@
         </div>
     </div>
     <div class="form-row">
-        <div class="form-group col">
+        <div class="form-group col-md-6">
             <div class="input-group">
                 <div class="input-group-prepend">
                     <div class="input-group-text"><svg class="icon icon-sm"><use xlink:href="{{ asset('svg/sprite.svg#it-user') }}"></use></svg></div>
@@ -30,13 +30,13 @@
     </div>
     @endisset
     <div class="form-row">
-        <div class="form-group has-form-text col">
+        <div class="form-group has-form-text col-md-6">
             <div class="input-group">
                 <div class="input-group-prepend">
                     <div class="input-group-text"><svg class="icon icon-sm"><use xlink:href="{{ asset('svg/sprite.svg#it-mail') }}"></use></svg></div>
                 </div>
                 <label for="email">{{ __('Indirizzo email istituzionale') }}</label>
-                <input type="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" id="email" name="email" value="{{ old('email', $user->email ?? '') }}" placeholder="{{ __("inserisci l'indirizzo email del nuovo utente") }}" aria-labelledby="email-input-help" aria-required="true" required>
+                <input type="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" id="email" name="email" value="{{ old('email', $user->email ?? '') }}" maxlength="255" aria-labelledby="email-input-help" aria-required="true" required>
                 @error('email')
                 <div class="invalid-feedback">{{ $errors->first('email') }}</div>
                 @else
@@ -47,13 +47,13 @@
         </div>
     </div>
     <div class="form-row">
-        <div class="form-group col">
+        <div class="form-group col-md-6">
             <div class="input-group">
                 <div class="input-group-prepend">
                     <div class="input-group-text"><svg class="icon icon-sm"><use xlink:href="{{ asset('svg/sprite.svg#it-card') }}"></use></svg></div>
                 </div>
                 <label for="fiscal_number">{{ __('Codice fiscale') }}</label>
-                <input type="text" class="form-control{{ $errors->has('fiscal_number') ? ' is-invalid' : '' }}" id="fiscal_number" name="fiscal_number" value="{{ old('fiscal_number', $user->fiscal_number ?? '') }}" placeholder="{{ __('inserisci il codice fiscale del nuovo utente') }}" aria-required="true" required {{ (optional($user->status ?? null)->is(UserStatus::INVITED) ?? true) ? '' : 'readonly' }}>
+                <input type="text" class="form-control{{ $errors->has('fiscal_number') ? ' is-invalid' : '' }}" id="fiscal_number" name="fiscal_number" value="{{ old('fiscal_number', $user->fiscal_number ?? '') }}" maxlength="255" aria-required="true" required {{ (optional($user->status ?? null)->is(UserStatus::INVITED) ?? true) ? '' : 'readonly' }}>
                 @error('fiscal_number')
                 <div class="invalid-feedback">{{ $errors->first('fiscal_number') }}</div>
                 @else
@@ -84,7 +84,7 @@
     <div class="form-row">
         @include('partials.datatable')
     </div>
-    <div class="form-row mt-4">
+    <div class="form-row mt-2 mt-md-4">
         <div class="form-group mb-0 col text-center">
             <button type="submit" class="btn btn-primary">{{ __('Salva') }}</button>
         </div>

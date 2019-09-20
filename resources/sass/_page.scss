@@ -1,6 +1,7 @@
-.page-container {
+.page-bulk-container {
   @extend .container;
   position: relative;
+  z-index: 3;
   background: $white;
   padding: 1em 2em;
   margin: calc(#{$header-center-max-height-mob} / 2 * -1) auto calc(#{$header-center-max-height-mob} / 2);
@@ -24,4 +25,122 @@
     max-width: 960px;
     padding: 4em 5em;
   }
+}
+
+.page-background-graphic {
+  position: relative;
+  background-color: $lightgrey-a1;
+  overflow: hidden;
+
+  .h-bars {
+    position: absolute;
+    top: 48px;
+    left: 0;
+  
+    .graphic-container {
+      width: 12em;
+    }
+  }
+
+  .target {
+    position: absolute;
+    top: 96px;
+    right: 0;
+  
+    .graphic-container{
+      width: 18em;
+    }
+  }
+
+  .v-bars {
+    position: absolute;
+    top: 16px;
+    right: 576px;
+  
+    .graphic-container {
+      width: 18em;
+    }
+  }
+}
+
+#main {
+  .container {
+    position: relative;
+    z-index: 2;
+  }
+}
+
+.page-background-image {
+  overflow: hidden;
+  width: 100%;
+  bottom: calc(#{$header-center-max-height-mob} / 2 * -1) !important;
+
+  .page-background-graphic & {
+    bottom: 0 !important;
+  }
+
+  @include media-breakpoint-up(lg) {
+    bottom: calc(#{$header-center-max-height} / 2 * -1) !important;
+  }
+
+  img {
+    width: 100%;
+  }
+}
+
+.absolute-bottom-right {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+
+.absolute-top {
+  position: absolute;
+  top: 0;
+}
+
+.absolute-top-left {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.absolute-top-right {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.absolute-bottom {
+  position: absolute;
+  bottom: 0;
+}
+
+.graphic-container {
+  .home-content & {
+    width: 15em;
+  }
+
+  &.h-flip {
+    transform: scaleX(-1);
+  }
+
+  &.v-flip {
+    transform: scaleY(-1);
+  }
+
+  svg {
+    height: 100%;
+    width: 100%;
+  }
+}
+
+.back-to-top {
+  z-index: 10;
+}
+
+#create-websites {
+  position: relative;
+  z-index: 1;
+  background-color: $white;
 }

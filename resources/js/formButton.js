@@ -23,7 +23,7 @@ export default (() => {
         button.addEventListener('click', event => {
             event.preventDefault();
 
-            confirmation && Confirmation.showConfirmation(confirmation.title, confirmation.body).then(() => {
+            confirmation && Confirmation.showConfirmation(confirmation.title, confirmation.body, confirmation.image).then(() => {
                 buttonSubmission(button, method);
             }).catch(() => {});
 

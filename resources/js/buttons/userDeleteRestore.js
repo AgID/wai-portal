@@ -26,6 +26,7 @@ export default (() => {
                     '</p>',
                     '<p>' + I18n.t('Sei sicuro?') +'<p>',
                 ].join(' '),
+                image: '/images/user-suspend.svg',
             };
             const success = response => {
                 Notification.showNotification(I18n.t('utente modificato'), response.data.trashed

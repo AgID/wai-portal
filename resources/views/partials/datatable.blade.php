@@ -5,7 +5,7 @@
         <div class="col-md-4 form-group mb-2 mb-md-0">
             <div class="input-group">
                 <label for="datatables-search">Cerca</label>
-                <input type="search" class="form-control" id="datatables-search">
+                <input type="search" class="form-control" id="datatables-search" maxlength="255">
                 <div class="input-group-append">
                     <div class="input-group-text"><svg class="icon icon-sm"><use xlink:href="{{ asset('svg/sprite.svg#it-search') }}"></use></svg></div>
                 </div>

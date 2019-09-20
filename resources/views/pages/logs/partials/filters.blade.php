@@ -15,7 +15,7 @@
         <div class="col-md-4">
             <div class="it-datepicker-wrapper">
                 <div class="form-group">
-                    <input type="text" class="form-control it-date-datepicker" name="start_date" id="start_date" value="{{ old('start_date') }}" placeholder="{{ __('inserisci la data di inizio') }}">
+                    <input type="text" class="form-control it-date-datepicker" name="start_date" id="start_date" value="{{ old('start_date') }}" maxlength="255">
                     <label for="start_date">{{ __('Data di inizio') }}</label>
                     <div class="invalid-feedback"></div>
                 </div>
@@ -29,7 +29,7 @@
         <div class="col-md-4">
             <div class="it-datepicker-wrapper">
                 <div class="form-group">
-                    <input type="text" class="form-control it-date-datepicker" name="end_date" id="end_date" value="{{ old('end_date') }}" placeholder="{{ __('inserisci la data di fine') }}">
+                    <input type="text" class="form-control it-date-datepicker" name="end_date" id="end_date" value="{{ old('end_date') }}" maxlength="255">
                     <label for="end_date">{{ __('Data di fine') }}</label>
                     <div class="invalid-feedback"></div>
                 </div>
@@ -44,7 +44,7 @@
     <div class="form-row">
         <div class="form-group col-md-8">
             <label for="message">{{ __('Contenuto del messaggio') }}</label>
-            <input type="text" class="form-control" name="message" id="message" value="{{ old('message') }}" placeholder="{{ __('cerca nel contenuto del messaggio') }}">
+            <input type="text" class="form-control" name="message" id="message" value="{{ old('message') }}" maxlength="255">
             <div class="invalid-feedback"></div>
         </div>
         <div class="form-group has-form-text col-md-4">
@@ -100,7 +100,7 @@
         <div class="form-group col-md-6">
             <div class="input-group">
                 <label for="website_id">{{ __('Sito web') }}</label>
-                <input type="search" class="form-control autocomplete" id="website_id" name="website_id" data-search="searchWebsites" data-source="{{ $searchWebsitesEndpoint }}" value="{{ old('website_id') }}" placeholder="{{ __('filtra per sito web') }}">
+                <input type="search" class="form-control autocomplete" id="website_id" name="website_id" data-search="searchWebsites" data-source="{{ $searchWebsitesEndpoint }}" value="{{ old('website_id') }}" maxlength="255">
                 <ul class="autocomplete-list"></ul>
                 <div class="searching-icon input-group-append">
                     <div class="input-group-text">
@@ -113,7 +113,7 @@
         <div class="form-group col-md-6">
             <div class="input-group">
                 <label for="user_uuid">{{ __('Utente') }}</label>
-                <input type="search" class="form-control autocomplete" id="user_uuid" name="user_uuid" data-search="searchUsers" data-source="{{ $searchUsersEndpoint }}" value="{{ old('user_uuid') }}" placeholder="{{ __('filtra per utente') }}">
+                <input type="search" class="form-control autocomplete" id="user_uuid" name="user_uuid" data-search="searchUsers" data-source="{{ $searchUsersEndpoint }}" value="{{ old('user_uuid') }}" maxlength="255">
                 <ul class="autocomplete-list"></ul>
                 <div class="searching-icon input-group-append">
                     <div class="input-group-text">

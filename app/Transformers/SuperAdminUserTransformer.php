@@ -55,6 +55,7 @@ class SuperAdminUserTransformer extends TransformerAbstract
                 [
                     'icon' => 'it-pencil',
                     'link' => route('admin.users.edit', ['user' => $user]),
+                    'color' => 'primary',
                     'title' => __('modifica'),
                 ],
             ],
@@ -64,6 +65,7 @@ class SuperAdminUserTransformer extends TransformerAbstract
             $data['icons'][] = [
                 'icon' => 'it-exchange-circle',
                 'link' => route('admin.users.reactivate', ['user' => $user]),
+                'color' => 'primary',
                 'title' => __('riattiva'),
                 'dataAttributes' => [
                     'user-name' => e($user->full_name),
@@ -77,6 +79,7 @@ class SuperAdminUserTransformer extends TransformerAbstract
             $data['icons'][] = [
                 'icon' => 'it-close-circle',
                 'link' => route('admin.users.suspend', ['user' => $user]),
+                'color' => 'primary',
                 'title' => __('sospendi'),
                 'dataAttributes' => [
                     'user-name' => e($user->full_name),

@@ -29,12 +29,13 @@ export default (() => {
                     userSuspendReactivateButton.dataset.currentStatusDescription.toUpperCase(),
                     '</span><br>',
                     I18n.t('Il nuovo stato sarà:'),
-                    '<span class="badge website-status ' + ('active' === currentStatus ? 'suspended' : 'active') + '">',
+                    '<span class="badge user-status ' + ('active' === currentStatus ? 'suspended' : 'active') + '">',
                     ('active' === currentStatus ? I18n.t('sospeso') : I18n.t('attivo')).toUpperCase(),
                     '</span><br>',
                     '</p>',
                     '<p>' + I18n.t('Sei sicuro?') +'<p>',
                 ].join(' '),
+                image: '/images/user-suspend.svg',
             };
             const success = response => {
                 Notification.showNotification(I18n.t('utente modificato'), [

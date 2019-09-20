@@ -13,7 +13,7 @@
                         <div class="input-group-text"><svg class="icon icon-sm"><use xlink:href="{{ asset('svg/sprite.svg#it-mail') }}"></use></svg></div>
                     </div>
                     <label for="email">{{ __('Indirizzo email') }}</label>
-                    <input type="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" id="email" name="email" value="{{ old('email') }}" placeholder="{{ __('inserisci il tuo indirizzo email') }}" aria-labelledby="email-input-help" aria-required="true" required>
+                    <input type="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" id="email" name="email" value="{{ old('email') }}" maxlength="255" aria-labelledby="email-input-help" aria-required="true" required>
                     @error('email')
                     <div class="invalid-feedback">{{ $errors->first('email') }}</div>
                     @else
@@ -33,7 +33,7 @@
                         <div class="input-group-text"><svg class="icon icon-sm"><use xlink:href="{{ asset('svg/sprite.svg#it-code-circle') }}"></use></svg></div>
                     </div>
                     <label for="token">{{ __('Codice di reset') }}</label>
-                    <input type="text" class="form-control{{ $errors->has('token') ? ' is-invalid' : '' }}" id="token" name="token" value="{{ old('token') }}" placeholder="{{ __('inserisci codice che hai ricevuto via email') }}" aria-labelledby="token-input-help" aria-required="true" required>
+                    <input type="text" class="form-control{{ $errors->has('token') ? ' is-invalid' : '' }}" id="token" name="token" value="{{ old('token') }}" maxlength="255" aria-labelledby="token-input-help" aria-required="true" required>
                     @error('token')
                     <div class="invalid-feedback">{{ $errors->first('token') }}</div>
                     @else
@@ -47,7 +47,7 @@
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="password">{{ __('Nuova password') }}</label>
-                <input type="password" class="form-control input-password input-password-strength-meter{{ $errors->has('password') ? ' is-invalid' : '' }}" id="password" name="password" placeholder="{{ __('inserisci la tua nuova password') }}" aria-required="true" required>
+                <input type="password" class="form-control input-password input-password-strength-meter{{ $errors->has('password') ? ' is-invalid' : '' }}" id="password" name="password" maxlength="255" aria-required="true" required>
                 <span class="password-icon" aria-hidden="true">
                     <svg class="password-icon-visible icon icon-sm"><use xlink:href="{{ asset('svg/sprite.svg#it-password-visible') }}"></use></svg>
                     <svg class="password-icon-invisible icon icon-sm d-none"><use xlink:href="{{ asset('svg/sprite.svg#it-password-invisible') }}"></use></svg>
@@ -62,7 +62,7 @@
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="password_confirmation">{{ __('Conferma nuova password') }}</label>
-                <input type="password" class="form-control input-password{{ $errors->has('password_confirmation') ? ' is-invalid' : '' }}" id="password_confirmation" name="password_confirmation" placeholder="{{ __('conferma la tua nuova password') }}" aria-required="true" required>
+                <input type="password" class="form-control input-password{{ $errors->has('password_confirmation') ? ' is-invalid' : '' }}" id="password_confirmation" name="password_confirmation" maxlength="255" aria-required="true" required>
                 <span class="password-icon" aria-hidden="true">
                     <svg class="password-icon-visible icon icon-sm"><use xlink:href="{{ asset('svg/sprite.svg#it-password-visible') }}"></use></svg>
                     <svg class="password-icon-invisible icon icon-sm d-none"><use xlink:href="{{ asset('svg/sprite.svg#it-password-invisible') }}"></use></svg>

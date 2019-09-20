@@ -130,7 +130,7 @@ class UserController extends Controller
             'title' => __('Invito inoltrato'),
             'icon' => 'it-clock',
             'message' => __("Abbiamo appena inviato un invito all'indirizzo email <strong>:email</strong>.", ['email' => $user->email]),
-            'image' => 'https://placeholder.pics/svg/180',
+            'image' => asset('images/invitation-email-sent.svg'),
         ]);
     }
 

@@ -12,7 +12,7 @@
                     <div class="input-group-text"><svg class="icon icon-sm"><use xlink:href="{{ asset('svg/sprite.svg#it-help-circle') }}"></use></svg></div>
                 </div>
                 <label for="website_name">{{ __('Nome del sito') }}</label>
-                <input type="text" class="form-control{{ $errors->has('website_name') ? ' is-invalid' : '' }}" id="website_name" name="website_name" value="{{ old('website_name', $website->name ?? '') }}" placeholder="{{ __('inserisci il nome del sito') }}" aria-labelledby="name-input-help" aria-required="true" required {{ optional($website->type ?? null)->is(WebsiteType::PRIMARY) ? 'readonly' : '' }}>
+                <input type="text" class="form-control{{ $errors->has('website_name') ? ' is-invalid' : '' }}" id="website_name" name="website_name" value="{{ old('website_name', $website->name ?? '') }}" maxlength="255" aria-labelledby="name-input-help" aria-required="true" required {{ optional($website->type ?? null)->is(WebsiteType::PRIMARY) ? 'readonly' : '' }}>
                 @error('website_name')
                 <div class="invalid-feedback">{{ $errors->first('website_name') }}</div>
                 @else
@@ -29,7 +29,7 @@
                     <div class="input-group-text"><svg class="icon icon-sm"><use xlink:href="{{ asset('svg/sprite.svg#it-code-circle') }}"></use></svg></div>
                 </div>
                 <label for="url">{{ __('URL') }}</label>
-                <input type="text" class="form-control{{ $errors->has('url') ? ' is-invalid' : '' }}" id="url" name="url" value="{{ old('url', $website->url ?? '') }}" placeholder="{{ __("inserisci l'indirizzo web del sito") }}" aria-labelledby="url-input-help" aria-required="true" required {{ optional($website->type ?? null)->is(WebsiteType::PRIMARY) ? 'readonly' : '' }}>
+                <input type="text" class="form-control{{ $errors->has('url') ? ' is-invalid' : '' }}" id="url" name="url" value="{{ old('url', $website->url ?? '') }}" maxlength="255" aria-labelledby="url-input-help" aria-required="true" required {{ optional($website->type ?? null)->is(WebsiteType::PRIMARY) ? 'readonly' : '' }}>
                 @error('url')
                 <div class="invalid-feedback">{{ $errors->first('url') }}</div>
                 @else
@@ -76,7 +76,7 @@
     <div class="form-row">
         @include('partials.datatable')
     </div>
-    <div class="form-row mt-4">
+    <div class="form-row mt-2 mt-md-4">
         <div class="form-group mb-0 col text-center">
             <button type="submit" class="btn btn-primary">{{ __('Salva') }}</button>
         </div>

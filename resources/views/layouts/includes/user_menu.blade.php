@@ -1,6 +1,6 @@
 <div class="user-dropdown dropdown">
     <a class="btn btn-dropdown dropdown-toggle" role="button" id="userDropdownButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        <span>{{ __('Ciao,') }} {{ $authUser->name }}!</span>
+        <span>{{ __('Ciao,') }} {{ $user->name }}!</span>
         <svg class="icon-expand icon icon-sm icon-primary"><use xlink:href="{{ asset('svg/sprite.svg#it-expand') }}"></use></svg>
     </a>
     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdownButton">
@@ -9,12 +9,12 @@
                 <li>
                     <div class="avatar-wrapper avatar-extra-text px-4 mb-0">
                         <div class="avatar size-lg">
-                            <img src="https://www.gravatar.com/avatar/{{ md5(strtolower($authUser->email)) }}?d={{ $authUser->email ? 'identicon' : 'mp' }}" alt="{{ $authUser->full_name }}">
+                            <img src="https://www.gravatar.com/avatar/{{ md5(strtolower($user->email)) }}?d={{ $user->email ? 'identicon' : 'mp' }}" alt="{{ $user->full_name }}">
                         </div>
                         <div class="extra-text">
-                            <h4>{{ $authUser->full_name }}</h4>
+                            <h4>{{ $user->full_name }}</h4>
                             @auth
-                            <p>{{ $authUser->all_role_names }}</p>
+                            <p>{{ $user->all_role_names }}</p>
                             @endauth
                         </div>
                     </div>

@@ -1,7 +1,7 @@
 import i18n from './i18n';
 
 export default (() => {
-    const showConfirmation = (title, message, buttonConfirmText, buttonCancelText) => {
+    const showConfirmation = (title, message, image, buttonConfirmText, buttonCancelText) => {
         const confirmationId = (new Date().getTime()).toString(36);
         const confirmationFragment = document.createRange().createContextualFragment(`
         <div class="modal fade" role="dialog" tabindex="-1" id="${confirmationId}">
@@ -17,7 +17,7 @@ export default (() => {
                             <p>${message}</p>
                         </div>
                         <div class="col-5 d-flex align-items-center justify-content-center">
-                            <img src="https://placeholder.pics/svg/180">
+                            <img src="${image}">
                         </div>
                     </div>
                 </div>

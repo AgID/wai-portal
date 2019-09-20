@@ -1,3 +1,3 @@
-<div class="box w-100{{ empty($classes) ? '' : ' ' . $classes }}">
+<div class="box{{ empty($classes) ? '' : ' ' . $classes }}">
     {{ $slot }}
 </div>

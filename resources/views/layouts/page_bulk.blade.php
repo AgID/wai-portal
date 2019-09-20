@@ -3,22 +3,24 @@
 @section('page-content')
     @include('layouts.includes.header', [
         'navbar' => false,
-        'tallHeader' => true,
-        'authUser' => auth()->user(),
-        'spidAuthUser' => app()->make('SPIDAuth')->getSPIDUser(),
-        'hasActivePublicAdministration' => session()->has('tenant_id') && auth()->user()->status->is(UserStatus::ACTIVE),
+        'classes' => ['tall'],
     ])
 
-    <div class="page-container">
-        <div id="main">
+    <div class="position-relative">
+        <div class="page-bulk-container">
+            <div id="main">
 
-            @include('layouts.includes.alert')
-            @yield('before-title')
+                @include('layouts.includes.alert')
+                @yield('before-title')
 
-            <h1 class="display-2">@yield('title')@yield('title-after')</h1>
+                <h1 class="display-2">@yield('title')@yield('title-after')</h1>
 
-            @yield('content')
+                @yield('content')
 
+            </div>
+        </div>
+        <div class="absolute-bottom page-background-image">
+            <img alt="" src="{{ asset('images/page-bulk-bg.svg') }}">
         </div>
     </div>
 @endsection

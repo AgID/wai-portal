@@ -178,6 +178,7 @@
 .input-group {
   label {
     left: 0;
+    z-index: 4;
   }
 
   .input-group-prepend + label {
@@ -207,8 +208,4 @@
 // Fiscal number
 input[name=fiscal_number] {
   text-transform: uppercase;
-
-  &::placeholder {
-    text-transform: none;
-  }
 }

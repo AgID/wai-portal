@@ -33,6 +33,7 @@ export default (() => {
                     '</p>',
                     '<p>' + I18n.t('Sei sicuro?') +'<p>',
                 ].join(' '),
+                image: '/images/website-archive.svg',
             };
             const success = response => {
                 Notification.showNotification(I18n.t('sito web modificato'), [
