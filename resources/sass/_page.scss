@@ -55,7 +55,7 @@
   .v-bars {
     position: absolute;
     top: 16px;
-    right: 576px;
+    @include v-bars-right-position();
   
     .graphic-container {
       width: 18em;
