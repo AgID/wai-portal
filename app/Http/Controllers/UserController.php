@@ -137,7 +137,7 @@ class UserController extends Controller
     /**
      * Show the user details page.
      *
-     * @param PublicAdministration|null $publicAdministration the public administration the user belongs to
+     * @param PublicAdministration $publicAdministration the public administration the user belongs to
      * @param User $user the user to display
      *
      * @return \Illuminate\View\View the view
@@ -375,12 +375,12 @@ class UserController extends Controller
     /**
      * Reactivate an existing suspended user.
      *
-     * @param PublicAdministration|null $publicAdministration the public administration the user belong to
+     * @param PublicAdministration $publicAdministration the public administration the user belong to
      * @param User $user the user to reactivate
      *
      * @return JsonResponse|RedirectResponse the response in json or http redirect format
      */
-    public function reactivate(?PublicAdministration $publicAdministration, User $user)
+    public function reactivate(PublicAdministration $publicAdministration, User $user)
     {
         if (!$user->status->is(UserStatus::SUSPENDED)) {
             return $this->notModifiedResponse();

@@ -22,7 +22,7 @@ class VerificationController extends Controller
     /**
      * Show the email verification notice.
      *
-     * @param \Illuminate\Http\Request $request the incoming request
+     * @param Request $request the incoming request
      *
      * @return mixed the view for verification notice or a redirect if user is already verified
      */
@@ -40,13 +40,13 @@ class VerificationController extends Controller
     /**
      * Mark the authenticated user's email address as verified.
      *
-     * @param \Illuminate\Http\Request $request the incoming request
+     * @param Request $request the incoming request
      * @param string $uuid the uuid of the user to be verified
      *
      * @throws \Illuminate\Contracts\Container\BindingResolutionException if unable to bind to SPID service
      * @throws \Illuminate\Auth\Access\AuthorizationException if verification link is invalid
      *
-     * @return \Illuminate\Http\RedirectResponse the server redirect response
+     * @return RedirectResponse the server redirect response
      */
     public function verify(Request $request, string $uuid): RedirectResponse
     {
@@ -79,11 +79,11 @@ class VerificationController extends Controller
     /**
      * Resend the email verification notification.
      *
-     * @param \Illuminate\Http\Request $request the incoming request
-     * @param User|null $user the user to resend the notification to
+     * @param Request $request the incoming request
+     * @param User $user the user to resend the notification to
      *
-     * @return \Illuminate\Http\RedirectResponse the server redirect response
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse the response
+     * @return RedirectResponse the server redirect response
+     * @return RedirectResponse|\Illuminate\Http\JsonResponse the response
      */
     public function resend(Request $request, User $user)
     {
@@ -115,7 +115,7 @@ class VerificationController extends Controller
      * @param User $user the user
      * @param Request $request the current request
      *
-     * @return \Illuminate\Http\RedirectResponse the server redirect response
+     * @return RedirectResponse the server redirect response
      */
     protected function alreadyVerifiedUser(Request $request, User $user): RedirectResponse
     {

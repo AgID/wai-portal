@@ -573,7 +573,7 @@ class WebsiteController extends Controller
     /**
      * Get the websites data.
      *
-     * @param PublicAdministration|null $publicAdministration the P.A. to filter websites or null to use current user P.A.
+     * @param PublicAdministration $publicAdministration the P.A. to filter websites or null to use current user P.A.
      *
      * @throws \Exception if unable to initialize the datatable
      *
@@ -591,14 +591,14 @@ class WebsiteController extends Controller
     /**
      * Get the user permissions on a website.
      *
-     * @param PublicAdministration|null $publicAdministration the public administration the website belongs to
-     * @param Website|null $website the website to use for permissions initialization or null for default
+     * @param PublicAdministration $publicAdministration the public administration the website belongs to
+     * @param Website $website the website to use for permissions initialization
      *
      * @throws \Exception if unable to initialize the datatable
      *
      * @return mixed the response the JSON format
      */
-    public function dataUsersPermissionsJson(PublicAdministration $publicAdministration, ?Website $website)
+    public function dataUsersPermissionsJson(PublicAdministration $publicAdministration, Website $website)
     {
         $users = auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)
             ? $publicAdministration->users

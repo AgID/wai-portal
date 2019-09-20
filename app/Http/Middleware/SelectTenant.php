@@ -11,8 +11,7 @@ class SelectTenant
      * Check whether the session has a tenant selected for the current request.
      *
      * @param \Illuminate\Http\Request $request
-     * @param \Closure $next
-     * @param string|null $guard
+     * @param Closure $next
      *
      * @return mixed
      */

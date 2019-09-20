@@ -3,6 +3,7 @@
 namespace App\Extensions;
 
 use Illuminate\Auth\EloquentUserProvider;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Str;
 
 /**
@@ -19,14 +20,14 @@ class AppUserProvider extends EloquentUserProvider
      *
      * @param array $credentials
      *
-     * @return \Illuminate\Contracts\Auth\Authenticatable|null
+     * @return Authenticatable|null
      */
-    public function retrieveByCredentials(array $credentials)
+    public function retrieveByCredentials(array $credentials): ?Authenticatable
     {
         if (empty($credentials) ||
            (1 === count($credentials) &&
             array_key_exists('password', $credentials))) {
-            return;
+            return null;
         }
         // First we will add each credential element to the query as a where clause.
         // Then we can execute the query and, if we found a user, return it in a

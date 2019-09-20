@@ -240,8 +240,7 @@ class User extends Authenticatable implements MustVerifyEmail
     /**
      * Configure information for notifications over mail channel.
      *
-     * @param PublicAdministration|null $publicAdministration the public administration the user belongs to
-     *                                                        or null if user is registering a new P.A.
+     * @param PublicAdministration|null $publicAdministration the public administration the user belongs to or null if user is registering a new Public Administration
      */
     public function sendEmailVerificationNotification(?PublicAdministration $publicAdministration = null)
     {

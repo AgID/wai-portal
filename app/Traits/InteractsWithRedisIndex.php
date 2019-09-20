@@ -40,7 +40,7 @@ trait InteractsWithRedisIndex
      *
      * @return array|null The Public Administration (as an associative array) or null if not found
      */
-    public function getPublicAdministrationEntryByIpaCode($ipaCode)
+    public function getPublicAdministrationEntryByIpaCode($ipaCode): ?array
     {
         try {
             $rawResult = $this->getRediSearchRedisClient('ipa')->rawCommand('FT.GET', [
@@ -129,20 +129,20 @@ trait InteractsWithRedisIndex
      *
      * @param string $indexName the index to search
      * @param string $query the query
-     * @param array|null $options the options to use in the query as an array
-     *                            [
-     *                            'inFields' => null, // the fields to use in the search
-     *                            'exact' => false, // wether exact matching is required
-     *                            'limit' => 100, // the maximum number of results to retrun
-     *                            'sortBy' => null, // the field to be used for the results sorting
-     *                            'tagFilters' => null, // the tags to use in query filtering
-     *                            'verbatim' => false, // wether stemming should be disabled in the search
-     *                            'resultsAsArray' => false, // wether the results should be returned as array
-     *                            ]
+     * @param array $options the options to use in the query as an array
+     *                       [
+     *                       'inFields' => null, // the fields to use in the search
+     *                       'exact' => false, // wether exact matching is required
+     *                       'limit' => 100, // the maximum number of results to retrun
+     *                       'sortBy' => null, // the field to be used for the results sorting
+     *                       'tagFilters' => null, // the tags to use in query filtering
+     *                       'verbatim' => false, // wether stemming should be disabled in the search
+     *                       'resultsAsArray' => false, // wether the results should be returned as array
+     *                       ]
      *
      * @return array the results list or an empty array if none
      */
-    protected function searchRedisIndex(string $indexName, string $query, ?array $options): array
+    protected function searchRedisIndex(string $indexName, string $query, array $options = []): array
     {
         $options = array_merge([
             'inFields' => null,
