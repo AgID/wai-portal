@@ -20,7 +20,7 @@ class AnonymousVisitTest extends DuskTestCase
     {
         $this->browse(function (Browser $browser) {
             $browser->visit(new Home())
-                    ->assertSee('Home')
+                    ->assertSee('Le statistiche dei siti web')
                     ->waitForText('Entra con SPID')
                     ->assertSee('Entra con SPID')
                     ->visit('/dashboard')
