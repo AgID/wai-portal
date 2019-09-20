@@ -282,6 +282,32 @@ export default (() => {
         });
     };
 
+    const responsiveRenderer = (api, rowIdx, columns) => {
+        const columnsData = columns.reduce((renderedData, column) => {
+            const title = column.title || 'actions';
+            column.hidden && (renderedData[title] = (renderedData[title] || '') + [
+                column.title && `<td class="text-wrap">${column.title}</td>`,
+                column.title && '<td class="text-wrap column-data">',
+                column.data,
+                column.title && '</td>',
+            ].join(''));
+            
+            return renderedData;
+        }, {});
+
+        const renderedColumns = Object.keys(columnsData).reduce((columnsMarkup, title, index) => {
+            return columnsMarkup + [
+                '<tr>',
+                'actions' === title ? '<td colspan="2" class="border-0 text-wrap">' : '',
+                columnsData[title],
+                'actions' === title ? '</td>' : '',
+                '</tr>',
+            ].join('') + (columnsData.length -1 === index ? '</table>' : '');
+        }, '<table class="w-100">');
+
+        return renderedColumns || false;
+    };
+
     const init = async (preInit, onDraw) => {
         if ($datatable.length === 0) {
             return;
@@ -306,7 +332,11 @@ export default (() => {
             serverSide: datatable.serverSide,
             searching: datatable.searching,
             ajax: datatable.source,
-            responsive: true,
+            responsive: {
+                details: {
+                    renderer: responsiveRenderer,
+                }
+            },
             autoWidth: false,
             dom: 'rtlip',
             columns: datatable.columns,
