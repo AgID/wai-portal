@@ -38,7 +38,7 @@ Route::get('/_reset_all', function () {
     ]);
 });
 
-Route::get('/_activate_websites', function () {
+Route::get('/_generate_visits', function () {
     $faker = Faker\Factory::create();
     $client = new TrackingClient(['base_uri' => config('analytics-service.api_base_uri')]);
     $pendingWebsites = Website::where('status', WebsiteStatus::PENDING)->get();
@@ -54,7 +54,6 @@ Route::get('/_activate_websites', function () {
             ],
         ]);
     });
-    Artisan::call('app:check-websites');
 
     return redirect()->home()->withNotification([
         'title' => __('generazione visite'),
