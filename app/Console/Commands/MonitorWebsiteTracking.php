@@ -22,7 +22,7 @@ class MonitorWebsiteTracking extends Command
      */
     public function __construct()
     {
-        $this->description = 'Check that websites registered in Web Analytics Italia have reported activity within the last ' . config('wai.archive_expire') . ' days';
+        $this->description = 'Check that websites registered in ' . config('app.name') . ' have reported activity within the last ' . config('wai.archive_expire') . ' days';
         parent::__construct();
     }
 

@@ -18,11 +18,15 @@ class UpdatePublicAdministrationsFromIpa extends Command
     protected $signature = 'app:update-ipa';
 
     /**
-     * The console command description.
+     * Create a new command instance.
      *
-     * @var string the command description
+     * @return void
      */
-    protected $description = 'Update Public Administrations from IPA index for Web Analytics Italia';
+    public function __construct()
+    {
+        $this->description = 'Update Public Administrations from IPA index for ' . config('app.name');
+        parent::__construct();
+    }
 
     /**
      * Execute the console command.

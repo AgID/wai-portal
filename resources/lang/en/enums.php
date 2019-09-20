@@ -32,11 +32,11 @@ return [
     UserRole::class => [
         UserRole::SUPER_ADMIN => [
             'short' => 'super admin of ' . config('app.name_short'),
-            'long' => 'The super administrator can manage all the data in Web Analytics Italia.',
+            'long' => 'The super administrator can manage all the data in ' . config('app.name') . '.',
         ],
         UserRole::ADMIN => [
             'short' => 'administrator',
-            'long' => 'The administrator can manage all websites and users of his Public Administratio.',
+            'long' => 'The administrator can manage all websites and users of his Public Administration.',
         ],
         UserRole::DELEGATED => [
             'short' => 'delegate',
@@ -48,30 +48,30 @@ return [
         ],
         UserRole::DELETED => [
             'short' => 'deleted',
-            'long' => 'The deleted user does not have access to Web Analytics Italia',
+            'long' => 'The deleted user does not have access to ' . config('app.name') . '.',
         ],
     ],
 
     UserStatus::class => [
         UserStatus::INVITED => [
             'short' => 'invited',
-            'long' => 'The user has not yet accepted the invitation to Web Analytics Italia.',
+            'long' => 'The user has not yet accepted the invitation to ' . config('app.name') . '.',
         ],
         UserStatus::INACTIVE => [
             'short' => 'inactive',
-            'long' => 'The user has not yet registered his Public Administratio on Web Analytics Italia.',
+            'long' => 'The user has not yet registered his Public Administratio on ' . config('app.name') . '.',
         ],
         UserStatus::PENDING => [
             'short' => 'pending',
-            'long' => 'The user is waiting for the activation on Web Analytics Italia.',
+            'long' => 'The user is waiting for the activation on ' . config('app.name') . '.',
         ],
         UserStatus::ACTIVE => [
             'short' => 'active',
-            'long' => 'The user is active and can use the services provided by Web Analytics Italia.',
+            'long' => 'The user is active and can use the services provided by ' . config('app.name') . '.',
         ],
         UserStatus::SUSPENDED => [
             'short' => 'suspended',
-            'long' => 'The user has been suspended and cannot use the services provided by Web Analytics Italia.',
+            'long' => 'The user has been suspended and cannot use the services provided by ' . config('app.name') . '.',
         ],
     ],
 

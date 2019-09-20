@@ -64,7 +64,7 @@ class UserController extends Controller
                 ['data' => 'buttons', 'name' => '', 'orderable' => false],
             ],
             'source' => $this->getRoleAwareUrl('users.data.json', [], $publicAdministration),
-            'caption' => __('elenco degli utenti presenti su Web Analytics Italia'),
+            'caption' => __('elenco degli utenti presenti su :app', ['app' => config('app.name')]),
             'columnsOrder' => [['added_at', 'asc'], ['name', 'asc']],
         ];
 
@@ -492,7 +492,7 @@ class UserController extends Controller
                 ['data' => ($readonly ? 'icons' : 'toggles'), 'name' => __('permessi sui dati analytics'), 'orderable' => false, 'searchable' => false],
             ],
             'source' => $source . ($readonly ? '?readOnly' : ''),
-            'caption' => __('elenco dei siti web presenti su Web Analytics Italia'),
+            'caption' => __('elenco dei siti web presenti su :app', ['app' => config('app.name')]),
             'columnsOrder' => [['website_name', 'asc']],
         ];
     }

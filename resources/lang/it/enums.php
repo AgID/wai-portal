@@ -32,7 +32,7 @@ return [
     UserRole::class => [
         UserRole::SUPER_ADMIN => [
             'short' => 'super amministratore di ' . config('app.name_short'),
-            'long' => 'Il super amministratore può gestire tutti i dati presenti in Web Analytics Italia.',
+            'long' => 'Il super amministratore può gestire tutti i dati presenti in ' . config('app.name') . '.',
         ],
         UserRole::ADMIN => [
             'short' => 'amministratore',
@@ -48,30 +48,30 @@ return [
         ],
         UserRole::DELETED => [
             'short' => 'eliminato',
-            'long' => "L'utente eliminato non ha accesso a Web Analytics Italia.",
+            'long' => "L'utente eliminato non ha accesso a " . config('app.name') . '.',
         ],
     ],
 
     UserStatus::class => [
         UserStatus::INVITED => [
             'short' => 'invitato',
-            'long' => "L'utente non ha ancora accettato l'invito a Web Analytics Italia.",
+            'long' => "L'utente non ha ancora accettato l'invito a " . config('app.name') . '.',
         ],
         UserStatus::INACTIVE => [
             'short' => 'inattivo',
-            'long' => "L'utente non ha ancora registrato la sua PA su Web Analytics Italia.",
+            'long' => "L'utente non ha ancora registrato la sua PA su " . config('app.name') . '.',
         ],
         UserStatus::PENDING => [
             'short' => 'in attesa',
-            'long' => "L'utente è in attesa dell'attivazione su Web Analytics Italia.",
+            'long' => "L'utente è in attesa dell'attivazione su " . config('app.name') . '.',
         ],
         UserStatus::ACTIVE => [
             'short' => 'attivo',
-            'long' => "L'utente è attivo e può utilizzare i servizi di Web Analytics Italia.",
+            'long' => "L'utente è attivo e può utilizzare i servizi di " . config('app.name') . '.',
         ],
         UserStatus::SUSPENDED => [
             'short' => 'sospeso',
-            'long' => "L'utente è stato sospeso e non può utilizzare i servizi di Web Analytics Italia.",
+            'long' => "L'utente è stato sospeso e non può utilizzare i servizi di " . config('app.name') . '.',
         ],
     ],
 

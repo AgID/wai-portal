@@ -76,7 +76,7 @@ class WebsiteController extends Controller
                 ['data' => 'buttons', 'name' => '', 'orderable' => false],
             ],
             'source' => $this->getRoleAwareUrl('websites.data.json', [], $publicAdministration),
-            'caption' => __('elenco dei siti web presenti su Web Analytics Italia'),
+            'caption' => __('elenco dei siti web presenti su :app', ['app' => config('app.name')]),
             'columnsOrder' => [['added_at', 'asc'], ['website_name', 'asc']],
         ];
 
@@ -630,7 +630,7 @@ class WebsiteController extends Controller
                 ['data' => ($readonly ? 'icons' : 'toggles'), 'name' => __('permessi sui dati analytics'), 'orderable' => false, 'searchable' => false],
             ],
             'source' => $source . ($readonly ? '?readOnly' : ''),
-            'caption' => __('elenco degli utenti presenti su Web Analytics Italia'),
+            'caption' => __('elenco degli utenti presenti su :app', ['app' => config('app.name')]),
             'columnsOrder' => [['name', 'asc']],
         ];
     }

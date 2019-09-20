@@ -52,7 +52,7 @@ class SuperAdminUserController extends Controller
                 ['data' => 'buttons', 'name' => '', 'orderable' => false],
             ],
             'source' => route('admin.users.data.json'),
-            'caption' => __('elenco degli utenti super amministratori presenti su Web Analytics Italia'),
+            'caption' => __('elenco degli utenti super amministratori presenti su :app', ['app' => config('app.name')]),
             'columnsOrder' => [['added_at', 'asc'], ['name', 'asc']],
         ];
 

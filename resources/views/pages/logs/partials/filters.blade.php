@@ -7,7 +7,7 @@
         {!! __('In alternativa puoi :show_all_logs', ['show_all_logs' => '<a href="#" id="reset-ipa_code-filter">' . __('visualizzare i log relativi a tutte le pubbliche amministrazioni') . '</a>.']) !!}
     </div>
     <div id="public-administration-not-selected" class="alert alert-info alert-dismissible rounded fade show{{ session()->has('super_admin_tenant_ipa_code') ? ' d-none' : '' }}" role="alert">
-        {{ __('Stai visualizzando i log relativi tutto il portale Web Analytics Italia.') }}<br>
+        {{ __('Stai visualizzando i log relativi tutto il portale :app.', ['app' => config('app.name')]) }}<br>
         {{ __('Se vuoi limitare la ricerca ad una sola amministrazione puoi selezionarla nella barra di navigazione in alto.') }}
     </div>
     @endcan

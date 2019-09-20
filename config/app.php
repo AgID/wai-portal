@@ -143,7 +143,7 @@ return [
     | Secret salt
     |--------------------------------------------------------------------------
     |
-    | This salt is used to generate hashed in the WAI application
+    | This salt is used to generate hashed in the application
     |
     */
 

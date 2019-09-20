@@ -18,11 +18,15 @@ class UpdateWebsitesIndex extends Command
     protected $signature = 'app:update-websites';
 
     /**
-     * The console command description.
+     * Create a new command instance.
      *
-     * @var string the command description
+     * @return void
      */
-    protected $description = 'Update Websites index for Web Analytics Italia';
+    public function __construct()
+    {
+        $this->description = 'Update Websites index for ' . config('app.name');
+        parent::__construct();
+    }
 
     /**
      * Execute the console command.

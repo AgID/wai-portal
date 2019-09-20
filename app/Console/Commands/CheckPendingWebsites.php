@@ -18,11 +18,13 @@ class CheckPendingWebsites extends Command
     protected $signature = 'app:check-websites {--D|execute-purge-check : Whether the websites purge check should be executed}';
 
     /**
-     * The console command description.
-     *
-     * @var string the command description
+     * Command constructor.
      */
-    protected $description = 'Check for pending Websites registered in Web Analytics Italia';
+    public function __construct()
+    {
+        $this->description = 'Check for pending Websites registered in ' . config('app.name');
+        parent::__construct();
+    }
 
     /**
      * Execute the console command.

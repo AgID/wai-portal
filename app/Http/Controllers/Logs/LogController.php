@@ -63,7 +63,7 @@ class LogController extends Controller
                 ],
             ],
             'source' => $currentUser->isA(UserRole::SUPER_ADMIN) ? route('admin.logs.data') : route('logs.data'),
-            'caption' => __('messaggi di log di Web Analytics Italia'),
+            'caption' => __('messaggi di log di :app', ['app' => config('app.name')]),
             'columnsOrder' => [['datetime', 'desc']],
         ];
 

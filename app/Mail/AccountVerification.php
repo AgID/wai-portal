@@ -78,7 +78,7 @@ class AccountVerification extends Mailable
             $mailTemplate = 'mail.verification';
         }
 
-        return $this->subject(__('Invito per Web Analytics Italia'))
+        return $this->subject(__('Invito per :app', ['app' => config('app.name')]))
                     ->markdown($mailTemplate)->with([
                         'user' => $this->user,
                         'publicAdministration' => $this->publicAdministration,

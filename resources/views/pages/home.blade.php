@@ -45,7 +45,7 @@
                             <div class="card-body">
                             <h5 class="card-title big-heading">{{ __("Cos'è") }}</h5>
                             <p class="card-text">
-                                {{ __('Web Analytics Italia è una piattaforma che analizza le statistiche in tempo reale sui visitatori di un sito web della pubblica aministrazione fornendo dei report dettagliati.') }}
+                                {{ __(':app è una piattaforma che analizza le statistiche in tempo reale sui visitatori di un sito web della pubblica aministrazione fornendo dei report dettagliati.', ['app' => config('app.name')]) }}
                             </p>
                             </div>
                         </div>
@@ -57,7 +57,7 @@
                             <div class="card-body">
                             <h5 class="card-title big-heading">{{ __("Come funziona") }}</h5>
                             <p class="card-text">
-                                {{ __('I dati sono raccolti ed elaborati dalla piattaforma centralizzata Web Analytics Italia (WAI).  WAI ospita i dati statistici dei siti web delle PA italiane aderenti al progetto.') }}
+                                {{ __('I dati sono raccolti ed elaborati dalla piattaforma centralizzata :app (:app_short). :app_short ospita i dati statistici dei siti web delle PA italiane aderenti al progetto.', ['app' => config('app.name'), 'app_short' => config('app.name_short')]) }}
                             </p>
                             </div>
                         </div>
@@ -69,7 +69,7 @@
                             <div class="card-body">
                             <h5 class="card-title big-heading">{{ __("A cosa serve") }}</h5>
                             <p class="card-text">
-                                {{ __('WAI ha lo scopo di aiutare le amministrazioni a comprendere il comportamento degli utenti online nell’ottica di fornire al pubblico siti e servizi via via più efficaci ed inclusivi.') }}
+                                {{ __(':app_short ha lo scopo di aiutare le amministrazioni a comprendere il comportamento degli utenti online nell’ottica di fornire al pubblico siti e servizi via via più efficaci ed inclusivi.', ['app_short' => config('app.name_short')]) }}
                             </p>
                             </div>
                         </div>
@@ -190,7 +190,7 @@
                         <h5 class="section-header long-dash">{{ __('accesso alla piattaforma') }}</h5>
                         <p class="text-serif mb-5">
                             @guest
-                            {{ __('Accedi con le tue credenziali SPID e registra la tua PA su Web Analytics Italia.') }}
+                            {{ __('Accedi con le tue credenziali SPID e registra la tua PA su :app.', ['app' => config('app.name')]) }}
                             <br>
                             <a href="route('faqs')">{{ __('Maggiori informazioni.') }}</a>
                             @else
@@ -225,7 +225,7 @@
             <h3 class="my-4">{{ __('Hai bisogno di aiuto?') }}</h3>
             <div class="d-flex justify-content-center py-3">
                 <p class="text-serif text-center">
-                    {{ __('Se hai dei dubbi su come funziona la piattaforma WAI  o su come fare per integrarla per la tua amministrazione') }}
+                    {{ __('Se hai dei dubbi su come funziona la piattaforma :app_short o su come fare per integrarla per la tua amministrazione', ['app_short' => config('app.name_short')]) }}
                 </p>
             </div>
             @component('layouts.components.link_button', [

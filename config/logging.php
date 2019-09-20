@@ -92,7 +92,7 @@ return [
         'slack' => [
             'driver' => 'slack',
             'url' => env('LOG_SLACK_WEBHOOK_URL', ''),
-            'username' => env('LOG_SLACK_USERNAME', 'WAI Portal'),
+            'username' => env('LOG_SLACK_USERNAME', config('app.name')),
             'emoji' => ':robot_face:',
             'tap' => [App\Logging\SlackLogger::class],
             'level' => 'notice',
