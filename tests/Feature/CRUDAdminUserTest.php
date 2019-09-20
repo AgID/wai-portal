@@ -62,7 +62,7 @@ class CRUDAdminUserTest extends TestCase
             ->json('GET', route('admin.users.data.json'))
             ->assertOk()
             ->assertJsonFragment([
-                'raw' => $this->user->full_name,
+                'raw' => e($this->user->full_name),
             ]);
     }
 

@@ -125,7 +125,7 @@ class CRUDWebsiteTest extends TestCase
             ->json('GET', route('websites.data.json'))
             ->assertOk()
             ->assertJsonFragment([
-                'raw' => $this->website->name,
+                'raw' => e($this->website->name),
             ]);
     }
 

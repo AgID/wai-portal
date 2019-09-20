@@ -104,7 +104,7 @@ class CRUDAdminWebsiteTest extends TestCase
             ]))
             ->assertOk()
             ->assertJsonFragment([
-                'raw' => $this->website->name,
+                'raw' => e($this->website->name),
             ]);
     }
 
