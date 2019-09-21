@@ -49,7 +49,7 @@ class SuperAdminUserTest extends DuskTestCase
                     ->type('password', 'randomPassword')
                     ->press(__('Accedi'))
                     ->assertPathIs('/admin/user/change-password')
-                    ->assertSee('La password è scaduta e deve essere cambiata.')
+                    ->waitForText('La password è scaduta e deve essere cambiata.')
                     ->type('password', 'password')
                     ->type('password_confirmation', 'password')
                     ->press(__('Cambia password'))
