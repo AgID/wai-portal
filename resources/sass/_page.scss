@@ -38,7 +38,7 @@
     left: 0;
 
     .graphic-container {
-      width: 12em;
+      @include graphic-widths();
     }
   }
 
@@ -48,17 +48,18 @@
     right: 0;
 
     .graphic-container{
-      width: 18em;
+      @include graphic-widths();
     }
   }
 
   .v-bars {
     position: absolute;
-    top: 16px;
+    top: 96px;
+    right: 140px;
     @include v-bars-right-position();
 
     .graphic-container {
-      width: 18em;
+      @include graphic-widths();
     }
   }
 }
