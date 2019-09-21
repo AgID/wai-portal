@@ -20,7 +20,7 @@
                                 <div class="it-tenant d-none ml-auto{{ $hasActivePublicAdministration ? ' d-md-block' : '' }}">
                                     {{ optional(current_public_administration())->name }}
                                 </div>
-                                <div class="it-socials d-none ml-auto{{ $hasActivePublicAdministration ? '' : ' d-md-flex' }}">
+                                <div class="it-socials d-none ml-lg-auto{{ $hasActivePublicAdministration ? '' : ' d-md-flex' }}">
                                     <span>{{ __('Seguici su') }}</span>
                                     <ul>
                                         @foreach (config('site.social') as $socialLink)

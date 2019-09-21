@@ -25,14 +25,15 @@
 
       .it-header-center-content-wrapper {
         .it-brand-wrapper {
+          padding-right: $v-gap * 4;
+          padding-left: 0;
+
           @include media-breakpoint-up(md) {
-            padding-left: 0;
+            padding-right: 0;
           }
 
           .it-brand-text {
-            @include media-breakpoint-down(sm) {
-              padding: 0;
-            }
+            padding-right: 0;
           }
         }
         .it-right-zone {
@@ -56,6 +57,8 @@
 
     .it-header-navbar-wrapper {
       background: none;
+      right: 0;
+      left: auto;
 
       &.super-admin {
         @include media-breakpoint-up(lg) {
@@ -126,6 +129,29 @@
 
         .navbar-collapsable {
           z-index: 5;
+
+          .menu-wrapper {
+            right: 0;
+            left: $navigation-h-padding * 2;
+            transform: translateX(100%);
+
+            @include media-breakpoint-up(lg) {
+              transform: none;
+              right: auto;
+              left: auto;
+            }
+          }
+
+          &.expanded {
+            .menu-wrapper {
+              transform: translateX(0);
+
+              .navbar-nav li a.nav-link.active {
+                border-right: $navigation-link-active-bar-size solid $navigation-link-active-bar-color;
+                border-left: none;
+              }
+            }
+          }
 
           @include media-breakpoint-up(lg) {
             width: 100%;
