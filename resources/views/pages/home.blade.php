@@ -12,7 +12,7 @@
                     <span class="payoff">{{ __('della pubblica amministrazione italiana') }}</span>
                 </div>
             </div>
-            <div class="col-lg-6 d-flex justify-content-center">
+            <div class="col-lg-6 d-flex justify-content-center align-items-center">
                 <img class="img-fluid mt-auto" alt="" src="{{ asset('images/home-laptop.png') }}">
             </div>
         </div>

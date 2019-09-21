@@ -124,8 +124,10 @@
           }
         }
 
-        @include media-breakpoint-up(lg) {
-          .navbar-collapsable {
+        .navbar-collapsable {
+          z-index: 5;
+
+          @include media-breakpoint-up(lg) {
             width: 100%;
 
             .menu-wrapper {
@@ -198,6 +200,10 @@
     .it-header-slim-wrapper-content{
       .nav-mobile {
         line-height: 2.2;
+
+        .align-middle {
+          line-height: 1;
+        }
       }
 
       @include media-breakpoint-up(lg) {
