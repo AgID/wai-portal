@@ -3,8 +3,52 @@
 @section('title', __('Dashboard'))
 
 @section('content')
-Lorem ipsum dolor sit amet consectetur adipisicing elit. Est commodi
-consequuntur, aliquam nostrum iste veritatis perferendis alias corporis ducimus
-deserunt tempore cum error facere, dignissimos ipsa quod nesciunt corrupti.
-Ipsam?
+<div class="container py-3">
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="card-wrapper card-space">
+                <div class="card card-bg">
+                    <div class="card-body"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card-wrapper card-space">
+                <div class="card card-bg">
+                    <div class="card-body"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card-wrapper card-space">
+                <div class="card card-bg">
+                    <div class="card-body"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="card-wrapper card-space">
+                <div class="card card-bg">
+                    <div class="card-body"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card-wrapper card-space">
+                <div class="card card-bg">
+                    <div class="card-body"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card-wrapper card-space">
+                <div class="card card-bg">
+                    <div class="card-body"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
