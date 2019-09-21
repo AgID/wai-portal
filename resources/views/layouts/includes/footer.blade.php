@@ -47,7 +47,7 @@
                     </li>
                     @endforeach
                 </ul>
-                <span class="ml-auto pb-4 pb-md-0"><small class="text-muted">{{ __('versione') }}: {{ config('app.version') }}</small></span>
+                <span class="ml-auto pb-4 pb-md-0"><small class="primary-color-a4">{{ __('versione') }}: {{ config('app.version') }}</small></span>
             </div>
         </div>
     </footer>
