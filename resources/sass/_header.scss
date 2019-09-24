@@ -65,6 +65,10 @@
           background-color: #0bd9d2;
         }
 
+        .menu-wrapper {
+          align-items: center;
+        }
+
         @include media-breakpoint-up(lg) {
           .navbar {
             .navbar-collapsable {
