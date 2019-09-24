@@ -41,7 +41,7 @@ class RegisterController extends Controller
     public function register(Request $request): RedirectResponse
     {
         $input = $request->all();
-        $validator = validator($input, [
+        $validatedData = validator($input, [
             'email' => 'required|email',
             'accept_terms' => 'required',
         ])->after(function ($validator) use ($input) {
@@ -59,7 +59,7 @@ class RegisterController extends Controller
             'family_name' => $SPIDUser->familyName,
             'fiscal_number' => $SPIDUser->fiscalNumber,
             'uuid' => Uuid::uuid4()->toString(),
-            'email' => $input['email'],
+            'email' => $validatedData['email'],
             'status' => UserStatus::INACTIVE,
             'last_access_at' => Date::now(),
         ]);

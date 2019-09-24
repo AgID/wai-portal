@@ -81,7 +81,7 @@ class SuperAdminUserController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $input = $request->all();
-        $validator = validator($input, [
+        $validatedData = validator($input, [
             'name' => 'required',
             'family_name' => 'required',
             'email' => 'required|email',
@@ -95,9 +95,9 @@ class SuperAdminUserController extends Controller
         $temporaryPassword = Str::random(16);
 
         $user = User::create([
-            'name' => $input['name'],
-            'family_name' => $input['family_name'],
-            'email' => $input['email'],
+            'name' => $validatedData['name'],
+            'family_name' => $validatedData['family_name'],
+            'email' => $validatedData['email'],
             'uuid' => Uuid::uuid4()->toString(),
             'password' => Hash::make($temporaryPassword),
             'password_changed_at' => Carbon::now()->subDays(1 + config('auth.password_expiry')),
@@ -160,7 +160,7 @@ class SuperAdminUserController extends Controller
     public function update(Request $request, User $user): RedirectResponse
     {
         $input = $request->all();
-        $validator = validator($input, [
+        $validatedData = validator($input, [
             'name' => 'required',
             'family_name' => 'required',
             'email' => 'required|email',
@@ -172,9 +172,9 @@ class SuperAdminUserController extends Controller
         })->validate();
 
         $user->fill([
-            'name' => $input['name'],
-            'family_name' => $input['family_name'],
-            'email' => $input['email'],
+            'name' => $validatedData['name'],
+            'family_name' => $validatedData['family_name'],
+            'email' => $validatedData['email'],
         ]);
         $user->save();
 
