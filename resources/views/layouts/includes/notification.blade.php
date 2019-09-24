@@ -2,7 +2,7 @@
 <template
     class="notification-in-page"
     data-title="{{ $notification['title'] }}"
-    data-message="{!! nl2br($notification['message']) !!}"
+    data-message="{{ nl2br($notification['message']) }}"
     data-status="{{ $notification['status'] }}"
     data-icon="{{ $notification['icon'] }}"
     data-dismissable="{{ $notification['dismissable'] ?? 'true' }}"
