@@ -81,14 +81,13 @@ class VerificationController extends Controller
      * Resend the email verification notification.
      *
      * @param Request $request the incoming request
-     * @param User $user the user to resend the notification to
+     * @param User|null $user the user to resend the notification to
      *
-     * @return RedirectResponse the server redirect response
      * @return RedirectResponse|\Illuminate\Http\JsonResponse the response
      */
-    public function resend(Request $request, User $user)
+    public function resend(Request $request, ?User $user = null)
     {
-        $user = $user->exists ? $user : $request->user();
+        $user = $user ?? $request->user();
 
         if ($user->hasVerifiedEmail()) {
             return $this->alreadyVerifiedUser($request, $user);
