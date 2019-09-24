@@ -78,7 +78,6 @@ class ProfileController extends Controller
             $user->name = $validatedData['name'];
             $user->family_name = $validatedData['family_name'];
         }
-        $user->save();
 
         if ($user->hasAnalyticsServiceAccount()) {
             //NOTE: remove the try/catch if matomo is configured
@@ -94,6 +93,8 @@ class ProfileController extends Controller
                 }
             }
         }
+
+        $user->save();
 
         return redirect()->home()
             ->withNotification([
