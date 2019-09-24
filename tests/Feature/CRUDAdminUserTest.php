@@ -129,7 +129,7 @@ class CRUDAdminUserTest extends TestCase
         $user->allow(UserPermission::MANAGE_USERS);
 
         $this->actingAs($this->user)
-            ->patch(route('admin.users.update', ['user' => $user]), [
+            ->put(route('admin.users.update', ['user' => $user]), [
                 '_token' => 'test',
                 'email' => 'new@email.local',
                 'name' => 'Mario',
@@ -156,7 +156,7 @@ class CRUDAdminUserTest extends TestCase
     {
         $this->actingAs($this->user)
             ->from(route('admin.users.edit', ['user' => $this->user]))
-            ->patch(route('admin.users.update', ['user' => $this->user]), [
+            ->put(route('admin.users.update', ['user' => $this->user]), [
                 '_token' => 'test',
             ])
             ->assertRedirect(route('admin.users.edit', ['user' => $this->user]))
@@ -439,7 +439,7 @@ class CRUDAdminUserTest extends TestCase
         $user->registerAnalyticsServiceAccount();
 
         $this->actingAs($this->user)
-            ->patch(route('admin.publicAdministration.users.update', [
+            ->put(route('admin.publicAdministration.users.update', [
                     'publicAdministration' => $publicAdministration,
                     'user' => $this->user,
             ]), [
@@ -484,7 +484,7 @@ class CRUDAdminUserTest extends TestCase
         $user->allow(UserPermission::READ_ANALYTICS, $website);
 
         $this->actingAs($this->user)
-            ->patch(route('admin.publicAdministration.users.update', [
+            ->put(route('admin.publicAdministration.users.update', [
                     'publicAdministration' => $publicAdministration,
                     'user' => $user,
             ]), [
@@ -534,7 +534,7 @@ class CRUDAdminUserTest extends TestCase
         $user->assign(UserRole::ADMIN);
 
         $this->actingAs($this->user)
-            ->patch(route('admin.publicAdministration.users.update', [
+            ->put(route('admin.publicAdministration.users.update', [
                     'publicAdministration' => $publicAdministration,
                     'user' => $user,
             ]), [
@@ -586,7 +586,7 @@ class CRUDAdminUserTest extends TestCase
                 'publicAdministration' => $publicAdministration,
                 'user' => $user,
             ]))
-            ->patch(route('admin.publicAdministration.users.update', [
+            ->put(route('admin.publicAdministration.users.update', [
                 'publicAdministration' => $publicAdministration,
                 'user' => $user,
             ]), [

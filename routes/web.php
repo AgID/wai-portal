@@ -309,7 +309,7 @@ Route::middleware('auth.admin', 'verified:admin.verification.notice')->group(fun
                 Route::get('/{user}/edit', 'SuperAdminUserController@edit')
                     ->name('admin.users.edit');
 
-                Route::patch('/{user}/update', 'SuperAdminUserController@update')
+                Route::put('/{user}/update', 'SuperAdminUserController@update')
                     ->name('admin.users.update');
 
                 Route::patch('/{user}/suspend', 'SuperAdminUserController@suspend')
@@ -349,7 +349,7 @@ Route::middleware('auth.admin', 'verified:admin.verification.notice')->group(fun
                     Route::get('/{user}/edit', 'UserController@edit')
                         ->name('admin.publicAdministration.users.edit');
 
-                    Route::patch('/{user}/update', 'UserController@update')
+                    Route::put('/{user}/update', 'UserController@update')
                         ->name('admin.publicAdministration.users.update');
 
                     Route::patch('/{user}/delete', 'UserController@delete')
