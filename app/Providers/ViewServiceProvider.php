@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Enums\UserRole;
 use App\Enums\UserStatus;
 use App\Http\View\Composers\ModalComposer;
 use App\Http\View\Composers\NotificationComposer;
@@ -31,9 +32,11 @@ class ViewServiceProvider extends ServiceProvider
         View::composer('layouts.includes.modal', ModalComposer::class);
         View::composer('layouts.includes.notification', NotificationComposer::class);
         View::composer('*', function ($view) {
-            $view->with('authUser', auth()->user());
+            $authUser = auth()->user();
+            $view->with('authUser', $authUser);
             $view->with('spidAuthUser', app()->make('SPIDAuth')->getSPIDUser());
-            $view->with('hasActivePublicAdministration', session()->has('tenant_id') && auth()->user()->status->is(UserStatus::ACTIVE));
+            $view->with('hasActivePublicAdministration', session()->has('tenant_id') && $authUser->status->is(UserStatus::ACTIVE));
+            $view->with('isSuperAdmin', isset($authUser) && $authUser->isA(UserRole::SUPER_ADMIN));
         });
     }
 

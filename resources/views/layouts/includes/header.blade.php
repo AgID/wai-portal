@@ -40,9 +40,7 @@
                 </div>
             </div>
         </div>
-        @includeWhen($navbar ?? true, 'layouts.includes.navbar', [
-            $isSuperAdmin = isset($authUser) && $authUser->isA(UserRole::SUPER_ADMIN),
-        ])
+        @includeWhen($navbar ?? true, 'layouts.includes.navbar')
     </div>
     @yield('after-header')
 </div>
