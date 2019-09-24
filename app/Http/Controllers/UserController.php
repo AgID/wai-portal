@@ -516,11 +516,13 @@ class UserController extends Controller
             $websitesPermissions = $validatedData['permissions'] ?? [];
             $publicAdministration->websites->map(function ($website) use ($user, $isAdmin, $websitesPermissions) {
                 if ($isAdmin) {
+                    $user->retract(UserRole::DELEGATED);
                     $user->assign(UserRole::ADMIN);
                     $user->setWriteAccessForWebsite($website);
 
                     return $user;
                 } else {
+                    $user->retract(UserRole::ADMIN);
                     $user->assign(UserRole::DELEGATED);
                     if (empty($websitesPermissions[$website->id])) {
                         $user->setNoAccessForWebsite($website);
