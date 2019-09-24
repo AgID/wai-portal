@@ -43,11 +43,11 @@
     </div>
     <div class="form-row">
         <div class="form-group col-md-8">
-            <label for="message">{{ __('Contenuto del messaggio') }}</label>
+            <label for="message">{{ __('Contenuto del messaggio (almeno 3 caratteri)') }}</label>
             <input type="text" class="form-control" name="message" id="message" value="{{ old('message') }}" maxlength="255">
             <div class="invalid-feedback"></div>
         </div>
-        <div class="form-group has-form-text col-md-4">
+        <div class="form-group col-md-4">
             <div class="bootstrap-select-wrapper flex-grow-1">
                 <label>{{ __('Livello minimo') }}</label>
                 <select title="{{ __('qualunque') }}" id="severity" name="severity">
@@ -62,7 +62,7 @@
         </div>
     </div>
     <div class="form-row">
-        <div class="form-group has-form-text col-md-4">
+        <div class="form-group col-md-4">
             <div class="bootstrap-select-wrapper flex-grow-1">
                 <label>{{ __('Tipo di evento') }}</label>
                 <select title="{{ __('qualunque') }}" id="event" name="event" data-live-search="true" data-live-search-placeholder="Cerca..." aria-disabled="false">
@@ -73,7 +73,7 @@
                 </select>
             </div>
         </div>
-        <div class="form-group has-form-text col-md-4">
+        <div class="form-group col-md-4">
             <div class="bootstrap-select-wrapper flex-grow-1 disabled">
                 <label>{{ __('Tipo di errore') }}</label>
                 <select title="{{ __('qualunque') }}" id="exception_type" name="exception_type" data-live-search="true" data-live-search-placeholder="Cerca..." disabled aria-disabled="true">
@@ -84,7 +84,7 @@
                 </select>
             </div>
         </div>
-        <div class="form-group has-form-text col-md-4">
+        <div class="form-group col-md-4">
             <div class="bootstrap-select-wrapper flex-grow-1">
                 <label>{{ __('Tipo di attività') }}</label>
                 <select title="{{ __('qualunque') }}" id="job" name="job" data-live-search="true" data-live-search-placeholder="Cerca..." aria-disabled="false">
