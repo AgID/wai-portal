@@ -173,15 +173,17 @@ class WebsiteController extends Controller
     {
         $validatedData = $request->validated();
 
-        $publicAdministration = current_public_administration();
+        $currentPublicAdministration = auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)
+            ? $publicAdministration
+            : current_public_administration();
 
-        $analyticsId = app()->make('analytics-service')->registerSite($validatedData['website_name'] . ' [' . $validatedData['type'] . ']', $validatedData['url'], $publicAdministration->name);
+        $analyticsId = app()->make('analytics-service')->registerSite($validatedData['website_name'] . ' [' . $validatedData['type'] . ']', $validatedData['url'], $currentPublicAdministration->name);
 
         $website = Website::create([
             'name' => $validatedData['website_name'],
             'url' => $validatedData['url'],
             'type' => (int) $validatedData['type'],
-            'public_administration_id' => $publicAdministration->id,
+            'public_administration_id' => $currentPublicAdministration->id,
             'analytics_id' => $analyticsId,
             'slug' => Str::slug($validatedData['url']),
             'status' => WebsiteStatus::PENDING,
@@ -189,12 +191,12 @@ class WebsiteController extends Controller
 
         event(new WebsiteAdded($website));
 
-        $publicAdministration->getAdministrators()->map(function ($administrator) use ($website) {
+        $currentPublicAdministration->getAdministrators()->map(function ($administrator) use ($website) {
             $administrator->setWriteAccessForWebsite($website);
             $administrator->syncWebsitesPermissionsToAnalyticsService();
         });
 
-        $this->manageWebsitePermissionsOnNonAdministrators($validatedData, $publicAdministration, $website);
+        $this->manageWebsitePermissionsOnNonAdministrators($validatedData, $currentPublicAdministration, $website);
 
         return redirect()->route('websites.index')->withModal([
             'title' => __('Il sito è stato inserito, adesso procedi ad attivarlo!'),
