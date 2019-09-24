@@ -20,7 +20,7 @@ export default (() => {
     }
 
     const initMessageFilter = messageInput => {
-        if (messageInput) {
+        if (!messageInput) {
             return;
         }
 
@@ -29,8 +29,11 @@ export default (() => {
                 return;
             }
 
-            if (!messageInput.value.trim().length >= 3) {
+            if (!messageInput.value.trim()) {
                 delete filters.message;
+            } else if (messageInput.value.trim().length < 3) {
+                delete filters.message;
+                return;
             } else {
                 filters.message = messageInput.value.trim();
             }
@@ -178,10 +181,10 @@ export default (() => {
         initDateFilter(endDateInput);
         initTimeFilter(startTimeInput);
         initTimeFilter(endTimeInput);
-        initIpaCodeFilter(ipaCodeInput);
-        initIpaCodeFilterResetLink(ipaCodeInput);
-        initWebsiteFilter(websiteIdInput, ipaCodeInput);
-        initUserFilter(userUuidInput, ipaCodeInput);
+        ipaCodeInput && initIpaCodeFilter(ipaCodeInput);
+        ipaCodeInput && initIpaCodeFilterResetLink(ipaCodeInput);
+        websiteIdInput && initWebsiteFilter(websiteIdInput, ipaCodeInput);
+        userUuidInput && initUserFilter(userUuidInput, ipaCodeInput);
     }
 
     const initSelects = filtersContainer => {
