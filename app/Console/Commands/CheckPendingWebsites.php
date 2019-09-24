@@ -11,17 +11,11 @@ use Illuminate\Console\Command;
 class CheckPendingWebsites extends Command
 {
     /**
-     * The name and signature of the console command.
-     *
-     * @var string the command
-     */
-    protected $signature = 'app:check-websites {--D|execute-purge-check : Whether the websites purge check should be executed}';
-
-    /**
      * Command constructor.
      */
     public function __construct()
     {
+        $this->signature = 'app:check-websites {--D|execute-purge-check : Whether the websites purge check should be executed}';
         $this->description = 'Check for pending Websites registered in ' . config('app.name');
         parent::__construct();
     }

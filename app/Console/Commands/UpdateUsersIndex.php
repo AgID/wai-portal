@@ -11,19 +11,13 @@ use Illuminate\Console\Command;
 class UpdateUsersIndex extends Command
 {
     /**
-     * The name and signature of the console command.
-     *
-     * @var string the command
-     */
-    protected $signature = 'app:update-users';
-
-    /**
      * Create a new command instance.
      *
      * @return void
      */
     public function __construct()
     {
+        $this->signature = 'app:update-users';
         $this->description = 'Update Users index for ' . config('app.name');
         parent::__construct();
     }

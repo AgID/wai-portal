@@ -11,19 +11,13 @@ use Illuminate\Console\Command;
 class UpdateWebsitesIndex extends Command
 {
     /**
-     * The name and signature of the console command.
-     *
-     * @var string the command
-     */
-    protected $signature = 'app:update-websites';
-
-    /**
      * Create a new command instance.
      *
      * @return void
      */
     public function __construct()
     {
+        $this->signature = 'app:update-websites';
         $this->description = 'Update Websites index for ' . config('app.name');
         parent::__construct();
     }

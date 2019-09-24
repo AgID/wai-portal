@@ -11,19 +11,13 @@ use Illuminate\Console\Command;
 class UpdatePublicAdministrationsFromIpa extends Command
 {
     /**
-     * The name and signature of the console command.
-     *
-     * @var string the command
-     */
-    protected $signature = 'app:update-ipa';
-
-    /**
      * Create a new command instance.
      *
      * @return void
      */
     public function __construct()
     {
+        $this->signature = 'app:update-ipa';
         $this->description = 'Update Public Administrations from IPA index for ' . config('app.name');
         parent::__construct();
     }

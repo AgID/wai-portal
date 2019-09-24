@@ -11,17 +11,11 @@ use Illuminate\Console\Command;
 class MonitorWebsiteTracking extends Command
 {
     /**
-     * The name and signature of the console command.
-     *
-     * @var string the command
-     */
-    protected $signature = 'app:monitor-activity';
-
-    /**
      * Command constructor.
      */
     public function __construct()
     {
+        $this->signature = 'app:monitor-activity';
         $this->description = 'Check that websites registered in ' . config('app.name') . ' have reported activity within the last ' . config('wai.archive_expire') . ' days';
         parent::__construct();
     }

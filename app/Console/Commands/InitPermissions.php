@@ -10,19 +10,13 @@ use Silber\Bouncer\BouncerFacade as Bouncer;
 class InitPermissions extends Command
 {
     /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'app:init-permissions';
-
-    /**
      * Create a new command instance.
      *
      * @return void
      */
     public function __construct()
     {
+        $this->signature = 'app:init-permissions';
         $this->description = 'Initialize user permissions for ' . config('app.name');
         parent::__construct();
     }
