@@ -34,7 +34,7 @@
                 <p>Maecenas vulputate ante dictum <a href="#">vestibulum volutpat</a>. Lorem ipsum dolor sit amet, <strong>consectetur adipiscing elit.</strong> Aenean non augue non purus vestibulum varius. Maecenas ullamcorper tincidunt nulla quis laoreet.</p>
                 <div class="collapse-div">
                     <div class="collapse-header" id="show-more">
-                        <button class="callout-more-toggle" data-toggle="collapse" data-target="#collapseTos" aria-expanded="false" aria-controls="collapseTos">
+                        <button type="button" class="callout-more-toggle" data-toggle="collapse" data-target="#collapseTos" aria-expanded="false" aria-controls="collapseTos">
                             {{ __('Leggi tutto') }} <span></span>
                         </button>
                     </div>
