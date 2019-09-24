@@ -60,7 +60,7 @@ trait HasAnalyticsServiceAccount
      */
     public function updateAnalyticsServiceAccountEmail(): void
     {
-        app()->make('analytics-service')->updateUserEmail($this->uuid, $this->email, $this->analytics_password);
+        app()->make('analytics-service')->updateUserEmail($this->uuid, $this->email, $this->analytics_password, $this->getAnalyticsServiceAccountTokenAuth());
     }
 
     /**

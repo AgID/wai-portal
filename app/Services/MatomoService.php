@@ -292,18 +292,19 @@ class MatomoService implements AnalyticsServiceContract
      * @param string $userLogin the Analytics Service user ID
      * @param string $updatedEmail the updated email address
      * @param string $passwordConfirmation the user password needed to confirm the email change
+     * @param string $tokenAuth the Analytics authentication token
      *
      * @throws AnalyticsServiceException if unable to connect the Analytics Service
      * @throws CommandErrorException if command is unsuccessful
      */
-    public function updateUserEmail(string $userLogin, string $updatedEmail, string $passwordConfirmation): void
+    public function updateUserEmail(string $userLogin, string $updatedEmail, string $passwordConfirmation, string $tokenAuth): void
     {
         $params = [
             'method' => 'UsersManager.updateUser',
             'userLogin' => $userLogin,
             'email' => $updatedEmail,
             'passwordConfirmation' => $passwordConfirmation,
-            'token_auth' => config('analytics-service.admin_token'),
+            'token_auth' => $tokenAuth,
         ];
 
         $this->apiCall($params);
