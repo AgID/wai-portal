@@ -141,6 +141,7 @@ return [
         EventType::PRIMARY_WEBSITE_NOT_TRACKING => 'Primary website tracking not active',
         EventType::USERS_INDEXING_COMPLETED => 'Users index update completed',
         EventType::WEBSITES_INDEXING_COMPLETED => 'Websites index update completed',
+        EventType::MAIL_SENT => 'Mail sent',
     ],
 
     ExceptionType::class => [
