@@ -46,6 +46,19 @@
                         </a>
                     </li>
                     @endforeach
+                    @unless($isSuperAdmin)
+                    <li class="list-inline-item px-0">
+                        <a class="nav-link" href="{{ route('logs.show') }}">
+                            <span class="font-weight-semibold analogue-2-color">{{ __('Logs') }}</span>
+                        </a>
+                    </li>
+                    @else
+                    <li class="list-inline-item px-0">
+                        <a class="nav-link" href="{{ route('admin.logs.show') }}">
+                            <span class="font-weight-semibold analogue-2-color">{{ __('Logs') }}</span>
+                        </a>
+                    </li>
+                    @endunless
                 </ul>
                 <span class="ml-auto pb-4 pb-md-0"><small class="primary-color-a4">{{ __('versione') }}: {{ config('app.version') }}</small></span>
             </div>
