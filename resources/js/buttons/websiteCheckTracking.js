@@ -2,12 +2,14 @@ import Datatable from '../datatables';
 import Notification from '../notification';
 import I18n from '../i18n';
 import AjaxButton from '../ajaxButton';
+import FormButton from '../formButton';
 
 export default (() => {
     const init = () => {
         const websiteCheckTrackingButtons = [...document.querySelectorAll('a[role="button"][data-type="checkTracking"]')];
 
         websiteCheckTrackingButtons.map(websiteCheckTrackingButton => {
+            const isAjax = 'ajax' in websiteCheckTrackingButton.dataset;
             const success = response => {
                 const createWebsitesSectionElement = document.getElementById('create-websites');
                 const publicAdministrationTenantElement = document.querySelector('.it-nav-wrapper .it-tenant');
@@ -34,7 +36,8 @@ export default (() => {
                 ].join(' '), 'info', 'it-info-circle');
             }
 
-            AjaxButton.init(websiteCheckTrackingButton, 'get', null, success, notModified);
+            isAjax && AjaxButton.init(websiteCheckTrackingButton, 'get', null, success, notModified);
+            isAjax || FormButton.init(websiteCheckTrackingButton, 'get');
         });
     }
 
