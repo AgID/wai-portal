@@ -385,9 +385,9 @@ class WebsiteController extends Controller
      * @param PublicAdministration $publicAdministration the public administration the website belongs to
      * @param Website $website the website to check
      *
-     * @return \Illuminate\Http\JsonResponse the JSON response
+     * @return JsonResponse|RedirectResponse the response
      */
-    public function checkTracking(PublicAdministration $publicAdministration, Website $website): JsonResponse
+    public function checkTracking(PublicAdministration $publicAdministration, Website $website)
     {
         try {
             if ($website->status->is(WebsiteStatus::PENDING)) {
@@ -430,9 +430,9 @@ class WebsiteController extends Controller
      * @param PublicAdministration $publicAdministration the public administration the website belongs to
      * @param Website $website the website
      *
-     * @return JsonResponse the JSON response
+     * @return JsonResponse|RedirectResponse the response
      */
-    public function archive(PublicAdministration $publicAdministration, Website $website): JsonResponse
+    public function archive(PublicAdministration $publicAdministration, Website $website)
     {
         if ($website->status->is(WebsiteStatus::ARCHIVED)) {
             return $this->notModifiedResponse();
@@ -486,9 +486,9 @@ class WebsiteController extends Controller
      * @param PublicAdministration $publicAdministration the public administration the website belongs to
      * @param Website $website the website
      *
-     * @return JsonResponse the JSON response
+     * @return JsonResponse|RedirectResponse the response
      */
-    public function unarchive(PublicAdministration $publicAdministration, Website $website): JsonResponse
+    public function unarchive(PublicAdministration $publicAdministration, Website $website)
     {
         try {
             if (!$website->type->is(WebsiteType::PRIMARY)) {

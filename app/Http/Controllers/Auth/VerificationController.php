@@ -115,9 +115,9 @@ class VerificationController extends Controller
      * @param User $user the user
      * @param Request $request the current request
      *
-     * @return RedirectResponse the server redirect response
+     * @return RedirectResponse|\Illuminate\Http\JsonResponse the response
      */
-    protected function alreadyVerifiedUser(Request $request, User $user): RedirectResponse
+    protected function alreadyVerifiedUser(Request $request, User $user)
     {
         return $request->expectsJson()
             ? response()->json(null, 304)
