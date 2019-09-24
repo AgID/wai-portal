@@ -35,7 +35,7 @@ trait SendsResponse
                 'message' => $user->trashed()
                     ? __("L'utente :user è stato eliminato.", ['user' => '<strong>' . e($user->full_name) . '</strong>'])
                     : implode("\n", [
-                        __("L'utente :user è stato modificato correttamente.", ['user' => '<strong>' . e($user->full_name) . '</strong>']),
+                        __("L'utente :user è stato aggiornato.", ['user' => '<strong>' . e($user->full_name) . '</strong>']),
                         __("Stato dell'utente: :status", [
                             'status' => '<span class="badge user-status ' . strtolower($user->status->key) . '">' . strtoupper($user->status->description) . '</span>.',
                         ]),
@@ -68,7 +68,7 @@ trait SendsResponse
                 'message' => $website->trashed()
                     ? __('Il sito web :website è stato eliminato.', ['website' => '<strong>' . e($website->name) . '</strong>'])
                     : implode("\n", [
-                        __('Il sito web :website è stato modificato correttamente.', ['website' => '<strong>' . e($website->name) . '</strong>']),
+                        __('Il sito web :website è stato aggiornato.', ['website' => '<strong>' . e($website->name) . '</strong>']),
                         __('Stato del sito web: :status', [
                             'status' => '<span class="badge website-status ' . strtolower($website->status->key) . '">' . strtoupper($website->status->description) . '</span>.',
                         ]),
@@ -118,8 +118,8 @@ trait SendsResponse
                     __('Si è verificato un errore relativamente alla tua richiesta.'),
                     __('Puoi riprovare più tardi o :contact_support.', ['contact_support' => '<a href="' . route('contacts') . '">' . __('contattare il supporto tecnico') . '</a>']),
                 ]),
-                'status' => 'info',
-                'icon' => 'it-info-circle',
+                'status' => 'error',
+                'icon' => 'it-close-circle',
             ]);
     }
 }

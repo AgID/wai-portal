@@ -43,7 +43,7 @@
                 <div class="invalid-feedback">{{ __('validation.email', ['attribute' => __('validation.attributes.email')]) }}</div>
                 @enderror
             </div>
-            <small id="email-input-help" class="form-text text-muted">{{ __("Inserisci l'indirizzo email di lavoro fornito dalla PA (es. nome.cognome@agid.gov.it).") }}</small>
+            <small id="email-input-help" class="form-text text-muted">{{ __('Indirizzo email di lavoro (es. nome.cognome@agid.gov.it).') }}</small>
         </div>
     </div>
     <div class="form-row">
