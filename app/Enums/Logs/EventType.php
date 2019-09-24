@@ -31,7 +31,7 @@ class EventType extends Enum implements LocalizedEnum
     public const TRACKING_WEBSITES_CHECK_COMPLETED = 3;
 
     /**
-     * Public administrations update frim IPA index completed event.
+     * Public administrations update from IPA index completed event.
      */
     public const UPDATE_PA_FROM_IPA_COMPLETED = 4;
 
