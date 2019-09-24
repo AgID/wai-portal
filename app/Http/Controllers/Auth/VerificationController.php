@@ -42,17 +42,18 @@ class VerificationController extends Controller
      *
      * @param Request $request the incoming request
      * @param string $uuid the uuid of the user to be verified
+     * @param string $hash the hash of the user email address
      *
      * @throws \Illuminate\Contracts\Container\BindingResolutionException if unable to bind to SPID service
      * @throws \Illuminate\Auth\Access\AuthorizationException if verification link is invalid
      *
      * @return RedirectResponse the server redirect response
      */
-    public function verify(Request $request, string $uuid): RedirectResponse
+    public function verify(Request $request, string $uuid, string $hash): RedirectResponse
     {
         $user = User::where('uuid', $uuid)->first();
 
-        if (!$user || !Hash::check($user->email, base64_decode($request->route('hash'), true))) {
+        if (!$user || !Hash::check($user->email, base64_decode($hash, true))) {
             throw new AuthorizationException('Current user does not match invitation.');
         }
 
