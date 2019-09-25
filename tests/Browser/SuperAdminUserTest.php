@@ -45,7 +45,7 @@ class SuperAdminUserTest extends DuskTestCase
         $this->browse(function (Browser $browser) use ($mailAddress, $newPassword, $signedUrl) {
             $browser->visit($signedUrl)
                     ->assertPathIs('/admin/user/login')
-                    ->assertSee('Accesso super amministratori')
+                    ->assertSee(__('Accesso super amministratori'))
                     ->type('email', $mailAddress)
                     ->type('password', 'randomPassword')
                     ->press(__('Accedi'))
@@ -60,7 +60,7 @@ class SuperAdminUserTest extends DuskTestCase
                     ->type('password_confirmation', $newPassword)
                     ->press(__('Cambia password'))
                     ->assertPathIs('/admin/dashboard')
-                    ->waitForText('La password è stata cambiata.')
+                    ->waitForText(__('La password è stata cambiata.'))
                     ->visit('/admin/user/logout')
                     ->assertPathIs('/');
         });
