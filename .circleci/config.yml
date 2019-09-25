@@ -32,7 +32,7 @@ commands:
             PHP_CS_FIXER_FUTURE_MODE=1
             bin/php-cs-fixer fix --diff --dry-run --verbose || (echo "Coding standards are not respected. Run PHP-CS-Fixer to fix." && exit 1)
 
-  install_node:
+  install_node_packages:
     description: Ensure all javascript dependencies are installed
     steps:
       - run:
@@ -41,6 +41,7 @@ commands:
             git clone https://github.com/nodenv/node-build.git ../node-build
             sudo ../node-build/install.sh
             sudo node-build $(cat .node-version) /usr/local
+            npm install
 
   save_all_caches:
     description: Save php and javascript dependencies
@@ -89,7 +90,7 @@ jobs:
       - restore_all_caches
       - composer
       - php-cs-fixer
-      - install_node
+      - install_node_packages
       - save_all_caches
       - setup_remote_docker
       # build
