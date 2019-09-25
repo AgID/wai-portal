@@ -7,6 +7,8 @@ use App\Enums\UserRole;
 use App\Enums\UserStatus;
 use App\Enums\WebsiteAccessType;
 use App\Events\User\UserInvited;
+use App\Events\User\UserReactivated;
+use App\Events\User\UserSuspended;
 use App\Events\User\UserUpdated;
 use App\Events\User\UserWebsiteAccessChanged;
 use App\Models\PublicAdministration;
@@ -436,6 +438,10 @@ class CRUDUserTest extends TestCase
             ])
             ->assertOk();
 
+        Event::assertDispatched(UserSuspended::class, function ($event) use ($user) {
+            return $event->getUser()->id === $user->id;
+        });
+
         Event::assertDispatched(UserUpdated::class, function ($event) {
             return $event->getUser()->status->is(UserStatus::SUSPENDED);
         });
@@ -459,6 +465,7 @@ class CRUDUserTest extends TestCase
             ->json('patch', route('users.suspend', ['user' => $user]))
             ->assertStatus(304);
 
+        Event::assertNotDispatched(UserSuspended::class);
         Event::assertNotDispatched(UserUpdated::class);
     }
 
@@ -480,6 +487,7 @@ class CRUDUserTest extends TestCase
                 'code' => 0,
             ]);
 
+        Event::assertNotDispatched(UserSuspended::class);
         Event::assertNotDispatched(UserUpdated::class);
     }
 
@@ -504,6 +512,7 @@ class CRUDUserTest extends TestCase
                 'message' => 'invalid operation for current user',
             ]);
 
+        Event::assertNotDispatched(UserSuspended::class);
         Event::assertNotDispatched(UserUpdated::class);
     }
 
@@ -532,6 +541,10 @@ class CRUDUserTest extends TestCase
             ])
             ->assertOk();
 
+        Event::assertDispatched(UserReactivated::class, function ($event) use ($user) {
+            return $event->getUser()->id === $user->id;
+        });
+
         Event::assertDispatched(UserUpdated::class, function ($event) {
             return $event->getUser()->status->is(UserStatus::INVITED);
         });
@@ -557,6 +570,7 @@ class CRUDUserTest extends TestCase
             ->json('patch', route('users.reactivate', ['user' => $user]))
             ->assertStatus(304);
 
+        Event::assertNotDispatched(UserReactivated::class);
         Event::assertNotDispatched(UserUpdated::class);
     }
 }
