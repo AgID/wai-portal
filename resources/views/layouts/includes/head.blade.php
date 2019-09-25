@@ -11,13 +11,13 @@
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('/icons/apple-touch-icon.png') }}">
     <link rel="icon" type="image/png" href="{{ asset('/icons/favicon-32x32.png') }}" sizes="32x32">
     <link rel="icon" type="image/png" href="{{ asset('/icons/favicon-16x16.png') }}" sizes="16x16">
-    <link rel="manifest" href="{{ asset('/icons/manifest.json') }}">
-    <link rel="mask-icon" href="{{ asset('/icons/safari-pinned-tab.svg') }}">
+    <link rel="manifest" href="{{ asset('/icons/site.webmanifest') }}">
+    <link rel="mask-icon" href="{{ asset('/icons/safari-pinned-tab.svg') }}" color="#0066cc">
     <link rel="shortcut icon" href="{{ asset('/icons/favicon.ico') }}">
     <meta name="apple-mobile-web-app-title" content="{{ config('app.name') }}">
     <meta name="application-name" content="{{ config('app.name') }}">
     <meta name="msapplication-config" content="{{ asset('/icons/browserconfig.xml') }}">
-    <meta name="theme-color" content="#0066cc">
+    <meta name="theme-color" content="#ffffff">
 
     @stack('styles')
 
