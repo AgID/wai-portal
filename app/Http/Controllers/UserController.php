@@ -7,6 +7,8 @@ use App\Enums\UserRole;
 use App\Enums\UserStatus;
 use App\Events\User\UserDeleted;
 use App\Events\User\UserInvited;
+use App\Events\User\UserReactivated;
+use App\Events\User\UserSuspended;
 use App\Exceptions\CommandErrorException;
 use App\Exceptions\InvalidUserStatusException;
 use App\Exceptions\OperationNotAllowedException;
@@ -356,6 +358,8 @@ class UserController extends Controller
             $user->status = UserStatus::SUSPENDED;
             $user->save();
 
+            event(new UserSuspended($user));
+
             return $this->userResponse($user);
         } catch (InvalidUserStatusException $exception) {
             report($exception);
@@ -388,6 +392,8 @@ class UserController extends Controller
 
         $user->status = $user->hasVerifiedEmail() ? UserStatus::ACTIVE : UserStatus::INVITED;
         $user->save();
+
+        event(new UserReactivated($user));
 
         return $this->userResponse($user);
     }
