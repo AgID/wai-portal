@@ -89,7 +89,7 @@ trait SendsResponse
             ? response()->json(null, 304)
             : back()->withNotification([
                 'title' => __('operazione non effettuata'),
-                'message' => __("L'azione richiesta risulta essere già stata effettuata."),
+                'message' => __('La richiesta non ha determinato cambiamenti nello stato.'),
                 'status' => 'info',
                 'icon' => 'it-info-circle',
             ]);
