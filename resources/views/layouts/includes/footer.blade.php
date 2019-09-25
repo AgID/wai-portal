@@ -46,6 +46,7 @@
                         </a>
                     </li>
                     @endforeach
+                    @auth
                     @unless($isSuperAdmin)
                     <li class="list-inline-item px-0">
                         <a class="nav-link" href="{{ route('logs.show') }}">
@@ -59,6 +60,7 @@
                         </a>
                     </li>
                     @endunless
+                    @endauth
                 </ul>
                 <span class="ml-auto pb-4 pb-md-0"><small class="primary-color-a4">{{ __('versione') }}: {{ config('app.version') }}</small></span>
             </div>
