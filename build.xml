@@ -229,6 +229,7 @@
                 <exec command="docker cp composer.lock application-container:/var/www/" checkreturn="true"/>
                 <exec command="docker cp phpunit.dusk.xml application-container:/var/www/" checkreturn="true"/>
                 <exec command="docker cp phpunit.xml application-container:/var/www/" checkreturn="true"/>
+                <exec command="docker cp .node-version application-container:/var/www/" checkreturn="true"/>
             </then>
             <else>
                 <echo msg="Create log directories if needed..."/>
@@ -352,8 +353,23 @@
         <!-- Execute phpunit to run unit tests -->
         <echo msg="Running unit tests [PHPUnit]..."/>
         <exec command="docker-compose exec php-fpm vendor/phpunit/phpunit/phpunit" dir="containers" passthru="true" checkreturn="true"/>
+        <!-- Install lighthouse -->
+        <exec command="docker-compose exec php-fpm lighthouse-ci --version" dir="containers" returnProperty="checkLighthouse"/>
+        <if>
+            <not><equals arg1="${checkLighthouse}" arg2="0"/></not>
+            <then>
+                <echo msg="Installing lighthouse..."/>
+                <exec command="docker-compose exec php-fpm bash -c 'node-build $(cat .node-version) /usr/local'" dir="containers" checkreturn="true"/>
+                <exec command="docker-compose exec php-fpm npm install -g lighthouse-ci" dir="containers" checkreturn="true"/>
+            </then>
+        </if>
         <!-- Execute dusk to run browser tests -->
         <echo msg="Running browser tests [Laravel Dusk]..."/>
+        <delete>
+            <fileset dir="tests/Browser/lighthouse">
+                <include name="report-*"/>
+            </fileset>
+        </delete>
         <exec command="docker-compose exec php-fpm php artisan dusk" dir="containers" passthru="true" checkreturn="true"/>
         <!-- Restore the Users/Websites indexes after tests -->
         <if>
