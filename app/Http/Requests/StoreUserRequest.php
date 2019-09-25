@@ -33,8 +33,6 @@ class StoreUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'sometimes|required|string|max:255',
-            'family_name' => 'sometimes|required|string|max:255',
             'email' => 'required|email|max:255',
             'fiscal_number' => [
                 'required',
