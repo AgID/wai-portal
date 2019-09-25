@@ -105,8 +105,14 @@ class EventType extends Enum implements LocalizedEnum
      */
     public const USER_STATUS_CHANGED = 18;
 
+    /**
+     * User suspended event.
+     */
     public const USER_SUSPENDED = 19;
 
+    /**
+     * User reactivated event.
+     */
     public const USER_REACTIVATED = 20;
 
     /**

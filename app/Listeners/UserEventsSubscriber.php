@@ -218,6 +218,11 @@ class UserEventsSubscriber
         );
     }
 
+    /**
+     * Handle user suspended events.
+     *
+     * @param UserSuspended $event the event
+     */
     public function onSuspended(UserSuspended $event): void
     {
         $user = $event->getUser();
@@ -230,6 +235,11 @@ class UserEventsSubscriber
         );
     }
 
+    /**
+     * Handle user reactivated events.
+     *
+     * @param UserReactivated $event the event
+     */
     public function onReactivated(UserReactivated $event): void
     {
         $user = $event->getUser();
