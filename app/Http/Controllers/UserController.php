@@ -236,7 +236,7 @@ class UserController extends Controller
         $redirectUrl = $this->getRoleAwareUrl('users.index', [], $publicAdministration);
 
         return redirect()->to($redirectUrl)->withNotification([
-            'title' => __('modifica sito web'),
+            'title' => __('modifica utente'),
             'message' => implode("\n", [
                 __("La modifica dell'utente è andata a buon fine."),
                 __("Se è stato modificato l'indirizzo email, l'utente riceverà un messaggio per effettuarne la verifica."),
