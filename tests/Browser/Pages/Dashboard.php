@@ -3,9 +3,12 @@
 namespace Tests\Browser\Pages;
 
 use Laravel\Dusk\Browser;
+use Tests\Browser\Traits\LighthouseTested;
 
 class Dashboard extends Page
 {
+    use LighthouseTested;
+
     /**
      * Get the URL for the page.
      *
@@ -13,7 +16,7 @@ class Dashboard extends Page
      */
     public function url()
     {
-        return '/admin/dashboard';
+        return '/dashboard';
     }
 
     /**
@@ -27,5 +30,6 @@ class Dashboard extends Page
     {
         parent::assertBase($browser);
         $browser->assertPathBeginsWith($this->url());
+        $this->lighthouseTest();
     }
 }
