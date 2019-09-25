@@ -29,6 +29,7 @@
 
 .page-background-graphic {
   position: relative;
+  z-index: 0;
   background-color: $lightgrey-a1;
   overflow: hidden;
 
@@ -72,6 +73,9 @@
 }
 
 .page-background-image {
+  position: absolute;
+  bottom: 0;
+  z-index: -1;
   overflow: hidden;
   width: 100%;
   bottom: calc(#{$header-center-max-height-mob} / 2 * -1) !important;

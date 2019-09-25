@@ -16,7 +16,7 @@
                 @yield('content')
             </div>
         </div>
-        <div class="absolute-bottom page-background-image">
+        <div class="page-background-image">
             <img alt="" src="{{ asset('images/page-bulk-bg.svg') }}">
         </div>
     </div>

@@ -1,9 +1,10 @@
 .it-header-wrapper {
   background: radial-gradient(at top, $header-center-bg-color 50%, $header-center-bg-secondary-color 70%);
-  position: relative;
-  z-index: 3;
 
   .it-nav-wrapper {
+    position: relative;
+    z-index: 3;
+
     &.tall {
       height: calc(#{$header-center-max-height-mob} + (#{$header-center-max-height-mob} / 2));
 
