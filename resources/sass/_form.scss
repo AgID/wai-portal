@@ -1,0 +1,211 @@
+.form-group {
+  .form-check {
+    text-indent: -2rem;
+    padding-left: 2rem;
+
+    [type=checkbox] {
+      & + label::after {
+        margin: 4px 5px;
+      }
+
+      & + label::before {
+        margin: 0 5px;
+      }
+    }
+
+    label.form-check-label {
+      white-space: normal;
+      display: inline;
+    }
+  }
+}
+
+.form-check {
+  .form-text {
+    opacity: .6;
+    margin: 0 0 1.2rem;
+    padding-left: 8px;
+    padding-right: 52px;
+  }
+}
+
+.needs-validation {
+  .form-group:not(.has-form-text),
+  .form-check:not(.has-form-text) {
+    .form-control {
+      & ~ .valid-feedback,
+      & ~ .invalid-feedback {
+        height: 1.2rem;
+        display: block;
+        visibility: hidden;
+      }
+    }
+  }
+
+  .form-group.has-form-text,
+  .form-check.has-form-text {
+    margin-bottom: 5rem;
+
+    .form-control {
+      & ~ .valid-feedback,
+      & ~ .invalid-feedback {
+        position: absolute;
+        bottom: -2.7rem;
+      }
+    }
+  }
+
+
+  .form-control.is-valid ~ .valid-feedback,
+  .form-control.is-invalid ~ .invalid-feedback,
+  &.was-validated .form-control:valid ~ .valid-feedback,
+  &.was-validated .form-control:invalid ~ .invalid-feedback {
+    visibility: visible !important;
+  }
+
+  .form-control.is-valid.input-password-strength-meter,
+  .form-control.is-invalid.input-password-strength-meter,
+  &.was-validated .form-control.input-password-strength-meter:valid,
+  &.was-validated .form-control.input-password-strength-meter:invalid {
+    & + .password-strength-meter {
+      display: none;
+    }
+  }
+}
+
+// Apply bootstrap-italia style
+.form-control {
+  .was-validated &:valid,
+  &.is-valid {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%2300cc85' viewBox='0 0 192 512'%3E%3Cpath d='M435.848 83.466L172.804 346.51l-96.652-96.652c-4.686-4.686-12.284-4.686-16.971 0l-28.284 28.284c-4.686 4.686-4.686 12.284 0 16.971l133.421 133.421c4.686 4.686 12.284 4.686 16.971 0l299.813-299.813c4.686-4.686 4.686-12.284 0-16.971l-28.284-28.284c-4.686-4.686-12.284-4.686-16.97 0z'/%3E%3C/svg%3E");
+
+    &:disabled,
+    &[readonly] {
+      background-color: #e6e9f2;
+    }
+  }
+
+  .was-validated &:invalid,
+  &.is-invalid {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23f73e5a' viewBox='0 0 384 512'%3E%3Cpath d='M231.6 256l130.1-130.1c4.7-4.7 4.7-12.3 0-17l-22.6-22.6c-4.7-4.7-12.3-4.7-17 0L192 216.4 61.9 86.3c-4.7-4.7-12.3-4.7-17 0l-22.6 22.6c-4.7 4.7-4.7 12.3 0 17L152.4 256 22.3 386.1c-4.7 4.7-4.7 12.3 0 17l22.6 22.6c4.7 4.7 12.3 4.7 17 0L192 295.6l130.1 130.1c4.7 4.7 12.3 4.7 17 0l22.6-22.6c4.7-4.7 4.7-12.3 0-17L231.6 256z'/%3E%3C/svg%3E");
+
+    &:disabled,
+    &[readonly] {
+      background-color: #e6e9f2;
+    }
+  }
+}
+
+.bootstrap-select-wrapper {
+  box-shadow: none;
+
+  select {
+    width: 0.5px;
+    opacity: 0;
+  }
+
+  .input-group & {
+    padding: 0;
+  }
+
+  button {
+    &:hover:not(.disabled) .filter-option::after {
+      transform: none;
+    }
+
+    .filter-option {
+      padding-right: 0.75rem;
+    }
+
+    &.loading {
+      &::after {
+        left: calc(100% - 32px) !important;
+      }
+    }
+  }
+
+  &.is-invalid,
+  &.is-valid {
+    button {
+      padding-right: 2.5rem;
+    }
+  }
+
+  &.is-valid {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%2300cc85' viewBox='0 0 192 512'%3E%3Cpath d='M435.848 83.466L172.804 346.51l-96.652-96.652c-4.686-4.686-12.284-4.686-16.971 0l-28.284 28.284c-4.686 4.686-4.686 12.284 0 16.971l133.421 133.421c4.686 4.686 12.284 4.686 16.971 0l299.813-299.813c4.686-4.686 4.686-12.284 0-16.971l-28.284-28.284c-4.686-4.686-12.284-4.686-16.97 0z'/%3E%3C/svg%3E");
+  }
+
+  &.is-invalid {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23f73e5a' viewBox='0 0 384 512'%3E%3Cpath d='M231.6 256l130.1-130.1c4.7-4.7 4.7-12.3 0-17l-22.6-22.6c-4.7-4.7-12.3-4.7-17 0L192 216.4 61.9 86.3c-4.7-4.7-12.3-4.7-17 0l-22.6 22.6c-4.7 4.7-4.7 12.3 0 17L152.4 256 22.3 386.1c-4.7 4.7-4.7 12.3 0 17l22.6 22.6c4.7 4.7 12.3 4.7 17 0L192 295.6l130.1 130.1c4.7 4.7 12.3 4.7 17 0l22.6-22.6c4.7-4.7 4.7-12.3 0-17L231.6 256z'/%3E%3C/svg%3E");
+  }
+}
+
+.autocomplete {
+  &::-webkit-search-cancel-button {
+    display: none;
+  }
+
+  & ~ .autocomplete-list {
+    z-index: 10;
+    border: none;
+    max-height: 300px;
+    overflow-y: auto;
+    margin-top: 2.5rem;
+  }
+
+  & ~ .searching-icon .icon {
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s, opacity 0.5s linear;
+  }
+
+  &.searching ~ .searching-icon .icon {
+    visibility: visible;
+    opacity: 1;
+    animation: $spin;
+  }
+
+  .was-validated &:valid,
+  .was-validated &:invalid,
+  &.is-valid,
+  &.is-invalid {
+    & ~ .searching-icon {
+      display: none;
+    }
+  }
+}
+
+.input-group {
+  label {
+    left: 0;
+    z-index: 4;
+  }
+
+  .input-group-prepend + label {
+    left: 2.25rem;
+  }
+}
+
+.section-header {
+  &.is-invalid {
+    & ~ .invalid-feedback {
+      display: block;
+      margin: -1.75rem 0 0.5rem 0;
+    }
+  }
+}
+
+.toggles {
+  .is-invalid {
+    & ~ .invalid-feedback {
+      display: block;
+      font-weight: normal;
+      margin-top: -0.2rem;
+    }
+  }
+}
+
+// Fiscal number
+input[name=fiscal_number] {
+  text-transform: uppercase;
+}

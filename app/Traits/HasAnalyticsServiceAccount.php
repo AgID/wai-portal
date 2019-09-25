@@ -30,7 +30,7 @@ trait HasAnalyticsServiceAccount
     public function getAnalyticsServiceAccountTokenAuth(): string
     {
         if (!$this->hasAnalyticsServiceAccount()) {
-            throw new AnalyticsServiceAccountException('trying to get auth token from non-existing account');
+            throw new AnalyticsServiceAccountException('Trying to get auth token from non-existing analytics service account.');
         }
 
         return app()->make('analytics-service')->getUserAuthToken($this->uuid, md5($this->analytics_password));
@@ -47,7 +47,7 @@ trait HasAnalyticsServiceAccount
     {
         $this->partial_analytics_password = Str::random(rand(32, 48));
         $this->save();
-        app()->make('analytics-service')->registerUser($this->uuid, $this->analytics_password, $this->email, config('analytics-service.admin_token'));
+        app()->make('analytics-service')->registerUser($this->uuid, $this->analytics_password, $this->email);
     }
 
     /**
@@ -74,6 +74,6 @@ trait HasAnalyticsServiceAccount
     {
         $this->partial_analytics_password = null;
         $this->save();
-        app()->make('analytics-service')->deleteUser($this->uuid, config('analytics-service.admin_token'));
+        app()->make('analytics-service')->deleteUser($this->uuid);
     }
 }

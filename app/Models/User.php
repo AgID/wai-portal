@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\UserRole;
 use App\Enums\UserStatus;
 use App\Events\User\UserRestored;
 use App\Events\User\UserUpdated;
@@ -23,6 +24,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Collection;
 use Silber\Bouncer\Database\HasRolesAndAbilities;
 
 /**
@@ -124,6 +126,16 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * Set the fiscal number.
+     *
+     * @param string $fiscalNumber the fiscal number
+     */
+    public function setFiscalNumberAttribute($fiscalNumber)
+    {
+        $this->attributes['fiscal_number'] = strtoupper($fiscalNumber);
+    }
+
+    /**
      * Get the route key for the model.
      *
      * @return string the route key name
@@ -192,20 +204,45 @@ class User extends Authenticatable implements MustVerifyEmail
      *
      * @return string the printable user representation
      */
-    public function getInfo(): string
+    public function getInfoAttribute(): string
     {
-        return (null === $this->name ? '' : $this->name . ' ') . (null === $this->family_name ? '' : $this->family_name . ' ') . '[' . $this->email . ']';
+        return $this->full_name . ' [' . $this->email . ']';
+    }
+
+    /**
+     * Return all user roles printable format.
+     *
+     * @return string the printable user roles representation
+     */
+    public function getAllRoleNamesAttribute(): string
+    {
+        return $this->roles->map(function ($role) {
+            return UserRole::getDescription($role->name);
+        })->join(' ');
+    }
+
+    /**
+     * Return a collection of all the user roles.
+     *
+     * @return Collection the collection of all the user roles
+     */
+    public function getAllRoles(): Collection
+    {
+        return $this->roles->map(function ($role) {
+            return [
+                'name' => $role->name,
+                'description' => UserRole::getDescription($role->name),
+                'longDescription' => UserRole::getLongDescription($role->name),
+            ];
+        });
     }
 
     /**
      * Configure information for notifications over mail channel.
      *
-     * @param PublicAdministration|null $publicAdministration the public administration the user belongs to
-     *                                                        or null if user is registering a new P.A.
-     *
-     * @return mixed the user email address or an array containing email and user name/surname
+     * @param PublicAdministration|null $publicAdministration the public administration the user belongs to or null if user is registering a new Public Administration
      */
-    public function sendEmailVerificationNotification(PublicAdministration $publicAdministration = null)
+    public function sendEmailVerificationNotification(?PublicAdministration $publicAdministration = null)
     {
         $this->notify(new VerifyEmail($publicAdministration));
     }
@@ -218,6 +255,34 @@ class User extends Authenticatable implements MustVerifyEmail
     public function isPasswordExpired(): bool
     {
         return Carbon::now()->diffInDays($this->password_changed_at) >= config('auth.password_expiry');
+    }
+
+    /**
+     * Check whether this user is the last active administrator of the specified public administration.
+     *
+     * @param PublicAdministration $publicAdministration the public administration
+     *
+     * @return bool true if the specified user is the last active administrator
+     */
+    public function isTheLastActiveAdministratorOf(PublicAdministration $publicAdministration): bool
+    {
+        $activeAdministrators = $publicAdministration->getActiveAdministrators();
+
+        return 1 === $activeAdministrators->count() && $this->is($activeAdministrators->first());
+    }
+
+    /**
+     * Check whether this user is the last active super administrator.
+     *
+     * @return bool true if the specified user is the last active super administrator
+     */
+    public function isTheLastActiveSuperAdministrator(): bool
+    {
+        $activeSuperAdministrators = static::whereIs(UserRole::SUPER_ADMIN)->get()->filter(function ($administrator) {
+            return $administrator->status->is(UserStatus::ACTIVE);
+        });
+
+        return 1 === $activeSuperAdministrators->count() && $this->is($activeSuperAdministrators->first());
     }
 
     /**
@@ -255,10 +320,11 @@ class User extends Authenticatable implements MustVerifyEmail
      * Notify website archived.
      *
      * @param Website $website the website
+     * @param bool $manual wether the website was archived manually
      */
-    public function sendWebsiteArchivedNotification(Website $website): void
+    public function sendWebsiteArchivedNotification(Website $website, bool $manual): void
     {
-        $this->notify(new WebsiteArchivedUserEmail($website));
+        $this->notify(new WebsiteArchivedUserEmail($website, $manual));
     }
 
     /**

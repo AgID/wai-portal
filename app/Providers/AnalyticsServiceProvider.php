@@ -12,13 +12,6 @@ use Illuminate\Support\ServiceProvider;
 class AnalyticsServiceProvider extends ServiceProvider implements DeferrableProvider
 {
     /**
-     * Bootstrap any application services.
-     */
-    public function boot()
-    {
-    }
-
-    /**
      * Register any application services.
      */
     public function register(): void

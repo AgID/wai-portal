@@ -2,6 +2,7 @@
 
 namespace App\Enums;
 
+use App\Traits\HasEnumLongDescription;
 use BenSampo\Enum\Contracts\LocalizedEnum;
 use BenSampo\Enum\Enum;
 
@@ -10,6 +11,8 @@ use BenSampo\Enum\Enum;
  */
 final class UserRole extends Enum implements LocalizedEnum
 {
+    use HasEnumLongDescription;
+
     /**
      * Super admin user role constant.
      */
@@ -31,7 +34,7 @@ final class UserRole extends Enum implements LocalizedEnum
     public const REGISTERED = 'registered';
 
     /**
-     * Removed user role constant.
+     * Deleted user role constant.
      */
-    public const REMOVED = 'removed';
+    public const DELETED = 'deleted';
 }

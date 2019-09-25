@@ -113,7 +113,7 @@ return [
     */
 
     'markdown' => [
-        'theme' => 'italia',
+        'theme' => 'wai',
 
         'paths' => [
             resource_path('views/mail/templates'),

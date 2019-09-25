@@ -11,18 +11,16 @@ use Illuminate\Console\Command;
 class UpdatePublicAdministrationsFromIpa extends Command
 {
     /**
-     * The name and signature of the console command.
+     * Create a new command instance.
      *
-     * @var string the command
+     * @return void
      */
-    protected $signature = 'app:update-ipa';
-
-    /**
-     * The console command description.
-     *
-     * @var string the command description
-     */
-    protected $description = 'Update Public Administrations from IPA list for Web Analytics Italia';
+    public function __construct()
+    {
+        $this->signature = 'app:update-ipa';
+        $this->description = 'Update Public Administrations from IPA index for ' . config('app.name');
+        parent::__construct();
+    }
 
     /**
      * Execute the console command.
@@ -31,7 +29,7 @@ class UpdatePublicAdministrationsFromIpa extends Command
      */
     public function handle()
     {
-        $this->info('Updating Public Administrations list...');
+        $this->info('Updating Public Administrations index...');
         dispatch(new ProcessPublicAdministrationsUpdateFromIpa())->onConnection('sync');
         $this->info('Public Administrations updated');
     }

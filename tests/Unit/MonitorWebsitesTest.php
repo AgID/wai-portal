@@ -4,7 +4,7 @@ namespace Tests\Unit;
 
 use App\Enums\WebsiteType;
 use App\Events\Jobs\WebsitesMonitoringCheckCompleted;
-use App\Jobs\ProcessWebsitesMonitoring;
+use App\Jobs\MonitorWebsitesTracking;
 use App\Models\PublicAdministration;
 use App\Models\Website;
 use Carbon\Carbon;
@@ -34,7 +34,7 @@ class MonitorWebsitesTest extends TestCase
      */
     public function testMonitorCheckCompleted(): void
     {
-        $job = new ProcessWebsitesMonitoring();
+        $job = new MonitorWebsitesTracking();
         $job->handle();
 
         Event::assertDispatched(WebsitesMonitoringCheckCompleted::class);
@@ -77,7 +77,7 @@ class MonitorWebsitesTest extends TestCase
             'verify' => false,
         ]);
 
-        $job = new ProcessWebsitesMonitoring();
+        $job = new MonitorWebsitesTracking();
         $job->handle();
 
         $this->app->make('analytics-service')->deleteSite($website->analytics_id);
@@ -132,7 +132,7 @@ class MonitorWebsitesTest extends TestCase
         $date = Carbon::now()->startOfWeek()->addWeek(1)->addDays($notificationWeekDay);
         Carbon::setTestNow($date);
 
-        $job = new ProcessWebsitesMonitoring();
+        $job = new MonitorWebsitesTracking();
         $job->handle();
 
         $this->app->make('analytics-service')->deleteSite($website->analytics_id);
@@ -187,7 +187,7 @@ class MonitorWebsitesTest extends TestCase
         $date = Carbon::now()->startOfWeek()->addWeek(1)->addDays($notificationWeekDay + 1);
         Carbon::setTestNow($date);
 
-        $job = new ProcessWebsitesMonitoring();
+        $job = new MonitorWebsitesTracking();
         $job->handle();
 
         $this->app->make('analytics-service')->deleteSite($website->analytics_id);
@@ -233,7 +233,7 @@ class MonitorWebsitesTest extends TestCase
             'verify' => false,
         ]);
 
-        $job = new ProcessWebsitesMonitoring();
+        $job = new MonitorWebsitesTracking();
         $job->handle();
 
         $this->app->make('analytics-service')->deleteSite($website->analytics_id);
@@ -284,7 +284,7 @@ class MonitorWebsitesTest extends TestCase
         $date = Carbon::now()->startOfWeek()->addWeek(1)->addDays($notificationWeekDay);
         Carbon::setTestNow($date);
 
-        $job = new ProcessWebsitesMonitoring();
+        $job = new MonitorWebsitesTracking();
         $job->handle();
 
         $this->app->make('analytics-service')->deleteSite($website->analytics_id);
@@ -308,7 +308,7 @@ class MonitorWebsitesTest extends TestCase
             'created_at' => now()->subDays((int) config('wai.archive_expire') + 1),
         ]);
 
-        $job = new ProcessWebsitesMonitoring();
+        $job = new MonitorWebsitesTracking();
         $job->handle();
 
         Event::assertDispatched(WebsitesMonitoringCheckCompleted::class, function ($event) use ($website) {

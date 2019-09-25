@@ -112,7 +112,7 @@ class SuperAdminUserPasswordTest extends TestCase
 
         Event::assertDispatched(UserUpdated::class);
         Event::assertDispatched(PasswordReset::class, function ($event) {
-            return $event->user->uuid === $this->user->uuid;
+            return $this->user->is($event->user);
         });
     }
 

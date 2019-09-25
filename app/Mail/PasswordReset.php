@@ -44,12 +44,10 @@ class PasswordReset extends Mailable
      */
     public function build()
     {
-        //TODO: make sender configurable
-        return $this->from('noreply@analytics.italia.it')
-            ->subject('Password reset requested') //TODO: string in lang file
-            ->markdown('mail.password_reset')->with([
-                'user' => $this->user,
-                'token' => $this->token,
-            ]);
+        return $this->subject(__('Reset della password'))
+                    ->markdown('mail.password_reset')->with([
+                        'user' => $this->user,
+                        'token' => $this->token,
+                    ]);
     }
 }

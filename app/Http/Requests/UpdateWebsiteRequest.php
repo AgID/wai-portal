@@ -51,10 +51,10 @@ class UpdateWebsiteRequest extends StoreWebsiteRequest
     {
         parent::withValidator($validator);
         $validator->after(function (Validator $validator) {
-            $affectedUsers = $this->checkLastWebsiteForUsers($this->route('website'), $this->input('usersEnabled'));
+            $affectedUsers = $this->checkLastWebsiteForUsers($this->route('website'), $this->input('permissions'));
             if (!empty($affectedUsers)) {
                 $affectedUsers->map(function ($affectedUser) use ($validator) {
-                    $validator->errors()->add('usersPermissions', __("Non è possibile disabiltare l'utente " . $affectedUser->getInfo() . " perché questo è l'unico sito per il quale è abilitato."));
+                    $validator->errors()->add('permissions', __("Non è possibile disabiltare l'utente :user perché questo è l'unico sito per il quale è abilitato.", ['user' => $affectedUser->info]));
                 });
             }
         });
@@ -62,16 +62,16 @@ class UpdateWebsiteRequest extends StoreWebsiteRequest
 
     /**
      * Check whether the provided website is the last enabled website for users
-     * not listed in the usersEnabled parameter.
+     * not listed in the permissions parameter.
      *
      * @param Website $website The website to check
-     * @param array $usersEnabled The users enabled array
+     * @param array|null $permissions The users enabled array
      *
      * @return array The array of users for whom the website is the last enabled one
      */
-    protected function checkLastWebsiteForUsers(Website $website, ?array $usersEnabled): Collection
+    protected function checkLastWebsiteForUsers(Website $website, ?array $permissions): Collection
     {
-        return $website->getEnabledNonAdministratorUsers()->whereNotInStrict('id', $usersEnabled)->filter(function ($user) {
+        return $website->getEnabledNonAdministratorUsers()->whereNotInStrict('id', $permissions ?? [])->filter(function ($user) {
             return 1 === $user->abilities->where('name', UserPermission::READ_ANALYTICS)->groupBy('entity_id')->count();
         });
     }

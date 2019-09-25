@@ -1,17 +1,10 @@
-@if (session()->has('message'))
-    @foreach (session('message') as $type => $text)
-        <div class="Alert Alert--{{ $type }} Alert--withIcon u-padding-r-right u-margin-r-bottom" role="alert">
-            <p class="u-text-p">{{ $text }}</p>
-        </div>
-    @endforeach
-@endif
-
-@if (session()->has('messages'))
-    @foreach (session('messages') as $message)
-        @foreach ($message as $type => $text)
-            <div class="Alert Alert--{{ $type }} Alert--withIcon u-padding-r-right u-margin-r-bottom" role="alert">
-                <p class="u-text-p">{{ $text }}</p>
-            </div>
-        @endforeach
+@if (session()->has('alert'))
+    @foreach (session('alert') as $type => $text)
+    <div class="alert alert-{{ $type }} alert-dismissible rounded fade show" role="alert">
+        {{ $text }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="{{ __('chiudi') }}">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
     @endforeach
 @endif

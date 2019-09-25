@@ -104,7 +104,7 @@ class CRUDAdminWebsiteTest extends TestCase
             ]))
             ->assertOk()
             ->assertJsonFragment([
-                'name' => $this->website->name,
+                'raw' => e($this->website->name),
             ]);
     }
 
@@ -114,7 +114,7 @@ class CRUDAdminWebsiteTest extends TestCase
     public function testDeleteWebsiteSuccessful(): void
     {
         $this->actingAs($this->user)
-            ->patch(route('admin.publicAdministration.websites.delete', [
+            ->json('patch', route('admin.publicAdministration.websites.delete', [
                 'publicAdministration' => $this->publicAdministration,
                 'website' => $this->website,
             ]))
@@ -140,14 +140,14 @@ class CRUDAdminWebsiteTest extends TestCase
         });
 
         $this->actingAs($this->user)
-            ->patch(route('admin.publicAdministration.websites.delete', [
+            ->json('patch', route('admin.publicAdministration.websites.delete', [
                 'publicAdministration' => $this->publicAdministration,
                 'website' => $this->website,
             ]))
             ->assertStatus(400)
             ->assertJson([
                 'result' => 'error',
-                'message' => 'Impossibile eliminare un sito istituzionale',
+                'message' => 'Delete request not allowed on primary website ' . $this->website->info . '.',
             ]);
 
         $this->website->refresh();
@@ -167,7 +167,7 @@ class CRUDAdminWebsiteTest extends TestCase
         });
 
         $this->actingAs($this->user)
-            ->patch(route('admin.publicAdministration.websites.restore', [
+            ->json('patch', route('admin.publicAdministration.websites.restore', [
                 'publicAdministration' => $this->publicAdministration,
                 'website' => $this->website,
             ]))

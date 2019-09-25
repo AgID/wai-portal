@@ -1,26 +1,54 @@
-@extends('layouts.default')
+@extends('layouts.page')
 
-@section('title', __('ui.pages.dashboard.title'))
+@section('title', __('Dashboard'))
 
 @section('content')
-    @can(UserPermission::ACCESS_ADMIN_AREA)
-        @include('partials.link_button', [
-            'label' => __('ui.pages.dashboard.users'),
-            'href' => route('admin.publicAdministration.users.index', ['publicAdministration' => $publicAdministration], false)
-        ])
-        @include('partials.link_button', [
-            'label' => __('ui.pages.dashboard.websites'),
-            'href' => route('admin.publicAdministration.websites.index', ['publicAdministration' => $publicAdministration], false)
-        ])
-    @else
-        @include('partials.user_info')
-        @include('partials.link_button', [
-            'label' => __('ui.pages.dashboard.websites'),
-            'href' => route('websites.index', [], false)
-        ])
-        @include('partials.link_button', [
-            'label' => __('ui.pages.dashboard.users'),
-            'href' => route('users.index', [], false)
-        ])
-    @endcan
+<div class="container py-3">
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="card-wrapper card-space">
+                <div class="card card-bg">
+                    <div class="card-body"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card-wrapper card-space">
+                <div class="card card-bg">
+                    <div class="card-body"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card-wrapper card-space">
+                <div class="card card-bg">
+                    <div class="card-body"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="card-wrapper card-space">
+                <div class="card card-bg">
+                    <div class="card-body"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card-wrapper card-space">
+                <div class="card card-bg">
+                    <div class="card-body"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card-wrapper card-space">
+                <div class="card card-bg">
+                    <div class="card-body"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection

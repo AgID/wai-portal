@@ -2,9 +2,9 @@
 
 namespace App\Console;
 
+use App\Jobs\MonitorWebsitesTracking;
 use App\Jobs\ProcessPendingWebsites;
 use App\Jobs\ProcessPublicAdministrationsUpdateFromIpa;
-use App\Jobs\ProcessWebsitesMonitoring;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -23,7 +23,7 @@ class Kernel extends ConsoleKernel
         $schedule->job(new ProcessPublicAdministrationsUpdateFromIpa())->dailyAt('06:30')->runInBackground()->onOneServer();
         $schedule->job(new ProcessPendingWebsites())->hourly()->runInBackground()->onOneServer();
         $schedule->job(new ProcessPendingWebsites(true))->dailyAt('04:30')->runInBackground()->onOneServer();
-        $schedule->job(new ProcessWebsitesMonitoring())->daily()->runInBackground()->onOneServer();
+        $schedule->job(new MonitorWebsitesTracking())->daily()->runInBackground()->onOneServer();
     }
 
     /**

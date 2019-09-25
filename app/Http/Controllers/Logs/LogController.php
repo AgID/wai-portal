@@ -5,8 +5,6 @@ namespace App\Http\Controllers\Logs;
 use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LogFilteringRequest;
-use App\Traits\InteractsWithUserIndex;
-use App\Traits\InteractsWithWebsiteIndex;
 use Carbon\Carbon;
 use Elasticsearch\ClientBuilder;
 use Exception;
@@ -21,9 +19,6 @@ use Monolog\Logger;
  */
 class LogController extends Controller
 {
-    use InteractsWithWebsiteIndex;
-    use InteractsWithUserIndex;
-
     /**
      * Display the logs list.
      *
@@ -33,25 +28,46 @@ class LogController extends Controller
      */
     public function show(Request $request): View
     {
-        $data = [
-            'currentUser' => $request->user(),
+        $currentUser = $request->user();
+        $searchWebsitesEndpoint = $currentUser->isAn(UserRole::SUPER_ADMIN)
+            ? route('admin.logs.websites.search')
+            : route('logs.websites.search');
+        $searchUsersEndpoint = $currentUser->isAn(UserRole::SUPER_ADMIN)
+        ? route('admin.logs.users.search')
+        : route('logs.users.search');
+        $logsDatatable = [
             'datatableOptions' => [
-                'textWrap' => true,
-                'serverSide' => true,
                 'processing' => true,
-                'searching' => false,
+                'serverSide' => true,
+                'textWrap' => true,
             ],
             'columns' => [
-                ['data' => 'datetime', 'name' => __('ui.pages.logs.table.headers.time'), 'className' => 'u-textNoWrap', 'searchable' => false],
-                ['data' => 'level_name', 'name' => __('ui.pages.logs.table.headers.level'), 'orderable' => false, 'searchable' => false, 'className' => 'u-textNoWrap dt-body-center'],
-                ['data' => 'message', 'name' => __('ui.pages.logs.table.headers.message'), 'orderable' => false, 'searchable' => false],
+                [
+                    'data' => 'datetime',
+                    'name' => __('data e ora'),
+                    'searchable' => false,
+                    'className' => 'text-nowrap text-center pr-2',
+                ],
+                [
+                    'data' => 'level_name',
+                    'name' => __('livello'),
+                    'orderable' => false,
+                    'searchable' => false,
+                    'className' => 'text-nowrap pr-2',
+                ],
+                [
+                    'data' => 'message',
+                    'name' => __('messaggio'),
+                    'orderable' => false,
+                    'searchable' => false,
+                ],
             ],
-            'source' => $request->user()->isA(UserRole::SUPER_ADMIN) ? route('admin.logs.data') : route('logs.data'),
-            'caption' => __('ui.pages.logs.table.caption'),
+            'source' => $currentUser->isA(UserRole::SUPER_ADMIN) ? route('admin.logs.data') : route('logs.data'),
+            'caption' => __('messaggi di log di :app', ['app' => config('app.name')]),
             'columnsOrder' => [['datetime', 'desc']],
         ];
 
-        return view('pages.logs.show')->with($data);
+        return view('pages.logs.show')->with(compact('currentUser', 'searchWebsitesEndpoint', 'searchUsersEndpoint'))->with($logsDatatable);
     }
 
     /**
@@ -104,10 +120,14 @@ class LogController extends Controller
             $response['data'] = Arr::pluck($results['hits']['hits'], '_source');
             foreach ($response['data'] as $index => $result) {
                 $response['data'][$index]['datetime'] = Carbon::parse($result['datetime'])->format('d/m/Y H:i:s');
+                $response['data'][$index]['level_name'] = [
+                    'display' => '<span class="badge log-level ' . strtolower($response['data'][$index]['level_name']) . '">' . $response['data'][$index]['level_name'] . '</span>',
+                    'raw' => $response['data'][$index]['level_name'],
+                ];
             }
         } catch (Exception $exception) {
             report($exception);
-            $response['errors'] = __('ui.pages.500.elasticsearch_description');
+            $response['errors'] = __('Si è verificato un errore nel recupero dei log.');
             $responseCode = 500;
         }
 
@@ -123,15 +143,14 @@ class LogController extends Controller
      */
     private function extractData(array $data): array
     {
+        $user = auth()->user();
         $params['message'] = empty($data['message']) ? null : $data['message'];
-
         $params['from'] = empty($data['start']) ? 0 : $data['start'];
-
         $params['size'] = empty($data['length']) ? 10 : $data['length'];
 
         if (!empty($data['severity'])) {
             $value = (int) $data['severity'];
-            if ($value < Logger::INFO && !auth()->user()->isA(UserRole::SUPER_ADMIN)) {
+            if ($value < Logger::INFO && !$user->isA(UserRole::SUPER_ADMIN)) {
                 $value = Logger::INFO;
             }
             $params['severity'] = $value;
@@ -151,7 +170,7 @@ class LogController extends Controller
 
         $params['filters'][] = ['term' => ['channel' => config('app.env')]];
 
-        if (auth()->user()->isA(UserRole::SUPER_ADMIN)) {
+        if ($user->isA(UserRole::SUPER_ADMIN)) {
             if (!empty($data['ipa_code'])) {
                 $params['filters'][] = ['term' => ['context.pa' => $data['ipa_code']]];
             }

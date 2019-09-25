@@ -85,21 +85,20 @@ trait HasWebsitePermissions
      * @throws \App\Exceptions\CommandErrorException if command is unsuccessful
      * @throws TenantIdNotSetException if the tenant id is not set in the current session
      */
-    public function syncWebsitesPermissionsToAnalyticsService(PublicAdministration $publicAdministration = null): void
+    public function syncWebsitesPermissionsToAnalyticsService(?PublicAdministration $publicAdministration = null): void
     {
         if (!isset($publicAdministration)) {
             $this->ensurePermissionScopeIsSet();
-
             $publicAdministration = PublicAdministration::find(session('tenant_id'));
         }
 
         $publicAdministration->websites()->get()->map(function ($website) {
             if ($this->can(UserPermission::MANAGE_ANALYTICS, $website)) {
-                app()->make('analytics-service')->setWebsiteAccess($this->uuid, WebsiteAccessType::WRITE, $website->analytics_id, config('analytics-service.admin_token'));
+                app()->make('analytics-service')->setWebsiteAccess($this->uuid, WebsiteAccessType::WRITE, $website->analytics_id);
             } elseif ($this->can(UserPermission::READ_ANALYTICS, $website)) {
-                app()->make('analytics-service')->setWebsiteAccess($this->uuid, WebsiteAccessType::VIEW, $website->analytics_id, config('analytics-service.admin_token'));
+                app()->make('analytics-service')->setWebsiteAccess($this->uuid, WebsiteAccessType::VIEW, $website->analytics_id);
             } else {
-                app()->make('analytics-service')->setWebsiteAccess($this->uuid, WebsiteAccessType::NO_ACCESS, $website->analytics_id, config('analytics-service.admin_token'));
+                app()->make('analytics-service')->setWebsiteAccess($this->uuid, WebsiteAccessType::NO_ACCESS, $website->analytics_id);
             }
         });
     }
@@ -113,7 +112,7 @@ trait HasWebsitePermissions
     private function ensurePermissionScopeIsSet(): void
     {
         if (empty(session('tenant_id'))) {
-            throw new TenantIdNotSetException();
+            throw new TenantIdNotSetException('Tenant not set.');
         }
 
         Bouncer::scope()->to(session('tenant_id'));

@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Cron;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\MonitorWebsitesTracking;
 use App\Jobs\ProcessPendingWebsites;
 use App\Jobs\ProcessPublicAdministrationsUpdateFromIpa;
-use App\Jobs\ProcessWebsitesMonitoring;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -19,7 +19,7 @@ class CronController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse JSON response with job submission status
      */
-    public function updateIPA(): JsonResponse
+    public function updateFromIpa(): JsonResponse
     {
         dispatch(new ProcessPublicAdministrationsUpdateFromIpa());
 
@@ -47,7 +47,7 @@ class CronController extends Controller
      */
     public function monitorWebsitesActivity(): JsonResponse
     {
-        dispatch(new ProcessWebsitesMonitoring());
+        dispatch(new MonitorWebsitesTracking());
 
         return response()->json(['message' => 'Activity check submitted'], 202);
     }

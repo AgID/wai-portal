@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Jobs\ProcessWebsitesMonitoring;
+use App\Jobs\MonitorWebsitesTracking;
 use Illuminate\Console\Command;
 
 /**
@@ -11,18 +11,12 @@ use Illuminate\Console\Command;
 class MonitorWebsiteTracking extends Command
 {
     /**
-     * The name and signature of the console command.
-     *
-     * @var string the command
-     */
-    protected $signature = 'app:monitor-activity';
-
-    /**
      * Command constructor.
      */
     public function __construct()
     {
-        $this->description = 'Check that websites registered in Web Analytics Italia have reported activity within the last ' . config('wai.archive_expire') . ' days';
+        $this->signature = 'app:monitor-activity';
+        $this->description = 'Check that websites registered in ' . config('app.name') . ' have reported activity within the last ' . config('wai.archive_expire') . ' days';
         parent::__construct();
     }
 
@@ -32,7 +26,7 @@ class MonitorWebsiteTracking extends Command
     public function handle(): void
     {
         $this->info('Checking websites activity...');
-        dispatch(new ProcessWebsitesMonitoring())->onConnection('sync');
+        dispatch(new MonitorWebsitesTracking())->onConnection('sync');
         $this->info('Websites activity checked');
     }
 }

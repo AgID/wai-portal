@@ -51,7 +51,7 @@ class RegisterTest extends TestCase
                 'email',
                 'accept_terms',
             ])
-            ->assertRedirect(route('home'));
+            ->assertRedirect(route('verification.notice'));
 
         Event::assertDispatched(Registered::class, function ($event) {
             return 'new@email.local' === $event->user->email;
@@ -68,10 +68,10 @@ class RegisterTest extends TestCase
             ])
             ->post(route('auth.register'))
             ->assertSessionHasErrors([
-                'email',
                 'accept_terms',
             ])
             ->assertRedirect(route('home'));
+
         Event::assertNotDispatched(Registered::class);
     }
 }

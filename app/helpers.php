@@ -6,12 +6,13 @@ if (!function_exists('current_public_administration')) {
     /**
      * Get the public administration corresponding to the current selected tenant.
      *
-     * @return \App\Models\PublicAdministration|null the PublicAdministration found or null if not found
+     * @return PublicAdministration|null the PublicAdministration found or null if not found
      */
     function current_public_administration(): ?PublicAdministration
     {
-        if (auth()->user()) {
-            return auth()->user()->publicAdministrations()->where('id', session('tenant_id'))->first();
+        $user = auth()->user();
+        if ($user) {
+            return $user->publicAdministrations()->where('id', session('tenant_id'))->first();
         }
 
         return null;
@@ -30,8 +31,9 @@ if (!function_exists('current_user_auth_token')) {
      */
     function current_user_auth_token(): ?string
     {
-        if (auth()->user()) {
-            return auth()->user()->getAnalyticsServiceAccountTokenAuth();
+        $user = auth()->user();
+        if ($user) {
+            return $user->getAnalyticsServiceAccountTokenAuth();
         }
 
         return null;

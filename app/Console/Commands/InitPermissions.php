@@ -10,26 +10,14 @@ use Silber\Bouncer\BouncerFacade as Bouncer;
 class InitPermissions extends Command
 {
     /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'app:init-permissions';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Initialize user permissions for Web Analytics Italia';
-
-    /**
      * Create a new command instance.
      *
      * @return void
      */
     public function __construct()
     {
+        $this->signature = 'app:init-permissions';
+        $this->description = 'Initialize user permissions for ' . config('app.name');
         parent::__construct();
     }
 
@@ -47,7 +35,7 @@ class InitPermissions extends Command
         Bouncer::allow(UserRole::ADMIN)->to(UserPermission::VIEW_LOGS);
         Bouncer::allow(UserRole::DELEGATED)->to(UserPermission::DO_NOTHING);
         Bouncer::allow(UserRole::REGISTERED)->to(UserPermission::DO_NOTHING);
-        Bouncer::forbid(UserRole::REMOVED)->everything();
-        $this->info('Created roles for Web Analytics Italia');
+        Bouncer::forbid(UserRole::DELETED)->everything();
+        $this->info('Created roles for ' . config('app.name'));
     }
 }

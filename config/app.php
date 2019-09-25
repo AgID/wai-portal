@@ -15,6 +15,8 @@ return [
 
     'name' => env('APP_NAME'),
 
+    'name_short' => env('APP_NAME_SHORT'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Version
@@ -141,7 +143,7 @@ return [
     | Secret salt
     |--------------------------------------------------------------------------
     |
-    | This salt is used to generate hashed in the WAI application
+    | This salt is used to generate hashed in the application
     |
     */
 
@@ -199,6 +201,7 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        App\Providers\ViewServiceProvider::class,
 
     ],
 

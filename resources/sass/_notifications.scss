@@ -1,0 +1,10 @@
+.notification {
+  display: block;
+  opacity: 0;
+  transition: opacity 0.2s ease-in;
+  z-index: 10;
+
+  &.show {
+    opacity: 1;
+  }
+}

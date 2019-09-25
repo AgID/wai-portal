@@ -56,14 +56,13 @@ interface AnalyticsService
      * registered in the Analytics Service.
      *
      * @param string $idSite the Analytics Service website ID
-     * @param string $tokenAuth the Analytics authentication token
      *
      * @throws AnalyticsServiceException if unable to connect the Analytics Service
      * @throws CommandErrorException if command is unsuccessful
      *
      * @return string the site tracking code
      */
-    public function getJavascriptSnippet(string $idSite, string $tokenAuth): string;
+    public function getJavascriptSnippet(string $idSite): string;
 
     /**
      * Delete a given site in the Analytics Service.
@@ -81,25 +80,23 @@ interface AnalyticsService
      * @param string $userLogin the Analytics Service user ID
      * @param string $password the Analytics Service user password
      * @param string $email the Analytics Service user email
-     * @param string $tokenAuth the Analytics authentication token
      *
      * @throws AnalyticsServiceException if unable to connect the Analytics Service
      * @throws CommandErrorException if command is unsuccessful
      */
-    public function registerUser(string $userLogin, string $password, string $email, string $tokenAuth): void;
+    public function registerUser(string $userLogin, string $password, string $email): void;
 
     /**
      * Get a specified user in the Analytics Service.
      *
      * @param string $email the Analytics Service user email
-     * @param string $tokenAuth the Analytics authentication token
      *
      * @throws CommandErrorException if command is unsuccessful
      * @throws AnalyticsServiceException if unable to connect the Analytics Service
      *
      * @return array the Analytics Service user
      */
-    public function getUserByEmail(string $email, string $tokenAuth): array;
+    public function getUserByEmail(string $email): array;
 
     /**
      * @param string $userLogin the Analytics Service user ID
@@ -116,12 +113,11 @@ interface AnalyticsService
      * Delete a specified user in the Analytics Service.
      *
      * @param string $userLogin the Analytics Service user ID
-     * @param string $tokenAuth the Analytics authentication token
      *
      * @throws AnalyticsServiceException if unable to connect the Analytics Service
      * @throws CommandErrorException if command is unsuccessful
      */
-    public function deleteUser(string $userLogin, string $tokenAuth): void;
+    public function deleteUser(string $userLogin): void;
 
     /**
      * Update the email address of a specified user in the Analytics Service.
@@ -153,26 +149,24 @@ interface AnalyticsService
      * @param string $userLogin the Analytics Service user ID
      * @param int $access the Analytics Service access level
      * @param string $idSites the Analytics Service website ID
-     * @param string $tokenAuth the Analytics authentication token
      *
      * @throws AnalyticsServiceException if unable to connect the Analytics Service
      * @throws CommandErrorException if command is unsuccessful
      *
      * @see \App\Enums\WebsiteAccessType
      */
-    public function setWebsiteAccess(string $userLogin, int $access, string $idSites, string $tokenAuth): void;
+    public function setWebsiteAccess(string $userLogin, int $access, string $idSites): void;
 
     /**
      * @param string $idSite the Analytics Service website ID
      * @param int $minutes the minutes period
-     * @param string $tokenAuth the Analytics authentication token
      *
      * @throws CommandErrorException if command is unsuccessful
      * @throws AnalyticsServiceException if unable to connect the Analytics Service
      *
      * @return int the live number of website visits
      */
-    public function getLiveVisits(string $idSite, int $minutes, string $tokenAuth): int;
+    public function getLiveVisits(string $idSite, int $minutes): int;
 
     /**
      * Get total number of visits for a specified site
@@ -180,40 +174,37 @@ interface AnalyticsService
      *
      * @param string $idSite the Analytics Service website ID
      * @param string $from the date range
-     * @param string $tokenAuth the Analytics authentication token
      *
      * @throws CommandErrorException if command is unsuccessful
      * @throws AnalyticsServiceException if unable to connect the Analytics Service
      *
      * @return int the total reported website visits
      */
-    public function getSiteTotalVisitsFrom(string $idSite, string $from, string $tokenAuth): int;
+    public function getSiteTotalVisitsFrom(string $idSite, string $from): int;
 
     /**
      * Get the number of visits for a specified site
      * registered last month in the Analytics Service.
      *
      * @param string $idSite the Analytics Service website ID
-     * @param string $tokenAuth the Analytics authentication token
      *
      * @throws CommandErrorException if command is unsuccessful
      * @throws AnalyticsServiceException if unable to connect the Analytics Service
      *
      * @return int the reported website visits from last month
      */
-    public function getSiteLastMonthVisits(string $idSite, string $tokenAuth): int;
+    public function getSiteLastMonthVisits(string $idSite): int;
 
     /**
      * Get the daily number of visits for the last requested days.
      *
      * @param string $idSite the Analytics Service website ID
      * @param int $days the requested number of days
-     * @param string $tokenAuth the Analytics authentication token
      *
      * @throws CommandErrorException if command is unsuccessful
      * @throws AnalyticsServiceException if unable to connect the Analytics Service
      *
      * @return array the list of days with the number of visits
      */
-    public function getSiteLastDaysVisits(string $idSite, int $days, string $tokenAuth): array;
+    public function getSiteLastDaysVisits(string $idSite, int $days): array;
 }

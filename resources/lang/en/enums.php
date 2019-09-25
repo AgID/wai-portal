@@ -20,35 +20,74 @@ return [
     ],
 
     UserPermission::class => [
-        UserPermission::ACCESS_ADMIN_AREA => 'Access to admin area',
-        UserPermission::MANAGE_USERS => 'Manage users',
-        UserPermission::MANAGE_WEBSITES => 'Manage websites',
-        UserPermission::VIEW_LOGS => 'View logs',
-        UserPermission::MANAGE_ANALYTICS => 'Manage analytics',
-        UserPermission::READ_ANALYTICS => 'Read analytics',
-        UserPermission::DO_NOTHING => 'No permissions',
+        UserPermission::ACCESS_ADMIN_AREA => 'access to admin area',
+        UserPermission::MANAGE_USERS => 'manage users',
+        UserPermission::MANAGE_WEBSITES => 'manage websites',
+        UserPermission::VIEW_LOGS => 'view logs',
+        UserPermission::MANAGE_ANALYTICS => 'manage analytics',
+        UserPermission::READ_ANALYTICS => 'read analytics',
+        UserPermission::DO_NOTHING => 'no permissions',
     ],
 
     UserRole::class => [
-        UserRole::SUPER_ADMIN => 'Super admin of ' . config('app.name'),
-        UserRole::ADMIN => 'Admin of own Public Administation',
-        UserRole::DELEGATED => 'Delegated user',
-        UserRole::REGISTERED => 'Registered user',
-        UserRole::REMOVED => 'Suspended user',
+        UserRole::SUPER_ADMIN => [
+            'short' => 'super admin of ' . config('app.name_short'),
+            'long' => 'The super administrator can manage all the data in ' . config('app.name') . '.',
+        ],
+        UserRole::ADMIN => [
+            'short' => 'administrator',
+            'long' => 'The administrator can manage all websites and users of his Public Administration.',
+        ],
+        UserRole::DELEGATED => [
+            'short' => 'delegate',
+            'long' => 'The delegate user can read or manage the analytics data according to the permissions assigned by the administrator.',
+        ],
+        UserRole::REGISTERED => [
+            'short' => 'registered',
+            'long' => 'The registered user has to continue the procedure by indicating his Public Administration.',
+        ],
+        UserRole::DELETED => [
+            'short' => 'deleted',
+            'long' => 'The deleted user does not have access to ' . config('app.name') . '.',
+        ],
     ],
 
     UserStatus::class => [
-        UserStatus::INVITED => 'invited',
-        UserStatus::INACTIVE => 'inactive',
-        UserStatus::PENDING => 'pending',
-        UserStatus::ACTIVE => 'active',
-        UserStatus::SUSPENDED => 'suspended',
+        UserStatus::INVITED => [
+            'short' => 'invited',
+            'long' => 'The user has not yet accepted the invitation to ' . config('app.name') . '.',
+        ],
+        UserStatus::INACTIVE => [
+            'short' => 'inactive',
+            'long' => 'The user has not yet registered his Public Administratio on ' . config('app.name') . '.',
+        ],
+        UserStatus::PENDING => [
+            'short' => 'pending',
+            'long' => 'The user is waiting for the activation on ' . config('app.name') . '.',
+        ],
+        UserStatus::ACTIVE => [
+            'short' => 'active',
+            'long' => 'The user is active and can use the services provided by ' . config('app.name') . '.',
+        ],
+        UserStatus::SUSPENDED => [
+            'short' => 'suspended',
+            'long' => 'The user has been suspended and cannot use the services provided by ' . config('app.name') . '.',
+        ],
     ],
 
     WebsiteStatus::class => [
-        WebsiteStatus::PENDING => 'pending',
-        WebsiteStatus::ACTIVE => 'active',
-        WebsiteStatus::ARCHIVED => 'archived',
+        WebsiteStatus::PENDING => [
+            'short' => 'pending',
+            'long' => "The website isn't tracking traffic yet. 😕",
+        ],
+        WebsiteStatus::ACTIVE => [
+            'short' => 'active',
+            'long' => 'The website is now tracking traffic! 🎉',
+        ],
+        WebsiteStatus::ARCHIVED => [
+            'short' => 'archived',
+            'long' => 'The website has been archived. 🛑'
+        ],
     ],
 
     WebsiteType::class => [
@@ -70,7 +109,7 @@ return [
         EventType::ANALYTICS_LOGIN => 'Analytics Service Login',
         EventType::PENDING_WEBSITES_CHECK_COMPLETED => 'Pending websites check completed',
         EventType::TRACKING_WEBSITES_CHECK_COMPLETED => 'Website tracking check completed',
-        EventType::IPA_UPDATE_COMPLETED => 'IPA update completed',
+        EventType::UPDATE_PA_FROM_IPA_COMPLETED => 'IPA update completed',
         EventType::PUBLIC_ADMINISTRATION_REGISTERED => 'Public Administration registered',
         EventType::PUBLIC_ADMINISTRATION_ACTIVATED => 'Public Administration activated',
         EventType::PUBLIC_ADMINISTRATION_ACTIVATION_FAILED => 'Public Administration activation failed',
@@ -94,6 +133,7 @@ return [
         EventType::WEBSITE_STATUS_CHANGED => 'Website status updated',
         EventType::WEBSITE_ARCHIVING => 'Website scheduled for archiving',
         EventType::WEBSITE_ARCHIVED => 'Website archived',
+        EventType::WEBSITE_UNARCHIVED => 'Website unarchived',
         EventType::WEBSITE_PURGING => 'Website scheduled for removing',
         EventType::WEBSITE_PURGED => 'Website removed',
         EventType::WEBSITE_DELETED => 'Website manually deleted',
@@ -101,6 +141,7 @@ return [
         EventType::PRIMARY_WEBSITE_NOT_TRACKING => 'Primary website tracking not active',
         EventType::USERS_INDEXING_COMPLETED => 'Users index update completed',
         EventType::WEBSITES_INDEXING_COMPLETED => 'Websites index update completed',
+        EventType::MAIL_SENT => 'Mail sent',
     ],
 
     ExceptionType::class => [
@@ -110,10 +151,9 @@ return [
         ExceptionType::ANALYTICS_COMMAND => 'Analytics Service command error',
         ExceptionType::HTTP_CLIENT_ERROR => 'Client http error (4xx)',
         ExceptionType::SERVER_ERROR => 'Internal server error',
-        ExceptionType::TENANT_SELECTION => 'Missing P.A. selection error',
-        ExceptionType::IPA_INDEX_SEARCH => 'I.P.A. index search error',
-        ExceptionType::WEBSITE_INDEX_SEARCH => 'Website index search error',
-        ExceptionType::USER_INDEX_SEARCH => 'User index search error',
+        ExceptionType::TENANT_SELECTION => 'Missing public administration selection error',
+        ExceptionType::IPA_INDEX_SEARCH => 'IPA index search error',
+        ExceptionType::REDIS_INDEX_SEARCH => 'Index search error',
         ExceptionType::INVALID_WEBSITE_STATUS => 'Invalid website status error',
         ExceptionType::INVALID_OPERATION => 'Invalid operation error',
         ExceptionType::INVALID_USER_STATUS => 'Invalid user status error',
@@ -121,9 +161,12 @@ return [
 
     JobType::class => [
         JobType::CLEAR_PASSWORD_TOKEN => 'Clear expired password token',
-        JobType::UPDATE_IPA => 'Update I.P.A. index',
+        JobType::UPDATE_PA_FROM_IPA => 'Update public administrations from IPA index',
         JobType::SEND_RESET_PASSWORD_TOKEN => 'Send password reset token',
         JobType::SEND_EMAIL_VERIFICATION_TOKEN => 'Send email verification token',
+        JobType::PROCESS_PENDING_WEBSITES => 'Process pending websites',
+        JobType::PROCESS_USERS_INDEX => 'Update users index',
+        JobType::PROCESS_WEBSITES_INDEX => 'Update websites index',
+        JobType::MONITOR_WEBSITES_TRACKING => 'Monitor websites tracking status',
     ],
-
 ];

@@ -113,7 +113,7 @@ class ArchiveWebsiteJsonRoutesTest extends TestCase
                 'spid_sessionIndex' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
             ])
-            ->patch(route('website.archive', ['website' => $this->website->slug]));
+            ->json('patch', route('websites.archive', ['website' => $this->website->slug]));
 
         $response->assertStatus(304);
 
@@ -133,14 +133,16 @@ class ArchiveWebsiteJsonRoutesTest extends TestCase
                 'spid_sessionIndex' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
             ])
-            ->patch(route('website.archive', ['website' => $this->website->slug]));
+            ->json('patch', route('websites.archive', ['website' => $this->website->slug]));
 
         $response->assertStatus(200);
 
         $response->assertJson([
             'result' => 'ok',
             'id' => $this->website->slug,
-            'status' => WebsiteStatus::getDescription(WebsiteStatus::ARCHIVED),
+            'website_name' => $this->website->name,
+            'status' => WebsiteStatus::getKey(WebsiteStatus::ARCHIVED),
+            'status_description' => WebsiteStatus::getDescription(WebsiteStatus::ARCHIVED),
         ]);
 
         Event::assertDispatched(WebsiteArchived::class, function ($event) {
@@ -162,7 +164,7 @@ class ArchiveWebsiteJsonRoutesTest extends TestCase
                 'spid_sessionIndex' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
             ])
-            ->patch(route('website.archive', ['website' => $this->website->slug]));
+            ->json('patch', route('websites.archive', ['website' => $this->website->slug]));
 
         $response->assertStatus(400);
 
@@ -188,7 +190,7 @@ class ArchiveWebsiteJsonRoutesTest extends TestCase
                 'spid_sessionIndex' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
             ])
-            ->patch(route('website.archive', ['website' => $this->website->slug]));
+            ->json('patch', route('websites.archive', ['website' => $this->website->slug]));
 
         $response->assertStatus(400);
 
@@ -218,7 +220,7 @@ class ArchiveWebsiteJsonRoutesTest extends TestCase
 //                'spid_sessionIndex' => 'fake-session-index',
 //                'tenant_id' => $this->publicAdministration->id,
 //            ])
-//            ->patch(route('website.archive', ['website' => $website->slug]));
+//            ->json('patch', route('websites.archive', ['website' => $website->slug]));
 //
 //        $response->assertJson([
 //            'result' => 'error',
@@ -242,7 +244,7 @@ class ArchiveWebsiteJsonRoutesTest extends TestCase
                 'spid_sessionIndex' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
             ])
-            ->patch(route('website.unarchive', ['website' => $this->website->slug]));
+            ->json('patch', route('websites.unarchive', ['website' => $this->website->slug]));
 
         $response->assertStatus(304);
 
@@ -265,14 +267,16 @@ class ArchiveWebsiteJsonRoutesTest extends TestCase
                 'spid_sessionIndex' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
             ])
-            ->patch(route('website.unarchive', ['website' => $this->website->slug]));
+            ->json('patch', route('websites.unarchive', ['website' => $this->website->slug]));
 
         $response->assertStatus(200);
 
         $response->assertJson([
             'result' => 'ok',
             'id' => $this->website->slug,
-            'status' => WebsiteStatus::getDescription(WebsiteStatus::ACTIVE),
+            'website_name' => $this->website->name,
+            'status' => WebsiteStatus::getKey(WebsiteStatus::ACTIVE),
+            'status_description' => WebsiteStatus::getDescription(WebsiteStatus::ACTIVE),
         ]);
 
         Event::assertDispatched(WebsiteUnarchived::class, function ($event) {
@@ -294,7 +298,7 @@ class ArchiveWebsiteJsonRoutesTest extends TestCase
                 'spid_sessionIndex' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
             ])
-            ->patch(route('website.unarchive', ['website' => $this->website->slug]));
+            ->json('patch', route('websites.unarchive', ['website' => $this->website->slug]));
 
         $response->assertStatus(400);
 
@@ -320,7 +324,7 @@ class ArchiveWebsiteJsonRoutesTest extends TestCase
                 'spid_sessionIndex' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
             ])
-            ->patch(route('website.unarchive', ['website' => $this->website->slug]));
+            ->json('patch', route('websites.unarchive', ['website' => $this->website->slug]));
 
         $response->assertStatus(400);
 
@@ -350,7 +354,7 @@ class ArchiveWebsiteJsonRoutesTest extends TestCase
 //                'spid_sessionIndex' => 'fake-session-index',
 //                'tenant_id' => $this->publicAdministration->id,
 //            ])
-//            ->patch(route('website.unarchive', ['website' => $website->slug]));
+//            ->json('patch', route('websites.unarchive', ['website' => $website->slug]));
 //
 //        $response->assertJson([
 //            'result' => 'error',

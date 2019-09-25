@@ -54,7 +54,7 @@ Route::get('/_test/_create_analytics_site/{websiteId}', function ($websiteId) {
 Route::get('/_test/_grant_analytics_access_to_site/{websiteId}/{userId}/{access}', function ($websiteId, $userId, $access) {
     $user = User::find($userId);
     $website = Website::find($websiteId);
-    app()->make('analytics-service')->setWebsiteAccess($user->uuid, $access, $website->analytics_id, config('analytics-service.admin_token'));
+    app()->make('analytics-service')->setWebsiteAccess($user->uuid, $access, $website->analytics_id);
 });
 
 Route::get('/_test/_delete_analytics_user/{userId}', function ($userId) {

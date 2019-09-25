@@ -11,18 +11,14 @@ use Illuminate\Console\Command;
 class CheckPendingWebsites extends Command
 {
     /**
-     * The name and signature of the console command.
-     *
-     * @var string the command
+     * Command constructor.
      */
-    protected $signature = 'app:check-websites {--D|execute-purge-check : Whether the websites purge check should be executed}';
-
-    /**
-     * The console command description.
-     *
-     * @var string the command description
-     */
-    protected $description = 'Check for pending Websites registered in Web Analytics Italia';
+    public function __construct()
+    {
+        $this->signature = 'app:check-websites {--D|execute-purge-check : Whether the websites purge check should be executed}';
+        $this->description = 'Check for pending Websites registered in ' . config('app.name');
+        parent::__construct();
+    }
 
     /**
      * Execute the console command.

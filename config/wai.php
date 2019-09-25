@@ -39,6 +39,7 @@ return [
     | for scheduled archiving.
     |
     */
+
     'archive_warning' => env('ARCHIVING_WEBSITE_WARNING', 60),
 
     /*
@@ -50,6 +51,7 @@ return [
     | starts sending daily notification to warn for scheduled website archiving.
     |
     */
+
     'archive_warning_daily_notification' => env('ARCHIVING_WEBSITE_DAILY_NOTIFICATION', 3),
 
     /*
@@ -62,6 +64,7 @@ return [
     | archiving when more than 'archive_warning_daily_notification' days left.
     |
     */
+
     'archive_warning_notification_day' => env('ARCHIVING_WEBSITE_NOTIFICATION_WEEK_DAY', 1),
 
     /*
@@ -74,6 +77,7 @@ return [
     | limit is reached, the system archive the website.
     |
     */
+
     'archive_expire' => env('ARCHIVING_WEBSITE_ARCHIVE', 90),
 
 ];

@@ -24,13 +24,22 @@ class WebsiteArchivedUserEmail extends Notification implements ShouldQueue
     protected $website;
 
     /**
+     * Manual flag.
+     *
+     * @var bool wether the website was archived manually
+     */
+    protected $manual;
+
+    /**
      * Notification constructor.
      *
      * @param Website $website the website
+     * @param bool $manual wether the website was archived manually
      */
-    public function __construct(Website $website)
+    public function __construct(Website $website, bool $manual)
     {
         $this->website = $website;
+        $this->manual = $manual;
     }
 
     /**
@@ -54,6 +63,6 @@ class WebsiteArchivedUserEmail extends Notification implements ShouldQueue
      */
     public function toMail(User $notifiable): UserWebsiteArchived
     {
-        return (new UserWebsiteArchived($notifiable, $this->website))->to($notifiable->email, $notifiable->full_name);
+        return (new UserWebsiteArchived($notifiable, $this->website, $this->manual))->to($notifiable->email, $notifiable->full_name);
     }
 }

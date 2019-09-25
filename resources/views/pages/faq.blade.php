@@ -1,24 +1,64 @@
-@extends('layouts.default')
+@extends('layouts.page')
 
-@section('title', __('ui.pages.faq.title'))
+@section('title', __('FAQ - Domande ricorrenti'))
 
 @section('content')
-    <div class="Accordion Accordion--default fr-accordion js-fr-accordion u-color-grey-30">
-        @foreach ($faqs as $faq)
-            <div class="Faq">
-                <h2 class="Accordion-header js-fr-accordion__header fr-accordion__header" id="accordion-header-{{ $loop->iteration }}">
-                <span class="Accordion-link u-linkClean">
-                    {{ $faq['question'] }}
-                    <a class="u-color-50 u-textClean u-margin-left-m u-text-s" href="#faq-{{ $loop->iteration }}">
-                        <span class="Icon Icon-link"></span>
-                    </a>
-                </span>
-                    <span id="faq-{{ $loop->iteration }}"></span>
-                </h2>
-                <div id="accordion-panel-{{ $loop->iteration }}" class="Accordion-panel fr-accordion__panel js-fr-accordion__panel">
-                    <div class="Prose u-text-p u-padding-r-bottom u-textSecondary">{{ $faq['answer'] }}</div>
+<div class="text-serif mb-5">{{ __('Naviga per tema, per trovare le risposte che stai cercando. Non riesci a risolvere il tuo dubbio?') }} <a href="{{ route('contacts') }}">{{ __('Scrivici') }}</a>.</div>
+<div class="row no-gutters">
+    <div class="col-sm-3">
+        <div class="faqs-sidebar sidebar-wrapper">
+            <div class="sidebar-linklist-wrapper">
+                <div class="link-list-wrapper">
+                    <ul class="link-list">
+                        <li>
+                            <h3>{{ __('Indice dei contenuti') }}</h3>
+                        </li>
+                        <li>
+                            <button type="button" class="btn btn-icon list-item faq-selector selected" data-theme="all">
+                                <span>{{ __('Tutti') }}</span>
+                                <svg class="icon icon-primary ml-1">
+                                    <use xlink:href="/svg/sprite.svg#it-check"></use>
+                                </svg>
+                            </button>
+                        </li>
+                        @foreach ($themes as $theme)
+                        <li>
+                            <button type="button" class="btn btn-icon list-item faq-selector" data-theme="{{ $theme }}">
+                                <span>{{ ucfirst($theme) }}</span>
+                                <svg class="icon icon-primary ml-1">
+                                    <use xlink:href="/svg/sprite.svg#it-check"></use>
+                                </svg>
+                            </button>
+                        </li>
+                        @endforeach
+                    </ul>
                 </div>
             </div>
-        @endforeach
+        </div>
     </div>
+    <div class="col-sm-9">
+        <div class="faqs-wrapper">
+            <div class="faqs collapse-div ml-sm-5" role="tablist">
+                @foreach ($faqs as $faq)
+                <div id="faq-{{ $loop->iteration }}" class="faq" data-theme="{{ $faq['theme'] }}">
+                    <div class="collapse-header" id="faq-{{ $loop->iteration }}-heading">
+                        <button class="text-secondary d-flex align-items-center" data-toggle="collapse" data-target="#faq-{{ $loop->iteration }}-body" aria-expanded="false" aria-controls="faq-{{ $loop->iteration }}-body">
+                            {{ $faq['question'] }}
+                            <small><span class="badge badge-pill badge-primary ml-3">{{ ucfirst($faq['theme']) }}</span></small>
+                            <a class="ml-auto" href="#faq-{{ $loop->iteration }}">
+                                <svg class="icon icon-sm"><use xlink:href="{{ asset('svg/sprite.svg#it-link') }}"></use></svg>
+                            </a>
+                        </button>
+                    </div>
+                    <div id="faq-{{ $loop->iteration }}-body" class="collapse" role="tabpanel" aria-labelledby="faq-{{ $loop->iteration }}-heading">
+                        <div class="collapse-body text-serif">
+                        {{ $faq['answer'] }}
+                        </div>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+        </div>
+    </div>
+</div>
 @endsection

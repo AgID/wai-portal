@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Traits\InteractsWithIPAIndex;
+use App\Traits\InteractsWithRedisIndex;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Validator;
 
@@ -11,7 +11,7 @@ use Illuminate\Validation\Validator;
  */
 class StorePrimaryWebsiteRequest extends FormRequest
 {
-    use InteractsWithIPAIndex;
+    use InteractsWithRedisIndex;
 
     /**
      * The validated public administration array in this request.
@@ -27,7 +27,9 @@ class StorePrimaryWebsiteRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        // TODO: this check should be managed otherwise when the support for tenant
+        // switch will be enabled
+        return $this->user()->publicAdministrations->isEmpty();
     }
 
     /**
@@ -40,9 +42,9 @@ class StorePrimaryWebsiteRequest extends FormRequest
         return [
             'public_administration_name' => 'required',
             'url' => 'required|unique:websites',
-            'pec' => 'email|nullable',
+            'rtd_mail' => 'nullable|email',
             'ipa_code' => 'required|unique:public_administrations',
-            'accept_terms' => 'required',
+            'correct_confirmation' => 'accepted',
         ];
     }
 
@@ -57,9 +59,20 @@ class StorePrimaryWebsiteRequest extends FormRequest
             if (filled($this->input('ipa_code'))) {
                 $publicAdministration = $this->getPublicAdministrationEntryByIpaCode($this->input('ipa_code'));
                 $this->publicAdministration = $publicAdministration;
+
                 if (empty($publicAdministration)) {
-                    $validator->errors()->add('public_administration_name', 'La PA selezionata non esiste'); //TODO: put error message in lang file
+                    $validator->errors()->add('public_administration_name', __('Il codice IPA della PA selezionata non è corretto.'));
                 }
+
+                // NOTE: uncomment and add "required" rule to rtd_name and rtd_mail to enforce rtd validation
+                // elseif (!($this->input('skip_rtd_validation') && app()->environment('testing'))) {
+                //     if ($this->input('rtd_name') !== ($publicAdministration['rtd_name'] ?? '')) {
+                //         $validator->errors()->add('rtd_name', __('Il nominativo RTD immesso non corrisponde a quello presente su indice IPA.'));
+                //     }
+                //     if ($this->input('rtd_mail') !== ($publicAdministration['rtd_mail'] ?? '')) {
+                //         $validator->errors()->add('rtd_mail', __("L'indirizzo email RTD immesso non corrisponde a quello presente su indice IPA."));
+                //     }
+                // }
             }
         });
     }

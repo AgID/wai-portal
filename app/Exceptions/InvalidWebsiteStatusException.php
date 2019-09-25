@@ -33,6 +33,11 @@ class InvalidWebsiteStatusException extends Exception
      */
     public function render(): RedirectResponse
     {
-        return redirect()->home()->withMessage(['error' => 'Il comando richiesto non è valido per lo stato attuale del sito']); //TODO: put message in lang file
+        return redirect()->home()->withNotification([
+            'title' => __('errore nella richiesta'),
+            'message' => __('La richiesta non è valida per lo stato attuale del sito.'),
+            'status' => 'error',
+            'icon' => 'it-close-circle',
+        ]);
     }
 }

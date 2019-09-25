@@ -1,3 +1,3 @@
-<script>__PUBLIC_PATH__ = "{{ asset('/web-toolkit') }}/"</script>
-<script type="text/javascript" src="{{ mix('/js/app.js') }}"></script>
-<script type="text/javascript" src="{{ asset('/web-toolkit/IWT.min.js') }}"></script>
+@include('layouts.includes.i18n')
+<script>window.__PUBLIC_PATH__ = '/fonts'</script>
+<script src="{{ mix('/js/app.js') }}"></script>

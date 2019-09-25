@@ -40,11 +40,10 @@ class UserPrimaryWebsiteNotTracking extends Mailable
      */
     public function build(): UserPrimaryWebsiteNotTracking
     {
-        return $this->from(config('mail.from.address'), config('mail.from.name'))
-            ->subject(__('mail.website.primary_not_tracking.user.subject'))
-            ->markdown('mail.primary_website_not_tracking_user_email')->with([
-                'locale' => Lang::getLocale(),
-                'fullName' => $this->user->full_name,
-            ]);
+        return $this->subject(__('[Attenzione] - Mancato tracciamento sito istituzionale'))
+                    ->markdown('mail.primary_website_not_tracking_user_email')->with([
+                        'locale' => Lang::getLocale(),
+                        'fullName' => $this->user->full_name,
+                    ]);
     }
 }

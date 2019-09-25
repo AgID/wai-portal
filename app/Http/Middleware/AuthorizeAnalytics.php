@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Enums\UserStatus;
 use Closure;
 
 /**
@@ -30,6 +31,11 @@ class AuthorizeAnalytics
             if ($request->user()->can($action, $request->route('website'))) {
                 $authorized = true;
             }
+            if ($request->routeIs('websites.tracking.check') || $request->routeIs('websites.snippet.javascript')) {
+                if ($request->user()->status->is(UserStatus::PENDING)) {
+                    $authorized = true;
+                }
+            }
             if ($currentPublicAdministration->id !== $request->route('website')->publicAdministration->id) {
                 $authorized = false;
             }
@@ -41,7 +47,7 @@ class AuthorizeAnalytics
             }
         }
 
-        if (empty($authorized) || !$authorized) {
+        if (!($authorized ?? false)) {
             abort(403);
         }
 

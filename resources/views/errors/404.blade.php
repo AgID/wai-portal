@@ -1,11 +1,13 @@
-@extends('layouts.default')
+@extends('layouts.page_bulk')
 
-@section('title', __('ui.pages.404.title'))
+@section('title', __('Pagina non trovata'))
+
+@section('title-after')
+<svg class="icon icon-xl icon-warning mb-1 ml-2"><use xlink:href="{{ asset('svg/sprite.svg#it-warning-circle') }}"></use></svg>
+@endsection
 
 @section('content')
-    <div class="u-flex u-flexCol u-flexAlignItemsCenter">
-        <p class="u-color-50 u-textWeight-600" style="font-size: 6em">404</p>
-        <p class="u-color-90 u-text-xxl u-margin-top-xl">{!! __('ui.pages.404.not_found', ['page' => '<code>'.$not_found_path.'</code>']) !!}</p>
-        <p><a href="{{ route('home', [], false) }}">{{ __('ui.return_home') }}</a></p>
-    </div>
+<p class="display-1 text-primary">404</p>
+<p class="lead text-primary font-weight-semibold">{!! __('La pagina :page non esiste.', ['page' => '<code>' . request()->path() . '</code>']) !!}</p>
+<p><a href="{{ route('home') }}">{{ __('Torna alla pagina iniziale') }}</a>.</p>
 @endsection

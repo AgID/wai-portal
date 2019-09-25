@@ -2,12 +2,13 @@
 
 namespace App\Jobs;
 
+use App\Enums\Logs\JobType;
 use App\Enums\WebsiteType;
-use App\Events\Jobs\IPAUpdateCompleted;
+use App\Events\Jobs\PublicAdministrationsUpdateFromIpaCompleted;
+use App\Events\PublicAdministration\PublicAdministrationPrimaryWebsiteUpdated;
 use App\Events\PublicAdministration\PublicAdministrationUpdated;
-use App\Events\PublicAdministration\PublicAdministrationWebsiteUpdated;
 use App\Models\PublicAdministration;
-use App\Traits\InteractsWithIPAIndex;
+use App\Traits\InteractsWithRedisIndex;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -24,13 +25,20 @@ class ProcessPublicAdministrationsUpdateFromIpa implements ShouldQueue
     use InteractsWithQueue;
     use Queueable;
     use SerializesModels;
-    use InteractsWithIPAIndex;
+    use InteractsWithRedisIndex;
 
     /**
      * Execute the job.
      */
     public function handle(): void
     {
+        logger()->info(
+            'Updating public administrations from IPA index',
+            [
+                'job' => JobType::UPDATE_PA_FROM_IPA,
+            ]
+        );
+
         $registeredPublicAdministrations = PublicAdministration::withTrashed()->get();
         $report = $registeredPublicAdministrations->mapWithKeys(function ($publicAdministration) {
             $ipaCode = $publicAdministration->ipa_code;
@@ -39,7 +47,7 @@ class ProcessPublicAdministrationsUpdateFromIpa implements ShouldQueue
             return [$ipaCode => $this->updateExistingPA($publicAdministration, $updatedPublicAdministration)];
         });
 
-        event(new IPAUpdateCompleted($report->all()));
+        event(new PublicAdministrationsUpdateFromIpaCompleted($report->all()));
     }
 
     /**
@@ -107,7 +115,7 @@ class ProcessPublicAdministrationsUpdateFromIpa implements ShouldQueue
                 'old' => $primaryWebsite->url,
                 'new' => $updatedPublicAdministration['site'],
             ];
-            event(new PublicAdministrationWebsiteUpdated($publicAdministration, $primaryWebsite, $updatedPublicAdministration['site']));
+            event(new PublicAdministrationPrimaryWebsiteUpdated($publicAdministration, $primaryWebsite, $updatedPublicAdministration['site']));
         }
 
         if (!empty($updates)) {

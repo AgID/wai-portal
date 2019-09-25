@@ -50,8 +50,7 @@ class UserWebsitePurging extends Mailable
      */
     public function build(): UserWebsitePurging
     {
-        return $this->from(config('mail.from.address'), config('mail.from.name'))
-                    ->subject(trans('mail.website.purging.user.subject'))
+        return $this->subject(__('[Attenzione] - Avviso rimozione'))
                     ->markdown('mail.website_purging_user_email')->with([
                         'locale' => Lang::getLocale(),
                         'fullName' => $this->user->full_name,

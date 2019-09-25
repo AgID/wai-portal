@@ -1,93 +1,11 @@
-@extends('layouts.default')
+@extends('layouts.page')
 
-@section('title', __('ui.pages.websites.edit.title'))
+@section('title', $website->name)
+
+@section('title-after')
+<small class="text-muted ml-3">{{ __('modifica') }}</small>
+@endsection
 
 @section('content')
-    <form class="Form Form--spaced u-text-r-xs" method="post" action="{{ route('websites.update', ['website' => $website], false) }}">
-        @csrf
-        @method('put')
-        @if ($errors->isEmpty())
-            <div class="Prose Alert Alert--info">
-                <p class="u-text-p">Tutti i campi sono richiesti salvo dove espressamente indicato.</p>
-            </div>
-        @else
-            <div class="Alert Alert--error Alert--withIcon u-margin-r-bottom" role="alert">
-                <p class="u-text-p">
-                    È necessario correggere alcuni errori prima di poter inviare il modulo.
-                    {{-- //TODO: put message in lang file --}}
-                </p>
-            </div>
-        @endif
-        <fieldset class="Form-fieldset">
-            <legend class="Form-legend">
-                Informazioni del sito{{-- //TODO: put message in lang file --}}
-            </legend>
-            <div class="Form-field">
-                <label class="Form-label is-required" for="name">
-                    Nome della pubblica amministrazione di appartenenza{{-- //TODO: put message in lang file --}}
-                </label>
-                <input class="Form-input is-disabled" id="name" name="name" value="{{ $website->publicAdministration->name }}" aria-required="true" required readonly>
-            </div>
-            <div class="Form-field {{ $errors->has('name') ? 'is-invalid' : '' }}">
-                @if ($errors->has('name'))
-                    <div class="Alert Alert--error Alert--withBg u-padding-r-top u-padding-r-bottom u-padding-r-right">
-                        <p class="u-text-p u-padding-r-bottom">{{ $errors->first('name') }}</p>
-                        @endif
-                        <label class="Form-label is-required" for="name">
-                            Nome del sito web{{-- //TODO: put message in lang file --}}
-                        </label>
-                        <input class="Form-input {{ $website->type->is(WebsiteType::PRIMARY) ? 'is-disabled' : '' }}" id="name" name="name" aria-required="true" value="{{ old('name') ?? $website->name }}" required {{ $website->type->is(WebsiteType::PRIMARY) ? 'readonly' : '' }}/>
-                        @if ($errors->has('name'))
-                    </div>
-                @endif
-            </div>
-            <div class="Form-field {{ $errors->has('url') ? 'is-invalid' : '' }}">
-                @if ($errors->has('url'))
-                    <div class="Alert Alert--error Alert--withBg u-padding-r-top u-padding-r-bottom u-padding-r-right">
-                        <p class="u-text-p u-padding-r-bottom">{{ $errors->first('url') }}</p>
-                        @endif
-                        <label class="Form-label is-required" for="url">
-                            Indirizzo del sito web{{-- //TODO: put message in lang file --}}
-                        </label>
-                        <input class="Form-input {{ $website->type->is(WebsiteType::PRIMARY) ? 'is-disabled' : '' }}" id="url" name="url" aria-required="true" value="{{ old('url') ?? $website->url }}" required {{ $website->type->is(WebsiteType::PRIMARY) ? 'readonly' : '' }}/>
-                        <p class="Form-message">
-                            Inserisci l'indirizzo del sito completo del protocollo <code>http://</code> o <code>https://</code> (es. https://www.agid.gov.it).{{-- //TODO: put message in lang file --}}
-                        </p>
-                        @if ($errors->has('url'))
-                    </div>
-                @endif
-            </div>
-            <div class="Form-field {{ $errors->has('type') ? 'is-invalid' : '' }}">
-                @if ($errors->has('type'))
-                    <div class="Alert Alert--error Alert--withBg u-padding-r-top u-padding-r-bottom u-padding-r-right">
-                        <p class="u-text-p u-padding-r-bottom">{{ $errors->first('type') }}</p>
-                        @endif
-                        <label class="Form-label is-required" for="type">
-                            Tipologia{{-- //TODO: put message in lang file --}}
-                        </label>
-                        @if ($website->type->is(WebsiteType::PRIMARY))
-                            <input class="Form-input is-disabled" id="type" name="type" aria-required="true" value="{{  $website->type->description }}" required readonly />
-                        @else
-                            <select class="Form-input {{ $website->type->is(WebsiteType::PRIMARY) ? 'is-disabled' : '' }}" id="type" name="type" aria-required="true" required {{ $website->type->is(WebsiteType::PRIMARY) ? 'readonly' : '' }}>
-                                <option value="">seleziona</option>{{-- //TODO: use localized enum --}}
-                                @foreach(WebsiteType::toSelectArray() as $value => $label)
-                                    @if ($value !== WebsiteType::PRIMARY)
-                                        <option value="{{ $value }}" {{ (old('type') ?? $website->type->value) == $value ? "selected" : "" }}>{{ $label }}</option>
-                                    @endif
-                                @endforeach
-
-                            </select>
-                        @endif
-                        @if ($errors->has('type'))
-                    </div>
-                @endif
-            </div>
-            @include('partials.website_user_permissions')
-        </fieldset>
-        <div class="Form-field Grid-cell u-textRight">
-            <button type="submit" class="Button Button--default u-text-xs">
-                Invia{{-- //TODO: put message in lang file --}}
-            </button>
-        </div>
-    </form>
+@include('pages.websites.partials.form', ['route' => $updateUrl])
 @endsection

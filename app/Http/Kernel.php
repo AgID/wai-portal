@@ -35,6 +35,7 @@ class Kernel extends HttpKernel
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            \App\Http\Middleware\SelectTenant::class,
             \App\Http\Middleware\ScopeBouncer::class,
         ],
 
@@ -58,7 +59,7 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $routeMiddleware = [
-        'admin.auth' => \App\Http\Middleware\AdminAuthenticate::class,
+        'auth.admin' => \App\Http\Middleware\AuthenticateAdmin::class,
         'auth' => \App\Http\Middleware\Authenticate::class,
         'authorize.analytics' => \App\Http\Middleware\AuthorizeAnalytics::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
@@ -69,7 +70,6 @@ class Kernel extends HttpKernel
         'password.not.expired' => \App\Http\Middleware\EnsurePasswordIsNotExpired::class,
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
-        'tenant.selected' => \App\Http\Middleware\SelectTenant::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'cron.auth' => \App\Http\Middleware\CronAuthenticate::class,
     ];
@@ -87,7 +87,7 @@ class Kernel extends HttpKernel
         \App\Http\Middleware\ScopeBouncer::class,
         \Italia\SPIDAuth\Middleware::class,
         \App\Http\Middleware\Authenticate::class,
-        \App\Http\Middleware\AdminAuthenticate::class,
+        \App\Http\Middleware\AuthenticateAdmin::class,
         \Illuminate\Session\Middleware\AuthenticateSession::class,
         \Illuminate\Routing\Middleware\SubstituteBindings::class,
         \Illuminate\Auth\Middleware\Authorize::class,

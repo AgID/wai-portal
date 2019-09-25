@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Enums\UserPermission;
 use App\Enums\WebsiteStatus;
 use App\Models\PublicAdministration;
 use App\Models\User;
@@ -24,13 +25,6 @@ class PendingWebsiteCheckJsonRoutesTest extends TestCase
      * @var User the user
      */
     protected $user;
-
-    /**
-     * The calling user authentication token.
-     *
-     * @var string the authentication token
-     */
-    protected $userTokenAuth;
 
     /**
      * The selected public administration for the user.
@@ -58,7 +52,7 @@ class PendingWebsiteCheckJsonRoutesTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        Bouncer::dontCache();
+
         $this->user = factory(User::class)->state('active')->create();
         $this->publicAdministration = factory(PublicAdministration::class)->create();
         $this->publicAdministration->users()->sync($this->user->id);
@@ -71,10 +65,13 @@ class PendingWebsiteCheckJsonRoutesTest extends TestCase
         $this->website->analytics_id = $analyticsID;
         $this->website->save();
         session()->put('tenant_id', $this->publicAdministration->id);
+
+        Bouncer::dontCache();
+        Bouncer::scope()->to($this->publicAdministration->id);
+        $this->user->allow(UserPermission::MANAGE_WEBSITES);
         $this->user->registerAnalyticsServiceAccount();
-        $this->user->setViewAccessForWebsite($this->website);
+        $this->user->setWriteAccessForWebsite($this->website);
         $this->user->syncWebsitesPermissionsToAnalyticsService();
-        $this->userTokenAuth = $this->user->getAnalyticsServiceAccountTokenAuth();
     }
 
     /**
@@ -101,7 +98,7 @@ class PendingWebsiteCheckJsonRoutesTest extends TestCase
                 'spid_sessionIndex' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
             ])
-            ->get(route('websites.tracking.check', ['website' => $this->website->slug]));
+            ->json('get', route('websites.tracking.check', ['website' => $this->website->slug]));
 
         $response->assertStatus(304);
 
@@ -129,12 +126,14 @@ class PendingWebsiteCheckJsonRoutesTest extends TestCase
                 'spid_sessionIndex' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
             ])
-            ->get(route('websites.tracking.check', ['website' => $this->website->slug]));
+            ->json('get', route('websites.tracking.check', ['website' => $this->website->slug]));
 
         $response->assertJson([
             'result' => 'ok',
+            'website_name' => $this->website->name,
             'id' => $this->website->slug,
-            'status' => WebsiteStatus::getDescription(WebsiteStatus::ACTIVE),
+            'status' => WebsiteStatus::getKey(WebsiteStatus::ACTIVE),
+            'status_description' => WebsiteStatus::getDescription(WebsiteStatus::ACTIVE),
         ]);
     }
 
@@ -159,7 +158,7 @@ class PendingWebsiteCheckJsonRoutesTest extends TestCase
                 'spid_sessionIndex' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
             ])
-            ->get(route('websites.tracking.check', ['website' => $website->slug]));
+            ->json('get', route('websites.tracking.check', ['website' => $website->slug]));
 
         $response->assertJson([
             'result' => 'error',

@@ -1,6 +1,6 @@
-@extends('layouts.default')
+@extends('layouts.page')
 
-@section('title', __('ui.pages.privacy.title'))
+@section('title', __('Privacy policy'))
 
 @section('content')
     Privacy

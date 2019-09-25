@@ -125,7 +125,7 @@ class CRUDWebsiteTest extends TestCase
             ->json('GET', route('websites.data.json'))
             ->assertOk()
             ->assertJsonFragment([
-                'name' => $this->website->name,
+                'raw' => e($this->website->name),
             ]);
     }
 
@@ -147,12 +147,15 @@ class CRUDWebsiteTest extends TestCase
                 'spid_sessionIndex' => 'fake-session-index',
                 'spid_user' => $this->spidUser,
             ])
-            ->from(route('websites.create.primary'))
+            ->from(route('websites.index'))
             ->post(route('websites.store.primary'), [
                 'public_administration_name' => 'Camera dei Deputati',
                 'url' => 'www.camera.it',
                 'ipa_code' => 'camera',
-                'accept_terms' => 'enabled',
+                'rtd_name' => 'Presidenza camera',
+                'rtd_mail' => 'presidenza@camera.it',
+                'correct_confirmation' => 'on',
+                'skip_rtd_validation' => true,
             ])
             ->assertSessionHasNoErrors()
             ->assertRedirect(route('websites.index'));
@@ -163,7 +166,7 @@ class CRUDWebsiteTest extends TestCase
         $this->app->make('analytics-service')->deleteSite($createdWebsite->analytics_id);
 
         Event::assertDispatched(PublicAdministrationRegistered::class, function ($event) use ($user) {
-            return 'camera' === $event->getPublicAdministration()->ipa_code && $event->getUser()->uuid === $user->uuid;
+            return 'camera' === $event->getPublicAdministration()->ipa_code && $user->is($event->getUser());
         });
         Event::assertDispatched(WebsiteAdded::class, function ($event) {
             return $event->getWebsite()->slug === Str::slug('www.camera.it');
@@ -186,7 +189,7 @@ class CRUDWebsiteTest extends TestCase
                 'spid_sessionIndex' => 'fake-session-index',
                 'spid_user' => $this->spidUser,
             ])
-            ->from(route('websites.create.primary'))
+            ->from(route('websites.index'))
             ->post(route('websites.store.primary'), [
                 'url' => $this->website->url,
                 'ipa_code' => $this->publicAdministration->ipa_code,
@@ -195,9 +198,9 @@ class CRUDWebsiteTest extends TestCase
                 'public_administration_name',
                 'url',
                 'ipa_code',
-                'accept_terms',
+                'correct_confirmation',
             ])
-            ->assertRedirect(route('websites.create.primary'));
+            ->assertRedirect(route('websites.index'));
 
         $user->refresh();
 
@@ -238,14 +241,13 @@ class CRUDWebsiteTest extends TestCase
             ])
             ->from(route('websites.create'))
             ->post(route('websites.store'), [
-                'name' => 'Sito secondario',
+                'website_name' => 'Sito secondario',
                 'url' => 'https://www.test.local',
                 'type' => WebsiteType::TESTING,
-                'usersEnabled' => [
-                    $secondUser->id => 'enabled',
-                ],
-                'usersPermissions' => [
-                    $secondUser->id => UserPermission::READ_ANALYTICS,
+                'permissions' => [
+                    $secondUser->id => [
+                        UserPermission::READ_ANALYTICS,
+                    ],
                 ],
             ])
             ->assertSessionHasNoErrors()
@@ -262,19 +264,19 @@ class CRUDWebsiteTest extends TestCase
         });
 
         Event::assertDispatched(UserWebsiteAccessChanged::class, function ($event) {
-            return $this->user->uuid === $event->getUser()->uuid
+            return $this->user->is($event->getUser())
                 && Str::slug('https://www.test.local') === $event->getWebsite()->slug
                 && $event->getAccessType()->is(WebsiteAccessType::WRITE);
         });
 
         Event::assertDispatched(UserWebsiteAccessChanged::class, function ($event) use ($secondUser) {
-            return $secondUser->uuid === $event->getUser()->uuid
+            return $secondUser->is($event->getUser())
                 && Str::slug('https://www.test.local') === $event->getWebsite()->slug
                 && $event->getAccessType()->is(WebsiteAccessType::VIEW);
         });
 
         Event::assertDispatched(UserWebsiteAccessChanged::class, function ($event) use ($thirdUser) {
-            return $thirdUser->uuid === $event->getUser()->uuid
+            return $thirdUser->is($event->getUser())
                 && Str::slug('https://www.test.local') === $event->getWebsite()->slug
                 && $event->getAccessType()->is(WebsiteAccessType::NO_ACCESS);
         });
@@ -295,15 +297,11 @@ class CRUDWebsiteTest extends TestCase
             ->post(route('websites.store'), [
                 'url' => 'www.camera.it',
                 'type' => WebsiteType::PRIMARY,
-                'usersEnabled' => [
-                    $this->user->id => 'enabled',
-                ],
             ])
             ->assertSessionHasErrors([
-                'name',
+                'website_name',
                 'url',
                 'type',
-                'usersPermissions',
             ])
             ->assertRedirect(route('websites.create'));
 
@@ -353,14 +351,13 @@ class CRUDWebsiteTest extends TestCase
             ])
             ->from(route('websites.edit', ['website' => $secondWebsite->slug]))
             ->put(route('websites.update', ['website' => $secondWebsite->slug]), [
-                'name' => 'Nuovo nome sito secondario',
+                'website_name' => 'Nuovo nome sito secondario',
                 'url' => 'https://www.test.local',
                 'type' => WebsiteType::TESTING,
-                'usersEnabled' => [
-                    $secondUser->id => 'enabled',
-                ],
-                'usersPermissions' => [
-                    $secondUser->id => UserPermission::READ_ANALYTICS,
+                'permissions' => [
+                    $secondUser->id => [
+                        UserPermission::READ_ANALYTICS,
+                    ],
                 ],
             ])
             ->assertSessionHasNoErrors()
@@ -379,13 +376,13 @@ class CRUDWebsiteTest extends TestCase
         });
 
         Event::assertDispatched(UserWebsiteAccessChanged::class, function ($event) use ($secondUser) {
-            return $secondUser->uuid === $event->getUser()->uuid
+            return $secondUser->is($event->getUser())
                 && Str::slug('https://www.test.local') === $event->getWebsite()->slug
                 && $event->getAccessType()->is(WebsiteAccessType::VIEW);
         });
 
         Event::assertDispatched(UserWebsiteAccessChanged::class, function ($event) use ($thirdUser) {
-            return $thirdUser->uuid === $event->getUser()->uuid
+            return $thirdUser->is($event->getUser())
                 && Str::slug('https://www.test.local') === $event->getWebsite()->slug
                 && $event->getAccessType()->is(WebsiteAccessType::NO_ACCESS);
         });
@@ -416,7 +413,7 @@ class CRUDWebsiteTest extends TestCase
                 'type' => WebsiteType::PRIMARY,
             ])
             ->assertSessionHasErrors([
-                'name',
+                'website_name',
                 'url',
                 'type',
             ])
@@ -450,12 +447,12 @@ class CRUDWebsiteTest extends TestCase
             ])
             ->from(route('websites.edit', ['website' => $this->website->slug]))
             ->put(route('websites.update', ['website' => $this->website->slug]), [
-                'name' => $this->website->name,
+                'website_name' => $this->website->name,
                 'url' => $this->website->url,
                 'type' => $this->website->type->description,
             ])
             ->assertSessionHasErrors([
-                'usersPermissions',
+                'permissions',
             ])
             ->assertRedirect(route('websites.edit', ['website' => $this->website->slug]));
 
@@ -500,14 +497,13 @@ class CRUDWebsiteTest extends TestCase
             ])
             ->from(route('websites.edit', ['website' => $this->website->slug]))
             ->put(route('websites.update', ['website' => $this->website->slug]), [
-                'name' => $this->website->name,
+                'website_name' => $this->website->name,
                 'url' => $this->website->url,
                 'type' => WebsiteType::getDescription(WebsiteType::PRIMARY),
-                'usersEnabled' => [
-                    $secondUser->id => 'enabled',
-                ],
-                'usersPermissions' => [
-                    $secondUser->id => UserPermission::READ_ANALYTICS,
+                'permissions' => [
+                    $secondUser->id => [
+                        UserPermission::READ_ANALYTICS,
+                    ],
                 ],
             ])
             ->assertSessionHasNoErrors()
@@ -520,13 +516,13 @@ class CRUDWebsiteTest extends TestCase
         Event::assertNotDispatched(WebsiteUpdated::class);
 
         Event::assertDispatched(UserWebsiteAccessChanged::class, function ($event) use ($secondUser) {
-            return $secondUser->uuid === $event->getUser()->uuid
+            return $secondUser->is($event->getUser())
                 && $this->website->slug === $event->getWebsite()->slug
                 && $event->getAccessType()->is(WebsiteAccessType::VIEW);
         });
 
         Event::assertDispatched(UserWebsiteAccessChanged::class, function ($event) use ($thirdUser) {
-            return $thirdUser->uuid === $event->getUser()->uuid
+            return $thirdUser->is($event->getUser())
                 && $this->website->slug === $event->getWebsite()->slug
                 && $event->getAccessType()->is(WebsiteAccessType::NO_ACCESS);
         });
@@ -556,15 +552,14 @@ class CRUDWebsiteTest extends TestCase
             ->put(route('websites.update', ['website' => $this->website->slug]), [
                 'url' => 'https://www.test.local',
                 'type' => WebsiteType::TESTING,
-                'usersEnabled' => [
-                    $secondUser->id => 'enabled',
-                ],
-                'usersPermissions' => [
-                    $secondUser->id => UserPermission::READ_ANALYTICS,
+                'permissions' => [
+                    $secondUser->id => [
+                        UserPermission::READ_ANALYTICS,
+                    ],
                 ],
             ])
             ->assertSessionHasErrors([
-                'name',
+                'website_name',
                 'url',
                 'type',
             ])

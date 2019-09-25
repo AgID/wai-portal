@@ -1,53 +1,64 @@
-@extends('layouts.page')
+@extends('layouts.page_bulk')
 
-@section('title', __('ui.pages.auth.register.title'))
+@section('title', __('Registrazione'))
 
-@section('page-content')
-<form class="Form Form--spaced u-text-r-xs" method="post" action="{{ route('auth.register', [], false) }}">
+@section('content')
+<p>{{ __('Per completare la registrazione è necessario inserire il tuo indirizzo email istituzionale.') }}</p>
+<p>{{ __("Riceverai un messaggio all'indirizzo indicato con le istruzioni per completare la procedura.") }}</p>
+<form method="post" action="{{ route('auth.register') }}" class="needs-validation" novalidate>
     @csrf
-    @if ($errors->isEmpty())
-    <div class="Prose Alert Alert--info">
-        <p class="u-text-p">Tutti i campi sono richiesti salvo dove espressamente indicato.{{-- //TODO: put message in lang file --}}</p>
-    </div>
-    @else
-    <div class="Alert Alert--error Alert--withIcon u-margin-r-bottom" role="alert">
-        <p class="u-text-p">
-            È necessario correggere alcuni errori prima di poter inviare il modulo.{{-- //TODO: put message in lang file --}}
-        </p>
-    </div>
-    @endif
-    <fieldset class="Form-fieldset">
-        <div class="Form-field {{ $errors->has('email') ? 'is-invalid' : '' }}">
-            @if ($errors->has('email'))
-            <div class="Alert Alert--error Alert--withBg u-padding-r-top u-padding-r-bottom u-padding-r-right">
-                <p class="u-text-p u-padding-r-bottom">{{ $errors->first('email') }}</p>
-            @endif
-                <label class="Form-label is-required" for="email">
-                    Indirizzo email istituzionale{{-- //TODO: put message in lang file --}}
-                </label>
-                <input class="Form-input" id="email" name="email" type="email" aria-required="true" value="{{ old('email') }}" required/>
-                <p class="Form-message">
-                    Inserisci la mail di lavoro fornita dalla tua PA (es. nome.cognome@agid.gov.it).{{-- //TODO: put message in lang file --}}
-                </p>
-            @if ($errors->has('email'))
+    <div class="mt-5">
+        <div class="form-row">
+            <div class="form-group has-form-text col-md-6">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text"><svg class="icon icon-sm"><use xlink:href="{{ asset('svg/sprite.svg#it-mail') }}"></use></svg></div>
+                    </div>
+                    <label for="email">{{ __('Indirizzo email istituzionale') }}</label>
+                    <input type="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" id="email" name="email" value="{{ old('email') }}" maxlength="255" aria-labelledby="email-input-help" aria-required="true" required>
+                    @error('email')
+                    <div class="invalid-feedback">{{ $errors->first('email') }}</div>
+                    @else
+                    <div class="invalid-feedback">{{ __('validation.email', ['attribute' => __('validation.attributes.email')]) }}</div>
+                    @enderror
+                </div>
+                <small id="email-input-help" class="form-text text-muted">{{ __('Indirizzo email di lavoro (es. nome.cognome@agid.gov.it).') }}</small>
             </div>
-            @endif
         </div>
-    </fieldset>
-    <fieldset class="Form-field Form-field--choose Grid-cell">
-        <legend class="Form-legend is-required">
-            Condizioni del servizio{{-- //TODO: put message in lang file --}}
-        </legend>
-        <label class="Form-label Form-label--block" for="accept_terms">
-            <input type="checkbox" class="Form-input" id="accept_terms" name="accept_terms" aria-required="true" required/>
-            <span class="Form-fieldIcon" role="presentation"></span>
-            Accetto le condizioni del servizio{{-- //TODO: put message in lang file --}}
-        </label>
-    </fieldset>
-    <div class="Form-field Grid-cell u-textCenter">
-        <button type="submit" class="Button Button--default u-text-xs submit">
-            Registra{{-- //TODO: put message in lang file --}}
-        </button>
+        <div class="form-row">
+            <div id="tos" class="callout callout-more note">
+                <div class="callout-title">
+                    <svg class="icon icon-primary"><use xlink:href="{{ asset('svg/sprite.svg#it-clip') }}"></use></svg>
+                    <span>{{ __('condizioni del servizio') }}</span>
+                </div>
+                <p>Maecenas vulputate ante dictum <a href="#">vestibulum volutpat</a>. Lorem ipsum dolor sit amet, <strong>consectetur adipiscing elit.</strong> Aenean non augue non purus vestibulum varius. Maecenas ullamcorper tincidunt nulla quis laoreet.</p>
+                <div class="collapse-div">
+                    <div class="collapse-header" id="show-more">
+                        <button type="button" class="callout-more-toggle" data-toggle="collapse" data-target="#collapseTos" aria-expanded="false" aria-controls="collapseTos">
+                            {{ __('Leggi tutto') }} <span></span>
+                        </button>
+                    </div>
+                    <div id="collapseTos" class="collapse" role="tabpanel" aria-labelledby="show-more">
+                        <div class="collapse-body">
+                            <p>Aenean tortor enim, suscipit eget commodo at, imperdiet quis diam. Vestibulum non accumsan felis, at ultrices lorem. Pellentesque ac diam a ipsum cursus interdum id nec odio. Vestibulum nec congue mauris. Aliquam et dui purus. Mauris in imperdiet risus, sed blandit tellus. Donec posuere accumsan lacinia. Mauris dignissim, sem vel volutpat rhoncus, neque mi ullamcorper ante, vitae volutpat ipsum quam id purus. Duis tincidunt sodales nisl eget ultricies. Sed condimentum mi eu ex venenatis, quis bibendum dui ultrices. Quisque ex eros, pellentesque vitae enim sed, pharetra tempus dolor. Donec eu nibh ac lacus luctus pellentesque. Duis interdum scelerisque magna nec malesuada.</p>
+                            <p>Maecenas at erat id <strong>sem interdum efficitur eu sed nunc.</strong> Mauris sit amet erat eget augue molestie malesuada ut sed ex. In sed dignissim elit. Donec efficitur, sem eget vestibulum auctor, sem erat interdum magna, eu commodo odio mauris semper dolor.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-check">
+                <input class="form-control form-check-input" class="{{ $errors->has('accept_terms') ? ' is-invalid' : '' }}" type="checkbox" id="accept_terms" name="accept_terms" aria-required="true" required>
+                <label class="form-check-label" for="accept_terms">{!! __('Accetto le :tos', ['tos' => '<a href="#tos">' . __('condizioni del servizio') . '</a>']) !!}</label>
+                <div class="invalid-feedback">{{ __('validation.accepted', ['attribute' => __('validation.attributes.accept_terms')]) }}</div>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group mb-0 col text-center">
+                <button type="submit" class="btn btn-primary">{{ __('Registrati') }}</button>
+            </div>
+        </div>
     </div>
 </form>
 @endsection

@@ -62,14 +62,30 @@ return [
     | be assigned to any extra authentication guards you have defined.
     |
     | Supported: "database", "eloquent"
+    | Custom provider: "app"
     |
     */
 
     'providers' => [
         'users' => [
-            'driver' => 'eloquent',
+            'driver' => 'app',
             'model' => App\Models\User::class,
         ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Email verification
+    |--------------------------------------------------------------------------
+    |
+    | The expire time is the number of days that the verification token should
+    | be considered valid. This security feature keeps tokens life limited so
+    | they have less time to be guessed. You may change this as needed.
+    |
+    */
+
+    'verification' => [
+        'expire' => 7,
     ],
 
     /*

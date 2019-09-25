@@ -66,7 +66,7 @@ class PublicAdministration extends Model
      *
      * @return PublicAdministration|null The Public Administration found or null if not found
      */
-    public static function findByIPACode(string $ipa_code): ?PublicAdministration
+    public static function findByIpaCode(string $ipa_code): ?PublicAdministration
     {
         return PublicAdministration::where('ipa_code', $ipa_code)->first();
     }
@@ -78,7 +78,7 @@ class PublicAdministration extends Model
      *
      * @return PublicAdministration|null The Public Administration found or null if not found
      */
-    public static function findTrashedByIPACode(string $ipa_code): ?PublicAdministration
+    public static function findTrashedByIpaCode(string $ipa_code): ?PublicAdministration
     {
         return PublicAdministration::onlyTrashed()->where('ipa_code', $ipa_code)->first();
     }
@@ -157,17 +157,16 @@ class PublicAdministration extends Model
         return $administrators;
     }
 
+    /**
+     * Get the active administrators users of this public administration.
+     *
+     * @return Collection the users list
+     */
     public function getActiveAdministrators(): Collection
     {
-        if ($this->status->is(PublicAdministrationStatus::PENDING)) {
-            return $this->users()->where('status', UserStatus::PENDING)->get();
-        }
-
-        Bouncer::scope()->to($this->id);
-        $administrators = User::where('status', UserStatus::ACTIVE)->whereIs(UserRole::ADMIN)->get();
-        Bouncer::scope()->to(session('tenant_id'));
-
-        return $administrators;
+        return $this->getAdministrators()->filter(function ($administrator) {
+            return $administrator->status->is(UserStatus::ACTIVE);
+        });
     }
 
     /**

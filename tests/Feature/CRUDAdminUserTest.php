@@ -59,13 +59,10 @@ class CRUDAdminUserTest extends TestCase
     public function testDatatableData(): void
     {
         $this->actingAs($this->user)
-            ->json(
-                'GET',
-                route('admin.users.data.json'),
-                )
+            ->json('GET', route('admin.users.data.json'))
             ->assertOk()
             ->assertJsonFragment([
-                'name' => implode(' ', [$this->user->family_name, $this->user->name]),
+                'raw' => e($this->user->full_name),
             ]);
     }
 
@@ -75,29 +72,24 @@ class CRUDAdminUserTest extends TestCase
     public function testCreateSuperAdminUserSuccessful(): void
     {
         $this->actingAs($this->user)
-            ->post(
-                route('admin.users.store'),
-                [
-                    '_token' => 'test',
-                    'email' => 'new@email.local',
-                    'name' => 'Mario',
-                    'family_name' => 'Rossi',
-                ],
-                )
-            ->assertSessionDoesntHaveErrors(
-                [
-                    'name',
-                    'family_name',
-                    'email',
-                ]
-            )
+            ->post(route('admin.users.store'), [
+                '_token' => 'test',
+                'email' => 'new@email.local',
+                'name' => 'Mario',
+                'family_name' => 'Rossi',
+            ])
+            ->assertSessionDoesntHaveErrors([
+                'name',
+                'family_name',
+                'email',
+            ])
             ->assertRedirect(route('admin.users.index'));
 
         Event::assertDispatched(UserInvited::class, function ($event) {
             return
                 'new@email.local' === $event->getUser()->email
                 && null === $event->getPublicAdministration()
-                && $event->getInvitedBy()->uuid === $this->user->uuid;
+                && $this->user->is($event->getInvitedBy());
         });
     }
 
@@ -108,13 +100,10 @@ class CRUDAdminUserTest extends TestCase
     {
         $this->actingAs($this->user)
             ->from(route('admin.users.create'))
-            ->post(
-                route('admin.users.store'),
-                [
-                    '_token' => 'test',
-                    'email' => $this->user->email,
-                ]
-            )
+            ->post(route('admin.users.store'), [
+                '_token' => 'test',
+                'email' => $this->user->email,
+            ])
             ->assertRedirect(route('admin.users.create'))
             ->assertSessionHasErrors([
                 'email',
@@ -140,19 +129,15 @@ class CRUDAdminUserTest extends TestCase
         $user->allow(UserPermission::MANAGE_USERS);
 
         $this->actingAs($this->user)
-            ->patch(
-                route('admin.users.update', ['user' => $user]),
-                [
-                    '_token' => 'test',
-                    'email' => 'new@email.local',
-                    'name' => 'Mario',
-                    'family_name' => 'Rossi',
-                ]
-            )
+            ->put(route('admin.users.update', ['user' => $user]), [
+                '_token' => 'test',
+                'email' => 'new@email.local',
+                'name' => 'Mario',
+                'family_name' => 'Rossi',
+            ])
             ->assertSessionDoesntHaveErrors([
-                    'email',
-                ]
-            )
+                'email',
+            ])
             ->assertRedirect(route('admin.users.index'));
 
         Event::assertDispatched(UserUpdated::class, function ($event) {
@@ -171,12 +156,9 @@ class CRUDAdminUserTest extends TestCase
     {
         $this->actingAs($this->user)
             ->from(route('admin.users.edit', ['user' => $this->user]))
-            ->patch(
-                route('admin.users.update', ['user' => $this->user]),
-                [
-                    '_token' => 'test',
-                ]
-            )
+            ->put(route('admin.users.update', ['user' => $this->user]), [
+                '_token' => 'test',
+            ])
             ->assertRedirect(route('admin.users.edit', ['user' => $this->user]))
             ->assertSessionHasErrors([
                 'name',
@@ -200,12 +182,13 @@ class CRUDAdminUserTest extends TestCase
         $user->allow(UserPermission::ACCESS_ADMIN_AREA);
 
         $this->actingAs($this->user)
-            ->patch(
-                route('admin.users.suspend', ['user' => $user]))
+            ->json('patch', route('admin.users.suspend', ['user' => $user]))
             ->assertJson([
                 'result' => 'ok',
                 'id' => $user->uuid,
-                'status' => UserStatus::getDescription(UserStatus::SUSPENDED),
+                'user_name' => e($user->full_name),
+                'status' => UserStatus::getKey(UserStatus::SUSPENDED),
+                'status_description' => UserStatus::getDescription(UserStatus::SUSPENDED),
             ])
             ->assertOk();
 
@@ -227,8 +210,7 @@ class CRUDAdminUserTest extends TestCase
         $user->allow(UserPermission::ACCESS_ADMIN_AREA);
 
         $this->actingAs($this->user)
-            ->patch(
-                route('admin.users.suspend', ['user' => $user]))
+            ->json('patch', route('admin.users.suspend', ['user' => $user]))
             ->assertStatus(304);
 
         Event::assertNotDispatched(UserUpdated::class);
@@ -240,8 +222,7 @@ class CRUDAdminUserTest extends TestCase
     public function testSuspendSuperAdminUserFailLastAdmin(): void
     {
         $this->actingAs($this->user)
-            ->patch(
-                route('admin.users.suspend', ['user' => $this->user]))
+            ->json('patch', route('admin.users.suspend', ['user' => $this->user]))
             ->assertStatus(400)
             ->assertJson([
                 'result' => 'error',
@@ -262,12 +243,13 @@ class CRUDAdminUserTest extends TestCase
         ]);
 
         $this->actingAs($this->user)
-            ->patch(
-                route('admin.users.reactivate', ['user' => $user]))
+            ->json('patch', route('admin.users.reactivate', ['user' => $user]))
             ->assertJson([
                 'result' => 'ok',
                 'id' => $user->uuid,
-                'status' => UserStatus::getDescription(UserStatus::INVITED),
+                'user_name' => e($user->full_name),
+                'status' => UserStatus::getKey(UserStatus::INVITED),
+                'status_description' => UserStatus::getDescription(UserStatus::INVITED),
             ])
             ->assertOk();
 
@@ -286,8 +268,7 @@ class CRUDAdminUserTest extends TestCase
         ]);
 
         $this->actingAs($this->user)
-            ->patch(
-                route('admin.users.reactivate', ['user' => $user]))
+            ->json('patch', route('admin.users.reactivate', ['user' => $user]))
             ->assertStatus(304);
 
         Event::assertNotDispatched(UserUpdated::class);
@@ -305,13 +286,10 @@ class CRUDAdminUserTest extends TestCase
         $publicAdministration->users()->sync([$user->id]);
 
         $this->actingAs($this->user)
-            ->json(
-                'GET',
-                route('admin.publicAdministration.users.data.json', ['publicAdministration' => $publicAdministration]),
-                )
+            ->json('GET', route('admin.publicAdministration.users.data.json', ['publicAdministration' => $publicAdministration]))
             ->assertOk()
             ->assertJsonFragment([
-                'name' => implode(' ', [$user->family_name, $user->name]),
+                'raw' => e($user->full_name),
             ]);
     }
 
@@ -329,31 +307,36 @@ class CRUDAdminUserTest extends TestCase
         $publicAdministration = factory(PublicAdministration::class)
             ->state('active')
             ->create();
+        $website = factory(Website::class)->create([
+            'public_administration_id' => $publicAdministration->id,
+        ]);
 
         $this->actingAs($this->user)
-            ->post(
-                route('admin.publicAdministration.users.store', ['publicAdministration' => $publicAdministration]),
-                [
-                    '_token' => 'test',
-                    'email' => $email,
-                    'fiscal_number' => $fiscalNumber,
-                    'isAdmin' => '1',
+            ->post(route('admin.publicAdministration.users.store', ['publicAdministration' => $publicAdministration]), [
+                '_token' => 'test',
+                'email' => $email,
+                'fiscal_number' => $fiscalNumber,
+                'is_admin' => '1',
+                'permissions' => [
+                    $website->id => [
+                        UserPermission::MANAGE_ANALYTICS,
+                        UserPermission::READ_ANALYTICS,
+                    ],
                 ],
-                )
-            ->assertSessionDoesntHaveErrors(
-                [
-                    'email',
-                    'fiscal_number',
-                    'isAdmin',
-                ]
-            )
+            ])
+            ->assertSessionDoesntHaveErrors([
+                'email',
+                'fiscal_number',
+                'is_admin',
+                'permissions',
+            ])
             ->assertRedirect(route('admin.publicAdministration.users.index', ['publicAdministration' => $publicAdministration]));
 
         Event::assertDispatched(UserInvited::class, function ($event) use ($email, $publicAdministration) {
             return
                 $email === $event->getUser()->email
                 && $publicAdministration->ipa_code === $event->getPublicAdministration()->ipa_code
-                && $event->getInvitedBy()->uuid === $this->user->uuid;
+                && $this->user->is($event->getInvitedBy());
         });
 
         User::findByFiscalNumber($fiscalNumber)->deleteAnalyticsServiceAccount();
@@ -378,38 +361,29 @@ class CRUDAdminUserTest extends TestCase
         ]);
 
         $this->actingAs($this->user)
-            ->post(
-                route('admin.publicAdministration.users.store', ['publicAdministration' => $publicAdministration]),
-                [
-                    '_token' => 'test',
-                    'email' => $email,
-                    'fiscal_number' => $fiscalNumber,
-                    'websitesEnabled' => [
-                        $website->id => 'enabled',
+            ->post(route('admin.publicAdministration.users.store', ['publicAdministration' => $publicAdministration]), [
+                '_token' => 'test',
+                'email' => $email,
+                'fiscal_number' => $fiscalNumber,
+                'permissions' => [
+                    $website->id => [
+                        UserPermission::MANAGE_ANALYTICS,
                     ],
-                    'websitesPermissions' => [
-                        $website->id => UserPermission::MANAGE_ANALYTICS,
-                    ],
-                ]
-            )
-            ->assertSessionDoesntHaveErrors(
-                [
-                    'email',
-                    'fiscal_number',
-                    'isAdmin',
-                    'websitesEnabled',
-                    'websitesEnabled.*',
-                    'websitesPermissions',
-                    'websitesPermissions.*',
-                ]
-            )
+                ],
+            ])
+            ->assertSessionDoesntHaveErrors([
+                'email',
+                'fiscal_number',
+                'is_admin',
+                'permissions',
+            ])
             ->assertRedirect(route('admin.publicAdministration.users.index', ['publicAdministration' => $publicAdministration]));
 
         Event::assertDispatched(UserInvited::class, function ($event) use ($email, $publicAdministration) {
             return
                 $email === $event->getUser()->email
                 && $publicAdministration->ipa_code === $event->getPublicAdministration()->ipa_code
-                && $event->getInvitedBy()->uuid === $this->user->uuid;
+                && $this->user->is($event->getInvitedBy());
         });
 
         User::findByFiscalNumber($fiscalNumber)->deleteAnalyticsServiceAccount();
@@ -428,19 +402,16 @@ class CRUDAdminUserTest extends TestCase
 
         $this->actingAs($this->user)
             ->from(route('admin.publicAdministration.users.create', ['publicAdministration' => $publicAdministration]))
-            ->post(
-                route('admin.publicAdministration.users.store', ['publicAdministration' => $publicAdministration]),
-                [
-                    '_token' => 'test',
-                    'email' => $user->email,
-                    'fiscal_number' => $user->fiscal_number,
-                ]
-            )
+            ->post(route('admin.publicAdministration.users.store', ['publicAdministration' => $publicAdministration]), [
+                '_token' => 'test',
+                'email' => $user->email,
+                'fiscal_number' => $user->fiscal_number,
+            ])
             ->assertRedirect(route('admin.publicAdministration.users.create', ['publicAdministration' => $publicAdministration]))
             ->assertSessionHasErrors([
                 'email',
                 'fiscal_number',
-                'websitesEnabled',
+                'permissions',
             ]);
 
         Event::assertNotDispatched(UserInvited::class);
@@ -468,20 +439,20 @@ class CRUDAdminUserTest extends TestCase
         $user->registerAnalyticsServiceAccount();
 
         $this->actingAs($this->user)
-            ->patch(
-                route('admin.publicAdministration.users.update', ['publicAdministration' => $publicAdministration, 'user' => $this->user]),
-                [
-                    '_token' => 'test',
-                    'email' => 'new@email.local',
-                    'isAdmin' => '1',
-                ]
-            )
-            ->assertSessionDoesntHaveErrors([
-                    'email',
-                    'isAdmin',
-                    'websitesPermissions',
-                ]
-            );
+            ->put(route('admin.publicAdministration.users.update', [
+                    'publicAdministration' => $publicAdministration,
+                    'user' => $this->user,
+            ]), [
+                '_token' => 'test',
+                'email' => 'new@email.local',
+                'is_admin' => '1',
+                'permissions' => [
+                    $website->id => [
+                        UserPermission::MANAGE_ANALYTICS,
+                    ],
+                ],
+            ])
+            ->assertSessionHasNoErrors();
 
         $this->user->refresh();
         Event::assertDispatched(UserUpdated::class, function ($event) {
@@ -513,25 +484,30 @@ class CRUDAdminUserTest extends TestCase
         $user->allow(UserPermission::READ_ANALYTICS, $website);
 
         $this->actingAs($this->user)
-            ->patch(
-                route('admin.publicAdministration.users.update', ['publicAdministration' => $publicAdministration, 'user' => $user]),
-                [
-                    '_token' => 'test',
-                    'email' => $user->email,
-                    'isAdmin' => '1',
-                ]
-            )
+            ->put(route('admin.publicAdministration.users.update', [
+                    'publicAdministration' => $publicAdministration,
+                    'user' => $user,
+            ]), [
+                '_token' => 'test',
+                'email' => $user->email,
+                'is_admin' => '1',
+                'permissions' => [
+                    $website->id => [
+                        UserPermission::MANAGE_ANALYTICS,
+                        UserPermission::READ_ANALYTICS,
+                    ],
+                ],
+            ])
             ->assertSessionDoesntHaveErrors([
-                    'email',
-                    'isAdmin',
-                    'websitesPermissions',
-                ]
-            )
+                'email',
+                'is_admin',
+                'permissions',
+            ])
             ->assertRedirect(route('admin.publicAdministration.users.index', ['publicAdministration' => $publicAdministration]));
 
-        $this->assertTrue($user->isA(UserRole::ADMIN));
+        $this->assertTrue($user->isAn(UserRole::ADMIN));
         Event::assertDispatched(UserWebsiteAccessChanged::class, function ($event) use ($user, $website) {
-            return $user->uuid === $event->getUser()->uuid
+            return $user->is($event->getUser())
                 && $website->slug === $event->getWebsite()->slug
                 && $event->getAccessType()->is(WebsiteAccessType::WRITE);
         });
@@ -558,33 +534,29 @@ class CRUDAdminUserTest extends TestCase
         $user->assign(UserRole::ADMIN);
 
         $this->actingAs($this->user)
-            ->patch(
-                route('admin.publicAdministration.users.update', ['publicAdministration' => $publicAdministration, 'user' => $user]),
-                [
-                    '_token' => 'test',
-                    'email' => $user->email,
-                    'websitesEnabled' => [
-                        $website->id => 'enabled',
+            ->put(route('admin.publicAdministration.users.update', [
+                    'publicAdministration' => $publicAdministration,
+                    'user' => $user,
+            ]), [
+                '_token' => 'test',
+                'email' => $user->email,
+                'permissions' => [
+                    $website->id => [
+                        UserPermission::READ_ANALYTICS,
                     ],
-                    'websitesPermissions' => [
-                        $website->id => UserPermission::READ_ANALYTICS,
-                    ],
-                ]
-            )
+                ],
+            ])
             ->assertSessionDoesntHaveErrors([
                 'email',
-                'isAdmin',
-                'websitesEnabled',
-                'websitesEnabled.*',
-                'websitesPermissions',
-                'websitesPermissions.*',
+                'is_admin',
+                'permissions',
             ])
             ->assertRedirect(route('admin.publicAdministration.users.index', ['publicAdministration' => $publicAdministration]));
 
         Bouncer::refreshFor($user);
         $this->assertTrue($user->isA(UserRole::DELEGATED));
         Event::assertDispatched(UserWebsiteAccessChanged::class, function ($event) use ($user, $website) {
-            return $user->uuid === $event->getUser()->uuid
+            return $user->is($event->getUser())
                 && $website->slug === $event->getWebsite()->slug
                 && $event->getAccessType()->is(WebsiteAccessType::VIEW);
         });
@@ -610,23 +582,25 @@ class CRUDAdminUserTest extends TestCase
         $user->allow(UserPermission::MANAGE_USERS);
 
         $this->actingAs($this->user)
-            ->from(route('admin.publicAdministration.users.edit', ['publicAdministration' => $publicAdministration, 'user' => $user]))
-            ->patch(
-                route('admin.publicAdministration.users.update', ['publicAdministration' => $publicAdministration, 'user' => $user]),
-                [
-                    '_token' => 'test',
-                    'email' => $user->email,
-                    'websiteEnabled' => [
-                        $website->id => 'enabled',
+            ->from(route('admin.publicAdministration.users.edit', [
+                'publicAdministration' => $publicAdministration,
+                'user' => $user,
+            ]))
+            ->put(route('admin.publicAdministration.users.update', [
+                'publicAdministration' => $publicAdministration,
+                'user' => $user,
+            ]), [
+                '_token' => 'test',
+                'email' => $user->email,
+                'permissions' => [
+                    $website->id => [
+                        UserPermission::READ_ANALYTICS,
                     ],
-                    'websitesPermissions' => [
-                        $website->id => UserPermission::READ_ANALYTICS,
-                    ],
-                ]
-            )
+                ],
+            ])
             ->assertRedirect(route('admin.publicAdministration.users.edit', ['publicAdministration' => $publicAdministration, 'user' => $user]))
             ->assertSessionHasErrors([
-                'isAdmin',
+                'is_admin',
             ]);
 
         Event::assertNotDispatched(UserWebsiteAccessChanged::class);
@@ -646,12 +620,16 @@ class CRUDAdminUserTest extends TestCase
         $publicAdministration->users()->sync([$user->id], false);
 
         $this->actingAs($this->user)
-            ->patch(
-                route('admin.publicAdministration.users.suspend', ['publicAdministration' => $publicAdministration, 'user' => $user]))
+            ->json('patch', route('admin.publicAdministration.users.suspend', [
+                'publicAdministration' => $publicAdministration,
+                'user' => $user,
+            ]))
             ->assertJson([
                 'result' => 'ok',
                 'id' => $user->uuid,
-                'status' => UserStatus::getDescription(UserStatus::SUSPENDED),
+                'user_name' => e($user->full_name),
+                'status' => UserStatus::getKey(UserStatus::SUSPENDED),
+                'status_description' => UserStatus::getDescription(UserStatus::SUSPENDED),
             ])
             ->assertOk();
 
@@ -674,8 +652,10 @@ class CRUDAdminUserTest extends TestCase
         $publicAdministration->users()->sync([$user->id], false);
 
         $this->actingAs($this->user)
-            ->patch(
-                route('admin.publicAdministration.users.suspend', ['publicAdministration' => $publicAdministration, 'user' => $user]))
+            ->json('patch', route('admin.publicAdministration.users.suspend', [
+                'publicAdministration' => $publicAdministration,
+                'user' => $user,
+            ]))
             ->assertStatus(304);
 
         Event::assertNotDispatched(UserUpdated::class);
@@ -699,12 +679,16 @@ class CRUDAdminUserTest extends TestCase
         });
 
         $this->actingAs($this->user)
-            ->patch(
-                route('admin.publicAdministration.users.suspend', ['publicAdministration' => $publicAdministration, 'user' => $user]))
+            ->json('patch', route('admin.publicAdministration.users.suspend', [
+                'publicAdministration' => $publicAdministration,
+                'user' => $user,
+            ]))
             ->assertJson([
                 'result' => 'ok',
                 'id' => $user->uuid,
-                'status' => UserStatus::getDescription(UserStatus::SUSPENDED),
+                'user_name' => e($user->full_name),
+                'status' => UserStatus::getKey(UserStatus::SUSPENDED),
+                'status_description' => UserStatus::getDescription(UserStatus::SUSPENDED),
             ])
             ->assertOk();
 
@@ -725,12 +709,14 @@ class CRUDAdminUserTest extends TestCase
         $publicAdministration->users()->sync([$user->id], false);
 
         $this->actingAs($this->user)
-            ->patch(
-                route('admin.publicAdministration.users.suspend', ['publicAdministration' => $publicAdministration, 'user' => $user]))
+            ->json('patch', route('admin.publicAdministration.users.suspend', [
+                'publicAdministration' => $publicAdministration,
+                'user' => $user,
+            ]))
             ->assertStatus(400)
             ->assertJson([
                 'result' => 'error',
-                'message' => 'Invalid operation for current user status',
+                'message' => 'invalid operation for current user status',
             ]);
 
         Event::assertNotDispatched(UserUpdated::class);
@@ -748,12 +734,16 @@ class CRUDAdminUserTest extends TestCase
         $publicAdministration->users()->sync([$user->id], false);
 
         $this->actingAs($this->user)
-            ->patch(
-                route('admin.publicAdministration.users.reactivate', ['publicAdministration' => $publicAdministration, 'user' => $user]))
+            ->json('patch', route('admin.publicAdministration.users.reactivate', [
+                'publicAdministration' => $publicAdministration,
+                'user' => $user,
+            ]))
             ->assertJson([
                 'result' => 'ok',
                 'id' => $user->uuid,
-                'status' => UserStatus::getDescription(UserStatus::INVITED),
+                'user_name' => e($user->full_name),
+                'status' => UserStatus::getKey(UserStatus::INVITED),
+                'status_description' => UserStatus::getDescription(UserStatus::INVITED),
             ])
             ->assertOk();
 
@@ -774,8 +764,10 @@ class CRUDAdminUserTest extends TestCase
         $publicAdministration->users()->sync([$user->id], false);
 
         $this->actingAs($this->user)
-            ->patch(
-                route('admin.publicAdministration.users.reactivate', ['publicAdministration' => $publicAdministration, 'user' => $user]))
+            ->json('patch', route('admin.publicAdministration.users.reactivate', [
+                'publicAdministration' => $publicAdministration,
+                'user' => $user,
+            ]))
             ->assertStatus(304);
 
         Event::assertNotDispatched(UserUpdated::class);
@@ -798,16 +790,18 @@ class CRUDAdminUserTest extends TestCase
         });
 
         $this->actingAs($this->user)
-            ->patch(
-                route('admin.publicAdministration.users.delete', ['publicAdministration' => $publicAdministration, 'user' => $user]))
+            ->json('patch', route('admin.publicAdministration.users.delete', [
+                'publicAdministration' => $publicAdministration,
+                'user' => $user,
+            ]))
             ->assertOk();
 
         Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user) {
-            $this->assertTrue($user->isA(UserRole::REMOVED));
+            $this->assertTrue($user->isA(UserRole::DELETED));
         });
 
         Event::assertDispatched(UserDeleted::class, function ($event) use ($user) {
-            return $user->uuid === $event->getUser()->uuid;
+            return $user->is($event->getUser());
         });
     }
 
@@ -828,12 +822,15 @@ class CRUDAdminUserTest extends TestCase
         });
 
         $this->actingAs($this->user)
-            ->patch(
-                route('admin.publicAdministration.users.delete', ['publicAdministration' => $publicAdministration, 'user' => $user]))
+            ->json('patch', route('admin.publicAdministration.users.delete', [
+                'publicAdministration' => $publicAdministration,
+                'user' => $user,
+            ]))
             ->assertStatus(400)
             ->assertJson([
                 'result' => 'error',
-                'message' => "Impossibile rimuovere l'utente " . $user->getInfo() . ' in quanto ultimo amministratore attivo della P.A.',
+                'message' => 'The last administrator cannot be removed or suspended.',
+                'code' => '0',
             ]);
 
         Event::assertNotDispatched(UserDeleted::class);
@@ -856,12 +853,14 @@ class CRUDAdminUserTest extends TestCase
         });
 
         $this->actingAs($this->user)
-            ->patch(
-                route('admin.publicAdministration.users.delete', ['publicAdministration' => $publicAdministration, 'user' => $user]))
+            ->json('patch', route('admin.publicAdministration.users.delete', [
+                'publicAdministration' => $publicAdministration,
+                'user' => $user,
+            ]))
             ->assertStatus(400)
             ->assertJson([
                 'result' => 'error',
-                'message' => 'Impossibile rimuovere un utente in attesa di attivazione',
+                'message' => 'Pending users cannot be deleted.',
             ]);
 
         Event::assertNotDispatched(UserDeleted::class);
@@ -882,17 +881,21 @@ class CRUDAdminUserTest extends TestCase
         $publicAdministration->users()->sync([$user->id]);
         Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user) {
             $user->assign(UserRole::DELEGATED);
-            $user->assign(UserRole::REMOVED);
+            $user->assign(UserRole::DELETED);
         });
 
         $this->actingAs($this->user)
-            ->patch(
-                route('admin.publicAdministration.users.restore', ['publicAdministration' => $publicAdministration, 'trashed_user' => $user]))
+            ->json('patch', route('admin.publicAdministration.users.restore', [
+                'publicAdministration' => $publicAdministration,
+                'trashed_user' => $user,
+            ]))
             ->assertOk()
             ->assertJson([
                 'result' => 'ok',
                 'id' => $user->uuid,
-                'status' => $user->status->description,
+                'user_name' => e($user->full_name),
+                'status' => UserStatus::getKey(UserStatus::PENDING),
+                'status_description' => UserStatus::getDescription(UserStatus::PENDING),
             ]);
 
         $user->refresh();
@@ -900,11 +903,11 @@ class CRUDAdminUserTest extends TestCase
         $this->assertFalse($user->trashed());
 
         Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user) {
-            $this->assertFalse($user->isA(UserRole::REMOVED));
+            $this->assertFalse($user->isA(UserRole::DELETED));
         });
 
         Event::assertDispatched(UserRestored::class, function ($event) use ($user) {
-            return $user->uuid === $event->getUser()->uuid;
+            return $user->is($event->getUser());
         });
     }
 }

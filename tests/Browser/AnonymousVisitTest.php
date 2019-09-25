@@ -20,11 +20,11 @@ class AnonymousVisitTest extends DuskTestCase
     {
         $this->browse(function (Browser $browser) {
             $browser->visit(new Home())
-                    ->assertSee('Home')
+                    ->assertSee('Le statistiche dei siti web')
                     ->waitForText('Entra con SPID')
                     ->assertSee('Entra con SPID')
-                    ->clickLink('Dashboard')
-                    ->assertSee("La risorsa richiesta richiede l'accesso.");
+                    ->visit('/dashboard')
+                    ->assertSee(__("La pagina che hai richiesto è raggiungibile solo dopo l'autenticazione."));
         });
     }
 }

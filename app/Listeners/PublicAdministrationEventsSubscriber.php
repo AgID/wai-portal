@@ -5,10 +5,10 @@ namespace App\Listeners;
 use App\Enums\Logs\EventType;
 use App\Events\PublicAdministration\PublicAdministrationActivated;
 use App\Events\PublicAdministration\PublicAdministrationActivationFailed;
+use App\Events\PublicAdministration\PublicAdministrationPrimaryWebsiteUpdated;
 use App\Events\PublicAdministration\PublicAdministrationPurged;
 use App\Events\PublicAdministration\PublicAdministrationRegistered;
 use App\Events\PublicAdministration\PublicAdministrationUpdated;
-use App\Events\PublicAdministration\PublicAdministrationWebsiteUpdated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Events\Dispatcher;
 
@@ -28,7 +28,7 @@ class PublicAdministrationEventsSubscriber implements ShouldQueue
         $user = $event->getUser();
         //TODO: inviare PEC a PA per la notifica?
         logger()->notice(
-            'User ' . $user->uuid . ' registered Public Administration ' . $publicAdministration->getInfo(),
+            'User ' . $user->uuid . ' registered Public Administration ' . $publicAdministration->info,
             [
                 'event' => EventType::PUBLIC_ADMINISTRATION_REGISTERED,
                 'pa' => $publicAdministration->ipa_code,
@@ -46,7 +46,7 @@ class PublicAdministrationEventsSubscriber implements ShouldQueue
     {
         $publicAdministration = $event->getPublicAdministration();
         logger()->notice(
-            'Public Administration ' . $publicAdministration->getInfo() . ' activated',
+            'Public Administration ' . $publicAdministration->info . ' activated',
             [
                 'event' => EventType::PUBLIC_ADMINISTRATION_ACTIVATED,
                 'pa' => $publicAdministration->ipa_code,
@@ -63,7 +63,7 @@ class PublicAdministrationEventsSubscriber implements ShouldQueue
     {
         $publicAdministration = $event->getPublicAdministration();
         logger()->error(
-            'Public Administration ' . $publicAdministration->getInfo() . ' activation failed: ' . $event->getMessage(),
+            'Public Administration ' . $publicAdministration->info . ' activation failed: ' . $event->getMessage(),
             [
                 'event' => EventType::PUBLIC_ADMINISTRATION_ACTIVATION_FAILED,
                 'pa' => $publicAdministration->ipa_code,
@@ -80,7 +80,7 @@ class PublicAdministrationEventsSubscriber implements ShouldQueue
     {
         $publicAdministration = $event->getPublicAdministration();
         logger()->notice(
-            'Public Administration ' . $publicAdministration->getInfo() . ' updated',
+            'Public Administration ' . $publicAdministration->info . ' updated',
             [
                 'event' => EventType::PUBLIC_ADMINISTRATION_UPDATED,
                 'pa' => $publicAdministration->ipa_code,
@@ -91,14 +91,14 @@ class PublicAdministrationEventsSubscriber implements ShouldQueue
     /**
      * Public Administration primary site changed callback.
      *
-     * @param PublicAdministrationWebsiteUpdated $event the public administration primary site updated event
+     * @param PublicAdministrationPrimaryWebsiteUpdated $event the public administration primary site updated event
      */
-    public function onPrimaryWebsiteUpdated(PublicAdministrationWebsiteUpdated $event): void
+    public function onPrimaryWebsiteUpdated(PublicAdministrationPrimaryWebsiteUpdated $event): void
     {
         //TODO: decidere come gestire i cambiamenti del sito istituzionale su IPA
         $publicAdministration = $event->getPublicAdministration();
         logger()->warning(
-            'Public Administration ' . $publicAdministration->getInfo() . ' primary website was changed in IPA list [' . $event->getNewURL() . '].',
+            'Public Administration ' . $publicAdministration->info . ' primary website was changed in IPA index [' . $event->getNewURL() . '].',
             [
                 'event' => EventType::PUBLIC_ADMINISTRATION_PRIMARY_WEBSITE_CHANGED,
                 'pa' => $publicAdministration->ipa_code,
@@ -149,7 +149,7 @@ class PublicAdministrationEventsSubscriber implements ShouldQueue
         );
 
         $events->listen(
-            'App\Events\PublicAdministration\PublicAdministrationWebsiteUpdated',
+            'App\Events\PublicAdministration\PublicAdministrationPrimaryWebsiteUpdated',
             'App\Listeners\PublicAdministrationEventsSubscriber@onUpdated'
         );
         $events->listen(

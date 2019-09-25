@@ -1,32 +1,43 @@
-@extends('layouts.default')
+@extends('layouts.page_bulk')
 
-@section('title', __('ui.pages.admin-login.title'))
+@section('title', __('Accesso super amministratori'))
 
 @section('content')
-    <form class="Form Form--spaced u-text-r-xs" method="post" action="{{ route('admin.login', [], false) }}">
-        @csrf
-        <fieldset class="Form-fieldset">
-            <div class="Form-field">
-                <label class="Form-label is-required" for="email">
-                    Indirizzo email{{-- //TODO: put message in lang file --}}
-                </label>
-                <input class="Form-input" id="email" name="email" type="email" aria-required="true" value="{{ old('email') }}" required/>
+<form method="post" action="{{ route('admin.login') }}" class="needs-validation" novalidate>
+    @csrf
+    <div class="mt-5">
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text"><svg class="icon icon-sm"><use xlink:href="{{ asset('svg/sprite.svg#it-user') }}"></use></svg></div>
+                    </div>
+                    <label for="email">{{ __('Indirizzo email') }}</label>
+                    <input type="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" id="email" name="email" value="{{ old('email') }}" maxlength="255" aria-required="true" required>
+                    <div class="invalid-feedback">{{ __('validation.email', ['attribute' => __('validation.attributes.email')]) }}</div>
+                </div>
             </div>
-            <div class="Form-field">
-                <label class="Form-label is-required" for="password">Password{{-- //TODO: put message in lang file --}}</label>
-                <input class="Form-input" id="password" name="password" type="password" aria-required="true" required/>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text"><svg class="icon icon-sm"><use xlink:href="{{ asset('svg/sprite.svg#it-key') }}"></use></svg></div>
+                    </div>
+                    <label for="password">{{ __('Password') }}</label>
+                    <input type="password" class="form-control{{ $errors->has('password') ? ' is-invalid' : '' }}" id="password" name="password" maxlength="255" aria-required="true" required>
+                    <div class="invalid-feedback">{{ __('validation.required', ['attribute' => __('validation.attributes.password')]) }}</div>
+                </div>
             </div>
-        </fieldset>
-        <div class="Form-field Grid-cell u-textCenter">
-            <button type="submit" class="Button Button--default u-text-xs submit">
-                Accedi{{-- //TODO: put message in lang file --}}
-            </button>
-            <br>
-            <div class="Prose">
-                <a href="{{ route('admin.password.forgot.show', [], false) }}">
-                    <small>Password dimenticata?</small>
+        </div>
+        <div class="form-row">
+            <div class="form-group mb-0 col text-center">
+                <button type="submit" class="btn btn-primary">{{ __('Accedi') }}</button><br>
+                <a href="{{ route('admin.password.forgot.show') }}">
+                    <small>{{ __('Password dimenticata?') }}</small>
                 </a>
             </div>
         </div>
-    </form>
+    </div>
+</form>
 @endsection
