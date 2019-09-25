@@ -225,7 +225,7 @@ class UserController extends Controller
                 // NOTE: at this point, user must have an analytics account
                 $user->updateAnalyticsServiceAccountEmail();
             } catch (CommandErrorException $exception) {
-                if (!Str::contains($exception->getMessage(), 'unable to send mail')) {
+                if (!Str::contains($exception->getMessage(), 'Unable to send mail.')) {
                     throw $exception;
                 }
             }
