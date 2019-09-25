@@ -228,12 +228,23 @@
     background: none;
     border-bottom: 1px solid rgba($header-slim-text-color, 0.2);;
 
-    .it-header-slim-wrapper-content{
+    .it-header-slim-wrapper-content {
       .nav-mobile {
         line-height: 2.2;
 
-        .align-middle {
-          line-height: 1;
+        .it-opener {
+          position: absolute;
+          top: -6.5px;
+          width: 48px;
+          height: 48px;
+          display: inline-flex !important;
+          align-items: center;
+          justify-content: center;
+          margin-left: 4px;
+
+          @include media-breakpoint-up(sm) {
+            height: 53px;
+          }
         }
       }
 

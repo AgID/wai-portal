@@ -7,9 +7,9 @@
                     <div class="nav-mobile">
                         <nav>
                             <span class="d-lg-none">
-                                <a class="d-none d-sm-inline align-middle" href="{{ __(config('site.owner.link')) }}">{{ __(config('site.owner.name')) }}</a>
-                                <a class="d-sm-none align-middle" href="{{ __(config('site.owner.link')) }}">{{ __(config('site.owner.name_short')) }}</a>
-                                <a class="it-opener d-inline-block p-0 ml-1" data-toggle="collapse" href="#slim-nav" role="button" aria-label="{{ __('espandi menu network') }}" aria-expanded="false" aria-controls="slim-nav">
+                                <a class="d-none d-sm-inline" href="{{ __(config('site.owner.link')) }}">{{ __(config('site.owner.name')) }}</a>
+                                <a class="d-sm-none" href="{{ __(config('site.owner.link')) }}">{{ __(config('site.owner.name_short')) }}</a>
+                                <a class="it-opener" data-toggle="collapse" href="#slim-nav" role="button" aria-label="{{ __('espandi menu network') }}" aria-expanded="false" aria-controls="slim-nav">
                                     <svg class="icon">
                                         <use xlink:href="{{ asset('svg/sprite.svg#it-expand') }}"></use>
                                     </svg>
