@@ -100,7 +100,7 @@
         <div class="form-group col-md-6">
             <div class="input-group">
                 <label for="website_id">{{ __('Sito web') }}</label>
-                <input type="search" class="form-control autocomplete" id="website_id" name="website_id" data-search="searchWebsites" data-source="{{ $searchWebsitesEndpoint }}" value="{{ old('website_id') }}" maxlength="255">
+                <input type="search" autocomplete="off" class="form-control autocomplete" id="website_id" name="website_id" data-search="searchWebsites" data-source="{{ $searchWebsitesEndpoint }}" value="{{ old('website_id') }}" maxlength="255">
                 <ul class="autocomplete-list"></ul>
                 <div class="searching-icon input-group-append">
                     <div class="input-group-text">
@@ -113,7 +113,7 @@
         <div class="form-group col-md-6">
             <div class="input-group">
                 <label for="user_uuid">{{ __('Utente') }}</label>
-                <input type="search" class="form-control autocomplete" id="user_uuid" name="user_uuid" data-search="searchUsers" data-source="{{ $searchUsersEndpoint }}" value="{{ old('user_uuid') }}" maxlength="255">
+                <input type="search" autocomplete="off" class="form-control autocomplete" id="user_uuid" name="user_uuid" data-search="searchUsers" data-source="{{ $searchUsersEndpoint }}" value="{{ old('user_uuid') }}" maxlength="255">
                 <ul class="autocomplete-list"></ul>
                 <div class="searching-icon input-group-append">
                     <div class="input-group-text">
