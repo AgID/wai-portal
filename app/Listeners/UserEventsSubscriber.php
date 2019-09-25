@@ -9,7 +9,9 @@ use App\Events\User\UserDeleted;
 use App\Events\User\UserInvited;
 use App\Events\User\UserLogin;
 use App\Events\User\UserLogout;
+use App\Events\User\UserReactivated;
 use App\Events\User\UserRestored;
+use App\Events\User\UserSuspended;
 use App\Events\User\UserUpdated;
 use App\Events\User\UserUpdating;
 use App\Events\User\UserWebsiteAccessChanged;
@@ -216,6 +218,30 @@ class UserEventsSubscriber
         );
     }
 
+    public function onSuspended(UserSuspended $event): void
+    {
+        $user = $event->getUser();
+        logger()->info(
+            'User ' . $user->uuid . ' suspended.',
+            [
+                'user' => $user->uuid,
+                'event' => EventType::USER_SUSPENDED,
+            ]
+        );
+    }
+
+    public function onReactivated(UserReactivated $event): void
+    {
+        $user = $event->getUser();
+        logger()->info(
+            'User ' . $user->uuid . ' reactivated.',
+            [
+                'user' => $user->uuid,
+                'event' => EventType::USER_REACTIVATED,
+            ]
+        );
+    }
+
     /**
      * Handle user deleted events.
      *
@@ -301,13 +327,23 @@ class UserEventsSubscriber
         );
 
         $events->listen(
+            'App\Events\User\UserSuspended',
+            'App\Listeners\UserEventsSubscriber@onSuspended'
+        );
+
+        $events->listen(
+            'App\Events\User\UserReactivated',
+            'App\Listeners\UserEventsSubscriber@onReactivated'
+        );
+
+        $events->listen(
             'App\Events\User\UserDeleted',
-            'App\Listeners\UserEventsSubscriber@OnDeleted',
+            'App\Listeners\UserEventsSubscriber@OnDeleted'
         );
 
         $events->listen(
             'App\Events\User\UserRestored',
-            'App\Listeners\UserEventsSubscriber@OnRestored',
-            );
+            'App\Listeners\UserEventsSubscriber@OnRestored'
+        );
     }
 }
