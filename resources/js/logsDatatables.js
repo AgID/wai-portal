@@ -102,7 +102,7 @@ export default (() => {
     }
 
     const initWebsiteFilter = (websiteIdInput, ipaCodeInput)  => {
-        if (!websiteIdInput || !ipaCodeInput) {
+        if (!websiteIdInput) {
             return;
         }
 
@@ -119,7 +119,7 @@ export default (() => {
         Autocomplete.init(websiteIdInput, websiteSchema, {
             handleSelectedResult: handleSelectedWebsite,
             queryParameters: {
-                public_administration: ipaCodeInput.value,
+                public_administration: ipaCodeInput ? ipaCodeInput.value : null,
             }
         });
 
@@ -132,7 +132,7 @@ export default (() => {
     }
 
     const initUserFilter = (userUuidInput, ipaCodeInput) => {
-        if (!userUuidInput || !ipaCodeInput) {
+        if (!userUuidInput) {
             return;
         }
 
@@ -142,13 +142,14 @@ export default (() => {
         };
 
         const userSchema = {
-            title: ['name', 'family_name'],
+            title: 'name',
+            subTitle: 'family_name',
         }
 
         Autocomplete.init(userUuidInput, userSchema, {
             handleSelectedResult: handleSelectedUser,
             queryParameters: {
-                public_administration: ipaCodeInput.value,
+                public_administration: ipaCodeInput ? ipaCodeInput.value : null,
             }
         });
 
