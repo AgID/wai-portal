@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Logs;
 use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LogFilteringRequest;
+use App\Services\ElasticSearchService;
 use Carbon\Carbon;
-use Elasticsearch\ClientBuilder;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -91,9 +91,7 @@ class LogController extends Controller
         $data = $this->extractData($validatedData);
 
         try {
-            $client = ClientBuilder::create()
-                ->setHosts([config('elastic-search.host') . ':' . config('elastic-search.port')])
-                ->build();
+            $client = app(ElasticSearchService::class)->getClient();
 
             $results = $client->searchTemplate([
                 'index' => config('elastic-search.index_name'),
