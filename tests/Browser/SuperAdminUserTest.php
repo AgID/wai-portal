@@ -60,7 +60,7 @@ class SuperAdminUserTest extends DuskTestCase
                     ->type('password_confirmation', $newPassword)
                     ->press(__('Cambia password'))
                     ->assertPathIs('/admin/dashboard')
-                    ->assertSee('La password è stata cambiata.')
+                    ->waitForText('La password è stata cambiata.')
                     ->visit('/admin/user/logout')
                     ->assertPathIs('/');
         });
