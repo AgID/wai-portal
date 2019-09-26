@@ -60,7 +60,7 @@ class LogFilteringRequest extends FormRequest
                 'integer',
                 new EnumValue(EventType::class, false),
             ],
-            'exception' => [
+            'exception_type' => [
                 'sometimes',
                 'required',
                 'integer',

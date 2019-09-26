@@ -178,7 +178,7 @@ class LogsVisualizationTest extends TestCase
                 'start_time' => Carbon::now()->format('H:i'),
                 'end_time' => Carbon::now()->subMinutes(15)->format('H:i'),
                 'event' => -1,
-                'exception' => -1,
+                'exception_type' => -1,
                 'job' => -1,
                 'severity' => -1,
             ]);
@@ -194,7 +194,7 @@ class LogsVisualizationTest extends TestCase
             'start_date',
             'end_date',
             'event',
-            'exception',
+            'exception_type',
             'job',
             'severity',
         ]);

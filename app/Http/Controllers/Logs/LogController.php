@@ -190,8 +190,8 @@ class LogController extends Controller
         if (isset($data['event'])) {
             $params['filters'][] = ['term' => ['context.event' => $data['event']]];
         }
-        if (isset($data['exception'])) {
-            $params['filters'][] = ['term' => ['context.type' => $data['exception']]];
+        if (isset($data['exception_type'])) {
+            $params['filters'][] = ['term' => ['context.exception_type' => $data['exception_type']]];
         }
 
         return $params ?? [];
