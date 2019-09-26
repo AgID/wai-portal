@@ -24,12 +24,12 @@ class SuperAdminUserTest extends DuskTestCase
         $this->browse(function (Browser $browser) use ($mailAddress) {
             $browser->visit('/admin')
                     ->assertPathIs('/admin/user/login')
-                    ->assertSee('Accesso super amministratori')
+                    ->assertSee(__('Accesso super amministratori'))
                     ->type('email', 'nome.cognome@example.com')
                     ->type('password', 'password')
                     ->press(__('Accedi'))
                     ->assertPathIs('/admin/dashboard')
-                    ->assertSee('Dashboard amministrativa')
+                    ->assertSee(__('Dashboard amministrativa'))
                     ->visit('/admin/users/create')
                     ->assertSee(__('Aggiungi un utente super amministratore'))
                     ->type('name', 'Nome')
@@ -45,12 +45,12 @@ class SuperAdminUserTest extends DuskTestCase
         $this->browse(function (Browser $browser) use ($mailAddress, $newPassword, $signedUrl) {
             $browser->visit($signedUrl)
                     ->assertPathIs('/admin/user/login')
-                    ->assertSee('Accesso super amministratori')
+                    ->assertSee(__('Accesso super amministratori'))
                     ->type('email', $mailAddress)
                     ->type('password', 'randomPassword')
                     ->press(__('Accedi'))
                     ->assertPathIs('/admin/user/change-password')
-                    ->waitForText('La password è scaduta e deve essere cambiata.')
+                    ->waitForText(__('La password è scaduta e deve essere cambiata.'))
                     ->type('password', 'password')
                     ->type('password_confirmation', 'password')
                     ->press(__('Cambia password'))
@@ -60,7 +60,7 @@ class SuperAdminUserTest extends DuskTestCase
                     ->type('password_confirmation', $newPassword)
                     ->press(__('Cambia password'))
                     ->assertPathIs('/admin/dashboard')
-                    ->waitForText('La password è stata cambiata.')
+                    ->waitForText(__('La password è stata cambiata.'))
                     ->visit('/admin/user/logout')
                     ->assertPathIs('/');
         });
@@ -72,7 +72,7 @@ class SuperAdminUserTest extends DuskTestCase
                     ->press(__('Accedi'))
                     ->assertPathIs('/admin/dashboard')
                     ->visit(new AdminDashboard())
-                    ->assertSee('Dashboard amministrativa');
+                    ->assertSee(__('Dashboard amministrativa'));
         });
     }
 }

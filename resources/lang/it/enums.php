@@ -124,6 +124,8 @@ return [
         EventType::USER_ACTIVATED => 'Utente attivato',
         EventType::USER_EMAIL_CHANGED => 'Email utente modificato',
         EventType::USER_STATUS_CHANGED => 'Stato utente modificato',
+        EventType::USER_SUSPENDED => 'Utente sospeso',
+        EventType::USER_REACTIVATED => 'Utente riattivato',
         EventType::USER_DELETED => 'Utente eliminato',
         EventType::USER_RESTORED => 'Utente ripristinato',
         EventType::USER_WEBSITE_ACCESS_CHANGED => 'Livello di accesso a sito per utente modificato',

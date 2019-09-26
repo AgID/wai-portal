@@ -106,89 +106,99 @@ class EventType extends Enum implements LocalizedEnum
     public const USER_STATUS_CHANGED = 18;
 
     /**
+     * User suspended event.
+     */
+    public const USER_SUSPENDED = 19;
+
+    /**
+     * User reactivated event.
+     */
+    public const USER_REACTIVATED = 20;
+
+    /**
      * User removed event.
      */
-    public const USER_DELETED = 19;
+    public const USER_DELETED = 21;
 
     /**
      * User restored event.
      */
-    public const USER_RESTORED = 20;
+    public const USER_RESTORED = 22;
 
     /**
      * User website access changed event.
      */
-    public const USER_WEBSITE_ACCESS_CHANGED = 21;
+    public const USER_WEBSITE_ACCESS_CHANGED = 23;
 
     /**
      * New website registered event.
      */
-    public const WEBSITE_ADDED = 22;
+    public const WEBSITE_ADDED = 24;
 
     /**
      * Website URL change event.
      */
-    public const WEBSITE_URL_CHANGED = 23;
+    public const WEBSITE_URL_CHANGED = 25;
 
     /**
      * Website activated event.
      */
-    public const WEBSITE_ACTIVATED = 24;
+    public const WEBSITE_ACTIVATED = 26;
 
     /**
      * Website status changed event.
      */
-    public const WEBSITE_STATUS_CHANGED = 25;
+    public const WEBSITE_STATUS_CHANGED = 27;
 
     /**
      * Website scheduled for archiving event.
      */
-    public const WEBSITE_ARCHIVING = 26;
+    public const WEBSITE_ARCHIVING = 28;
 
     /**
      * Website archived event.
      */
-    public const WEBSITE_ARCHIVED = 27;
+    public const WEBSITE_ARCHIVED = 29;
 
     /**
      * Website unarchived event.
      */
-    public const WEBSITE_UNARCHIVED = 28;
+    public const WEBSITE_UNARCHIVED = 30;
 
     /**
      * Website scheduled for removing event.
      */
-    public const WEBSITE_PURGING = 29;
+    public const WEBSITE_PURGING = 31;
 
     /**
      * Website removed event.
      */
-    public const WEBSITE_PURGED = 30;
+    public const WEBSITE_PURGED = 32;
 
     /**
      * Website manually deleted event.
      */
-    public const WEBSITE_DELETED = 31;
+    public const WEBSITE_DELETED = 33;
 
     /**
      * Website restored event.
      */
-    public const WEBSITE_RESTORED = 32;
+    public const WEBSITE_RESTORED = 34;
 
     /**
      * Primary website tracking failing event.
      */
-    public const PRIMARY_WEBSITE_NOT_TRACKING = 33;
+    public const PRIMARY_WEBSITE_NOT_TRACKING = 35;
 
     /**
      * Users index updated event.
      */
-    public const USERS_INDEXING_COMPLETED = 34;
+    public const USERS_INDEXING_COMPLETED = 36;
 
     /**
      * Websites index updated event.
      */
-    public const WEBSITES_INDEXING_COMPLETED = 35;
+    public const WEBSITES_INDEXING_COMPLETED = 37;
 
     /**
      * Mail sent event.

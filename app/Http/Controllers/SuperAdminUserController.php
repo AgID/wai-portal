@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Enums\UserRole;
 use App\Enums\UserStatus;
 use App\Events\User\UserInvited;
+use App\Events\User\UserReactivated;
+use App\Events\User\UserSuspended;
 use App\Exceptions\OperationNotAllowedException;
 use App\Models\User;
 use App\Traits\SendsResponse;
@@ -213,6 +215,8 @@ class SuperAdminUserController extends Controller
             $user->status = UserStatus::SUSPENDED;
             $user->save();
 
+            event(new UserSuspended($user));
+
             return $this->userResponse($user);
         } catch (OperationNotAllowedException $exception) {
             report($exception);
@@ -239,6 +243,8 @@ class SuperAdminUserController extends Controller
 
         $user->status = $user->hasVerifiedEmail() ? UserStatus::ACTIVE : UserStatus::INVITED;
         $user->save();
+
+        event(new UserReactivated($user));
 
         return $this->userResponse($user);
     }

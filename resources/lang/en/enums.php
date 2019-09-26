@@ -86,7 +86,7 @@ return [
         ],
         WebsiteStatus::ARCHIVED => [
             'short' => 'archived',
-            'long' => 'The website has been archived. 🛑'
+            'long' => 'The website has been archived. 🛑',
         ],
     ],
 
@@ -124,6 +124,8 @@ return [
         EventType::USER_ACTIVATED => 'User activated',
         EventType::USER_EMAIL_CHANGED => 'User email changed',
         EventType::USER_STATUS_CHANGED => 'User status changed',
+        EventType::USER_SUSPENDED => 'User suspended',
+        EventType::USER_REACTIVATED => 'User reactivated',
         EventType::USER_DELETED => 'User deleted',
         EventType::USER_RESTORED => 'User restored',
         EventType::USER_WEBSITE_ACCESS_CHANGED => 'User access level to website changed',
