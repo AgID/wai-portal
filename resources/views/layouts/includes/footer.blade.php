@@ -40,24 +40,24 @@
             <h3 class="sr-only">{{ __('navigazione secondaria') }}</h3>
             <ul class="it-footer-small-prints-list list-inline mb-0 d-flex flex-column flex-md-row pl-0">
                 @foreach (config('site.footer_links') as $footerMenuItem)
-                    <li class="list-inline-item px-0">
-                        <a class="nav-link" href="{{ route($footerMenuItem['route']) }}">
-                            <span class="font-weight-semibold analogue-2-color">{{ __($footerMenuItem['name']) }}</span>
-                        </a>
-                    </li>
+                <li class="list-inline-item px-0">
+                    <a class="nav-link" href="{{ route($footerMenuItem['route']) }}">
+                        <span class="font-weight-semibold analogue-2-color">{{ __($footerMenuItem['name']) }}</span>
+                    </a>
+                </li>
                 @endforeach
                 @can(UserPermission::ACCESS_ADMIN_AREA)
-                    <li class="list-inline-item px-0">
-                        <a class="nav-link" href="{{ route('admin.logs.show') }}">
-                            <span class="font-weight-semibold analogue-2-color">{{ __('Logs') }}</span>
-                        </a>
-                    </li>
+                <li class="list-inline-item px-0">
+                    <a class="nav-link" href="{{ route('admin.logs.show') }}">
+                        <span class="font-weight-semibold analogue-2-color">{{ __('Logs') }}</span>
+                    </a>
+                </li>
                 @elsecan(UserPermission::VIEW_LOGS)
-                    <li class="list-inline-item px-0">
-                        <a class="nav-link" href="{{ route('logs.show') }}">
-                            <span class="font-weight-semibold analogue-2-color">{{ __('Logs') }}</span>
-                        </a>
-                    </li>
+                <li class="list-inline-item px-0">
+                    <a class="nav-link" href="{{ route('logs.show') }}">
+                        <span class="font-weight-semibold analogue-2-color">{{ __('Logs') }}</span>
+                    </a>
+                </li>
                 @endcan
             </ul>
             <span class="ml-auto pb-4 pb-md-0"><small class="primary-color-a4">{{ __('versione') }}: {{ config('app.version') }}</small></span>
