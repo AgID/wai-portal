@@ -71,7 +71,7 @@ export default (() => {
 
         response.data.map(result => {
             const markText = new RegExp('(' + searchInput.value + ')', 'gi');
-            const resultName = Array.isArray(resultSchema.title)
+            const resultName = Array.isArray(resultSchema.title) && !response.empty
                 ? resultSchema.title.reduce((title, titleElement) => {
                     return [title, result[titleElement]].join(' ');
                 }, '')

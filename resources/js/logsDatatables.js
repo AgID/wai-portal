@@ -142,8 +142,7 @@ export default (() => {
         };
 
         const userSchema = {
-            title: 'name',
-            subTitle: 'family_name',
+            title: ['name', 'family_name'],
         }
 
         Autocomplete.init(userUuidInput, userSchema, {
