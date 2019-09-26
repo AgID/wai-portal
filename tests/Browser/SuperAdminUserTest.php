@@ -3,6 +3,7 @@
 namespace Tests\Browser;
 
 use Laravel\Dusk\Browser;
+use Tests\Browser\Pages\AdminDashboard;
 use Tests\DuskTestCase;
 
 class SuperAdminUserTest extends DuskTestCase
@@ -59,7 +60,7 @@ class SuperAdminUserTest extends DuskTestCase
                     ->type('password_confirmation', $newPassword)
                     ->press(__('Cambia password'))
                     ->assertPathIs('/admin/dashboard')
-                    ->assertSee('La password è stata cambiata.')
+                    ->waitForText('La password è stata cambiata.')
                     ->visit('/admin/user/logout')
                     ->assertPathIs('/');
         });
@@ -70,6 +71,7 @@ class SuperAdminUserTest extends DuskTestCase
                     ->type('password', $newPassword)
                     ->press(__('Accedi'))
                     ->assertPathIs('/admin/dashboard')
+                    ->visit(new AdminDashboard())
                     ->assertSee('Dashboard amministrativa');
         });
     }

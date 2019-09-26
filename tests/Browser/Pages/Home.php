@@ -3,9 +3,12 @@
 namespace Tests\Browser\Pages;
 
 use Laravel\Dusk\Browser;
+use Tests\Browser\Traits\LighthouseTested;
 
 class Home extends Page
 {
+    use LighthouseTested;
+
     /**
      * Get the URL for the page.
      *
@@ -27,5 +30,6 @@ class Home extends Page
     {
         parent::assertBase($browser);
         $browser->assertPathIs($this->url());
+        $this->lighthouseTest();
     }
 }
