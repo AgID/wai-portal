@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "58f64eb2317c13c90e72ae6a0e0160cd",
+    "content-hash": "cce9ca85fce7f3fbac744998b605caf5",
     "packages": [
         {
             "name": "bensampo/laravel-enum",
@@ -2582,28 +2582,28 @@
         },
         {
             "name": "silber/bouncer",
-            "version": "v1.0.0-rc.5",
+            "version": "v1.0.0-rc.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/JosephSilber/bouncer.git",
-                "reference": "0bd51dd5aeddc80f4b6da1bf2f817bdb7cb2871e"
+                "reference": "7a410f2bf7e9878cb5f80b07056e70d9ec5e2df0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/JosephSilber/bouncer/zipball/0bd51dd5aeddc80f4b6da1bf2f817bdb7cb2871e",
-                "reference": "0bd51dd5aeddc80f4b6da1bf2f817bdb7cb2871e",
+                "url": "https://api.github.com/repos/JosephSilber/bouncer/zipball/7a410f2bf7e9878cb5f80b07056e70d9ec5e2df0",
+                "reference": "7a410f2bf7e9878cb5f80b07056e70d9ec5e2df0",
                 "shasum": ""
             },
             "require": {
-                "illuminate/auth": "5.1.20 - 5.8",
-                "illuminate/cache": "5.1.20 - 5.8",
-                "illuminate/container": "5.1.20 - 5.8",
-                "illuminate/contracts": "5.1.20 - 5.8",
-                "illuminate/database": "5.1.20 - 5.8"
+                "illuminate/auth": "5.1.20 - 5.8|^6.0",
+                "illuminate/cache": "5.1.20 - 5.8|^6.0",
+                "illuminate/container": "5.1.20 - 5.8|^6.0",
+                "illuminate/contracts": "5.1.20 - 5.8|^6.0",
+                "illuminate/database": "5.1.20 - 5.8|^6.0"
             },
             "require-dev": {
-                "illuminate/console": "5.1.20 - 5.8",
-                "illuminate/events": "5.1.20 - 5.8",
+                "illuminate/console": "5.1.20 - 5.8|^6.0",
+                "illuminate/events": "5.1.20 - 5.8|^6.0",
                 "larapack/dd": "^1.1",
                 "mockery/mockery": "^0.9.5",
                 "phpunit/phpunit": "^4.8.35"
@@ -2648,7 +2648,7 @@
                 "permissions",
                 "roles"
             ],
-            "time": "2019-02-27T17:05:11+00:00"
+            "time": "2019-09-04T03:29:16+00:00"
         },
         {
             "name": "swiftmailer/swiftmailer",
