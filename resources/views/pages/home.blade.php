@@ -192,7 +192,7 @@
                             @guest
                             {{ __('Accedi con le tue credenziali SPID e registra la tua PA su :app.', ['app' => config('app.name')]) }}
                             <br>
-                            <a href="route('faqs')">{{ __('Maggiori informazioni.') }}</a>
+                            <a href="{{ route('faq') }}">{{ __('Maggiori informazioni.') }}</a>
                             @else
                             {{ __("Hai già effettuato l'accesso a :app.", ['app' => config('app.name')]) }}
                             <br>
