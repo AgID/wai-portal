@@ -48,7 +48,6 @@ class UserTransformer extends TransformerAbstract
                 ],
                 'email' => e($user->email),
                 'added_at' => $user->created_at->format('d/m/Y'),
-                'status' => $user->status->description,
                 'status' => [
                     'display' => '<span class="badge user-status ' . strtolower($user->status->key) . '">' . strtoupper($user->status->description) . '</span>',
                     'raw' => $user->status->description,
