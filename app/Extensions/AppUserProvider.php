@@ -4,6 +4,7 @@ namespace App\Extensions;
 
 use Illuminate\Auth\EloquentUserProvider;
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Str;
 
 /**
