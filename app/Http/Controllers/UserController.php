@@ -347,7 +347,7 @@ class UserController extends Controller
                 throw new InvalidUserStatusException('Pending users cannot be suspended.');
             }
 
-            //NOTE: super admin are allowed to suspend the last active PA administrator
+            //NOTE: super admin are allowed to suspend the last active administrator of a Public Administration
             if (auth()->user()->cannot(UserPermission::ACCESS_ADMIN_AREA)) {
                 $validator = validator(request()->all())->after([$this, 'validateNotLastActiveAdministrator']);
                 if ($validator->fails()) {

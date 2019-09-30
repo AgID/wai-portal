@@ -11,7 +11,7 @@ use Illuminate\Notifications\Notification;
 /**
  * Website activated Public Administration PEC notification.
  */
-class WebsiteActivatedPAEmail extends Notification implements ShouldQueue
+class WebsiteActivatedPublicAdministrationEmail extends Notification implements ShouldQueue
 {
     use Queueable;
 

@@ -575,7 +575,7 @@ class WebsiteController extends Controller
     /**
      * Get the websites data.
      *
-     * @param PublicAdministration $publicAdministration the P.A. to filter websites or null to use current user P.A.
+     * @param PublicAdministration $publicAdministration the Public Administration to filter websites or null to use current one
      *
      * @throws \Exception if unable to initialize the datatable
      *

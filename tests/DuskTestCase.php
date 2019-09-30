@@ -125,7 +125,7 @@ abstract class DuskTestCase extends BaseTestCase
         $this->get('/_test/_assign_role/' . $userId . '/' . $role);
     }
 
-    public function assignUserToPA(int $userId, int $paId)
+    public function assignUserToPublicAdministration(int $userId, int $paId)
     {
         $this->get('/_test/_assign_to_pa/' . $paId . '/' . $userId);
     }
