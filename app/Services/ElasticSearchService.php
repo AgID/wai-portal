@@ -2,7 +2,8 @@
 
 namespace App\Services;
 
-use Elastica\Client;
+use Elasticsearch\Client;
+use Elasticsearch\ClientBuilder;
 
 /**
  * ElasticSearch service.
@@ -12,13 +13,14 @@ class ElasticSearchService
     /**
      * Initialize the client to push log messages to ElasticSearch.
      *
-     * @return \Elastica\Client the client
+     * @return \Elasticsearch\Client the client
      */
     public function getClient(): Client
     {
-        return new Client([
-            'host' => config('elastic-search.host'),
-            'port' => config('elastic-search.port'),
-        ]);
+        return ClientBuilder::create()
+            ->setHosts([
+                config('elastic-search.host') . ':' . config('elastic-search.port'),
+            ])
+            ->build();
     }
 }
