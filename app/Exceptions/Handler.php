@@ -60,7 +60,7 @@ class Handler extends ExceptionHandler
      * @param Request $request the request
      * @param Exception $exception the raised exception
      *
-     * @return \Illuminate\Http\Response the response
+     * @return mixed the response
      */
     public function render($request, Exception $exception)
     {
