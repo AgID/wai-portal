@@ -73,16 +73,16 @@
         },
         {
             "name": "cweagans/composer-patches",
-            "version": "1.6.6",
+            "version": "1.6.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cweagans/composer-patches.git",
-                "reference": "1d89dcc730e7f42426c434b88261fcfb3bce651e"
+                "reference": "2e6f72a2ad8d59cd7e2b729f218bf42adb14f590"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cweagans/composer-patches/zipball/1d89dcc730e7f42426c434b88261fcfb3bce651e",
-                "reference": "1d89dcc730e7f42426c434b88261fcfb3bce651e",
+                "url": "https://api.github.com/repos/cweagans/composer-patches/zipball/2e6f72a2ad8d59cd7e2b729f218bf42adb14f590",
+                "reference": "2e6f72a2ad8d59cd7e2b729f218bf42adb14f590",
                 "shasum": ""
             },
             "require": {
@@ -113,7 +113,7 @@
                 }
             ],
             "description": "Provides a way to patch Composer packages.",
-            "time": "2018-10-24T15:51:16+00:00"
+            "time": "2019-08-29T20:11:49+00:00"
         },
         {
             "name": "davejamesmiller/laravel-breadcrumbs",
@@ -1080,32 +1080,32 @@
         },
         {
             "name": "italia/spid-laravel",
-            "version": "v0.5.0-beta",
+            "version": "v0.6.0-beta",
             "source": {
                 "type": "git",
                 "url": "https://github.com/italia/spid-laravel.git",
-                "reference": "13f7e85d3e270faa999ce42f25c71bb6bc57d41e"
+                "reference": "21fe5b891eb0c62196668145b68ad9ae96663210"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/italia/spid-laravel/zipball/13f7e85d3e270faa999ce42f25c71bb6bc57d41e",
-                "reference": "13f7e85d3e270faa999ce42f25c71bb6bc57d41e",
+                "url": "https://api.github.com/repos/italia/spid-laravel/zipball/21fe5b891eb0c62196668145b68ad9ae96663210",
+                "reference": "21fe5b891eb0c62196668145b68ad9ae96663210",
                 "shasum": ""
             },
             "require": {
                 "cweagans/composer-patches": "^1.6",
-                "illuminate/config": "~5.0",
-                "illuminate/support": "~5.0",
+                "illuminate/config": ">=5.0",
+                "illuminate/support": ">=5.0",
                 "onelogin/php-saml": "3.2.1",
                 "php": "^7.2.0"
             },
             "require-dev": {
-                "friendsofphp/php-cs-fixer": "^2.11",
+                "friendsofphp/php-cs-fixer": "^2.14",
                 "mikey179/vfsstream": "^1.6",
                 "mockery/mockery": "^1.0",
-                "orchestra/testbench": "~3.0",
+                "orchestra/testbench": "~4.0",
                 "pds/skeleton": "~1.0",
-                "phpunit/phpunit": "^8.0"
+                "phpunit/phpunit": "^8.1"
             },
             "type": "library",
             "extra": {
@@ -1142,7 +1142,7 @@
                 "laravel",
                 "laravel 5"
             ],
-            "time": "2019-09-20T22:20:01+00:00"
+            "time": "2019-09-26T11:59:22+00:00"
         },
         {
             "name": "jakub-onderka/php-console-color",
