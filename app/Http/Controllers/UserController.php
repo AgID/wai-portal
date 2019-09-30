@@ -29,7 +29,7 @@ use Illuminate\Validation\Validator;
 use Illuminate\View\View;
 use Ramsey\Uuid\Uuid;
 use Silber\Bouncer\BouncerFacade as Bouncer;
-use Yajra\Datatables\Datatables;
+use Yajra\DataTables\DataTables;
 
 /**
  * User management controller.
@@ -410,7 +410,7 @@ class UserController extends Controller
      */
     public function dataJson(Request $request, PublicAdministration $publicAdministration)
     {
-        return Datatables::of($request->user()->can(UserPermission::ACCESS_ADMIN_AREA)
+        return DataTables::of($request->user()->can(UserPermission::ACCESS_ADMIN_AREA)
                 ? $publicAdministration->users()->withTrashed()->get()
                 : optional(current_public_administration())->users ?? collect([]))
             ->setTransformer(new UserTransformer())
@@ -429,7 +429,7 @@ class UserController extends Controller
      */
     public function dataWebsitesPermissionsJson(PublicAdministration $publicAdministration, User $user)
     {
-        return Datatables::of((auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)
+        return DataTables::of((auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)
                 ? $publicAdministration
                 : current_public_administration())
             ->websites)

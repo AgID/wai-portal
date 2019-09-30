@@ -35,7 +35,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Silber\Bouncer\BouncerFacade as Bouncer;
-use Yajra\Datatables\Datatables;
+use Yajra\DataTables\DataTables;
 
 /**
  * Website management controller.
@@ -583,7 +583,7 @@ class WebsiteController extends Controller
      */
     public function dataJson(PublicAdministration $publicAdministration)
     {
-        return Datatables::of(auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)
+        return DataTables::of(auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)
                 ? $publicAdministration->websites()->withTrashed()->get()
                 : current_public_administration()->websites())
             ->setTransformer(new WebsiteTransformer())
@@ -606,7 +606,7 @@ class WebsiteController extends Controller
             ? $publicAdministration->users
             : current_public_administration()->users()->where('status', '!=', UserStatus::SUSPENDED);
 
-        return Datatables::of($users)
+        return DataTables::of($users)
             ->setTransformer(new UsersPermissionsTransformer())
             ->make(true);
     }
