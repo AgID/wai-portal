@@ -39,7 +39,7 @@ RUN if [ "env-${ENV}" = "env-local" ] || [ "env-${ENV}" = "env-testing" ]; then 
     && rm chromedriver_linux64.zip \
     && wget -O node-build.zip https://github.com/nodenv/node-build/archive/master.zip \
     && unzip node-build.zip \
-    && ./node-build-master/install.sh \
+    && node-build-master/install.sh \
     && rm -Rf node-build-master node-build.zip \
 ;fi
 
