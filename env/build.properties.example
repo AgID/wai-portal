@@ -85,7 +85,7 @@ PEC_ENCRYPTION=null
 MATOMO_ROOT_USER=admin
 
 # Matomo super user password
-MATOMO_ROOT_PASSWORD=admin
+MATOMO_ROOT_PASSWORD=Password
 
 # Matomo super user API Key, put any MD5 hash.
 MATOMO_ROOT_APIKEY=8aa23f3ca5903d451d1ff8eb947c7a8f
