@@ -1,5 +1,6 @@
 <?php
 
+/** @var \Illuminate\Database\Eloquent\Factory $factory */
 use App\Enums\PublicAdministrationStatus;
 use App\Models\PublicAdministration;
 use Faker\Generator as Faker;

@@ -3,6 +3,7 @@
 use App\Services\ElasticSearchService;
 use Monolog\Formatter\ElasticsearchFormatter;
 use Monolog\Handler\ElasticsearchHandler;
+use Monolog\Handler\NullHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogUdpHandler;
 
@@ -30,7 +31,8 @@ return [
     | you a variety of powerful log handlers / formatters to utilize.
     |
     | Available Drivers: "single", "daily", "slack", "syslog",
-    |                    "errorlog", "custom", "stack"
+    |                    "errorlog", "monolog",
+    |                    "custom", "stack"
     |
     */
 
@@ -137,5 +139,11 @@ return [
             'driver' => 'errorlog',
             'level' => 'debug',
         ],
+
+        'null' => [
+            'driver' => 'monolog',
+            'handler' => NullHandler::class,
+        ],
     ],
+
 ];
