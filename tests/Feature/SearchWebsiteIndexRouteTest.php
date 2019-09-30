@@ -111,16 +111,16 @@ class SearchWebsiteIndexRouteTest extends TestCase
         $this->secondUser->allow(UserPermission::VIEW_LOGS);
 
         $this->firstWebsite = factory(Website::class)->create([
+            'url' => 'www.sito1.it',
             'slug' => Str::slug('www.sito1.it'),
             'public_administration_id' => $this->firstPublicAdministration->id,
         ]);
 
-        do {
-            $this->secondWebsite = factory(Website::class)->make([
-                'slug' => Str::slug('www.sito2.it'),
-                'public_administration_id' => $this->secondPublicAdministration->id,
-            ]);
-        } while ($this->secondWebsite->slug === $this->firstWebsite->slug);
+        $this->secondWebsite = factory(Website::class)->make([
+            'url' => 'www.sito2.it',
+            'slug' => Str::slug('www.sito2.it'),
+            'public_administration_id' => $this->secondPublicAdministration->id,
+        ]);
         $this->secondWebsite->save();
 
         (new ProcessWebsitesIndex())->handle();
