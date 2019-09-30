@@ -1,5 +1,6 @@
 <?php
 
+/** @var \Illuminate\Database\Eloquent\Factory $factory */
 use App\Enums\WebsiteStatus;
 use App\Enums\WebsiteType;
 use App\Models\Website;

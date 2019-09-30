@@ -1,5 +1,6 @@
 <?php
 
+/** @var \Illuminate\Database\Eloquent\Factory $factory */
 use App\Enums\UserStatus;
 use App\Models\User;
 use Carbon\Carbon;

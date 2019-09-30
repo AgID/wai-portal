@@ -169,7 +169,7 @@ class CRUDAdminWebsiteTest extends TestCase
         $this->actingAs($this->user)
             ->json('patch', route('admin.publicAdministration.websites.restore', [
                 'publicAdministration' => $this->publicAdministration,
-                'website' => $this->website,
+                'trashed_website' => $this->website,
             ]))
             ->assertOk();
 

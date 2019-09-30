@@ -1,8 +1,9 @@
 <?php
 
 use App\Services\ElasticSearchService;
-use Monolog\Formatter\ElasticaFormatter;
-use Monolog\Handler\ElasticSearchHandler;
+use Monolog\Formatter\ElasticsearchFormatter;
+use Monolog\Handler\ElasticsearchHandler;
+use Monolog\Handler\NullHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogUdpHandler;
 
@@ -30,7 +31,8 @@ return [
     | you a variety of powerful log handlers / formatters to utilize.
     |
     | Available Drivers: "single", "daily", "slack", "syslog",
-    |                    "errorlog", "custom", "stack"
+    |                    "errorlog", "monolog",
+    |                    "custom", "stack"
     |
     */
 
@@ -63,7 +65,7 @@ return [
         'elasticsearch' => [
             'driver' => 'monolog',
             'level' => 'debug',
-            'handler' => ElasticSearchHandler::class,
+            'handler' => ElasticsearchHandler::class,
             'handler_with' => [
                 'client' => app(ElasticSearchService::class)->getClient(),
                 'options' => [
@@ -77,7 +79,7 @@ return [
                     'ignore_error' => config('elastic-search.ignore_exceptions'),
                 ],
             ],
-            'formatter' => ElasticaFormatter::class,
+            'formatter' => ElasticsearchFormatter::class,
             'formatter_with' => [
                 'index' => config('elastic-search.index_name'),
                 /*
@@ -137,5 +139,11 @@ return [
             'driver' => 'errorlog',
             'level' => 'debug',
         ],
+
+        'null' => [
+            'driver' => 'monolog',
+            'handler' => NullHandler::class,
+        ],
     ],
+
 ];
