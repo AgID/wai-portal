@@ -62,7 +62,7 @@ class PublicAdministration extends Model
     /**
      * Find a Public Administration instance by IPA code.
      *
-     * @param string IPA code
+     * @param string $ipa_code IPA code
      *
      * @return PublicAdministration|null The Public Administration found or null if not found
      */
@@ -74,7 +74,7 @@ class PublicAdministration extends Model
     /**
      * Find a deleted Public Administration instance by IPA code.
      *
-     * @param string IPA code
+     * @param string $ipa_code IPA code
      *
      * @return PublicAdministration|null The Public Administration found or null if not found
      */
@@ -177,7 +177,7 @@ class PublicAdministration extends Model
     public function getNonAdministrators(): Collection
     {
         if ($this->status->is(PublicAdministrationStatus::PENDING)) {
-            return collect([]);
+            return Collection::make();
         }
 
         Bouncer::scope()->to($this->id);

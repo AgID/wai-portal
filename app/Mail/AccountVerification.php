@@ -62,8 +62,6 @@ class AccountVerification extends Mailable
     /**
      * Build the message.
      *
-     * @param string the verification token
-     *
      * @return \App\Mail\AccountVerification
      */
     public function build(): AccountVerification

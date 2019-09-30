@@ -615,7 +615,7 @@ class WebsiteController extends Controller
      * Get the datatable parameters for users permission with specified source.
      *
      * @param string $source the source paramater for the users permission datatable
-     * @param bool|null $readonly wether the datatable is readonly
+     * @param bool $readonly wether the datatable is readonly
      *
      * @return array the datatable parameters
      */

@@ -473,7 +473,7 @@ class UserController extends Controller
      * Get the datatable parameters for websites permission with specified source.
      *
      * @param string $source the source paramater for the websites permission datatable
-     * @param bool|null $readonly wether the datatable is readonly
+     * @param bool $readonly wether the datatable is readonly
      *
      * @return array the datatable parameters
      */
