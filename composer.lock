@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "dbb110384120bdd7a39e24f475e83ede",
+    "content-hash": "90342863fb2cc9c30e578ced6ed8a237",
     "packages": [
         {
             "name": "bensampo/laravel-enum",
@@ -450,16 +450,16 @@
         },
         {
             "name": "elasticsearch/elasticsearch",
-            "version": "v7.0.2",
+            "version": "v7.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/elastic/elasticsearch-php.git",
-                "reference": "2b9a84d606a21b7be55909fd2ab342fc66642fc8"
+                "reference": "f8b5d2beeeb22a5a59aabb183b5bcd7e70878d2f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/elastic/elasticsearch-php/zipball/2b9a84d606a21b7be55909fd2ab342fc66642fc8",
-                "reference": "2b9a84d606a21b7be55909fd2ab342fc66642fc8",
+                "url": "https://api.github.com/repos/elastic/elasticsearch-php/zipball/f8b5d2beeeb22a5a59aabb183b5bcd7e70878d2f",
+                "reference": "f8b5d2beeeb22a5a59aabb183b5bcd7e70878d2f",
                 "shasum": ""
             },
             "require": {
@@ -506,7 +506,7 @@
                 "elasticsearch",
                 "search"
             ],
-            "time": "2019-07-01T10:50:26+00:00"
+            "time": "2019-09-30T12:52:38+00:00"
         },
         {
             "name": "erusev/parsedown",
