@@ -24,7 +24,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Str;
 use Illuminate\Validation\Validator;
 use Illuminate\View\View;
 use Ramsey\Uuid\Uuid;
@@ -217,20 +216,11 @@ class UserController extends Controller
             //       sends a new email verification request and
             //       reset the email verification status
             $user->email = $validatedData['email'];
-            $user->save();
 
-            //NOTE: remove the try/catch if matomo is configured
-            //      to not send email on user updates using API interface
-            //      See: https://github.com/matomo-org/matomo/pull/14281
-            try {
-                // Update Analytics Service account if needed
-                // NOTE: at this point, user must have an analytics account
-                $user->updateAnalyticsServiceAccountEmail();
-            } catch (CommandErrorException $exception) {
-                if (!Str::contains($exception->getMessage(), 'Unable to send mail.')) {
-                    throw $exception;
-                }
-            }
+            // Update Analytics Service account if needed
+            // NOTE: at this point, user must have an analytics account
+            $user->updateAnalyticsServiceAccountEmail();
+            $user->save();
         }
 
         $this->manageUserPermissions($validatedData, $currentPublicAdministration, $user);
@@ -429,10 +419,9 @@ class UserController extends Controller
      */
     public function dataWebsitesPermissionsJson(PublicAdministration $publicAdministration, User $user)
     {
-        return DataTables::of((auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)
-                ? $publicAdministration
-                : current_public_administration())
-            ->websites)
+        return DataTables::of(auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)
+                ? $publicAdministration->websites
+                : current_public_administration()->websites)
             ->setTransformer(new WebsitesPermissionsTransformer())
             ->make(true);
     }
