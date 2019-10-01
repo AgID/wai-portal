@@ -254,6 +254,10 @@ class CRUDUserTest extends TestCase
     public function testUpdateUserEmailSuccessful(): void
     {
         $this->user->registerAnalyticsServiceAccount();
+        $analyticsId = app()->make('analytics-service')->registerSite($this->website->name . ' [' . $this->website->type . ']', $this->website->url, $this->publicAdministration->name);
+        $this->website->analytics_id = $analyticsId;
+        $this->website->save();
+        app()->make('analytics-service')->setWebsiteAccess($this->user->uuid, WebsiteAccessType::WRITE, $this->website->analytics_id);
 
         $this->actingAs($this->user)
             ->withSession([
@@ -285,6 +289,7 @@ class CRUDUserTest extends TestCase
         });
 
         $this->user->deleteAnalyticsServiceAccount();
+        app()->make('analytics-service')->deleteSite($this->website->analytics_id);
     }
 
     /**

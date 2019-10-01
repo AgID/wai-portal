@@ -439,7 +439,7 @@ class CRUDAdminUserTest extends TestCase
      */
     public function testPublicAdministrationUpdateUserEmailSuccessful(): void
     {
-        $user = factory(User::class)->create();
+        $user = factory(User::class)->state('invited')->create();
         $publicAdministration = factory(PublicAdministration::class)
             ->state('active')
             ->create();
@@ -447,14 +447,22 @@ class CRUDAdminUserTest extends TestCase
         $website = factory(Website::class)->create([
             'public_administration_id' => $publicAdministration->id,
         ]);
+        $analyticsId = app()->make('analytics-service')->registerSite($website->name . ' [' . $website->type . ']', $website->url, $publicAdministration->name);
+        $website->analytics_id = $analyticsId;
+        $website->save();
         Bouncer::scope()->to($publicAdministration->id);
         $user->assign(UserRole::ADMIN);
         $user->registerAnalyticsServiceAccount();
+        Bouncer::allow($user)->to(UserPermission::READ_ANALYTICS, $website);
+        Bouncer::allow($user)->to(UserPermission::MANAGE_ANALYTICS, $website);
+        Bouncer::disallow($user)->to(UserPermission::NO_ACCESS, $website);
+        Bouncer::refreshFor($user);
+        app()->make('analytics-service')->setWebsiteAccess($user->uuid, WebsiteAccessType::WRITE, $website->analytics_id);
 
         $this->actingAs($this->user)
             ->put(route('admin.publicAdministration.users.update', [
                     'publicAdministration' => $publicAdministration,
-                    'user' => $this->user,
+                    'user' => $user,
             ]), [
                 '_token' => 'test',
                 'email' => 'new@email.local',
@@ -473,6 +481,7 @@ class CRUDAdminUserTest extends TestCase
         });
 
         $user->deleteAnalyticsServiceAccount();
+        app()->make('analytics-service')->deleteSite($website->analytics_id);
     }
 
     /**
