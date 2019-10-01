@@ -401,8 +401,8 @@ class UserController extends Controller
     public function dataJson(Request $request, PublicAdministration $publicAdministration)
     {
         return DataTables::of($request->user()->can(UserPermission::ACCESS_ADMIN_AREA)
-            ? $publicAdministration->users()->withTrashed()->get()
-            : optional(current_public_administration())->users ?? collect([]))
+                ? $publicAdministration->users()->withTrashed()->get()
+                : optional(current_public_administration())->users ?? collect([]))
             ->setTransformer(new UserTransformer())
             ->make(true);
     }
@@ -419,10 +419,9 @@ class UserController extends Controller
      */
     public function dataWebsitesPermissionsJson(PublicAdministration $publicAdministration, User $user)
     {
-        return DataTables::of((auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)
-            ? $publicAdministration
-            : current_public_administration())
-            ->websites)
+        return DataTables::of(auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)
+                ? $publicAdministration->websites
+                : current_public_administration()->websites)
             ->setTransformer(new WebsitesPermissionsTransformer())
             ->make(true);
     }
