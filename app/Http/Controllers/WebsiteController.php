@@ -35,7 +35,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Silber\Bouncer\BouncerFacade as Bouncer;
-use Yajra\Datatables\Datatables;
+use Yajra\DataTables\DataTables;
 
 /**
  * Website management controller.
@@ -575,7 +575,7 @@ class WebsiteController extends Controller
     /**
      * Get the websites data.
      *
-     * @param PublicAdministration $publicAdministration the P.A. to filter websites or null to use current user P.A.
+     * @param PublicAdministration $publicAdministration the Public Administration to filter websites or null to use current one
      *
      * @throws \Exception if unable to initialize the datatable
      *
@@ -583,7 +583,7 @@ class WebsiteController extends Controller
      */
     public function dataJson(PublicAdministration $publicAdministration)
     {
-        return Datatables::of(auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)
+        return DataTables::of(auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)
                 ? $publicAdministration->websites()->withTrashed()->get()
                 : current_public_administration()->websites())
             ->setTransformer(new WebsiteTransformer())
@@ -606,7 +606,7 @@ class WebsiteController extends Controller
             ? $publicAdministration->users
             : current_public_administration()->users()->where('status', '!=', UserStatus::SUSPENDED);
 
-        return Datatables::of($users)
+        return DataTables::of($users)
             ->setTransformer(new UsersPermissionsTransformer())
             ->make(true);
     }
@@ -615,7 +615,7 @@ class WebsiteController extends Controller
      * Get the datatable parameters for users permission with specified source.
      *
      * @param string $source the source paramater for the users permission datatable
-     * @param bool|null $readonly wether the datatable is readonly
+     * @param bool $readonly wether the datatable is readonly
      *
      * @return array the datatable parameters
      */

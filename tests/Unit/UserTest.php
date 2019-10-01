@@ -84,32 +84,32 @@ class UserTest extends TestCase
         $secondUser = factory(User::class)->create();
         $thirdUser = factory(User::class)->create();
 
-        $firstPA = factory(PublicAdministration::class)->create();
-        $secondPA = factory(PublicAdministration::class)->create();
-        $thirdPA = factory(PublicAdministration::class)->create();
+        $firstPublicAdministration = factory(PublicAdministration::class)->create();
+        $secondPublicAdministration = factory(PublicAdministration::class)->create();
+        $thirdPublicAdministration = factory(PublicAdministration::class)->create();
 
-        $firstUser->publicAdministrations()->sync([$firstPA->id, $secondPA->id]);
-        $secondUser->publicAdministrations()->sync($thirdPA->id);
-        $thirdUser->publicAdministrations()->sync($thirdPA->id);
+        $firstUser->publicAdministrations()->sync([$firstPublicAdministration->id, $secondPublicAdministration->id]);
+        $secondUser->publicAdministrations()->sync($thirdPublicAdministration->id);
+        $thirdUser->publicAdministrations()->sync($thirdPublicAdministration->id);
 
         $this->assertDatabaseHas('public_administration_user', [
-            'public_administration_id' => $firstPA->id,
+            'public_administration_id' => $firstPublicAdministration->id,
             'user_id' => $firstUser->id,
         ]);
 
         $this->assertDatabaseHas('public_administration_user', [
-            'public_administration_id' => $secondPA->id,
+            'public_administration_id' => $secondPublicAdministration->id,
             'user_id' => $firstUser->id,
         ]);
 
         $this->assertDatabaseHas('public_administration_user', [
-            'public_administration_id' => $thirdPA->id,
+            'public_administration_id' => $thirdPublicAdministration->id,
             'user_id' => $secondUser->id,
         ]);
 
         $this->assertDatabaseHas('public_administration_user', [
             'public_administration_id' => $thirdUser->id,
-            'user_id' => $thirdPA->id,
+            'user_id' => $thirdPublicAdministration->id,
         ]);
 
         $searchedFirstUser = User::findByFiscalNumber($firstUser->fiscal_number);
@@ -120,13 +120,13 @@ class UserTest extends TestCase
         $this->assertCount(1, $searchedSecondUser->publicAdministrations()->get());
         $this->assertCount(1, $searchedThirdUser->publicAdministrations()->get());
 
-        $searchedFirstPA = PublicAdministration::findByIpaCode($firstPA->ipa_code);
-        $searchedSecondPA = PublicAdministration::findByIpaCode($secondPA->ipa_code);
-        $searchedThirdPA = PublicAdministration::findByIpaCode($thirdPA->ipa_code);
+        $searchedFirstPublicAdministration = PublicAdministration::findByIpaCode($firstPublicAdministration->ipa_code);
+        $searchedSecondPublicAdministration = PublicAdministration::findByIpaCode($secondPublicAdministration->ipa_code);
+        $searchedThirdPublicAdministration = PublicAdministration::findByIpaCode($thirdPublicAdministration->ipa_code);
 
-        $this->assertCount(1, $searchedFirstPA->users()->get());
-        $this->assertCount(1, $searchedSecondPA->users()->get());
-        $this->assertCount(2, $searchedThirdPA->users()->get());
+        $this->assertCount(1, $searchedFirstPublicAdministration->users()->get());
+        $this->assertCount(1, $searchedSecondPublicAdministration->users()->get());
+        $this->assertCount(2, $searchedThirdPublicAdministration->users()->get());
     }
 
     /**

@@ -38,7 +38,7 @@ class UserEventsSubscriber
     {
         $this->updateUsersIndex($event->user);
 
-        //NOTE: user isn't connected to any P.A. yet
+        //NOTE: user isn't connected to any Public Administration yet
         logger()->notice(
             'New user registered: ' . $event->user->uuid,
             [

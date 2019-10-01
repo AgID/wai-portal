@@ -44,7 +44,7 @@ class ProcessPublicAdministrationsUpdateFromIpa implements ShouldQueue
             $ipaCode = $publicAdministration->ipa_code;
             $updatedPublicAdministration = $this->getPublicAdministrationEntryByIpaCode($ipaCode);
 
-            return [$ipaCode => $this->updateExistingPA($publicAdministration, $updatedPublicAdministration)];
+            return [$ipaCode => $this->updateExistingPublicAdministration($publicAdministration, $updatedPublicAdministration)];
         });
 
         event(new PublicAdministrationsUpdateFromIpaCompleted($report->all()));
@@ -58,7 +58,7 @@ class ProcessPublicAdministrationsUpdateFromIpa implements ShouldQueue
      *
      * @return array the array containing the list of updated data for the public administration, empty if none
      */
-    private function updateExistingPA(PublicAdministration $publicAdministration, array $updatedPublicAdministration): array
+    private function updateExistingPublicAdministration(PublicAdministration $publicAdministration, array $updatedPublicAdministration): array
     {
         if (empty($updatedPublicAdministration)) {
             // TODO: public administration not present in ipa, what should be done?

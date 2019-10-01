@@ -5,7 +5,7 @@ namespace App\Models;
 use App\Enums\PublicAdministrationStatus;
 use App\Enums\UserRole;
 use App\Enums\UserStatus;
-use App\Notifications\WebsiteActivatedPAEmail;
+use App\Notifications\WebsiteActivatedPublicAdministrationEmail;
 use BenSampo\Enum\Traits\CastsEnums;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -62,7 +62,7 @@ class PublicAdministration extends Model
     /**
      * Find a Public Administration instance by IPA code.
      *
-     * @param string IPA code
+     * @param string $ipa_code IPA code
      *
      * @return PublicAdministration|null The Public Administration found or null if not found
      */
@@ -74,7 +74,7 @@ class PublicAdministration extends Model
     /**
      * Find a deleted Public Administration instance by IPA code.
      *
-     * @param string IPA code
+     * @param string $ipa_code IPA code
      *
      * @return PublicAdministration|null The Public Administration found or null if not found
      */
@@ -177,7 +177,7 @@ class PublicAdministration extends Model
     public function getNonAdministrators(): Collection
     {
         if ($this->status->is(PublicAdministrationStatus::PENDING)) {
-            return collect([]);
+            return Collection::make();
         }
 
         Bouncer::scope()->to($this->id);
@@ -194,6 +194,6 @@ class PublicAdministration extends Model
      */
     public function sendWebsiteActivatedNotification(Website $website): void
     {
-        $this->notify(new WebsiteActivatedPAEmail($website));
+        $this->notify(new WebsiteActivatedPublicAdministrationEmail($website));
     }
 }

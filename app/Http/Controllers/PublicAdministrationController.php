@@ -82,7 +82,7 @@ class PublicAdministrationController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function selectTenant()
+    public function selectTenant($id)
     {
         //
     }

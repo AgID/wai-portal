@@ -6,7 +6,7 @@
 
     <title>{{ config('app.name') }} - @yield('title')</title>
 
-    <link media="all" rel="stylesheet" href="{{ asset('/css/app.css') }}">
+    <link media="all" rel="stylesheet" href="{{ mix('/css/app.css') }}">
 
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('/icons/apple-touch-icon.png') }}">
     <link rel="icon" type="image/png" href="{{ asset('/icons/favicon-32x32.png') }}" sizes="32x32">

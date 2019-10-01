@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Traits\InteractsWithRedisIndex;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class SearchIpaIndexController extends Controller
@@ -14,9 +15,9 @@ class SearchIpaIndexController extends Controller
      *
      * @param Request $request
      *
-     * @return \Illuminate\Http\Response
+     * @return JsonResponse
      */
-    public function search(Request $request)
+    public function search(Request $request): JsonResponse
     {
         if (isset($request->q)) {
             $result = $this->searchPublicAdministration($request->q);

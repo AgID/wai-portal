@@ -104,16 +104,16 @@ class WebsiteTest extends TestCase
      */
     public function testPublicAdministrationRelation(): void
     {
-        $firstPA = factory(PublicAdministration::class)->create();
-        $secondPA = factory(PublicAdministration::class)->create();
+        $firstPublicAdministration = factory(PublicAdministration::class)->create();
+        $secondPublicAdministration = factory(PublicAdministration::class)->create();
 
         $firstWebsite = factory(Website::class)->create([
-            'public_administration_id' => $firstPA->id,
+            'public_administration_id' => $firstPublicAdministration->id,
         ]);
 
         do {
             $secondWebsite = factory(Website::class)->make([
-                'public_administration_id' => $secondPA->id,
+                'public_administration_id' => $secondPublicAdministration->id,
             ]);
         } while ($secondWebsite->slug === $firstWebsite->slug);
         $secondWebsite->save();
@@ -121,7 +121,7 @@ class WebsiteTest extends TestCase
         $searchedFirstWebsite = Website::where('id', $firstWebsite->id)->first();
         $searchedSecondWebsite = Website::where('id', $secondWebsite->id)->first();
 
-        $this->assertEquals($firstPA->ipa_code, $searchedFirstWebsite->publicAdministration->ipa_code);
-        $this->assertEquals($secondPA->ipa_code, $searchedSecondWebsite->publicAdministration->ipa_code);
+        $this->assertEquals($firstPublicAdministration->ipa_code, $searchedFirstWebsite->publicAdministration->ipa_code);
+        $this->assertEquals($secondPublicAdministration->ipa_code, $searchedSecondWebsite->publicAdministration->ipa_code);
     }
 }

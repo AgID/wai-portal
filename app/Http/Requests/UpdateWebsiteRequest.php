@@ -67,7 +67,7 @@ class UpdateWebsiteRequest extends StoreWebsiteRequest
      * @param Website $website The website to check
      * @param array|null $permissions The users enabled array
      *
-     * @return array The array of users for whom the website is the last enabled one
+     * @return Collection The collection of users for whom the website is the last enabled one
      */
     protected function checkLastWebsiteForUsers(Website $website, ?array $permissions): Collection
     {

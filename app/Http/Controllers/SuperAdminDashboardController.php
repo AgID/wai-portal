@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\View\View;
+
 class SuperAdminDashboardController extends Controller
 {
     /**
      * Show the admin dashboard.
      *
-     * @return \Illuminate\Http\Response
+     * @return View
      */
-    public function dashboard()
+    public function dashboard(): View
     {
         return view('pages.admin.dashboard');
     }

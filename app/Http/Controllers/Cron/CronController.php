@@ -35,7 +35,7 @@ class CronController extends Controller
      */
     public function checkPendingWebsites(Request $request): JsonResponse
     {
-        dispatch(new ProcessPendingWebsites($request->input('purge', false)));
+        dispatch(new ProcessPendingWebsites($request->input('purge') ?? false));
 
         return response()->json(['message' => 'Pending check submitted'], 202);
     }
