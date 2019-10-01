@@ -18,7 +18,7 @@
         <p>{{ __('Per procedere clicca sul link che ti abbiamo inviato.') }}</p>
     </div>
     <div class="col-sm-4 d-flex align-items-center justify-content-center">
-        <img src="{{ asset('images/verification-email-sent.svg') }}">
+        <img src="{{ asset('images/verification-email-sent.svg') }}" alt="">
     </div>
     <div class="col">
         <p class="font-italic mt-4 mb-0">

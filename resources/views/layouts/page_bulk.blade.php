@@ -17,7 +17,7 @@
             </div>
         </div>
         <div class="page-background-image">
-            <img alt="" src="{{ asset('images/page-bulk-bg.svg') }}">
+            <img alt="" src="{{ asset('images/page-bulk-bg.svg') }}" alt="">
         </div>
     </div>
 @endsection

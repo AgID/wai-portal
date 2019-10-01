@@ -86,7 +86,7 @@ export default (() => {
             if (column.data === 'checkboxes') {
                 column.render = checkboxes => {
                     return [
-                        '<span class="checkboxes">',
+                        `<span class="checkboxes" role="group" aria-label="${column.name}">`,
                         checkboxes.map(checkbox => {
                             return [
                                 checkbox.label && `<label for="${checkbox.name}-${checkbox.value}">`,
@@ -116,7 +116,7 @@ export default (() => {
             if (column.data === 'toggles') {
                 column.render = toggles => {
                     return [
-                        '<div class="toggles-container ml-2">',
+                        `<div class="toggles-container ml-2" role="group" aria-label="${column.name}">`,
                         toggles.map(toggle => {
                             return [
                                 '<div class="toggles mr-4">',
@@ -150,7 +150,7 @@ export default (() => {
             if (column.data === 'radios') {
                 column.render = radios => {
                     return [
-                        '<span class="radios">',
+                        `<span class="radios" role="radiogroup" aria-label="${column.name}">`,
                         radios.map(radio => {
                             return [
                                 radio.label && `<label for="${radio.name}-${radio.value}">`,

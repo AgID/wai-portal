@@ -22,9 +22,7 @@
                     <span class="not-filtered">{{ $columnFilter['filterLabel'] }}</span>
                 </button>
                 <div class="dropdown-menu dropdown-menu-right p-3" aria-labelledby="dropdownFilter-{{ $column }}">
-                    <form>
-                        <div class="filter-values form-group mb-3"></div>
-                    </form>
+                    <div class="filter-values form-group mb-3" role="group" aria-labelledby="dropdownFilter-{{ $column }}"></div>
                     <div class="text-center">
                         <button type="button" class="reset-filters btn btn-xs btn-outline-secondary disabled">{{ __('Azzera filtri') }}</button>
                     </div>

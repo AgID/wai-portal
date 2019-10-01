@@ -62,7 +62,7 @@
                 <div class="invalid-feedback">{{ __('validation.required', ['attribute' => __('validation.attributes.type')]) }}</div>
                 @enderror
             </div>
-            <small id="name-input-help" class="form-text text-muted">
+            <small id="type-input-help" class="form-text text-muted">
                 {{ __('Non sai quale tipologia scegliere per il sito della tua PA?') }}
                 <a href={{ route('faq') }}>{{ __('Consulta le FAQ.') }}</a>
             </small>
