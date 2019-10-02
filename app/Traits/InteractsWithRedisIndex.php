@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Adapter\RedisSentinelPredisAdapter;
 use App\Enums\Logs\EventType;
 use App\Enums\Logs\ExceptionType;
 use App\Models\User;
@@ -11,6 +12,7 @@ use Ehann\RediSearch\Index;
 use Ehann\RediSearch\Query\SearchResult;
 use Ehann\RediSearch\RediSearchRedisClient;
 use Ehann\RedisRaw\PredisAdapter;
+use Ehann\RedisRaw\RedisRawClientInterface;
 use Exception;
 use Illuminate\Support\Arr;
 
@@ -211,10 +213,7 @@ trait InteractsWithRedisIndex
      */
     protected function getRedisIndex(string $index): Index
     {
-        return new Index((new PredisAdapter())->connect(config('database.redis.indexes.' . $index . '.host'),
-        config('database.redis.indexes.' . $index . '.port'), config('database.redis.indexes.' . $index . '.database')),
-        config('database.redis.indexes.' . $index . '.name')
-        );
+        return new Index($this->getConnectedRedisClient($index), config('database.redis.indexes.' . $index . '.name'));
     }
 
     /**
@@ -226,8 +225,7 @@ trait InteractsWithRedisIndex
      */
     protected function getRediSearchRedisClient(string $index): RediSearchRedisClient
     {
-        return new RediSearchRedisClient((new PredisAdapter())->connect(config('database.redis.indexes.' . $index . '.host'),
-        config('database.redis.indexes.' . $index . '.port'), config('database.redis.indexes.' . $index . '.database')));
+        return new RediSearchRedisClient($this->getConnectedRedisClient($index));
     }
 
     /**
@@ -288,5 +286,19 @@ trait InteractsWithRedisIndex
         } catch (FieldNotInSchemaException $exception) {
             report($exception);
         }
+    }
+
+    private function getConnectedRedisClient(string $index): RedisRawClientInterface
+    {
+        if (('ipa' === $index && env('REDIS_REDISEARCH_USE_SENTINELS', false)) || (env('REDIS_USE_SENTINELS', false))) {
+            return (new RedisSentinelPredisAdapter($index))->connect();
+        }
+
+        return (new PredisAdapter())->connect(
+            config('database.redis.indexes.' . $index . '.direct.host'),
+            config('database.redis.indexes.' . $index . '.direct.port'),
+            config('database.redis.indexes.' . $index . '.direct.database'),
+            config('database.redis.indexes.' . $index . '.direct.password')
+        );
     }
 }
