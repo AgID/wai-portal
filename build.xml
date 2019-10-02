@@ -46,6 +46,15 @@
                     <token key="MARIADB_USER" value="${MARIADB_USER}" />
                     <token key="MARIADB_PASSWORD" value="${MARIADB_PASSWORD}" />
                     <token key="MARIADB_ROOT_PASSWORD" value="${MARIADB_ROOT_PASSWORD}" />
+                    <token key="CACHE_CONNECTION" value="${CACHE_CONNECTION}" />
+                    <token key="SESSION_CONNECTION" value="${SESSION_CONNECTION}" />
+                    <token key="QUEUE_REDIS_CONNECTION" value="${QUEUE_REDIS_CONNECTION}" />
+                    <token key="REDIS_SENTINELS" value="${REDIS_SENTINELS}" />
+                    <token key="REDIS_SENTINEL_SERVICE" value="${REDIS_SENTINEL_SERVICE}" />
+                    <token key="REDIS_INDEXES_USE_SENTINELS" value="${REDIS_INDEXES_USE_SENTINELS}" />
+                    <token key="REDIS_REDISEARCH_USE_SENTINELS" value="${REDIS_REDISEARCH_USE_SENTINELS}" />
+                    <token key="REDIS_REDISEARCH_SENTINELS" value="${REDIS_REDISEARCH_SENTINELS}" />
+                    <token key="REDIS_REDISEARCH_SENTINEL_SERVICE" value="${REDIS_REDISEARCH_SENTINEL_SERVICE}" />
                     <token key="MAIL_HOST" value="${MAIL_HOST}" />
                     <token key="MAIL_PORT" value="${MAIL_PORT}" />
                     <token key="MAIL_USERNAME" value="${MAIL_USERNAME}" />
