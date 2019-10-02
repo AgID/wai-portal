@@ -288,6 +288,13 @@ trait InteractsWithRedisIndex
         }
     }
 
+    /**
+     * Retrieve the initialized RediSearch client.
+     *
+     * @param string $index the index name
+     *
+     * @return RedisRawClientInterface the client
+     */
     private function getConnectedRedisClient(string $index): RedisRawClientInterface
     {
         if (('ipa' === $index && env('REDIS_REDISEARCH_USE_SENTINELS', false)) || (env('REDIS_USE_SENTINELS', false))) {
