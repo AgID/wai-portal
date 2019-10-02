@@ -116,26 +116,113 @@ return [
         'indexes' => [
             'ipa' => [
                 'name' => 'IPAIndex',
-                'host' => env('REDIS_REDISEARCH_HOST', '127.0.0.1'),
-                'password' => env('REDIS_REDISEARCH_PASSWORD', null),
-                'port' => env('REDIS_REDISEARCH_PORT', 6379),
-                'database' => 0,
+                'direct' => [
+                    'host' => env('REDIS_REDISEARCH_HOST', '127.0.0.1'),
+                    'password' => env('REDIS_REDISEARCH_PASSWORD'),
+                    'port' => env('REDIS_REDISEARCH_PORT', 6379),
+                    'database' => 0,
+                ],
+                'sentinel' => array_merge(
+                    explode(',', env('REDIS_REDISEARCH_SENTINELS', '')),
+                    [
+                        'options' => [
+                            'replication' => 'sentinel',
+                            'service' => env('REDIS_SENTINEL_REDISEARCH_SERVICE', 'mymaster'),
+                            'parameters' => [
+                                'password' => env('REDIS_REDISEARCH_PASSWORD'),
+                                'database' => 0,
+                            ],
+                        ],
+                    ]
+                ),
             ],
             'websites' => [
                 'name' => 'WebsitesIndex',
-                'host' => env('REDIS_HOST', '127.0.0.1'),
-                'password' => env('REDIS_PASSWORD', null),
-                'port' => env('REDIS_PORT', 6379),
-                'database' => 0,
+                'direct' => [
+                    'host' => env('REDIS_HOST', '127.0.0.1'),
+                    'password' => env('REDIS_PASSWORD'),
+                    'port' => env('REDIS_PORT', 6379),
+                    'database' => 0,
+                ],
+                'sentinel' => array_merge(
+                    explode(',', env('REDIS_SENTINELS', '')),
+                    [
+                        'options' => [
+                            'replication' => 'sentinel',
+                            'service' => env('REDIS_SENTINEL_SERVICE', 'mymaster'),
+                            'parameters' => [
+                                'password' => env('REDIS_PASSWORD'),
+                                'database' => 0,
+                            ],
+                        ],
+                    ]
+                ),
             ],
             'users' => [
                 'name' => 'UsersIndex',
-                'host' => env('REDIS_HOST', '127.0.0.1'),
-                'password' => env('REDIS_PASSWORD', null),
-                'port' => env('REDIS_PORT', 6379),
-                'database' => 0,
+                'direct' => [
+                    'host' => env('REDIS_HOST', '127.0.0.1'),
+                    'password' => env('REDIS_PASSWORD'),
+                    'port' => env('REDIS_PORT', 6379),
+                    'database' => 0,
+                ],
+                'sentinel' => array_merge(
+                    explode(',', env('REDIS_SENTINELS', '')),
+                    [
+                        'options' => [
+                            'replication' => 'sentinel',
+                            'service' => env('REDIS_SENTINEL_SERVICE', 'mymaster'),
+                            'parameters' => [
+                                'password' => env('REDIS_PASSWORD'),
+                                'database' => 0,
+                            ],
+                        ],
+                    ]
+                ),
             ],
         ],
+
+        'queue-sentinel' => array_merge(
+            explode(',', env('REDIS_SENTINELS', '')),
+            [
+                'options' => [
+                    'replication' => 'sentinel',
+                    'service' => env('REDIS_SENTINEL_SERVICE', 'mymaster'),
+                    'parameters' => [
+                        'password' => env('REDIS_PASSWORD'),
+                        'database' => env('REDIS_QUEUE_DB', 3),
+                    ],
+                ],
+            ]
+        ),
+
+        'sessions-sentinel' => array_merge(
+            explode(',', env('REDIS_SENTINELS', '')),
+            [
+                'options' => [
+                    'replication' => 'sentinel',
+                    'service' => env('REDIS_SENTINEL_SERVICE', 'mymaster'),
+                    'parameters' => [
+                        'password' => env('REDIS_PASSWORD'),
+                        'database' => env('REDIS_SESSIONS_DB', 2),
+                    ],
+                ],
+            ]
+        ),
+
+        'cache-sentinel' => array_merge(
+            explode(',', env('REDIS_SENTINELS', '')),
+            [
+                'options' => [
+                    'replication' => 'sentinel',
+                    'service' => env('REDIS_SENTINEL_SERVICE', 'mymaster'),
+                    'parameters' => [
+                        'password' => env('REDIS_PASSWORD'),
+                        'database' => env('REDIS_CACHE_DB', 1),
+                    ],
+                ],
+            ]
+        ),
     ],
 
 ];
