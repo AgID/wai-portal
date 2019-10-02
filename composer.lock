@@ -1084,23 +1084,23 @@
         },
         {
             "name": "italia/spid-laravel",
-            "version": "v0.6.0-beta",
+            "version": "v0.7.0-beta",
             "source": {
                 "type": "git",
                 "url": "https://github.com/italia/spid-laravel.git",
-                "reference": "21fe5b891eb0c62196668145b68ad9ae96663210"
+                "reference": "4aee0eb7d25e316c713bf636ae0a51a9ab28852f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/italia/spid-laravel/zipball/21fe5b891eb0c62196668145b68ad9ae96663210",
-                "reference": "21fe5b891eb0c62196668145b68ad9ae96663210",
+                "url": "https://api.github.com/repos/italia/spid-laravel/zipball/4aee0eb7d25e316c713bf636ae0a51a9ab28852f",
+                "reference": "4aee0eb7d25e316c713bf636ae0a51a9ab28852f",
                 "shasum": ""
             },
             "require": {
                 "cweagans/composer-patches": "^1.6",
                 "illuminate/config": ">=5.0",
                 "illuminate/support": ">=5.0",
-                "onelogin/php-saml": "3.2.1",
+                "onelogin/php-saml": "3.3.0",
                 "php": "^7.2.0"
             },
             "require-dev": {
@@ -1120,7 +1120,7 @@
                 },
                 "patches": {
                     "onelogin/php-saml": {
-                        "Compatibility with SPID": "https://rawgit.com/italia/spid-laravel/master/patches/php-saml-3-spid.patch"
+                        "Compatibility with SPID": "https://rawgit.com/italia/spid-laravel/master/patches/php-saml-3.3.0-spid.patch"
                     }
                 }
             },
@@ -1146,7 +1146,7 @@
                 "laravel",
                 "laravel 5"
             ],
-            "time": "2019-09-26T11:59:22+00:00"
+            "time": "2019-10-01T08:37:16+00:00"
         },
         {
             "name": "jakub-onderka/php-console-color",
@@ -1793,16 +1793,16 @@
         },
         {
             "name": "onelogin/php-saml",
-            "version": "3.2.1",
+            "version": "3.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/onelogin/php-saml.git",
-                "reference": "845a6ce39e839ed9e687f80bffb02ffde16a70d0"
+                "reference": "a79a9e3cdd414ec177aad916ce741210052620c7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/onelogin/php-saml/zipball/845a6ce39e839ed9e687f80bffb02ffde16a70d0",
-                "reference": "845a6ce39e839ed9e687f80bffb02ffde16a70d0",
+                "url": "https://api.github.com/repos/onelogin/php-saml/zipball/a79a9e3cdd414ec177aad916ce741210052620c7",
+                "reference": "a79a9e3cdd414ec177aad916ce741210052620c7",
                 "shasum": ""
             },
             "require": {
@@ -1839,7 +1839,7 @@
                 "onelogin",
                 "saml"
             ],
-            "time": "2019-06-25T10:28:20+00:00",
+            "time": "2019-09-11T13:56:06+00:00",
             "extra": {
                 "patches_applied": {
                     "Compatibility with SPID": "https://rawgit.com/italia/spid-laravel/master/patches/php-saml-3-spid.patch"
