@@ -44,7 +44,7 @@
                 @endcomponent
             </div>
             <div class="col-md-6 text-center d-none d-md-block">
-                <img src="{{ asset('images/add-websites.svg') }}">
+                <img src="{{ asset('images/add-websites.svg') }}" alt="">
             </div>
         </div>
     </div>

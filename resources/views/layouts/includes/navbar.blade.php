@@ -1,4 +1,4 @@
-<div id="menu" class="it-header-navbar-wrapper{{ $isSuperAdmin ? ' super-admin' : '' }}">
+<div class="it-header-navbar-wrapper{{ $isSuperAdmin ? ' super-admin' : '' }}">
     <div class="container">
         <div class="row">
             <div class="col-12">

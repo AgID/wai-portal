@@ -7,6 +7,11 @@
   }
 }
 
+// Skiplinks
+.skiplinks a {
+  color: $black;
+}
+
 // Override bootstrap-italia cursor: not-allowed
 .form-control-plaintext {
   cursor: default;

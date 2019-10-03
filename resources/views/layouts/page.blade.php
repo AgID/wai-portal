@@ -9,7 +9,7 @@
         @include('layouts.includes.graphic_background')
         @endif
 
-        
+
         @if (Breadcrumbs::exists())
         <div class="container mt-2 mt-sm-3 mt-lg-5">
         @include('layouts.includes.breadcrumbs', ['breadcrumbs' => Breadcrumbs::generate()])
@@ -31,7 +31,7 @@
             </div>
             @endunless
             <div class="absolute-bottom page-background-image">
-                <img alt="" src="{{ asset('images/page-bg.svg') }}">
+                <img alt="" src="{{ asset('images/page-bg.svg') }}" alt="">
             </div>
         </div>
         @if ($graphicBackground ?? false)

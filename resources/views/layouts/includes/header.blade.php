@@ -40,7 +40,9 @@
                 </div>
             </div>
         </div>
+        <div id="menu">
         @includeWhen($navbar ?? true, 'layouts.includes.navbar')
+        </div>
     </div>
     @yield('after-header')
 </div>
