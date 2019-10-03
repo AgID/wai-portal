@@ -38,7 +38,7 @@
             index="0"
             isDefault="true" />
 
-        <md:AttributeConsumingService index="1">
+        <md:AttributeConsumingService index="0">
             <md:ServiceName xml:lang="it">Web Analytics Italia</md:ServiceName>
             <md:ServiceDescription xml:lang="it">I dati dei siti web della PA</md:ServiceDescription>
             <md:RequestedAttribute Name="name" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:basic"/>
