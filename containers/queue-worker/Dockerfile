@@ -17,8 +17,7 @@ RUN rm /var/cache/apk/*
 COPY supervisord.conf /etc/supervisord.conf
 
 # cron scheduler
-COPY ./cron-laravel-scheduler /etc/cron.d/
-RUN chmod 644 /etc/cron.d/cron-laravel-scheduler
+COPY ./cron-laravel-scheduler /
 
 # entrypoint
 COPY ./entrypoint.sh /entrypoint.sh
