@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4bfbefdcbc502f1144be575568fc495b",
+    "content-hash": "7d7c85a9459caa111f2ca92a0d19f7aa",
     "packages": [
         {
             "name": "bensampo/laravel-enum",
@@ -1084,16 +1084,16 @@
         },
         {
             "name": "italia/spid-laravel",
-            "version": "v0.7.0-beta",
+            "version": "v0.8.0-beta",
             "source": {
                 "type": "git",
                 "url": "https://github.com/italia/spid-laravel.git",
-                "reference": "4aee0eb7d25e316c713bf636ae0a51a9ab28852f"
+                "reference": "6c9cceec2d6a146450921129b00ce3f0be1baacf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/italia/spid-laravel/zipball/4aee0eb7d25e316c713bf636ae0a51a9ab28852f",
-                "reference": "4aee0eb7d25e316c713bf636ae0a51a9ab28852f",
+                "url": "https://api.github.com/repos/italia/spid-laravel/zipball/6c9cceec2d6a146450921129b00ce3f0be1baacf",
+                "reference": "6c9cceec2d6a146450921129b00ce3f0be1baacf",
                 "shasum": ""
             },
             "require": {
@@ -1146,7 +1146,7 @@
                 "laravel",
                 "laravel 5"
             ],
-            "time": "2019-10-01T08:37:16+00:00"
+            "time": "2019-10-03T13:11:29+00:00"
         },
         {
             "name": "jakub-onderka/php-console-color",
