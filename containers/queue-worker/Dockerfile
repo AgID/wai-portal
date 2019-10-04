@@ -5,13 +5,14 @@ FROM php:${PHP_VERSION}-alpine
 LABEL maintainer="Davide Porrovecchio <davide.porrovecchio@agid.gov.it>"
 
 # supervisord
-RUN apk --update add supervisor
+RUN apk --update add supervisor icu-dev
 
 # php required extensions
-RUN docker-php-ext-install pdo_mysql bcmath
+RUN docker-php-ext-install pdo_mysql bcmath intl
 
-# clean apk cache
-RUN rm /var/cache/apk/*
+# clean apk
+RUN apk del icu-dev \
+    && rm /var/cache/apk/*
 
 # supervisord conf
 COPY supervisord.conf /etc/supervisord.conf
