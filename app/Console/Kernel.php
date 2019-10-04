@@ -20,10 +20,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        $schedule->job(new ProcessPublicAdministrationsUpdateFromIpa())->dailyAt('06:30')->runInBackground()->onOneServer();
-        $schedule->job(new ProcessPendingWebsites())->hourly()->runInBackground()->onOneServer();
-        $schedule->job(new ProcessPendingWebsites(true))->dailyAt('04:30')->runInBackground()->onOneServer();
-        $schedule->job(new MonitorWebsitesTracking())->daily()->runInBackground()->onOneServer();
+        $schedule->job(new ProcessPublicAdministrationsUpdateFromIpa())->dailyAt('06:30')->onOneServer();
+        $schedule->job(new ProcessPendingWebsites())->hourly()->onOneServer();
+        $schedule->job(new ProcessPendingWebsites(true))->dailyAt('04:30')->onOneServer();
+        $schedule->job(new MonitorWebsitesTracking())->daily()->onOneServer();
     }
 
     /**
