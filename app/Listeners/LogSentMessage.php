@@ -3,9 +3,10 @@
 namespace App\Listeners;
 
 use App\Enums\Logs\EventType;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Events\MessageSent;
 
-class LogSentMessage
+class LogSentMessage implements ShouldQueue
 {
     /**
      * Log the MessageSent event.
