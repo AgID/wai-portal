@@ -161,6 +161,7 @@ return [
         ExceptionType::INVALID_OPERATION => 'Errore comando non valido',
         ExceptionType::INVALID_USER_STATUS => 'Error stato utente non valido',
         ExceptionType::EXPIRED_INVITATION_LINK_USAGE => 'Errore link invito scaduto',
+        ExceptionType::EXPIRED_VERIFICATION_LINK_USAGE => 'Errore link verifica scaduto',
     ],
 
     JobType::class => [

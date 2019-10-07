@@ -4,20 +4,19 @@ namespace App\Exceptions;
 
 use App\Enums\Logs\EventType;
 use App\Enums\Logs\ExceptionType;
-use Illuminate\Http\RedirectResponse;
-use Symfony\Component\HttpKernel\Exception\HttpException;
+use Illuminate\Http\Response;
 
 /**
  * Expired invitation exception.
  */
-class ExpiredInvitationException extends HttpException
+class ExpiredInvitationException extends ExpiredUrlException
 {
     /**
      * Create a new exception instance.
      */
     public function __construct()
     {
-        parent::__construct(403, 'Invitation validity ended.');
+        parent::__construct('Invitation validity ended.');
     }
 
     /**
@@ -40,13 +39,8 @@ class ExpiredInvitationException extends HttpException
      *
      * @return RedirectResponse the response
      */
-    public function render(): RedirectResponse
+    public function render(): Response
     {
-        return redirect()->home()->withNotification([
-            'title' => __('errore nella richiesta'),
-            'message' => __("L'invito che hai usato non è più valido, contatta un amministratore per riceverne uno."),
-            'status' => 'error',
-            'icon' => 'it-close-circle',
-        ]);
+        return $this->buildResponse(true);
     }
 }

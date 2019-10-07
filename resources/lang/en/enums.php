@@ -161,6 +161,7 @@ return [
         ExceptionType::INVALID_OPERATION => 'Invalid operation error',
         ExceptionType::INVALID_USER_STATUS => 'Invalid user status error',
         ExceptionType::EXPIRED_INVITATION_LINK_USAGE => 'Expired user invitation link used',
+        ExceptionType::EXPIRED_VERIFICATION_LINK_USAGE => 'Expired user verification link used',
     ],
 
     JobType::class => [

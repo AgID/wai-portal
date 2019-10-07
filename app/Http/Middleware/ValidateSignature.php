@@ -2,14 +2,15 @@
 
 namespace App\Http\Middleware;
 
-use App\Enums\UserRole;
 use App\Enums\UserStatus;
 use App\Events\User\UserInvitationLinkExpired;
 use App\Exceptions\ExpiredInvitationException;
+use App\Exceptions\ExpiredVerificationException;
 use App\Models\User;
 use Carbon\Carbon;
 use Closure;
 use Illuminate\Routing\Middleware\ValidateSignature as Middleware;
+use Illuminate\Support\Facades\Route;
 
 /**
  * Generated URL validation middleware.
@@ -30,13 +31,15 @@ class ValidateSignature extends Middleware
     {
         $expire = $request->query('expires');
         $uuid = $request->route('uuid');
-        if ($expire && $uuid && Carbon::now()->getTimestamp() > $expire) {
+        if ($expire && $uuid && 'verification.verify' === Route::currentRouteName() && Carbon::now()->getTimestamp() > $expire) {
             $user = User::where('uuid', $uuid)->first();
-            if ($user->status->is(UserStatus::INVITED) && (!$user->isA(UserRole::SUPER_ADMIN))) {
+            if ($user->status->is(UserStatus::INVITED)) {
                 event(new UserInvitationLinkExpired($user));
 
                 throw new ExpiredInvitationException();
             }
+
+            throw new ExpiredVerificationException();
         }
 
         return parent::handle($request, $next);
