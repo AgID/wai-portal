@@ -2,12 +2,17 @@
 
 namespace Tests\Feature;
 
+use App\Enums\UserRole;
 use App\Enums\UserStatus;
 use App\Events\User\UserInvitationLinkExpired;
 use App\Events\User\UserUpdated;
+use App\Exceptions\ExpiredInvitationException;
+use App\Exceptions\ExpiredVerificationException;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Routing\Exceptions\InvalidSignatureException;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
@@ -48,6 +53,8 @@ class EmailVerificationTest extends TestCase
             'familyName' => 'Cognome',
             'name' => 'Nome',
         ]);
+
+        $this->withoutExceptionHandling();
     }
 
     /**
@@ -57,7 +64,7 @@ class EmailVerificationTest extends TestCase
     {
         $signedUrl = URL::temporarySignedRoute(
             'verification.verify',
-            Carbon::now()->addMinutes(Config::get('auth.verification.expire', 60)),
+            Carbon::now()->addDays(Config::get('auth.verification.expire', 7)),
             [
                 'uuid' => $this->user->uuid,
                 'hash' => base64_encode(Hash::make($this->user->email)),
@@ -86,13 +93,14 @@ class EmailVerificationTest extends TestCase
 
         $signedUrl = URL::temporarySignedRoute(
             'verification.verify',
-            Carbon::now()->addMinutes(Config::get('auth.verification.expire', 60)),
+            Carbon::now()->addDays(Config::get('auth.verification.expire', 7)),
             [
                 'uuid' => $this->user->uuid,
                 'hash' => base64_encode(Hash::make($oldEmail)),
             ]
         );
 
+        $this->expectException(AuthorizationException::class);
         $this->actingAs($this->user)
             ->withSession([
                 'spid_sessionIndex' => 'fake-session-index',
@@ -111,12 +119,13 @@ class EmailVerificationTest extends TestCase
 
         $signedUrl = URL::temporarySignedRoute(
             'verification.verify',
-            Carbon::now()->addMinutes(Config::get('auth.verification.expire', 60)), [
+            Carbon::now()->addDays(Config::get('auth.verification.expire', 7)), [
             'uuid' => $this->user->uuid,
             'hash' => base64_encode(Hash::make($this->user->email)),
         ]);
         $signedUrl = str_replace($this->user->uuid, Str::uuid()->toString(), $signedUrl);
 
+        $this->expectException(InvalidSignatureException::class);
         $this->actingAs($this->user)
             ->withSession([
                 'spid_sessionIndex' => 'fake-session-index',
@@ -133,9 +142,9 @@ class EmailVerificationTest extends TestCase
     }
 
     /**
-     * Test mail verification fail due to expired URL validity.
+     * Test invitation verification fail due to expired URL validity.
      */
-    public function testEmailVerificationFailExpiredLink(): void
+    public function testInvitationVerificationFailExpiredLink(): void
     {
         Event::fake();
 
@@ -143,30 +152,80 @@ class EmailVerificationTest extends TestCase
         $this->user->save();
         $signedUrl = URL::temporarySignedRoute(
             'verification.verify',
-            Carbon::now()->subMinutes(Config::get('auth.verification.expire', 60) + 1), [
+            Carbon::now()->subDays(Config::get('auth.verification.expire', 7) + 1), [
             'uuid' => $this->user->uuid,
             'hash' => base64_encode(Hash::make($this->user->email)),
         ]);
 
+        $this->expectException(ExpiredInvitationException::class);
         $this->actingAs($this->user)
             ->withSession([
                 'spid_sessionIndex' => 'fake-session-index',
                 'spid_user' => $this->spidUser,
             ])
             ->get($signedUrl)
-            ->assertRedirect(route('home'))
-            ->assertSessionHas(
-                'notification',
-                [
-                    'title' => __('errore nella richiesta'),
-                    'message' => __("L'invito che hai usato non è più valido, contatta un amministratore per riceverne uno."),
-                    'status' => 'error',
-                    'icon' => 'it-close-circle',
-                ]
+            ->assertViewIs('auth.url_expired')
+            ->assertViewHas(
+                'invitation',
+                true
             );
 
         Event::assertDispatched(UserInvitationLinkExpired::class, function ($event) {
             return $event->getUser()->uuid === $this->user->uuid;
         });
+    }
+
+    public function testEmailVerificationFailExpiredLink(): void
+    {
+        Event::fake();
+
+        $signedUrl = URL::temporarySignedRoute(
+            'verification.verify',
+            Carbon::now()->subDays(Config::get('auth.verification.expire', 7) + 1), [
+            'uuid' => $this->user->uuid,
+            'hash' => base64_encode(Hash::make($this->user->email)),
+        ]);
+
+        $this->expectException(ExpiredVerificationException::class);
+        $this->actingAs($this->user)
+            ->withSession([
+                'spid_sessionIndex' => 'fake-session-index',
+                'spid_user' => $this->spidUser,
+            ])
+            ->get($signedUrl)
+            ->assertViewIs('auth.url_expired')
+            ->assertViewHas(
+                'invitation',
+                false
+            );
+
+        Event::assertNotDispatched(UserInvitationLinkExpired::class);
+    }
+
+    public function testEmailVerificationFailExpiredLinkSuperAdmin(): void
+    {
+        Event::fake();
+        $this->user->assign(UserRole::SUPER_ADMIN);
+
+        $signedUrl = URL::temporarySignedRoute(
+            'admin.verification.verify',
+            Carbon::now()->subDays(Config::get('auth.verification.expire', 7) + 1), [
+            'uuid' => $this->user->uuid,
+            'hash' => base64_encode(Hash::make($this->user->email)),
+        ]);
+
+        $this->expectException(InvalidSignatureException::class);
+        $this->actingAs($this->user)
+            ->get($signedUrl)
+            ->assertViewIs('errors.403')
+            ->assertViewHas(
+                [
+                    'userMessage' => __('Il link che hai usato non è valido oppure è scaduto.'),
+                    'exception' => new InvalidSignatureException(),
+                ]
+            )
+            ->assertForbidden();
+
+        Event::assertNotDispatched(UserInvitationLinkExpired::class);
     }
 }

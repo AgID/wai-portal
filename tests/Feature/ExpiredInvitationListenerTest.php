@@ -16,7 +16,7 @@ use Tests\TestCase;
 /**
  * Dynamically generated URL validation middleware test.
  */
-class ValidateSignatureMiddlewareTest extends TestCase
+class ExpiredInvitationListenerTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -77,32 +77,5 @@ class ValidateSignatureMiddlewareTest extends TestCase
                 return $mail->hasTo($this->publicAdministrationAdmin->email, $this->publicAdministrationAdmin->full_name);
             }
         );
-    }
-
-    /**
-     * Test no notification to public administrator is sent for expired verification link event
-     * due to related user is not in "invited" state.
-     */
-    public function testExpiredLinkVisitedNotInvited(): void
-    {
-        $user = factory(User::class)->create();
-        $this->publicAdministration->users()->sync([$user->id]);
-        event(new UserInvitationLinkExpired($user));
-        Notification::assertNothingSent();
-    }
-
-    /**
-     * Test no notification to public administrator is sent for expired verification link event
-     * due to related user is a super-admin.
-     */
-    public function testExpiredLinkVisitedSuperAdmin(): void
-    {
-        $user = factory(User::class)->state('invited')->create();
-        $this->publicAdministration->users()->sync([$user->id]);
-        Bouncer::scope()->onceTo(0, function () use ($user) {
-            $user->assign(UserRole::SUPER_ADMIN);
-        });
-        event(new UserInvitationLinkExpired($user));
-        Notification::assertNothingSent();
     }
 }

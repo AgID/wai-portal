@@ -31,6 +31,7 @@ class ValidateSignature extends Middleware
     {
         $expire = $request->query('expires');
         $uuid = $request->route('uuid');
+
         if ($expire && $uuid && 'verification.verify' === Route::currentRouteName() && Carbon::now()->getTimestamp() > $expire) {
             $user = User::where('uuid', $uuid)->first();
             if ($user->status->is(UserStatus::INVITED)) {
