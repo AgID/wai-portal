@@ -3,8 +3,8 @@
 namespace Tests\Feature;
 
 use App\Enums\UserStatus;
-use App\Events\User\UserUpdated;
 use App\Events\User\UserInvitationLinkExpired;
+use App\Events\User\UserUpdated;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;

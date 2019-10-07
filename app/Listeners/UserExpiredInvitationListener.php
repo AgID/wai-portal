@@ -8,8 +8,16 @@ use App\Enums\UserStatus;
 use App\Events\User\UserInvitationLinkExpired;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
+/**
+ * Expired user verification URL received events listener.
+ */
 class UserExpiredInvitationListener implements ShouldQueue
 {
+    /**
+     * Handle the expired verification URL received events.
+     *
+     * @param UserInvitationLinkExpired $event the event
+     */
     public function handle(UserInvitationLinkExpired $event): void
     {
         $user = $event->getUser();

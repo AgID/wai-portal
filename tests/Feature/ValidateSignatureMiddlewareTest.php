@@ -13,14 +13,30 @@ use Illuminate\Support\Facades\Notification;
 use Silber\Bouncer\BouncerFacade as Bouncer;
 use Tests\TestCase;
 
+/**
+ * Dynamically generated URL validation middleware test.
+ */
 class ValidateSignatureMiddlewareTest extends TestCase
 {
     use RefreshDatabase;
 
+    /**
+     * The testing public administration.
+     *
+     * @var PublicAdministration the public administration
+     */
     private $publicAdministration;
 
+    /**
+     * The public administration administrator.
+     *
+     * @var User the public administration administrator
+     */
     private $publicAdministrationAdmin;
 
+    /**
+     * Pre-test setup.
+     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -34,6 +50,9 @@ class ValidateSignatureMiddlewareTest extends TestCase
         Notification::fake();
     }
 
+    /**
+     * Test notification to public administrator is sent for expired verification link event.
+     */
     public function testExpiredLinkVisited(): void
     {
         $user = factory(User::class)->state('invited')->create();
@@ -60,6 +79,10 @@ class ValidateSignatureMiddlewareTest extends TestCase
         );
     }
 
+    /**
+     * Test no notification to public administrator is sent for expired verification link event
+     * due to related user is not in "invited" state.
+     */
     public function testExpiredLinkVisitedNotInvited(): void
     {
         $user = factory(User::class)->create();
@@ -68,6 +91,10 @@ class ValidateSignatureMiddlewareTest extends TestCase
         Notification::assertNothingSent();
     }
 
+    /**
+     * Test no notification to public administrator is sent for expired verification link event
+     * due to related user is a super-admin.
+     */
     public function testExpiredLinkVisitedSuperAdmin(): void
     {
         $user = factory(User::class)->state('invited')->create();

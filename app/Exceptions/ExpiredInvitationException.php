@@ -7,13 +7,22 @@ use App\Enums\Logs\ExceptionType;
 use Illuminate\Http\RedirectResponse;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
+/**
+ * Expired invitation exception.
+ */
 class ExpiredInvitationException extends HttpException
 {
+    /**
+     * Create a new exception instance.
+     */
     public function __construct()
     {
         parent::__construct(403, 'Invitation validity ended.');
     }
 
+    /**
+     * Report the exception.
+     */
     public function report(): void
     {
         logger()->error(
@@ -26,6 +35,11 @@ class ExpiredInvitationException extends HttpException
         );
     }
 
+    /**
+     * Render the exception into an HTTP response.
+     *
+     * @return RedirectResponse the response
+     */
     public function render(): RedirectResponse
     {
         return redirect()->home()->withNotification([

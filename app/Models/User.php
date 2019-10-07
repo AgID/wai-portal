@@ -321,7 +321,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * Notify website archived.
      *
      * @param Website $website the website
-     * @param bool $manual wether the website was archived manually
+     * @param bool $manual whether the website was archived manually
      */
     public function sendWebsiteArchivedNotification(Website $website, bool $manual): void
     {
@@ -336,6 +336,11 @@ class User extends Authenticatable implements MustVerifyEmail
         $this->notify(new PrimaryWebsiteNotTrackingUserEmail());
     }
 
+    /**
+     * Notify an expired verification URL was used.
+     *
+     * @param User $user the user the expired URL refers to
+     */
     public function sendExpiredInvitationLinkVisited(User $user): void
     {
         $this->notify(new ExpiredInvitationLinkVisitedEmail($user));

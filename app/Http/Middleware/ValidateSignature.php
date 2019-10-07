@@ -11,9 +11,21 @@ use Carbon\Carbon;
 use Closure;
 use Illuminate\Routing\Middleware\ValidateSignature as Middleware;
 
+/**
+ * Generated URL validation middleware.
+ */
 class ValidateSignature extends Middleware
 {
-
+    /**
+     * Handle an incoming request.
+     *
+     * @param \Illuminate\Http\Request $request the request
+     * @param \Closure $next the next closure
+     *
+     * @throws \App\Exceptions\ExpiredInvitationException if link is no longer valid
+     *
+     * @return \Illuminate\Http\Response the response
+     */
     public function handle($request, Closure $next)
     {
         $expire = $request->query('expires');
