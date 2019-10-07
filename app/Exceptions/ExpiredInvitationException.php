@@ -44,7 +44,7 @@ class ExpiredInvitationException extends HttpException
     {
         return redirect()->home()->withNotification([
             'title' => __('errore nella richiesta'),
-            'message' => __('L\'invito che hai usato non è più valido. Contatta un amministratore per ricevere uno nuovo link.'),
+            'message' => __("L'invito che hai usato non è più valido, contatta un amministratore per riceverne uno."),
             'status' => 'error',
             'icon' => 'it-close-circle',
         ]);
