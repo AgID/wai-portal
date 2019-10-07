@@ -200,6 +200,8 @@ class EventType extends Enum implements LocalizedEnum
      */
     public const WEBSITES_INDEXING_COMPLETED = 37;
 
+    public const EXPIRED_USER_INVITATION_USED = 38;
+
     /**
      * Mail sent event.
      */

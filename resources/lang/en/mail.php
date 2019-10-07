@@ -29,4 +29,12 @@ return [
         ],
     ],
 
+    'user' => [
+        'expired_invitation_link_visited' => [
+            'user' => [
+                'title' => 'Expired invitation used',
+            ],
+        ],
+    ],
+
 ];

@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Events\User\UserInvited;
+use App\Events\User\UserInvitationLinkExpired;
 use App\Listeners\CheckPendingWebsiteJobsEventsSubscriber;
 use App\Listeners\CheckWebsitesMonitoringJobEventsSubscriber;
 use App\Listeners\LogSentMessage;
@@ -12,6 +13,7 @@ use App\Listeners\SPIDEventSubscriber;
 use App\Listeners\UpdatePublicAdministrationsFromIpaJobEventsSubscriber;
 use App\Listeners\UserEventsSubscriber;
 use App\Listeners\UsersJobEventsSubscriber;
+use App\Listeners\UserExpiredInvitationListener;
 use App\Listeners\WebsiteEventsSubscriber;
 use App\Listeners\WebsitesJobEventSubscriber;
 use Illuminate\Auth\Events\Registered;
@@ -38,6 +40,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         MessageSent::class => [
             LogSentMessage::class,
+        ],
+        UserInvitationLinkExpired::class => [
+            UserExpiredInvitationListener::class,
         ],
     ];
 
