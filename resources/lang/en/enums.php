@@ -159,6 +159,7 @@ return [
         ExceptionType::INVALID_WEBSITE_STATUS => 'Invalid website status error',
         ExceptionType::INVALID_OPERATION => 'Invalid operation error',
         ExceptionType::INVALID_USER_STATUS => 'Invalid user status error',
+        ExceptionType::EXPIRED_INVITATION_LINK_USAGE => 'Expired user invitation link used',
     ],
 
     JobType::class => [

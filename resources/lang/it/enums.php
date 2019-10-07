@@ -159,6 +159,7 @@ return [
         ExceptionType::INVALID_WEBSITE_STATUS => 'Errore stato sito web non valido',
         ExceptionType::INVALID_OPERATION => 'Errore comando non valido',
         ExceptionType::INVALID_USER_STATUS => 'Error stato utente non valido',
+        ExceptionType::EXPIRED_INVITATION_LINK_USAGE => 'Errore link invito scaduto',
     ],
 
     JobType::class => [
