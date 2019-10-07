@@ -30,14 +30,14 @@ class ExpiredInvitationException extends ExpiredUrlException
                 'event' => EventType::EXCEPTION,
                 'exception_type' => ExceptionType::EXPIRED_INVITATION_LINK_USAGE,
                 'exception' => $this,
-            ],
+            ]
         );
     }
 
     /**
      * Render the exception into an HTTP response.
      *
-     * @return RedirectResponse the response
+     * @return Response the response
      */
     public function render(): Response
     {

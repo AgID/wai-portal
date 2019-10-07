@@ -23,7 +23,8 @@ class ValidateSignature extends Middleware
      * @param \Illuminate\Http\Request $request the request
      * @param \Closure $next the next closure
      *
-     * @throws \App\Exceptions\ExpiredInvitationException if link is no longer valid
+     * @throws \App\Exceptions\ExpiredInvitationException if invitation link is expired
+     * @throws \App\Exceptions\ExpiredVerificationException if verification link is expired
      *
      * @return \Illuminate\Http\Response the response
      */

@@ -6,13 +6,22 @@ use App\Enums\Logs\EventType;
 use App\Enums\Logs\ExceptionType;
 use Illuminate\Http\Response;
 
+/**
+ * Expired user verification exception.
+ */
 class ExpiredVerificationException extends ExpiredUrlException
 {
+    /**
+     * Create a new exception instance.
+     */
     public function __construct()
     {
         parent::__construct('Verification link validity ended.');
     }
 
+    /**
+     * Report the exception.
+     */
     public function report(): void
     {
         logger()->error(
@@ -25,6 +34,11 @@ class ExpiredVerificationException extends ExpiredUrlException
         );
     }
 
+    /**
+     * Render the exception into an HTTP response.
+     *
+     * @return Response the response
+     */
     public function render(): Response
     {
         return $this->buildResponse();

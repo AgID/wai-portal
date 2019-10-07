@@ -142,7 +142,7 @@ class EmailVerificationTest extends TestCase
     }
 
     /**
-     * Test invitation verification fail due to expired URL validity.
+     * Test invitation verification fail due to expired URL.
      */
     public function testInvitationVerificationFailExpiredLink(): void
     {
@@ -175,6 +175,9 @@ class EmailVerificationTest extends TestCase
         });
     }
 
+    /**
+     * Test email verification fail due to expired URL.
+     */
     public function testEmailVerificationFailExpiredLink(): void
     {
         Event::fake();
@@ -202,6 +205,9 @@ class EmailVerificationTest extends TestCase
         Event::assertNotDispatched(UserInvitationLinkExpired::class);
     }
 
+    /**
+     * Test email verification fail due to expired URL for super-admin.
+     */
     public function testEmailVerificationFailExpiredLinkSuperAdmin(): void
     {
         Event::fake();
