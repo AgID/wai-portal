@@ -19,13 +19,14 @@ use App\Models\User;
 use App\Traits\InteractsWithRedisIndex;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Events\Verified;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Support\Facades\Date;
 
 /**
  * Users related events subscriber.
  */
-class UserEventsSubscriber
+class UserEventsSubscriber implements ShouldQueue
 {
     use InteractsWithRedisIndex;
 

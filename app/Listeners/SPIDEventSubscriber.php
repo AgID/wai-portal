@@ -8,6 +8,9 @@ use App\Models\User;
 use Italia\SPIDAuth\Events\LoginEvent;
 use Italia\SPIDAuth\Events\LogoutEvent;
 
+/**
+ * SPID related events subscriber.
+ */
 class SPIDEventSubscriber
 {
     /**
@@ -15,7 +18,7 @@ class SPIDEventSubscriber
      *
      * @param LoginEvent $event
      */
-    public function onSPIDLogin(LoginEvent $event)
+    public function onSPIDLogin(LoginEvent $event): void
     {
         auth()->logout();
         $SPIDUser = $event->getSPIDUser();
@@ -32,7 +35,7 @@ class SPIDEventSubscriber
      *
      * @param LogoutEvent $event
      */
-    public function onSPIDLogout(LogoutEvent $event)
+    public function onSPIDLogout(LogoutEvent $event): void
     {
         if (auth()->check()) {
             $user = auth()->user();
@@ -48,7 +51,7 @@ class SPIDEventSubscriber
      *
      * @param \Illuminate\Events\Dispatcher $events
      */
-    public function subscribe($events)
+    public function subscribe($events): void
     {
         $events->listen(
             'Italia\SPIDAuth\Events\LoginEvent',

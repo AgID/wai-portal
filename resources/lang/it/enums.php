@@ -143,6 +143,7 @@ return [
         EventType::PRIMARY_WEBSITE_NOT_TRACKING => 'Tracciamento sito istituzionale non attivo',
         EventType::USERS_INDEXING_COMPLETED => 'Aggiornamento indice utenti completato',
         EventType::WEBSITES_INDEXING_COMPLETED => 'Aggiornamento indice siti web completato',
+        EventType::EXPIRED_USER_INVITATION_USED => 'Tentativo di attivazione con invito scaduto',
         EventType::MAIL_SENT => 'Email inviata',
     ],
 
@@ -159,6 +160,8 @@ return [
         ExceptionType::INVALID_WEBSITE_STATUS => 'Errore stato sito web non valido',
         ExceptionType::INVALID_OPERATION => 'Errore comando non valido',
         ExceptionType::INVALID_USER_STATUS => 'Error stato utente non valido',
+        ExceptionType::EXPIRED_INVITATION_LINK_USAGE => 'Errore link invito scaduto',
+        ExceptionType::EXPIRED_VERIFICATION_LINK_USAGE => 'Errore link verifica scaduto',
     ],
 
     JobType::class => [

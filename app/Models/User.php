@@ -7,6 +7,7 @@ use App\Enums\UserStatus;
 use App\Events\User\UserRestored;
 use App\Events\User\UserUpdated;
 use App\Events\User\UserUpdating;
+use App\Notifications\ExpiredInvitationLinkVisitedEmail;
 use App\Notifications\PrimaryWebsiteNotTrackingUserEmail;
 use App\Notifications\VerifyEmail;
 use App\Notifications\WebsiteActivatedUserEmail;
@@ -320,7 +321,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * Notify website archived.
      *
      * @param Website $website the website
-     * @param bool $manual wether the website was archived manually
+     * @param bool $manual whether the website was archived manually
      */
     public function sendWebsiteArchivedNotification(Website $website, bool $manual): void
     {
@@ -333,5 +334,15 @@ class User extends Authenticatable implements MustVerifyEmail
     public function sendPrimaryWebsiteNotTrackingNotification(): void
     {
         $this->notify(new PrimaryWebsiteNotTrackingUserEmail());
+    }
+
+    /**
+     * Notify an expired verification URL was used.
+     *
+     * @param User $user the user the expired URL refers to
+     */
+    public function sendExpiredInvitationLinkVisited(User $user): void
+    {
+        $this->notify(new ExpiredInvitationLinkVisitedEmail($user));
     }
 }

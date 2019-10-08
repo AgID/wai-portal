@@ -69,4 +69,14 @@ class ExceptionType extends Enum implements LocalizedEnum
      * Invalid user status related exception.
      */
     public const INVALID_USER_STATUS = 11;
+
+    /**
+     * Expired invitation URL related exception.
+     */
+    public const EXPIRED_INVITATION_LINK_USAGE = 12;
+
+    /**
+     * Expired verification URL related exception.
+     */
+    public const EXPIRED_VERIFICATION_LINK_USAGE = 13;
 }

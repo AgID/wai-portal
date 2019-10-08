@@ -143,6 +143,7 @@ return [
         EventType::PRIMARY_WEBSITE_NOT_TRACKING => 'Primary website tracking not active',
         EventType::USERS_INDEXING_COMPLETED => 'Users index update completed',
         EventType::WEBSITES_INDEXING_COMPLETED => 'Websites index update completed',
+        EventType::EXPIRED_USER_INVITATION_USED => 'Activation attempt using expired invitation',
         EventType::MAIL_SENT => 'Mail sent',
     ],
 
@@ -159,6 +160,8 @@ return [
         ExceptionType::INVALID_WEBSITE_STATUS => 'Invalid website status error',
         ExceptionType::INVALID_OPERATION => 'Invalid operation error',
         ExceptionType::INVALID_USER_STATUS => 'Invalid user status error',
+        ExceptionType::EXPIRED_INVITATION_LINK_USAGE => 'Expired user invitation link used',
+        ExceptionType::EXPIRED_VERIFICATION_LINK_USAGE => 'Expired user verification link used',
     ],
 
     JobType::class => [

@@ -65,7 +65,7 @@ class VerificationController extends Controller
             event(new Verified($user));
         }
 
-        $dashboard = $user->can(UserPermission::ACCESS_ADMIN_AREA) ? '/admin/dashboard' : '/dashboard';
+        $dashboard = $user->can(UserPermission::ACCESS_ADMIN_AREA) ? route('admin.dashboard') : route('dashboard');
 
         return redirect($dashboard)->withModal([
             'title' => __('Indirizzo email confermato'),
