@@ -220,6 +220,13 @@ class UserController extends Controller
             // Update Analytics Service account if needed
             // NOTE: at this point, user must have an analytics account
             $user->updateAnalyticsServiceAccountEmail();
+        }
+
+        if ($user->status->is(UserStatus::INVITED) && array_key_exists('fiscal_number', $validatedData)) {
+            $user->fiscal_number = $validatedData['fiscal_number'];
+        }
+
+        if ($user->isDirty()) {
             $user->save();
         }
 

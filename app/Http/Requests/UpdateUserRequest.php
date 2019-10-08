@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use App\Enums\UserRole;
 use App\Enums\UserStatus;
 use App\Models\User;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
 
 /**
@@ -20,7 +21,13 @@ class UpdateUserRequest extends StoreUserRequest
     public function rules(): array
     {
         $rules = parent::rules();
-        unset($rules['fiscal_number']);
+
+        if (!$this->route('user')->status->is(UserStatus::INVITED)) {
+            unset($rules['fiscal_number']);
+        } else {
+            unset($rules['fiscal_number'][array_search('unique:users', $rules['fiscal_number'])]);
+            $rules['fiscal_number'][] = Rule::unique('users')->ignore($this->route('user')->id);
+        }
 
         return $rules;
     }
