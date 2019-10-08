@@ -32,18 +32,19 @@ class UpdateUserRequest extends StoreUserRequest
      */
     public function withValidator(Validator $validator): void
     {
-        $validator->after(function (Validator $validator) {
-            if (User::where('email', $this->input('email'))->where('id', '<>', $this->route('user')->id)->whereDoesntHave('roles', function ($query) {
+        $user = $this->route('user');
+
+        $validator->after(function (Validator $validator) use ($user) {
+            if (User::where('email', $this->input('email'))->where('id', '<>', $user->id)->whereDoesntHave('roles', function ($query) {
                 $query->where('name', UserRole::SUPER_ADMIN);
             })->get()->isNotEmpty()) {
                 $validator->errors()->add('email', __('validation.unique', ['attribute' => __('validation.attributes.email')]));
             }
         });
 
-        $validator->after(function (Validator $validator) {
-            $user = $this->route('user');
-            $lastAdministrator = 1 === request()->route('publicAdministration', current_public_administration())->getActiveAdministrators()->count();
-            if ($lastAdministrator && $user->status->is(UserStatus::ACTIVE) && $user->isAn(UserRole::ADMIN) && !$this->input('is_admin')) {
+        $validator->after(function (Validator $validator) use ($user) {
+            $publicAdministration = request()->route('publicAdministration', current_public_administration());
+            if ($user->isTheLastActiveAdministratorOf($publicAdministration) && !$this->input('is_admin')) {
                 $validator->errors()->add('is_admin', __('Deve restare almeno un utente amministratore per ogni PA.'));
             }
         });

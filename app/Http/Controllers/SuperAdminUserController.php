@@ -270,8 +270,7 @@ class SuperAdminUserController extends Controller
      */
     public function validateNotLastActiveAdministrator(Validator $validator): void
     {
-        $user = request()->route('user');
-        if ($user->status->is(UserStatus::ACTIVE) && 1 === User::where('status', UserStatus::ACTIVE)->whereIs(UserRole::SUPER_ADMIN)->count()) {
+        if (request()->route('user')->isTheLastActiveSuperAdministrator()) {
             $validator->errors()->add('last_admin', 'The last super administrator cannot be suspended.');
         }
     }
