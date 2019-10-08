@@ -165,7 +165,7 @@
             <h3 class="text-center">{{ __('Come iniziare a tracciare il traffico') }}</h3>
             <div class="d-flex justify-content-center pb-5">
                 <p class="text-serif text-center">
-                    {!! __('Il progetto :app si trova attualmente in fase di <em>closed-beta</em> (versione beta chiusa limitata ad un panel ristretto di amministrazioni).', ['app' => config('app.name')]) !!}
+                    {!! __('Il progetto :app si trova attualmente in fase di :phase (:phase-description).', ['app' => config('app.name'), 'phase' => '<em>__('closed-beta')</em>', 'phase-description' => __('versione beta chiusa limitata ad un panel ristretto di amministrazioni')]) !!}
                 </p>
             </div>
             <div class="row">
