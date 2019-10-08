@@ -259,7 +259,21 @@
                 <exec command="docker-compose up -d --build nginx mariadb redis ipa-redisearch elasticsearch php-fpm matomo" dir="containers" passthru="true" checkreturn="true"/>
             </then>
             <else>
-                <exec command="docker-compose up -d --build nginx mariadb redis ipa-redisearch mailhog php-fpm matomo queue-worker elasticsearch spid-testenv" dir="containers" passthru="true" checkreturn="true"/>
+                <if>
+                    <or>
+                        <equals arg1="${REDIS_INDEXES_USE_SENTINELS}" arg2="true"/>
+                        <equals arg1="${REDIS_REDISEARCH_USE_SENTINELS}" arg2="true"/>
+                        <contains string="${CACHE_CONNECTION}" substring="sentinel"/>
+                        <contains string="${SESSION_CONNECTION}" substring="sentinel"/>
+                        <contains string="${QUEUE_REDIS_CONNECTION}" substring="sentinel"/>
+                    </or>
+                    <then>
+                        <exec command="docker-compose up -d --build nginx mariadb redis ipa-redisearch redis-sentinel mailhog php-fpm matomo queue-worker elasticsearch spid-testenv" dir="containers" passthru="true" checkreturn="true"/>
+                    </then>
+                    <else>
+                        <exec command="docker-compose up -d --build nginx mariadb redis ipa-redisearch mailhog php-fpm matomo queue-worker elasticsearch spid-testenv" dir="containers" passthru="true" checkreturn="true"/>
+                    </else>
+                </if>
             </else>
         </if>
         <!-- Wait for mariadb container to start gracefully -->
@@ -450,6 +464,17 @@
                         <exec command="docker-compose exec -u root kibana rm -Rf /opt/kibana-init" dir="containers" checkreturn="true"/>
                     </then>
                 </if>
+            </then>
+        </if>
+    </target>
+
+    <!-- Target: start RedisSentinel -->
+    <target name="sentinel">
+        <if>
+            <available file="containers" type="dir" property="ignored"/>
+            <then>
+                <echo msg="Running RedisSentinel..."/>
+                <exec command="docker-compose up --build -d redis-sentinel" dir="containers" passthru="true"/>
             </then>
         </if>
     </target>

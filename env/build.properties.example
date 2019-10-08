@@ -73,6 +73,7 @@ QUEUE_REDIS_CONNECTION=queue
 # Leave blank/defaults if not using Redis Sentinel
 
 # Comma separated list of Redis Sentinels connection strings
+# e.g. tcp://sentinel1:26379,tcp://sentinel2:26379
 REDIS_SENTINELS=
 REDIS_SENTINEL_SERVICE=
 
