@@ -466,6 +466,7 @@ class CRUDAdminUserTest extends TestCase
             ]), [
                 '_token' => 'test',
                 'email' => 'new@email.local',
+                'fiscal_number' => $user->fiscal_number,
                 'is_admin' => '1',
                 'permissions' => [
                     $website->id => [
@@ -512,6 +513,7 @@ class CRUDAdminUserTest extends TestCase
             ]), [
                 '_token' => 'test',
                 'email' => $user->email,
+                'fiscal_number' => $user->fiscal_number,
                 'is_admin' => '1',
                 'permissions' => [
                     $website->id => [
