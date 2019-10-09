@@ -1,8 +1,5 @@
 <?php
 
-use App\Enums\UserRole;
-use App\Enums\UserPermission;
-
 return [
 
     /*
