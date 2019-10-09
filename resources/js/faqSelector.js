@@ -1,6 +1,6 @@
 export default (() => {
     const selectFaqTheme = faqTheme => {
-        const faqThemeQuerySelector = faqTheme === 'all' ? `data-theme` : `data-theme=${faqTheme}`;
+        const faqThemeQuerySelector = faqTheme === 'all' ? `data-themes` : `data-themes~=${faqTheme}`;
         const faqsToHide = [...document.querySelectorAll(`.faq:not([${faqThemeQuerySelector}])`)];
         const faqsToShow = [...document.querySelectorAll(`.faq[${faqThemeQuerySelector}]`)];
 

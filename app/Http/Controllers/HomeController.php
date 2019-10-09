@@ -29,7 +29,9 @@ class HomeController extends Controller
         $currentLocale = app()->getLocale();
         $faqsLocale = array_key_exists($currentLocale, $allFaqs) ? $currentLocale : config('app.fallback_locale');
         $faqs = $allFaqs[$faqsLocale];
-        $themes = array_unique(Arr::pluck($faqs, 'theme'));
+        $themes = array_unique(Arr::flatten(array_map(function ($themes) {
+            return explode(' ', $themes);
+        }, Arr::pluck($faqs, 'themes'))));
 
         return view('pages.faq')->with(compact('faqs', 'themes'));
     }
