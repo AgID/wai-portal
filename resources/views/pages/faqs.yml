@@ -1,24 +1,190 @@
-- theme: generale
-  question: Lorem ipsum dolor sit amet
-  answer: |
-    Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium
-    doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore
-    veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim
-    ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia
-    consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.
-- theme: generale
-  question: Lorem ipsum dolor sit amet
-  answer: |
-    Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium
-    doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore
-    veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim
-    ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia
-    consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.
-- theme: analytics
-  question: Lorem ipsum dolor sit amet
-  answer: |
-    Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium
-    doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore
-    veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim
-    ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia
-    consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.
+it:
+  - themes: generale
+    question: Quali sono le specifiche tecniche di Web analytics Italia?
+    answer: |
+      **Web analytics Italia (WAI)** si basa su tre componenti principali:
+
+        - un sistema di raccolta e analisi dei dati web basata sul software
+          [Matomo](https://matomo.org/);
+        - un portale di front-end che gestisce la registrazione e l'accesso
+          all'infrastruttura dati;
+        - un set di API per l'accesso ai dati da parte di applicazioni di terze
+          parti (non disponibile in fase beta).
+
+      Tutte le componenti software sono ospitate su una piattaforma scalabile e
+      ridondata costruita sulla base dei servizi forniti da SPC Cloud - Lotto 1.
+
+  - themes: generale
+    question: Cos'è Matomo?
+    answer: |
+      Matomo è la piattaforma di web analytics leader mondiale nel settore dei
+      software open source per la raccolta e l'analisi del traffico web.
+
+      Il codice sorgente di Matomo è disponibile in un [repository
+      pubblico](https://github.com/matomo-org/matomo).
+
+  - themes: generale
+    question: |
+      Quali sono i requisiti tecnici richiesti alla PA per l'adesione alla
+      piattaforma?
+    answer: |
+      Per aderire alla piattaforma WAI è necessario che l'amministrazione sia
+      presente su [IndicePA](https://www.indicepa.gov.it) e che il referente che
+      si occupa della procedura di registrazione disponga di una identità
+      digitale [SPID](https://www.spid.gov.it) (necessaria per l'accesso alla
+      piattaforma WAI).
+
+      Come in tutti i sistemi di raccolta dei dati sul traffico web, è
+      necessario inserire uno script (codice eseguibile dal browser) all'interno
+      del sito.
+
+  - themes: generale
+    question: |
+      Quando verrà avviata e quanto durerà la fase di sperimentazione iniziale
+      del progetto? Che impegno è richiesto alle istituzioni che verranno
+      coinvolte?
+    answer: |
+      La fase di sperimentazione sarà avviata entro la prima metà del 2020. Alle
+      PA coinvolte nella fase beta sarà richiesto di fornire feedback e
+      suggerimenti per il miglioramento della piattaforma.
+
+      L'effort per l'abilitazione del tracciamento sui propri siti web è
+      paragonabile a quello per l'aggiunta di qualunque altro strumento simile
+      (ad esempio Google Analytics).
+
+  - themes: generale
+    question: |
+      Dopo i mesi di sperimentazione iniziale e dopo il biennio/triennio di
+      apertura del progetto a tutte le PA, la piattaforma resterà totalmente
+      gratuita o alcune features saranno a pagamento?
+    answer: |
+      L'uso della piattaforma e delle features supportate resteranno sempre
+      gratuite per tutte le PA aderenti.
+
+  - themes: generale analytics
+    question: |
+      Quali sono le principali differenze fra Matomo e altre piattaforme di web
+      analytics proprietarie?
+    answer: |
+      Matomo offre una suite completa di web analytics in modalità "free open
+      source": nella sua versione base fornisce un set ampio e articolato di
+      funzionalità, ulteriormente ampliabile e personalizzabile.
+
+      A differenza di altre piattaforme di tipo proprietario, offre il totale
+      controllo (e la proprietà) del dato raccolto.
+
+  - themes: generale analytics
+    question: |
+      Quali sono i vantaggi dell'utilizzo di Matomo rispetto a Google Analytics
+      per una pubblica amministrazione?
+    answer: |
+      I principali vantaggi dell'utilizzo di Matomo per il settore governativo
+      sono:
+
+      - la proprietà del dato e il suo controllo totale;
+      - l'assenza di *lock-in* tecnologico;
+      - l'alta modularità e personalizzabilità della piattaforma;
+      - l'assenza di sampling (campionamento).
+
+  - themes: generale
+    question: Come funziona il processo di adesione a Web Analytics Italia?
+    answer: |
+      Per aderire a WAI è necessario che il referente di una PA presente su IPA
+      avvii la procedura di registrazione del sito istituzionale, accedendo al
+      portale tramite una identità SPID. La verifica  di attribuzione del sito
+      registrato alla PA aderente sarà di tipo "implicito" (ossia subordinata
+      all'effettivo inserimento del codice di tracciamento nel sito).
+
+  - themes: generale
+    question: La piattaforma Web Analytics Italia è sicura?
+    answer: |
+      L'infrastruttura e il portale di front-end di WAI sono entrambi sviluppati
+      secondo i più  recenti standard di sicurezza informatica nonché secondo le
+      linee guida per la sicurezza ICT nelle pubbliche amministrazioni.
+
+  - themes: generale
+    question: |
+      Qual è il numero massimo di siti web che è possibile tracciare per singola
+      amministrazione?
+    answer: |
+      Non esiste al momento un numero limite al numero di siti web tracciabili
+      con Web Analytics Italia.
+
+  - themes: analytics
+    question: Posso tracciare le visite di una app mobile?
+    answer: |
+      Si, in WAI è possibile tracciare anche le visite di e il comportamento
+      degli utenti di una app mobile.
+
+  - themes: analytics
+    question: Posso effettuare un tracciamento interdominio?
+    answer: |
+      Si, in WAI è possibile richiedere il tracciamento interdominio di due o
+      più siti dell’amministrazione. Questa funzionalità non sarà disponibile
+      durante la fase beta.
+
+  - themes: analytics privacy
+    question: Posso anonimizzare le visite dei miei utenti?
+    answer: |
+      Si, WAI utilizza utilizza di default il sistema di anonimizzazione
+      dell’indirizzo IP degli utenti, quindi non sarà necessario intraprendere
+      altre azioni per rendere anonime le visite.
+
+  - themes: privacy
+    question: Il progetto è aderente alla normativa GDPR?
+    answer: |
+      Si, il progetto WAI è pienamente aderente alla normativa GDPR (General
+      Data Protection Regulation). Maggiori informazioni sono disponibili nella
+      pagina dedicata alla [privacy](/privacy).
+
+  - themes: privacy generale
+    question: Dove vengono memorizzati i dati raccolti?
+    answer: |
+      I dati statistici raccolti da WAI vengono memorizzati su server dedicati e
+      ad uso esclusivo della pubblica amministrazione, localizzati in Italia.
+
+  - themes: privacy generale
+    question: |
+      Se aderisco al progetto devo modificare la cookie policy del mio sito?
+    answer: |
+      È possibile che sia necessario un adattamento della cookie policy.
+
+      Potrai trovare un esempio di cookie policy personalizzabile nella
+      knowledge base dedicata del portale di accesso a WAI.
+
+  - themes: generale analytics
+    question: |
+      Lo script di tracciamento di WAI è compatibile con altri script già
+      presenti sul sito?
+    answer: |
+      Si, lo script di tracciamento di WAI è compatibile con altri script di
+      tracking eventualmente presenti sul sito dell’amministrazione (nel caso di
+      altro script Matomo già presente sarà necessario inserire un unico script
+      con server multipli).
+
+      L’amministrazione aderente a WAI può quindi continuare ad usare altre
+      piattaforme di analisi dei dati contemporaneamente.
+
+  - themes: privacy generale
+    question: |
+      Devo utilizzare dei plugin per inserire lo script di Matomo nei principali
+      CMS?
+    answer: |
+      L’utilizzo di plugin nel caso dei CMS non è obbligatorio. Potranno
+      facoltativamente essere utilizzati per semplificare l’inserimento dello
+      script di tracciamento.
+
+      Matomo offre alcuni [plugin di
+      integrazione](https://matomo.org/integrate/).
+
+  - themes: privacy generale
+    question: |
+      Se già utilizzo Matomo in modalità self hosted posso migrare i dati del
+      miei siti dalla mia infrastruttura a Web analytics Italia?
+    answer: |
+      Si, è necessaria una copia del database per migrare i dati da
+      un’infrastruttura Matomo *self-hosted* dell’amministrazione a WAI.
+
+      La fattibilità è subordinata all’analisi, caso per caso, delle
+      caratteristiche dei dati (struttura e quantità) in termini di
+      compatibilità con la piattaforma WAI.
