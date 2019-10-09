@@ -44,7 +44,7 @@ class RedisSentinelPredisAdapter extends PredisAdapter
      */
     public function connect($hostname = '127.0.0.1', $port = 6379, $db = 0, $password = null): RedisRawClientInterface
     {
-        $this->redis = Redis::connection('database.redis.indexes.' . $this->index . '.sentinel')->client();
+        $this->redis = Redis::connection($this->index . '-sentinel')->client();
 
         return $this;
     }
