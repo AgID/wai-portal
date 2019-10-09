@@ -39,6 +39,16 @@ interface AnalyticsService
     public function updateSite(string $idSite, string $siteName, string $url, string $group): void;
 
     /**
+     * Get an array with the ids of all the sites in the Analytics Service.
+     *
+     * @throws AnalyticsServiceException if unable to connect the Analytics Service
+     * @throws CommandErrorException if command is unsuccessful
+     *
+     * @return array all the ids of all the sites
+     */
+    public function getAllSitesId(): array;
+
+    /**
      * Change archive status in the Analytics Service.
      *
      * @param string $idSites the Analytics Service website ID
@@ -131,6 +141,16 @@ interface AnalyticsService
      * @throws CommandErrorException if command is unsuccessful
      */
     public function updateUserEmail(string $userLogin, string $updatedEmail, string $passwordConfirmation, string $tokenAuth): void;
+
+    /**
+     * Get an array with the login strings of all the users in the Analytics Service.
+     *
+     * @throws AnalyticsServiceException if unable to connect the Analytics Service
+     * @throws CommandErrorException if command is unsuccessful
+     *
+     * @return array all the login strings of all the users
+     */
+    public function getUsersLogin(): array;
 
     /**
      * Login and redirect a specified user in the Analytics Service.

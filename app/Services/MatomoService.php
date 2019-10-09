@@ -136,6 +136,24 @@ class MatomoService implements AnalyticsServiceContract
     }
 
     /**
+     * Get an array with the ids of all the sites in the Analytics Service.
+     *
+     * @throws AnalyticsServiceException if unable to connect the Analytics Service
+     * @throws CommandErrorException if command is unsuccessful
+     *
+     * @return array all the ids of all the sites
+     */
+    public function getAllSitesId(): array
+    {
+        $params = [
+            'method' => 'SitesManager.getAllSitesId',
+            'token_auth' => $this->tokenAuth,
+        ];
+
+        return $this->apiCall($params);
+    }
+
+    /**
      * Change archive status in the Analytics Service.
      *
      * @param string $idSites the Analytics Service website ID
@@ -308,6 +326,24 @@ class MatomoService implements AnalyticsServiceContract
         ];
 
         $this->apiCall($params);
+    }
+
+    /**
+     * Get an array with the login strings of all the users in the Analytics Service.
+     *
+     * @throws AnalyticsServiceException if unable to connect the Analytics Service
+     * @throws CommandErrorException if command is unsuccessful
+     *
+     * @return array all the login strings of all the users
+     */
+    public function getUsersLogin(): array
+    {
+        $params = [
+            'method' => 'UsersManager.getUsersLogin',
+            'token_auth' => $this->tokenAuth,
+        ];
+
+        return $this->apiCall($params);
     }
 
     /**
