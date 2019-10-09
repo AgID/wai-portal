@@ -1,10 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "32a9803a7f7e7927ca3b2d47c1d15411",
+    "content-hash": "27cfcb9919def00151a7d854dd2739db",
     "packages": [
         {
             "name": "bensampo/laravel-enum",
@@ -173,6 +173,53 @@
                 "laravel"
             ],
             "time": "2019-09-03T15:24:57+00:00"
+        },
+        {
+            "name": "davidepastore/codice-fiscale",
+            "version": "v0.5.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/DavidePastore/codice-fiscale.git",
+                "reference": "2f8ddc2aa8fae067bb1939fe2d5cc9b93c291460"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/DavidePastore/codice-fiscale/zipball/2f8ddc2aa8fae067bb1939fe2d5cc9b93c291460",
+                "reference": "2f8ddc2aa8fae067bb1939fe2d5cc9b93c291460",
+                "shasum": ""
+            },
+            "require": {
+                "ext-intl": "*"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^7",
+                "scrutinizer/ocular": "~1.1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "davidepastore",
+                    "email": "pasdavide@gmail.com"
+                }
+            ],
+            "description": "An italian tax code calculator and checker",
+            "keywords": [
+                "codice fiscale",
+                "italian",
+                "italy",
+                "tax code",
+                "validator"
+            ],
+            "time": "2019-06-22T16:04:36+00:00"
         },
         {
             "name": "dnoegel/php-xdg-base-dir",
@@ -1824,6 +1871,11 @@
                 "ext-openssl": "Install openssl lib in order to handle with x509 certs (require to support sign and encryption)"
             },
             "type": "library",
+            "extra": {
+                "patches_applied": {
+                    "Compatibility with SPID": "https://rawgit.com/italia/spid-laravel/master/patches/php-saml-3.3.0-spid.patch"
+                }
+            },
             "autoload": {
                 "psr-4": {
                     "OneLogin\\": "src/"
@@ -1840,12 +1892,7 @@
                 "onelogin",
                 "saml"
             ],
-            "time": "2019-09-11T13:56:06+00:00",
-            "extra": {
-                "patches_applied": {
-                    "Compatibility with SPID": "https://rawgit.com/italia/spid-laravel/master/patches/php-saml-3-spid.patch"
-                }
-            }
+            "time": "2019-09-11T13:56:06+00:00"
         },
         {
             "name": "opis/closure",
@@ -4074,50 +4121,6 @@
             "description": "CssToInlineStyles is a class that enables you to convert HTML-pages/files into HTML-pages/files with inline styles. This is very useful when you're sending emails.",
             "homepage": "https://github.com/tijsverkoyen/CssToInlineStyles",
             "time": "2017-11-27T11:13:29+00:00"
-        },
-        {
-            "name": "usu/codice-fiscale",
-            "version": "v1.0.4",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/andreausu/CodiceFiscale.git",
-                "reference": "92a9a9accd388744813043683cff5652838956dc"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/andreausu/CodiceFiscale/zipball/92a9a9accd388744813043683cff5652838956dc",
-                "reference": "92a9a9accd388744813043683cff5652838956dc",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.4.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "@stable"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "CodiceFiscale": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Andrea Usuelli",
-                    "email": "andrea.usuelli@gmail.com"
-                }
-            ],
-            "description": "A library to calculate and check the validity of the italian fiscal code (codice fiscale)",
-            "homepage": "http://andreausu.github.com/CodiceFiscale",
-            "keywords": [
-                "codice fiscale",
-                "php"
-            ],
-            "time": "2014-11-29T09:49:24+00:00"
         },
         {
             "name": "vlucas/phpdotenv",
