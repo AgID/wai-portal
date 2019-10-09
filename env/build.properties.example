@@ -60,8 +60,40 @@ MARIADB_USER=default
 MARIADB_PASSWORD=secret
 MARIADB_ROOT_PASSWORD=root
 
+# Connections settings
+# --------------------
+
+CACHE_CONNECTION=cache
+SESSION_CONNECTION=sessions
+QUEUE_REDIS_CONNECTION=queue
+
+# Redis Sentinel settings
+# -----------------------
+
+# Leave blank/defaults if not using Redis Sentinel
+
+# Comma separated list of Redis Sentinels connection strings
+# e.g. tcp://sentinel1:26379,tcp://sentinel2:26379
+REDIS_SENTINELS=
+REDIS_SENTINEL_SERVICE=
+
+# Indexes RediSearch settings
+# ---------------------------
+
+REDIS_INDEXES_USE_SENTINELS=false
+
+# IPA RediSearch Sentinel settings
+# --------------------------------
+
+# Leave blank/defaults if not using Sentinels for IPA RediSearch service
+
+REDIS_REDISEARCH_USE_SENTINELS=false
+# A comma separated list of Redis Sentinels connection strings
+REDIS_REDISEARCH_SENTINELS=
+REDIS_REDISEARCH_SENTINEL_SERVICE=
+
 # Mail settings
-# ------------
+# -------------
 
 MAIL_HOST=mailhog
 MAIL_PORT=1025

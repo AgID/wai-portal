@@ -194,3 +194,16 @@ services:
     networks:
       - frontend
       - backend
+
+#Redis Sentinel
+  redis-sentinel:
+    image: wai-redis-sentinel:dev
+    depends_on:
+      - redis
+    build:
+      context: ./redis-sentinel
+      args:
+        - REDIS_SENTINEL_SERVICE=${REDIS_SENTINEL_SERVICE}
+        - REDIS_REDISEARCH_SENTINEL_SERVICE=${REDIS_REDISEARCH_SENTINEL_SERVICE}
+    networks:
+      - backend
