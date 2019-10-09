@@ -46,7 +46,11 @@ class ViewServiceProvider extends ServiceProvider
     protected function mergeViewConfig()
     {
         try {
-            config(Yaml::parseFile(resource_path('views/config.yml')));
+            $viewConfig = Yaml::parseFile(resource_path('views/config.yml'));
+            $currentLocale = app()->getLocale();
+            $configLocale = array_key_exists($currentLocale, $viewConfig) ? $currentLocale : config('app.fallback_locale');
+            $localizedViewConfig = $viewConfig[$configLocale];
+            config($localizedViewConfig);
         } catch (ParseException $exception) {
             abort(500, $exception->getMessage());
         }
