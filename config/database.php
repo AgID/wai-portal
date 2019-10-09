@@ -127,7 +127,7 @@ return [
                     [
                         'options' => [
                             'replication' => 'sentinel',
-                            'service' => env('REDIS_SENTINEL_REDISEARCH_SERVICE', 'mymaster'),
+                            'service' => env('REDIS_REDISEARCH_SENTINEL_SERVICE', 'mymaster'),
                             'parameters' => [
                                 'password' => env('REDIS_REDISEARCH_PASSWORD'),
                                 'database' => 0,
