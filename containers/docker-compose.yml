@@ -204,5 +204,6 @@ services:
       context: ./redis-sentinel
       args:
         - REDIS_SENTINEL_SERVICE=${REDIS_SENTINEL_SERVICE}
+        - REDIS_REDISEARCH_SENTINEL_SERVICE=${REDIS_REDISEARCH_SENTINEL_SERVICE}
     networks:
       - backend
