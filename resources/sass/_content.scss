@@ -23,6 +23,16 @@ a.disabled {
   opacity: 0.5;
 }
 
+// External link
+a.external-link {
+  line-height: 1;
+
+  &::after {
+    vertical-align: bottom;
+    content: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0Ij48cGF0aCBkPSJNMjEsM1Y5SDIwVjQuN2wtNy42LDcuNy0uOC0uOEwxOS4zLDRIMTVWM1pNMTcsMTkuNWEuNS41LDAsMCwxLS41LjVINC41YS41LjUsMCwwLDEtLjUtLjVWNy41QS41LjUsMCwwLDEsNC41LDdIMTJWNkg0LjVBMS41LDEuNSwwLDAsMCwzLDcuNXYxMkExLjUsMS41LDAsMCwwLDQuNSwyMWgxMkExLjUsMS41LDAsMCwwLDE4LDE5LjVWMTJIMTdaIi8+PC9zdmc+');
+  }
+}
+
 // Header of page sections
 .section-header {
   font-size: 0.9rem;
