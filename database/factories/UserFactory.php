@@ -5,19 +5,30 @@ use App\Enums\UserStatus;
 use App\Models\User;
 use Carbon\Carbon;
 use CodiceFiscale\Calculator;
+use CodiceFiscale\Subject;
 use Faker\Generator as Faker;
-use Faker\Provider\it_IT\Person as PersonFaker;
 use Illuminate\Support\Str;
 use Ramsey\Uuid\Uuid;
 
 $factory->define(User::class, function (Faker $faker) {
-    $faker->addProvider(new PersonFaker($faker));
 
     return [
         'spid_code' => Str::random(14),
         'name' => $faker->firstName,
         'family_name' => $faker->lastName,
-        'fiscal_number' => (new Calculator())->calcola($faker->firstName, $faker->lastName, rand(0, 1) ? 'M' : 'F', Carbon::createFromDate(rand(1950, 1990), rand(1, 12), rand(1, 30)), 'H501'),
+        'fiscal_number' => (
+        new Calculator(
+            new Subject(
+                [
+                    'name' => $faker->firstName,
+                    'surname' => $faker->lastName,
+                    'birthDate' => Carbon::createFromDate(rand(1950, 1990), rand(1, 12), rand(1, 30)),
+                    'gender' => rand(0, 1) ? Calculator::CHR_MALE : Calculator::CHR_WOMEN,
+                    'belfioreCode' => 'H501',
+                ]
+            )
+        )
+        )->calculate(),
         'email' => $faker->unique()->safeEmail,
         'uuid' => Uuid::uuid4()->toString(),
         'password_changed_at' => Carbon::now()->format('Y-m-d H:i:s'),
