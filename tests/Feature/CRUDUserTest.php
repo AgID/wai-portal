@@ -295,6 +295,53 @@ class CRUDUserTest extends TestCase
     /**
      * Test public administration user change role to admin from delegate successful.
      */
+    public function testUpdateUserFiscalNumberSuccessful(): void
+    {
+        $user = factory(User::class)->state('invited')->create();
+        $fiscalNumber = 'SKYLKU77E25H501R';
+        $this->publicAdministration->users()->sync([$user->id], false);
+        $user->registerAnalyticsServiceAccount();
+
+        Bouncer::scope()->to($this->publicAdministration->id);
+        $user->assign(UserRole::DELEGATED);
+        $user->allow(UserPermission::READ_ANALYTICS, $this->website);
+
+        $this->actingAs($this->user)
+            ->withSession([
+                'spid_sessionIndex' => 'fake-session-index',
+                'tenant_id' => $this->publicAdministration->id,
+                'spid_user' => $this->spidUser,
+                '_token' => 'test',
+            ])
+            ->put(route('users.update', ['user' => $user]), [
+                '_token' => 'test',
+                'email' => $user->email,
+                'fiscal_number' => $fiscalNumber,
+                'permissions' => [
+                    $this->website->id => [
+                        UserPermission::MANAGE_ANALYTICS,
+                        UserPermission::READ_ANALYTICS,
+                    ],
+                ],
+            ])
+            ->assertSessionDoesntHaveErrors([
+                'email',
+                'fiscal_number',
+                'permissions',
+            ])
+            ->assertRedirect(route('users.index'));
+
+        $user->refresh();
+        Event::assertDispatched(UserUpdated::class, function ($event) use ($fiscalNumber) {
+            return $fiscalNumber === $event->getUser()->fiscal_number;
+        });
+
+        $user->deleteAnalyticsServiceAccount();
+    }
+
+    /**
+     * Test public administration user change role to admin from delegate successful.
+     */
     public function testUpdateUserToAdminSuccessful(): void
     {
         $user = factory(User::class)->state('invited')->create([
@@ -317,6 +364,7 @@ class CRUDUserTest extends TestCase
             ->put(route('users.update', ['user' => $user]), [
                 '_token' => 'test',
                 'email' => $user->email,
+                'fiscal_number' => $user->fiscal_number,
                 'is_admin' => '1',
                 'permissions' => [
                     $this->website->id => [
@@ -364,6 +412,7 @@ class CRUDUserTest extends TestCase
             ->put(route('users.update', ['user' => $user]), [
                 '_token' => 'test',
                 'email' => $user->email,
+                'fiscal_number' => $user->fiscal_number,
                 'permissions' => [
                     $this->website->id => [
                         UserPermission::READ_ANALYTICS,

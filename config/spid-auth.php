@@ -32,8 +32,11 @@ return [
           #'digitalAddress',
           #'expirationDate'
       ],
+      'sp_certificate_file' => null,
+      'sp_private_key_file' => null,
       'sp_certificate' => env('SPID_SP_CERTIFICATE'),
       'sp_private_key' => env('SPID_SP_PRIVATE_KEY'),
+      'sp_spid_level' => 'https://www.spid.gov.it/SpidL1',
 
       'test_idp' => 'production' === env('APP_ENV') ? false : [
         'entityId' => env('APP_URL') . ':8088',
