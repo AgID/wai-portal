@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "145901e715220a068262f364efe1dc3a",
+    "content-hash": "32a9803a7f7e7927ca3b2d47c1d15411",
     "packages": [
         {
             "name": "bensampo/laravel-enum",
@@ -4829,16 +4829,16 @@
         },
         {
             "name": "facade/ignition",
-            "version": "1.10.0",
+            "version": "1.11.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/facade/ignition.git",
-                "reference": "58a826c2ee5cacf68557fcddfb6eb6c92f495155"
+                "reference": "dc56111b19e160236084dc6ab460e9c08912ecac"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/facade/ignition/zipball/58a826c2ee5cacf68557fcddfb6eb6c92f495155",
-                "reference": "58a826c2ee5cacf68557fcddfb6eb6c92f495155",
+                "url": "https://api.github.com/repos/facade/ignition/zipball/dc56111b19e160236084dc6ab460e9c08912ecac",
+                "reference": "dc56111b19e160236084dc6ab460e9c08912ecac",
                 "shasum": ""
             },
             "require": {
@@ -4896,7 +4896,7 @@
                 "laravel",
                 "page"
             ],
-            "time": "2019-10-07T19:11:10+00:00"
+            "time": "2019-10-08T07:36:31+00:00"
         },
         {
             "name": "facebook/webdriver",
