@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use App\Enums\UserPermission;
 use App\Enums\UserRole;
 use App\Models\User;
-use CodiceFiscale\Checker as FiscalNumberChecker;
+use CodiceFiscale\Validator as FiscalNumberChecker;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
@@ -38,8 +38,8 @@ class StoreUserRequest extends FormRequest
                 'required',
                 'unique:users',
                 function ($attribute, $value, $fail) {
-                    $chk = new FiscalNumberChecker();
-                    if (!$chk->isFormallyCorrect($value)) {
+                    $chk = new FiscalNumberChecker($value);
+                    if (!$chk->isFormallyValid()) {
                         return $fail(__('Il codice fiscale non è formalmente valido.'));
                     }
                 },
