@@ -5,14 +5,16 @@ namespace App\Http\Middleware;
 use App\Enums\UserPermission;
 use Closure;
 
+/**
+ * Guest users middleware.
+ */
 class RedirectIfAuthenticated
 {
     /**
      * Handle an incoming request.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \Closure $next
-     * @param string|null $notSpid
+     * @param \Illuminate\Http\Request $request the request
+     * @param \Closure $next the next closure
      *
      * @return mixed
      */

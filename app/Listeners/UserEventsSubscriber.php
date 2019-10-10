@@ -109,14 +109,9 @@ class UserEventsSubscriber implements ShouldQueue
     }
 
     /**
-     * Handle user update event.
+     * Handle user email changed event.
      *
      * @param UserEmailChanged $event the event
-     *
-     * @throws \App\Exceptions\AnalyticsServiceAccountException if the Analytics Service account doesn't exist
-     * @throws \App\Exceptions\AnalyticsServiceException if unable to connect the Analytics Service
-     * @throws \App\Exceptions\CommandErrorException if command is unsuccessful
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException if unable to bind analytics service
      */
     public function onUserEmailChanged(UserEmailChanged $event): void
     {
@@ -132,6 +127,11 @@ class UserEventsSubscriber implements ShouldQueue
         );
     }
 
+    /**
+     * Handle user status changed event.
+     *
+     * @param UserStatusChanged $event the event
+     */
     public function onUserStatusChanged(UserStatusChanged $event): void
     {
         $user = $event->getUser();

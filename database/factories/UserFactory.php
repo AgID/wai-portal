@@ -11,7 +11,6 @@ use Illuminate\Support\Str;
 use Ramsey\Uuid\Uuid;
 
 $factory->define(User::class, function (Faker $faker) {
-
     return [
         'spid_code' => Str::random(14),
         'name' => $faker->firstName,

@@ -24,7 +24,8 @@ class VerificationController extends Controller
      *
      * @param Request $request the incoming request
      *
-     * @return mixed the view for verification notice or a redirect if user is already verified
+     * @return mixed the view for verification or invitation notice (based on user status)
+     *               or a redirect if user is already verified
      */
     public function show(Request $request)
     {
@@ -35,6 +36,7 @@ class VerificationController extends Controller
         }
 
         $view = $user->status->is(UserStatus::INVITED) ? 'auth.invitation_notice' : 'auth.verify';
+
         return view($view)->with('user', $user);
     }
 

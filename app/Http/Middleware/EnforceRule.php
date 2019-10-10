@@ -7,8 +7,23 @@ use App\Enums\UserStatus;
 use Closure;
 use Illuminate\Auth\Access\AuthorizationException;
 
+/**
+ * Rules enforcer middleware.
+ */
 class EnforceRule
 {
+    /**
+     * Handle incoming request.
+     *
+     * @param \Illuminate\Http\Request $request the request
+     * @param Closure $next the next closure
+     * @param mixed $rules the comma separated rule list
+     *
+     * @throws AuthorizationException if user is not authorized
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException if unable to bind SPID authentication service
+     *
+     * @return mixed the middleware response
+     */
     public function handle($request, Closure $next, ...$rules)
     {
         if (in_array('forbid-spid', $rules, true) && app()->make('SPIDAuth')->isAuthenticated()) {
