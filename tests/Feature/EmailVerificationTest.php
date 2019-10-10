@@ -52,6 +52,7 @@ class EmailVerificationTest extends TestCase
         $this->spidUser = new SPIDUser([
             'familyName' => 'Cognome',
             'name' => 'Nome',
+            'fiscalNumber' => $this->user->fiscal_number,
         ]);
 
         $this->withoutExceptionHandling();
