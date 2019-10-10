@@ -49,25 +49,25 @@ Route::get('/open-data', 'HomeController@openData')
  */
 Route::prefix('/admin/user')->group(function () {
     Route::get('/login', 'Auth\SuperAdminAuthController@showLogin')
-        ->name('admin.login.show')->middleware('guest:notspid');
+        ->name('admin.login.show')->middleware('enforce.rules:forbid-spid');
 
     Route::post('/login', 'Auth\SuperAdminAuthController@login')
-        ->name('admin.login')->middleware('guest:notspid');
+        ->name('admin.login')->middleware('enforce.rules:forbid-spid');
 
     Route::get('/logout', 'Auth\SuperAdminAuthController@logout')
         ->name('admin.logout')->middleware('auth.admin');
 
     Route::get('/password-forgot', 'Auth\SuperAdminAuthController@showPasswordForgot')
-        ->name('admin.password.forgot.show')->middleware('guest:notspid');
+        ->name('admin.password.forgot.show')->middleware('enforce.rules:forbid-spid');
 
     Route::post('/password-forgot', 'Auth\SuperAdminAuthController@sendPasswordForgot')
-        ->name('admin.password.reset.send')->middleware('guest:notspid', 'throttle:5,1');
+        ->name('admin.password.reset.send')->middleware('enforce.rules:forbid-spid', 'throttle:5,1');
 
     Route::get('/password-reset/{token?}', 'Auth\SuperAdminAuthController@showPasswordReset')
-        ->name('admin.password.reset.show')->middleware('guest:notspid');
+        ->name('admin.password.reset.show')->middleware('enforce.rules:forbid-spid');
 
     Route::post('/password-reset', 'Auth\SuperAdminAuthController@passwordReset')
-        ->name('admin.password.reset')->middleware('guest:notspid', 'throttle:5,1');
+        ->name('admin.password.reset')->middleware('enforce.rules:forbid-spid', 'throttle:5,1');
 });
 
 /*
@@ -81,18 +81,20 @@ Route::middleware('auth.admin')->group(function () {
             ->name('admin.verification.notice');
 
         Route::get('/resend', 'Auth\VerificationController@resend')
-            ->name('admin.verification.resend')->middleware('throttle:5,1');
+            ->name('admin.verification.resend')->middleware('enforce.rules:forbid-invited', 'throttle:5,1');
 
         Route::get('/{uuid}/{hash}', 'Auth\VerificationController@verify')
             ->name('admin.verification.verify')->middleware('signed', 'throttle:5,1');
     });
 
-    Route::prefix('/admin/user/profile')->group(function () {
-        Route::get('/', 'Auth\ProfileController@edit')
-            ->name('admin.user.profile.edit');
+    Route::middleware('enforce.rules:forbid-invited')->group(function () {
+        Route::prefix('/admin/user/profile')->group(function () {
+            Route::get('/', 'Auth\ProfileController@edit')
+                ->name('admin.user.profile.edit');
 
-        Route::patch('/', 'Auth\ProfileController@update')
-            ->name('admin.user.profile.update');
+            Route::patch('/', 'Auth\ProfileController@update')
+                ->name('admin.user.profile.update');
+        });
     });
 });
 
@@ -116,13 +118,13 @@ Route::middleware('spid.auth', 'guest')->group(function () {
  *
  * SPID authentication required.
  */
-Route::middleware('spid.auth')->group(function () {
+Route::middleware('spid.auth', 'auth')->group(function () {
     Route::prefix('/user/verify')->group(function () {
         Route::get('/', 'Auth\VerificationController@show')
             ->name('verification.notice');
 
         Route::get('/resend', 'Auth\VerificationController@resend')
-            ->name('verification.resend')->middleware('throttle:5,1');
+            ->name('verification.resend')->middleware('enforce.rules:forbid-invited', 'throttle:5,1');
 
         Route::get('/{uuid}/{hash}', 'Auth\VerificationController@verify')
             ->name('verification.verify')->middleware('signed', 'throttle:5,1');
@@ -134,7 +136,7 @@ Route::middleware('spid.auth')->group(function () {
  *
  * Both SPID and application authentication required
  */
-Route::middleware('spid.auth', 'auth')->group(function () {
+Route::middleware('spid.auth', 'auth', 'enforce.rules:forbid-invited')->group(function () {
     Route::prefix('/user/profile')->group(function () {
         Route::get('/', 'Auth\ProfileController@edit')
             ->name('user.profile.edit');

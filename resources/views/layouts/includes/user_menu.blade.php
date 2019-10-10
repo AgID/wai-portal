@@ -21,15 +21,17 @@
                 </li>
                 <li><span class="divider"></span></li>
                 @auth
+                @if (!$user->status->is(UserStatus::INVITED))
                 <li>
-                    <a class="text-primary right-icon" href="{{ route('user.profile.edit') }}" class="list-item">
+                    <a class="text-primary right-icon list-item" href="{{ route('user.profile.edit') }}">
                         <span>{{ __('Profilo') }}</span>
                         <svg class="icon icon-sm icon-primary right"><use xlink:href="{{ asset('svg/sprite.svg#it-user') }}"></use></svg>
                     </a>
                 </li>
+                @endif
                 @endauth
                 <li>
-                    <a class="text-primary right-icon" href="{{ route('spid-auth_logout') }}" class="list-item">
+                    <a class="text-primary right-icon list-item" href="{{ route('spid-auth_logout') }}">
                         <span>{{ __('Disconnetti') }}</span>
                         <svg class="icon icon-sm icon-primary right"><use xlink:href="{{ asset('svg/sprite.svg#it-unlocked') }}"></use></svg>
                     </a>

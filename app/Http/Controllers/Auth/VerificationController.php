@@ -34,7 +34,8 @@ class VerificationController extends Controller
             return $this->alreadyVerifiedUser($request, $user);
         }
 
-        return view('auth.verify')->with('user', $user);
+        $view = $user->status->is(UserStatus::INVITED) ? 'auth.invitation_notice' : 'auth.verify';
+        return view($view)->with('user', $user);
     }
 
     /**

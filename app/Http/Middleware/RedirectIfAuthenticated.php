@@ -4,7 +4,6 @@ namespace App\Http\Middleware;
 
 use App\Enums\UserPermission;
 use Closure;
-use Illuminate\Auth\Access\AuthorizationException;
 
 class RedirectIfAuthenticated
 {
@@ -17,14 +16,10 @@ class RedirectIfAuthenticated
      *
      * @return mixed
      */
-    public function handle($request, Closure $next, ?string $notSpid = null)
+    public function handle($request, Closure $next)
     {
-        if ('notspid' === $notSpid && app()->make('SPIDAuth')->isAuthenticated()) {
-            throw new AuthorizationException('SPID authenticated users are not authorized for route ' . $request->route()->getName() . '.');
-        }
-
         if (auth()->check()) {
-            $redirectTo = $request->user()->can(UserPermission::ACCESS_ADMIN_AREA) ? '/admin/dashboard' : '/dashboard';
+            $redirectTo = $request->user()->can(UserPermission::ACCESS_ADMIN_AREA) ? route('admin.dashboard') : route('dashboard');
 
             return redirect($redirectTo);
         }
