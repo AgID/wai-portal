@@ -22,13 +22,28 @@ use Silber\Bouncer\BouncerFacade as Bouncer;
 
 Route::get('/_reset_all', function () {
     session()->invalidate();
+
     $session_files = Storage::disk('sessions')->files('/');
     $session_files = array_diff($session_files, ['.gitignore']);
     Storage::disk('sessions')->delete($session_files);
+
     Artisan::call('migrate:fresh');
     Bouncer::scope()->to(null);
     Artisan::call('app:init-permissions');
     Artisan::call('db:seed');
+
+    $analyticsService = app()->make('analytics-service');
+    foreach ($analyticsService->getAllSitesId() as $siteId) {
+        if ('1' !== $siteId) {
+            $analyticsService->deleteSite($siteId);
+        }
+    }
+
+    foreach ($analyticsService->getUsersLogin() as $userLogin) {
+        if (!in_array($userLogin, ['admin', 'anonymous'])) {
+            $analyticsService->deleteUser($userLogin);
+        }
+    }
 
     return redirect()->home()->withNotification([
         'title' => __('reset applicazione'),
