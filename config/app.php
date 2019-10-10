@@ -108,7 +108,7 @@ return [
     |
     */
 
-    'fallback_locale' => 'en',
+    'fallback_locale' => 'it',
 
     /*
     |--------------------------------------------------------------------------
@@ -264,6 +264,7 @@ return [
         'EventType' => App\Enums\Logs\EventType::class,
         'JobType' => App\Enums\Logs\JobType::class,
         'ExceptionType' => App\Enums\Logs\ExceptionType::class,
+        'Markdown' => App\Support\Markdown::class,
     ],
 
 ];

@@ -25,8 +25,13 @@ class HomeController extends Controller
      */
     public function faq(): View
     {
-        $faqs = Yaml::parseFile(resource_path('views/pages/faqs.yml'));
-        $themes = array_unique(Arr::pluck($faqs, 'theme'));
+        $allFaqs = Yaml::parseFile(resource_path('views/pages/faqs.yml'));
+        $currentLocale = app()->getLocale();
+        $faqsLocale = array_key_exists($currentLocale, $allFaqs) ? $currentLocale : config('app.fallback_locale');
+        $faqs = $allFaqs[$faqsLocale];
+        $themes = array_unique(Arr::flatten(array_map(function ($themes) {
+            return explode(' ', $themes);
+        }, Arr::pluck($faqs, 'themes'))));
 
         return view('pages.faq')->with(compact('faqs', 'themes'));
     }

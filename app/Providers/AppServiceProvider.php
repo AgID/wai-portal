@@ -24,6 +24,10 @@ class AppServiceProvider extends ServiceProvider
         Blade::if('env', function ($environment) {
             return app()->environment($environment);
         });
+
+        Blade::directive('markdown', function ($markdown) {
+            return "<?php echo (new Markdown())->text($markdown); ?>";
+        });
     }
 
     /**

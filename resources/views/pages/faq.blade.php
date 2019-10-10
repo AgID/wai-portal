@@ -40,19 +40,21 @@
         <div class="faqs-wrapper">
             <div class="faqs collapse-div ml-sm-5" role="tablist">
                 @foreach ($faqs as $faq)
-                <div id="faq-{{ $loop->iteration }}" class="faq" data-theme="{{ $faq['theme'] }}">
+                <div id="faq-{{ $loop->iteration }}" class="faq" data-themes="{{ $faq['themes'] }}">
                     <div class="collapse-header" id="faq-{{ $loop->iteration }}-heading">
                         <button class="text-secondary d-flex align-items-center" data-toggle="collapse" data-target="#faq-{{ $loop->iteration }}-body" aria-expanded="false" aria-controls="faq-{{ $loop->iteration }}-body">
-                            {{ $faq['question'] }}
-                            <small><span class="badge badge-pill badge-primary ml-3">{{ ucfirst($faq['theme']) }}</span></small>
-                            <a class="ml-auto" href="#faq-{{ $loop->iteration }}">
+                            <span class="mr-auto">{{ $faq['question'] }}</span>
+                            @foreach (explode(' ', $faq['themes']) as $theme)
+                                <small><span class="badge badge-pill badge-primary py-1 mx-2">{{ ucfirst($theme) }}</span></small>
+                            @endforeach
+                            <a href="#faq-{{ $loop->iteration }}">
                                 <svg class="icon icon-sm"><use xlink:href="{{ asset('svg/sprite.svg#it-link') }}"></use></svg>
                             </a>
                         </button>
                     </div>
                     <div id="faq-{{ $loop->iteration }}-body" class="collapse" role="tabpanel" aria-labelledby="faq-{{ $loop->iteration }}-heading">
                         <div class="collapse-body text-serif">
-                        {{ $faq['answer'] }}
+                        @markdown($faq['answer'])
                         </div>
                     </div>
                 </div>

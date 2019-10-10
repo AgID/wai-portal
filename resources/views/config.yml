@@ -1,22 +1,51 @@
-site:
-  owner:
-    name: Agenzia per l'Italia Digitale
-    name_short: AGID
-    link: http://www.agid.gov.it
-    logo: /images/agid-logo.svg
-  privacy_policy: /privacy
-  logo: /images/wai-logo.svg
-  pill: alpha
+it:
+  site:
+    owner:
+      name: Agenzia per l'Italia Digitale
+      name_short: AGID
+      link: http://www.agid.gov.it
+      logo: /images/agid-logo.svg
+    privacy_policy: /privacy
+    logo: /images/wai-logo.svg
+    pill: alpha
 
-  menu_items:
-    primary:
-      - name: Dashboard
-        route: dashboard
-      - name: Siti web
-        route: websites.index
-      - name: Utenti
-        route: users.index
-    secondary:
+    menu_items:
+      primary:
+        - name: Dashboard
+          route: dashboard
+        - name: Siti web
+          route: websites.index
+        - name: Utenti
+          route: users.index
+      secondary:
+        - name: Open data
+          route: open-data
+        - name: FAQ
+          route: faq
+        - name: Contattaci
+          route: contacts
+
+    slim_header_links:
+      - name: Piano triennale
+        url: https://pianotriennale-ict.italia.it
+        class: delimiter
+      - name: Developers
+        url: https://developers.italia.it/
+      - name: Designers
+        url: http://designers.italia.it
+        class: delimiter
+      - name: Forum
+        url: https://forum.italia.it/
+      - name: Docs
+        url: https://docs.italia.it/
+      - name: GitHub
+        url: https://github.com/italia/
+
+    footer_links:
+      - name: Privacy policy
+        route: privacy
+      - name: Note legali
+        route: legal-notes
       - name: Open data
         route: open-data
       - name: FAQ
@@ -24,44 +53,16 @@ site:
       - name: Contattaci
         route: contacts
 
-  slim_header_links:
-    - name: Piano triennale
-      url: https://pianotriennale-ict.italia.it
-      class: delimiter
-    - name: Developers
-      url: https://developers.italia.it/
-    - name: Designers
-      url: http://designers.italia.it
-      class: delimiter
-    - name: Forum
-      url: https://forum.italia.it/
-    - name: Docs
-      url: https://docs.italia.it/
-    - name: GitHub
-      url: https://github.com/italia/
+    social:
+      - name: facebook
+        url: https://www.facebook.com/AgIDGovIT/
+      - name: twitter
+        url: https://twitter.com/AgidGov
+      - name: youtube
+        url: https://www.youtube.com/channel/UCxJmOWf__YcLgB19gy5dGQQ
+      - name: medium
+        url: https://medium.com/designers-italia
 
-  footer_links:
-    - name: Privacy policy
-      route: privacy
-    - name: Note legali
-      route: legal-notes
-    - name: Open data
-      route: open-data
-    - name: FAQ
-      route: faq
-    - name: Contattaci
-      route: contacts
-
-  social:
-    - name: facebook
-      url: https://www.facebook.com/AgIDGovIT/
-    - name: twitter
-      url: https://twitter.com/AgidGov
-    - name: youtube
-      url: https://www.youtube.com/channel/UCxJmOWf__YcLgB19gy5dGQQ
-    - name: medium
-      url: https://medium.com/designers-italia
-
-  trackers:
-    matomo: 1
-    ga: UA-140404450-1
+    trackers:
+      matomo: 1
+      ga: UA-140404450-1
