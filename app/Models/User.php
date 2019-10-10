@@ -38,7 +38,6 @@ class User extends Authenticatable implements MustVerifyEmail
     use HasRolesAndAbilities;
     use HasWebsitePermissions;
     use HasAnalyticsServiceAccount;
-    use Notifiable;
     use SoftDeletes;
 
     /**
