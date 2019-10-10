@@ -80,18 +80,7 @@ class ProfileController extends Controller
         }
 
         if ($user->hasAnalyticsServiceAccount()) {
-            //NOTE: remove the try/catch if matomo is configured
-            //      to not send email on user updates using API interface
-            //      See: https://github.com/matomo-org/matomo/pull/14281
-            try {
-                // Update Analytics Service account if needed
-                // NOTE: at this point, user must have an analytics account
-                $user->updateAnalyticsServiceAccountEmail();
-            } catch (CommandErrorException $exception) {
-                if (!Str::contains($exception->getMessage(), 'Unable to send mail.')) {
-                    throw $exception;
-                }
-            }
+            $user->updateAnalyticsServiceAccountEmail();
         }
 
         $user->save();
