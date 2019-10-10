@@ -126,7 +126,7 @@ class UserTransformer extends TransformerAbstract
                     $data['buttons'][] = [
                         'link' => route('admin.publicAdministration.users.restore', [
                             'publicAdministration' => $publicAdministration,
-                            'user' => $user,
+                            'trashed_user' => $user,
                         ]),
                         'label' => __('ripristina'),
                         'color' => 'warning',
