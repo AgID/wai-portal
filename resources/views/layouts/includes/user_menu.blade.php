@@ -1,6 +1,6 @@
 <div class="user-dropdown dropdown">
     <a class="btn btn-dropdown dropdown-toggle" role="button" id="userDropdownButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        <span>{{ __('Ciao,') }} {{ $user->name }}!</span>
+        <span>{{ __('Ciao,') }} {{ $user->name ?? $user->full_name }}!</span>
         <svg class="icon-expand icon icon-sm icon-primary"><use xlink:href="{{ asset('svg/sprite.svg#it-expand') }}"></use></svg>
     </a>
     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdownButton">
