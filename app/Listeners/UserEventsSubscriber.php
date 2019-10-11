@@ -6,16 +6,15 @@ use App\Enums\Logs\EventType;
 use App\Enums\UserStatus;
 use App\Events\User\UserActivated;
 use App\Events\User\UserDeleted;
+use App\Events\User\UserEmailChanged;
 use App\Events\User\UserInvited;
 use App\Events\User\UserLogin;
 use App\Events\User\UserLogout;
 use App\Events\User\UserReactivated;
 use App\Events\User\UserRestored;
+use App\Events\User\UserStatusChanged;
 use App\Events\User\UserSuspended;
-use App\Events\User\UserUpdated;
-use App\Events\User\UserUpdating;
 use App\Events\User\UserWebsiteAccessChanged;
-use App\Models\User;
 use App\Traits\InteractsWithRedisIndex;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Events\Verified;
@@ -110,54 +109,38 @@ class UserEventsSubscriber implements ShouldQueue
     }
 
     /**
-     * Handle user updating event.
+     * Handle user email changed event.
      *
-     * @param UserUpdating $event the event
+     * @param UserEmailChanged $event the event
      */
-    public function onUpdating(UserUpdating $event): void
+    public function onUserEmailChanged(UserEmailChanged $event): void
     {
         $user = $event->getUser();
-        if ($user->isDirty('email')) {
-            $user->email_verified_at = null;
-        }
+
+        $user->sendEmailVerificationNotification($user->status->is(UserStatus::INVITED) ? $user->publicAdministrations()->first() : null);
+
+        logger()->notice('User ' . $user->uuid . ' email address changed',
+            [
+                'event' => EventType::USER_EMAIL_CHANGED,
+                'user' => $user->uuid,
+            ]
+        );
     }
 
     /**
-     * Handle user update event.
+     * Handle user status changed event.
      *
-     * @param UserUpdated $event the event
-     *
-     * @throws \App\Exceptions\AnalyticsServiceAccountException if the Analytics Service account doesn't exist
-     * @throws \App\Exceptions\AnalyticsServiceException if unable to connect the Analytics Service
-     * @throws \App\Exceptions\CommandErrorException if command is unsuccessful
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException if unable to bind analytics service
+     * @param UserStatusChanged $event the event
      */
-    public function onUpdated(UserUpdated $event): void
+    public function onUserStatusChanged(UserStatusChanged $event): void
     {
         $user = $event->getUser();
-
-        if ($user->isDirty('email_verified_at') && !empty($user->email_verified_at) && $user->hasAnalyticsServiceAccount()) {
-            $user->updateAnalyticsServiceAccountEmail();
-        }
-        if ($user->isDirty('email')) {
-            $user->sendEmailVerificationNotification($user->status->is(UserStatus::INVITED) ? $user->publicAdministrations()->first() : null);
-
-            logger()->notice('User ' . $user->uuid . ' email address changed',
-                [
-                    'event' => EventType::USER_EMAIL_CHANGED,
-                    'user' => $user->uuid,
-                ]
-            );
-        }
-
-        if ($user->isDirty('status')) {
-            logger()->notice('User ' . $user->uuid . ' status changed from "' . UserStatus::getDescription($user->getOriginal('status')) . '" to "' . $user->status->description . '"',
-                [
-                    'event' => EventType::USER_STATUS_CHANGED,
-                    'user' => $user->uuid,
-                ]
-            );
-        }
+        logger()->notice('User ' . $user->uuid . ' status changed from "' . UserStatus::getDescription($event->getOldStatus()) . '" to "' . $user->status->description . '"',
+            [
+                'event' => EventType::USER_STATUS_CHANGED,
+                'user' => $user->uuid,
+            ]
+        );
 
         $this->updateUsersIndex($user);
     }
@@ -313,13 +296,13 @@ class UserEventsSubscriber implements ShouldQueue
         );
 
         $events->listen(
-            'App\Events\User\UserUpdating',
-            'App\Listeners\UserEventsSubscriber@onUpdating'
+            'App\Events\User\UserEmailChanged',
+            'App\Listeners\UserEventsSubscriber@onUserEmailChanged'
         );
 
         $events->listen(
-            'App\Events\User\UserUpdated',
-            'App\Listeners\UserEventsSubscriber@onUpdated'
+            'App\Events\User\UserStatusChanged',
+            'App\Listeners\UserEventsSubscriber@onUserStatusChanged'
         );
 
         $events->listen(

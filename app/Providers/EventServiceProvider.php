@@ -14,6 +14,7 @@ use App\Listeners\UpdatePublicAdministrationsFromIpaJobEventsSubscriber;
 use App\Listeners\UserEventsSubscriber;
 use App\Listeners\UserExpiredInvitationListener;
 use App\Listeners\UsersJobEventsSubscriber;
+use App\Listeners\UserUpdatesSubscriber;
 use App\Listeners\WebsiteEventsSubscriber;
 use App\Listeners\WebsitesJobEventSubscriber;
 use Illuminate\Auth\Events\Registered;
@@ -61,6 +62,7 @@ class EventServiceProvider extends ServiceProvider
         CheckWebsitesMonitoringJobEventsSubscriber::class,
         UsersJobEventsSubscriber::class,
         WebsitesJobEventSubscriber::class,
+        UserUpdatesSubscriber::class,
     ];
 
     /**

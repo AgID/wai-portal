@@ -18,20 +18,22 @@
                     </div>
                 </li>
                 <li><span class="divider"></span></li>
+                @if(!$authUser->status->is(UserStatus::INVITED))
                 <li>
-                    <a class="text-primary right-icon" href="{{ route('admin.user.profile.edit') }}" class="list-item">
+                    <a class="text-primary right-icon list-item" href="{{ route('admin.user.profile.edit') }}">
                         <span>{{ __('Profilo') }}</span>
                         <svg class="icon icon-sm icon-primary right"><use xlink:href="{{ asset('svg/sprite.svg#it-user') }}"></use></svg>
                     </a>
                 </li>
                 <li>
-                    <a class="text-primary right-icon" href="{{ route('admin.password.change.show') }}" class="list-item">
+                    <a class="text-primary right-icon list-item" href="{{ route('admin.password.change.show') }}">
                         <span>{{ __('Cambio password') }}</span>
                         <svg class="icon icon-sm icon-primary right"><use xlink:href="{{ asset('svg/sprite.svg#it-key') }}"></use></svg>
                     </a>
                 </li>
+                @endif
                 <li>
-                    <a class="text-primary right-icon" href="{{ route('admin.logout') }}" class="list-item">
+                    <a class="text-primary right-icon list-item" href="{{ route('admin.logout') }}">
                         <span>{{ __('Disconnetti') }}</span>
                         <svg class="icon icon-sm icon-primary right"><use xlink:href="{{ asset('svg/sprite.svg#it-unlocked') }}"></use></svg>
                     </a>

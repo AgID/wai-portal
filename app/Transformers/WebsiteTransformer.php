@@ -155,7 +155,7 @@ class WebsiteTransformer extends TransformerAbstract
                     $data['buttons'][] = [
                         'link' => route('admin.publicAdministration.websites.restore', [
                             'publicAdministration' => $publicAdministration,
-                            'website' => $website,
+                            'trashed_website' => $website,
                         ]),
                         'label' => __('ripristina'),
                         'color' => 'warning',

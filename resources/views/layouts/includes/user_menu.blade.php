@@ -1,6 +1,6 @@
 <div class="user-dropdown dropdown">
     <a class="btn btn-dropdown dropdown-toggle" role="button" id="userDropdownButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        <span>{{ __('Ciao,') }} {{ $user->name }}!</span>
+        <span>{{ __('Ciao,') }} {{ $user->name ?? $user->full_name }}!</span>
         <svg class="icon-expand icon icon-sm icon-primary"><use xlink:href="{{ asset('svg/sprite.svg#it-expand') }}"></use></svg>
     </a>
     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdownButton">
@@ -21,15 +21,17 @@
                 </li>
                 <li><span class="divider"></span></li>
                 @auth
+                @if (!$user->status->is(UserStatus::INVITED))
                 <li>
-                    <a class="text-primary right-icon" href="{{ route('user.profile.edit') }}" class="list-item">
+                    <a class="text-primary right-icon list-item" href="{{ route('user.profile.edit') }}">
                         <span>{{ __('Profilo') }}</span>
                         <svg class="icon icon-sm icon-primary right"><use xlink:href="{{ asset('svg/sprite.svg#it-user') }}"></use></svg>
                     </a>
                 </li>
+                @endif
                 @endauth
                 <li>
-                    <a class="text-primary right-icon" href="{{ route('spid-auth_logout') }}" class="list-item">
+                    <a class="text-primary right-icon list-item" href="{{ route('spid-auth_logout') }}">
                         <span>{{ __('Disconnetti') }}</span>
                         <svg class="icon icon-sm icon-primary right"><use xlink:href="{{ asset('svg/sprite.svg#it-unlocked') }}"></use></svg>
                     </a>

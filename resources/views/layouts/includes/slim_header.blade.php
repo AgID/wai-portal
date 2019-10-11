@@ -58,7 +58,7 @@
                                 @else
                                 @include('layouts.includes.user_menu', [
                                     'user' => tap($spidAuthUser, function($spidAuthUser) {
-                                        return $spidAuthUser->full_name = implode(' ', [
+                                        $spidAuthUser->full_name = implode(' ', [
                                             $spidAuthUser->name,
                                             $spidAuthUser->familyName,
                                         ]);

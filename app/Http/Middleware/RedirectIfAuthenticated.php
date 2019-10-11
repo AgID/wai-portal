@@ -4,27 +4,24 @@ namespace App\Http\Middleware;
 
 use App\Enums\UserPermission;
 use Closure;
-use Illuminate\Auth\Access\AuthorizationException;
 
+/**
+ * Guest users middleware.
+ */
 class RedirectIfAuthenticated
 {
     /**
      * Handle an incoming request.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \Closure $next
-     * @param string|null $notSpid
+     * @param \Illuminate\Http\Request $request the request
+     * @param \Closure $next the next closure
      *
      * @return mixed
      */
-    public function handle($request, Closure $next, ?string $notSpid = null)
+    public function handle($request, Closure $next)
     {
-        if ('notspid' === $notSpid && app()->make('SPIDAuth')->isAuthenticated()) {
-            throw new AuthorizationException('SPID authenticated users are not authorized for route ' . $request->route()->getName() . '.');
-        }
-
         if (auth()->check()) {
-            $redirectTo = $request->user()->can(UserPermission::ACCESS_ADMIN_AREA) ? '/admin/dashboard' : '/dashboard';
+            $redirectTo = $request->user()->can(UserPermission::ACCESS_ADMIN_AREA) ? route('admin.dashboard') : route('dashboard');
 
             return redirect($redirectTo);
         }
