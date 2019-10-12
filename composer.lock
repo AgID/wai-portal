@@ -1,10 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "27cfcb9919def00151a7d854dd2739db",
+    "content-hash": "dc35db7731cc4460c6f659bdb06367a7",
     "packages": [
         {
             "name": "bensampo/laravel-enum",
@@ -1131,16 +1131,16 @@
         },
         {
             "name": "italia/spid-laravel",
-            "version": "v0.8.0-beta",
+            "version": "v0.9.1-beta",
             "source": {
                 "type": "git",
                 "url": "https://github.com/italia/spid-laravel.git",
-                "reference": "6c9cceec2d6a146450921129b00ce3f0be1baacf"
+                "reference": "424979fd79e35ef41044282198087b6a75523fc5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/italia/spid-laravel/zipball/6c9cceec2d6a146450921129b00ce3f0be1baacf",
-                "reference": "6c9cceec2d6a146450921129b00ce3f0be1baacf",
+                "url": "https://api.github.com/repos/italia/spid-laravel/zipball/424979fd79e35ef41044282198087b6a75523fc5",
+                "reference": "424979fd79e35ef41044282198087b6a75523fc5",
                 "shasum": ""
             },
             "require": {
@@ -1186,14 +1186,14 @@
                     "email": "davide.porrovecchio@agid.gov.it"
                 }
             ],
-            "description": "Laravel 5 Package for SPID authentication",
+            "description": "Laravel Package for SPID authentication",
             "homepage": "https://github.com/italia/spid-laravel",
             "keywords": [
                 "SPiD",
                 "laravel",
-                "laravel 5"
+                "php"
             ],
-            "time": "2019-10-03T13:11:29+00:00"
+            "time": "2019-10-12T10:42:17+00:00"
         },
         {
             "name": "jakub-onderka/php-console-color",

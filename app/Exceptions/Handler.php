@@ -9,6 +9,7 @@ use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Exceptions\InvalidSignatureException;
 use Illuminate\Session\TokenMismatchException;
+use Italia\SPIDAuth\Exceptions\SPIDLoginAnomalyException;
 use Italia\SPIDAuth\Exceptions\SPIDLoginException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
@@ -84,9 +85,13 @@ class Handler extends ExceptionHandler
         }
 
         if ($exception instanceof SPIDLoginException) {
+            $message = $exception instanceof SPIDLoginAnomalyException
+                ? ucfirst($exception->getUserMessage()) . '.'
+                : __("L'accesso con SPID è fallito.");
+
             return redirect()->home()->withNotification([
                 'title' => __('accesso non effettuato'),
-                'message' => __("L'accesso con SPID è stato annullato o è fallito."),
+                'message' => $message,
                 'status' => 'error',
                 'icon' => 'it-close-circle',
             ]);
