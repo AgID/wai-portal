@@ -7,15 +7,14 @@ use App\Events\User\UserInvitationLinkExpired;
 use App\Exceptions\ExpiredInvitationException;
 use App\Exceptions\ExpiredVerificationException;
 use App\Models\User;
-use Carbon\Carbon;
 use Closure;
-use Illuminate\Routing\Middleware\ValidateSignature as Middleware;
-use Illuminate\Support\Facades\Route;
+use Illuminate\Routing\Exceptions\InvalidSignatureException;
+use Illuminate\Support\Facades\URL;
 
 /**
- * Generated URL validation middleware.
+ * Generated signed URL validation middleware.
  */
-class ValidateSignature extends Middleware
+class ValidateSignature
 {
     /**
      * Handle an incoming request.
@@ -25,17 +24,20 @@ class ValidateSignature extends Middleware
      *
      * @throws \App\Exceptions\ExpiredInvitationException if invitation link is expired
      * @throws \App\Exceptions\ExpiredVerificationException if verification link is expired
+     * @throws \Illuminate\Routing\Exceptions\InvalidSignatureException if verification link is expired
      *
      * @return \Illuminate\Http\Response the response
      */
     public function handle($request, Closure $next)
     {
-        $expire = $request->query('expires');
-        $uuid = $request->route('uuid');
+        if ($request->hasValidSignature()) {
+            return $next($request);
+        }
 
-        if ($expire && $uuid && 'verification.verify' === Route::currentRouteName() && Carbon::now()->getTimestamp() > $expire) {
-            $user = User::where('uuid', $uuid)->first();
-            if ($user->status->is(UserStatus::INVITED)) {
+        // if this request hasn't a valid signature but it's correct then must be expired
+        if ($request->route()->named('verification.verify') && URL::hasCorrectSignature($request)) {
+            $user = User::where('uuid', $request->route('uuid'))->first();
+            if ($user && $user->status->is(UserStatus::INVITED)) {
                 event(new UserInvitationLinkExpired($user));
 
                 throw new ExpiredInvitationException();
@@ -44,6 +46,6 @@ class ValidateSignature extends Middleware
             throw new ExpiredVerificationException();
         }
 
-        return parent::handle($request, $next);
+        throw new InvalidSignatureException();
     }
 }

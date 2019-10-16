@@ -120,7 +120,7 @@ class EmailVerificationTest extends TestCase
 
         $signedUrl = URL::temporarySignedRoute(
             'verification.verify',
-            Carbon::now()->addDays(Config::get('auth.verification.expire', 7)), [
+            Carbon::now()->subDays(Config::get('auth.verification.expire', 7) + 1), [
             'uuid' => $this->user->uuid,
             'hash' => base64_encode(Hash::make($this->user->email)),
         ]);
