@@ -106,7 +106,7 @@ class CRUDWebsiteTest extends TestCase
      * @throws \App\Exceptions\AnalyticsServiceException if unable to connect the Analytics Service
      * @throws \App\Exceptions\CommandErrorException if command is unsuccessful
      */
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         $this->user->deleteAnalyticsServiceAccount();
         parent::tearDown();

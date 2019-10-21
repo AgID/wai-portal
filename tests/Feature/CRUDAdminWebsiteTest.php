@@ -52,7 +52,7 @@ class CRUDAdminWebsiteTest extends TestCase
      * @throws \App\Exceptions\AnalyticsServiceException if unable to connect the Analytics Service
      * @throws \App\Exceptions\CommandErrorException if command is unsuccessful
      */
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         Event::fake();
@@ -87,7 +87,7 @@ class CRUDAdminWebsiteTest extends TestCase
      * @throws \App\Exceptions\AnalyticsServiceException if unable to connect the Analytics Service
      * @throws \App\Exceptions\CommandErrorException if command is unsuccessful
      */
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         $this->app->make('analytics-service')->deleteSite($this->website->analytics_id);
         parent::tearDown();

@@ -73,7 +73,7 @@ class SearchWebsiteIndexRouteTest extends TestCase
     /**
      * Pre-test setup.
      */
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         Bouncer::dontCache();
