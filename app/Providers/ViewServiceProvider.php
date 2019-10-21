@@ -8,6 +8,7 @@ use App\Http\View\Composers\ModalComposer;
 use App\Http\View\Composers\NotificationComposer;
 use App\Http\View\Composers\PrimaryMenuComposer;
 use App\Http\View\Composers\PublicAdministrationSelectorComposer;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Symfony\Component\Yaml\Exception\ParseException;
@@ -23,6 +24,14 @@ class ViewServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->mergeViewConfig();
+
+        Blade::if('env', function ($environment) {
+            return app()->environment($environment);
+        });
+
+        Blade::directive('markdown', function ($markdown) {
+            return "<?php echo (new Markdown())->text($markdown); ?>";
+        });
 
         View::composer([
             'auth.*',
