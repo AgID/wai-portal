@@ -65,7 +65,7 @@ class WebsiteTransformer extends TransformerAbstract
             if (!$website->status->is(WebsiteStatus::PENDING) && $authUser->can(UserPermission::READ_ANALYTICS, $website)) {
                 if (!$authUserCanAccessAdminArea) {
                     $data['icons'][] = [
-                        'icon' => 'it-presentation',
+                        'icon' => 'it-chart-line',
                         'link' => route('analytics.service.login'),
                         'color' => 'primary',
                         'title' => __('vai agli analytics'),
@@ -76,7 +76,7 @@ class WebsiteTransformer extends TransformerAbstract
             if ($website->status->is(WebsiteStatus::PENDING)) {
                 if ($authUser->can(UserPermission::MANAGE_WEBSITES) || $authUser->status->is(UserStatus::PENDING)) {
                     $data['icons'][] = [
-                        'icon' => 'it-exchange-circle',
+                        'icon' => 'it-plug',
                         'link' => $authUserCanAccessAdminArea
                             ? route('admin.publicAdministration.websites.tracking.check', [
                                 'publicAdministration' => $publicAdministration,
