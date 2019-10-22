@@ -45,7 +45,7 @@ class EmailVerificationTest extends TestCase
     /**
      * Pre-test setup.
      */
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->user = factory(User::class)->create();

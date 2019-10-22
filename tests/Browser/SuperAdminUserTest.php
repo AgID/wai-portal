@@ -2,12 +2,23 @@
 
 namespace Tests\Browser;
 
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 use Laravel\Dusk\Browser;
 use Tests\Browser\Pages\AdminDashboard;
 use Tests\DuskTestCase;
 
 class SuperAdminUserTest extends DuskTestCase
 {
+    /**
+     * Pre-test setup.
+     */
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->artisan('db:seed');
+    }
+
     /**
      * A basic browser test example.
      *
@@ -18,7 +29,6 @@ class SuperAdminUserTest extends DuskTestCase
      */
     public function testVisit()
     {
-        $this->addFakeUser();
         $mailAddress = 'nome.cognome@gov.it';
         $newPassword = 'Password.1'; // really?
         $this->browse(function (Browser $browser) use ($mailAddress) {
@@ -40,7 +50,10 @@ class SuperAdminUserTest extends DuskTestCase
                     ->visit('/admin/user/logout')
                     ->assertPathIs('/');
         });
-        $this->setPassword(2, 'randomPassword');
+
+        $user = User::find(2);
+        $user->password = Hash::make('randomPassword');
+        $user->save();
         $signedUrl = $this->getSignedUrl(2);
         $this->browse(function (Browser $browser) use ($mailAddress, $newPassword, $signedUrl) {
             $browser->visit($signedUrl)
