@@ -12,6 +12,7 @@ trusted_hosts[] = "localhost:9443"
 enable_trusted_host_check = 0
 force_ssl = 1
 enable_update_users_email = 0
+enable_internet_features = 0
 
 [Plugins]
 Plugins[] = "CorePluginsAdmin"
