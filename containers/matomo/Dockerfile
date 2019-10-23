@@ -27,6 +27,13 @@ RUN curl -fsSL -o DisableTracking.tar.gz \
     && mv /opt/matomo/plugins/Piwik-Plugin-DisableTracking-${DISABLE_TRACKING_VERSION} /opt/matomo/plugins/DisableTracking \
     && rm -rf DisableTracking.tar.gz
 
+RUN curl -fsSL -o WAIPortal.tar.gz \
+        "https://github.com/Valair/WAIPortal/releases/download/v0.1.0-alpha/WAIPortal-WAI.tar.gz" \
+    && tar -xf WAIPortal.tar.gz -C /opt/matomo/plugins \
+    && rm -rf WAIPortal.tar.gz
+
+COPY ./templates/*.tpl /opt/matomo/plugins/Morpheus/templates/
+
 COPY ./matomo.sql /opt/matomo-install/matomo.sql
 COPY ./install_matomo_db.sh /opt/matomo-install/install_matomo_db.sh
 
@@ -34,6 +41,9 @@ COPY ./disable_tracking_plugin.sql /opt/matomo-install/disable_tracking_plugin.s
 COPY ./install_disable_tracking_plugin.sh /opt/matomo-install/install_disable_tracking_plugin.sh
 
 COPY ./config.ini.php /opt/matomo/config/config.ini.php
+
+ARG MATOMO_WAI_URL
+RUN sed -i -e s/@MATOMO_WAI_URL@/${MATOMO_WAI_URL}/g /opt/matomo/config/config.ini.php
 
 ARG DB_PASSWORD
 RUN sed -i -e s/@DB_PASSWORD@/${DB_PASSWORD}/g /opt/matomo-install/install_matomo_db.sh

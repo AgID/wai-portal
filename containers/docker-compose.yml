@@ -119,6 +119,7 @@ services:
         - MATOMO_ROOT_PASSWORD=${MATOMO_ROOT_PASSWORD}
         - MATOMO_ROOT_APIKEY=${MATOMO_ROOT_APIKEY}
         - MATOMO_VERSION=${MATOMO_VERSION}
+        - MATOMO_WAI_URL=${MATOMO_WAI_URL}
     volumes:
       - matomo:/opt/matomo/
       - matomo-install:/opt/matomo-install/
