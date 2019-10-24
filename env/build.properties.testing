@@ -112,6 +112,10 @@ PEC_ENCRYPTION=tls
 # Matomo
 # ------
 
+# Matomo Database user
+MATOMO_DB_USER=matomo
+MATOMO_DB_PASSWORD=secret
+
 # Matomo super user name
 MATOMO_ROOT_USER=admin
 

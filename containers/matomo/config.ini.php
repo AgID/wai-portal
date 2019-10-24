@@ -2,8 +2,8 @@
 ; file automatically generated or modified by Matomo; you can manually override the default values in global.ini.php by redefining them in this file.
 [database]
 host = "mariadb"
-username = "root"
-password = "@DB_PASSWORD@"
+username = "@MATOMO_DB_USER@"
+password = "@MATOMO_DB_PASSWORD@"
 dbname = "matomo"
 
 [General]

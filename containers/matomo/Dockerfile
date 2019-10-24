@@ -37,11 +37,17 @@ COPY ./config.ini.php /opt/matomo/config/config.ini.php
 
 ARG DB_PASSWORD
 RUN sed -i -e s/@DB_PASSWORD@/${DB_PASSWORD}/g /opt/matomo-install/install_matomo_db.sh
-RUN sed -i -e s/@DB_PASSWORD@/${DB_PASSWORD}/g /opt/matomo/config/config.ini.php
 RUN sed -i -e s/@DB_PASSWORD@/${DB_PASSWORD}/g /opt/matomo-install/install_disable_tracking_plugin.sh
+
+ARG MATOMO_DB_USER
+ARG MATOMO_DB_PASSWORD
+RUN sed -i -e s/@MATOMO_DB_USER@/${MATOMO_DB_USER}/g /opt/matomo/config/config.ini.php
+RUN sed -i -e s/@MATOMO_DB_PASSWORD@/${MATOMO_DB_PASSWORD}/g /opt/matomo/config/config.ini.php
 
 ARG MATOMO_ROOT_USER
 RUN sed -i -e s/@MATOMO_ROOT_USER@/${MATOMO_ROOT_USER}/g /opt/matomo-install/install_matomo_db.sh
+RUN sed -i -e s/@MATOMO_DB_USER@/${MATOMO_DB_USER}/g /opt/matomo-install/install_matomo_db.sh
+RUN sed -i -e s/@MATOMO_DB_PASSWORD@/${MATOMO_DB_PASSWORD}/g /opt/matomo-install/install_matomo_db.sh
 
 ARG MATOMO_ROOT_PASSWORD
 RUN sed -i -e s#@MATOMO_ROOT_PASSWORD@#${MATOMO_ROOT_PASSWORD}#g /opt/matomo-install/install_matomo_db.sh
