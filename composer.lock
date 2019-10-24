@@ -1872,11 +1872,6 @@
                 "ext-openssl": "Install openssl lib in order to handle with x509 certs (require to support sign and encryption)"
             },
             "type": "library",
-            "extra": {
-                "patches_applied": {
-                    "Compatibility with SPID": "https://rawgit.com/italia/spid-laravel/master/patches/php-saml-3.3.0-spid.patch"
-                }
-            },
             "autoload": {
                 "psr-4": {
                     "OneLogin\\": "src/"
@@ -1893,7 +1888,12 @@
                 "onelogin",
                 "saml"
             ],
-            "time": "2019-09-11T13:56:06+00:00"
+            "time": "2019-09-11T13:56:06+00:00",
+            "extra": {
+                "patches_applied": {
+                    "Compatibility with SPID": "https://rawgit.com/italia/spid-laravel/master/patches/php-saml-3.3.0-spid.patch"
+                }
+            }
         },
         {
             "name": "opis/closure",
@@ -4240,16 +4240,16 @@
         },
         {
             "name": "yajra/laravel-datatables-oracle",
-            "version": "v9.7.0",
+            "version": "v9.7.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/yajra/laravel-datatables.git",
-                "reference": "bb6ff7b76bd6253396cb7a5a7b6c51c5ab14b1a8"
+                "reference": "787eb04e59d754c453e6ed4185073195bc01d967"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yajra/laravel-datatables/zipball/bb6ff7b76bd6253396cb7a5a7b6c51c5ab14b1a8",
-                "reference": "bb6ff7b76bd6253396cb7a5a7b6c51c5ab14b1a8",
+                "url": "https://api.github.com/repos/yajra/laravel-datatables/zipball/787eb04e59d754c453e6ed4185073195bc01d967",
+                "reference": "787eb04e59d754c453e6ed4185073195bc01d967",
                 "shasum": ""
             },
             "require": {
@@ -4307,7 +4307,7 @@
                 "jquery",
                 "laravel"
             ],
-            "time": "2019-10-02T05:58:48+00:00"
+            "time": "2019-10-24T03:50:05+00:00"
         },
         {
             "name": "zendframework/zend-code",
