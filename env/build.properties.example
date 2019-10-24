@@ -113,6 +113,10 @@ PEC_ENCRYPTION=null
 # Matomo
 # ------
 
+# Matomo Database user
+MATOMO_DB_USER=matomo
+MATOMO_DB_PASSWORD=SecretMatomo
+
 # Matomo super user name
 MATOMO_ROOT_USER=admin
 
