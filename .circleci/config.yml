@@ -30,7 +30,14 @@ commands:
           name: Run php-cs-fixer (future mode)
           command: |
             PHP_CS_FIXER_FUTURE_MODE=1
-            bin/php-cs-fixer fix --diff --dry-run --verbose || (echo "Coding standards are not respected. Run PHP-CS-Fixer to fix." && exit 1)
+            bin/php-cs-fixer fix --diff --dry-run --verbose
+
+  security:
+    description: Check known security issues in php dependencies
+    steps:
+      - run:
+          name: Run security-checker
+          command: bin/security-checker security:check
 
   install_node_packages:
     description: Ensure all javascript dependencies are installed
@@ -99,6 +106,7 @@ jobs:
       - restore_all_caches
       - composer
       - php-cs-fixer
+      - security
       - install_node_packages
       - save_all_caches
       - setup_remote_docker
