@@ -8,6 +8,7 @@ RUN mkdir -p /opt/matomo
 
 ARG MATOMO_VERSION
 ARG DISABLE_TRACKING_VERSION=1.0.4
+ARG WAI_THEME_VERSION=0.2.0-alpha
 
 RUN curl -fsSL -o matomo.tar.gz \
         "https://builds.matomo.org/matomo-${MATOMO_VERSION}.tar.gz"; \
@@ -28,11 +29,9 @@ RUN curl -fsSL -o DisableTracking.tar.gz \
     && rm -rf DisableTracking.tar.gz
 
 RUN curl -fsSL -o WAIPortal.tar.gz \
-        "https://github.com/Valair/WAIPortal/releases/download/v0.1.0-alpha/WAIPortal-WAI.tar.gz" \
+        "https://github.com/Valair/WAIPortal/releases/download/v${WAI_THEME_VERSION}/WAIPortal_${WAI_THEME_VERSION}_auto_activate.tar.gz" \
     && tar -xf WAIPortal.tar.gz -C /opt/matomo/plugins \
     && rm -rf WAIPortal.tar.gz
-
-COPY ./templates/*.tpl /opt/matomo/plugins/Morpheus/templates/
 
 COPY ./matomo.sql /opt/matomo-install/matomo.sql
 COPY ./install_matomo_db.sh /opt/matomo-install/install_matomo_db.sh
