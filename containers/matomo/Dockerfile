@@ -23,13 +23,13 @@ RUN curl -fsSL -o GeoIPCity.tar.gz \
     && rm -rf GeoIPCity.tar.gz /tmp/geocity
 
 RUN curl -fsSL -o DisableTracking.tar.gz \
-        "https://github.com/Valair/Piwik-Plugin-DisableTracking/archive/${DISABLE_TRACKING_VERSION}.tar.gz" \
+        "https://github.com/agid/wai-matomo-plugin-DisableTracking/archive/${DISABLE_TRACKING_VERSION}.tar.gz" \
     && tar -xf DisableTracking.tar.gz -C /opt/matomo/plugins \
-    && mv /opt/matomo/plugins/Piwik-Plugin-DisableTracking-${DISABLE_TRACKING_VERSION} /opt/matomo/plugins/DisableTracking \
+    && mv /opt/matomo/plugins/wai-matomo-plugin-DisableTracking-${DISABLE_TRACKING_VERSION} /opt/matomo/plugins/DisableTracking \
     && rm -rf DisableTracking.tar.gz
 
 RUN curl -fsSL -o WAIPortal.tar.gz \
-        "https://github.com/Valair/WAIPortal/releases/download/v${WAI_THEME_VERSION}/WAIPortal_${WAI_THEME_VERSION}_auto_activate.tar.gz" \
+        "https://github.com/agid/wai-matomo-theme/releases/download/v${WAI_THEME_VERSION}/WAIPortal_${WAI_THEME_VERSION}_auto_activate.tar.gz" \
     && tar -xf WAIPortal.tar.gz -C /opt/matomo/plugins \
     && rm -rf WAIPortal.tar.gz
 
