@@ -8,7 +8,7 @@ RUN mkdir -p /opt/matomo
 
 ARG MATOMO_VERSION
 ARG DISABLE_TRACKING_VERSION=1.0.4
-ARG WAI_THEME_VERSION=0.2.0-alpha
+ARG WAI_THEME_VERSION=0.3.0-alpha
 
 RUN curl -fsSL -o matomo.tar.gz \
         "https://builds.matomo.org/matomo-${MATOMO_VERSION}.tar.gz"; \
@@ -28,10 +28,10 @@ RUN curl -fsSL -o DisableTracking.tar.gz \
     && mv /opt/matomo/plugins/wai-matomo-plugin-DisableTracking-${DISABLE_TRACKING_VERSION} /opt/matomo/plugins/DisableTracking \
     && rm -rf DisableTracking.tar.gz
 
-RUN curl -fsSL -o WAIPortal.tar.gz \
-        "https://github.com/agid/wai-matomo-theme/releases/download/v${WAI_THEME_VERSION}/WAIPortal_${WAI_THEME_VERSION}_auto_activate.tar.gz" \
-    && tar -xf WAIPortal.tar.gz -C /opt/matomo/plugins \
-    && rm -rf WAIPortal.tar.gz
+RUN curl -fsSL -o WAIMatomoTheme.tar.gz \
+        "https://github.com/agid/wai-matomo-theme/releases/download/v${WAI_THEME_VERSION}/wai-matomo-theme_${WAI_THEME_VERSION}_auto_activate.tar.gz" \
+    && tar -xf WAIMatomoTheme.tar.gz -C /opt/matomo/plugins \
+    && rm -rf WAIMatomoTheme.tar.gz
 
 COPY ./matomo.sql /opt/matomo-install/matomo.sql
 COPY ./install_matomo_db.sh /opt/matomo-install/install_matomo_db.sh

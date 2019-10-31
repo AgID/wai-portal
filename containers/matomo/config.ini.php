@@ -78,7 +78,7 @@ Plugins[] = "ProfessionalServices"
 Plugins[] = "UserId"
 Plugins[] = "CustomPiwikJs"
 Plugins[] = "DisableTracking"
-Plugins[] = "WAIPortal"
+Plugins[] = "WAIMatomoTheme"
 
 [PluginsInstalled]
 PluginsInstalled[] = "Diagnostics"
@@ -145,7 +145,7 @@ PluginsInstalled[] = "UserId"
 PluginsInstalled[] = "CustomPiwikJs"
 PluginsInstalled[] = "DisableTracking"
 PluginsInstalled[] = "Tour"
-PluginsInstalled[] = "WAIPortal"
+PluginsInstalled[] = "WAIMatomoTheme"
 
 [WAIPortal]
 waiUrl = "https://@MATOMO_WAI_URL@"
