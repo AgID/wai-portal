@@ -7,8 +7,8 @@ RUN apk --update add curl && rm /var/cache/apk/*
 RUN mkdir -p /opt/matomo
 
 ARG MATOMO_VERSION
-ARG DISABLE_TRACKING_VERSION=1.0.4
-ARG WAI_THEME_VERSION=0.3.0-alpha
+ARG MATOMO_PLUGIN_DISABLESITETRACKING_VERSION
+ARG MATOMO_WAI_THEME_VERSION
 
 RUN curl -fsSL -o matomo.tar.gz \
         "https://builds.matomo.org/matomo-${MATOMO_VERSION}.tar.gz"; \
@@ -23,13 +23,13 @@ RUN curl -fsSL -o GeoIPCity.tar.gz \
     && rm -rf GeoIPCity.tar.gz /tmp/geocity
 
 RUN curl -fsSL -o DisableTracking.tar.gz \
-        "https://github.com/agid/wai-matomo-plugin-DisableTracking/archive/${DISABLE_TRACKING_VERSION}.tar.gz" \
+        "https://github.com/agid/wai-matomo-plugin-DisableTracking/archive/${MATOMO_PLUGIN_DISABLESITETRACKING_VERSION}.tar.gz" \
     && tar -xf DisableTracking.tar.gz -C /opt/matomo/plugins \
-    && mv /opt/matomo/plugins/wai-matomo-plugin-DisableTracking-${DISABLE_TRACKING_VERSION} /opt/matomo/plugins/DisableTracking \
+    && mv /opt/matomo/plugins/wai-matomo-plugin-DisableTracking-${MATOMO_PLUGIN_DISABLESITETRACKING_VERSION} /opt/matomo/plugins/DisableTracking \
     && rm -rf DisableTracking.tar.gz
 
 RUN curl -fsSL -o WAIMatomoTheme.tar.gz \
-        "https://github.com/agid/wai-matomo-theme/releases/download/v${WAI_THEME_VERSION}/wai-matomo-theme_${WAI_THEME_VERSION}_auto_activate.tar.gz" \
+        "https://github.com/agid/wai-matomo-theme/releases/download/v${MATOMO_WAI_THEME_VERSION}/wai-matomo-theme_${MATOMO_WAI_THEME_VERSION}_auto_activate.tar.gz" \
     && tar -xf WAIMatomoTheme.tar.gz -C /opt/matomo/plugins \
     && rm -rf WAIMatomoTheme.tar.gz
 

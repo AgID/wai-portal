@@ -124,6 +124,12 @@ MATOMO_ROOT_APIKEY=d300edfad46f2723f0df5b5b5877033b
 # Matomo version
 MATOMO_VERSION=3.11.0
 
+# Matomo WAI theme version
+MATOMO_WAI_THEME_VERSION=0.3.0-alpha
+
+# Matomo plugin DisableSiteTracking version
+MATOMO_PLUGIN_DISABLESITETRACKING_VERSION=1.0.4
+
 # Analytics Service URLs
 # ----------------------
 
