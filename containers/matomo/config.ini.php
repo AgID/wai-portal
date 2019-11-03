@@ -147,5 +147,5 @@ PluginsInstalled[] = "DisableTracking"
 PluginsInstalled[] = "Tour"
 PluginsInstalled[] = "WAIMatomoTheme"
 
-[WAIPortal]
+[WAIMatomoTheme]
 waiUrl = "https://@MATOMO_WAI_URL@"
