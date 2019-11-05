@@ -1,6 +1,13 @@
 version: 2.1
 
 commands:
+  install_system_dependencies:
+    description: Install dependencies needed for the tests to run
+    steps:
+      - run:
+          name: Install pcntl php extension
+          command: sudo docker-php-ext-install pcntl
+
   restore_all_caches:
     description: Restore php and javascript dependencies
     steps:
@@ -102,6 +109,7 @@ jobs:
     environment:
       - APP_ENV: "testing"
     steps:
+      - install_system_dependencies
       - checkout
       - restore_all_caches
       - composer
