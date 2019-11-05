@@ -20,7 +20,7 @@
         "datatables.net-dt": "^1.10.20",
         "datatables.net-responsive": "^2.2.3",
         "datatables.net-responsive-dt": "^2.2.3",
-        "eslint": "^6.5.1",
+        "eslint": "^6.6.0",
         "eslint-loader": "^3.0.2",
         "eslint-plugin-vue": "^5.2.3",
         "jquery": "^3.4.1",
