@@ -27,17 +27,13 @@ class Authenticate extends Middleware
     {
         $SPIDUser = session()->get('spid_user');
         if ($SPIDUser && User::findTrashedByFiscalNumber($SPIDUser->fiscalNumber)) {
-            throw new AuthenticationException(
-                'User deleted.', $guards, $this->redirectTrashedTo($request)
-            );
+            throw new AuthenticationException('User deleted.', $guards, $this->redirectTrashedTo($request));
         }
 
         parent::authenticate($request, $guards);
 
         if ($request->user()->status->is(UserStatus::SUSPENDED) && !$request->routeIs('admin.logout')) {
-            throw new AuthenticationException(
-                'User suspended.', $guards, $this->redirectSuspendedTo($request)
-            );
+            throw new AuthenticationException('User suspended.', $guards, $this->redirectSuspendedTo($request));
         }
     }
 
