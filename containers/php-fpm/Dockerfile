@@ -8,7 +8,7 @@ ENV DEBIAN_FRONTEND noninteractive
 
 # php required extensions
 RUN apt-get update && apt-get install -y --no-install-recommends libicu-dev && rm -rf /var/lib/apt/lists/* \
-    && docker-php-ext-install pdo_mysql bcmath intl \
+    && docker-php-ext-install pdo_mysql bcmath pcntl intl \
     && apt-get purge -y --auto-remove libicu-dev
 
 # xdebug
