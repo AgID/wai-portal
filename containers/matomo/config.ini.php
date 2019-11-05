@@ -12,6 +12,7 @@ trusted_hosts[] = "localhost:9443"
 enable_trusted_host_check = 0
 force_ssl = 1
 enable_update_users_email = 0
+enable_internet_features = 0
 
 [Plugins]
 Plugins[] = "CorePluginsAdmin"
@@ -77,6 +78,7 @@ Plugins[] = "ProfessionalServices"
 Plugins[] = "UserId"
 Plugins[] = "CustomPiwikJs"
 Plugins[] = "DisableTracking"
+Plugins[] = "WAIMatomoTheme"
 
 [PluginsInstalled]
 PluginsInstalled[] = "Diagnostics"
@@ -143,3 +145,7 @@ PluginsInstalled[] = "UserId"
 PluginsInstalled[] = "CustomPiwikJs"
 PluginsInstalled[] = "DisableTracking"
 PluginsInstalled[] = "Tour"
+PluginsInstalled[] = "WAIMatomoTheme"
+
+[WAIMatomoTheme]
+waiUrl = "https://@MATOMO_WAI_URL@"

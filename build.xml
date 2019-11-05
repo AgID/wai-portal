@@ -77,6 +77,8 @@
                     <token key="MATOMO_ROOT_PASSWORD" value="${HASHED_MATOMO_ROOT_PASSWORD}" />
                     <token key="MATOMO_ROOT_APIKEY" value="${MATOMO_ROOT_APIKEY}" />
                     <token key="MATOMO_VERSION" value="${MATOMO_VERSION}" />
+                    <token key="MATOMO_WAI_THEME_VERSION" value="${MATOMO_WAI_THEME_VERSION}" />
+                    <token key="MATOMO_PLUGIN_DISABLESITETRACKING_VERSION" value="${MATOMO_PLUGIN_DISABLESITETRACKING_VERSION}" />
                 </replacetokens>
             </filterchain>
         </copy>
