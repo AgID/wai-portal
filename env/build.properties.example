@@ -113,6 +113,10 @@ PEC_ENCRYPTION=null
 # Matomo
 # ------
 
+# Matomo Reader database host
+# Leave blank if not using a clustered DB
+MATOMO_DB_READER=
+
 # Matomo Database user
 MATOMO_DB_USER=matomo
 MATOMO_DB_PASSWORD=SecretMatomo

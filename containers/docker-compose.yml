@@ -115,6 +115,7 @@ services:
       context: ./matomo
       args:
         - DB_PASSWORD=${MARIADB_ROOT_PASSWORD}
+        - MATOMO_DB_READER=${MATOMO_DB_READER}
         - MATOMO_DB_USER=${MATOMO_DB_USER}
         - MATOMO_DB_PASSWORD=${MATOMO_DB_PASSWORD}
         - MATOMO_ROOT_USER=${MATOMO_ROOT_USER}

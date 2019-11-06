@@ -112,6 +112,9 @@ PEC_ENCRYPTION=tls
 # Matomo
 # ------
 
+# Matomo Reader database host
+MATOMO_DB_READER=
+
 # Matomo Database user
 MATOMO_DB_USER=matomo
 MATOMO_DB_PASSWORD=secret

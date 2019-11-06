@@ -48,8 +48,10 @@ ARG DB_PASSWORD
 RUN sed -i -e s/@DB_PASSWORD@/${DB_PASSWORD}/g /opt/matomo-install/install_matomo_db.sh
 RUN sed -i -e s/@DB_PASSWORD@/${DB_PASSWORD}/g /opt/matomo-install/install_disable_tracking_plugin.sh
 
+ARG MATOMO_DB_READER
 ARG MATOMO_DB_USER
 ARG MATOMO_DB_PASSWORD
+RUN sed -i -e s/@MATOMO_DB_READER@/${MATOMO_DB_READER}/g /opt/matomo/config/config.ini.php
 RUN sed -i -e s/@MATOMO_DB_USER@/${MATOMO_DB_USER}/g /opt/matomo/config/config.ini.php
 RUN sed -i -e s/@MATOMO_DB_PASSWORD@/${MATOMO_DB_PASSWORD}/g /opt/matomo/config/config.ini.php
 
