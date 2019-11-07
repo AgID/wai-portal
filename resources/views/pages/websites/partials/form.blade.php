@@ -4,9 +4,9 @@
     @method('put')
     @endisset
     @component('layouts.components.box', ['classes' => 'rounded'])
-    <h5 class="section-header">{{ __('informazioni') }}</h5>
+    <h3 class="section-header">{{ __('Informazioni') }}</h3>
     <div class="form-row">
-        <div class="form-group has-form-text col">
+        <div class="form-group has-form-text col-md-7">
             <div class="input-group">
                 <div class="input-group-prepend">
                     <div class="input-group-text"><svg class="icon icon-sm"><use xlink:href="{{ asset('svg/sprite.svg#it-help-circle') }}"></use></svg></div>
@@ -23,7 +23,7 @@
         </div>
     </div>
     <div class="form-row">
-        <div class="form-group has-form-text col">
+        <div class="form-group has-form-text col-md-7">
             <div class="input-group">
                 <div class="input-group-prepend">
                     <div class="input-group-text"><svg class="icon icon-sm"><use xlink:href="{{ asset('svg/sprite.svg#it-code-circle') }}"></use></svg></div>
@@ -41,7 +41,7 @@
     </div>
     @unless (optional($website->type ?? null)->is(WebsiteType::PRIMARY))
     <div class="form-row">
-        <div class="form-group has-form-text col">
+        <div class="form-group has-form-text col-md-7">
             <div class="input-group">
                 <div class="input-group-prepend">
                     <div class="input-group-text"><svg class="icon icon-sm"><use xlink:href="{{ asset('svg/sprite.svg#it-folder') }}"></use></svg></div>
@@ -69,10 +69,24 @@
         </div>
     </div>
     @endunless
-    <h5 class="section-header{{ $errors->has('permissions') ? ' is-invalid' : '' }}">{{ __('permessi degli utenti') }}</h5>
+    <h3 class="section-header{{ $errors->has('permissions') ? ' is-invalid' : '' }}">{{ __('Permessi degli utenti') }}</h3>
     @error('permissions')
     <div class="invalid-feedback">{{ $errors->first('permissions') }}</div>
     @enderror
+    <h6>{{ __('Puoi assegnare permessi diversificati per ciascun utente') }}</h6>
+    <div class="row justify-content-between">
+        <div class="col-md-6">
+            <p><small>
+                {{ UserPermission::getLongDescription(UserPermission::READ_ANALYTICS) }}<br>
+                {{ UserPermission::getLongDescription(UserPermission::MANAGE_ANALYTICS) }}
+            </small></p>
+        </div>
+        <div class="col-md-5">
+            <div class="callout callout-highlight note m-0">
+                <p class="font-italic"><small>{{ __('I permessi degli utenti con ruolo di amministratore non possono essere modificati.') }}</small></p>
+            </div>
+        </div>
+    </div>
     <div class="form-row">
         @include('partials.datatable')
     </div>

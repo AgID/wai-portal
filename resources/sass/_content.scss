@@ -52,6 +52,13 @@ a.external-link {
   }
 }
 
+h3.section-header {
+  font-size: 1.777rem;
+  font-weight: 700;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
 // Websites status
 .badge.website-status {
   &.pending {
