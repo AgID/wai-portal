@@ -11,7 +11,7 @@ export default (() => {
         websiteCheckTrackingButtons.map(websiteCheckTrackingButton => {
             const isAjax = 'ajax' in websiteCheckTrackingButton.dataset;
             const success = response => {
-                const createWebsitesSectionElement = document.getElementById('create-websites');
+                const showWhenActiveElements = [...document.querySelectorAll('.show-when-active')];
                 const publicAdministrationTenantElement = document.querySelector('.it-nav-wrapper .it-tenant');
                 const headerSocialsElement = document.querySelector('.it-nav-wrapper .it-socials');
 
@@ -21,7 +21,9 @@ export default (() => {
                     I18n.t('ha iniziato a tracciare il traffico.'),
                 ].join(' '), 'success', 'it-check-circle');
 
-                createWebsitesSectionElement && createWebsitesSectionElement.classList.remove('d-none');
+                showWhenActiveElements.map(showWhenActiveElement => {
+                    showWhenActiveElement.classList.remove('d-none');
+                });
                 headerSocialsElement && headerSocialsElement.classList.remove('d-md-flex');
                 publicAdministrationTenantElement && publicAdministrationTenantElement.classList.add('d-md-block');
 

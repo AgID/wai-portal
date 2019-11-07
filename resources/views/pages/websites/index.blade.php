@@ -10,8 +10,8 @@
     @component('layouts.components.box', ['classes' => 'rounded'])
     @if (session()->has('tenant_id') || auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA))
     @include('partials.datatable')
-    @can(UserPermission::ACCESS_ADMIN_AREA)
-    <div class="mt-4 text-center text-sm-left">
+    @if ($authUser->can(UserPermission::MANAGE_WEBSITES) || $authUser->can(UserPermission::ACCESS_ADMIN_AREA))
+    <div class="show-when-active mt-4 text-center text-sm-left{{ $authUser->cannot(UserPermission::MANAGE_WEBSITES) ? ' d-none' : '' }}">
     @component('layouts.components.link_button', [
         'icon' => 'it-plus',
         'link' => $websiteCreateUrl,
@@ -20,14 +20,14 @@
         {{ __('Aggiungi sito web') }}
     @endcomponent
     </div>
-    @endcan
+    @endif
     @else
     @include('pages.websites.partials.add_primary')
     @endif
     @endcomponent
 </div>
 @cannot(UserPermission::ACCESS_ADMIN_AREA)
-<div id="create-websites" class="py-5{{ auth()->user()->cannot(UserPermission::MANAGE_WEBSITES) ? ' d-none' : '' }}">
+<div class="show-when-active create-more-websites py-5{{ $authUser->cannot(UserPermission::MANAGE_WEBSITES) ? ' d-none' : '' }}">
     <div class="container">
         <div class="row">
             <div class="col-md-6">
