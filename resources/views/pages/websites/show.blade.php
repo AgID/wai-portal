@@ -167,7 +167,7 @@
                 {!! __('Consulta i dati analytics e prendi :data_driven_decisions per la tua PA.', ['data_driven_decisions' => '<em>' . __('decisioni basate sui dati') . '</em>']) !!}
             </p>
             <p class="text-center">
-                <a role="button" class="btn btn-sm btn-outline-secondary"
+                <a role="button" class="btn btn-sm btn-outline-primary"
                     href="{{ route('analytics.service.login') }}">
                     {{ __('Vai agli analytics') }}
                 </a>
