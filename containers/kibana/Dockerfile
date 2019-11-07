@@ -1,4 +1,4 @@
-FROM docker.elastic.co/kibana/kibana:7.0.0
+FROM docker.elastic.co/kibana/kibana:7.4.1
 
 COPY ./check_index_pattern.sh /opt/check_index_pattern.sh
 

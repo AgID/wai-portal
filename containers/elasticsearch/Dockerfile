@@ -1,4 +1,4 @@
-FROM docker.elastic.co/elasticsearch/elasticsearch:7.0.0
+FROM docker.elastic.co/elasticsearch/elasticsearch:7.4.1
 
 COPY ./check_index.sh /opt/check_index.sh
 
