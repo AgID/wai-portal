@@ -24,8 +24,14 @@ return [
         UserPermission::MANAGE_USERS => 'gestione utenti',
         UserPermission::MANAGE_WEBSITES => 'gestione siti',
         UserPermission::VIEW_LOGS => 'visualizzare i log',
-        UserPermission::MANAGE_ANALYTICS => 'gestione',
-        UserPermission::READ_ANALYTICS => 'lettura',
+        UserPermission::MANAGE_ANALYTICS => [
+            'short' => 'gestione',
+            'long' => 'Il permesso di gestione consente la modifica delle impostazioni relative ai dati analytics.',
+        ],
+        UserPermission::READ_ANALYTICS => [
+            'short' => 'lettura',
+            'long' => 'Il permesso di lettura consente la consultazione di tutti i dati analytics.',
+        ],
         UserPermission::DO_NOTHING => 'nessun permesso',
     ],
 
@@ -101,7 +107,7 @@ return [
         WebsiteAccessType::NO_ACCESS => 'nessun accesso',
         WebsiteAccessType::VIEW => 'sola lettura',
         WebsiteAccessType::WRITE => 'gestione analytics',
-        WebsiteAccessType::ADMIN => 'amministratore',
+        WebsiteAccessType::ADMIN => 'amministrazione',
     ],
 
     EventType::class => [
