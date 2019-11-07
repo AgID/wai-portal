@@ -8,7 +8,7 @@
 @section('content')
 <div class="container pb-2 pb-sm-3 pb-lg-5">
     @component('layouts.components.box', ['classes' => 'rounded'])
-    @if (session()->has('tenant_id') || auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA))
+    @if (session()->has('tenant_id') || $authUser->can(UserPermission::ACCESS_ADMIN_AREA))
     @include('partials.datatable')
     @if ($authUser->can(UserPermission::MANAGE_WEBSITES) || $authUser->can(UserPermission::ACCESS_ADMIN_AREA))
     <div class="show-when-active mt-4 text-center text-sm-left{{ $authUser->cannot(UserPermission::MANAGE_WEBSITES) ? ' d-none' : '' }}">
