@@ -14,7 +14,7 @@
                     <div class="input-group-prepend">
                         <div class="input-group-text"><svg class="icon icon-sm"><use xlink:href="{{ asset('svg/sprite.svg#it-mail') }}"></use></svg></div>
                     </div>
-                    <label for="email">{{ __('Indirizzo email istituzionale') }}</label>
+                    <label for="email">{{ __('Indirizzo di lavoro') }}</label>
                     <input type="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" id="email" name="email" value="{{ old('email') }}" maxlength="255" aria-labelledby="email-input-help" aria-required="true" required>
                     @error('email')
                     <div class="invalid-feedback">{{ $errors->first('email') }}</div>
@@ -22,7 +22,7 @@
                     <div class="invalid-feedback">{{ __('validation.email', ['attribute' => __('validation.attributes.email')]) }}</div>
                     @enderror
                 </div>
-                <small id="email-input-help" class="form-text text-muted">{{ __('Indirizzo email di lavoro (es. nome.cognome@agid.gov.it).') }}</small>
+                <small id="email-input-help" class="form-text text-muted">{{ __('es. nome.cognome@agid.gov.it') }}</small>
             </div>
         </div>
         <div class="form-row">
@@ -50,7 +50,7 @@
         <div class="form-row">
             <div class="form-check">
                 <input class="form-control form-check-input" class="{{ $errors->has('accept_terms') ? ' is-invalid' : '' }}" type="checkbox" id="accept_terms" name="accept_terms" aria-required="true" required>
-                <label class="form-check-label" for="accept_terms">{!! __('Accetto le :tos', ['tos' => '<a href="#tos">' . __('condizioni del servizio') . '</a>']) !!}</label>
+                <label class="form-check-label" for="accept_terms">{{ __('Accetto le condizioni del servizio') }}</label>
                 <div class="invalid-feedback">{{ __('validation.accepted', ['attribute' => __('validation.attributes.accept_terms')]) }}</div>
             </div>
         </div>
