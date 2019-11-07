@@ -71,6 +71,7 @@
                     <token key="ANALYTICS_API_BASE_URL" value="${ANALYTICS_API_BASE_URL}" />
                     <token key="ANALYTICS_API_SSL_VERIFY" value="${ANALYTICS_API_SSL_VERIFY}" />
                     <token key="ANALYTICS_PUBLIC_URL" value="${ANALYTICS_PUBLIC_URL}" />
+                    <token key="MATOMO_DB_READER" value="${MATOMO_DB_READER}" />
                     <token key="MATOMO_DB_USER" value="${MATOMO_DB_USER}" />
                     <token key="MATOMO_DB_PASSWORD" value="${MATOMO_DB_PASSWORD}" />
                     <token key="MATOMO_ROOT_USER" value="${MATOMO_ROOT_USER}" />

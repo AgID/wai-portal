@@ -6,6 +6,13 @@ username = "@MATOMO_DB_USER@"
 password = "@MATOMO_DB_PASSWORD@"
 dbname = "matomo"
 
+[database_reader]
+host = "@MATOMO_DB_READER@"
+username = "@MATOMO_DB_USER@"
+password = "@MATOMO_DB_PASSWORD@"
+dbname = "matomo"
+port = 3306
+
 [General]
 salt = "01106e8d05b7c61b81cbf572dccc977c"
 trusted_hosts[] = "localhost:9443"
