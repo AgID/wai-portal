@@ -19,7 +19,6 @@ trusted_hosts[] = "localhost:9443"
 enable_trusted_host_check = 0
 force_ssl = 1
 enable_update_users_email = 0
-enable_internet_features = 0
 
 [Plugins]
 Plugins[] = "CorePluginsAdmin"
@@ -31,7 +30,6 @@ Plugins[] = "Diagnostics"
 Plugins[] = "CoreVisualizations"
 Plugins[] = "Proxy"
 Plugins[] = "API"
-Plugins[] = "ExamplePlugin"
 Plugins[] = "Widgetize"
 Plugins[] = "Transitions"
 Plugins[] = "LanguagesManager"
@@ -51,7 +49,6 @@ Plugins[] = "VisitsSummary"
 Plugins[] = "VisitFrequency"
 Plugins[] = "VisitTime"
 Plugins[] = "VisitorInterest"
-Plugins[] = "ExampleAPI"
 Plugins[] = "RssWidget"
 Plugins[] = "Feedback"
 Plugins[] = "Monolog"
