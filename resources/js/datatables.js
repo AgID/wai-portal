@@ -245,8 +245,20 @@ export default (() => {
         datatableApi.draw();
     };
 
+    const initPagination = () => {
+        if (datatableApi.page.info().pages < 2) {
+            $datatable.siblings('.dataTables_length').hide();
+            $datatable.siblings('.dataTables_paginate').hide();
+            $datatable.siblings('.dataTables_info').hide();
+        } else {
+            $datatable.siblings('.dataTables_length').show();
+            $datatable.siblings('.dataTables_paginate').show();
+            $datatable.siblings('.dataTables_info').show();
+        }
+    }
+
     const initPaginatedInputs = () => {
-        if (datatableApi.page.len() < 2) {
+        if (datatableApi.page.info().pages < 2) {
             return;
         }
 
@@ -361,6 +373,7 @@ export default (() => {
             $('.dataTables_wrapper [data-toggle="tooltip"]').tooltip();
         }).on('draw', () => {
             onDraw && onDraw.map(onDrawFunction => onDrawFunction());
+            initPagination();
             $('.dataTables_wrapper [data-toggle="tooltip"]').tooltip();
         });
     };
