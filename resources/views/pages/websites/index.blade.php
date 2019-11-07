@@ -29,7 +29,7 @@
 @cannot(UserPermission::ACCESS_ADMIN_AREA)
 <div class="show-when-active create-more-websites py-5{{ $authUser->cannot(UserPermission::MANAGE_WEBSITES) ? ' d-none' : '' }}">
     <div class="container">
-        <div class="row">
+        <div class="row justify-content-between">
             <div class="col-md-6">
                 <h5 class="section-header">{{ __('Aggiungi altri siti web') }}</h5>
                 <p class="mb-5">
@@ -43,7 +43,7 @@
                     {{ __('Aggiungi sito') }}
                 @endcomponent
             </div>
-            <div class="col-md-6 text-center d-none d-md-block">
+            <div class="col-md-4 text-center d-none d-md-block">
                 <img src="{{ asset('images/add-websites.svg') }}" alt="">
             </div>
         </div>
