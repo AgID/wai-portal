@@ -1,7 +1,7 @@
 <div class="container-fluid">
     @isset($datatableOptions)
     <div class="row mb-3">
-        @isset($datatableOptions['searching'])
+        @if (!empty($datatableOptions['searching']))
         <div class="col-md-4 form-group mb-2 mb-md-0">
             <div class="input-group">
                 <label for="datatables-search">Cerca</label>
@@ -11,8 +11,8 @@
                 </div>
             </div>
         </div>
-        @endisset
-        @isset($datatableOptions['columnFilters'])
+        @endif
+        @if (!empty($datatableOptions['columnFilters']))
         <div class="datatable-filters col-md-6 d-flex justify-content-end align-items-center ml-auto">
             <small>{{ __('filtra per:') }}</small>
             @foreach ($datatableOptions['columnFilters'] as $column => $columnFilter)
@@ -30,19 +30,19 @@
             </div>
             @endforeach
         </div>
-        @endisset
+        @endif
     </div>
     @endisset
     <table class="Datatable table responsive{{ ($datatableOptions['textWrap'] ?? false) ? '' : ' nowrap' }}"
-        @isset($datatableOptions['serverSide'])
+        @if (!empty($datatableOptions['serverSide']))
         data-dt-server-side={{ $datatableOptions['serverSide'] ? 'true' : 'false' }}
-        @endisset
-        @isset($datatableOptions['processing'])
+        @endif
+        @if (!empty($datatableOptions['processing']))
         data-dt-processing={{ $datatableOptions['processing'] ? 'true' : 'false' }}
-        @endisset
-        @isset($datatableOptions['searching'])
+        @endif
+        @if (!empty($datatableOptions['searching']))
         data-dt-searching={{ $datatableOptions['searching'] ? 'true' : 'false' }}
-        @endisset
+        @endif
         data-dt-source="{{ url($source) }}"
         data-dt-columns="{{ json_encode($columns) }}"
         data-dt-columns-order="{{ json_encode($columnsOrder) }}">
