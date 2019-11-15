@@ -297,7 +297,7 @@ trait InteractsWithRedisIndex
      */
     private function getConnectedRedisClient(string $index): RedisRawClientInterface
     {
-        if (('ipa' === $index && env('REDIS_REDISEARCH_USE_SENTINELS', false)) || (env('REDIS_INDEXES_USE_SENTINELS', false))) {
+        if (('ipa' === $index && env('REDIS_REDISEARCH_USE_SENTINELS', false)) || ('ipa' !== $index && env('REDIS_INDEXES_USE_SENTINELS', false))) {
             return (new RedisSentinelPredisAdapter($index))->connect();
         }
 
