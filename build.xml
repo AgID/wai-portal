@@ -48,6 +48,8 @@
                     <token key="MARIADB_ROOT_PASSWORD" value="${MARIADB_ROOT_PASSWORD}" />
                     <token key="CACHE_CONNECTION" value="${CACHE_CONNECTION}" />
                     <token key="SESSION_CONNECTION" value="${SESSION_CONNECTION}" />
+                    <token key="SESSION_SECURE_COOKIE" value="${SESSION_SECURE_COOKIE}" />
+                    <token key="SESSION_ENCRYPT" value="${SESSION_ENCRYPT}" />
                     <token key="QUEUE_REDIS_CONNECTION" value="${QUEUE_REDIS_CONNECTION}" />
                     <token key="REDIS_SENTINELS" value="${REDIS_SENTINELS}" />
                     <token key="REDIS_SENTINEL_SERVICE" value="${REDIS_SENTINEL_SERVICE}" />

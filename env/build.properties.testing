@@ -67,6 +67,12 @@ CACHE_CONNECTION=cache
 SESSION_CONNECTION=sessions
 QUEUE_REDIS_CONNECTION=queue
 
+# Sessions settings
+# -----------------
+
+SESSION_SECURE_COOKIE=false
+SESSION_ENCRYPT=false
+
 # Redis Sentinel settings
 # -----------------------
 
