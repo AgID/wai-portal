@@ -198,7 +198,9 @@ class WebsiteController extends Controller
 
         $this->manageWebsitePermissionsOnNonAdministrators($validatedData, $currentPublicAdministration, $website);
 
-        return redirect()->route('websites.index')->withModal([
+        $redirectUrl = $this->getRoleAwareUrl('websites.index', [], $publicAdministration);
+
+        return redirect()->to($redirectUrl)->withModal([
             'title' => __('Il sito è stato inserito, adesso procedi ad attivarlo!'),
             'icon' => 'it-check-circle',
             'message' => __('Abbiamo appena inviato al tuo indirizzo email tutte le istruzioni per attivare il sito e iniziare a monitorare il traffico.'),
@@ -291,7 +293,9 @@ class WebsiteController extends Controller
 
         $this->manageWebsitePermissionsOnNonAdministrators($validatedData, $currentPublicAdministration, $website);
 
-        return redirect()->route('websites.index')->withNotification([
+        $redirectUrl = $this->getRoleAwareUrl('websites.index', [], $publicAdministration);
+
+        return redirect()->to($redirectUrl)->withNotification([
             'title' => __('modifica sito web'),
             'message' => __('La modifica del sito è andata a buon fine.'),
             'status' => 'success',
@@ -670,9 +674,9 @@ class WebsiteController extends Controller
 
                 return $user;
             }
-        })->map(function ($user) {
+        })->map(function ($user) use ($publicAdministration) {
             if ($user->hasAnalyticsServiceAccount()) {
-                $user->syncWebsitesPermissionsToAnalyticsService();
+                $user->syncWebsitesPermissionsToAnalyticsService($publicAdministration);
             }
         });
     }
