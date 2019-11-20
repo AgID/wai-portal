@@ -510,7 +510,7 @@ class MatomoService implements AnalyticsServiceContract
             throw new AnalyticsServiceException($exception->getMessage());
         }
 
-        $response = json_decode($res->getBody(), true);
+        $response = json_decode(preg_replace('/[^\[]*(\[?{.*}\]?).*/is', '${1}', $res->getBody()), true);
 
         if (!empty($response['result']) && 'error' === $response['result']) {
             throw new CommandErrorException($response['message']);
