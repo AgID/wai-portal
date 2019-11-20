@@ -160,6 +160,7 @@ ANALYTICS_PUBLIC_URL=https://localhost:9443
 # Elastic Search Service URLs
 # ---------------------------
 
+ELASTICSEARCH_VERSION=7.4.1
 ELASTICSEARCH_HOST=elasticsearch
 ELASTICSEARCH_PORT=9200
 ELASTICSEARCH_INDEX_PREFIX=wai

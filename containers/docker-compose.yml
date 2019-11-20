@@ -168,6 +168,7 @@ services:
     build:
       context: ./elasticsearch
       args:
+        - ELASTICSEARCH_VERSION=${ELASTICSEARCH_VERSION}
         - ELASTICSEARCH_INDEX_NAME=${ELASTICSEARCH_INDEX_NAME}
         - ELASTICSEARCH_SEARCH_TEMPLATE_NAME=${ELASTICSEARCH_SEARCH_TEMPLATE_NAME}
     environment:
@@ -191,6 +192,7 @@ services:
     build:
       context: ./kibana
       args:
+        - KIBANA_VERSION=${KIBANA_VERSION}
         - ELASTICSEARCH_INDEX_PREFIX=${ELASTICSEARCH_INDEX_PREFIX}
     environment:
       - SERVER_NAME=kibana01

@@ -38,10 +38,12 @@
                     <token key="ARCHIVING_WEBSITE_ARCHIVE" value="${ARCHIVING_WEBSITE_ARCHIVE}" />
                     <token key="ARCHIVING_WEBSITE_NOTIFICATION_WEEK_DAY" value="${ARCHIVING_WEBSITE_NOTIFICATION_WEEK_DAY}" />
                     <token key="ARCHIVING_WEBSITE_DAILY_NOTIFICATION" value="${ARCHIVING_WEBSITE_DAILY_NOTIFICATION}" />
+                    <token key="ELASTICSEARCH_VERSION" value="${ELASTICSEARCH_VERSION}" />
                     <token key="ELASTICSEARCH_INDEX_PREFIX" value="${ELASTICSEARCH_INDEX_PREFIX}" />
                     <token key="ELASTICSEARCH_INDEX_NAME" value="${ELASTICSEARCH_INDEX_PREFIX}-${ELASTICSEARCH_INDEX_NAME}" />
                     <token key="ELASTICSEARCH_IGNORE_EXCEPTIONS" value="${ELASTICSEARCH_IGNORE_EXCEPTIONS}" />
                     <token key="ELASTICSEARCH_SEARCH_TEMPLATE_NAME" value="${ELASTICSEARCH_SEARCH_TEMPLATE_NAME}" />
+                    <token key="KIBANA_VERSION" value="${KIBANA_VERSION}" />
                     <token key="MARIADB_DATABASE" value="${MARIADB_DATABASE}" />
                     <token key="MARIADB_USER" value="${MARIADB_USER}" />
                     <token key="MARIADB_PASSWORD" value="${MARIADB_PASSWORD}" />
