@@ -3,7 +3,6 @@
 namespace App\Listeners;
 
 use App\Enums\Logs\EventType;
-use App\Enums\WebsiteStatus;
 use App\Events\Website\PrimaryWebsiteNotTracking;
 use App\Events\Website\WebsiteActivated;
 use App\Events\Website\WebsiteAdded;
@@ -13,8 +12,10 @@ use App\Events\Website\WebsiteDeleted;
 use App\Events\Website\WebsitePurged;
 use App\Events\Website\WebsitePurging;
 use App\Events\Website\WebsiteRestored;
+use App\Events\Website\WebsiteStatusChanged;
 use App\Events\Website\WebsiteUnarchived;
 use App\Events\Website\WebsiteUpdated;
+use App\Events\Website\WebsiteUrlChanged;
 use App\Traits\InteractsWithRedisIndex;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Events\Dispatcher;
@@ -93,31 +94,44 @@ class WebsiteEventsSubscriber implements ShouldQueue
      */
     public function onUpdated(WebsiteUpdated $event): void
     {
-        $website = $event->getWebsite();
-        if ($website->isDirty('status')) {
-            logger()->notice(
-                'Website ' . $website->info . ' status changed from "' . WebsiteStatus::getDescription($website->status->getOriginal()) . '" to "' . $website->status->description . '"',
-                [
-                    'event' => EventType::WEBSITE_STATUS_CHANGED,
-                    'website' => $website->id,
-                    'pa' => $website->publicAdministration->ipa_code,
-                ]
-            );
-        }
-
-        if ($website->isDirty('slug')) {
-            logger()->notice(
-                'Website' . $website->info . ' URL updated from ' . $website->getOriginal('url') . ' to ' . e($website->url),
-                [
-                    'event' => EventType::WEBSITE_URL_CHANGED,
-                    'website' => $website->id,
-                    'pa' => $website->publicAdministration->ipa_code,
-                ]
-            );
-        }
-
         //Update Redisearch websites index
-        $this->updateWebsitesIndex($website);
+        $this->updateWebsitesIndex($event->getWebsite());
+    }
+
+    /**
+     * Handle website status changed event.
+     *
+     * @param WebsiteStatusChanged $event the event
+     */
+    public function onWebsiteStatusChanged(WebsiteStatusChanged $event): void
+    {
+        $website = $event->getWebsite();
+        logger()->notice(
+            'Website ' . $website->info . ' status changed from "' . $event->getOldStatus()->description . '" to "' . $website->status->description . '"',
+            [
+                'event' => EventType::WEBSITE_STATUS_CHANGED,
+                'website' => $website->id,
+                'pa' => $website->publicAdministration->ipa_code,
+            ]
+        );
+    }
+
+    /**
+     * Handle website URL changed event.
+     *
+     * @param WebsiteUrlChanged $event the event
+     */
+    public function onWebsiteUrlChanged(WebsiteUrlChanged $event): void
+    {
+        $website = $event->getWebsite();
+        logger()->notice(
+            'Website' . $website->info . ' URL updated from ' . e($event->getOldUrl()) . ' to ' . e($website->url),
+            [
+                'event' => EventType::WEBSITE_URL_CHANGED,
+                'website' => $website->id,
+                'pa' => $website->publicAdministration->ipa_code,
+            ]
+        );
     }
 
     /**
@@ -314,34 +328,50 @@ class WebsiteEventsSubscriber implements ShouldQueue
             'App\Events\Website\WebsiteAdded',
             'App\Listeners\WebsiteEventsSubscriber@onAdded'
         );
+
         $events->listen(
             'App\Events\Website\WebsiteActivated',
             'App\Listeners\WebsiteEventsSubscriber@onActivated'
-        );
-        $events->listen(
-            'App\Events\Website\WebsiteArchiving',
-            'App\Listeners\WebsiteEventsSubscriber@onArchiving'
-        );
-        $events->listen(
-            'App\Events\Website\WebsiteArchived',
-            'App\Listeners\WebsiteEventsSubscriber@onArchived'
-        );
-        $events->listen(
-            'App\Events\Website\WebsiteUnarchived',
-            'App\Listeners\WebsiteEventsSubscriber@onUnarchived'
-        );
-        $events->listen(
-            'App\Events\Website\WebsitePurging',
-            'App\Listeners\WebsiteEventsSubscriber@onPurging'
-        );
-        $events->listen(
-            'App\Events\Website\WebsitePurged',
-            'App\Listeners\WebsiteEventsSubscriber@onPurged'
         );
 
         $events->listen(
             'App\Events\Website\WebsiteUpdated',
             'App\Listeners\WebsiteEventsSubscriber@onUpdated'
+        );
+
+        $events->listen(
+            'App\Events\Website\WebsiteStatusChanged',
+            'App\Listeners\WebsiteEventsSubscriber@onWebsiteStatusChanged'
+        );
+
+        $events->listen(
+            'App\Events\Website\WebsiteUrlChanged',
+            'App\Listeners\WebsiteEventsSubscriber@onWebsiteUrlChanged'
+        );
+
+        $events->listen(
+            'App\Events\Website\WebsiteArchiving',
+            'App\Listeners\WebsiteEventsSubscriber@onArchiving'
+        );
+
+        $events->listen(
+            'App\Events\Website\WebsiteArchived',
+            'App\Listeners\WebsiteEventsSubscriber@onArchived'
+        );
+
+        $events->listen(
+            'App\Events\Website\WebsiteUnarchived',
+            'App\Listeners\WebsiteEventsSubscriber@onUnarchived'
+        );
+
+        $events->listen(
+            'App\Events\Website\WebsitePurging',
+            'App\Listeners\WebsiteEventsSubscriber@onPurging'
+        );
+
+        $events->listen(
+            'App\Events\Website\WebsitePurged',
+            'App\Listeners\WebsiteEventsSubscriber@onPurged'
         );
 
         $events->listen(

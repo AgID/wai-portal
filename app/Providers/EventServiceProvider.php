@@ -17,6 +17,7 @@ use App\Listeners\UsersJobEventsSubscriber;
 use App\Listeners\UserUpdatesSubscriber;
 use App\Listeners\WebsiteEventsSubscriber;
 use App\Listeners\WebsitesJobEventSubscriber;
+use App\Listeners\WebsiteUpdatesSubscriber;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -63,6 +64,7 @@ class EventServiceProvider extends ServiceProvider
         UsersJobEventsSubscriber::class,
         WebsitesJobEventSubscriber::class,
         UserUpdatesSubscriber::class,
+        WebsiteUpdatesSubscriber::class,
     ];
 
     /**
