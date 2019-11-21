@@ -57,7 +57,7 @@ class ProfileController extends Controller
         ]);
 
         $validator->after(function ($validator) use ($user, $request) {
-            if ($user->email === $request->input('email')) {
+            if (!$user->can(UserPermission::ACCESS_ADMIN_AREA) && $user->email === $request->input('email')) {
                 $validator->errors()->add('email', __('Il nuovo indirizzo email non può essere uguale a quello attuale.'));
             }
         });
