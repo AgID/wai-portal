@@ -14,6 +14,7 @@ use App\Events\User\UserReactivated;
 use App\Events\User\UserRestored;
 use App\Events\User\UserStatusChanged;
 use App\Events\User\UserSuspended;
+use App\Events\User\UserUpdated;
 use App\Events\User\UserWebsiteAccessChanged;
 use App\Traits\InteractsWithRedisIndex;
 use Illuminate\Auth\Events\Registered;
@@ -109,6 +110,17 @@ class UserEventsSubscriber implements ShouldQueue
     }
 
     /**
+     * Handle user updated events.
+     *
+     * @param UserUpdated $event the event
+     */
+    public function onUpdated(UserUpdated $event): void
+    {
+        //Update Redisearch websites index
+        $this->updateUsersIndex($event->getUser());
+    }
+
+    /**
      * Handle user email changed event.
      *
      * @param UserEmailChanged $event the event
@@ -141,8 +153,6 @@ class UserEventsSubscriber implements ShouldQueue
                 'user' => $user->uuid,
             ]
         );
-
-        $this->updateUsersIndex($user);
     }
 
     /**
@@ -293,6 +303,11 @@ class UserEventsSubscriber implements ShouldQueue
         $events->listen(
             'App\Events\User\UserActivated',
             'App\Listeners\UserEventsSubscriber@onActivated'
+        );
+
+        $events->listen(
+            'App\Events\User\UserUpdated',
+            'App\Listeners\UserEventsSubscriber@onUpdated'
         );
 
         $events->listen(
