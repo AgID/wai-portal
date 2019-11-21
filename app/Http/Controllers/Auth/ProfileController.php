@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Enums\UserPermission;
 use App\Enums\UserRole;
 use App\Exceptions\CommandErrorException;
 use App\Http\Controllers\Controller;
@@ -84,7 +85,9 @@ class ProfileController extends Controller
 
         $user->save();
 
-        return redirect()->home()
+        $redirectTo = $user->can(UserPermission::ACCESS_ADMIN_AREA) ? 'admin.dashboard' : 'home';
+
+        return redirect()->to(route($redirectTo))
             ->withNotification([
                 'title' => __('modifica utente'),
                 'message' => implode("\n", [
