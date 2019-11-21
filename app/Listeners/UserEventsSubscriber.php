@@ -147,7 +147,7 @@ class UserEventsSubscriber implements ShouldQueue
     public function onUserStatusChanged(UserStatusChanged $event): void
     {
         $user = $event->getUser();
-        logger()->notice('User ' . $user->uuid . ' status changed from "' . UserStatus::getDescription($event->getOldStatus()) . '" to "' . $user->status->description . '"',
+        logger()->notice('User ' . $user->uuid . ' status changed from "' . $event->getOldStatus()->description . '" to "' . $user->status->description . '"',
             [
                 'event' => EventType::USER_STATUS_CHANGED,
                 'user' => $user->uuid,
