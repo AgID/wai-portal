@@ -9,6 +9,7 @@
     .collapse-header {
       *[data-toggle=collapse] {
         font-size: $display3-size;
+
         &::before {
           margin-right: 0.5rem;
           width: 2.5rem;

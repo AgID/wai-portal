@@ -27,16 +27,6 @@
     padding: 3em 4em;
   }
 
-  &.full-width {
-    padding-left: 0;
-    padding-right: 0;
-
-    .box-section {
-      margin-left: 0;
-      margin-right: 0;
-    }
-  }
-
   .box-section {
     margin: 0.5em -0.5em;
     padding: 0.5em;
@@ -58,6 +48,16 @@
 
     .section-header {
       margin-bottom: 0.5em;
+    }
+  }
+
+  &.full-width {
+    padding-left: 0;
+    padding-right: 0;
+
+    .box-section {
+      margin-left: 0;
+      margin-right: 0;
     }
   }
 

@@ -1,3 +1,63 @@
+.home-content {
+  .card {
+    .card-title.big-heading::after {
+      content: '';
+      border-bottom: 4px solid $primary;
+      width: 32px;
+      margin-top: 4px;
+      display: block;
+    }
+
+    .card-text {
+      font-size: 18px;
+      line-height: 1.6;
+    }
+  }
+
+  .separator {
+    overflow: hidden;
+    height: 50px;
+    position: relative;
+
+    @include media-breakpoint-up(xl) {
+      height: auto;
+    }
+
+    svg {
+      height: 100%;
+      width: 100%;
+    }
+  }
+
+  .home-spid-button {
+    margin-bottom: -2em;
+  }
+
+  .bg-primary {
+    .btn-primary {
+      @include button-variant(
+        $white,
+        $primary,
+        lighten($white, 7.5%),
+        darken($primary, 10%),
+        lighten($white, 10%),
+        darken($primary, 12.5%)
+      );
+
+      color: $primary;
+
+      @include hover {
+        color: darken($primary, 10%);
+      }
+
+      &.disabled,
+      &:disabled {
+        color: darken($primary, 10%);
+      }
+    }
+  }
+}
+
 .home-header {
   padding-top: 48px;
 
@@ -59,63 +119,6 @@
       &:hover {
         background: darken($primary, 10%);
         text-decoration: none;
-      }
-    }
-  }
-}
-
-.home-content {
-  .card {
-    .card-title.big-heading::after {
-      content: '';
-      border-bottom: 4px solid $primary;
-      width: 32px;
-      margin-top: 4px;
-      display: block;
-    }
-
-    .card-text {
-      font-size: 18px;
-      line-height: 1.6;
-    }
-  }
-
-  .separator {
-    overflow: hidden;
-    height: 50px;
-    position: relative;
-
-    @include media-breakpoint-up(xl) {
-      height: auto;
-    }
-
-    svg {
-      height: 100%;
-      width: 100%;
-    }
-  }
-
-  .home-spid-button {
-    margin-bottom: -2em;
-  }
-
-  .bg-primary {
-    .btn-primary {
-      @include button-variant(
-        $white,
-        $primary,
-        lighten($white, 7.5%),
-        darken($primary, 10%),
-        lighten($white, 10%),
-        darken($primary, 12.5%)
-      );
-      color: $primary;
-      @include hover {
-        color: darken($primary, 10%);
-      }
-      &.disabled,
-      &:disabled {
-        color: darken($primary, 10%);
       }
     }
   }
