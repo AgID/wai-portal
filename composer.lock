@@ -1,23 +1,23 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
     "content-hash": "09eb65b36c4a284d9f659d131c0e1917",
     "packages": [
         {
             "name": "bensampo/laravel-enum",
-            "version": "v1.26.1",
+            "version": "v1.27",
             "source": {
                 "type": "git",
                 "url": "https://github.com/BenSampo/laravel-enum.git",
-                "reference": "e78d0e80bdfc58d9caefec623dce112a92e677a7"
+                "reference": "6dfe3045e740bbebe30cc8c31e3ed0f6c3b33f98"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/BenSampo/laravel-enum/zipball/e78d0e80bdfc58d9caefec623dce112a92e677a7",
-                "reference": "e78d0e80bdfc58d9caefec623dce112a92e677a7",
+                "url": "https://api.github.com/repos/BenSampo/laravel-enum/zipball/6dfe3045e740bbebe30cc8c31e3ed0f6c3b33f98",
+                "reference": "6dfe3045e740bbebe30cc8c31e3ed0f6c3b33f98",
                 "shasum": ""
             },
             "require": {
@@ -27,6 +27,7 @@
                 "zendframework/zend-code": "^3.3"
             },
             "require-dev": {
+                "doctrine/dbal": "^2.9",
                 "laravel/framework": "5.8.*|^6.0",
                 "orchestra/testbench": "3.8.*|3.9.*",
                 "phpstan/phpstan": "^0.11.6",
@@ -41,6 +42,11 @@
                 "laravel": {
                     "providers": [
                         "BenSampo\\Enum\\EnumServiceProvider"
+                    ]
+                },
+                "phpstan": {
+                    "includes": [
+                        "extension.neon"
                     ]
                 }
             },
@@ -69,7 +75,7 @@
                 "package",
                 "validation"
             ],
-            "time": "2019-09-17T19:20:10+00:00"
+            "time": "2019-11-16T12:03:42+00:00"
         },
         {
             "name": "cweagans/composer-patches",
@@ -1791,16 +1797,16 @@
         },
         {
             "name": "nikic/php-parser",
-            "version": "v4.2.4",
+            "version": "v4.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nikic/PHP-Parser.git",
-                "reference": "97e59c7a16464196a8b9c77c47df68e4a39a45c4"
+                "reference": "9a9981c347c5c49d6dfe5cf826bb882b824080dc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/97e59c7a16464196a8b9c77c47df68e4a39a45c4",
-                "reference": "97e59c7a16464196a8b9c77c47df68e4a39a45c4",
+                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/9a9981c347c5c49d6dfe5cf826bb882b824080dc",
+                "reference": "9a9981c347c5c49d6dfe5cf826bb882b824080dc",
                 "shasum": ""
             },
             "require": {
@@ -1808,6 +1814,7 @@
                 "php": ">=7.0"
             },
             "require-dev": {
+                "ircmaxell/php-yacc": "0.0.5",
                 "phpunit/phpunit": "^6.5 || ^7.0 || ^8.0"
             },
             "bin": [
@@ -1816,7 +1823,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "4.2-dev"
+                    "dev-master": "4.3-dev"
                 }
             },
             "autoload": {
@@ -1838,7 +1845,7 @@
                 "parser",
                 "php"
             ],
-            "time": "2019-09-01T07:51:21+00:00"
+            "time": "2019-11-08T13:50:10+00:00"
         },
         {
             "name": "onelogin/php-saml",
@@ -1872,11 +1879,6 @@
                 "ext-openssl": "Install openssl lib in order to handle with x509 certs (require to support sign and encryption)"
             },
             "type": "library",
-            "extra": {
-                "patches_applied": {
-                    "Compatibility with SPID": "https://rawgit.com/italia/spid-laravel/master/patches/php-saml-3.3.0-spid.patch"
-                }
-            },
             "autoload": {
                 "psr-4": {
                     "OneLogin\\": "src/"
@@ -1893,7 +1895,12 @@
                 "onelogin",
                 "saml"
             ],
-            "time": "2019-09-11T13:56:06+00:00"
+            "time": "2019-09-11T13:56:06+00:00",
+            "extra": {
+                "patches_applied": {
+                    "Compatibility with SPID": "https://rawgit.com/italia/spid-laravel/master/patches/php-saml-3.3.0-spid.patch"
+                }
+            }
         },
         {
             "name": "opis/closure",
@@ -3021,16 +3028,16 @@
         },
         {
             "name": "symfony/finder",
-            "version": "v4.3.8",
+            "version": "v4.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/finder.git",
-                "reference": "72a068f77e317ae77c0a0495236ad292cfb5ce6f"
+                "reference": "ce8743441da64c41e2a667b8eb66070444ed911e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/finder/zipball/72a068f77e317ae77c0a0495236ad292cfb5ce6f",
-                "reference": "72a068f77e317ae77c0a0495236ad292cfb5ce6f",
+                "url": "https://api.github.com/repos/symfony/finder/zipball/ce8743441da64c41e2a667b8eb66070444ed911e",
+                "reference": "ce8743441da64c41e2a667b8eb66070444ed911e",
                 "shasum": ""
             },
             "require": {
@@ -3039,7 +3046,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "4.3-dev"
+                    "dev-master": "4.4-dev"
                 }
             },
             "autoload": {
@@ -3066,7 +3073,7 @@
             ],
             "description": "Symfony Finder Component",
             "homepage": "https://symfony.com",
-            "time": "2019-10-30T12:53:54+00:00"
+            "time": "2019-11-17T21:56:56+00:00"
         },
         {
             "name": "symfony/http-foundation",
@@ -4313,16 +4320,16 @@
         },
         {
             "name": "zendframework/zend-code",
-            "version": "3.3.2",
+            "version": "3.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/zend-code.git",
-                "reference": "936fa7ad4d53897ea3e3eb41b5b760828246a20b"
+                "reference": "46feaeecea14161734b56c1ace74f28cb329f194"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-code/zipball/936fa7ad4d53897ea3e3eb41b5b760828246a20b",
-                "reference": "936fa7ad4d53897ea3e3eb41b5b760828246a20b",
+                "url": "https://api.github.com/repos/zendframework/zend-code/zipball/46feaeecea14161734b56c1ace74f28cb329f194",
+                "reference": "46feaeecea14161734b56c1ace74f28cb329f194",
                 "shasum": ""
             },
             "require": {
@@ -4332,7 +4339,7 @@
             "require-dev": {
                 "doctrine/annotations": "^1.0",
                 "ext-phar": "*",
-                "phpunit/phpunit": "^7.5.15",
+                "phpunit/phpunit": "^7.5.16 || ^8.4",
                 "zendframework/zend-coding-standard": "^1.0",
                 "zendframework/zend-stdlib": "^2.7 || ^3.0"
             },
@@ -4343,8 +4350,8 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.3.x-dev",
-                    "dev-develop": "3.4.x-dev"
+                    "dev-master": "3.4.x-dev",
+                    "dev-develop": "3.5.x-dev"
                 }
             },
             "autoload": {
@@ -4362,7 +4369,7 @@
                 "code",
                 "zf"
             ],
-            "time": "2019-08-31T14:14:34+00:00"
+            "time": "2019-10-05T23:18:22+00:00"
         },
         {
             "name": "zendframework/zend-eventmanager",
