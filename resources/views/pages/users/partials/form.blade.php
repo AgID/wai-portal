@@ -67,7 +67,7 @@
             <div class="toggles">
                 <label for="is_admin">
                     {{ __('Utente con ruolo di amministratore') }}
-                    <input class="{{ $errors->has('is_admin') ? 'is-invalid' : '' }}" type="checkbox" id="is_admin" name="is_admin" value="1" aria-labelledby="is_admin-help" {{ old('is_admin', !session()->hasOldInput() && optional($user ?? null)->isAn(UserRole::ADMIN)) ? 'checked' : '' }} disabled>
+                    <input class="{{ $errors->has('is_admin') ? 'is-invalid' : '' }}" type="checkbox" id="is_admin" name="is_admin" value="1" aria-labelledby="is_admin-help" {{ old('is_admin', !session()->hasOldInput() && ($isAdmin ?? false)) ? 'checked' : '' }} disabled>
                     <span class="lever"></span>
                     @error('is_admin')
                     <div class="invalid-feedback">{{ $errors->first('is_admin') }}</div>

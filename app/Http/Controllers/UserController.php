@@ -185,7 +185,15 @@ class UserController extends Controller
 
         $websitesPermissionsDatatable = $this->getDatatableWebsitesPermissionsParams($websitesPermissionsDatatableSource);
 
-        return view('pages.users.edit')->with(compact('user', 'userUpdateUrl'))->with($websitesPermissionsDatatable);
+        if (auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)) {
+            $isAdmin = Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user) {
+                return $user->isA(UserRole::ADMIN);
+            });
+        } else {
+            $isAdmin = $user->isA(UserRole::ADMIN);
+        }
+
+        return view('pages.users.edit')->with(compact('user', 'userUpdateUrl', 'isAdmin'))->with($websitesPermissionsDatatable);
     }
 
     /**

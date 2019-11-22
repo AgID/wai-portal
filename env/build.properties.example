@@ -67,6 +67,12 @@ CACHE_CONNECTION=cache
 SESSION_CONNECTION=sessions
 QUEUE_REDIS_CONNECTION=queue
 
+# Sessions settings
+# -----------------
+
+SESSION_SECURE_COOKIE=true
+SESSION_ENCRYPT=true
+
 # Redis Sentinel settings
 # -----------------------
 
@@ -131,7 +137,7 @@ MATOMO_ROOT_PASSWORD=Password
 MATOMO_ROOT_APIKEY=8aa23f3ca5903d451d1ff8eb947c7a8f
 
 # Matomo version
-MATOMO_VERSION=3.11.0
+MATOMO_VERSION=3.12.0
 
 # Matomo WAI theme version
 MATOMO_WAI_THEME_VERSION=0.3.1-alpha
@@ -156,12 +162,14 @@ ANALYTICS_PUBLIC_URL=https://localhost:9443
 # Elastic Search Service URLs
 # ---------------------------
 
+ELASTICSEARCH_VERSION=7.4.1
 ELASTICSEARCH_HOST=elasticsearch
 ELASTICSEARCH_INDEX_PREFIX=wai
 ELASTICSEARCH_INDEX_NAME=log
 ELASTICSEARCH_SEARCH_TEMPLATE_NAME=log_search
 ELASTICSEARCH_IGNORE_EXCEPTIONS=false
 
+KIBANA_VERSION=7.4.1
 KIBANA_PORT=5601
 
 # Debugging

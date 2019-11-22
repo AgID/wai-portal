@@ -150,7 +150,7 @@ class PublicAdministrationEventsSubscriber implements ShouldQueue
 
         $events->listen(
             'App\Events\PublicAdministration\PublicAdministrationPrimaryWebsiteUpdated',
-            'App\Listeners\PublicAdministrationEventsSubscriber@onUpdated'
+            'App\Listeners\PublicAdministrationEventsSubscriber@onPrimaryWebsiteUpdated'
         );
         $events->listen(
             'App\Events\PublicAdministration\PublicAdministrationPurged',

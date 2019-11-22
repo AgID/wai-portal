@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Enums\UserPermission;
 use App\Enums\UserRole;
 use App\Exceptions\CommandErrorException;
 use App\Http\Controllers\Controller;
@@ -56,7 +57,7 @@ class ProfileController extends Controller
         ]);
 
         $validator->after(function ($validator) use ($user, $request) {
-            if ($user->email === $request->input('email')) {
+            if (!$user->can(UserPermission::ACCESS_ADMIN_AREA) && $user->email === $request->input('email')) {
                 $validator->errors()->add('email', __('Il nuovo indirizzo email non può essere uguale a quello attuale.'));
             }
         });
@@ -84,7 +85,9 @@ class ProfileController extends Controller
 
         $user->save();
 
-        return redirect()->home()
+        $redirectTo = $user->can(UserPermission::ACCESS_ADMIN_AREA) ? 'admin.dashboard' : 'home';
+
+        return redirect()->to(route($redirectTo))
             ->withNotification([
                 'title' => __('modifica utente'),
                 'message' => implode("\n", [

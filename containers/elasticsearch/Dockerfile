@@ -1,4 +1,6 @@
-FROM docker.elastic.co/elasticsearch/elasticsearch:7.0.0
+ARG ELASTICSEARCH_VERSION
+
+FROM docker.elastic.co/elasticsearch/elasticsearch:${ELASTICSEARCH_VERSION}
 
 COPY ./check_index.sh /opt/check_index.sh
 

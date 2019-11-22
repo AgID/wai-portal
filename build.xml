@@ -38,16 +38,20 @@
                     <token key="ARCHIVING_WEBSITE_ARCHIVE" value="${ARCHIVING_WEBSITE_ARCHIVE}" />
                     <token key="ARCHIVING_WEBSITE_NOTIFICATION_WEEK_DAY" value="${ARCHIVING_WEBSITE_NOTIFICATION_WEEK_DAY}" />
                     <token key="ARCHIVING_WEBSITE_DAILY_NOTIFICATION" value="${ARCHIVING_WEBSITE_DAILY_NOTIFICATION}" />
+                    <token key="ELASTICSEARCH_VERSION" value="${ELASTICSEARCH_VERSION}" />
                     <token key="ELASTICSEARCH_INDEX_PREFIX" value="${ELASTICSEARCH_INDEX_PREFIX}" />
                     <token key="ELASTICSEARCH_INDEX_NAME" value="${ELASTICSEARCH_INDEX_PREFIX}-${ELASTICSEARCH_INDEX_NAME}" />
                     <token key="ELASTICSEARCH_IGNORE_EXCEPTIONS" value="${ELASTICSEARCH_IGNORE_EXCEPTIONS}" />
                     <token key="ELASTICSEARCH_SEARCH_TEMPLATE_NAME" value="${ELASTICSEARCH_SEARCH_TEMPLATE_NAME}" />
+                    <token key="KIBANA_VERSION" value="${KIBANA_VERSION}" />
                     <token key="MARIADB_DATABASE" value="${MARIADB_DATABASE}" />
                     <token key="MARIADB_USER" value="${MARIADB_USER}" />
                     <token key="MARIADB_PASSWORD" value="${MARIADB_PASSWORD}" />
                     <token key="MARIADB_ROOT_PASSWORD" value="${MARIADB_ROOT_PASSWORD}" />
                     <token key="CACHE_CONNECTION" value="${CACHE_CONNECTION}" />
                     <token key="SESSION_CONNECTION" value="${SESSION_CONNECTION}" />
+                    <token key="SESSION_SECURE_COOKIE" value="${SESSION_SECURE_COOKIE}" />
+                    <token key="SESSION_ENCRYPT" value="${SESSION_ENCRYPT}" />
                     <token key="QUEUE_REDIS_CONNECTION" value="${QUEUE_REDIS_CONNECTION}" />
                     <token key="REDIS_SENTINELS" value="${REDIS_SENTINELS}" />
                     <token key="REDIS_SENTINEL_SERVICE" value="${REDIS_SENTINEL_SERVICE}" />

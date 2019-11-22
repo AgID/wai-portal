@@ -105,7 +105,7 @@ class ProfileTest extends TestCase
                 'family_name',
                 'email',
             ])
-            ->assertRedirect(route('home'));
+            ->assertRedirect(route('admin.dashboard'));
 
         Event::assertDispatched(UserUpdated::class, function ($event) {
             $user = $event->getUser();
