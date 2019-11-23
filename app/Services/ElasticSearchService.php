@@ -17,10 +17,14 @@ class ElasticSearchService
      */
     public function getClient(): Client
     {
-        return ClientBuilder::create()
+        $builder = ClientBuilder::create()
             ->setHosts([
                 config('elastic-search.host') . ':' . config('elastic-search.port'),
-            ])
-            ->build();
+            ]);
+        if (config('elastic-search.user') && config('elastic-search.password')) {
+            $builder->setBasicAuthentication(config('elastic-search.user'), config('elastic-search.password'));
+        }
+
+        return $builder->build();
     }
 }
