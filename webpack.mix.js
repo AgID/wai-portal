@@ -24,7 +24,7 @@ mix.autoload({
 });
 
 mix.js('resources/js/app.js', 'public/js')
-    .stylelint({ files: ['resources/**/*.s?(a|c)ss']})
+    .stylelint({ files: ['**/*.s?(a|c)ss']})
     .eslint({
         enforce: 'pre',
         test: /\.js$/,

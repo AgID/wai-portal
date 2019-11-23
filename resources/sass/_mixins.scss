@@ -11,7 +11,6 @@
 
   @each $breakpoint, $container-max-width in $max-widths {
     @include media-breakpoint-up($breakpoint, $breakpoints) {
-
       width: calc(#{$container-max-width} / 5);
     }
   }
