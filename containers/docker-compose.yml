@@ -139,7 +139,9 @@ services:
 
 # ipa-redisearch
   ipa-redisearch:
-    image: pdavide/ipa-redisearch:latest
+    image: webanalyticsitalia/wai-ipa-redisearch:5.0.3-dev-0
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
     networks:
       - backend
 
@@ -212,6 +214,8 @@ services:
       context: ./redis-sentinel
       args:
         - REDIS_SENTINEL_SET=${REDIS_SENTINEL_SET}
-        - REDIS_REDISEARCH_SENTINEL_SERVICE=${REDIS_REDISEARCH_SENTINEL_SERVICE}
+        - REDIS_IPA_INDEX_SENTINEL_SET=${REDIS_IPA_INDEX_SENTINEL_SET}
+    ports:
+      - 26379:26379
     networks:
       - backend
