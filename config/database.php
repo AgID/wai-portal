@@ -116,9 +116,9 @@ return [
         'indexes' => [
             'ipa' => [
                 'name' => 'IPAIndex',
-                'host' => env('REDIS_REDISEARCH_HOST', '127.0.0.1'),
-                'password' => env('REDIS_REDISEARCH_PASSWORD'),
-                'port' => env('REDIS_REDISEARCH_PORT', 6379),
+                'host' => env('REDIS_IPA_INDEX_HOST', '127.0.0.1'),
+                'password' => env('REDIS_IPA_INDEX_PASSWORD'),
+                'port' => env('REDIS_IPA_INDEX_PORT', 6379),
                 'database' => 0,
             ],
             'websites' => [
@@ -142,7 +142,7 @@ return [
             [
                 'options' => [
                     'replication' => 'sentinel',
-                    'service' => env('REDIS_SENTINEL_SERVICE', 'mymaster'),
+                    'service' => env('REDIS_SENTINEL_SET', 'mymaster'),
                     'parameters' => [
                         'password' => env('REDIS_PASSWORD'),
                         'database' => env('REDIS_QUEUE_DB', 3),
@@ -156,7 +156,7 @@ return [
             [
                 'options' => [
                     'replication' => 'sentinel',
-                    'service' => env('REDIS_SENTINEL_SERVICE', 'mymaster'),
+                    'service' => env('REDIS_SENTINEL_SET', 'mymaster'),
                     'parameters' => [
                         'password' => env('REDIS_PASSWORD'),
                         'database' => env('REDIS_SESSIONS_DB', 2),
@@ -170,7 +170,7 @@ return [
             [
                 'options' => [
                     'replication' => 'sentinel',
-                    'service' => env('REDIS_SENTINEL_SERVICE', 'mymaster'),
+                    'service' => env('REDIS_SENTINEL_SET', 'mymaster'),
                     'parameters' => [
                         'password' => env('REDIS_PASSWORD'),
                         'database' => env('REDIS_CACHE_DB', 1),
@@ -180,13 +180,13 @@ return [
         ),
 
         'ipa-sentinel' => array_merge(
-            explode(',', env('REDIS_REDISEARCH_SENTINELS', '')),
+            explode(',', env('REDIS_IPA_INDEX_SENTINELS', '')),
             [
                 'options' => [
                     'replication' => 'sentinel',
-                    'service' => env('REDIS_REDISEARCH_SENTINEL_SERVICE', 'mymaster'),
+                    'service' => env('REDIS_IPA_INDEX_SENTINEL_SET', 'mymaster'),
                     'parameters' => [
-                        'password' => env('REDIS_REDISEARCH_PASSWORD'),
+                        'password' => env('REDIS_IPA_INDEX_PASSWORD'),
                         'database' => 0,
                     ],
                 ],
@@ -198,7 +198,7 @@ return [
             [
                 'options' => [
                     'replication' => 'sentinel',
-                    'service' => env('REDIS_SENTINEL_SERVICE', 'mymaster'),
+                    'service' => env('REDIS_SENTINEL_SET', 'mymaster'),
                     'parameters' => [
                         'password' => env('REDIS_PASSWORD'),
                         'database' => 0,
@@ -212,7 +212,7 @@ return [
             [
                 'options' => [
                     'replication' => 'sentinel',
-                    'service' => env('REDIS_SENTINEL_SERVICE', 'mymaster'),
+                    'service' => env('REDIS_SENTINEL_SET', 'mymaster'),
                     'parameters' => [
                         'password' => env('REDIS_PASSWORD'),
                         'database' => 0,
