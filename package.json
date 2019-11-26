@@ -10,7 +10,7 @@
         "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
     },
     "devDependencies": {
-        "@babel/plugin-syntax-dynamic-import": "^7.2.0",
+        "@babel/plugin-syntax-dynamic-import": "^7.7.4",
         "axios": "^0.19",
         "axios-extensions": "^3.0.6",
         "babel-eslint": "^10.0.3",
