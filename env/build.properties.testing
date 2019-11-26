@@ -80,7 +80,7 @@ SESSION_ENCRYPT=false
 
 # Comma separated list of Redis Sentinels connection strings
 REDIS_SENTINELS=
-REDIS_SENTINEL_SERVICE=
+REDIS_SENTINEL_SET=
 
 # Indexes RediSearch settings
 # ---------------------------
@@ -92,10 +92,10 @@ REDIS_INDEXES_USE_SENTINELS=false
 
 # Leave blank/defaults if not using Sentinels for IPA RediSearch service
 
-REDIS_REDISEARCH_USE_SENTINELS=false
+REDIS_IPA_INDEX_USE_SENTINELS=false
 # A comma separated list of Redis Sentinels connection strings
-REDIS_REDISEARCH_SENTINELS=
-REDIS_REDISEARCH_SENTINEL_SERVICE=
+REDIS_IPA_INDEX_SENTINELS=
+REDIS_IPA_INDEX_SENTINEL_SET=
 
 # Mail settings
 # ------------
