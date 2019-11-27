@@ -1,0 +1,409 @@
+<?php
+
+namespace Tests\Feature;
+
+use App\Enums\UserPermission;
+use App\Enums\UserRole;
+use App\Enums\WebsiteStatus;
+use App\Enums\WebsiteType;
+use App\Models\PublicAdministration;
+use App\Models\User;
+use App\Models\Website;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Str;
+use Silber\Bouncer\BouncerFacade as Bouncer;
+use Tests\TestCase;
+
+class WebsiteTransformerTest extends TestCase
+{
+    use RefreshDatabase;
+
+    private $user;
+
+    private $publicAdministration;
+
+    private $websitePrimary;
+
+    private $websiteSecondaryActive;
+
+    private $websiteSecondaryArchived;
+
+    private $websiteSecondaryPending;
+
+    private $websiteSecondaryTrashed;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->user = factory(User::class)->state('active')->create();
+        $this->publicAdministration = factory(PublicAdministration::class)->state('active')->create();
+        $this->publicAdministration->users()->sync($this->user->id);
+
+        $this->websitePrimary = factory(Website::class)->state('active')->create([
+            'public_administration_id' => $this->publicAdministration->id,
+        ]);
+
+        do {
+            $this->websiteSecondaryActive = factory(Website::class)->state('active')->make([
+                'type' => WebsiteType::SECONDARY,
+                'public_administration_id' => $this->publicAdministration->id,
+            ]);
+        } while ($this->websiteSecondaryActive->slug === $this->websitePrimary->slug);
+        $this->websiteSecondaryActive->url = 'https://' . $this->websiteSecondaryActive->url;
+        $this->websiteSecondaryActive->slug = Str::slug($this->websiteSecondaryActive->url);
+        $this->websiteSecondaryActive->save();
+
+        do {
+            $this->websiteSecondaryArchived = factory(Website::class)->state('archived')->make([
+                'type' => WebsiteType::SECONDARY,
+                'public_administration_id' => $this->publicAdministration->id,
+            ]);
+        } while (
+            ($this->websiteSecondaryArchived->slug === $this->websitePrimary->slug)
+            || ($this->websiteSecondaryArchived->slug === $this->websiteSecondaryActive->slug)
+        );
+        $this->websiteSecondaryArchived->save();
+
+        do {
+            $this->websiteSecondaryPending = factory(Website::class)->make([
+                'type' => WebsiteType::SECONDARY,
+                'status' => WebsiteStatus::PENDING,
+                'public_administration_id' => $this->publicAdministration->id,
+            ]);
+        } while (
+            ($this->websiteSecondaryPending->slug === $this->websitePrimary->slug)
+            || ($this->websiteSecondaryPending->slug === $this->websiteSecondaryActive->slug)
+            || ($this->websiteSecondaryPending->slug === $this->websiteSecondaryArchived->slug)
+        );
+        $this->websiteSecondaryPending->save();
+
+        do {
+            $this->websiteSecondaryTrashed = factory(Website::class)->state('active')->make([
+                'type' => WebsiteType::SECONDARY,
+                'public_administration_id' => $this->publicAdministration->id,
+                'deleted_at' => now(),
+            ]);
+        } while (
+            ($this->websiteSecondaryTrashed->slug === $this->websitePrimary->slug)
+            || ($this->websiteSecondaryTrashed->slug === $this->websiteSecondaryActive->slug)
+            || ($this->websiteSecondaryTrashed->slug === $this->websiteSecondaryArchived->slug)
+            || ($this->websiteSecondaryTrashed->slug === $this->websiteSecondaryPending->slug)
+        );
+        $this->websiteSecondaryTrashed->save();
+
+        Bouncer::dontCache();
+    }
+
+    public function testWebsiteTransformAsDelegate(): void
+    {
+        Bouncer::scope()->onceTo($this->publicAdministration->id, function () {
+            $this->user->assign(UserRole::DELEGATED);
+            $this->user->allow(UserPermission::READ_ANALYTICS, $this->websiteSecondaryActive);
+        });
+
+        $expected = [
+            'draw',
+            'recordsTotal',
+            'recordsFiltered',
+            'data' => [
+                '*' => [
+                    'website_name' => [
+                        'display',
+                        'raw',
+                    ],
+                    'type',
+                    'added_at',
+                    'status' => [
+                        'display',
+                        'raw',
+                    ],
+                    'icons',
+                    'buttons',
+                ],
+            ],
+        ];
+
+        $this->actingAs($this->user)
+            ->withSession([
+                'spid_sessionIndex' => 'fake-session-index',
+                'tenant_id' => $this->publicAdministration->id,
+            ])
+            ->get(route('websites.data.json'))
+            ->assertJsonStructure($expected)
+            ->assertJsonFragment(['link' => route('websites.show', ['website' => $this->websitePrimary])])
+            ->assertJsonFragment(['link' => route('websites.show', ['website' => $this->websiteSecondaryActive])])
+            ->assertJsonFragment(['link' => route('websites.show', ['website' => $this->websiteSecondaryArchived])])
+            ->assertJsonFragment(['link' => route('websites.show', ['website' => $this->websiteSecondaryPending])])
+            ->assertJsonMissing(['link' => route('websites.show', ['website' => $this->websiteSecondaryTrashed])])
+            ->assertJsonMissing(['link' => route('websites.tracking.check', ['website' => $this->websitePrimary])])
+            ->assertJsonMissing(['link' => route('websites.tracking.check', ['website' => $this->websiteSecondaryActive])])
+            ->assertJsonMissing(['link' => route('websites.tracking.check', ['website' => $this->websiteSecondaryArchived])])
+            ->assertJsonMissing(['link' => route('websites.tracking.check', ['website' => $this->websiteSecondaryPending])])
+            ->assertJsonMissing(['link' => route('websites.tracking.check', ['website' => $this->websiteSecondaryTrashed])])
+            ->assertJsonMissing(['link' => route('websites.edit', ['website' => $this->websitePrimary])])
+            ->assertJsonMissing(['link' => route('websites.edit', ['website' => $this->websiteSecondaryActive])])
+            ->assertJsonMissing(['link' => route('websites.edit', ['website' => $this->websiteSecondaryArchived])])
+            ->assertJsonMissing(['link' => route('websites.edit', ['website' => $this->websiteSecondaryPending])])
+            ->assertJsonMissing(['link' => route('websites.edit', ['website' => $this->websiteSecondaryTrashed])])
+            ->assertJsonMissing(['link' => route('websites.archive', ['website' => $this->websitePrimary])])
+            ->assertJsonMissing(['link' => route('websites.unarchive', ['website' => $this->websitePrimary])])
+            ->assertJsonMissing(['link' => route('websites.archive', ['website' => $this->websiteSecondaryActive])])
+            ->assertJsonMissing(['link' => route('websites.unarchive', ['website' => $this->websiteSecondaryActive])])
+            ->assertJsonMissing(['link' => route('websites.archive', ['website' => $this->websiteSecondaryArchived])])
+            ->assertJsonMissing(['link' => route('websites.unarchive', ['website' => $this->websiteSecondaryArchived])])
+            ->assertJsonMissing(['link' => route('websites.archive', ['website' => $this->websiteSecondaryPending])])
+            ->assertJsonMissing(['link' => route('websites.unarchive', ['website' => $this->websiteSecondaryPending])])
+            ->assertJsonMissing(['link' => route('websites.archive', ['website' => $this->websiteSecondaryTrashed])])
+            ->assertJsonMissing(['link' => route('websites.unarchive', ['website' => $this->websiteSecondaryTrashed])])
+            ->assertJsonFragment(['link' => route('analytics.service.login')])
+            ->assertJsonMissing(['link' => route('admin.publicAdministration.websites.restore', [
+                'publicAdministration' => $this->publicAdministration,
+                'trashed_website' => $this->websitePrimary,
+            ])])
+            ->assertJsonMissing(['link' => route('admin.publicAdministration.websites.delete', [
+                'publicAdministration' => $this->publicAdministration,
+                'website' => $this->websitePrimary,
+            ])])
+            ->assertJsonMissing(['link' => route('admin.publicAdministration.websites.restore', [
+                'publicAdministration' => $this->publicAdministration,
+                'trashed_website' => $this->websiteSecondaryActive,
+            ])])
+            ->assertJsonMissing(['link' => route('admin.publicAdministration.websites.delete', [
+                'publicAdministration' => $this->publicAdministration,
+                'website' => $this->websiteSecondaryActive,
+            ])])
+            ->assertJsonMissing(['link' => route('admin.publicAdministration.websites.restore', [
+                'publicAdministration' => $this->publicAdministration,
+                'trashed_website' => $this->websiteSecondaryArchived,
+            ])])
+            ->assertJsonMissing(['link' => route('admin.publicAdministration.websites.delete', [
+                'publicAdministration' => $this->publicAdministration,
+                'website' => $this->websiteSecondaryArchived,
+            ])])
+            ->assertJsonMissing(['link' => route('admin.publicAdministration.websites.restore', [
+                'publicAdministration' => $this->publicAdministration,
+                'trashed_website' => $this->websiteSecondaryPending,
+            ])])
+            ->assertJsonMissing(['link' => route('admin.publicAdministration.websites.delete', [
+                'publicAdministration' => $this->publicAdministration,
+                'website' => $this->websiteSecondaryPending,
+            ])])
+            ->assertJsonMissing(['link' => route('admin.publicAdministration.websites.restore', [
+                'publicAdministration' => $this->publicAdministration,
+                'trashed_website' => $this->websiteSecondaryTrashed,
+            ])])
+            ->assertJsonMissing(['link' => route('admin.publicAdministration.websites.delete', [
+                'publicAdministration' => $this->publicAdministration,
+                'website' => $this->websiteSecondaryTrashed,
+            ])]);
+    }
+
+    public function testWebsiteTransformAsAdmin(): void
+    {
+        Bouncer::scope()->onceTo($this->publicAdministration->id, function () {
+            $this->user->assign(UserRole::ADMIN);
+            $this->user->allow(UserPermission::MANAGE_WEBSITES);
+            $this->user->allow(UserPermission::READ_ANALYTICS, $this->websitePrimary);
+            $this->user->allow(UserPermission::READ_ANALYTICS, $this->websiteSecondaryActive);
+            $this->user->allow(UserPermission::READ_ANALYTICS, $this->websiteSecondaryArchived);
+            $this->user->allow(UserPermission::READ_ANALYTICS, $this->websiteSecondaryPending);
+            $this->user->allow(UserPermission::READ_ANALYTICS, $this->websiteSecondaryTrashed);
+        });
+
+        $expected = [
+            'draw',
+            'recordsTotal',
+            'recordsFiltered',
+            'data' => [
+                '*' => [
+                    'website_name' => [
+                        'display',
+                        'raw',
+                    ],
+                    'type',
+                    'added_at',
+                    'status' => [
+                        'display',
+                        'raw',
+                    ],
+                    'icons',
+                    'buttons',
+                ],
+            ],
+        ];
+
+        $this->actingAs($this->user)
+            ->withSession([
+                'spid_sessionIndex' => 'fake-session-index',
+                'tenant_id' => $this->publicAdministration->id,
+            ])
+            ->get(route('websites.data.json'))
+            ->assertJsonStructure($expected)
+            ->assertJsonFragment(['link' => route('websites.show', ['website' => $this->websitePrimary])])
+            ->assertJsonFragment(['link' => route('websites.show', ['website' => $this->websiteSecondaryActive])])
+            ->assertJsonFragment(['link' => route('websites.show', ['website' => $this->websiteSecondaryArchived])])
+            ->assertJsonFragment(['link' => route('websites.show', ['website' => $this->websiteSecondaryPending])])
+            ->assertJsonMissing(['link' => route('websites.show', ['website' => $this->websiteSecondaryTrashed])])
+            ->assertJsonMissing(['link' => route('websites.tracking.check', ['website' => $this->websitePrimary])])
+            ->assertJsonMissing(['link' => route('websites.tracking.check', ['website' => $this->websiteSecondaryActive])])
+            ->assertJsonMissing(['link' => route('websites.tracking.check', ['website' => $this->websiteSecondaryArchived])])
+            ->assertJsonFragment(['link' => route('websites.tracking.check', ['website' => $this->websiteSecondaryPending])])
+            ->assertJsonMissing(['link' => route('websites.tracking.check', ['website' => $this->websiteSecondaryTrashed])])
+            ->assertJsonFragment(['link' => route('websites.edit', ['website' => $this->websitePrimary])])
+            ->assertJsonFragment(['link' => route('websites.edit', ['website' => $this->websiteSecondaryActive])])
+            ->assertJsonFragment(['link' => route('websites.edit', ['website' => $this->websiteSecondaryArchived])])
+            ->assertJsonFragment(['link' => route('websites.edit', ['website' => $this->websiteSecondaryPending])])
+            ->assertJsonMissing(['link' => route('websites.edit', ['website' => $this->websiteSecondaryTrashed])])
+            ->assertJsonMissing(['link' => route('websites.archive', ['website' => $this->websitePrimary])])
+            ->assertJsonMissing(['link' => route('websites.unarchive', ['website' => $this->websitePrimary])])
+            ->assertJsonFragment(['link' => route('websites.archive', ['website' => $this->websiteSecondaryActive])])
+            ->assertJsonMissing(['link' => route('websites.unarchive', ['website' => $this->websiteSecondaryActive])])
+            ->assertJsonMissing(['link' => route('websites.archive', ['website' => $this->websiteSecondaryArchived])])
+            ->assertJsonFragment(['link' => route('websites.unarchive', ['website' => $this->websiteSecondaryArchived])])
+            ->assertJsonMissing(['link' => route('websites.archive', ['website' => $this->websiteSecondaryPending])])
+            ->assertJsonMissing(['link' => route('websites.unarchive', ['website' => $this->websiteSecondaryPending])])
+            ->assertJsonMissing(['link' => route('websites.archive', ['website' => $this->websiteSecondaryTrashed])])
+            ->assertJsonMissing(['link' => route('websites.unarchive', ['website' => $this->websiteSecondaryTrashed])])
+            ->assertJsonFragment(['link' => route('analytics.service.login')])
+            ->assertJsonMissing(['link' => route('admin.publicAdministration.websites.restore', [
+                'publicAdministration' => $this->publicAdministration,
+                'trashed_website' => $this->websitePrimary,
+            ])])
+            ->assertJsonMissing(['link' => route('admin.publicAdministration.websites.delete', [
+                'publicAdministration' => $this->publicAdministration,
+                'website' => $this->websitePrimary,
+            ])])
+            ->assertJsonMissing(['link' => route('admin.publicAdministration.websites.restore', [
+                'publicAdministration' => $this->publicAdministration,
+                'trashed_website' => $this->websiteSecondaryActive,
+            ])])
+            ->assertJsonMissing(['link' => route('admin.publicAdministration.websites.delete', [
+                'publicAdministration' => $this->publicAdministration,
+                'website' => $this->websiteSecondaryActive,
+            ])])
+            ->assertJsonMissing(['link' => route('admin.publicAdministration.websites.restore', [
+                'publicAdministration' => $this->publicAdministration,
+                'trashed_website' => $this->websiteSecondaryArchived,
+            ])])
+            ->assertJsonMissing(['link' => route('admin.publicAdministration.websites.delete', [
+                'publicAdministration' => $this->publicAdministration,
+                'website' => $this->websiteSecondaryArchived,
+            ])])
+            ->assertJsonMissing(['link' => route('admin.publicAdministration.websites.restore', [
+                'publicAdministration' => $this->publicAdministration,
+                'trashed_website' => $this->websiteSecondaryPending,
+            ])])
+            ->assertJsonMissing(['link' => route('admin.publicAdministration.websites.delete', [
+                'publicAdministration' => $this->publicAdministration,
+                'website' => $this->websiteSecondaryPending,
+            ])])
+            ->assertJsonMissing(['link' => route('admin.publicAdministration.websites.restore', [
+                'publicAdministration' => $this->publicAdministration,
+                'trashed_website' => $this->websiteSecondaryTrashed,
+            ])])
+            ->assertJsonMissing(['link' => route('admin.publicAdministration.websites.delete', [
+                'publicAdministration' => $this->publicAdministration,
+                'website' => $this->websiteSecondaryTrashed,
+            ])]);
+    }
+
+    public function testWebsiteTransformAsSuperAdmin(): void
+    {
+        $superAdmin = factory(User::class)->state('active')->create();
+
+        Bouncer::scope()->onceTo(0, function () use ($superAdmin) {
+            $superAdmin->assign(UserRole::SUPER_ADMIN);
+            $superAdmin->allow(UserPermission::ACCESS_ADMIN_AREA);
+            $superAdmin->allow(UserPermission::MANAGE_WEBSITES);
+        });
+
+        $expected = [
+            'draw',
+            'recordsTotal',
+            'recordsFiltered',
+            'data' => [
+                '*' => [
+                    'website_name' => [
+                        'display',
+                        'raw',
+                    ],
+                    'type',
+                    'added_at',
+                    'status', //NOTE: trashed websites don't have status
+                    'icons',
+                    'buttons',
+                ],
+            ],
+        ];
+
+        $this->actingAs($superAdmin)
+            ->get(route('admin.publicAdministration.websites.data.json', ['publicAdministration' => $this->publicAdministration]))
+            ->assertJsonStructure($expected)
+            ->assertJsonFragment(['link' => route('admin.publicAdministration.websites.show', ['publicAdministration' => $this->publicAdministration, 'website' => $this->websitePrimary])])
+            ->assertJsonFragment(['link' => route('admin.publicAdministration.websites.show', ['publicAdministration' => $this->publicAdministration, 'website' => $this->websiteSecondaryActive])])
+            ->assertJsonFragment(['link' => route('admin.publicAdministration.websites.show', ['publicAdministration' => $this->publicAdministration, 'website' => $this->websiteSecondaryArchived])])
+            ->assertJsonFragment(['link' => route('admin.publicAdministration.websites.show', ['publicAdministration' => $this->publicAdministration, 'website' => $this->websiteSecondaryPending])])
+            ->assertJsonMissing(['link' => route('admin.publicAdministration.websites.show', ['publicAdministration' => $this->publicAdministration, 'website' => $this->websiteSecondaryTrashed])])
+            ->assertJsonMissing(['link' => route('admin.publicAdministration.websites.tracking.check', ['publicAdministration' => $this->publicAdministration, 'website' => $this->websitePrimary])])
+            ->assertJsonMissing(['link' => route('admin.publicAdministration.websites.tracking.check', ['publicAdministration' => $this->publicAdministration, 'website' => $this->websiteSecondaryActive])])
+            ->assertJsonMissing(['link' => route('admin.publicAdministration.websites.tracking.check', ['publicAdministration' => $this->publicAdministration, 'website' => $this->websiteSecondaryArchived])])
+            ->assertJsonFragment(['link' => route('admin.publicAdministration.websites.tracking.check', ['publicAdministration' => $this->publicAdministration, 'website' => $this->websiteSecondaryPending])])
+            ->assertJsonMissing(['link' => route('admin.publicAdministration.websites.tracking.check', ['publicAdministration' => $this->publicAdministration, 'website' => $this->websiteSecondaryTrashed])])
+            ->assertJsonFragment(['link' => route('admin.publicAdministration.websites.edit', ['publicAdministration' => $this->publicAdministration, 'website' => $this->websitePrimary])])
+            ->assertJsonFragment(['link' => route('admin.publicAdministration.websites.edit', ['publicAdministration' => $this->publicAdministration, 'website' => $this->websiteSecondaryActive])])
+            ->assertJsonFragment(['link' => route('admin.publicAdministration.websites.edit', ['publicAdministration' => $this->publicAdministration, 'website' => $this->websiteSecondaryArchived])])
+            ->assertJsonFragment(['link' => route('admin.publicAdministration.websites.edit', ['publicAdministration' => $this->publicAdministration, 'website' => $this->websiteSecondaryPending])])
+            ->assertJsonMissing(['link' => route('admin.publicAdministration.websites.edit', ['publicAdministration' => $this->publicAdministration, 'website' => $this->websiteSecondaryTrashed])])
+            ->assertJsonMissing(['link' => route('admin.publicAdministration.websites.archive', ['publicAdministration' => $this->publicAdministration, 'website' => $this->websitePrimary])])
+            ->assertJsonMissing(['link' => route('admin.publicAdministration.websites.unarchive', ['publicAdministration' => $this->publicAdministration, 'website' => $this->websitePrimary])])
+            ->assertJsonFragment(['link' => route('admin.publicAdministration.websites.archive', ['publicAdministration' => $this->publicAdministration, 'website' => $this->websiteSecondaryActive])])
+            ->assertJsonMissing(['link' => route('admin.publicAdministration.websites.unarchive', ['publicAdministration' => $this->publicAdministration, 'website' => $this->websiteSecondaryActive])])
+            ->assertJsonMissing(['link' => route('admin.publicAdministration.websites.archive', ['publicAdministration' => $this->publicAdministration, 'website' => $this->websiteSecondaryArchived])])
+            ->assertJsonFragment(['link' => route('admin.publicAdministration.websites.unarchive', ['publicAdministration' => $this->publicAdministration, 'website' => $this->websiteSecondaryArchived])])
+            ->assertJsonMissing(['link' => route('admin.publicAdministration.websites.archive', ['publicAdministration' => $this->publicAdministration, 'website' => $this->websiteSecondaryPending])])
+            ->assertJsonMissing(['link' => route('admin.publicAdministration.websites.unarchive', ['publicAdministration' => $this->publicAdministration, 'website' => $this->websiteSecondaryPending])])
+            ->assertJsonMissing(['link' => route('admin.publicAdministration.websites.archive', ['publicAdministration' => $this->publicAdministration, 'website' => $this->websiteSecondaryTrashed])])
+            ->assertJsonMissing(['link' => route('admin.publicAdministration.websites.unarchive', ['publicAdministration' => $this->publicAdministration, 'website' => $this->websiteSecondaryTrashed])])
+            ->assertJsonMissing(['link' => route('analytics.service.login')])
+            ->assertJsonMissing(['link' => route('admin.publicAdministration.websites.restore', [
+                'publicAdministration' => $this->publicAdministration,
+                'trashed_website' => $this->websitePrimary,
+            ])])
+            ->assertJsonMissing(['link' => route('admin.publicAdministration.websites.delete', [
+                'publicAdministration' => $this->publicAdministration,
+                'website' => $this->websitePrimary,
+            ])])
+            ->assertJsonMissing(['link' => route('admin.publicAdministration.websites.restore', [
+                'publicAdministration' => $this->publicAdministration,
+                'trashed_website' => $this->websiteSecondaryActive,
+            ])])
+            ->assertJsonFragment(['link' => route('admin.publicAdministration.websites.delete', [
+                'publicAdministration' => $this->publicAdministration,
+                'website' => $this->websiteSecondaryActive,
+            ])])
+            ->assertJsonMissing(['link' => route('admin.publicAdministration.websites.restore', [
+                'publicAdministration' => $this->publicAdministration,
+                'trashed_website' => $this->websiteSecondaryArchived,
+            ])])
+            ->assertJsonFragment(['link' => route('admin.publicAdministration.websites.delete', [
+                'publicAdministration' => $this->publicAdministration,
+                'website' => $this->websiteSecondaryArchived,
+            ])])
+            ->assertJsonMissing(['link' => route('admin.publicAdministration.websites.restore', [
+                'publicAdministration' => $this->publicAdministration,
+                'trashed_website' => $this->websiteSecondaryPending,
+            ])])
+            ->assertJsonFragment(['link' => route('admin.publicAdministration.websites.delete', [
+                'publicAdministration' => $this->publicAdministration,
+                'website' => $this->websiteSecondaryPending,
+            ])])
+            ->assertJsonFragment(['link' => route('admin.publicAdministration.websites.restore', [
+                'publicAdministration' => $this->publicAdministration,
+                'trashed_website' => $this->websiteSecondaryTrashed,
+            ])])
+            ->assertJsonMissing(['link' => route('admin.publicAdministration.websites.delete', [
+                'publicAdministration' => $this->publicAdministration,
+                'website' => $this->websiteSecondaryTrashed,
+            ])]);
+    }
+}
