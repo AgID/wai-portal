@@ -215,7 +215,5 @@ services:
       args:
         - REDIS_SENTINEL_SET=${REDIS_SENTINEL_SET}
         - REDIS_IPA_INDEX_SENTINEL_SET=${REDIS_IPA_INDEX_SENTINEL_SET}
-    ports:
-      - 26379:26379
     networks:
       - backend
