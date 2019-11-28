@@ -12,12 +12,23 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
 use Tests\TestCase;
 
+/**
+ * Website updates events listener tests.
+ */
 class WebsiteUpdatesSubscriberTest extends TestCase
 {
     use RefreshDatabase;
 
+    /**
+     * The website.
+     *
+     * @var Website the website
+     */
     private $website;
 
+    /**
+     * Pre-test setup.
+     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -31,7 +42,9 @@ class WebsiteUpdatesSubscriberTest extends TestCase
         ]);
     }
 
-
+    /**
+     * Test website status changed event handler.
+     */
     public function testWebsiteStatusChanged(): void
     {
         $this->website->status = WebsiteStatus::ARCHIVED;
@@ -48,6 +61,9 @@ class WebsiteUpdatesSubscriberTest extends TestCase
         Event::assertNotDispatched(WebsiteUrlChanged::class);
     }
 
+    /**
+     * Test website URL changed event handler.
+     */
     public function testWebsiteURLChanged(): void
     {
         $this->website->url = 'https://newfakeurl.local';

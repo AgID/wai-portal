@@ -6,8 +6,14 @@ use App\Enums\Logs\EventType;
 use App\Events\Jobs\WebsitesMonitoringCheckCompleted;
 use Tests\TestCase;
 
+/**
+ * Active websites monitoring job events listener tests.
+ */
 class CheckWebsitesMonitoringJobEventsSubscriberTest extends TestCase
 {
+    /**
+     * Test job completed event handler.
+     */
     public function testWebsitesMonitoringCheckCompleted(): void
     {
         $archived = [

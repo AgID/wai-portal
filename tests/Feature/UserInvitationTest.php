@@ -16,14 +16,30 @@ use Illuminate\Support\Facades\URL;
 use Silber\Bouncer\BouncerFacade as Bouncer;
 use Tests\TestCase;
 
+/**
+ * User invited events listener tests.
+ */
 class UserInvitationTest extends TestCase
 {
     use RefreshDatabase;
 
+    /**
+     * The inviting user.
+     *
+     * @var User the user
+     */
     private $user;
 
+    /**
+     * The invited user.
+     *
+     * @var User the user
+     */
     private $userInvited;
 
+    /**
+     * Pre-test setup.
+     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -34,6 +50,9 @@ class UserInvitationTest extends TestCase
         Notification::fake();
     }
 
+    /**
+     * Test user invited event handler.
+     */
     public function testUserInvited(): void
     {
         $publicAdministration = factory(PublicAdministration::class)->state('active')->create();
@@ -82,6 +101,9 @@ class UserInvitationTest extends TestCase
         );
     }
 
+    /**
+     * Test super-admin invited event handler.
+     */
     public function testSuperAdminInvited(): void
     {
         Bouncer::scope()->onceTo(0, function () {

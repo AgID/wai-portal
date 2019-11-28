@@ -12,12 +12,23 @@ use Illuminate\Support\Facades\Route;
 use Silber\Bouncer\BouncerFacade as Bouncer;
 use Tests\TestCase;
 
+/**
+ * Tenant select middleware tests.
+ */
 class SelectTenantMiddlewareTest extends TestCase
 {
     use RefreshDatabase;
 
+    /**
+     * The authenticated user.
+     *
+     * @var User the user
+     */
     private $user;
 
+    /**
+     * Pre-test setup.
+     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -30,6 +41,9 @@ class SelectTenantMiddlewareTest extends TestCase
         });
     }
 
+    /**
+     * Test tenant not enforced.
+     */
     public function testNotAuthenticated(): void
     {
         $this->get('_test/tenant-select')
@@ -37,6 +51,9 @@ class SelectTenantMiddlewareTest extends TestCase
             ->assertOk();
     }
 
+    /**
+     * Test tenant enforced for user.
+     */
     public function testUserTenantEnforced(): void
     {
         $publicAdministration = factory(PublicAdministration::class)->create();
@@ -47,6 +64,9 @@ class SelectTenantMiddlewareTest extends TestCase
             ->assertSessionHas('tenant_id', $publicAdministration->id);
     }
 
+    /**
+     * Test tenant not enforced for super-admin.
+     */
     public function testSuperUserTenantNotEnforce(): void
     {
         $this->user->assign(UserRole::SUPER_ADMIN);
@@ -56,6 +76,9 @@ class SelectTenantMiddlewareTest extends TestCase
             ->assertSessionMissing(['tenant_id', 'super_admin_tenant_ipa_code']);
     }
 
+    /**
+     * Test tenant configuration for super-admin for public administrations routes.
+     */
     public function testSuperUserTenantEnforced(): void
     {
         $publicAdministration = factory(PublicAdministration::class)->create();

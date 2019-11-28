@@ -9,12 +9,23 @@ use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Route;
 use Tests\TestCase;
 
+/**
+ * Password not expired middleware tests.
+ */
 class EnsurePasswordIsNotExpiredMiddlewareTest extends TestCase
 {
     use RefreshDatabase;
 
+    /**
+     * The authenticated user.
+     *
+     * @var User the user
+     */
     private $user;
 
+    /**
+     * Pre-test setup.
+     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -26,6 +37,9 @@ class EnsurePasswordIsNotExpiredMiddlewareTest extends TestCase
         $this->user = factory(User::class)->create();
     }
 
+    /**
+     * Set authorization fail due to expired password.
+     */
     public function testExpiredPasswordAuthorizationFail(): void
     {
         $this->user->password_changed_at = Date::now()->subDays(config('auth.password_expiry'));
@@ -42,6 +56,9 @@ class EnsurePasswordIsNotExpiredMiddlewareTest extends TestCase
             ]);
     }
 
+    /**
+     * Set authorization granted.
+     */
     public function testAuthorizationGranted(): void
     {
         $this->actingAs($this->user)

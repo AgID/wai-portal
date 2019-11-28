@@ -8,12 +8,23 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Silber\Bouncer\BouncerFacade as Bouncer;
 use Tests\TestCase;
 
+/**
+ * Super-admin users datatable transformer tests.
+ */
 class SuperAdminUserTransformerTest extends TestCase
 {
     use RefreshDatabase;
 
+    /**
+     * The super-admin user.
+     *
+     * @var User the user
+     */
     private $user;
 
+    /**
+     * Pre-test setup.
+     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -24,11 +35,9 @@ class SuperAdminUserTransformerTest extends TestCase
         });
     }
 
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-    }
-
+    /**
+     * Test transformer with base super-admin.
+     */
     public function testSuperAdminUserTransform(): void
     {
         $expected = [
@@ -72,6 +81,9 @@ class SuperAdminUserTransformerTest extends TestCase
             ->assertJsonMissing(['link' => route('admin.users.suspend', ['user' => $this->user])]);
     }
 
+    /**
+     * Test transformer with suspended super-admin user.
+     */
     public function testSuperAdminUserSuspendedTransform(): void
     {
         $user = factory(User::class)->state('suspended')->create();
@@ -83,6 +95,9 @@ class SuperAdminUserTransformerTest extends TestCase
             ->assertJsonMissing(['link' => route('admin.users.suspend', ['user' => $user])]);
     }
 
+    /**
+     * Test transformer with suspendable super-admin user.
+     */
     public function testSuperAdminSuspendTransform(): void
     {
         $user = factory(User::class)->state('active')->create();

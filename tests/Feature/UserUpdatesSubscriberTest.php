@@ -12,12 +12,23 @@ use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
 
+/**
+ * User updates events listener tests.
+ */
 class UserUpdatesSubscriberTest extends TestCase
 {
     use RefreshDatabase;
 
+    /**
+     * Updating user.
+     *
+     * @var User the user
+     */
     private $user;
 
+    /**
+     * Pre-test setup.
+     */
     public function setUp(): void
     {
         parent::setUp();
@@ -26,6 +37,9 @@ class UserUpdatesSubscriberTest extends TestCase
         $this->user = factory(User::class)->create();
     }
 
+    /**
+     * Test user updating event handler expecting email verification reset.
+     */
     public function testUpdatingWithEmailVerificationReset(): void
     {
         Event::fakeFor(function () {
@@ -39,6 +53,9 @@ class UserUpdatesSubscriberTest extends TestCase
         $this->assertNull($this->user->email_verified_at);
     }
 
+    /**
+     * Test user updating event handler not expecting email verification reset.
+     */
     public function testUpdatingWithoutEmailVerificationReset(): void
     {
         Event::fakeFor(function () {
@@ -53,6 +70,9 @@ class UserUpdatesSubscriberTest extends TestCase
         $this->assertEquals('Fakename', $this->user->name);
     }
 
+    /**
+     * Test user with analytics account email verification updated event handler.
+     */
     public function testUpdatedEmailVerifiedWithAnalyticsAccount(): void
     {
         Event::fakeFor(function () {
@@ -86,6 +106,9 @@ class UserUpdatesSubscriberTest extends TestCase
         Event::assertNotDispatched(UserStatusChanged::class);
     }
 
+    /**
+     * Test user without analytics account email verification updated event handler.
+     */
     public function testUpdatedEmailVerifiedWithoutAnalyticsAccount(): void
     {
         $this->app->bind('analytics-service', function () {
@@ -101,6 +124,9 @@ class UserUpdatesSubscriberTest extends TestCase
         Event::assertNotDispatched(UserStatusChanged::class);
     }
 
+    /**
+     * Test user with analytics account email updated event handler.
+     */
     public function testUpdatedEmailChangedWithAnalyticsAccount(): void
     {
         Event::fakeFor(function () {
@@ -138,6 +164,9 @@ class UserUpdatesSubscriberTest extends TestCase
         Event::assertNotDispatched(UserStatusChanged::class);
     }
 
+    /**
+     * Test user without analytics account email updated event handler.
+     */
     public function testUpdatedEmailChangedWithoutAnalyticsAccount(): void
     {
         $this->app->bind('analytics-service', function () {
@@ -155,6 +184,9 @@ class UserUpdatesSubscriberTest extends TestCase
         Event::assertNotDispatched(UserStatusChanged::class);
     }
 
+    /**
+     * Test user status changed event handler.
+     */
     public function testUpdatedStatusChanged(): void
     {
         $this->app->bind('analytics-service', function () {

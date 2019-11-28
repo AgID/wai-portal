@@ -10,14 +10,30 @@ use Illuminate\Support\Facades\Route;
 use Italia\SPIDAuth\SPIDUser;
 use Tests\TestCase;
 
+/**
+ * Users authentication middleware tests.
+ */
 class AuthenticationMiddlewareTest extends TestCase
 {
     use RefreshDatabase;
 
+    /**
+     * The authenticating user.
+     *
+     * @var User the user
+     */
     private $user;
 
+    /**
+     * The mocked SPID user information.
+     *
+     * @var SPIDUser the SPID user
+     */
     private $spidUser;
 
+    /**
+     * Pre-test setup.
+     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -32,6 +48,9 @@ class AuthenticationMiddlewareTest extends TestCase
         ]);
     }
 
+    /**
+     * Test missing user redirect to registration.
+     */
     public function testMissingUserAuthentication(): void
     {
         $this->withSession([
@@ -41,6 +60,9 @@ class AuthenticationMiddlewareTest extends TestCase
             ->assertRedirect(route('auth.register.show'));
     }
 
+    /**
+     * Test authentication successful.
+     */
     public function testUserAuthenticationSuccessful(): void
     {
         $this->actingAs($this->user)
@@ -49,6 +71,9 @@ class AuthenticationMiddlewareTest extends TestCase
             ->assertOk();
     }
 
+    /**
+     * Test deleted user redirect to home.
+     */
     public function testDeletedUserAuthentication(): void
     {
         $this->user->delete();
@@ -64,6 +89,9 @@ class AuthenticationMiddlewareTest extends TestCase
             ->assertRedirect(route('home'));
     }
 
+    /**
+     * Test suspended user redirect to home.
+     */
     public function testSuspendedUserAuthentication(): void
     {
         $this->user->status = UserStatus::SUSPENDED;

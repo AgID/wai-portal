@@ -11,20 +11,51 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Silber\Bouncer\BouncerFacade as Bouncer;
 use Tests\TestCase;
 
+/**
+ * Users permissions datatable transformer tests.
+ */
 class UsersPermissionsTransformerTest extends TestCase
 {
     use RefreshDatabase;
 
+    /**
+     * The public administration.
+     *
+     * @var PublicAdministration the public administration
+     */
     private $publicAdministration;
 
+    /**
+     * The public administration website.
+     *
+     * @var Website the website
+     */
     private $website;
 
+    /**
+     * The public administration administrator.
+     *
+     * @var User the user
+     */
     private $userAdmin;
 
+    /**
+     * The public administration analytics manager.
+     *
+     * @var User the user
+     */
     private $userManager;
 
+    /**
+     * The public administration analytics reader.
+     *
+     * @var User the user
+     */
     private $userReader;
 
+    /**
+     * Pre-test setup.
+     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -57,9 +88,11 @@ class UsersPermissionsTransformerTest extends TestCase
         });
     }
 
+    /**
+     * Test transformer as administrator.
+     */
     public function testUserPermissionsTransformerAsAdmin(): void
     {
-
         $expected = [
             'draw',
             'recordsTotal',
@@ -116,6 +149,9 @@ class UsersPermissionsTransformerTest extends TestCase
             ->assertJsonMissing(['icons']);
     }
 
+    /**
+     * Test read-only transformer as administrator.
+     */
     public function testUserPermissionsTransformerReadOnlyAsAdmin(): void
     {
         $expected = [
@@ -196,6 +232,9 @@ class UsersPermissionsTransformerTest extends TestCase
             ->assertJsonMissing(['toggles']);
     }
 
+    /**
+     * Test transformer as super-admin.
+     */
     public function testUserPermissionsTransformerAsSuperAdmin(): void
     {
         $superAdmin = factory(User::class)->state('active')->create();
@@ -256,6 +295,9 @@ class UsersPermissionsTransformerTest extends TestCase
             ->assertJsonMissing(['icons']);
     }
 
+    /**
+     * Test read-only transformer as super-admin.
+     */
     public function testUserPermissionsTransformerReadOnlyAsSuperAdmin(): void
     {
         $superAdmin = factory(User::class)->state('active')->create();

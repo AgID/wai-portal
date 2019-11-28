@@ -7,10 +7,16 @@ use App\Events\Jobs\WebsiteIndexUpdateCompleted;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
+/**
+ * Websites index events listener tests.
+ */
 class WebsitesIndexEventSubscriberTest extends TestCase
 {
     use RefreshDatabase;
 
+    /**
+     * Test websites index update completed event handler.
+     */
     public function testUpdateCompleted(): void
     {
         $inserted = [

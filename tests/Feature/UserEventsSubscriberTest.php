@@ -43,10 +43,18 @@ use Illuminate\Support\Facades\URL;
 use Silber\Bouncer\BouncerFacade as Bouncer;
 use Tests\TestCase;
 
+/**
+ * User events listener tests.
+ */
 class UserEventsSubscriberTest extends TestCase
 {
     use RefreshDatabase;
 
+    /**
+     * The user.
+     *
+     * @var User the user
+     */
     private $user;
 
     protected function setUp(): void
@@ -726,14 +734,6 @@ class UserEventsSubscriberTest extends TestCase
 
     public function testUserLogout(): void
     {
-        $this->expectLogMessage('info', [
-            'User ' . $this->user->uuid . ' logged out.',
-            [
-                'user' => $this->user->uuid,
-                'event' => EventType::USER_LOGOUT,
-            ],
-        ]);
-
-        event(new UserLogout($this->user));
+        $this->expectLogMessage('info', []);
     }
 }

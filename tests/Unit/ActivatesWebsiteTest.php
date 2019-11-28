@@ -21,16 +21,37 @@ use Illuminate\Support\Facades\Event;
 use Silber\Bouncer\BouncerFacade as Bouncer;
 use Tests\TestCase;
 
+/**
+ * Website activation trait tests.
+ */
 class ActivatesWebsiteTest extends TestCase
 {
     use RefreshDatabase;
 
+    /**
+     * The anonymous class using the trait.
+     *
+     * @var mixed the anonymous class
+     */
     private $class;
 
+    /**
+     * The public administration.
+     *
+     * @var PublicAdministration the public administration
+     */
     private $publicAdministration;
 
+    /**
+     * The website.
+     *
+     * @var Website the website
+     */
     private $website;
 
+    /**
+     * Pre-test setup.
+     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -44,6 +65,9 @@ class ActivatesWebsiteTest extends TestCase
         ]);
     }
 
+    /**
+     * Test website activation check expecting "not active".
+     */
     public function testHasActivated(): void
     {
         $this->app->bind('analytics-service', function () {
@@ -70,6 +94,9 @@ class ActivatesWebsiteTest extends TestCase
         $this->assertFalse($result);
     }
 
+    /**
+     * Test website activation check expecting "active" due to live visits.
+     */
     public function testHasActivatedLiveVisits(): void
     {
         $this->app->bind('analytics-service', function () {
@@ -96,6 +123,9 @@ class ActivatesWebsiteTest extends TestCase
         $this->assertTrue($result);
     }
 
+    /**
+     * Test website activation check expecting "active" due to archived visits.
+     */
     public function testHasActivatedTotalVisits(): void
     {
         $this->app->bind('analytics-service', function () {
@@ -122,6 +152,9 @@ class ActivatesWebsiteTest extends TestCase
         $this->assertTrue($result);
     }
 
+    /**
+     * Test primary website activation.
+     */
     public function testActivatedPrimaryWebsite(): void
     {
         Event::fake();
@@ -171,6 +204,9 @@ class ActivatesWebsiteTest extends TestCase
         $this->assertTrue($user->status->is(UserStatus::ACTIVE));
     }
 
+    /**
+     * Test secondary website activation.
+     */
     public function testActivatedSecondaryWebsite(): void
     {
         Event::fake();

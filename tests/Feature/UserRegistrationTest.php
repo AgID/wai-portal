@@ -12,10 +12,16 @@ use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\URL;
 use Tests\TestCase;
 
+/**
+ * User registered events listener tests.
+ */
 class UserRegistrationTest extends TestCase
 {
     use RefreshDatabase;
 
+    /**
+     * Test user registered event handler.
+     */
     public function testUserRegistration(): void
     {
         Notification::fake();

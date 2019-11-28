@@ -13,12 +13,23 @@ use Italia\SPIDAuth\SPIDAuth;
 use Silber\Bouncer\BouncerFacade as Bouncer;
 use Tests\TestCase;
 
+/**
+ * Enforce rules middleware test.
+ */
 class EnforceRuleMiddlewareTest extends TestCase
 {
     use RefreshDatabase;
 
+    /**
+     * The authenticated user.
+     *
+     * @var User the user
+     */
     private $user;
 
+    /**
+     * Pre-test setup.
+     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -41,6 +52,9 @@ class EnforceRuleMiddlewareTest extends TestCase
         })->name('rule-enforcer-test');
     }
 
+    /**
+     * Test authorization fail due to "no SPID authenticated user" rule enforced.
+     */
     public function testSPIDAuthenticatedAuthorizationFail(): void
     {
         $this->app->bind('SPIDAuth', function () {
@@ -57,6 +71,9 @@ class EnforceRuleMiddlewareTest extends TestCase
         $this->get('_test/rules-enforced');
     }
 
+    /**
+     * Test authorization granted.
+     */
     public function testAuthorizationGranted(): void
     {
         $this->actingAs($this->user)
@@ -64,6 +81,9 @@ class EnforceRuleMiddlewareTest extends TestCase
             ->assertOk();
     }
 
+    /**
+     * Test authorization fail due to "no invited user" rule enforced.
+     */
     public function testInvitedUserAuthorizationFail(): void
     {
         $this->user->status = UserStatus::INVITED;

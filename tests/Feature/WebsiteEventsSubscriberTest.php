@@ -685,6 +685,9 @@ class WebsiteEventsSubscriberTest extends TestCase
         );
     }
 
+    /**
+     * Test website unarchived event handler.
+     */
     public function testWebsiteUnarchived(): void
     {
         $this->expectLogMessage('notice', [
@@ -769,6 +772,9 @@ class WebsiteEventsSubscriberTest extends TestCase
         );
     }
 
+    /**
+     * Test website scheduled for purging event handler.
+     */
     public function testWebsitePurging(): void
     {
         $this->expectLogMessage('notice', [

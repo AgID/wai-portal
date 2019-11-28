@@ -6,8 +6,14 @@ use App\Enums\Logs\EventType;
 use App\Events\Jobs\PendingWebsitesCheckCompleted;
 use Tests\TestCase;
 
+/**
+ * Pending websites job events listener tests.
+ */
 class CheckPendingWebsiteJobsEventsSubscriberTest extends TestCase
 {
+    /**
+     * Test job completed event handler.
+     */
     public function testCheckPendingWebsiteJobsCompleted(): void
     {
         $activated = [

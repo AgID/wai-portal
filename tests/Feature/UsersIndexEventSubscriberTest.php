@@ -7,10 +7,16 @@ use App\Events\Jobs\UserIndexUpdateCompleted;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
+/**
+ * Users index events listener tests.
+ */
 class UsersIndexEventSubscriberTest extends TestCase
 {
     use RefreshDatabase;
 
+    /**
+     * Test users index update completed event handler.
+     */
     public function testUpdateCompleted(): void
     {
         $inserted = [

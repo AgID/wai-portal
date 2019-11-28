@@ -9,8 +9,14 @@ use Illuminate\Support\Facades\Lang;
 use Illuminate\Translation\Translator;
 use Tests\TestCase;
 
+/**
+ * Enum descriptions tests.
+ */
 class HasEnumLongDescriptionTest extends TestCase
 {
+    /**
+     * Test description retrieval using fallback due to missing translations.
+     */
     public function testGetDescriptions(): void
     {
         $class = new class(0) extends Enum {
@@ -22,6 +28,9 @@ class HasEnumLongDescriptionTest extends TestCase
         $this->assertEquals('Test value', $class::getDescription($class::TEST_VALUE));
     }
 
+    /**
+     * Test enum long description retrieval successful.
+     */
     public function testLongDescription(): void
     {
         $class = new class(0) extends Enum implements LocalizedEnum {
@@ -48,6 +57,9 @@ class HasEnumLongDescriptionTest extends TestCase
         $this->assertEquals('Fake long description', $class::getLongDescription($class::TEST_VALUE));
     }
 
+    /**
+     * Test enum short description retrieval successful.
+     */
     public function testShortDescription(): void
     {
         $class = new class(0) extends Enum implements LocalizedEnum {

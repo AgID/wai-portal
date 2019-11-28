@@ -12,10 +12,16 @@ use Italia\SPIDAuth\Events\LogoutEvent;
 use Italia\SPIDAuth\SPIDUser;
 use Tests\TestCase;
 
+/**
+ * SPID events listener tests.
+ */
 class SPIDEventSubscriberTest extends TestCase
 {
     use RefreshDatabase;
 
+    /**
+     * Test SPID login event handler with not registered user.
+     */
     public function testSpidLoginNoUser(): void
     {
         Event::fake([UserLogin::class]);
@@ -30,6 +36,9 @@ class SPIDEventSubscriberTest extends TestCase
         Event::assertNotDispatched(UserLogin::class);
     }
 
+    /**
+     * Test SPID login event handler with registered user.
+     */
     public function testSpidLoginRegisteredUser(): void
     {
         Event::fake([UserLogin::class]);
@@ -49,6 +58,9 @@ class SPIDEventSubscriberTest extends TestCase
         $this->assertEquals($user->uuid, auth()->user()->uuid);
     }
 
+    /**
+     * Test SPID logout event handler.
+     */
     public function testSpidLogout(): void
     {
         Event::fake(UserLogout::class);

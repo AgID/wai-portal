@@ -10,12 +10,23 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Route;
 use Tests\TestCase;
 
+/**
+ * Super-admin users authentication middleware tests.
+ */
 class AuthenticateAdminMiddlewareTest extends TestCase
 {
     use RefreshDatabase;
 
+    /**
+     * The super-admin user.
+     *
+     * @var User the user
+     */
     private $user;
 
+    /**
+     * Pre-test setup.
+     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -26,12 +37,18 @@ class AuthenticateAdminMiddlewareTest extends TestCase
         });
     }
 
+    /**
+     * Test missing authentication redirect to login.
+     */
     public function testMissingSuperAdminAuthentication(): void
     {
         $this->get('_test/admin-authentication')
             ->assertRedirect(route('admin.login.show'));
     }
 
+    /**
+     * Test authentication successful.
+     */
     public function testSuperAdminAuthenticationSuccessful(): void
     {
         $this->user->assign(UserRole::SUPER_ADMIN);
@@ -41,6 +58,9 @@ class AuthenticateAdminMiddlewareTest extends TestCase
             ->assertOk();
     }
 
+    /**
+     * Test wrong user role authorization error.
+     */
     public function testNotSuperAdminAuthentication(): void
     {
         $this->withoutExceptionHandling();

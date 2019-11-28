@@ -14,24 +14,65 @@ use Illuminate\Support\Str;
 use Silber\Bouncer\BouncerFacade as Bouncer;
 use Tests\TestCase;
 
+/**
+ * Websites transformer tests.
+ */
 class WebsiteTransformerTest extends TestCase
 {
     use RefreshDatabase;
 
+    /**
+     * The user.
+     *
+     * @var User the user
+     */
     private $user;
 
+    /**
+     * The public administration.
+     *
+     * @var PublicAdministration the public administration
+     */
     private $publicAdministration;
 
+    /**
+     * The primary website.
+     *
+     * @var Website the website
+     */
     private $websitePrimary;
 
+    /**
+     * The secondary active website.
+     *
+     * @var Website the website
+     */
     private $websiteSecondaryActive;
 
+    /**
+     * The secondary archived website.
+     *
+     * @var Website the website
+     */
     private $websiteSecondaryArchived;
 
+    /**
+     * The secondary pending website.
+     *
+     * @var Website the website
+     */
     private $websiteSecondaryPending;
 
+    /**
+     * The secondary deleted website.
+     *
+     * @var Website the website
+     */
     private $websiteSecondaryTrashed;
 
+    /**
+     * Pre-test setup.
+     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -94,6 +135,9 @@ class WebsiteTransformerTest extends TestCase
         Bouncer::dontCache();
     }
 
+    /**
+     * Test transformer as delegate.
+     */
     public function testWebsiteTransformAsDelegate(): void
     {
         Bouncer::scope()->onceTo($this->publicAdministration->id, function () {
@@ -198,6 +242,9 @@ class WebsiteTransformerTest extends TestCase
             ])]);
     }
 
+    /**
+     * Test transformer as administrator.
+     */
     public function testWebsiteTransformAsAdmin(): void
     {
         Bouncer::scope()->onceTo($this->publicAdministration->id, function () {
@@ -307,6 +354,9 @@ class WebsiteTransformerTest extends TestCase
             ])]);
     }
 
+    /**
+     * Test transformer as super-admin.
+     */
     public function testWebsiteTransformAsSuperAdmin(): void
     {
         $superAdmin = factory(User::class)->state('active')->create();

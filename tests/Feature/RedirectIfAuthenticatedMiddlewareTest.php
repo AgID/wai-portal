@@ -10,12 +10,23 @@ use Illuminate\Support\Facades\Route;
 use Silber\Bouncer\BouncerFacade as Bouncer;
 use Tests\TestCase;
 
+/**
+ * Authenticated user redirect middleware tests.
+ */
 class RedirectIfAuthenticatedMiddlewareTest extends TestCase
 {
     use RefreshDatabase;
 
+    /**
+     * The authenticated user.
+     *
+     * @var User the user
+     */
     private $user;
 
+    /**
+     * Pre-test setup.
+     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -28,12 +39,18 @@ class RedirectIfAuthenticatedMiddlewareTest extends TestCase
         });
     }
 
+    /**
+     * Test not authenticated user not redirected.
+     */
     public function testUserNotAuthenticated(): void
     {
         $this->get('_test/guest')
             ->assertOk();
     }
 
+    /**
+     * Test authenticated user redirected.
+     */
     public function testUserAuthenticatedRedirect(): void
     {
         $this->actingAs($this->user)

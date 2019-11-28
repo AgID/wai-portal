@@ -15,12 +15,23 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\URL;
 use Tests\TestCase;
 
+/**
+ * Signature validation middleware tests.
+ */
 class ValidateSignatureMiddlewareTest extends TestCase
 {
     use RefreshDatabase;
 
+    /**
+     * The authenticated user.
+     *
+     * @var User the user
+     */
     private $user;
 
+    /**
+     * Pre-test setup.
+     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -38,6 +49,9 @@ class ValidateSignatureMiddlewareTest extends TestCase
         $this->withoutExceptionHandling();
     }
 
+    /**
+     * Test signature validated.
+     */
     public function testSignatureValidated(): void
     {
         URL::shouldReceive('hasValidSignature')
@@ -49,6 +63,9 @@ class ValidateSignatureMiddlewareTest extends TestCase
             ->assertOk();
     }
 
+    /**
+     * Test invalid signature.
+     */
     public function testInvalidSignature(): void
     {
         URL::shouldReceive('hasValidSignature')
@@ -61,6 +78,9 @@ class ValidateSignatureMiddlewareTest extends TestCase
         $this->get('_test/signature');
     }
 
+    /**
+     * Test expired user email verification link.
+     */
     public function testExpiredVerification(): void
     {
         Event::fake();
@@ -80,6 +100,9 @@ class ValidateSignatureMiddlewareTest extends TestCase
         Event::assertNotDispatched(UserInvitationLinkExpired::class);
     }
 
+    /**
+     * Test expired user invitation link.
+     */
     public function testExpiredInvitation(): void
     {
         $this->user->status = UserStatus::INVITED;

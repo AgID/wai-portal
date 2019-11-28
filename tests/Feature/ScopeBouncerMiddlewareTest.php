@@ -10,12 +10,23 @@ use Illuminate\Support\Facades\Route;
 use Silber\Bouncer\BouncerFacade as Bouncer;
 use Tests\TestCase;
 
+/**
+ * Bouncer scope middleware tests.
+ */
 class ScopeBouncerMiddlewareTest extends TestCase
 {
     use RefreshDatabase;
 
+    /**
+     * The authenticated user.
+     *
+     * @var User the user
+     */
     private $user;
 
+    /**
+     * Pre-test setup.
+     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -28,6 +39,9 @@ class ScopeBouncerMiddlewareTest extends TestCase
         });
     }
 
+    /**
+     * Test scope not enforced.
+     */
     public function testNoScopeEnforced(): void
     {
         $this->actingAs($this->user)
@@ -36,6 +50,9 @@ class ScopeBouncerMiddlewareTest extends TestCase
         $this->assertEquals(0, Bouncer::scope()->get());
     }
 
+    /**
+     * Test scope enforced.
+     */
     public function testScopeEnforced(): void
     {
         $publicAdministration = factory(PublicAdministration::class)->create();

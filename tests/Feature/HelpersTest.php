@@ -7,12 +7,23 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
+/**
+ * Helpers tests.
+ */
 class HelpersTest extends TestCase
 {
     use RefreshDatabase;
 
+    /**
+     * The logged in user.
+     *
+     * @var User the user
+     */
     private $user;
 
+    /**
+     * Pre-test setup.
+     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -20,6 +31,9 @@ class HelpersTest extends TestCase
         $this->user = factory(User::class)->create();
     }
 
+    /**
+     * Post-test cleanup.
+     */
     protected function tearDown(): void
     {
         session()->invalidate();
@@ -27,6 +41,9 @@ class HelpersTest extends TestCase
         parent::tearDown();
     }
 
+    /**
+     * Test retrieve public administration from user session successful.
+     */
     public function testCurrentPublicAdministrationExists(): void
     {
         $publicAdministration = factory(PublicAdministration::class)->create();
@@ -38,6 +55,9 @@ class HelpersTest extends TestCase
         $this->assertNotEmpty(current_public_administration());
     }
 
+    /**
+     * Test retrieve public administration from user session fail.
+     */
     public function testCurrentPublicAdministrationNotExists(): void
     {
         auth()->login($this->user);

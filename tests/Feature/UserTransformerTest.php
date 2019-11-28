@@ -10,14 +10,30 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Silber\Bouncer\BouncerFacade as Bouncer;
 use Tests\TestCase;
 
+/**
+ * Users transformer tests.
+ */
 class UserTransformerTest extends TestCase
 {
     use RefreshDatabase;
 
+    /**
+     * The user.
+     *
+     * @var User the user
+     */
     private $user;
 
+    /**
+     * The public administration.
+     *
+     * @var PublicAdministration the public administration
+     */
     private $publicAdministration;
 
+    /**
+     * Pre-test setup.
+     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -32,6 +48,9 @@ class UserTransformerTest extends TestCase
         });
     }
 
+    /**
+     * Test transformer as delegate.
+     */
     public function testUserTransformTestAsDelegate(): void
     {
         $user = factory(User::class)->state('active')->create();
@@ -83,6 +102,9 @@ class UserTransformerTest extends TestCase
             ])]);
     }
 
+    /**
+     * Test transformer as administrator.
+     */
     public function testUserTransformTestAsAdmin(): void
     {
         $userInvited = factory(User::class)->state('invited')->create();
@@ -180,6 +202,9 @@ class UserTransformerTest extends TestCase
             ])]);
     }
 
+    /**
+     * Test transformer as super-admin.
+     */
     public function testUserTransformAsSuperAdmin(): void
     {
         $superAdmin = factory(User::class)->state('active')->create();

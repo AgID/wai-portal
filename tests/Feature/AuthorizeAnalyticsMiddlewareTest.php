@@ -14,16 +14,37 @@ use Illuminate\Support\Facades\Route;
 use Silber\Bouncer\BouncerFacade as Bouncer;
 use Tests\TestCase;
 
+/**
+ * Analytics authorization middleware tests.
+ */
 class AuthorizeAnalyticsMiddlewareTest extends TestCase
 {
     use RefreshDatabase;
 
+    /**
+     * The authenticated user.
+     *
+     * @var User the user
+     */
     private $user;
 
+    /**
+     * The public administration the user belongs to.
+     *
+     * @var PublicAdministration the public administration
+     */
     private $publicAdministration;
 
+    /**
+     * The public administration website.
+     *
+     * @var Website the website
+     */
     private $website;
 
+    /**
+     * Pre-test setup.
+     */
     public function setUp(): void
     {
         parent::setUp();
@@ -64,6 +85,9 @@ class AuthorizeAnalyticsMiddlewareTest extends TestCase
         })->name('websites.snippet.javascript');
     }
 
+    /**
+     * Test user authorization fail.
+     */
     public function testMissingPermissionAuthorizationFail(): void
     {
         $this->actingAs($this->user)
@@ -71,6 +95,9 @@ class AuthorizeAnalyticsMiddlewareTest extends TestCase
             ->assertForbidden();
     }
 
+    /**
+     * Test authorization granted.
+     */
     public function testPermissionAuthorizationGranted(): void
     {
         $this->user->allow(UserPermission::VIEW_LOGS);
@@ -80,6 +107,9 @@ class AuthorizeAnalyticsMiddlewareTest extends TestCase
             ->assertOk();
     }
 
+    /**
+     * Test users routes authorization fail due to wrong public administration.
+     */
     public function testDifferentPublicAdministrationUsersRouteAuthorizationFail(): void
     {
         $secondUser = factory(User::class)->create();
@@ -92,6 +122,9 @@ class AuthorizeAnalyticsMiddlewareTest extends TestCase
             ->assertForbidden();
     }
 
+    /**
+     * Test users routes authorization granted.
+     */
     public function testUsersRouteAuthorizationGranted(): void
     {
         $this->actingAs($this->user)
@@ -100,6 +133,9 @@ class AuthorizeAnalyticsMiddlewareTest extends TestCase
             ->assertOk();
     }
 
+    /**
+     * Test websites routes authorization granted.
+     */
     public function testWebsitesRouteAuthorizationGranted(): void
     {
         $this->actingAs($this->user)
@@ -108,6 +144,9 @@ class AuthorizeAnalyticsMiddlewareTest extends TestCase
             ->assertOk();
     }
 
+    /**
+     * Test websites routes authorization fail due to missing permission on website.
+     */
     public function testMissingAuthorizationWebsitesRouteAuthorizationFail(): void
     {
         do {
@@ -127,6 +166,9 @@ class AuthorizeAnalyticsMiddlewareTest extends TestCase
             ->assertForbidden();
     }
 
+    /**
+     * Test tracking check and JS snippet routes authorization granted for pending user.
+     */
     public function testPendingUserWebsitesRouteAuthorizationGranted(): void
     {
         $this->user->status = UserStatus::PENDING;
@@ -151,6 +193,9 @@ class AuthorizeAnalyticsMiddlewareTest extends TestCase
             ->assertOk();
     }
 
+    /**
+     * Test tracking check and JS snippet routes authorization fail due to not pending user.
+     */
     public function testNotPendingUserWebsitesRouteAuthorizationFail(): void
     {
         do {
@@ -171,6 +216,9 @@ class AuthorizeAnalyticsMiddlewareTest extends TestCase
             ->assertForbidden();
     }
 
+    /**
+     * Test websites routes authorization fail due to wrong public administration.
+     */
     public function testDifferentPublicAdministrationWebsiteRoutesAuthorizationFail(): void
     {
         $secondPublicAdministration = factory(PublicAdministration::class)->create();

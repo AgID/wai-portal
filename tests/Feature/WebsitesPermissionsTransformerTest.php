@@ -12,18 +12,44 @@ use Illuminate\Support\Str;
 use Silber\Bouncer\BouncerFacade as Bouncer;
 use Tests\TestCase;
 
+/**
+ * Websites permissions datatable transformer tests.
+ */
 class WebsitesPermissionsTransformerTest extends TestCase
 {
     use RefreshDatabase;
 
+    /**
+     * The public administration.
+     *
+     * @var PublicAdministration the public administration
+     */
     private $publicAdministration;
 
+    /**
+     * The website with manageable analytics.
+     *
+     * @var Website the website
+     */
     private $websiteManage;
 
+    /**
+     * The website with readable analytics.
+     *
+     * @var Website the website
+     */
     private $websiteRead;
 
+    /**
+     * The user.
+     *
+     * @var User the user
+     */
     private $user;
 
+    /**
+     * Pre-test setup.
+     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -33,7 +59,6 @@ class WebsitesPermissionsTransformerTest extends TestCase
         $this->websiteManage = factory(Website::class)->state('active')->create([
             'public_administration_id' => $this->publicAdministration->id,
         ]);
-
 
         do {
             $this->websiteRead = factory(Website::class)->state('active')->make([
@@ -50,7 +75,6 @@ class WebsitesPermissionsTransformerTest extends TestCase
 
         Bouncer::dontCache();
         Bouncer::scope()->onceTo($this->publicAdministration->id, function () {
-
             $this->user->assign(UserRole::DELEGATED);
             $this->user->allow(UserPermission::READ_ANALYTICS, $this->websiteManage);
             $this->user->allow(UserPermission::MANAGE_ANALYTICS, $this->websiteManage);
@@ -58,6 +82,9 @@ class WebsitesPermissionsTransformerTest extends TestCase
         });
     }
 
+    /**
+     * Test website permissions as administrator.
+     */
     public function testWebsitePermissionAsAdmin(): void
     {
         $userAdmin = factory(User::class)->state('active')->create();
@@ -119,6 +146,9 @@ class WebsitesPermissionsTransformerTest extends TestCase
             ->assertJsonMissing(['icons']);
     }
 
+    /**
+     * Test read-only transformer as administrator.
+     */
     public function testWebsitePermissionReadOnlyAsAdmin(): void
     {
         $userAdmin = factory(User::class)->state('active')->create();
@@ -212,6 +242,9 @@ class WebsitesPermissionsTransformerTest extends TestCase
             ->assertJsonMissing(['toggles']);
     }
 
+    /**
+     * Test transformer as super-admin.
+     */
     public function testWebsitePermissionAsSuperAdmin(): void
     {
         $superAdmin = factory(User::class)->state('active')->create();
@@ -268,6 +301,9 @@ class WebsitesPermissionsTransformerTest extends TestCase
             ->assertJsonMissing(['icons']);
     }
 
+    /**
+     * Test read-only transformer as super-admin.
+     */
     public function testWebsitePermissionReadOnlyAsSuperAdmin(): void
     {
         $superAdmin = factory(User::class)->state('active')->create();

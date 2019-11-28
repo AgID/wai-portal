@@ -20,6 +20,9 @@ class CommandsTest extends TestCase
 {
     use RefreshDatabase;
 
+    /**
+     * Pre-test setup.
+     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -87,6 +90,9 @@ class CommandsTest extends TestCase
         ]);
     }
 
+    /**
+     * Test active websites tracking check command.
+     */
     public function testMonitorWebsiteTracking(): void
     {
         $this->artisan('app:monitor-activity');
@@ -106,6 +112,9 @@ class CommandsTest extends TestCase
         Bus::assertDispatched(ProcessPublicAdministrationsUpdateFromIpa::class);
     }
 
+    /**
+     * Test users index update command.
+     */
     public function testUpdateUsersIndex(): void
     {
         $this->artisan('app:update-users');
@@ -113,6 +122,9 @@ class CommandsTest extends TestCase
         Bus::assertDispatched(ProcessUsersIndex::class);
     }
 
+    /**
+     * Test websites index update command.
+     */
     public function testUpdateWebsitesIndex(): void
     {
         $this->artisan('app:update-websites');

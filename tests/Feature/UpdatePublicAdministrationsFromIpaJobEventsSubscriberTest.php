@@ -6,8 +6,14 @@ use App\Enums\Logs\EventType;
 use App\Events\Jobs\PublicAdministrationsUpdateFromIpaCompleted;
 use Tests\TestCase;
 
+/**
+ * Public administrations index update events listener tests.
+ */
 class UpdatePublicAdministrationsFromIpaJobEventsSubscriberTest extends TestCase
 {
+    /**
+     * Test job completed event handler.
+     */
     public function testUpdateFromIpaCompleted(): void
     {
         $updates = [
