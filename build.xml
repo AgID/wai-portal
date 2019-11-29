@@ -39,6 +39,8 @@
                     <token key="ARCHIVING_WEBSITE_NOTIFICATION_WEEK_DAY" value="${ARCHIVING_WEBSITE_NOTIFICATION_WEEK_DAY}" />
                     <token key="ARCHIVING_WEBSITE_DAILY_NOTIFICATION" value="${ARCHIVING_WEBSITE_DAILY_NOTIFICATION}" />
                     <token key="ELASTICSEARCH_VERSION" value="${ELASTICSEARCH_VERSION}" />
+                    <token key="ELASTICSEARCH_USER" value="${ELASTICSEARCH_USER}" />
+                    <token key="ELASTICSEARCH_PASSWORD" value="${ELASTICSEARCH_PASSWORD}" />
                     <token key="ELASTICSEARCH_INDEX_PREFIX" value="${ELASTICSEARCH_INDEX_PREFIX}" />
                     <token key="ELASTICSEARCH_INDEX_NAME" value="${ELASTICSEARCH_INDEX_PREFIX}-${ELASTICSEARCH_INDEX_NAME}" />
                     <token key="ELASTICSEARCH_IGNORE_EXCEPTIONS" value="${ELASTICSEARCH_IGNORE_EXCEPTIONS}" />
