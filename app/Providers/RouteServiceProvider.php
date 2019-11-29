@@ -47,7 +47,8 @@ class RouteServiceProvider extends ServiceProvider
 
         $this->mapWebRoutes();
 
-        $this->mapCronRoutes();
+        // NOTE: CronJobs routes disabled.
+        // $this->mapCronRoutes();
 
         if (!$this->app->environment('production')) {
             $this->mapTestingRoutes();
