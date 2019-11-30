@@ -89,6 +89,24 @@ class PublicAdministrationEventsSubscriber implements ShouldQueue
     }
 
     /**
+     * Public Administration not found during update from ipa callback.
+     *
+     * @param PublicAdministrationNotFoundInIpa $event the public administration not found in ipa event
+     */
+    public function onNotFoundInIpa(PublicAdministrationNotFoundInIpa $event): void
+    {
+        // TODO: send notification to super-admins
+        $publicAdministration = $event->getPublicAdministration();
+        logger()->warning(
+            'Public Administration ' . $publicAdministration->info . ' not found',
+            [
+                'event' => EventType::PUBLIC_ADMINISTRATION_UPDATED,
+                'pa' => $publicAdministration->ipa_code,
+            ]
+        );
+    }
+
+    /**
      * Public Administration primary site changed callback.
      *
      * @param PublicAdministrationPrimaryWebsiteUpdated $event the public administration primary site updated event
@@ -135,23 +153,32 @@ class PublicAdministrationEventsSubscriber implements ShouldQueue
             'App\Events\PublicAdministration\PublicAdministrationRegistered',
             'App\Listeners\PublicAdministrationEventsSubscriber@onRegistered'
         );
+
         $events->listen(
             'App\Events\PublicAdministration\PublicAdministrationActivated',
             'App\Listeners\PublicAdministrationEventsSubscriber@onActivated'
         );
+
         $events->listen(
             'App\Events\PublicAdministration\PublicAdministrationActivationFailed',
             'App\Listeners\PublicAdministrationEventsSubscriber@onActivationFailed'
         );
+
         $events->listen(
             'App\Events\PublicAdministration\PublicAdministrationUpdated',
             'App\Listeners\PublicAdministrationEventsSubscriber@onUpdated'
         );
 
         $events->listen(
+            'App\Events\PublicAdministration\PublicAdministrationNotFoundInIpa',
+            'App\Listeners\PublicAdministrationEventsSubscriber@onNotFoundInIpa'
+        );
+
+        $events->listen(
             'App\Events\PublicAdministration\PublicAdministrationPrimaryWebsiteUpdated',
             'App\Listeners\PublicAdministrationEventsSubscriber@onPrimaryWebsiteUpdated'
         );
+
         $events->listen(
             'App\Events\PublicAdministration\PublicAdministrationPurged',
             'App\Listeners\PublicAdministrationEventsSubscriber@onPurged'
