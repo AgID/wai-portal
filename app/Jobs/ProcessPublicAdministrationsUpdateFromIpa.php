@@ -67,49 +67,28 @@ class ProcessPublicAdministrationsUpdateFromIpa implements ShouldQueue
             return [];
         }
 
-        if ($publicAdministration->name !== $updatedPublicAdministration['name']) {
-            $updates['name'] = [
-                'old' => $publicAdministration->name,
-                'new' => $updatedPublicAdministration['name'],
-            ];
-            $publicAdministration->name = $updatedPublicAdministration['name'];
-        }
+        // id key from ipa (redisearch) is not related to model id
+        unset($updatedPublicAdministration['id']);
 
-        if ($publicAdministration->city !== $updatedPublicAdministration['city']) {
-            $updates['city'] = [
-                'old' => $publicAdministration->city,
-                'new' => $updatedPublicAdministration['city'],
-            ];
-            $publicAdministration->city = $updatedPublicAdministration['city'];
-        }
-        if ($publicAdministration->county !== $updatedPublicAdministration['county']) {
-            $updates['county'] = [
-                'old' => $publicAdministration->county,
-                'new' => $updatedPublicAdministration['county'],
-            ];
-            $publicAdministration->county = $updatedPublicAdministration['county'];
-        }
-        if ($publicAdministration->region !== $updatedPublicAdministration['region']) {
-            $updates['region'] = [
-                'old' => $publicAdministration->region,
-                'new' => $updatedPublicAdministration['region'],
-            ];
-            $publicAdministration->region = $updatedPublicAdministration['region'];
-        }
-        if ($publicAdministration->type !== $updatedPublicAdministration['type']) {
-            $updates['type'] = [
-                'old' => $publicAdministration->type,
-                'new' => $updatedPublicAdministration['type'],
-            ];
-            $publicAdministration->type = $updatedPublicAdministration['type'];
-        }
-        if ($publicAdministration->pec_address !== $updatedPublicAdministration['pec']) {
-            $updates['type'] = [
-                'old' => $publicAdministration->pec_address,
-                'new' => $updatedPublicAdministration['pec'],
-            ];
-            $publicAdministration->pec_address = $updatedPublicAdministration['pec'];
-        }
+        $updates = collect(array_keys($updatedPublicAdministration))->mapWithKeys(function ($updatedPublicAdministrationField) use ($publicAdministration, $updatedPublicAdministration) {
+            if (array_key_exists($updatedPublicAdministrationField, $publicAdministration->attributesToArray())) {
+                $updatedValue = $updatedPublicAdministration[$updatedPublicAdministrationField];
+
+                if ($publicAdministration->{$updatedPublicAdministrationField} !== $updatedValue) {
+                    $update = [
+                        $updatedPublicAdministrationField => [
+                            'old' => $publicAdministration->{$updatedPublicAdministrationField},
+                            'new' => $updatedValue,
+                        ]
+                    ];
+                    $publicAdministration->{$updatedPublicAdministrationField} = $updatedValue;
+
+                    return $update;
+                }
+            }
+
+            return [];
+        })->all();
 
         $primaryWebsite = $publicAdministration->websites()->where('type', WebsiteType::PRIMARY)->first();
         if (!empty($primaryWebsite) && !empty($updatedPublicAdministration['site']) && $primaryWebsite->slug !== Str::slug($updatedPublicAdministration['site'])) {
@@ -117,11 +96,13 @@ class ProcessPublicAdministrationsUpdateFromIpa implements ShouldQueue
                 'old' => $primaryWebsite->url,
                 'new' => $updatedPublicAdministration['site'],
             ];
+
             event(new PublicAdministrationPrimaryWebsiteUpdated($publicAdministration, $primaryWebsite, $updatedPublicAdministration['site']));
         }
 
         if (!empty($updates)) {
             $publicAdministration->save();
+
             event(new PublicAdministrationUpdated($publicAdministration, $updates));
         }
 
