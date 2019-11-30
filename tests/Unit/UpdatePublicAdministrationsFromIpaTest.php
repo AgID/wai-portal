@@ -32,7 +32,7 @@ class UpdatePublicAdministrationsFromIpaTest extends TestCase
         $public_administration = factory(PublicAdministration::class)->create([
             'ipa_code' => 'camera',
             'name' => 'Camera dei Deputati',
-            'pec_address' => 'camera_protcentrale@certcamera.it',
+            'pec' => 'camera_protcentrale@certcamera.it',
             'city' => 'Roma',
             'county' => 'RM',
             'region' => 'Lazio',
@@ -64,7 +64,7 @@ class UpdatePublicAdministrationsFromIpaTest extends TestCase
         $public_administration = factory(PublicAdministration::class)->create([
             'ipa_code' => 'camera',
             'name' => 'Camera dei Deputati',
-            'pec_address' => 'camera_protcentrale@certcamera.it',
+            'pec' => 'camera_protcentrale@certcamera.it',
             'city' => 'Firenze',
             'county' => 'RM',
             'region' => 'Lazio',
