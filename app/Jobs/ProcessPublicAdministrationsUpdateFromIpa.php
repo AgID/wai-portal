@@ -79,7 +79,7 @@ class ProcessPublicAdministrationsUpdateFromIpa implements ShouldQueue
                         $updatedPublicAdministrationField => [
                             'old' => $publicAdministration->{$updatedPublicAdministrationField},
                             'new' => $updatedValue,
-                        ]
+                        ],
                     ];
                     $publicAdministration->{$updatedPublicAdministrationField} = $updatedValue;
 
