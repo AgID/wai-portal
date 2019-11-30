@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Enums\Logs\JobType;
 use App\Enums\WebsiteType;
 use App\Events\Jobs\PublicAdministrationsUpdateFromIpaCompleted;
+use App\Events\PublicAdministration\PublicAdministrationNotFoundInIpa;
 use App\Events\PublicAdministration\PublicAdministrationPrimaryWebsiteUpdated;
 use App\Events\PublicAdministration\PublicAdministrationUpdated;
 use App\Models\PublicAdministration;
@@ -61,7 +62,8 @@ class ProcessPublicAdministrationsUpdateFromIpa implements ShouldQueue
     private function updateExistingPublicAdministration(PublicAdministration $publicAdministration, array $updatedPublicAdministration): array
     {
         if (empty($updatedPublicAdministration)) {
-            // TODO: public administration not present in ipa, what should be done?
+            event(new PublicAdministrationNotFoundInIpa($publicAdministration));
+
             return [];
         }
 
