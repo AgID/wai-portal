@@ -5,6 +5,7 @@ namespace App\Listeners;
 use App\Enums\Logs\EventType;
 use App\Events\PublicAdministration\PublicAdministrationActivated;
 use App\Events\PublicAdministration\PublicAdministrationActivationFailed;
+use App\Events\PublicAdministration\PublicAdministrationNotFoundInIpa;
 use App\Events\PublicAdministration\PublicAdministrationPrimaryWebsiteUpdated;
 use App\Events\PublicAdministration\PublicAdministrationPurged;
 use App\Events\PublicAdministration\PublicAdministrationRegistered;
