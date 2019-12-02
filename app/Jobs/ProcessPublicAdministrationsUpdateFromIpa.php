@@ -55,11 +55,11 @@ class ProcessPublicAdministrationsUpdateFromIpa implements ShouldQueue
      * Update a registered Public Administration.
      *
      * @param PublicAdministration $publicAdministration the public administration to be updated
-     * @param array $updatedPublicAdministration the IPA data for the public administration
+     * @param array|null $updatedPublicAdministration the IPA data for the public administration or null if not existing
      *
      * @return array the array containing the list of updated data for the public administration, empty if none
      */
-    private function updateExistingPublicAdministration(PublicAdministration $publicAdministration, array $updatedPublicAdministration): array
+    private function updateExistingPublicAdministration(PublicAdministration $publicAdministration, ?array $updatedPublicAdministration): array
     {
         if (empty($updatedPublicAdministration)) {
             event(new PublicAdministrationNotFoundInIpa($publicAdministration));
