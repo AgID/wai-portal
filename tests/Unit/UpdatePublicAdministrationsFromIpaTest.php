@@ -108,7 +108,7 @@ class UpdatePublicAdministrationsFromIpaTest extends TestCase
     /**
      * Test registered Public Administration check with no updates.
      */
-    public function tesrPublicAdministrationNotFound(): void
+    public function testPublicAdministrationNotFound(): void
     {
         Event::fake();
 
