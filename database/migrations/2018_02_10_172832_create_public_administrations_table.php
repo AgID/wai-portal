@@ -20,7 +20,10 @@ class CreatePublicAdministrationsTable extends Migration
             $table->increments('id');
             $table->string('ipa_code')->unique();
             $table->string('name');
-            $table->string('pec_address')->nullable();
+            $table->string('pec')->nullable();
+            $table->string('rtd_name')->nullable();
+            $table->string('rtd_mail')->nullable();
+            $table->string('rtd_pec')->nullable();
             $table->string('city');
             $table->string('county');
             $table->string('region');

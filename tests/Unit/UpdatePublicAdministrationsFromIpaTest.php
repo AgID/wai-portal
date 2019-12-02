@@ -5,6 +5,7 @@ namespace Tests\Unit;
 use App\Enums\PublicAdministrationStatus;
 use App\Enums\WebsiteType;
 use App\Events\Jobs\PublicAdministrationsUpdateFromIpaCompleted;
+use App\Events\PublicAdministration\PublicAdministrationNotFoundInIpa;
 use App\Events\PublicAdministration\PublicAdministrationPrimaryWebsiteUpdated;
 use App\Events\PublicAdministration\PublicAdministrationUpdated;
 use App\Jobs\ProcessPublicAdministrationsUpdateFromIpa;
@@ -32,7 +33,7 @@ class UpdatePublicAdministrationsFromIpaTest extends TestCase
         $public_administration = factory(PublicAdministration::class)->create([
             'ipa_code' => 'camera',
             'name' => 'Camera dei Deputati',
-            'pec_address' => 'camera_protcentrale@certcamera.it',
+            'pec' => 'camera_protcentrale@certcamera.it',
             'city' => 'Roma',
             'county' => 'RM',
             'region' => 'Lazio',
@@ -64,7 +65,7 @@ class UpdatePublicAdministrationsFromIpaTest extends TestCase
         $public_administration = factory(PublicAdministration::class)->create([
             'ipa_code' => 'camera',
             'name' => 'Camera dei Deputati',
-            'pec_address' => 'camera_protcentrale@certcamera.it',
+            'pec' => 'camera_protcentrale@certcamera.it',
             'city' => 'Firenze',
             'county' => 'RM',
             'region' => 'Lazio',
@@ -102,5 +103,37 @@ class UpdatePublicAdministrationsFromIpaTest extends TestCase
 
             return $updated_pa->ipa_code === $public_administration->ipa_code && $event->getUpdates() === $expected_updates;
         });
+    }
+
+    /**
+     * Test registered Public Administration check with no updates.
+     */
+    public function testPublicAdministrationNotFound(): void
+    {
+        Event::fake();
+
+        $public_administration = factory(PublicAdministration::class)->create([
+            'ipa_code' => 'non-existent',
+            'name' => 'Name',
+            'city' => 'Roma',
+            'county' => 'RM',
+            'region' => 'Region',
+            'type' => 'Type',
+            'status' => PublicAdministrationStatus::ACTIVE,
+        ]);
+
+        factory(Website::class)->create([
+            'url' => 'www.institutional.it',
+            'slug' => Str::slug('www.institutional.it'),
+            'public_administration_id' => $public_administration->id,
+        ]);
+
+        $job = new ProcessPublicAdministrationsUpdateFromIpa();
+        $job->handle();
+
+        Event::assertDispatched(PublicAdministrationsUpdateFromIpaCompleted::class);
+        Event::assertDispatched(PublicAdministrationNotFoundInIpa::class);
+        Event::assertNotDispatched(PublicAdministrationUpdated::class);
+        Event::assertNotDispatched(PublicAdministrationPrimaryWebsiteUpdated::class);
     }
 }

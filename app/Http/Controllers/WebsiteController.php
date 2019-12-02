@@ -99,6 +99,10 @@ class WebsiteController extends Controller
         $publicAdministration = PublicAdministration::make([
             'ipa_code' => $request->publicAdministration['ipa_code'],
             'name' => $request->publicAdministration['name'],
+            'pec' => $request->publicAdministration['pec'],
+            'rtd_name' => $request->publicAdministration['rtd_name'] ?? null,
+            'rtd_mail' => $request->publicAdministration['rtd_mail'] ?? null,
+            'rtd_pec' => $request->publicAdministration['rtd_pec'] ?? null,
             'city' => $request->publicAdministration['city'],
             'county' => $request->publicAdministration['county'],
             'region' => $request->publicAdministration['region'],

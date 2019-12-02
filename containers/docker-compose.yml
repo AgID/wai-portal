@@ -205,7 +205,7 @@ services:
       - frontend
       - backend
 
-#Redis Sentinel
+# Redis Sentinel
   redis-sentinel:
     image: wai-redis-sentinel:dev
     depends_on:

@@ -33,7 +33,10 @@ class PublicAdministration extends Model
     protected $fillable = [
         'ipa_code',
         'name',
-        'pec_address',
+        'pec',
+        'rtd_name',
+        'rtd_mail',
+        'rtd_pec',
         'city',
         'county',
         'region',

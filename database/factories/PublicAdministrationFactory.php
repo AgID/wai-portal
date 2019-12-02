@@ -10,7 +10,10 @@ $factory->define(PublicAdministration::class, function (Faker $faker) {
     return [
         'ipa_code' => Str::random(5),
         'name' => $faker->company,
-        'pec_address' => $faker->unique()->safeEmail,
+        'pec' => $faker->unique()->safeEmail,
+        'rtd_name' => implode(' ', [$faker->firstName, $faker->lastName]),
+        'rtd_mail' => $faker->unique()->safeEmail,
+        'rtd_pec' => $faker->unique()->safeEmail,
         'city' => $faker->city,
         'county' => $faker->stateAbbr,
         'region' => $faker->state,
