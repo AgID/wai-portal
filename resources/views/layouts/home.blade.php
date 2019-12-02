@@ -6,7 +6,7 @@
         'classes' => ['home'],
     ])
 
-    <div id="main">
+    <div id="main" role="main">
         @yield('content')
     </div>
 @endsection

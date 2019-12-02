@@ -5,11 +5,11 @@
                 <div class="it-header-slim-wrapper-content">
                     <a class="d-none d-lg-block navbar-brand" href="{{ __(config('site.owner.link')) }}">{{ __(config('site.owner.name')) }}</a>
                     <div class="nav-mobile">
-                        <nav>
+                        <nav aria-label="{{ __('navigazione siti del network') }}">
                             <span class="d-lg-none">
                                 <a class="d-none d-sm-inline" href="{{ __(config('site.owner.link')) }}">{{ __(config('site.owner.name')) }}</a>
                                 <a class="d-sm-none" href="{{ __(config('site.owner.link')) }}">{{ __(config('site.owner.name_short')) }}</a>
-                                <a class="it-opener" data-toggle="collapse" href="#slim-nav" role="button" aria-label="{{ __('espandi menu network') }}" aria-expanded="false" aria-controls="slim-nav">
+                                <a class="it-opener" data-toggle="collapse" href="#slim-nav" role="button" aria-label="{{ __('espandi menu siti del network') }}" aria-expanded="false" aria-controls="slim-nav">
                                     <svg class="icon">
                                         <use xlink:href="{{ asset('svg/sprite.svg#it-expand') }}"></use>
                                     </svg>

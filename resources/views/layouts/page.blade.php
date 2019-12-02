@@ -16,7 +16,7 @@
         </div>
         @endif
 
-        <div id="main">
+        <div id="main" role="main">
             <div class="container">
             <h1>@yield('title')@yield('title-after')</h1>
             </div>

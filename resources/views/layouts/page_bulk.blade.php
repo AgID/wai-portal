@@ -8,7 +8,7 @@
 
     <div class="position-relative">
         <div class="page-bulk-container">
-            <div id="main">
+            <div id="main" role="main">
                 @yield('before-title')
 
                 <h1 class="display-2">@yield('title')@yield('title-after')</h1>

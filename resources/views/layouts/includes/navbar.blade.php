@@ -2,8 +2,8 @@
     <div class="container">
         <div class="row">
             <div class="col-12">
-                <nav class="navbar navbar-expand-lg">
-                    <button class="custom-navbar-toggler" type="button" aria-controls="main-nav" aria-expanded="false" aria-label="{{ __('navigazione') }}" data-target="#main-nav">
+                <nav class="navbar navbar-expand-lg" aria-label="{{ __('navigazione principale') }}">
+                    <button class="custom-navbar-toggler" type="button" aria-controls="main-nav" aria-expanded="false" aria-label="{{ __('apri il menu di navigazione') }}" data-target="#main-nav">
                         <svg class="icon">
                             <use xlink:href="{{ asset('svg/sprite.svg#it-burger') }}"></use>
                         </svg>

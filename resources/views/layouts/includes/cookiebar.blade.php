@@ -1,4 +1,4 @@
-<div class="cookiebar">
+<div class="cookiebar" role="contentinfo" aria-label="{{ __('gestione delle preferenze sui cookie') }}">
     <p>
         {{ __('Questo sito utilizza cookie tecnici, analytics e di terze parti.') }}
         <br>
