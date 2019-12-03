@@ -161,10 +161,6 @@
 }
 
 .autocomplete {
-  &::-webkit-search-cancel-button {
-    display: none;
-  }
-
   & ~ .autocomplete-list {
     z-index: 10;
     border: none;
@@ -209,4 +205,8 @@
 // Fiscal number
 input[name=fiscal_number] {
   text-transform: uppercase;
+}
+
+input[type="search"]::-webkit-search-cancel-button {
+  -webkit-appearance: none;
 }

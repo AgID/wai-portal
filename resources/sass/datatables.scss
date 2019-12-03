@@ -324,10 +324,6 @@
 
 // Search
 #datatables-search {
-  &::-webkit-search-cancel-button {
-    display: none;
-  }
-
   &:valid,
   &:invalid,
   &.is-valid,
