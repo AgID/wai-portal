@@ -1,5 +1,6 @@
 <!-- Header -->
-<div class="it-header-wrapper">
+<div class="it-header-wrapper" role="banner">
+    @include('layouts.includes.skiplinks')
     @include('layouts.includes.slim_header')
     <div class="it-nav-wrapper {{ implode(' ', $classes ?? []) }}">
         <div class="it-header-center-wrapper">

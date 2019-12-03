@@ -5,7 +5,6 @@
 
     <body>
 
-        @include('layouts.includes.skiplinks')
         @include('layouts.includes.cookiebar')
 
         @yield('page-content')
