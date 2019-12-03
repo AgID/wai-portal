@@ -49,7 +49,9 @@ class UserController extends Controller
     {
         $usersDatatable = [
             'datatableOptions' => [
-                'searching' => true,
+                'searching' => [
+                    'label' => __('cerca tra gli utenti'),
+                ],
                 'columnFilters' => [
                     'status' => [
                         'filterLabel' => __('stato'),
@@ -485,7 +487,9 @@ class UserController extends Controller
     {
         return [
             'datatableOptions' => [
-                'searching' => true,
+                'searching' => [
+                    'label' => __('cerca tra i siti web'),
+                ],
                 'columnFilters' => [
                     'type' => [
                         'filterLabel' => __('tipologia'),

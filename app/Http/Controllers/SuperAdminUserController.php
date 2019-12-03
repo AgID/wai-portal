@@ -38,7 +38,9 @@ class SuperAdminUserController extends Controller
     {
         $superUsersDatatable = [
             'datatableOptions' => [
-                'searching' => true,
+                'searching' => [
+                    'label' => __('cerca tra gli utenti'),
+                ],
                 'columnFilters' => [
                     'status' => [
                         'filterLabel' => __('stato'),
