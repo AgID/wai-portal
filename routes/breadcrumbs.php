@@ -200,9 +200,9 @@ Breadcrumbs::for('admin.publicAdministration.users.index', function ($trail, $pu
 });
 
 // Web Analytics Italia > Users > Invite a new user
-Breadcrumbs::for('admin.publicAdministration.create', function ($trail, $publicAdministrationIpaCode) {
+Breadcrumbs::for('admin.publicAdministration.users.create', function ($trail, $publicAdministrationIpaCode) {
     $trail->parent('admin.publicAdministration.users.index', $publicAdministrationIpaCode);
-    $trail->push(__('Invita un utente'), route('admin.publicAdministration.users.create'));
+    $trail->push(__('Invita un utente'), route('admin.publicAdministration.users.create', ['publicAdministration' => $publicAdministrationIpaCode]));
 });
 
 // Web Analytics Italia > Users > [user->full_name]
