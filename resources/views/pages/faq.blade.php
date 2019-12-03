@@ -7,11 +7,20 @@
 <div class="row no-gutters">
     <div class="col-sm-3">
         <div class="faqs-sidebar sidebar-wrapper">
+            <div class="form-group px-4">
+                <div class="input-group">
+                    <label for="faq-search">{{ __('Cerca tra le FAQ') }}</label>
+                    <input type="search" class="form-control" id="faq-search" maxlength="255">
+                    <div class="input-group-append">
+                        <div class="input-group-text"><svg class="icon icon-sm"><use xlink:href="{{ asset('svg/sprite.svg#it-search') }}"></use></svg></div>
+                    </div>
+                </div>
+            </div>
             <div class="sidebar-linklist-wrapper">
                 <div class="link-list-wrapper">
                     <ul class="link-list">
                         <li>
-                            <h3>{{ __('Indice dei contenuti') }}</h3>
+                            <h3>{{ __('Categorie') }}</h3>
                         </li>
                         <li>
                             <button type="button" class="btn btn-icon list-item faq-selector selected" data-theme="all">
@@ -37,6 +46,11 @@
         </div>
     </div>
     <div class="col-sm-9">
+        <div id="no-faqs-found" class="d-none ml-sm-5">
+            <p class="lead">
+                {{ __('Nessun risultato. Prova a usare meno filtri di ricerca.') }}
+            </p>
+        </div>
         <div class="faqs-wrapper">
             <div class="faqs collapse-div ml-sm-5" role="tablist">
                 @foreach ($faqs as $faq)
