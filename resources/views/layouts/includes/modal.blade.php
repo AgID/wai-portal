@@ -20,7 +20,7 @@
                     </div>
                     @isset($modal['image'])
                     <div class="col-sm-4 d-flex align-items-center justify-content-center">
-                        <img src="{{ $modal['image'] }}">
+                        <img src="{{ $modal['image'] }}" alt="">
                     </div>
                     @endisset
                 </div>
