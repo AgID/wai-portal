@@ -262,7 +262,7 @@ Route::middleware('spid.auth', 'auth', 'verified:verification.notice')->group(fu
     });
 
     Route::prefix('/analytics-service')->group(function () {
-        Route::get('/login', 'AnalyticsController@login')
+        Route::get('/login/{websiteAnalyticsId?}', 'AnalyticsServiceController@login')
             ->name('analytics.service.login');
     });
 });

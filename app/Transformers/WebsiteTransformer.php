@@ -143,7 +143,7 @@ class WebsiteTransformer extends TransformerAbstract
                     $data['buttons'][] = [
                         'icon' => 'it-arrow-right',
                         'iconColor' => 'white',
-                        'link' => route('analytics.service.login'),
+                        'link' => route('analytics.service.login', ['websiteAnalyticsId' => $website->analytics_id]),
                         'color' => 'primary',
                         'label' => __('dashboard'),
                     ];
