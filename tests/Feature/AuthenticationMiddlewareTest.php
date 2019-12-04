@@ -1,0 +1,83 @@
+<?php
+
+namespace Tests\Feature;
+
+use App\Enums\UserStatus;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Route;
+use Italia\SPIDAuth\SPIDUser;
+use Tests\TestCase;
+
+class AuthenticationMiddlewareTest extends TestCase
+{
+    use RefreshDatabase;
+
+    private $user;
+
+    private $spidUser;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        Route::middleware(['auth', 'web'])->get('_test/authentication', function () {
+            return Response::HTTP_OK;
+        });
+
+        $this->user = factory(User::class)->create();
+        $this->spidUser = new SPIDUser([
+            'fiscalNumber' => ['TINIT-' . $this->user->fiscal_number],
+        ]);
+    }
+
+    public function testMissingUserAuthentication(): void
+    {
+        $this->withSession([
+            'spid_user' => new SPIDUser(['fiscalNumber' => ['TINIT-FAKEFISCALNUMBER']]),
+        ])
+            ->get('_test/authentication')
+            ->assertRedirect(route('auth.register.show'));
+    }
+
+    public function testUserAuthenticationSuccessful(): void
+    {
+        $this->actingAs($this->user)
+            ->withSession(['spid_user' => $this->spidUser])
+            ->get('_test/authentication')
+            ->assertOk();
+    }
+
+    public function testDeletedUserAuthentication(): void
+    {
+        $this->user->delete();
+
+        $this->withSession(['spid_user' => $this->spidUser])
+            ->get('_test/authentication')
+            ->assertSessionHas('notification', [
+                'title' => __('accesso negato'),
+                'message' => __("L'utenza è stata rimossa."),
+                'status' => 'error',
+                'icon' => 'it-close-circle',
+            ])
+            ->assertRedirect(route('home'));
+    }
+
+    public function testSuspendedUserAuthentication(): void
+    {
+        $this->user->status = UserStatus::SUSPENDED;
+        $this->user->save();
+
+        $this->actingAs($this->user)
+            ->withSession(['spid_user' => $this->spidUser])
+            ->get('_test/authentication')
+            ->assertSessionHas('notification', [
+                'title' => __('accesso negato'),
+                'message' => __("L'utenza è stata sospesa."),
+                'status' => 'error',
+                'icon' => 'it-close-circle',
+            ])
+            ->assertRedirect(route('home'));
+    }
+}
