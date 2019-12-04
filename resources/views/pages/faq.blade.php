@@ -56,14 +56,18 @@
                 @foreach ($faqs as $faq)
                 <div id="faq-{{ $loop->iteration }}" class="faq" data-themes="{{ $faq['themes'] }}">
                     <div class="collapse-header" id="faq-{{ $loop->iteration }}-heading">
-                        <button class="text-secondary d-flex align-items-center" data-toggle="collapse" data-target="#faq-{{ $loop->iteration }}-body" aria-expanded="false" aria-controls="faq-{{ $loop->iteration }}-body">
-                            <span class="mr-auto">{{ $faq['question'] }}</span>
+                        <button class="text-secondary d-flex flex-wrap flex-md-nowrap align-items-center" data-toggle="collapse" data-target="#faq-{{ $loop->iteration }}-body" aria-expanded="false" aria-controls="faq-{{ $loop->iteration }}-body">
+                            <span class="mr-auto">
+                                {{ $faq['question'] }}
+                                <a class="faq-anchor" href="#faq-{{ $loop->iteration }}">
+                                    <svg class="icon icon-sm"><use xlink:href="{{ asset('svg/sprite.svg#it-link') }}"></use></svg>
+                                </a>
+                            </span>
+                            <span class="d-flex flex-wrap flex-md-nowrap flex-md-column align-items-end justify-content-end align-self-end align-self-md-center mt-2 mt-md-0 ml-auto">
                             @foreach (explode(' ', $faq['themes']) as $theme)
                                 <small><span class="badge badge-pill badge-primary py-1 mx-2">{{ ucfirst($theme) }}</span></small>
                             @endforeach
-                            <a href="#faq-{{ $loop->iteration }}">
-                                <svg class="icon icon-sm"><use xlink:href="{{ asset('svg/sprite.svg#it-link') }}"></use></svg>
-                            </a>
+                            </span>
                         </button>
                     </div>
                     <div id="faq-{{ $loop->iteration }}-body" class="collapse" role="tabpanel" aria-labelledby="faq-{{ $loop->iteration }}-heading">
