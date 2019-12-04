@@ -19,14 +19,15 @@ class UsersTableSeeder extends Seeder
      */
     public function run(): void
     {
-        if (null === User::findByFiscalNumber('FSCLNB17A01H501X')) {
+        $fiscalNumber = env('APP_SUPER_ADMIN_FISCAL_NUMBER');
+        if (null === User::findByFiscalNumber($fiscalNumber)) {
             DB::table('users')->insert([
-                'name' => 'Nome',
-                'family_name' => 'Cognome',
-                'fiscal_number' => 'FSCLNB17A01H501X',
-                'email' => 'nome.cognome@example.com',
+                'name' => env('APP_SUPER_ADMIN_NAME'),
+                'family_name' => env('APP_SUPER_ADMIN_FAMILY_NAME'),
+                'fiscal_number' => $fiscalNumber,
+                'email' => env('APP_SUPER_ADMIN_EMAIL'),
                 'uuid' => Uuid::uuid4()->toString(),
-                'password' => Hash::make('password'),
+                'password' => Hash::make(env('APP_SUPER_ADMIN_PASSWORD')),
                 'status' => UserStatus::ACTIVE,
                 'email_verified_at' => Carbon::now()->format('Y-m-d H:i:s'),
                 'password_changed_at' => Carbon::now()->format('Y-m-d H:i:s'),
@@ -34,7 +35,7 @@ class UsersTableSeeder extends Seeder
                 'updated_at' => Carbon::now()->format('Y-m-d H:i:s'),
             ]);
             Bouncer::scope()->to(0);
-            User::findByFiscalNumber('FSCLNB17A01H501X')->assign(UserRole::SUPER_ADMIN);
+            User::findByFiscalNumber($fiscalNumber)->assign(UserRole::SUPER_ADMIN);
         }
     }
 }
