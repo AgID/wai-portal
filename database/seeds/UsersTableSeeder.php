@@ -19,20 +19,22 @@ class UsersTableSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('users')->insert([
-            'name' => 'Nome',
-            'family_name' => 'Cognome',
-            'fiscal_number' => 'FSCLNB17A01H501X',
-            'email' => 'nome.cognome@example.com',
-            'uuid' => Uuid::uuid4()->toString(),
-            'password' => Hash::make('password'),
-            'status' => UserStatus::ACTIVE,
-            'email_verified_at' => Carbon::now()->format('Y-m-d H:i:s'),
-            'password_changed_at' => Carbon::now()->format('Y-m-d H:i:s'),
-            'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-            'updated_at' => Carbon::now()->format('Y-m-d H:i:s'),
-        ]);
-        Bouncer::scope()->to(0);
-        User::findByFiscalNumber('FSCLNB17A01H501X')->assign(UserRole::SUPER_ADMIN);
+        if (null === User::findByFiscalNumber('FSCLNB17A01H501X')) {
+            DB::table('users')->insert([
+                'name' => 'Nome',
+                'family_name' => 'Cognome',
+                'fiscal_number' => 'FSCLNB17A01H501X',
+                'email' => 'nome.cognome@example.com',
+                'uuid' => Uuid::uuid4()->toString(),
+                'password' => Hash::make('password'),
+                'status' => UserStatus::ACTIVE,
+                'email_verified_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                'password_changed_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                'updated_at' => Carbon::now()->format('Y-m-d H:i:s'),
+            ]);
+            Bouncer::scope()->to(0);
+            User::findByFiscalNumber('FSCLNB17A01H501X')->assign(UserRole::SUPER_ADMIN);
+        }
     }
 }
