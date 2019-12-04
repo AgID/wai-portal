@@ -59,19 +59,9 @@ class WebsiteTransformer extends TransformerAbstract
                         'website' => $website,
                     ])
                     : route('websites.show', ['website' => $website]),
+                'color' => 'outline-primary',
                 'label' => __('dettagli'),
             ];
-
-            if (!$website->status->is(WebsiteStatus::PENDING) && $authUser->can(UserPermission::READ_ANALYTICS, $website)) {
-                if (!$authUserCanAccessAdminArea) {
-                    $data['icons'][] = [
-                        'icon' => 'it-chart-line',
-                        'link' => route('analytics.service.login'),
-                        'color' => 'primary',
-                        'title' => __('vai agli analytics'),
-                    ];
-                }
-            }
 
             if ($website->status->is(WebsiteStatus::PENDING)) {
                 if ($authUser->can(UserPermission::MANAGE_WEBSITES) || $authUser->status->is(UserStatus::PENDING)) {
@@ -116,6 +106,7 @@ class WebsiteTransformer extends TransformerAbstract
                                     'website' => $website,
                                 ])
                                 : route('websites.archive', ['website' => $website]),
+                            'color' => 'outline-primary',
                             'label' => __('archivia'),
                             'dataAttributes' => [
                                 'website-name' => e($website->name),
@@ -133,6 +124,7 @@ class WebsiteTransformer extends TransformerAbstract
                                     'website' => $website,
                                 ])
                                 : route('websites.unarchive', ['website' => $website]),
+                            'color' => 'outline-primary',
                             'label' => __('riattiva'),
                             'dataAttributes' => [
                                 'website-name' => e($website->name),
@@ -143,6 +135,18 @@ class WebsiteTransformer extends TransformerAbstract
                             ],
                         ];
                     }
+                }
+            }
+
+            if (!$website->status->is(WebsiteStatus::PENDING) && $authUser->can(UserPermission::READ_ANALYTICS, $website)) {
+                if (!$authUserCanAccessAdminArea) {
+                    $data['buttons'][] = [
+                        'icon' => 'it-arrow-right',
+                        'iconColor' => 'white',
+                        'link' => route('analytics.service.login'),
+                        'color' => 'primary',
+                        'label' => __('dashboard'),
+                    ];
                 }
             }
         }

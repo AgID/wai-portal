@@ -64,6 +64,7 @@ class UserTransformer extends TransformerAbstract
                             'user' => $user,
                         ])
                         : route('users.show', ['user' => $user]),
+                    'color' => 'outline-primary',
                     'label' => __('dettagli'),
                 ];
                 $data['icons'][] = [
