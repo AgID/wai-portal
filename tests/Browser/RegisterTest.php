@@ -20,7 +20,7 @@ class RegisterTest extends DuskTestCase
     {
         $this->browse(function (Browser $browser) {
             $browser->visit(new Home())
-                    ->visit('/dashboard')
+                    ->visit('/analytics')
                     ->assertPathIs('/spid/login')
                     ->waitForText('Entra con SPID')
                     ->click('@spid_login_button')
@@ -30,7 +30,7 @@ class RegisterTest extends DuskTestCase
         $this->injectFakeSpidSession();
         $this->browse(function (Browser $browser) {
             $browser->visit(new Home())
-                ->clickLink('Dashboard')
+                ->click('a[href="/analytics"]')
                 ->assertPathIs('/register')
                 ->assertSee('Registrazione')
                 ->type('email', 'nome.cognome@example.com')

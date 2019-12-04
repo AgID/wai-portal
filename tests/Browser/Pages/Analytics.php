@@ -5,7 +5,7 @@ namespace Tests\Browser\Pages;
 use Laravel\Dusk\Browser;
 use Tests\Browser\Traits\LighthouseTested;
 
-class Dashboard extends Page
+class Analytics extends Page
 {
     use LighthouseTested;
 
@@ -16,7 +16,7 @@ class Dashboard extends Page
      */
     public function url()
     {
-        return '/dashboard';
+        return '/analytics';
     }
 
     /**

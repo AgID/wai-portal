@@ -11,8 +11,8 @@ it:
 
     menu_items:
       primary:
-        - name: Dashboard
-          route: dashboard
+        - name: Analytics
+          route: analytics
         - name: Siti web
           route: websites.index
         - name: Utenti

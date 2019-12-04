@@ -55,6 +55,6 @@ return [
     'middleware_group' => 'web',
     'routes_prefix' => 'spid',
     'login_view' => 'auth.spid',
-    'after_login_url' => '/dashboard',
+    'after_login_url' => '/analytics',
     'after_logout_url' => '/',
 ];

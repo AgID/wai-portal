@@ -6,10 +6,10 @@ use App\Enums\UserPermission;
 use App\Models\PublicAdministration;
 use Illuminate\Http\Request;
 
-class DashboardController extends Controller
+class AnalyticsController extends Controller
 {
     /**
-     * Show the application dashboard or redirect to websites index page.
+     * Show the application analytics dashboard or redirect to websites index page.
      *
      * @param Request $request the incoming request
      *
@@ -26,6 +26,6 @@ class DashboardController extends Controller
 
         $publicAdministration = !empty(request()->route('publicAdministration')) ? PublicAdministration::findByIpaCode(request()->route('publicAdministration')) : null;
 
-        return view('pages.dashboard')->with(['publicAdministration' => $publicAdministration]);
+        return view('pages.analytics')->with(['publicAdministration' => $publicAdministration]);
     }
 }

@@ -21,7 +21,7 @@ class RedirectIfAuthenticated
     public function handle($request, Closure $next)
     {
         if (auth()->check()) {
-            $redirectTo = $request->user()->can(UserPermission::ACCESS_ADMIN_AREA) ? route('admin.dashboard') : route('dashboard');
+            $redirectTo = $request->user()->can(UserPermission::ACCESS_ADMIN_AREA) ? route('admin.dashboard') : route('analytics');
 
             return redirect($redirectTo);
         }

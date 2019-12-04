@@ -37,15 +37,15 @@ Breadcrumbs::for('legal-notes', function ($trail) {
     $trail->push(__('Note legali'), route('legal-notes'));
 });
 
-// Web Analytics Italia > Dashboard
-Breadcrumbs::for('dashboard', function ($trail) {
+// Web Analytics Italia > Analytics
+Breadcrumbs::for('analytics', function ($trail) {
     $trail->parent('home');
-    $trail->push(__('Dashboard'), route('dashboard'));
+    $trail->push(__('Analytics'), route('analytics'));
 });
 
-// Web Analytics Italia > Dashboard > Logs view
+// Web Analytics Italia > Analytics > Logs view
 Breadcrumbs::for('logs.show', function ($trail) {
-    $trail->parent('dashboard');
+    $trail->parent('analytics');
     $trail->push(__('Visualizzazione log'), route('logs.show'));
 });
 
