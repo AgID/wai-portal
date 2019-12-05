@@ -158,8 +158,8 @@ Route::middleware('spid.auth', 'auth', 'verified:verification.notice')->group(fu
     //     'uses' => 'PublicAdministrationController@selectTenant',
     // ]);
 
-    Route::get('/dashboard', 'DashboardController@index')
-        ->name('dashboard');
+    Route::get('/analytics', 'AnalyticsController@index')
+        ->name('analytics');
 
     Route::get('/search-ipa-index', 'SearchIpaIndexController@search')
         ->name('ipa.search');
@@ -262,7 +262,7 @@ Route::middleware('spid.auth', 'auth', 'verified:verification.notice')->group(fu
     });
 
     Route::prefix('/analytics-service')->group(function () {
-        Route::get('/login', 'AnalyticsController@login')
+        Route::get('/login/{websiteAnalyticsId?}', 'AnalyticsServiceController@login')
             ->name('analytics.service.login');
     });
 });
@@ -329,9 +329,8 @@ Route::middleware('auth.admin', 'verified:admin.verification.notice')->group(fun
             });
 
             Route::prefix('/{publicAdministration}')->group(function () {
-                Route::get('/dashboard', function () {
-                    return redirect()->route('admin.dashboard');
-                })->name('admin.publicAdministration.dashboard');
+                Route::get('/analytics', 'AnalyticsController@index')
+                    ->name('admin.publicAdministration.analytics');
 
                 Route::prefix('/users')->group(function () {
                     Route::get('/', 'UserController@index')

@@ -59,7 +59,7 @@
             <small id="email-input-help" class="form-text text-muted">{{ __("Inserisci l'indirizzo email di lavoro fornito dalla PA (es. nome.cognome@agid.gov.it).") }}</small>
         </div>
     </div>
-    <div class="form-row mt-2 mt-md-4">
+    <div class="form-row mt-4">
         <div class="form-group mb-0 col text-center">
             <button type="submit" class="btn btn-primary">{{ __('Salva') }}</button>
         </div>

@@ -23,7 +23,7 @@ class AnonymousVisitTest extends DuskTestCase
                     ->assertSee('Le statistiche dei siti web')
                     ->waitForText('Entra con SPID')
                     ->assertSee('Entra con SPID')
-                    ->visit('/dashboard')
+                    ->visit('/analytics')
                     ->assertSee(__("La pagina che hai richiesto è raggiungibile solo dopo l'autenticazione."));
         });
     }

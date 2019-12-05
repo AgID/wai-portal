@@ -20,7 +20,7 @@ class RegisterTest extends DuskTestCase
     {
         $this->browse(function (Browser $browser) {
             $browser->visit(new Home())
-                    ->visit('/dashboard')
+                    ->visit('/analytics')
                     ->assertPathIs('/spid/login')
                     ->waitForText('Entra con SPID')
                     ->click('@spid_login_button')
@@ -30,12 +30,11 @@ class RegisterTest extends DuskTestCase
         $this->injectFakeSpidSession();
         $this->browse(function (Browser $browser) {
             $browser->visit(new Home())
-                ->clickLink('Dashboard')
+                ->click('a[href="/analytics"]')
                 ->assertPathIs('/register')
                 ->assertSee('Registrazione')
                 ->type('email', 'nome.cognome@example.com')
-                // NOTE: workaround to interact with a bootstrap checkbox with a link in its label
-                ->waitUntil('$("input[name=accept_terms]").prop("checked", true)')
+                ->click('label[for="accept_terms"]')
                 ->press(__('Registrati'))
                 ->assertSee(__('Abbiamo inviato un link di conferma al tuo indirizzo'));
         });

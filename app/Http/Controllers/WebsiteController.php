@@ -57,7 +57,9 @@ class WebsiteController extends Controller
     {
         $websitesDatatable = [
             'datatableOptions' => [
-                'searching' => true,
+                'searching' => [
+                    'label' => __('cerca tra i siti web'),
+                ],
                 'columnFilters' => [
                     'type' => [
                         'filterLabel' => __('tipologia'),
@@ -631,7 +633,9 @@ class WebsiteController extends Controller
     {
         return [
             'datatableOptions' => [
-                'searching' => true,
+                'searching' => [
+                    'label' => __('cerca tra gli utenti'),
+                ],
             ],
             'columns' => [
                 ['data' => 'name', 'name' => __('nome e cognome')],

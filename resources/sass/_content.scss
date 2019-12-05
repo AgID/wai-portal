@@ -28,7 +28,9 @@ a.external-link {
   line-height: 1;
 
   &::after {
-    vertical-align: bottom;
+    line-height: 0;
+    display: inline-block;
+    vertical-align: text-bottom;
     content: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0Ij48cGF0aCBkPSJNMjEsM1Y5SDIwVjQuN2wtNy42LDcuNy0uOC0uOEwxOS4zLDRIMTVWM1pNMTcsMTkuNWEuNS41LDAsMCwxLS41LjVINC41YS41LjUsMCwwLDEtLjUtLjVWNy41QS41LjUsMCwwLDEsNC41LDdIMTJWNkg0LjVBMS41LDEuNSwwLDAsMCwzLDcuNXYxMkExLjUsMS41LDAsMCwwLDQuNSwyMWgxMkExLjUsMS41LDAsMCwwLDE4LDE5LjVWMTJIMTdaIi8+PC9zdmc+');
   }
 }
@@ -50,6 +52,13 @@ a.external-link {
     margin-right: 18px;
     padding-top: 5px;
   }
+}
+
+h3.section-header {
+  font-size: 1.777rem;
+  font-weight: 700;
+  text-transform: none;
+  letter-spacing: normal;
 }
 
 // Websites status
@@ -206,4 +215,9 @@ a.external-link {
       }
     }
   }
+}
+
+// Analytics page callout
+.go-to-dashboard {
+  border-width: 8px !important;
 }

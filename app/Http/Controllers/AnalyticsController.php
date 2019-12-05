@@ -2,37 +2,29 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\Logs\EventType;
-use Illuminate\Http\RedirectResponse;
+use App\Enums\UserPermission;
+use App\Models\PublicAdministration;
+use Illuminate\Http\Request;
 
 class AnalyticsController extends Controller
 {
     /**
-     * Login and redirect the current user to the Analytics Service.
+     * Show the application analytics dashboard or redirect to websites index page.
      *
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException if unable to bind analytics service
+     * @param Request $request the incoming request
+     * @param PublicAdministration|null $publicAdministration the public administration the analytics data belong to
      *
-     * @return RedirectResponse the server redirect response
+     * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
      */
-    public function login(): RedirectResponse
+    public function index(Request $request, PublicAdministration $publicAdministration = null)
     {
-        $user = auth()->user();
-        if (!$user->hasAnalyticsServiceAccount()) {
-            abort(404);
+        $user = $request->user();
+        if ($user->publicAdministrations->isEmpty() && $user->cannot(UserPermission::ACCESS_ADMIN_AREA)) {
+            $request->session()->reflash();
+
+            return redirect()->route('websites.index');
         }
 
-        logger()->info(
-            'User ' . $user->uuid . ' logged in the Analytics Service.',
-            [
-                'user' => $user->uuid,
-                'pa' => current_public_administration()->ipa_code,
-                'event' => EventType::ANALYTICS_LOGIN,
-            ]
-        );
-
-        $hashedPassword = md5($user->analytics_password);
-
-        return app()->make('analytics-service')
-                    ->loginAndRedirectUser($user->uuid, $hashedPassword);
+        return view('pages.analytics')->with(['publicAdministration' => $publicAdministration]);
     }
 }

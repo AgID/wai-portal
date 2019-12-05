@@ -77,7 +77,7 @@ class EmailVerificationTest extends TestCase
                 'spid_user' => $this->spidUser,
             ])
             ->get($signedUrl)
-            ->assertRedirect(route('dashboard'));
+            ->assertRedirect(route('analytics'));
     }
 
     /**

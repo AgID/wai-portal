@@ -24,8 +24,14 @@ return [
         UserPermission::MANAGE_USERS => 'manage users',
         UserPermission::MANAGE_WEBSITES => 'manage websites',
         UserPermission::VIEW_LOGS => 'view logs',
-        UserPermission::MANAGE_ANALYTICS => 'manage analytics',
-        UserPermission::READ_ANALYTICS => 'read analytics',
+        UserPermission::MANAGE_ANALYTICS => [
+            'short' => 'manage analytics',
+            'long' => 'The management permission allows the user to change settings for the analytics data.',
+        ],
+        UserPermission::READ_ANALYTICS => [
+            'short' => 'read analytics',
+            'long' => 'The reading permission allows the user to view of all analytics data.',
+        ],
         UserPermission::DO_NOTHING => 'no permissions',
     ],
 

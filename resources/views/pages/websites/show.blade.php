@@ -167,9 +167,12 @@
                 {!! __('Consulta i dati analytics e prendi :data_driven_decisions per la tua PA.', ['data_driven_decisions' => '<em>' . __('decisioni basate sui dati') . '</em>']) !!}
             </p>
             <p class="text-center">
-                <a role="button" class="btn btn-sm btn-outline-secondary"
-                    href="{{ route('analytics.service.login') }}">
-                    {{ __('Vai agli analytics') }}
+                <a role="button" class="btn btn-sm btn-icon btn-outline-primary"
+                    href="{{ route('analytics.service.login', ['websiteAnalyticsId' => $website->analytics_id]) }}">
+                    {{ __('Vai alla dashboard') }}
+                    <svg class="icon icon-primary ml-2 align-middle">
+                        <use xlink:href="{{ asset('svg/sprite.svg') }}#it-arrow-right"></use>
+                    </svg>
                 </a>
             </p>
             @else
@@ -190,6 +193,7 @@
     @component('layouts.components.box', ['classes' => 'mt-0'])
     <h4 class="text-uppercase mb-5">{{ __('permessi degli utenti') }}</h4>
     @include('partials.datatable')
+    <div class="mt-4 text-center text-sm-left">
     @component('layouts.components.link_button', [
         'icon' => 'it-pencil',
         'link' => $websiteEditUrl,
@@ -197,6 +201,7 @@
     ])
         {{ __('Modifica') }}
     @endcomponent
+    </div>
     @endcomponent
     @endcan
     </div>

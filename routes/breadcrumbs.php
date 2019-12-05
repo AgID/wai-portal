@@ -37,15 +37,15 @@ Breadcrumbs::for('legal-notes', function ($trail) {
     $trail->push(__('Note legali'), route('legal-notes'));
 });
 
-// Web Analytics Italia > Dashboard
-Breadcrumbs::for('dashboard', function ($trail) {
+// Web Analytics Italia > Analytics
+Breadcrumbs::for('analytics', function ($trail) {
     $trail->parent('home');
-    $trail->push(__('Dashboard'), route('dashboard'));
+    $trail->push(__('Analytics'), route('analytics'));
 });
 
-// Web Analytics Italia > Dashboard > Logs view
+// Web Analytics Italia > Analytics > Logs view
 Breadcrumbs::for('logs.show', function ($trail) {
-    $trail->parent('dashboard');
+    $trail->parent('analytics');
     $trail->push(__('Visualizzazione log'), route('logs.show'));
 });
 
@@ -169,6 +169,12 @@ Breadcrumbs::for('admin.password.reset.show', function ($trail) {
     $trail->push(__('Reset della password'), route('admin.password.reset.show'));
 });
 
+// Web Analytics Italia > Analytics
+Breadcrumbs::for('admin.publicAdministration.analytics', function ($trail, $publicAdministrationIpaCode) {
+    $trail->parent('home');
+    $trail->push(__('Analytics web'), route('admin.publicAdministration.analytics', ['publicAdministration' => $publicAdministrationIpaCode]));
+});
+
 // Web Analytics Italia > Websites
 Breadcrumbs::for('admin.publicAdministration.websites.index', function ($trail, $publicAdministrationIpaCode) {
     $trail->parent('home');
@@ -200,9 +206,9 @@ Breadcrumbs::for('admin.publicAdministration.users.index', function ($trail, $pu
 });
 
 // Web Analytics Italia > Users > Invite a new user
-Breadcrumbs::for('admin.publicAdministration.create', function ($trail, $publicAdministrationIpaCode) {
+Breadcrumbs::for('admin.publicAdministration.users.create', function ($trail, $publicAdministrationIpaCode) {
     $trail->parent('admin.publicAdministration.users.index', $publicAdministrationIpaCode);
-    $trail->push(__('Invita un utente'), route('admin.publicAdministration.users.create'));
+    $trail->push(__('Invita un utente'), route('admin.publicAdministration.users.create', ['publicAdministration' => $publicAdministrationIpaCode]));
 });
 
 // Web Analytics Italia > Users > [user->full_name]

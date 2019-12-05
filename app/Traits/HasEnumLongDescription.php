@@ -62,6 +62,11 @@ trait HasEnumLongDescription
             if (Lang::has($localizedStringKey)) {
                 return __($localizedStringKey);
             }
+
+            $defaultLocalizedStringKey = static::getLocalizationKey() . '.' . $value;
+            if (Lang::has($defaultLocalizedStringKey)) {
+                return __($defaultLocalizedStringKey);
+            }
         }
 
         return null;

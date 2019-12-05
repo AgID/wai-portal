@@ -139,7 +139,7 @@ services:
 
 # ipa-redisearch
   ipa-redisearch:
-    image: webanalyticsitalia/wai-ipa-redisearch:5.0.3-dev-0
+    image: webanalyticsitalia/wai-ipa-redisearch:stable
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
     networks:

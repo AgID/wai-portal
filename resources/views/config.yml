@@ -3,7 +3,7 @@ it:
     owner:
       name: Agenzia per l'Italia Digitale
       name_short: AGID
-      link: http://www.agid.gov.it
+      link: https://www.agid.gov.it
       logo: /images/agid-logo.svg
     privacy_policy: /privacy
     logo: /images/wai-logo.svg
@@ -11,8 +11,8 @@ it:
 
     menu_items:
       primary:
-        - name: Dashboard
-          route: dashboard
+        - name: Analytics
+          route: analytics
         - name: Siti web
           route: websites.index
         - name: Utenti
@@ -42,16 +42,20 @@ it:
         url: https://github.com/italia/
 
     footer_links:
-      - name: Privacy policy
-        route: privacy
-      - name: Note legali
-        route: legal-notes
-      - name: Open data
-        route: open-data
-      - name: FAQ
-        route: faq
-      - name: Contattaci
-        route: contacts
+      primary:
+        - name: Domande frequenti
+          route: faq
+        - name: Open data
+          route: open-data
+        - name: Contattaci
+          route: contacts
+        - name: Dichiarazione di accessibilità
+          url: https://form.agid.gov.it/
+      secondary:
+        - name: Privacy policy
+          route: privacy
+        - name: Note legali
+          route: legal-notes
 
     social:
       - name: facebook

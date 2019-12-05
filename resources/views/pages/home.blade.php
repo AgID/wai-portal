@@ -106,10 +106,10 @@
     </div>
     <div class="lightgrey-bg-c1 py-5">
         <div class="container py-3">
-            <h2 class="display-1 text-center">{{ __('Dashboard') }}</h2>
+            <h2 class="display-1 text-center">{{ __('Analytics') }}</h2>
             <div class="d-flex justify-content-center pb-5">
                 <p class="text-serif text-center">
-                    {{ __('Questa dashboard espone alcuni set di dati che mostrano la maniera in cui i cittadini interagiscono online con i siti web della pubblica amministrazione italiana.') }}
+                    {{ __('Questa sezione espone alcuni set di dati che mostrano la maniera in cui i cittadini interagiscono online con i siti web della pubblica amministrazione italiana.') }}
                 </p>
             </div>
             <div class="row">
@@ -208,10 +208,12 @@
                     @else
                     <div>
                     @component('layouts.components.link_button', [
-                        'link' => route('dashboard'),
+                        'link' => route('analytics'),
                         'type' => 'outline-primary',
+                        'icon' => 'it-arrow-right',
+                        'iconColor' => 'primary',
                     ])
-                        {{ __('Vai alla dashboard') }}
+                        {{ __('Vai agli analytics') }}
                     @endcomponent
                     </div>
                     @endguest

@@ -6,12 +6,8 @@
                 <div class="row clearfix align-items-center">
                     <div class="col-12 col-md-6">
                         <div class="it-brand-wrapper">
-                            <a class="d-inline-flex" href="{{ url('/') }}">
-                                <img alt="{{ config('app.name') }} - logo" class="icon" src="{{ asset(config('site.logo')) }}">
-                                <div class="it-brand-text">
-                                    <h2>{{ config('app.name') }}</h2>
-                                    <h3>{{ __('I dati dei siti web della PA') }}</h3>
-                                </div>
+                            <a class="d-inline-flex" href="{{ config('site.owner.link') }}">
+                                <img alt="{{ config('site.owner.name') }} - logo" src="{{ asset(config('site.owner.logo')) }}">
                             </a>
                         </div>
                     </div>
@@ -32,6 +28,18 @@
                         </div>
                     </div>
                 </div>
+                <div class="footer-primary-menu row justify-content-between mb-4">
+                    @foreach (config('site.footer_links.primary') as $footerPrimaryMenuItem)
+                    <div class="pb-2">
+                        <h4>
+                            <a href="{{ isset($footerPrimaryMenuItem['route']) ? route($footerPrimaryMenuItem['route']) : $footerPrimaryMenuItem['url'] }}"
+                                class="{{ isset($footerPrimaryMenuItem['url']) ? 'external-link' : '' }}">
+                                {{ __($footerPrimaryMenuItem['name']) }}</a>
+                        </h4>
+                    </div>
+                    @endforeach
+                </div>
+                @include('layouts.includes.footer_band')
             </section>
         </div>
     </div>
@@ -39,14 +47,19 @@
         <div class="container d-flex align-items-end align-items-md-center">
             <nav aria-label="{{ __('navigazione secondaria') }}">
                 <ul class="it-footer-small-prints-list list-inline mb-0 d-flex flex-column flex-md-row pl-0">
-                    @foreach (config('site.footer_links') as $footerMenuItem)
+                    @foreach (config('site.footer_links.secondary') as $footerSecondaryMenuItem)
                     <li class="list-inline-item px-0">
-                        <a class="nav-link" href="{{ route($footerMenuItem['route']) }}">
-                            <span class="font-weight-semibold analogue-2-color">{{ __($footerMenuItem['name']) }}</span>
+                        <a class="nav-link" href="{{ route($footerSecondaryMenuItem['route']) }}">
+                            <span class="font-weight-semibold analogue-2-color">{{ __($footerSecondaryMenuItem['name']) }}</span>
                         </a>
                     </li>
                     @endforeach
                     @can(UserPermission::ACCESS_ADMIN_AREA)
+                    <li class="list-inline-item px-0">
+                        <a class="nav-link" href="{{ route('admin.dashboard') }}">
+                            <span class="font-weight-semibold analogue-2-color">{{ __('Dashboard amministrativa') }}</span>
+                        </a>
+                    </li>
                     <li class="list-inline-item px-0">
                         <a class="nav-link" href="{{ route('admin.logs.show') }}">
                             <span class="font-weight-semibold analogue-2-color">{{ __('Logs') }}</span>

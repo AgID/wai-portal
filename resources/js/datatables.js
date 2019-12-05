@@ -27,18 +27,21 @@ export default (() => {
             if (column.data === 'buttons') {
                 column.render = buttons => {
                     return [
-                        '<span class="buttons">',
+                        '<span class="buttons d-flex justify-content-end">',
                         buttons.map(button => {
                             return [
                                 `<a href="${button.link}"`,
                                 'role="button"',
-                                `class="btn btn-${button.color || 'primary'} btn-xs mr-1 py-1${button.dataAttributes ? ' disabled' : ''}"`,
+                                `class="btn btn-${button.color || 'primary'} ${button.icon ? '' : 'btn-icon '}btn-xs text-nowrap mr-1 py-1${button.dataAttributes ? ' disabled' : ''}"`,
                                 button.dataAttributes && Object.keys(button.dataAttributes).reduce((dataAttrs, attr) => {
                                     return [dataAttrs, `data-${attr}="${button.dataAttributes[attr]}"`].join(' ');
                                 }, ''),
                                 button.dataAttributes && 'aria-disabled="true"',
                                 `title="${button.label}">`,
                                 `<span>${button.label}</span>`,
+                                button.icon && `<svg class="icon icon-${button.iconColor || 'primary'} icon-xs ml-1">`,
+                                button.icon && `<use xlink:href="/svg/sprite.svg#${button.icon}"></use>`,
+                                button.icon && '</svg>',
                                 '</a>',
                             ].join(' ');
                         }).join(''),
@@ -245,8 +248,20 @@ export default (() => {
         datatableApi.draw();
     };
 
+    const initPagination = () => {
+        if (datatableApi.page.info().pages < 2) {
+            $datatable.siblings('.dataTables_length').hide();
+            $datatable.siblings('.dataTables_paginate').hide();
+            $datatable.siblings('.dataTables_info').hide();
+        } else {
+            $datatable.siblings('.dataTables_length').show();
+            $datatable.siblings('.dataTables_paginate').show();
+            $datatable.siblings('.dataTables_info').show();
+        }
+    }
+
     const initPaginatedInputs = () => {
-        if (datatableApi.page.len() < 2) {
+        if (datatableApi.page.info().pages < 2) {
             return;
         }
 
@@ -361,6 +376,7 @@ export default (() => {
             $('.dataTables_wrapper [data-toggle="tooltip"]').tooltip();
         }).on('draw', () => {
             onDraw && onDraw.map(onDrawFunction => onDrawFunction());
+            initPagination();
             $('.dataTables_wrapper [data-toggle="tooltip"]').tooltip();
         });
     };
