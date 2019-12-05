@@ -11,6 +11,7 @@
             </p>
         </div>
         <div class="col-md-6">
+            @cannot(UserPermission::ACCESS_ADMIN_AREA)
             <div class="go-to-dashboard callout callout-highlight my-0 pl-4 primary-border-color-c1">
                 <div class="callout-title">{{ __('dashboard') }}</div>
                 <p class="text-sans-serif">
@@ -28,6 +29,7 @@
                     </svg>
                 </a>
             </div>
+            @endcannot
         </div>
     </div>
 </div>
