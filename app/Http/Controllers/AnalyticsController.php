@@ -12,19 +12,18 @@ class AnalyticsController extends Controller
      * Show the application analytics dashboard or redirect to websites index page.
      *
      * @param Request $request the incoming request
+     * @param PublicAdministration|null $publicAdministration the public administration the analytics data belong to
      *
      * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
      */
-    public function index(Request $request)
+    public function index(Request $request, PublicAdministration $publicAdministration = null)
     {
-        $user = auth()->user();
+        $user = $request->user();
         if ($user->publicAdministrations->isEmpty() && $user->cannot(UserPermission::ACCESS_ADMIN_AREA)) {
             $request->session()->reflash();
 
             return redirect()->route('websites.index');
         }
-
-        $publicAdministration = !empty(request()->route('publicAdministration')) ? PublicAdministration::findByIpaCode(request()->route('publicAdministration')) : null;
 
         return view('pages.analytics')->with(['publicAdministration' => $publicAdministration]);
     }
