@@ -68,5 +68,5 @@ it:
         url: https://medium.com/designers-italia
 
     trackers:
-      matomo: 1
+      matomo: "1"
       ga: UA-140404450-1
