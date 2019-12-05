@@ -39,6 +39,15 @@ commands:
             PHP_CS_FIXER_FUTURE_MODE=1
             bin/php-cs-fixer fix --diff --dry-run --verbose
 
+  yaml-validation:
+    description: Ensure yaml configuration files are valid
+    steps:
+      - run:
+          name: Run rx validator
+          command: |
+            bin/rx resources/views/config.yml tests/schemas/config_schema.yml
+            bin/rx resources/views/pages/faqs.yml tests/schemas/faqs_schema.yml
+
   security:
     description: Check known security issues in php dependencies
     steps:
@@ -114,6 +123,7 @@ jobs:
       - restore_all_caches
       - composer
       - php-cs-fixer
+      - yaml-validation
       - security
       - install_node_packages
       - save_all_caches
