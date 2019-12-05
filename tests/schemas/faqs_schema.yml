@@ -1,0 +1,21 @@
+type: "//rec"
+required:
+  it:
+    type: "//arr"
+    length: { min: 1 }
+    contents:
+      type: "//rec"
+      required:
+        themes: "//str"
+        question: "//str"
+        answer: "//str"
+optional:
+  en:
+    type: "//arr"
+    length: { min: 1 }
+    contents:
+      type: "//rec"
+      required:
+        themes: "//str"
+        question: "//str"
+        answer: "//str"

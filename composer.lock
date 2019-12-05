@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3a60afd7f734182ede7c8fc388bc9715",
+    "content-hash": "19dc6baba3e5903838173c12f2f91653",
     "packages": [
         {
             "name": "bensampo/laravel-enum",
@@ -1886,6 +1886,11 @@
                 "ext-openssl": "Install openssl lib in order to handle with x509 certs (require to support sign and encryption)"
             },
             "type": "library",
+            "extra": {
+                "patches_applied": {
+                    "Compatibility with SPID": "https://rawgit.com/italia/spid-laravel/master/patches/php-saml-3.3.0-spid.patch"
+                }
+            },
             "autoload": {
                 "psr-4": {
                     "OneLogin\\": "src/"
@@ -1902,12 +1907,7 @@
                 "onelogin",
                 "saml"
             ],
-            "time": "2019-09-11T13:56:06+00:00",
-            "extra": {
-                "patches_applied": {
-                    "Compatibility with SPID": "https://rawgit.com/italia/spid-laravel/master/patches/php-saml-3.3.0-spid.patch"
-                }
-            }
+            "time": "2019-09-11T13:56:06+00:00"
         },
         {
             "name": "opis/closure",
@@ -7288,6 +7288,43 @@
             "description": "Library that helps with managing the version number of Git-hosted PHP projects",
             "homepage": "https://github.com/sebastianbergmann/version",
             "time": "2016-10-03T07:35:21+00:00"
+        },
+        {
+            "name": "shaggy8871/php-rx",
+            "version": "1.0.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/shaggy8871/php-rx.git",
+                "reference": "cfd361b729d66102da96780d0b24783dfde85c43"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/shaggy8871/php-rx/zipball/cfd361b729d66102da96780d0b24783dfde85c43",
+                "reference": "cfd361b729d66102da96780d0b24783dfde85c43",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1.0",
+                "symfony/yaml": "^4.3"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^8"
+            },
+            "bin": [
+                "rx"
+            ],
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Rx\\": "src/Rx/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0-or-later"
+            ],
+            "description": "The Rx schema and validation system",
+            "time": "2019-06-09T11:14:00+00:00"
         },
         {
             "name": "symfony/filesystem",

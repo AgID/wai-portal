@@ -41,6 +41,7 @@
         "phing/phing": "2.*",
         "phpunit/phpunit": "^8.1",
         "sensiolabs/security-checker": "^6.0",
+        "shaggy8871/php-rx": "^1.0",
         "symfony/thanks": "^1.0"
     },
     "autoload": {
