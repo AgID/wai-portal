@@ -169,6 +169,12 @@ Breadcrumbs::for('admin.password.reset.show', function ($trail) {
     $trail->push(__('Reset della password'), route('admin.password.reset.show'));
 });
 
+// Web Analytics Italia > Analytics
+Breadcrumbs::for('admin.publicAdministration.analytics', function ($trail, $publicAdministrationIpaCode) {
+    $trail->parent('home');
+    $trail->push(__('Analytics web'), route('admin.publicAdministration.analytics', ['publicAdministration' => $publicAdministrationIpaCode]));
+});
+
 // Web Analytics Italia > Websites
 Breadcrumbs::for('admin.publicAdministration.websites.index', function ($trail, $publicAdministrationIpaCode) {
     $trail->parent('home');

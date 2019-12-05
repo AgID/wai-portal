@@ -329,9 +329,8 @@ Route::middleware('auth.admin', 'verified:admin.verification.notice')->group(fun
             });
 
             Route::prefix('/{publicAdministration}')->group(function () {
-                Route::get('/analytics', function () {
-                    return redirect()->route('admin.dashboard');
-                })->name('admin.publicAdministration.analytics');
+                Route::get('/analytics', 'AnalyticsController@index')
+                    ->name('admin.publicAdministration.analytics');
 
                 Route::prefix('/users')->group(function () {
                     Route::get('/', 'UserController@index')
