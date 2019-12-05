@@ -22,7 +22,7 @@
                     <svg class="icon icon-primary mr-2 align-middle">
                         <use xlink:href="{{ asset('svg/sprite.svg') }}#it-chart-line"></use>
                     </svg>
-                    {{ __('vai alla dashboard') }}
+                    {{ __('Vai alla dashboard') }}
                     <svg class="icon icon-primary ml-2 align-middle">
                         <use xlink:href="{{ asset('svg/sprite.svg') }}#it-arrow-right"></use>
                     </svg>
