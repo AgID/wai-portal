@@ -193,6 +193,7 @@
     @component('layouts.components.box', ['classes' => 'mt-0'])
     <h4 class="text-uppercase mb-5">{{ __('permessi degli utenti') }}</h4>
     @include('partials.datatable')
+    <div class="mt-4 text-center text-sm-left">
     @component('layouts.components.link_button', [
         'icon' => 'it-pencil',
         'link' => $websiteEditUrl,
@@ -200,6 +201,7 @@
     ])
         {{ __('Modifica') }}
     @endcomponent
+    </div>
     @endcomponent
     @endcan
     </div>

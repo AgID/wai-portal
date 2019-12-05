@@ -95,7 +95,7 @@
     <div class="form-row">
         @include('partials.datatable')
     </div>
-    <div class="form-row mt-2 mt-md-4">
+    <div class="form-row mt-4">
         <div class="form-group mb-0 col text-center">
             <button type="submit" class="btn btn-primary">{{ __('Salva') }}</button>
         </div>

@@ -168,6 +168,7 @@
         </div>
     </div>
     @include('partials.datatable')
+    <div class="mt-4 text-center text-sm-left">
     @component('layouts.components.link_button', [
         'icon' => 'it-pencil',
         'link' => $userEditUrl,
@@ -175,6 +176,7 @@
     ])
         {{ __('Modifica') }}
     @endcomponent
+    </div>
     @endcomponent
     @endcan
     </div>
