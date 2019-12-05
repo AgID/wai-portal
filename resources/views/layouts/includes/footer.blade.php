@@ -56,6 +56,11 @@
                     @endforeach
                     @can(UserPermission::ACCESS_ADMIN_AREA)
                     <li class="list-inline-item px-0">
+                        <a class="nav-link" href="{{ route('admin.dashboard') }}">
+                            <span class="font-weight-semibold analogue-2-color">{{ __('Dashboard amministrativa') }}</span>
+                        </a>
+                    </li>
+                    <li class="list-inline-item px-0">
                         <a class="nav-link" href="{{ route('admin.logs.show') }}">
                             <span class="font-weight-semibold analogue-2-color">{{ __('Logs') }}</span>
                         </a>
