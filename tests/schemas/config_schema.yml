@@ -1,0 +1,160 @@
+type: "//rec"
+required:
+  it:
+    type: "//rec"
+    required:
+      site:
+        type: "//rec"
+        required:
+          owner:
+            type: "//rec"
+            required:
+              name: "//str"
+              name_short: "//str"
+              link: "//str"
+              logo: "//str"
+          privacy_policy: "//str"
+          logo: "//str"
+          menu_items:
+            type: "//rec"
+            required:
+              primary:
+                type: "//arr"
+                length:
+                  min: 3
+                  max: 3
+                contents:
+                  type: "//rec"
+                  required:
+                    name: "//str"
+                    route: "//str"
+            optional:
+              secondary:
+                type: "//arr"
+                contents:
+                  type: "//rec"
+                  required:
+                    name: "//str"
+                    route: "//str"
+          slim_header_links:
+            type: "//arr"
+            contents:
+              type: "//rec"
+              required:
+                name: "//str"
+                url: "//str"
+              optional:
+                class: "//str"
+        optional:
+          pill: "//str"
+          footer_links:
+            type: "//rec"
+            required:
+              primary:
+                type: "//arr"
+                contents:
+                  type: "//rec"
+                  required:
+                    name: "//str"
+                  optional:
+                    route: "//str"
+                    url: "//str"
+            optional:
+              secondary:
+                type: "//arr"
+                contents:
+                  type: "//rec"
+                  required:
+                    name: "//str"
+                  optional:
+                      route: "//str"
+                      url: "//str"
+          social:
+            type: "//arr"
+            contents:
+              type: "//rec"
+              required:
+                name: "//str"
+                url: "//str"
+          trackers:
+            type: "//map"
+            values: "//str"
+optional:
+  en:
+    type: "//rec"
+    required:
+      site:
+        type: "//rec"
+        required:
+          owner:
+            type: "//rec"
+            required:
+              name: "//str"
+              name_short: "//str"
+              link: "//str"
+              logo: "//str"
+          privacy_policy: "//str"
+          menu_items:
+            type: "//rec"
+            required:
+              primary:
+                type: "//arr"
+                length:
+                  min: 3
+                  max: 3
+                contents:
+                  type: "//rec"
+                  required:
+                    name: "//str"
+                    route: "//str"
+            optional:
+              secondary:
+                type: "//arr"
+                contents:
+                  type: "//rec"
+                  required:
+                    name: "//str"
+                    route: "//str"
+          slim_header_links:
+            type: "//arr"
+            contents:
+              type: "//rec"
+              required:
+                name: "//str"
+                url: "//str"
+              optional:
+                class: "//str"
+        optional:
+          pill: "//str"
+          footer_links:
+            type: "//rec"
+            required:
+              primary:
+                type: "//arr"
+                contents:
+                  type: "//rec"
+                  required:
+                    name: "//str"
+                  optional:
+                    route: "//str"
+                    url: "//str"
+            optional:
+              secondary:
+                type: "//arr"
+                contents:
+                  type: "//rec"
+                  required:
+                    name: "//str"
+                  optional:
+                      route: "//str"
+                      url: "//str"
+          social:
+            type: "//arr"
+            contents:
+              type: "//rec"
+              required:
+                name: "//str"
+                url: "//str"
+          trackers:
+            type: "//map"
+            values: "//str"
