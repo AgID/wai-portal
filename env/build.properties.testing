@@ -38,6 +38,15 @@ SPID_SP_CERTIFICATE=MIICajCCAdOgAwIBAgIBADANBgkqhkiG9w0BAQsFADBSMQswCQYDVQQGEwJp
 
 CRON_TOKEN=94b0ef4e300dbd0da2ceb6f7c5c09a2b
 
+# Super admin user
+# ----------------
+
+APP_SUPER_ADMIN_NAME=Nome
+APP_SUPER_ADMIN_FAMILY_NAME=Cognome
+APP_SUPER_ADMIN_FISCAL_NUMBER=FSCLNB17A01H501X
+APP_SUPER_ADMIN_EMAIL=nome.cognome@example.com
+APP_SUPER_ADMIN_PASSWORD=password
+
 # Pending websites expirations
 # ----------------------------
 
