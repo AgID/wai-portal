@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "bensampo/laravel-enum",
-            "version": "v1.28.1",
+            "version": "v1.28.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/BenSampo/laravel-enum.git",
-                "reference": "2948e7535fae0a98760a34607572dae2038eb9b8"
+                "reference": "5e345a5a780e7bc6394ee81824bdd24d7dfb58d0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/BenSampo/laravel-enum/zipball/2948e7535fae0a98760a34607572dae2038eb9b8",
-                "reference": "2948e7535fae0a98760a34607572dae2038eb9b8",
+                "url": "https://api.github.com/repos/BenSampo/laravel-enum/zipball/5e345a5a780e7bc6394ee81824bdd24d7dfb58d0",
+                "reference": "5e345a5a780e7bc6394ee81824bdd24d7dfb58d0",
                 "shasum": ""
             },
             "require": {
@@ -75,7 +75,7 @@
                 "package",
                 "validation"
             ],
-            "time": "2019-11-28T00:14:55+00:00"
+            "time": "2019-12-05T21:23:50+00:00"
         },
         {
             "name": "cweagans/composer-patches",
@@ -1886,11 +1886,6 @@
                 "ext-openssl": "Install openssl lib in order to handle with x509 certs (require to support sign and encryption)"
             },
             "type": "library",
-            "extra": {
-                "patches_applied": {
-                    "Compatibility with SPID": "https://rawgit.com/italia/spid-laravel/master/patches/php-saml-3.3.0-spid.patch"
-                }
-            },
             "autoload": {
                 "psr-4": {
                     "OneLogin\\": "src/"
@@ -1907,7 +1902,12 @@
                 "onelogin",
                 "saml"
             ],
-            "time": "2019-09-11T13:56:06+00:00"
+            "time": "2019-09-11T13:56:06+00:00",
+            "extra": {
+                "patches_applied": {
+                    "Compatibility with SPID": "https://rawgit.com/italia/spid-laravel/master/patches/php-saml-3.3.0-spid.patch"
+                }
+            }
         },
         {
             "name": "opis/closure",
