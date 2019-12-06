@@ -55,7 +55,7 @@ class RedirectIfAuthenticatedMiddlewareTest extends TestCase
     {
         $this->actingAs($this->user)
             ->get('_test/guest')
-            ->assertRedirect(route('dashboard'));
+            ->assertRedirect(route('analytics'));
 
         $this->user->allow(UserPermission::ACCESS_ADMIN_AREA);
 

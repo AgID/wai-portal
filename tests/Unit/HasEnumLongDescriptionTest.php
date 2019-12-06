@@ -64,27 +64,40 @@ class HasEnumLongDescriptionTest extends TestCase
     {
         $class = new class(0) extends Enum implements LocalizedEnum {
             use HasEnumLongDescription;
-            public const TEST_VALUE = 0;
+            public const TEST_VALUE_0 = 0;
+            public const TEST_VALUE_1 = 1;
         };
 
-        $longKey = $class::getLocalizationKey() . '.' . $class::TEST_VALUE . '.long';
-        $shortKey = $class::getLocalizationKey() . '.' . $class::TEST_VALUE . '.short';
+        $longKey = $class::getLocalizationKey() . '.' . $class::TEST_VALUE_0 . '.long';
+        $shortKey = $class::getLocalizationKey() . '.' . $class::TEST_VALUE_0 . '.short';
+        $shortKeySecondValue = $class::getLocalizationKey() . '.' . $class::TEST_VALUE_1 . '.short';
+        $keySecondValue = $class::getLocalizationKey() . '.' . $class::TEST_VALUE_1;
 
         Lang::shouldReceive('has')->withArgs([$longKey])->andReturnFalse();
         Lang::shouldReceive('has')->withArgs([$shortKey])->andReturnTrue();
+        Lang::shouldReceive('has')->withArgs([$shortKeySecondValue])->andReturnFalse();
+        Lang::shouldReceive('has')->withArgs([$keySecondValue])->andReturnTrue();
 
         $this->app->bind('translator', function () use ($class) {
             return $this->partialMock(Translator::class, function ($mock) use ($class) {
                 $mock->shouldReceive('get')
                     ->withArgs([
-                        $class::getLocalizationKey() . '.' . $class::TEST_VALUE . '.short',
+                        $class::getLocalizationKey() . '.' . $class::TEST_VALUE_0 . '.short',
                         [],
                         null,
                     ])
                     ->andReturn('Fake short description');
+                $mock->shouldReceive('get')
+                    ->withArgs([
+                        $class::getLocalizationKey() . '.' . $class::TEST_VALUE_1,
+                        [],
+                        null,
+                    ])
+                    ->andReturn('Fake basic description');
             });
         });
 
-        $this->assertEquals('Fake short description', $class::getDescription($class::TEST_VALUE));
+        $this->assertEquals('Fake short description', $class::getDescription($class::TEST_VALUE_0));
+        $this->assertEquals('Fake basic description', $class::getDescription($class::TEST_VALUE_1));
     }
 }

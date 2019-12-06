@@ -81,56 +81,45 @@ class WebsiteTransformerTest extends TestCase
         $this->publicAdministration->users()->sync($this->user->id);
 
         $this->websitePrimary = factory(Website::class)->state('active')->create([
+            'url' => 'https://primary.local',
+            'slug' => Str::slug('https://primary.local'),
             'public_administration_id' => $this->publicAdministration->id,
+            'analytics_id' => 1,
         ]);
 
-        do {
-            $this->websiteSecondaryActive = factory(Website::class)->state('active')->make([
-                'type' => WebsiteType::SECONDARY,
-                'public_administration_id' => $this->publicAdministration->id,
-            ]);
-        } while ($this->websiteSecondaryActive->slug === $this->websitePrimary->slug);
-        $this->websiteSecondaryActive->url = 'https://' . $this->websiteSecondaryActive->url;
-        $this->websiteSecondaryActive->slug = Str::slug($this->websiteSecondaryActive->url);
-        $this->websiteSecondaryActive->save();
+        $this->websiteSecondaryActive = factory(Website::class)->state('active')->create([
+            'type' => WebsiteType::SECONDARY,
+            'url' => 'https://seconday-active.local',
+            'slug' => Str::slug('https://seconday-active.local'),
+            'public_administration_id' => $this->publicAdministration->id,
+            'analytics_id' => 2,
+        ]);
 
-        do {
-            $this->websiteSecondaryArchived = factory(Website::class)->state('archived')->make([
-                'type' => WebsiteType::SECONDARY,
-                'public_administration_id' => $this->publicAdministration->id,
-            ]);
-        } while (
-            ($this->websiteSecondaryArchived->slug === $this->websitePrimary->slug)
-            || ($this->websiteSecondaryArchived->slug === $this->websiteSecondaryActive->slug)
-        );
-        $this->websiteSecondaryArchived->save();
+        $this->websiteSecondaryArchived = factory(Website::class)->state('archived')->create([
+            'type' => WebsiteType::SECONDARY,
+            'url' => 'https://seconday-archived.local',
+            'slug' => Str::slug('https://seconday-archived.local'),
+            'public_administration_id' => $this->publicAdministration->id,
+            'analytics_id' => 3,
+        ]);
 
-        do {
-            $this->websiteSecondaryPending = factory(Website::class)->make([
-                'type' => WebsiteType::SECONDARY,
-                'status' => WebsiteStatus::PENDING,
-                'public_administration_id' => $this->publicAdministration->id,
-            ]);
-        } while (
-            ($this->websiteSecondaryPending->slug === $this->websitePrimary->slug)
-            || ($this->websiteSecondaryPending->slug === $this->websiteSecondaryActive->slug)
-            || ($this->websiteSecondaryPending->slug === $this->websiteSecondaryArchived->slug)
-        );
-        $this->websiteSecondaryPending->save();
+        $this->websiteSecondaryPending = factory(Website::class)->create([
+            'type' => WebsiteType::SECONDARY,
+            'status' => WebsiteStatus::PENDING,
+            'url' => 'https://seconday-pending.local',
+            'slug' => Str::slug('https://seconday-pending.local'),
+            'public_administration_id' => $this->publicAdministration->id,
+            'analytics_id' => 4,
+        ]);
 
-        do {
-            $this->websiteSecondaryTrashed = factory(Website::class)->state('active')->make([
-                'type' => WebsiteType::SECONDARY,
-                'public_administration_id' => $this->publicAdministration->id,
-                'deleted_at' => now(),
-            ]);
-        } while (
-            ($this->websiteSecondaryTrashed->slug === $this->websitePrimary->slug)
-            || ($this->websiteSecondaryTrashed->slug === $this->websiteSecondaryActive->slug)
-            || ($this->websiteSecondaryTrashed->slug === $this->websiteSecondaryArchived->slug)
-            || ($this->websiteSecondaryTrashed->slug === $this->websiteSecondaryPending->slug)
-        );
-        $this->websiteSecondaryTrashed->save();
+        $this->websiteSecondaryTrashed = factory(Website::class)->state('active')->create([
+            'type' => WebsiteType::SECONDARY,
+            'url' => 'https://seconday-trashed.local',
+            'slug' => Str::slug('https://seconday-trashed.local'),
+            'public_administration_id' => $this->publicAdministration->id,
+            'deleted_at' => now(),
+            'analytics_id' => 5,
+        ]);
 
         Bouncer::dontCache();
     }
@@ -199,7 +188,6 @@ class WebsiteTransformerTest extends TestCase
             ->assertJsonMissing(['link' => route('websites.unarchive', ['website' => $this->websiteSecondaryPending])])
             ->assertJsonMissing(['link' => route('websites.archive', ['website' => $this->websiteSecondaryTrashed])])
             ->assertJsonMissing(['link' => route('websites.unarchive', ['website' => $this->websiteSecondaryTrashed])])
-            ->assertJsonFragment(['link' => route('analytics.service.login')])
             ->assertJsonMissing(['link' => route('admin.publicAdministration.websites.restore', [
                 'publicAdministration' => $this->publicAdministration,
                 'trashed_website' => $this->websitePrimary,
@@ -239,7 +227,12 @@ class WebsiteTransformerTest extends TestCase
             ->assertJsonMissing(['link' => route('admin.publicAdministration.websites.delete', [
                 'publicAdministration' => $this->publicAdministration,
                 'website' => $this->websiteSecondaryTrashed,
-            ])]);
+            ])])
+            ->assertJsonFragment(['link' => route('analytics.service.login', ['websiteAnalyticsId' => $this->websiteSecondaryActive->analytics_id])])
+            ->assertJsonMissing(['link' => route('analytics.service.login', ['websiteAnalyticsId' => $this->websitePrimary->analytics_id])])
+            ->assertJsonMissing(['link' => route('analytics.service.login', ['websiteAnalyticsId' => $this->websiteSecondaryArchived->analytics_id])])
+            ->assertJsonMissing(['link' => route('analytics.service.login', ['websiteAnalyticsId' => $this->websiteSecondaryPending->analytics_id])])
+            ->assertJsonMissing(['link' => route('analytics.service.login', ['websiteAnalyticsId' => $this->websiteSecondaryTrashed->analytics_id])]);
     }
 
     /**
@@ -311,7 +304,11 @@ class WebsiteTransformerTest extends TestCase
             ->assertJsonMissing(['link' => route('websites.unarchive', ['website' => $this->websiteSecondaryPending])])
             ->assertJsonMissing(['link' => route('websites.archive', ['website' => $this->websiteSecondaryTrashed])])
             ->assertJsonMissing(['link' => route('websites.unarchive', ['website' => $this->websiteSecondaryTrashed])])
-            ->assertJsonFragment(['link' => route('analytics.service.login')])
+            ->assertJsonFragment(['link' => route('analytics.service.login', ['websiteAnalyticsId' => $this->websitePrimary->analytics_id])])
+            ->assertJsonFragment(['link' => route('analytics.service.login', ['websiteAnalyticsId' => $this->websiteSecondaryActive->analytics_id])])
+            ->assertJsonFragment(['link' => route('analytics.service.login', ['websiteAnalyticsId' => $this->websiteSecondaryArchived->analytics_id])])
+            ->assertJsonMissing(['link' => route('analytics.service.login', ['websiteAnalyticsId' => $this->websiteSecondaryPending->analytics_id])])
+            ->assertJsonMissing(['link' => route('analytics.service.login', ['websiteAnalyticsId' => $this->websiteSecondaryTrashed->analytics_id])])
             ->assertJsonMissing(['link' => route('admin.publicAdministration.websites.restore', [
                 'publicAdministration' => $this->publicAdministration,
                 'trashed_website' => $this->websitePrimary,
