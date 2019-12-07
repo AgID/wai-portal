@@ -9,6 +9,8 @@ export default (() => {
     const urlInputLabel = document.querySelector('label[for="url"]');
     const rtdNameInputLabel = document.querySelector('label[for="rtd_name"]');
     const rtdMailInputLabel = document.querySelector('label[for="rtd_mail"]');
+    const rtdMailPresentMessage = document.getElementById('rtd_mail_present');
+    const rtdMailMissingMessage = document.getElementById('rtd_mail_missing');
 
     const handleSelectedIpa = selectedResult => {
         searchIpaInput.dataset.selectedPa = selectedResult.name;
@@ -16,6 +18,8 @@ export default (() => {
         urlInput.value = selectedResult.site;
         rtdNameInput.value = selectedResult.rtd_name || '';
         rtdMailInput.value = selectedResult.rtd_mail || '';
+        selectedResult.rtd_mail && rtdMailPresentMessage.classList.remove('d-none');
+        selectedResult.rtd_mail || rtdMailMissingMessage.classList.remove('d-none');
         urlInputLabel.classList.add('active');
         rtdNameInputLabel.classList.add('active');
         rtdMailInputLabel.classList.add('active');
@@ -32,6 +36,8 @@ export default (() => {
         urlInputLabel.classList.remove('active');
         rtdNameInputLabel.classList.remove('active');
         rtdMailInputLabel.classList.remove('active');
+        rtdMailMissingMessage.classList.add('d-none');
+        rtdMailPresentMessage.classList.add('d-none');
     };
 
     const ipaSchema = {
