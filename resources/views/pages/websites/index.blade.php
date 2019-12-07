@@ -13,7 +13,7 @@
         'link' => $websiteCreateUrl,
         'size' => 'lg',
     ])
-        {{ __('Aggiungi sito web') }}
+    {{ __('aggiungi un sito web') }}
     @endcomponent
     </div>
     @endif

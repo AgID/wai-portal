@@ -9,5 +9,5 @@
 @section('content')
 <p class="display-1 text-primary">404</p>
 <p class="lead text-primary font-weight-semibold">{!! __('La pagina :page non esiste.', ['page' => '<code>' . request()->path() . '</code>']) !!}</p>
-<p><a href="{{ route('home') }}">{{ __('Torna alla pagina iniziale') }}</a>.</p>
+<p><a href="{{ route('home') }}">{{ ucfirst(__('torna alla pagina iniziale')) }}</a>.</p>
 @endsection

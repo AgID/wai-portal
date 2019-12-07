@@ -49,7 +49,7 @@ class ExpiredInvitationLinkVisited extends Mailable
      */
     public function build(): ExpiredInvitationLinkVisited
     {
-        return $this->subject(__('[Info] - Avviso utilizzo invito scaduto'))
+        return $this->subject(__('[Info] - Avviso di utilizzo di un invito scaduto'))
             ->markdown('mail.expired_invitation_link_visited')->with([
                 'locale' => Lang::getLocale(),
                 'fullName' => $this->user->full_name,

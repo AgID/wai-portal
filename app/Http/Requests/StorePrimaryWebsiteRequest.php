@@ -67,10 +67,10 @@ class StorePrimaryWebsiteRequest extends FormRequest
                 // NOTE: uncomment and add "required" rule to rtd_name and rtd_mail to enforce rtd validation
                 // elseif (!($this->input('skip_rtd_validation') && app()->environment('testing'))) {
                 //     if ($this->input('rtd_name') !== ($publicAdministration['rtd_name'] ?? '')) {
-                //         $validator->errors()->add('rtd_name', __('Il nominativo RTD immesso non corrisponde a quello presente su indice IPA.'));
+                //         $validator->errors()->add('rtd_name', __('Il nominativo RTD immesso non corrisponde a quello presente su IndicePA.'));
                 //     }
                 //     if ($this->input('rtd_mail') !== ($publicAdministration['rtd_mail'] ?? '')) {
-                //         $validator->errors()->add('rtd_mail', __("L'indirizzo email RTD immesso non corrisponde a quello presente su indice IPA."));
+                //         $validator->errors()->add('rtd_mail', __("L'indirizzo email RTD immesso non corrisponde a quello presente su IndicePA."));
                 //     }
                 // }
             }

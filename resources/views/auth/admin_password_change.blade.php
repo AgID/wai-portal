@@ -1,6 +1,6 @@
 @extends('layouts.page')
 
-@section('title', __('Cambio della password'))
+@section('title', __('Cambio password'))
 
 @section('content')
 @component('layouts.components.box')

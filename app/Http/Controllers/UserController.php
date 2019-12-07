@@ -132,7 +132,7 @@ class UserController extends Controller
         return redirect()->to($redirectUrl)->withModal([
             'title' => __('Invito inoltrato'),
             'icon' => 'it-clock',
-            'message' => __("Abbiamo appena inviato un invito all'indirizzo email :email.", ['email' => '<strong>' . e($user->email) . '</strong>']),
+            'message' => __("Abbiamo inviato un invito all'indirizzo email :email.", ['email' => '<strong>' . e($user->email) . '</strong>']),
             'image' => asset('images/invitation-email-sent.svg'),
         ]);
     }

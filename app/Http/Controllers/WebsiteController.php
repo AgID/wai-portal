@@ -143,7 +143,7 @@ class WebsiteController extends Controller
         return redirect()->route('websites.index')->withModal([
             'title' => __('Il sito è stato inserito, adesso procedi ad attivarlo!'),
             'icon' => 'it-check-circle',
-            'message' => __('Abbiamo appena inviato al tuo indirizzo email tutte le istruzioni per attivare il sito e iniziare a monitorare il traffico.'),
+            'message' => __('Abbiamo inviato al tuo indirizzo email le istruzioni per attivare il sito e iniziare a monitorare il traffico.'),
             'image' => asset('images/primary-website-added.svg'),
         ]);
     }
@@ -209,7 +209,7 @@ class WebsiteController extends Controller
         return redirect()->to($redirectUrl)->withModal([
             'title' => __('Il sito è stato inserito, adesso procedi ad attivarlo!'),
             'icon' => 'it-check-circle',
-            'message' => __('Abbiamo appena inviato al tuo indirizzo email tutte le istruzioni per attivare il sito e iniziare a monitorare il traffico.'),
+            'message' => __('Abbiamo inviato al tuo indirizzo email le istruzioni per attivare il sito e iniziare a monitorare il traffico.'),
             'image' => asset('images/website-added.svg'),
         ]);
     }

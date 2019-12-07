@@ -1,6 +1,6 @@
 @extends('layouts.page_bulk')
 
-@section('title', __('Accesso negato'))
+@section('title', ucfirst(__('accesso negato')))
 
 @section('title-after')
 <svg class="icon icon-xl icon-danger mb-1 ml-2"><use xlink:href="{{ asset('svg/sprite.svg#it-error') }}"></use></svg>
@@ -14,5 +14,5 @@
 @isset($userMessage)
 <p class="text-primary my-4">{!! nl2br($userMessage) !!}</p>
 @endisset
-<p><a href="{{ route('home') }}">{{ __('Torna alla pagina iniziale') }}</a>.</p>
+<p><a href="{{ route('home') }}">{{ ucfirst(__('torna alla pagina iniziale')) }}</a>.</p>
 @endsection

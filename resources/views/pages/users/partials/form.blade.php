@@ -4,7 +4,7 @@
     @method('put')
     @endisset
     @component('layouts.components.box', ['classes' => 'rounded'])
-    <h3 class="section-header">{{ __('Anagrafica') }}</h3>
+    <h3 class="section-header">{{ __('anagrafica') }}</h3>
     @isset($user)
     <div class="form-row">
         <div class="form-group col-md-6">
@@ -35,7 +35,7 @@
                 <div class="input-group-prepend">
                     <div class="input-group-text"><svg class="icon icon-sm"><use xlink:href="{{ asset('svg/sprite.svg#it-mail') }}"></use></svg></div>
                 </div>
-                <label for="email">{{ __('Indirizzo email istituzionale') }}</label>
+                <label for="email">{{ __('Indirizzo email di lavoro') }}</label>
                 <input type="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" id="email" name="email" value="{{ old('email', $user->email ?? '') }}" maxlength="255" aria-labelledby="email-input-help" aria-required="true" required>
                 @error('email')
                 <div class="invalid-feedback">{{ $errors->first('email') }}</div>
@@ -43,7 +43,7 @@
                 <div class="invalid-feedback">{{ __('validation.email', ['attribute' => __('validation.attributes.email')]) }}</div>
                 @enderror
             </div>
-            <small id="email-input-help" class="form-text text-muted">{{ __('Indirizzo email di lavoro (es. nome.cognome@agid.gov.it).') }}</small>
+            <small id="email-input-help" class="form-text text-muted">{{ __('es. nome.cognome@agid.gov.it') }}</small>
         </div>
     </div>
     <div class="form-row">

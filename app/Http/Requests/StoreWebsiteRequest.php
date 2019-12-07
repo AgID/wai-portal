@@ -63,7 +63,7 @@ class StoreWebsiteRequest extends FormRequest
             if (filled($this->input('url'))) {
                 $host = parse_url($this->input('url'), PHP_URL_HOST);
                 if ($host && !$this->checkIsNotPrimary($host)) {
-                    $validator->errors()->add('url', __("L'indirizzo inserito appartiene ad un'altra pubblica amministrazione."));
+                    $validator->errors()->add('url', __("L'indirizzo inserito appartiene a un'altra pubblica amministrazione."));
                 }
             }
         });

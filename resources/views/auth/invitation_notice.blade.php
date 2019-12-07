@@ -15,7 +15,7 @@
 <div class="row">
     <div class="col-sm-8">
         <p>{!! __('Uno degli amministratori ti ha inviato un invito al tuo indirizzo :email.', ['email' => '<strong>' . e($user->email) . '</strong>']) !!}</p>
-        <p>{{ __('Per procedere clicca sul link che trovi nella email.') }}</p>
+        <p>{{ __('Per procedere clicca sul link che trovi nel messaggio email.') }}</p>
     </div>
     <div class="col-sm-4 d-flex align-items-center justify-content-center">
         <img src="{{ asset('images/verification-email-sent.svg') }}" alt="">

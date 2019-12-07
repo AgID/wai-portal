@@ -69,8 +69,8 @@ class Handler extends ExceptionHandler
             return redirect()->home()->withNotification([
                 'title' => __('sessione scaduta'),
                 'message' => implode("\n", [
-                    __('La sessione è scaduta per inattività.'),
-                    __('Accedi di nuovo per continuare da dove eri rimasto.'),
+                    __('La sessione è scaduta a causa di inattività sulla pagina.'),
+                    __('Accedi di nuovo per continuare da dove eri rimasto/a.'),
                 ]),
                 'status' => 'warning',
                 'icon' => 'it-error',
@@ -87,7 +87,7 @@ class Handler extends ExceptionHandler
         if ($exception instanceof SPIDLoginException) {
             $message = $exception instanceof SPIDLoginAnomalyException
                 ? ucfirst($exception->getUserMessage()) . '.'
-                : __("L'accesso con SPID è fallito.");
+                : __('auth.spid_failed');
 
             return redirect()->home()->withNotification([
                 'title' => __('accesso non effettuato'),

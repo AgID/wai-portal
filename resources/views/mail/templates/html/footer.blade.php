@@ -6,7 +6,7 @@
                     <a class="text-white" href="">{{ __("Cos'è") }} {{ config('app.name') }}?</a>
                 </li>
                 <li class="list-inline-item ml-1">
-                    <a class="text-white" href="">{{ __('Ottieni aiuto') }}</a>
+                    <a class="text-white" href="">{{ __('Aiuto') }}</a>
                 </li>
                 <li class="list-inline-item ml-1">
                     <a class="text-white" href="">{{ __('Contattaci') }}</a>

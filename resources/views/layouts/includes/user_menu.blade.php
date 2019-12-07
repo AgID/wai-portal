@@ -32,7 +32,7 @@
                 @endauth
                 <li>
                     <a class="text-primary right-icon list-item" href="{{ route('spid-auth_logout') }}">
-                        <span>{{ __('Disconnetti') }}</span>
+                        <span>{{ __('Disconnettiti') }}</span>
                         <svg class="icon icon-sm icon-primary right"><use xlink:href="{{ asset('svg/sprite.svg#it-unlocked') }}"></use></svg>
                     </a>
                 </li>

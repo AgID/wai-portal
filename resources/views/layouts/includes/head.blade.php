@@ -2,7 +2,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <meta name="description" content="{{ __(':app è il portale per le statistiche dei siti web della Pubblica Amministrazione italiana.', ['app' => config('app.name')]) }}">
+    <meta name="description" content="{{ __(':app è il portale delle statistiche dei siti web della Pubblica Amministrazione italiana.', ['app' => config('app.name')]) }}">
 
     <title>{{ config('app.name') }} - @yield('title')</title>
 
