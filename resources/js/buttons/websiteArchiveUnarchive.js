@@ -1,3 +1,4 @@
+import { upperCaseFirst } from 'upper-case-first';
 import Datatable from '../datatables';
 import Notification from '../notification';
 import I18n from '../i18n';
@@ -12,13 +13,13 @@ export default (() => {
             const isAjax = 'ajax' in websiteArchiveUnarchiveButton.dataset;
             const currentStatus = websiteArchiveUnarchiveButton.dataset.currentStatus.toLowerCase();
             const currentAction = 'active' === currentStatus
-                ? I18n.t('Archiviazione')
-                : I18n.t('Riattivazione');
+                ? I18n.t('archiviazione')
+                : I18n.t('riattivazione');
             const confirmation = {
-                title: [
+                title: upperCaseFirst([
                     currentAction,
                     I18n.t('del sito web'),
-                ].join(' '),
+                ].join(' ')),
                 body: [
                     '<p>',
                     I18n.t('Stai cambiando lo stato del sito.') + '<br>',
@@ -37,7 +38,7 @@ export default (() => {
             };
             const success = response => {
                 Notification.showNotification(I18n.t('sito web modificato'), [
-                    I18n.t('Il sito web'),
+                    I18n.t('Il sito'),
                     '<strong>' + response.data.website_name + '</strong>',
                     I18n.t('è stato modificato correttamente.'),
                     '<br>',

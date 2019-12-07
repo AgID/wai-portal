@@ -1,3 +1,4 @@
+import { upperCaseFirst } from 'upper-case-first';
 import Datatable from '../datatables';
 import Notification from '../notification';
 import I18n from '../i18n';
@@ -12,16 +13,16 @@ export default (() => {
             const isAjax = 'ajax' in websiteDeleteRestoreButton.dataset;
             const isTrashed = websiteDeleteRestoreButton.dataset.trashed;
             const currentAction = isTrashed
-                ? I18n.t('Ripristino')
-                : I18n.t('Eliminazione');
+                ? I18n.t('ripristino')
+                : I18n.t('eliminazione');
             const confirmation = {
-                title: [
+                title: upperCaseFirst([
                     currentAction,
                     I18n.t('del sito web'),
-                ].join(' '),
+                ].join(' ')),
                 body: [
                     '<p>',
-                    isTrashed ? I18n.t('Stai ripristinando il sito web') : I18n.t('Stai eliminando il sito web'),
+                    isTrashed ? I18n.t('Stai ripristinando il sito') : I18n.t('Stai eliminando il sito'),
                     '<strong>' + websiteDeleteRestoreButton.dataset.websiteName + '</strong>',
                     '</p>',
                     '<p>' + I18n.t('Sei sicuro?') +'<p>',
@@ -31,12 +32,12 @@ export default (() => {
             const success = response => {
                 Notification.showNotification(I18n.t('sito web modificato'), response.data.trashed
                     ? [
-                        I18n.t('Il sito web'),
+                        I18n.t('Il sito'),
                         '<strong>' + response.data.website_name + '</strong>',
                         I18n.t('è stato eliminato.')
                     ].join(' ')
                     : [
-                        I18n.t('Il sito web'),
+                        I18n.t('Il sito'),
                         '<strong>' + response.data.website_name + '</strong>',
                         I18n.t('è stato modificato correttamente.'),
                         '<br>',

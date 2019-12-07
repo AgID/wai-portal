@@ -1,3 +1,4 @@
+import { upperCaseFirst } from 'upper-case-first';
 import Datatable from '../datatables';
 import Notification from '../notification';
 import I18n from '../i18n';
@@ -12,13 +13,13 @@ export default (() => {
             const isAjax = 'ajax' in userSuspendReactivateButton.dataset;
             const currentStatus = userSuspendReactivateButton.dataset.currentStatus.toLowerCase();
             const currentAction = 'active' === currentStatus
-                ? I18n.t('Sospensione')
-                : I18n.t('Riattivazione');
+                ? I18n.t('sospensione')
+                : I18n.t('riattivazione');
             const confirmation = {
-                title: [
+                title: upperCaseFirst([
                     currentAction,
                     I18n.t("dell'utente"),
-                ].join(' '),
+                ].join(' ')),
                 body: [
                     '<p>',
                     I18n.t("Stai cambiando lo stato dell'utente"),
