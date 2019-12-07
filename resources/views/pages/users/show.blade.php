@@ -122,15 +122,6 @@
                     {{ __('Non è possibile modificare lo stato.') }}
                 </p>
                 @endif
-                @if ($user->status->is(UserStatus::INACTIVE))
-                <h5 class="section-header">{{ __('appena registrato') }}</h5>
-                <p>
-                    {{ __("L'utente ha solo effettuato l'accesso con SPID, ma non ha completato la procedura di onboarding.") }}
-                </p>
-                <p>
-                    {{ __('Non è possibile modificare lo stato.') }}
-                </p>
-                @endif
                 @endcan
             </div>
             <div>
