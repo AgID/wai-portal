@@ -45,8 +45,8 @@ commands:
       - run:
           name: Run rx validator
           command: |
-            bin/rx resources/views/config.yml tests/schemas/config_schema.yml
-            bin/rx resources/views/pages/faqs.yml tests/schemas/faqs_schema.yml
+            bin/rx resources/data/config.yml tests/schemas/config_schema.yml
+            bin/rx resources/data/faqs.yml tests/schemas/faqs_schema.yml
 
   security:
     description: Check known security issues in php dependencies
