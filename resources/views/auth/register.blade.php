@@ -3,7 +3,7 @@
 @section('title', __('Registrazione'))
 
 @section('content')
-<p>{{ __('Per completare la registrazione è necessario inserire il tuo indirizzo email istituzionale.') }}</p>
+<p>{{ __('Per completare la registrazione è necessario inserire il tuo indirizzo email di lavoro.') }}</p>
 <p>{{ __("Riceverai un messaggio all'indirizzo indicato con le istruzioni per completare la procedura.") }}</p>
 <form method="post" action="{{ route('auth.register') }}" class="needs-validation" novalidate>
     @csrf
@@ -31,7 +31,7 @@
                     <svg class="icon icon-primary"><use xlink:href="{{ asset('svg/sprite.svg#it-clip') }}"></use></svg>
                     <span>{{ __('condizioni del servizio') }}</span>
                 </div>
-                <p>Maecenas vulputate ante dictum <a href="#">vestibulum volutpat</a>. Lorem ipsum dolor sit amet, <strong>consectetur adipiscing elit.</strong> Aenean non augue non purus vestibulum varius. Maecenas ullamcorper tincidunt nulla quis laoreet.</p>
+                @excerpt($tos)
                 <div class="collapse-div">
                     <div class="collapse-header" id="show-more">
                         <button type="button" class="callout-more-toggle" data-toggle="collapse" data-target="#collapseTos" aria-expanded="false" aria-controls="collapseTos">
@@ -40,8 +40,7 @@
                     </div>
                     <div id="collapseTos" class="collapse" role="tabpanel" aria-labelledby="show-more">
                         <div class="collapse-body">
-                            <p>Aenean tortor enim, suscipit eget commodo at, imperdiet quis diam. Vestibulum non accumsan felis, at ultrices lorem. Pellentesque ac diam a ipsum cursus interdum id nec odio. Vestibulum nec congue mauris. Aliquam et dui purus. Mauris in imperdiet risus, sed blandit tellus. Donec posuere accumsan lacinia. Mauris dignissim, sem vel volutpat rhoncus, neque mi ullamcorper ante, vitae volutpat ipsum quam id purus. Duis tincidunt sodales nisl eget ultricies. Sed condimentum mi eu ex venenatis, quis bibendum dui ultrices. Quisque ex eros, pellentesque vitae enim sed, pharetra tempus dolor. Donec eu nibh ac lacus luctus pellentesque. Duis interdum scelerisque magna nec malesuada.</p>
-                            <p>Maecenas at erat id <strong>sem interdum efficitur eu sed nunc.</strong> Mauris sit amet erat eget augue molestie malesuada ut sed ex. In sed dignissim elit. Donec efficitur, sem eget vestibulum auctor, sem erat interdum magna, eu commodo odio mauris semper dolor.</p>
+                            @remainder($tos)
                         </div>
                     </div>
                 </div>

@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Date;
 use Illuminate\View\View;
 use Ramsey\Uuid\Uuid;
+use Symfony\Component\Yaml\Yaml;
 
 /**
  * User registration controller.
@@ -26,7 +27,12 @@ class RegisterController extends Controller
      */
     public function showRegistrationForm(): View
     {
-        return view('auth.register');
+        $tos = Yaml::parseFile(resource_path('data/tos.yml'));
+        $currentLocale = app()->getLocale();
+        $tosLocale = array_key_exists($currentLocale, $tos) ? $currentLocale : config('app.fallback_locale');
+        $tos = $tos[$tosLocale];
+
+        return view('auth.register')->with(compact('tos'));
     }
 
     /**
