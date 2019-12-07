@@ -10,6 +10,36 @@ use Parsedown;
 class Markdown extends Parsedown
 {
     /**
+     * Render a text excerpt (before the separator).
+     *
+     * @param string $text the full text
+     * @param string $separator the separator for the excerpt
+     *
+     * @return string the rendered excerpt (empty if separator is not found)
+     */
+    public function excerpt(string $text, string $separator = '<!--more-->')
+    {
+        $excerpt = explode($separator, $text, 2)[0];
+
+        return $this->text($excerpt !== $text ? $excerpt : '');
+    }
+
+    /**
+     * Render a text remainder (after the separator).
+     *
+     * @param string $text the full text
+     * @param string $separator the separator for the remainder
+     *
+     * @return string the rendered remainder (the full text if separator is not found)
+     */
+    public function remainder(string $text, string $separator = '<!--more-->')
+    {
+        $remainderArray = explode($separator, $text, 2);
+
+        return $this->text(end($remainderArray));
+    }
+
+    /**
      * Render inline links.
      *
      * @param string $excerpt the text excerpt

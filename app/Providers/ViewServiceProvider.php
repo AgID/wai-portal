@@ -33,6 +33,14 @@ class ViewServiceProvider extends ServiceProvider
             return "<?php echo (new Markdown())->text($markdown); ?>";
         });
 
+        Blade::directive('excerpt', function ($markdown) {
+            return "<?php echo (new Markdown())->excerpt($markdown); ?>";
+        });
+
+        Blade::directive('remainder', function ($markdown) {
+            return "<?php echo (new Markdown())->remainder($markdown); ?>";
+        });
+
         View::composer([
             'auth.*',
             'pages.*',
