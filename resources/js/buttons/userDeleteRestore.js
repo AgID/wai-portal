@@ -1,3 +1,4 @@
+import { upperCaseFirst } from 'upper-case-first';
 import Datatable from '../datatables';
 import Notification from '../notification';
 import I18n from '../i18n';
@@ -12,13 +13,13 @@ export default (() => {
             const isAjax = 'ajax' in userDeleteRestoreButton.dataset;
             const isTrashed = userDeleteRestoreButton.dataset.trashed;
             const currentAction = isTrashed
-                ? I18n.t('Ripristino')
-                : I18n.t('Eliminazione');
+                ? I18n.t('ripristino')
+                : I18n.t('eliminazione');
             const confirmation = {
-                title: [
+                title: upperCaseFirst([
                     currentAction,
                     I18n.t("dell'utente"),
-                ].join(' '),
+                ].join(' ')),
                 body: [
                     '<p>',
                     isTrashed ? I18n.t("Stai ripristinando l'utente") : I18n.t("Stai eliminando l'utente"),

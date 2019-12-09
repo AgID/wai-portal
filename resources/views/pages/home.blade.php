@@ -45,7 +45,7 @@
                             <div class="card-body">
                             <h5 class="card-title big-heading">{{ __("Cos'è") }}</h5>
                             <p class="card-text">
-                                {{ __(':app è una piattaforma che analizza le statistiche in tempo reale sui visitatori di un sito web della pubblica aministrazione fornendo dei report dettagliati.', ['app' => config('app.name')]) }}
+                                {{ __(':app è una piattaforma che offre le statistiche in tempo reale dei visitatori di un sito della pubblica aministrazione, fornendo agli operatori dei report dettagliati.', ['app' => config('app.name')]) }}
                             </p>
                             </div>
                         </div>
@@ -69,7 +69,7 @@
                             <div class="card-body">
                             <h5 class="card-title big-heading">{{ __("A cosa serve") }}</h5>
                             <p class="card-text">
-                                {{ __(':app_short ha lo scopo di aiutare le amministrazioni a comprendere il comportamento degli utenti online nell’ottica di fornire al pubblico siti e servizi via via più efficaci ed inclusivi.', ['app_short' => config('app.name_short')]) }}
+                                {{ __(":app_short aiuta le amministrazioni a comprendere il comportamento degli utenti online, con l'obiettivo di fornire ai cittadini siti e servizi via via più efficaci e inclusivi.", ['app_short' => config('app.name_short')]) }}
                             </p>
                             </div>
                         </div>
@@ -181,7 +181,7 @@
                             'link' => route('contacts'),
                             'type' => 'outline-primary',
                         ])
-                            {{ __('Contattaci') }}
+                        {{ __('contattaci') }}
                         @endcomponent
                     </div>
                 </div>
@@ -213,7 +213,7 @@
                         'icon' => 'it-arrow-right',
                         'iconColor' => 'primary',
                     ])
-                        {{ __('Vai agli analytics') }}
+                    {{ __('vai agli analytics') }}
                     @endcomponent
                     </div>
                     @endguest
@@ -233,7 +233,7 @@
             @component('layouts.components.link_button', [
                 'link' => route('faq'),
             ])
-                {{ __('Consulta le faq') }}
+            {{ __('Consulta le FAQ') }}
             @endcomponent
         </div>
         <div class="absolute-top-left d-none d-md-block">

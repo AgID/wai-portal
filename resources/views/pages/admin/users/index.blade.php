@@ -11,7 +11,7 @@
         'link' => route('admin.users.create'),
         'size' => 'lg',
     ])
-        {{ __('Aggiungi utente') }}
+    {{ __('aggiungi utente') }}
     @endcomponent
     </div>
     @endcomponent

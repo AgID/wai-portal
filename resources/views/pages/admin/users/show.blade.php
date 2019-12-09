@@ -47,7 +47,7 @@
                     'link' => route('admin.users.edit', ['user' => $user]),
                     'size' => 'lg',
                 ])
-                    {{ __('Modifica') }}
+                {{ __('modifica') }}
                 @endcomponent
             </div>
             @endcomponent
@@ -65,7 +65,7 @@
                 @if ($user->status->is(UserStatus::INVITED))
                 <h5 class="section-header">{{ __('invito') }}</h5>
                 <p>
-                    {{ __("Se l'indirizzo email è corretto puoi inviare di nuovo l'invito!") }}
+                    {{ __("Se l'indirizzo email è corretto puoi inviare un nuovo invito!") }}
                 </p>
                 <a role="button" class="btn btn-sm btn-outline-secondary disabled"
                     href="{{ route('admin.users.verification.resend', ['user' => $user]) }}"
@@ -88,7 +88,7 @@
                     data-current-status-description="{{ $user->status->description }}"
                     data-current-status="{{ $user->status->key }}"
                     aria-disabled="true">
-                    {{ __('Sospendi') }}
+                    {{ ucfirst(__('sospendi')) }}
                 </a>
                 @endif
                 @if ($user->status->is(UserStatus::SUSPENDED))
@@ -103,7 +103,7 @@
                     data-current-status-description="{{ $user->status->description }}"
                     data-current-status="{{ $user->status->key }}"
                     aria-disabled="true">
-                    {{ __('Riattiva') }}
+                    {{ ucfirst(__('riattiva')) }}
                 </a>
                 @endif
             </div>

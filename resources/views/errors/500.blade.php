@@ -14,5 +14,5 @@
 @env('local')
 <p class="text-primary my-4">{{ $exception->getMessage() }}</p>
 @endenv
-<p><a href="{{ route('home') }}">{{ __('Torna alla pagina iniziale') }}</a>.</p>
+<p><a href="{{ route('home') }}">{{ ucfirst(__('torna alla pagina iniziale')) }}</a>.</p>
 @endsection

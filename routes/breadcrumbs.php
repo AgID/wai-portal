@@ -160,7 +160,7 @@ Breadcrumbs::for('admin.password.forgot.show', function ($trail) {
 // Web Analytics Italia > Password change
 Breadcrumbs::for('admin.password.change.show', function ($trail) {
     $trail->parent('home');
-    $trail->push(__('Cambio della password'), route('admin.password.change.show'));
+    $trail->push(__('Cambio password'), route('admin.password.change.show'));
 });
 
 // Web Analytics Italia > Password reset

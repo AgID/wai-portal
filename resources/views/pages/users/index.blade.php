@@ -12,7 +12,7 @@
         'link' => $userCreateUrl,
         'size' => 'lg',
     ])
-        {{ __('Aggiungi utente') }}
+    {{ __('aggiungi utente') }}
     @endcomponent
     </div>
     @endif

@@ -11,7 +11,7 @@
                 <div class="form-row">
                     <div class="form-group col-md-6">
                         <input type="text" class="form-control-plaintext" id="name" value="{{ $website->name }}" readonly>
-                        <label for="name">{{ __('Nome del sito') }}</label>
+                        <label for="name">{{ ucfirst(__('nome del sito')) }}</label>
                     </div>
                     <div class="form-group col-md-6">
                         <input type="text" class="form-control-plaintext" id="url" value="{{ $website->url }}" readonly>
@@ -21,7 +21,7 @@
                 <div class="form-row">
                     <div class="form-group col-md-6">
                         <input type="text" class="form-control-plaintext" id="type" value="{{ $website->type->description }}" readonly>
-                        <label for="type">{{ __('Tipologia') }}</label>
+                        <label for="type">{{ ucfirst(__('tipologia')) }}</label>
                     </div>
                     <div class="form-group col-md-6">
                         <input type="text" class="form-control-plaintext" id="created_at" value="{{ $website->created_at->format('d/m/Y') }}" readonly>
@@ -42,7 +42,7 @@
                     'link' => $websiteEditUrl,
                     'size' => 'lg',
                 ])
-                    {{ __('Modifica') }}
+                {{ __('modifica') }}
                 @endcomponent
                 @endcan
             </div>
@@ -82,7 +82,7 @@
                     data-current-status-description="{{ $website->status->description }}"
                     data-current-status="{{ $website->status->key }}"
                     aria-disabled="true">
-                    {{ __('Archivia') }}
+                    {{ ucfirst(__('archivia')) }}
                 </a>
                 @else
                 <h5 class="section-header">{{ __('ripristino') }}</h5>
@@ -96,12 +96,12 @@
                     data-current-status-description="{{ $website->status->description }}"
                     data-current-status="{{ $website->status->key }}"
                     aria-disabled="true">
-                    {{ __('Ripristina') }}
+                    {{ ucfirst(__('ripristina')) }}
                 </a>
                 @endif
                 @endcan
                 @else
-                <h5 class="section-header">{{ __('sito istituzionale') }}</h5>
+                <h5 class="section-header">{{ __('Sito istituzionale') }}</h5>
                 <p>
                     {{ __('Questo è il sito istituzionale della tua Pubblica Amministrazione.') }}
                 </p>
@@ -199,7 +199,7 @@
         'link' => $websiteEditUrl,
         'size' => 'lg',
     ])
-        {{ __('Modifica') }}
+    {{ __('modifica') }}
     @endcomponent
     </div>
     @endcomponent

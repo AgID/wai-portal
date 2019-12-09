@@ -72,7 +72,7 @@ class ExpiredInvitationListenerTest extends TestCase
                     'invitedFullName' => $user->full_name,
                     'profileUrl' => route('users.show', ['user' => $user]),
                 ]);
-                $this->assertEquals($mail->subject, __('[Info] - Avviso utilizzo invito scaduto'));
+                $this->assertEquals($mail->subject, __('[Info] - Avviso di utilizzo di un invito scaduto'));
 
                 return $mail->hasTo($this->publicAdministrationAdmin->email, $this->publicAdministrationAdmin->full_name);
             }

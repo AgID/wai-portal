@@ -11,7 +11,7 @@
                 <div class="input-group-prepend">
                     <div class="input-group-text"><svg class="icon icon-sm"><use xlink:href="{{ asset('svg/sprite.svg#it-help-circle') }}"></use></svg></div>
                 </div>
-                <label for="website_name">{{ __('Nome del sito') }}</label>
+                <label for="website_name">{{ ucfirst(__('nome del sito')) }}</label>
                 <input type="text" class="form-control{{ $errors->has('website_name') ? ' is-invalid' : '' }}" id="website_name" name="website_name" value="{{ old('website_name', $website->name ?? '') }}" maxlength="255" aria-labelledby="name-input-help" aria-required="true" required {{ optional($website->type ?? null)->is(WebsiteType::PRIMARY) ? 'readonly' : '' }}>
                 @error('website_name')
                 <div class="invalid-feedback">{{ $errors->first('website_name') }}</div>
@@ -19,7 +19,7 @@
                 <div class="invalid-feedback">{{ __('validation.required', ['attribute' => __('validation.attributes.website_name')]) }}</div>
                 @enderror
             </div>
-            <small id="name-input-help" class="form-text text-muted">{{ __('Inserisci il nome del sito web: una buona scelta potrebbe essere il titolo della pagina iniziale.') }}</small>
+            <small id="name-input-help" class="form-text text-muted">{{ __('Inserisci il nome del sito: una buona scelta potrebbe essere il titolo della pagina iniziale.') }}</small>
         </div>
     </div>
     <div class="form-row">
@@ -36,7 +36,7 @@
                 <div class="invalid-feedback">{{ __('validation.url', ['attribute' => __('validation.attributes.url')]) }}</div>
                 @enderror
             </div>
-            <small id="url-input-help" class="form-text text-muted">{!! __("Inserisci l'indirizzo del sito web completo del protocollo :http o :https (es. https://www.agid.gov.it).", ['http' => '<code>http://</code>', 'https' => '<code>https://</code>']) !!}</small>
+            <small id="url-input-help" class="form-text text-muted">{!! __("Inserisci l'indirizzo del sito completo del protocollo :http o :https (es. https://www.agid.gov.it).", ['http' => '<code>http://</code>', 'https' => '<code>https://</code>']) !!}</small>
         </div>
     </div>
     @unless (optional($website->type ?? null)->is(WebsiteType::PRIMARY))
@@ -47,7 +47,7 @@
                     <div class="input-group-text"><svg class="icon icon-sm"><use xlink:href="{{ asset('svg/sprite.svg#it-folder') }}"></use></svg></div>
                 </div>
                 <div class="bootstrap-select-wrapper form-control flex-grow-1{{ $errors->has('type') ? ' is-invalid' : '' }}">
-                    <label>{{ __('Tipologia') }}</label>
+                    <label for="type">{{ ucfirst(__('tipologia')) }}</label>
                     <select title="Scegli una tipologia" id="type" name="type" aria-required="true" required>
                     @foreach(WebsiteType::toSelectArray() as $value => $label)
                         @unless ($value === WebsiteType::PRIMARY)
@@ -64,12 +64,12 @@
             </div>
             <small id="type-input-help" class="form-text text-muted">
                 {{ __('Non sai quale tipologia scegliere per il sito della tua PA?') }}
-                <a href={{ route('faq') }}>{{ __('Consulta le FAQ.') }}</a>
+                <a href={{ route('faq') }}>{{ __('Consulta le FAQ') }}</a>
             </small>
         </div>
     </div>
     @endunless
-    <h3 class="section-header{{ $errors->has('permissions') ? ' is-invalid' : '' }}">{{ __('Permessi degli utenti') }}</h3>
+    <h3 class="section-header{{ $errors->has('permissions') ? ' is-invalid' : '' }}">{{ __('permessi degli utenti') }}</h3>
     @error('permissions')
     <div class="invalid-feedback">{{ $errors->first('permissions') }}</div>
     @enderror

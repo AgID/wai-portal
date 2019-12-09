@@ -14,7 +14,7 @@ export default (() => {
             .catch(error => {
                 if (error.response && error.response.status === 304) {
                     notModified && notModified();
-                    notModified || Notification.showNotification(I18n.t('operazione non effettuata'), I18n.t("L'azione richiesta risulta essere già stata effettuata."), 'info', 'it-info-circle');
+                    notModified || Notification.showNotification(I18n.t('operazione non effettuata'), I18n.t("L'azione richiesta è già stata effettuata."), 'info', 'it-info-circle');
                     Datatable.reload();
                 } else if (!error.response || error.response.status !== 401) {
                     Notification.showServerErrorNotification();

@@ -33,6 +33,14 @@ class ViewServiceProvider extends ServiceProvider
             return "<?php echo (new Markdown())->text($markdown); ?>";
         });
 
+        Blade::directive('excerpt', function ($markdown) {
+            return "<?php echo (new Markdown())->excerpt($markdown); ?>";
+        });
+
+        Blade::directive('remainder', function ($markdown) {
+            return "<?php echo (new Markdown())->remainder($markdown); ?>";
+        });
+
         View::composer([
             'auth.*',
             'pages.*',
@@ -55,7 +63,7 @@ class ViewServiceProvider extends ServiceProvider
     protected function mergeViewConfig()
     {
         try {
-            $viewConfig = Yaml::parseFile(resource_path('views/config.yml'));
+            $viewConfig = Yaml::parseFile(resource_path('data/config.yml'));
             $currentLocale = app()->getLocale();
             $configLocale = array_key_exists($currentLocale, $viewConfig) ? $currentLocale : config('app.fallback_locale');
             $localizedViewConfig = $viewConfig[$configLocale];

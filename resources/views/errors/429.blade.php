@@ -8,5 +8,5 @@
 
 @section('content')
 <p class="lead text-primary font-weight-semibold">{{ __('Spiacenti, sono pervenute troppe richieste.') }}</p>
-<p><a href="{{ route('home') }}">{{ __('Torna alla pagina iniziale') }}</a>.</p>
+<p><a href="{{ route('home') }}">{{ ucfirst(__('torna alla pagina iniziale')) }}</a>.</p>
 @endsection

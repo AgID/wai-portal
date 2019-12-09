@@ -52,7 +52,7 @@
                     'link' => $userEditUrl,
                     'size' => 'lg',
                 ])
-                    {{ __('Modifica') }}
+                {{ ucfirst(__('modifica')) }}
                 @endcomponent
                 @endcan
             </div>
@@ -72,7 +72,7 @@
                 @if ($user->status->is(UserStatus::INVITED))
                 <h5 class="section-header">{{ __('invito') }}</h5>
                 <p>
-                    {{ __("Se l'indirizzo email è corretto puoi inviare di nuovo l'invito!") }}
+                    {{ __("Se l'indirizzo email è corretto puoi inviare un nuovo invito!") }}
                 </p>
                 <a role="button" class="btn btn-sm btn-outline-secondary disabled"
                     href="{{ $userVerificationResendUrl }}"
@@ -86,7 +86,7 @@
                 @if ($user->status->is(UserStatus::ACTIVE) && !$user->is($authUser))
                 <h5 class="section-header">{{ __('sospensione') }}</h5>
                 <p>
-                    {{ __("Se vuoi impedire a questo utente l'accesso ai dati analytics puoi sospenderlo.") }}
+                    {{ __("Se vuoi impedire l'accesso a questo utente puoi sospenderlo.") }}
                 </p>
                 <a role="button" class="btn btn-sm btn-outline-secondary disabled"
                     href="{{ $userSuspendUrl }}"
@@ -95,13 +95,13 @@
                     data-current-status-description="{{ $user->status->description }}"
                     data-current-status="{{ $user->status->key }}"
                     aria-disabled="true">
-                    {{ __('Sospendi') }}
+                    {{ ucfirst(__('sospendi')) }}
                 </a>
                 @endif
                 @if ($user->status->is(UserStatus::SUSPENDED))
                 <h5 class="section-header">{{ __('riattivazione') }}</h5>
                 <p>
-                    {{ __("Se vuoi di nuovo consentire a questo utente l'accesso ai dati analytics puoi riattivarlo.") }}
+                    {{ __("Se vuoi di nuovo consentire l'accesso a questo utente puoi riattivarlo.") }}
                 </p>
                 <a role="button" class="btn btn-sm btn-outline-secondary disabled"
                     href="{{ $userReactivateUrl }}"
@@ -110,22 +110,13 @@
                     data-current-status-description="{{ $user->status->description }}"
                     data-current-status="{{ $user->status->key }}"
                     aria-disabled="true">
-                    {{ __('Riattiva') }}
+                    {{ ucfirst(__('riattiva')) }}
                 </a>
                 @endif
                 @if ($user->status->is(UserStatus::PENDING))
                 <h5 class="section-header">{{ __('non attivo') }}</h5>
                 <p>
                     {{ __("L'attivazione dell'utente avviene quando il sito istituzionale della PA inizia a tracciare il traffico.") }}
-                </p>
-                <p>
-                    {{ __('Non è possibile modificare lo stato.') }}
-                </p>
-                @endif
-                @if ($user->status->is(UserStatus::INACTIVE))
-                <h5 class="section-header">{{ __('appena registrato') }}</h5>
-                <p>
-                    {{ __("L'utente ha solo effettuato l'accesso con SPID, ma non ha completato la procedura di onboarding.") }}
                 </p>
                 <p>
                     {{ __('Non è possibile modificare lo stato.') }}
@@ -174,7 +165,7 @@
         'link' => $userEditUrl,
         'size' => 'lg',
     ])
-        {{ __('Modifica') }}
+    {{ ucfirst(__('modifica')) }}
     @endcomponent
     </div>
     @endcomponent
