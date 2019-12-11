@@ -41,12 +41,20 @@ class UserController extends Controller
     /**
      * Display the users list.
      *
+     * @param Request $request the incoming request
      * @param PublicAdministration $publicAdministration the public administration the users belong to
      *
-     * @return \Illuminate\View\View the view
+     * @return View|RedirectResponse
      */
-    public function index(PublicAdministration $publicAdministration): View
+    public function index(Request $request, PublicAdministration $publicAdministration)
     {
+        $user = $request->user();
+        if ($user->publicAdministrations->isEmpty() && $user->cannot(UserPermission::ACCESS_ADMIN_AREA)) {
+            $request->session()->reflash();
+
+            return redirect()->route('websites.index');
+        }
+
         $usersDatatable = [
             'datatableOptions' => [
                 'searching' => [
