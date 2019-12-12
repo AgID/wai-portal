@@ -123,7 +123,7 @@
         <div class="form-group col-md-6 pl-md-5 d-flex flex-column justify-content-between">
             <p>{{ __('Se riscontri delle inesattezze nei dati visualizzati potresti non riuscire a completare la procedura. Interrompi adesso e riprendi dopo che saranno stati corretti.') }}</p>
             <div>
-                <a href="#" role="button" class="btn btn-icon btn-outline-primary">
+                <a href="https://www.indicepa.gov.it/" role="button" class="btn btn-icon btn-outline-primary">
                     <span class="mr-1">{{ __('I dati NON sono corretti') }}</span>
                     <svg class="icon icon-primary">
                         <use xlink:href="{{ asset('svg/sprite.svg#it-external-link') }}"></use>
