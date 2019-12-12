@@ -20,6 +20,8 @@ ADD ./conf/upstream.conf /etc/nginx/conf.d/
 ADD ./conf/application.conf /etc/nginx/sites-available/
 ADD ./conf/matomo.conf /etc/nginx/sites-available/
 
+RUN sed -i -e s/@PHP_UPSTREAM_CONTAINER@/${PHP_UPSTREAM_CONTAINER}/g /etc/nginx/conf.d/upstream.conf
+RUN sed -i -e s/@PHP_UPSTREAM_PORT@/${PHP_UPSTREAM_PORT}/g /etc/nginx/conf.d/upstream.conf
 
 CMD ["nginx"]
 
