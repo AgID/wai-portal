@@ -7,11 +7,11 @@ ENV=@ENV@
 
 ### Point to the path of your applications code, logs and storage on your host and containers
 APP_CODE_PATH_HOST=../
-APP_CODE_PATH_CONTAINER=/var/www
+APP_CODE_PATH_CONTAINER=/var/www/html
 APP_LOGS_PATH_HOST=./logs
 APP_LOGS_PATH_CONTAINER=/var/log
 APP_STORAGE_PATH_HOST=../storage
-APP_STORAGE_PATH_CONTAINER=/var/www/storage
+APP_STORAGE_PATH_CONTAINER=/var/www/html/storage
 
 ### Choose storage path on your machine. For all storage systems
 DATA_PATH_HOST=./data

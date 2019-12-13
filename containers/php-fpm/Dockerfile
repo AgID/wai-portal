@@ -58,7 +58,7 @@ RUN groupmod -g 1000 www-data
 RUN apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-WORKDIR /var/www
+WORKDIR /var/www/html
 
 CMD ["php-fpm"]
 
