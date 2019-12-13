@@ -1,0 +1,49 @@
+ARG PHP_VERSION
+ARG MATOMO_IMAGE_TAG
+
+FROM matomo-codebase:${MATOMO_IMAGE_TAG} as matomo-codebase
+
+RUN rm /opt/matomo/config/config.ini.php
+
+FROM bitnami/php-fpm:${PHP_VERSION}-prod
+
+LABEL maintainer="Davide Porrovecchio <davide.porrovecchio@agid.gov.it>"
+
+ENV DEBIAN_FRONTEND noninteractive
+
+# install php required extensions
+ARG BUILD_PACKAGES="autoconf build-essential wget"
+ARG MATOMO_PHPREDIS_VERSION
+RUN apt-get update && apt-get install -y ${BUILD_PACKAGES} && \
+    wget https://pecl.php.net/get/redis-${MATOMO_PHPREDIS_VERSION}.tgz && \
+    tar -xvf redis-${MATOMO_PHPREDIS_VERSION}.tgz && \
+    cd redis-${MATOMO_PHPREDIS_VERSION} && \
+    phpize && \
+    ./configure && \
+    make && \
+    make install && \
+    echo "extension=redis.so" >> /opt/bitnami/php/etc/conf.d/matomo.ini && \
+    cd .. && \
+    rm -Rf redis* && \
+    apt-get autoremove --purge -y ${BUILD_PACKAGES} && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN echo "expose_php = Off" >> /opt/bitnami/php/etc/conf.d/wai.ini && \
+    echo "html_errors = Off" >> /opt/bitnami/php/etc/conf.d/wai.ini && \
+    echo "error_log = /dev/stderr" >> /opt/bitnami/php/etc/conf.d/wai.ini && \
+    echo "date.timezone = Europe/Rome" >> /opt/bitnami/php/etc/conf.d/wai.ini && \
+    echo "error_log = /dev/stderr" >> /opt/bitnami/php/etc/php-fpm.d/10-wai-log.conf && \
+    echo "user = www-data" >> /opt/bitnami/php/etc/php-fpm.d/99-wai.conf && \
+    echo "group = www-data" >> /opt/bitnami/php/etc/php-fpm.d/99-wai.conf && \
+    mv /opt/bitnami/php/etc/php-fpm.d/www.conf /opt/bitnami/php/etc/php-fpm.d/50-www.conf
+
+COPY --from=matomo-codebase --chown=www-data:www-data /opt/matomo /var/www/html
+
+WORKDIR /var/www/html
+
+RUN find . -type f -exec chmod 644 {} \; && \
+    find . -type d -exec chmod 755 {} \;
+
+EXPOSE 9000
+
+CMD [ "php-fpm", "-F", "-y", "/opt/bitnami/php/etc/php-fpm.conf" ]
