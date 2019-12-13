@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "089ce5405b073c4b73070d5348c0fcc6",
+    "content-hash": "2bf0a3dfcc9ed8162b03caae8410ec87",
     "packages": [
         {
             "name": "bensampo/laravel-enum",
@@ -1142,16 +1142,16 @@
         },
         {
             "name": "italia/spid-laravel",
-            "version": "v0.9.4-beta",
+            "version": "v0.9.5-beta",
             "source": {
                 "type": "git",
                 "url": "https://github.com/italia/spid-laravel.git",
-                "reference": "6a02570be39b15e3d6bfe272eeb5f49f9f08ad1c"
+                "reference": "1a8d68bd9bc856d009ecca86c1de5680d738a8d0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/italia/spid-laravel/zipball/6a02570be39b15e3d6bfe272eeb5f49f9f08ad1c",
-                "reference": "6a02570be39b15e3d6bfe272eeb5f49f9f08ad1c",
+                "url": "https://api.github.com/repos/italia/spid-laravel/zipball/1a8d68bd9bc856d009ecca86c1de5680d738a8d0",
+                "reference": "1a8d68bd9bc856d009ecca86c1de5680d738a8d0",
                 "shasum": ""
             },
             "require": {
@@ -1205,7 +1205,7 @@
                 "laravel",
                 "php"
             ],
-            "time": "2019-12-03T08:03:51+00:00"
+            "time": "2019-12-13T18:27:44+00:00"
         },
         {
             "name": "jakub-onderka/php-console-color",
@@ -1887,6 +1887,11 @@
                 "ext-openssl": "Install openssl lib in order to handle with x509 certs (require to support sign and encryption)"
             },
             "type": "library",
+            "extra": {
+                "patches_applied": {
+                    "Compatibility with SPID": "https://rawgit.com/italia/spid-laravel/master/patches/php-saml-3.3.0-spid.patch"
+                }
+            },
             "autoload": {
                 "psr-4": {
                     "OneLogin\\": "src/"
@@ -1903,12 +1908,7 @@
                 "onelogin",
                 "saml"
             ],
-            "time": "2019-09-11T13:56:06+00:00",
-            "extra": {
-                "patches_applied": {
-                    "Compatibility with SPID": "https://rawgit.com/italia/spid-laravel/master/patches/php-saml-3.3.0-spid.patch"
-                }
-            }
+            "time": "2019-09-11T13:56:06+00:00"
         },
         {
             "name": "opis/closure",
