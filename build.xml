@@ -500,4 +500,46 @@
         </if>
     </target>
 
+    <!-- Target: build portal image -->
+    <target name="build-portal-image">
+        <if>
+            <not><isset property="PORTAL_IMAGE_TAG"/></not>
+            <then>
+                <fail message="No image tag specified, run bin/phing build-portal-image -DPORTAL_IMAGE_TAG=tag"/>
+            </then>
+        </if>
+        <exec command="docker build --no-cache --rm -f Dockerfile.portal
+            --build-arg PHP_VERSION=${PHP_VERSION}
+            -t webanalyticsitalia/wai-portal:${PORTAL_IMAGE_TAG} ."
+            passthru="true" checkreturn="true"/>
+    </target>
+
+    <!-- Target: build matomo image -->
+    <target name="build-matomo-image">
+        <if>
+            <not><isset property="MATOMO_IMAGE_TAG"/></not>
+            <then>
+                <fail message="No image tag specified, run bin/phing build-matomo-image -DMATOMO_IMAGE_TAG=tag"/>
+            </then>
+        </if>
+        <exec command="docker build --no-cache --rm
+            --build-arg PHP_VERSION=${PHP_VERSION}
+            --build-arg MATOMO_VERSION=${MATOMO_VERSION}
+            --build-arg MATOMO_WAI_THEME_VERSION=${MATOMO_WAI_THEME_VERSION}
+            --build-arg MATOMO_PLUGIN_DISABLESITETRACKING_VERSION=${MATOMO_PLUGIN_DISABLESITETRACKING_VERSION}
+            --build-arg MATOMO_PLUGIN_QUEUEDTRACKING_VERSION=${MATOMO_PLUGIN_QUEUEDTRACKING_VERSION}
+            --build-arg MATOMO_PLUGIN_PROTECTTRACKID_VERSION=${MATOMO_PLUGIN_PROTECTTRACKID_VERSION}
+            --build-arg MATOMO_PLUGIN_CUSTOMDIMENSIONS_VERSION=${MATOMO_PLUGIN_CUSTOMDIMENSIONS_VERSION}
+            --build-arg MATOMO_PLUGIN_LOGINFILTERIP_VERSION=${MATOMO_PLUGIN_LOGINFILTERIP_VERSION}
+            -t matomo-codebase:${MATOMO_IMAGE_TAG} ."
+            dir="containers/matomo" passthru="true" checkreturn="true"/>
+        <exec command="docker build --no-cache --rm -f Dockerfile.matomo
+            --build-arg PHP_VERSION=${PHP_VERSION}
+            --build-arg MATOMO_IMAGE_TAG=${MATOMO_IMAGE_TAG}
+            --build-arg MATOMO_PHPREDIS_VERSION=${MATOMO_PHPREDIS_VERSION}
+            -t webanalyticsitalia/wai-matomo:${MATOMO_IMAGE_TAG} ."
+            passthru="true" checkreturn="true"/>
+        <exec command="docker rmi matomo-codebase:${MATOMO_IMAGE_TAG}" passthru="true" checkreturn="true"/>
+    </target>
+
 </project>
