@@ -5,10 +5,13 @@ LABEL maintainer="Davide Porrovecchio <davide.porrovecchio@agid.gov.it>"
 RUN apk --update add curl && rm /var/cache/apk/*
 
 RUN mkdir -p /opt/matomo
-
 ARG MATOMO_VERSION
-ARG MATOMO_PLUGIN_DISABLESITETRACKING_VERSION
 ARG MATOMO_WAI_THEME_VERSION
+ARG MATOMO_PLUGIN_DISABLESITETRACKING_VERSION
+ARG MATOMO_PLUGIN_QUEUEDTRACKING_VERSION
+ARG MATOMO_PLUGIN_PROTECTTRACKID_VERSION
+ARG MATOMO_PLUGIN_CUSTOMDIMENSIONS_VERSION
+ARG MATOMO_PLUGIN_LOGINFILTERIP_VERSION
 
 RUN curl -fsSL -o matomo.tar.gz \
         "https://builds.matomo.org/matomo-${MATOMO_VERSION}.tar.gz"; \
@@ -22,16 +25,45 @@ RUN curl -fsSL -o GeoIPCity.tar.gz \
     && mv /tmp/geocity/*.mmdb /opt/matomo/misc/ \
     && rm -rf GeoIPCity.tar.gz /tmp/geocity
 
-RUN curl -fsSL -o DisableTracking.tar.gz \
-        "https://github.com/agid/wai-matomo-plugin-DisableTracking/archive/${MATOMO_PLUGIN_DISABLESITETRACKING_VERSION}.tar.gz" \
-    && tar -xf DisableTracking.tar.gz -C /opt/matomo/plugins \
-    && mv /opt/matomo/plugins/wai-matomo-plugin-DisableTracking-${MATOMO_PLUGIN_DISABLESITETRACKING_VERSION} /opt/matomo/plugins/DisableTracking \
-    && rm -rf DisableTracking.tar.gz
-
 RUN curl -fsSL -o WAIMatomoTheme.tar.gz \
         "https://github.com/agid/wai-matomo-theme/releases/download/v${MATOMO_WAI_THEME_VERSION}/wai-matomo-theme_${MATOMO_WAI_THEME_VERSION}_auto_activate.tar.gz" \
     && tar -xf WAIMatomoTheme.tar.gz -C /opt/matomo/plugins \
     && rm -rf WAIMatomoTheme.tar.gz
+
+RUN if [ -n "$MATOMO_PLUGIN_DISABLESITETRACKING_VERSION" ]; then \
+    curl -fsSL -o DisableTracking.tar.gz \
+        "https://github.com/AgID/wai-matomo-plugin-DisableTracking/releases/download/${MATOMO_PLUGIN_DISABLESITETRACKING_VERSION}/DisableTracking.tar.gz" \
+    && tar -xf DisableTracking.tar.gz -C /opt/matomo/plugins \
+    && rm -rf DisableTracking.tar.gz \
+;fi
+
+RUN if [ -n "$MATOMO_PLUGIN_QUEUEDTRACKING_VERSION" ]; then \
+    curl -fsSL -o QueuedTracking.zip \
+        "https://plugins.matomo.org/api/2.0/plugins/QueuedTracking/download/${MATOMO_PLUGIN_QUEUEDTRACKING_VERSION}" \
+    && unzip QueuedTracking.zip -d /opt/matomo/plugins \
+    && rm -rf QueuedTracking.zip \
+;fi
+
+RUN if [ -n "$MATOMO_PLUGIN_PROTECTTRACKID_VERSION" ]; then \
+    curl -fsSL -o ProtectTrackID.zip \
+        "https://plugins.matomo.org/api/2.0/plugins/ProtectTrackID/download/${MATOMO_PLUGIN_PROTECTTRACKID_VERSION}" \
+    && unzip ProtectTrackID.zip -d /opt/matomo/plugins \
+    && rm -rf ProtectTrackID.zip \
+;fi
+
+RUN if [ -n "$MATOMO_PLUGIN_CUSTOMDIMENSIONS_VERSION" ]; then \
+    curl -fsSL -o CustomDimensions.zip \
+        "https://plugins.matomo.org/api/2.0/plugins/CustomDimensions/download/${MATOMO_PLUGIN_CUSTOMDIMENSIONS_VERSION}" \
+    && unzip CustomDimensions.zip -d /opt/matomo/plugins \
+    && rm -rf CustomDimensions.zip \
+;fi
+
+RUN if [ -n "$MATOMO_PLUGIN_LOGINFILTERIP_VERSION" ]; then \
+    curl -fsSL -o LoginFilterIp.zip \
+        "https://github.com/AgID/wai-matomo-plugin-LoginFilterIp/archive/${MATOMO_PLUGIN_LOGINFILTERIP_VERSION}.zip" \
+    && unzip LoginFilterIp.zip -d /opt/matomo/plugins \
+    && rm -rf LoginFilterIp.zip \
+;fi
 
 COPY ./matomo.sql /opt/matomo-install/matomo.sql
 COPY ./install_matomo_db.sh /opt/matomo-install/install_matomo_db.sh

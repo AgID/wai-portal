@@ -91,6 +91,10 @@
                     <token key="MATOMO_VERSION" value="${MATOMO_VERSION}" />
                     <token key="MATOMO_WAI_THEME_VERSION" value="${MATOMO_WAI_THEME_VERSION}" />
                     <token key="MATOMO_PLUGIN_DISABLESITETRACKING_VERSION" value="${MATOMO_PLUGIN_DISABLESITETRACKING_VERSION}" />
+                    <token key="MATOMO_PLUGIN_QUEUEDTRACKING_VERSION" value="${MATOMO_PLUGIN_QUEUEDTRACKING_VERSION}" />
+                    <token key="MATOMO_PLUGIN_PROTECTTRACKID_VERSION" value="${MATOMO_PLUGIN_PROTECTTRACKID_VERSION}" />
+                    <token key="MATOMO_PLUGIN_CUSTOMDIMENSIONS_VERSION" value="${MATOMO_PLUGIN_CUSTOMDIMENSIONS_VERSION}" />
+                    <token key="MATOMO_PLUGIN_LOGINFILTERIP_VERSION" value="${MATOMO_PLUGIN_LOGINFILTERIP_VERSION}" />
                 </replacetokens>
             </filterchain>
         </copy>
