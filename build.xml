@@ -24,6 +24,7 @@
             <filterchain>
                 <replacetokens>
                     <token key="ENV" value="${env.APP_ENV}"/>
+                    <token key="PHP_VERSION" value="${PHP_VERSION}"/>
                     <token key="APP_DEBUG" value="${APP_DEBUG}" />
                     <token key="APP_SALT" value="${APP_SALT}" />
                     <token key="HOSTNAME" value="${HOSTNAME}" />

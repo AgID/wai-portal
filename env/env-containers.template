@@ -22,7 +22,7 @@ COMPOSE_PROJECT_NAME=wai
 ## PHP Version
 
 ### Select a PHP version.
-PHP_VERSION=7.3
+PHP_VERSION=@PHP_VERSION@
 
 ## Docker Host IP
 
