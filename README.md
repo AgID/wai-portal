@@ -7,7 +7,7 @@
 ### Local environment
 
 #### Requirements
-- php >= 7.3
+- php >= 7.3 (extensions requirements can be discovered after running composer)
 - [composer](https://getcomposer.org/)
 - node ([nodenv](https://github.com/nodenv/nodenv))
 - docker and docker-compose
