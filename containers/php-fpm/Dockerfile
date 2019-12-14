@@ -7,9 +7,10 @@ LABEL maintainer="Davide Porrovecchio <davide.porrovecchio@agid.gov.it>"
 ENV DEBIAN_FRONTEND noninteractive
 
 # php required extensions
-RUN apt-get update && apt-get install -y --no-install-recommends libicu-dev && rm -rf /var/lib/apt/lists/* \
-    && docker-php-ext-install pdo_mysql bcmath pcntl intl \
-    && apt-get purge -y --auto-remove libicu-dev
+RUN apt-get update && apt-get install -y --no-install-recommends libicu-dev libpng-dev libfreetype6-dev libjpeg62-turbo-dev libjpeg62-turbo libpng16-16 libfreetype6 libzip-dev unzip && rm -rf /var/lib/apt/lists/* \
+    && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
+    && docker-php-ext-install pdo_mysql gd opcache zip bcmath pcntl intl \
+    && apt-get purge -y --auto-remove libpng-dev libfreetype6-dev libjpeg62-turbo-dev
 
 # xdebug
 ARG INSTALL_XDEBUG=false
@@ -46,19 +47,14 @@ RUN if [ "env-${ENV}" = "env-local" ] || [ "env-${ENV}" = "env-testing" ]; then 
 ;fi
 
 # configuration files
-COPY ./laravel.ini /usr/local/etc/php/conf.d
-COPY ./xlaravel.pool.conf /usr/local/etc/php-fpm.d/
 COPY ./php.ini /usr/local/etc/php/php.ini
-
-# set uid and gid
-RUN usermod -u 1000 www-data
-RUN groupmod -g 1000 www-data
 
 # cleanup
 RUN apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-WORKDIR /var/www/html
+ARG APP_CODE_PATH_CONTAINER
+WORKDIR ${APP_CODE_PATH_CONTAINER}
 
 CMD ["php-fpm"]
 
