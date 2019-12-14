@@ -16,6 +16,9 @@
         <then>
             <property file="env/build.properties.${env.APP_ENV}"/>
         </then>
+        <else>
+            <fail message="Build properties file 'env/build.properties.${env.APP_ENV}' not found."/>
+        </else>
     </if>
 
     <!-- Target: compile-template -->
