@@ -28,6 +28,7 @@
                 <replacetokens>
                     <token key="ENV" value="${env.APP_ENV}"/>
                     <token key="PHP_VERSION" value="${PHP_VERSION}"/>
+                    <token key="APP_CODE_PATH_CONTAINER" value="${APP_CODE_PATH_CONTAINER}"/>
                     <token key="APP_DEBUG" value="${APP_DEBUG}" />
                     <token key="APP_SALT" value="${APP_SALT}" />
                     <token key="HOSTNAME" value="${HOSTNAME}" />
@@ -244,25 +245,25 @@
             <equals arg1="${env.APP_ENV}" arg2="testing"/>
             <then>
                 <echo msg="Copying application files to application-code volume"/>
-                <exec command="docker run -v application-code:/var/www/ -v application-logs:/var/log/ --name application-container busybox mkdir -p /var/log/nginx" checkreturn="true"/>
-                <exec command="docker cp app application-container:/var/www/" checkreturn="true"/>
-                <exec command="docker cp bootstrap application-container:/var/www/" checkreturn="true"/>
-                <exec command="docker cp config application-container:/var/www/" checkreturn="true"/>
-                <exec command="docker cp database application-container:/var/www/" checkreturn="true"/>
-                <exec command="docker cp public application-container:/var/www/" checkreturn="true"/>
-                <exec command="docker cp resources application-container:/var/www/" checkreturn="true"/>
-                <exec command="docker cp routes application-container:/var/www/" checkreturn="true"/>
-                <exec command="docker cp storage application-container:/var/www/" checkreturn="true"/>
-                <exec command="docker cp tests application-container:/var/www/" checkreturn="true"/>
-                <exec command="docker cp vendor application-container:/var/www/" checkreturn="true"/>
-                <exec command="docker cp .env application-container:/var/www/" checkreturn="true"/>
-                <exec command="docker cp .env.dusk.testing application-container:/var/www/" checkreturn="true"/>
-                <exec command="docker cp artisan application-container:/var/www/" checkreturn="true"/>
-                <exec command="docker cp composer.json application-container:/var/www/" checkreturn="true"/>
-                <exec command="docker cp composer.lock application-container:/var/www/" checkreturn="true"/>
-                <exec command="docker cp phpunit.dusk.xml application-container:/var/www/" checkreturn="true"/>
-                <exec command="docker cp phpunit.xml application-container:/var/www/" checkreturn="true"/>
-                <exec command="docker cp .node-version application-container:/var/www/" checkreturn="true"/>
+                <exec command="docker run -v application-code:${APP_CODE_PATH_CONTAINER} -v application-logs:/var/log/ --name application-container busybox mkdir -p /var/log/nginx" checkreturn="true"/>
+                <exec command="docker cp app application-container:${APP_CODE_PATH_CONTAINER}" checkreturn="true"/>
+                <exec command="docker cp bootstrap application-container:${APP_CODE_PATH_CONTAINER}" checkreturn="true"/>
+                <exec command="docker cp config application-container:${APP_CODE_PATH_CONTAINER}" checkreturn="true"/>
+                <exec command="docker cp database application-container:${APP_CODE_PATH_CONTAINER}" checkreturn="true"/>
+                <exec command="docker cp public application-container:${APP_CODE_PATH_CONTAINER}" checkreturn="true"/>
+                <exec command="docker cp resources application-container:${APP_CODE_PATH_CONTAINER}" checkreturn="true"/>
+                <exec command="docker cp routes application-container:${APP_CODE_PATH_CONTAINER}" checkreturn="true"/>
+                <exec command="docker cp storage application-container:${APP_CODE_PATH_CONTAINER}" checkreturn="true"/>
+                <exec command="docker cp tests application-container:${APP_CODE_PATH_CONTAINER}" checkreturn="true"/>
+                <exec command="docker cp vendor application-container:${APP_CODE_PATH_CONTAINER}" checkreturn="true"/>
+                <exec command="docker cp .env application-container:${APP_CODE_PATH_CONTAINER}" checkreturn="true"/>
+                <exec command="docker cp .env.dusk.testing application-container:${APP_CODE_PATH_CONTAINER}" checkreturn="true"/>
+                <exec command="docker cp artisan application-container:${APP_CODE_PATH_CONTAINER}" checkreturn="true"/>
+                <exec command="docker cp composer.json application-container:${APP_CODE_PATH_CONTAINER}" checkreturn="true"/>
+                <exec command="docker cp composer.lock application-container:${APP_CODE_PATH_CONTAINER}" checkreturn="true"/>
+                <exec command="docker cp phpunit.dusk.xml application-container:${APP_CODE_PATH_CONTAINER}" checkreturn="true"/>
+                <exec command="docker cp phpunit.xml application-container:${APP_CODE_PATH_CONTAINER}" checkreturn="true"/>
+                <exec command="docker cp .node-version application-container:${APP_CODE_PATH_CONTAINER}" checkreturn="true"/>
             </then>
             <else>
                 <echo msg="Create log directories if needed..."/>

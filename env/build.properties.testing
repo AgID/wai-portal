@@ -8,6 +8,10 @@
 # ---
 PHP_VERSION=7.3
 
+# Container
+# ---------
+APP_CODE_PATH_CONTAINER=/var/www/html
+
 # Application
 # -----------
 APP_VERSION=0.1-alpha
