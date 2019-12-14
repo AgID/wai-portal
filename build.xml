@@ -144,13 +144,13 @@
     <target name="clean" depends="set-docker-compose-env">
         <echo msg="Cleaning environment..."/>
         <!-- Delete containers data directory -->
-        <echo msg="Deleting containers data directory...."/>
+        <echo msg="Deleting containers data directory..."/>
         <delete dir="containers/data" includeemptydirs="true" quiet="true"/>
         <!-- Delete testing db file -->
-        <echo msg="Deleting testing database file...."/>
+        <echo msg="Deleting testing database file..."/>
         <delete file="database/testing.sqlite" quiet="true"/>
         <!-- Delete containers logs directory -->
-        <echo msg="Deleting containers logs directory...."/>
+        <echo msg="Deleting containers logs directory..."/>
         <delete dir="containers/logs" includeemptydirs="true" quiet="true"/>
         <echo msg="Deleting containers and images..."/>
         <!-- Stopping and deleting running containers and images -->
@@ -161,7 +161,7 @@
                 <exec command="docker-compose down --rmi 'local' -v" dir="containers" passthru="true" checkreturn="true"/>
             </then>
         </if>
-        <echo msg="Deleting environment files...."/>
+        <echo msg="Deleting environment files..."/>
         <delete file=".env" quiet="true"/>
         <delete file="containers/.env" quiet="true"/>
         <delete file="containers/docker-compose.override.yml" quiet="true"/>
