@@ -107,8 +107,8 @@
 
     <!-- Target: set-docker-compose-env -->
     <target name="set-docker-compose-env">
-    <!-- Set docker-compose .env file according to current environment -->
-    <echo message="Setting docker-compose environment..."/>
+        <!-- Set docker-compose .env file according to current environment -->
+        <echo message="Setting docker-compose environment..."/>
         <!-- Calculated properties -->
         <echo msg="Calculating properties..."/>
         <php function="random_bytes" returnProperty="APP_SALT">
@@ -301,6 +301,11 @@
                 </if>
             </else>
         </if>
+        <!-- Set files ownership -->
+        <echo msg="Setting files ownership..."/>
+        <exec command="docker-compose exec php-fpm chown -R www-data:www-data storage database .env" dir="containers" checkreturn="true"/>
+        <exec command="docker-compose exec php-fpm chown -R www-data:www-data /opt/matomo/tmp" dir="containers" checkreturn="true"/>
+        <exec command="docker-compose exec php-fpm chown www-data:www-data /opt/matomo/config/config.ini.php" dir="containers" checkreturn="true"/>
         <!-- Wait for mariadb container to start gracefully -->
         <echo msg="Waiting for database container to be ready..."/>
         <retry retryDelay="5" retryCount="12">
@@ -336,14 +341,14 @@
         </if>
         <!-- Run migrations -->
         <echo msg="Running database migrations..."/>
-        <exec command="docker-compose exec php-fpm php artisan migrate" dir="containers" passthru="true" checkreturn="true"/>
+        <exec command="docker-compose exec -u www-data php-fpm php artisan migrate" dir="containers" passthru="true" checkreturn="true"/>
         <!-- Create roles -->
         <exec command="docker-compose exec mariadb mysql -u root -p${MARIADB_ROOT_PASSWORD} ${MARIADB_DATABASE} -e 'select * from abilities where id=1'" dir="containers" outputProperty="checkRoles"/>
         <if>
             <equals arg1="${checkRoles}" arg2=""/>
             <then>
                 <echo msg="Creating application roles..."/>
-                <exec command="docker-compose exec php-fpm php artisan app:init-permissions" dir="containers" passthru="true" checkreturn="true"/>
+                <exec command="docker-compose exec -u www-data php-fpm php artisan app:init-permissions" dir="containers" passthru="true" checkreturn="true"/>
             </then>
         </if>
         <!-- Database seed -->
@@ -352,22 +357,22 @@
             <equals arg1="${checkDBseed}" arg2=""/>
             <then>
                 <echo msg="Seeding database..."/>
-                <exec command="docker-compose exec php-fpm php artisan db:seed" dir="containers" passthru="true" checkreturn="true"/>
+                <exec command="docker-compose exec -u www-data php-fpm php artisan db:seed" dir="containers" passthru="true" checkreturn="true"/>
             </then>
         </if>
         <!-- Clear sessions and caches -->
         <echo msg="Clearing sessions and caches..."/>
-        <exec command="docker-compose exec php-fpm php artisan view:clear" dir="containers" passthru="true" checkreturn="true"/>
-        <exec command="docker-compose exec php-fpm php artisan route:clear" dir="containers" passthru="true" checkreturn="true"/>
-        <exec command="docker-compose exec php-fpm php artisan config:clear" dir="containers" passthru="true" checkreturn="true"/>
-        <exec command="docker-compose exec php-fpm php artisan cache:clear" dir="containers" passthru="true" checkreturn="true"/>
-        <exec command="docker-compose exec php-fpm php artisan clear-compiled" dir="containers" passthru="true" checkreturn="true"/>
+        <exec command="docker-compose exec -u www-data php-fpm php artisan view:clear" dir="containers" passthru="true" checkreturn="true"/>
+        <exec command="docker-compose exec -u www-data php-fpm php artisan route:clear" dir="containers" passthru="true" checkreturn="true"/>
+        <exec command="docker-compose exec -u www-data php-fpm php artisan config:clear" dir="containers" passthru="true" checkreturn="true"/>
+        <exec command="docker-compose exec -u www-data php-fpm php artisan cache:clear" dir="containers" passthru="true" checkreturn="true"/>
+        <exec command="docker-compose exec -u www-data php-fpm php artisan clear-compiled" dir="containers" passthru="true" checkreturn="true"/>
         <!-- Populate Website list -->
         <echo msg="Populating Websites list..."/>
-        <exec command="docker-compose exec php-fpm php artisan app:update-websites" dir="containers" passthru="true" checkreturn="true"/>
+        <exec command="docker-compose exec -u www-data php-fpm php artisan app:update-websites" dir="containers" passthru="true" checkreturn="true"/>
         <!-- Populate User list -->
         <echo msg="Populating Users list..."/>
-        <exec command="docker-compose exec php-fpm php artisan app:update-users" dir="containers" passthru="true" checkreturn="true"/>
+        <exec command="docker-compose exec -u www-data php-fpm php artisan app:update-users" dir="containers" passthru="true" checkreturn="true"/>
         <echo msg="Deleting sessions..."/>
         <delete>
             <fileset dir="storage/framework/sessions">
@@ -392,17 +397,15 @@
                 <fail message="Testing not allowed in environments other than local or testing"/>
             </then>
         </if>
-        <!-- Set permissions -->
-        <echo msg="Setting permissions..."/>
-        <exec command="docker-compose exec php-fpm bash -c 'rm -f database/testing.sqlite; touch database/testing.sqlite'" dir="containers"/>
-        <exec command="docker-compose exec php-fpm bash -c 'touch storage/logs/testing.log'" dir="containers"/>
-        <exec command="docker-compose exec php-fpm chown -R www-data:www-data storage" dir="containers" passthru="true" checkreturn="true"/>
-        <exec command="docker-compose exec php-fpm chown -R www-data:www-data database" dir="containers" passthru="true" checkreturn="true"/>
+        <!-- Set testing database file -->
+        <echo msg="Setting testing database file..."/>
+        <exec command="docker-compose exec -u www-data php-fpm bash -c 'rm -f database/testing.sqlite; touch database/testing.sqlite'" dir="containers"/>
+        <exec command="docker-compose exec php-fpm chown -R www-data:www-data tests" dir="containers" checkreturn="true"/>
         <!-- Execute phpunit to run unit tests -->
         <echo msg="Running unit tests [PHPUnit]..."/>
-        <exec command="docker-compose exec php-fpm vendor/phpunit/phpunit/phpunit" dir="containers" passthru="true" checkreturn="true"/>
+        <exec command="docker-compose exec -u www-data php-fpm vendor/phpunit/phpunit/phpunit" dir="containers" passthru="true" checkreturn="true"/>
         <!-- Install lighthouse -->
-        <exec command="docker-compose exec php-fpm lighthouse-ci --version" dir="containers" returnProperty="checkLighthouse"/>
+        <exec command="docker-compose exec -u www-data php-fpm lighthouse-ci --version" dir="containers" returnProperty="checkLighthouse"/>
         <if>
             <not><equals arg1="${checkLighthouse}" arg2="0"/></not>
             <then>
@@ -418,15 +421,15 @@
                 <include name="report-*"/>
             </fileset>
         </delete>
-        <exec command="docker-compose exec php-fpm php artisan dusk" dir="containers" passthru="true" checkreturn="true"/>
+        <exec command="docker-compose exec -u www-data php-fpm php artisan dusk" dir="containers" passthru="true" checkreturn="true"/>
         <!-- Restore the Users/Websites indexes after tests -->
         <if>
             <equals arg1="${env.APP_ENV}" arg2="local"/>
             <then>
                 <echo msg="Restoring User list after tests..."/>
-                <exec command="docker-compose exec php-fpm php artisan app:update-users" dir="containers" passthru="true" checkreturn="true"/>
+                <exec command="docker-compose exec -u www-data php-fpm php artisan app:update-users" dir="containers" passthru="true" checkreturn="true"/>
                 <echo msg="Restoring Website list after tests..."/>
-                <exec command="docker-compose exec php-fpm php artisan app:update-websites" dir="containers" passthru="true" checkreturn="true"/>
+                <exec command="docker-compose exec -u www-data php-fpm php artisan app:update-websites" dir="containers" passthru="true" checkreturn="true"/>
             </then>
         </if>
     </target>
