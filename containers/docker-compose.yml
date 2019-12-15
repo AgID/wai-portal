@@ -11,6 +11,10 @@ volumes:
     driver: local
   matomo-install:
     driver: local
+  mariadb-data:
+    driver: local
+  elasticsearch-data:
+    driver: local
 
 services:
 # php-fpm
@@ -83,8 +87,7 @@ services:
   mariadb:
     image: mariadb
     volumes:
-      - ${DATA_PATH_HOST}/mariadb:/var/lib/mysql
-      - ${APP_LOGS_PATH_HOST}:${APP_LOGS_PATH_CONTAINER}
+      - mariadb-data:/var/lib/mysql
       - matomo-install:/opt/matomo-install/
     environment:
       - MYSQL_DATABASE=${MARIADB_DATABASE}
@@ -186,7 +189,7 @@ services:
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
       - TAKE_FILE_OWNERSHIP=1
     volumes:
-      - ${DATA_PATH_HOST}/elasticsearch:/usr/share/elasticsearch/data
+      - elasticsearch-data:/usr/share/elasticsearch/data
     ulimits:
       memlock:
         soft: -1
