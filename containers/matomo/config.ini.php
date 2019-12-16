@@ -90,8 +90,8 @@ Plugins[] = "Marketplace"
 Plugins[] = "ProfessionalServices"
 Plugins[] = "UserId"
 Plugins[] = "CustomPiwikJs"
-Plugins[] = "DisableTracking"
 Plugins[] = "WAIMatomoTheme"
+@MATOMO_PLUGINS@
 
 [PluginsInstalled]
 PluginsInstalled[] = "Diagnostics"
@@ -154,9 +154,11 @@ PluginsInstalled[] = "Marketplace"
 PluginsInstalled[] = "ProfessionalServices"
 PluginsInstalled[] = "UserId"
 PluginsInstalled[] = "CustomPiwikJs"
-PluginsInstalled[] = "DisableTracking"
 PluginsInstalled[] = "Tour"
 PluginsInstalled[] = "WAIMatomoTheme"
+@MATOMO_PLUGINS_INSTALLED@
 
 [WAIMatomoTheme]
 waiUrl = "https://@MATOMO_WAI_URL@"
+
+@MATOMO_MORE_CONFIG@

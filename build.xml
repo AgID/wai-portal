@@ -318,9 +318,8 @@
             <then>
                 <echo msg="Installing Matomo database..."/>
                 <exec command="docker-compose exec mariadb bash /opt/matomo-install/install_matomo_db.sh" dir="containers" checkreturn="true"/>
-                <exec command="docker-compose exec mariadb bash /opt/matomo-install/install_disable_tracking_plugin.sh" dir="containers" checkreturn="true"/>
-                <exec command="docker-compose exec php-fpm rm -Rf /opt/matomo-install/" dir="containers" checkreturn="true"/>
-                <exec command="docker-compose exec php-fpm chown -R www-data:www-data /opt/matomo" dir="containers" passthru="true" checkreturn="true"/>
+                <exec command="docker-compose exec mariadb bash /opt/matomo-install/install_plugins_db.sh" dir="containers" checkreturn="true"/>
+                <exec command="docker-compose exec mariadb rm -Rf /opt/matomo-install/*" dir="containers" checkreturn="true"/>
             </then>
         </if>
         <!-- Initialize ElasticSearch -->
