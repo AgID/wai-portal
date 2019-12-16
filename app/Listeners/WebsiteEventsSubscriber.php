@@ -19,6 +19,7 @@ use App\Events\Website\WebsiteUrlChanged;
 use App\Traits\InteractsWithRedisIndex;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Events\Dispatcher;
+use Illuminate\Support\Facades\Cache;
 
 /**
  * Websites related events subscriber.
@@ -105,6 +106,7 @@ class WebsiteEventsSubscriber implements ShouldQueue
      */
     public function onWebsiteStatusChanged(WebsiteStatusChanged $event): void
     {
+        Cache::forget(Website::WEBSITE_COUNT_KEY);
         $website = $event->getWebsite();
         logger()->notice(
             'Website ' . $website->info . ' status changed from "' . $event->getOldStatus()->description . '" to "' . $website->status->description . '"',
@@ -241,6 +243,7 @@ class WebsiteEventsSubscriber implements ShouldQueue
      */
     public function onPurged(WebsitePurged $event): void
     {
+        Cache::forget(Website::WEBSITE_COUNT_KEY);
         $website = json_decode($event->getWebsiteJson());
         $websiteInfo = '"' . e($website->name) . '" [' . $website->slug . ']';
         //NOTE: toJson: relationship attributes are snake_case

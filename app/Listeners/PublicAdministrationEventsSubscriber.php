@@ -10,8 +10,10 @@ use App\Events\PublicAdministration\PublicAdministrationPrimaryWebsiteUpdated;
 use App\Events\PublicAdministration\PublicAdministrationPurged;
 use App\Events\PublicAdministration\PublicAdministrationRegistered;
 use App\Events\PublicAdministration\PublicAdministrationUpdated;
+use App\Models\PublicAdministration;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Events\Dispatcher;
+use Illuminate\Support\Facades\Cache;
 
 /**
  * Public Administration related events subscriber.
@@ -25,6 +27,7 @@ class PublicAdministrationEventsSubscriber implements ShouldQueue
      */
     public function onRegistered(PublicAdministrationRegistered $event): void
     {
+        Cache::forget(PublicAdministration::PUBLIC_ADMINISTRATION_COUNT_KEY);
         $publicAdministration = $event->getPublicAdministration();
         $user = $event->getUser();
         //TODO: inviare PEC a PA per la notifica?
@@ -132,6 +135,7 @@ class PublicAdministrationEventsSubscriber implements ShouldQueue
      */
     public function onPurged(PublicAdministrationPurged $event): void
     {
+        Cache::forget(PublicAdministration::PUBLIC_ADMINISTRATION_COUNT_KEY);
         $publicAdministration = json_decode($event->getPublicAdministrationJson());
         $publicAdministrationInfo = '"' . $publicAdministration->name . '" [' . $publicAdministration->ipa_code . ']';
         logger()->notice(

@@ -116,50 +116,26 @@
                 <div class="col-lg-4">
                     <div class="card-wrapper card-space">
                         <div class="card card-bg">
-                            <div class="card-body"></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="card-wrapper card-space">
-                        <div class="card card-bg">
-                            <div class="card-body"></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="card-wrapper card-space">
-                        <div class="card card-bg">
-                            <div class="card-body"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-4">
-                    <div class="card-wrapper card-space">
-                        <div class="card card-bg">
-                            <div class="card-body"></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="card-wrapper card-space">
-                        <div class="card card-bg">
-                            <div class="card-body"></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="card-wrapper card-space">
-                        <div class="card card-bg">
-                            <div class="card-body"></div>
+                            <div class="card-body">
+                                <h5 class="card-title big-heading">{{ __('Riepilogo portale') }}</h5>
+                                <table class="table">
+                                    <tbody>
+                                    <tr>
+                                        <td>{{ __('Pubbliche Amministrazioni registrate') }}</td>
+                                        <td>{{ $publicAdministrationsCount }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ __('Siti web attivi') }}</td>
+                                        <td>{{ $websitesCount }}</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
     <div class="py-5">
         <div class="container py-3">
             <h3 class="text-center">{{ __('Come iniziare a tracciare il traffico') }}</h3>

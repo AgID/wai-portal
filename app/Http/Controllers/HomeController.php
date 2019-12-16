@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PublicAdministration;
+use App\Models\Website;
 use Illuminate\Support\Arr;
 use Illuminate\View\View;
 use Symfony\Component\Yaml\Yaml;
@@ -15,7 +17,9 @@ class HomeController extends Controller
      */
     public function home(): View
     {
-        return view('pages.home');
+        $publicAdministrationsCount = PublicAdministration::getCount();
+        $websitesCount = Website::getCount();
+        return view('pages.home')->with(compact('publicAdministrationsCount', 'websitesCount'));
     }
 
     /**
