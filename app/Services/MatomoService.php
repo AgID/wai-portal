@@ -489,6 +489,32 @@ class MatomoService implements AnalyticsServiceContract
         return $this->apiCall($params);
     }
 
+    public function registerRollUp(string $name, array $idSites): int
+    {
+        $params = [
+            'sourceIdSites' => $idSites,
+            'method' => 'RollUpReporting.addRollUp',
+            'name' => $name,
+            'timezone' => 'Europe/Rome',
+            'currency' => 'EUR',
+            'token_auth' => $this->tokenAuth,
+        ];
+
+        return $this->apiCall($params)['value'];
+    }
+
+    public function updateRollUp(string $idRollUp, array $idSites): void
+    {
+        $params = [
+            'sourceIdSites' => $idSites,
+            'method' => 'RollUpReporting.updateRollUp',
+            'idSite' => $idRollUp,
+            'token_auth' => $this->tokenAuth,
+        ];
+
+        $this->apiCall($params);
+    }
+
     /**
      * Make an API call to Analytics Service.
      *

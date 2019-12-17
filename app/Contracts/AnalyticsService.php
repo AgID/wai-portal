@@ -228,4 +228,8 @@ interface AnalyticsService
      * @return array the list of days with the number of visits
      */
     public function getSiteLastDaysVisits(string $idSite, int $days): array;
+
+    public function registerRollUp(string $name, array $idSites): int;
+
+    public function updateRollUp(string $idRollUp, array $idSites): void;
 }
