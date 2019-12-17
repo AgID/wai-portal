@@ -11,6 +11,7 @@ use App\Events\PublicAdministration\PublicAdministrationPurged;
 use App\Events\PublicAdministration\PublicAdministrationRegistered;
 use App\Events\PublicAdministration\PublicAdministrationUpdated;
 use App\Models\PublicAdministration;
+use Exception;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Support\Facades\Cache;
@@ -49,6 +50,15 @@ class PublicAdministrationEventsSubscriber implements ShouldQueue
     public function onActivated(PublicAdministrationActivated $event): void
     {
         $publicAdministration = $event->getPublicAdministration();
+
+        try {
+            //NOTE: if RollUp Reporting plugin isn't installed on remote Analytics Service,
+            //      a CommandErrorException is expected to be thrown
+            $publicAdministration->registerRollUp();
+        } catch (Exception $exception) {
+            report($exception);
+        }
+
         logger()->notice(
             'Public Administration ' . $publicAdministration->info . ' activated',
             [

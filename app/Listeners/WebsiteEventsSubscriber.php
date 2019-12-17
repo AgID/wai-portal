@@ -4,6 +4,7 @@ namespace App\Listeners;
 
 use App\Enums\Logs\EventType;
 use App\Enums\WebsiteAccessType;
+use App\Enums\WebsiteType;
 use App\Events\Website\PrimaryWebsiteNotTracking;
 use App\Events\Website\WebsiteActivated;
 use App\Events\Website\WebsiteAdded;
@@ -94,6 +95,16 @@ class WebsiteEventsSubscriber implements ShouldQueue
             $this->updatePublicDashboardUser($website);
         } catch (Exception $exception) {
             report($exception);
+        }
+
+        //NOTE: primary websites are added to roll up report
+        //      by "public administration activated" event handler
+        if (!$website->type->is(WebsiteType::PRIMARY)) {
+            try {
+                $website->publicAdministration->updateRollUp($website);
+            } catch (Exception $exception) {
+                report($exception);
+            }
         }
     }
 

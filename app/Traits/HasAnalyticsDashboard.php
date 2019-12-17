@@ -20,8 +20,10 @@ trait HasAnalyticsDashboard
     public function registerRollUp(): void
     {
         $analyticsService = app()->make('analytics-service');
-        $this->registerAccount($analyticsService);
+        //NOTE: if RollUp reporting plugin doesn't exists, we allow a CommandException to be thrown
+        //      to break public administration dashboard user/permissions management
         $rollUpId = $analyticsService->registerRollUp($this->name, Arr::pluck($this->websites->all(), 'analytics_id'));
+        $this->registerAccount($analyticsService);
         $analyticsService->setWebsiteAccess($this->ipa_code, WebsiteAccessType::VIEW, $rollUpId);
 
         //NOTE: RollUp reporting expects user has at least "view" access on every website included in the report
@@ -32,8 +34,10 @@ trait HasAnalyticsDashboard
 
     public function updateRollUp(Website $website): void
     {
-        if (empty($this->token_auth)) {
-            throw new AnalyticsServiceAccountException('Trying to get auth token from non-existing analytics service account.');
+        if (empty($this->rollup_id)) {
+            //NOTE: return immediately since the public administration
+            //      doesn't have a RollUp report (no plugin installed)
+            return;
         }
 
         $analyticsService = app()->make('analytics-service');
