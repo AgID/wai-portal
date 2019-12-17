@@ -6,6 +6,7 @@ use App\Enums\PublicAdministrationStatus;
 use App\Enums\UserRole;
 use App\Enums\UserStatus;
 use App\Notifications\WebsiteActivatedPublicAdministrationEmail;
+use App\Traits\HasAnalyticsDashboard;
 use BenSampo\Enum\Traits\CastsEnums;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -25,6 +26,7 @@ class PublicAdministration extends Model
     use CastsEnums;
     use SoftDeletes;
     use Notifiable;
+    use HasAnalyticsDashboard;
 
     public const PUBLIC_ADMINISTRATION_COUNT_KEY = 'paCount';
 
