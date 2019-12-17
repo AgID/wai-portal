@@ -112,8 +112,9 @@
                     {{ __('Questa sezione espone alcuni set di dati che mostrano la maniera in cui i cittadini interagiscono online con i siti web della pubblica amministrazione italiana.') }}
                 </p>
             </div>
+            @if (empty('analytics-service.public_dashboard'))
             <div class="row">
-                <div class="col-lg-4">
+                <div class="col-lg-12">
                     <div class="card-wrapper card-space">
                         <div class="card card-bg">
                             <div class="card-body">
@@ -135,7 +136,60 @@
                     </div>
                 </div>
             </div>
+            @else
+            @foreach($widgets as $widgetsRow)
+            <div class="row">
+                @if ($loop->first)
+                <div class="col-lg-4">
+                    <div class="card-wrapper card-space">
+                        <div class="card card-bg">
+                            <div class="card-body">
+                                <h5 class="card-title big-heading">{{ __('Riepilogo portale') }}</h5>
+                                <table class="table">
+                                    <tbody>
+                                        <tr>
+                                            <td>{{ __('Pubbliche Amministrazioni registrate') }}</td>
+                                            <td>{{ $publicAdministrationsCount }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>{{ __('Siti web attivi') }}</td>
+                                            <td>{{ $websitesCount }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @endif
+                @foreach($widgetsRow as $widget)
+                <div class="col-lg-{{ $widget['span'] ?? 4}}">
+                    <div class="card-wrapper card-space">
+                        <div class="card card-bg">
+                            <div class="card-body">
+                                <h5 class="card-title big-heading">{{ __($widget['title']) }}</h5>
+                                <iframe
+                                    id="iFrameResizer{{ $loop->parent->index }}{{ $loop->index }}"
+                                    title="{{ __($widget['title']) }}"
+                                    class="auto-resizeable"
+                                    sandbox="allow-same-origin allow-scripts"
+                                    src="{{ config('analytics-service.public_url') }}/{{ $widget['url'] }}&token_auth={{ config('analytics-service.viewer_token') }}&idSite={{ config('analytics-service.public_dashboard') }}&show_footer_icons=0&show_related_reports=0"
+                                    frameborder="0"
+                                    width="100%"
+                                    height="350"
+                                    marginheight="0"
+                                    marginwidth="0"
+                                    scrolling="no"></iframe>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+            @endforeach
+            @endif
         </div>
+    </div>
     <div class="py-5">
         <div class="container py-3">
             <h3 class="text-center">{{ __('Come iniziare a tracciare il traffico') }}</h3>

@@ -17,9 +17,12 @@ class HomeController extends Controller
      */
     public function home(): View
     {
+        $allWidgets = Yaml::parseFile(resource_path('data/widgets.yml'));
         $publicAdministrationsCount = PublicAdministration::getCount();
         $websitesCount = Website::getCount();
-        return view('pages.home')->with(compact('publicAdministrationsCount', 'websitesCount'));
+        $widgets = $allWidgets['public'] ?? [];
+
+        return view('pages.home')->with(compact('publicAdministrationsCount', 'websitesCount', 'widgets'));
     }
 
     /**

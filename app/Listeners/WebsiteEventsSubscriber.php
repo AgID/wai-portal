@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Enums\Logs\EventType;
+use App\Enums\WebsiteAccessType;
 use App\Events\Website\PrimaryWebsiteNotTracking;
 use App\Events\Website\WebsiteActivated;
 use App\Events\Website\WebsiteAdded;
@@ -16,7 +17,9 @@ use App\Events\Website\WebsiteStatusChanged;
 use App\Events\Website\WebsiteUnarchived;
 use App\Events\Website\WebsiteUpdated;
 use App\Events\Website\WebsiteUrlChanged;
+use App\Models\Website;
 use App\Traits\InteractsWithRedisIndex;
+use Exception;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Support\Facades\Cache;
@@ -86,6 +89,12 @@ class WebsiteEventsSubscriber implements ShouldQueue
                 'pa' => $website->publicAdministration->ipa_code,
             ]
         );
+
+        try {
+            $this->updatePublicDashboardUser($website);
+        } catch (Exception $exception) {
+            report($exception);
+        }
     }
 
     /**
@@ -391,5 +400,10 @@ class WebsiteEventsSubscriber implements ShouldQueue
             'App\Events\Website\PrimaryWebsiteNotTracking',
             'App\Listeners\WebsiteEventsSubscriber@onPrimaryWebsiteNotTracking'
         );
+    }
+
+    private function updatePublicDashboardUser(Website $website): void
+    {
+        app()->make('analytics-service')->setWebsiteAccess(config('analytics-service.viewer_login'), WebsiteAccessType::VIEW, $website->analytics_id);
     }
 }
