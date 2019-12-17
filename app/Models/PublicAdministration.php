@@ -45,6 +45,7 @@ class PublicAdministration extends Model
         'region',
         'type',
         'status',
+        'rollup_id',
     ];
 
     /**
