@@ -78,6 +78,7 @@ RUN if [ -n "$MATOMO_PLUGIN_LOGINFILTERIP_VERSION" ]; then \
     curl -fsSL -o LoginFilterIp.zip \
         "https://github.com/AgID/wai-matomo-plugin-LoginFilterIp/archive/${MATOMO_PLUGIN_LOGINFILTERIP_VERSION}.zip" \
     && unzip LoginFilterIp.zip -d /opt/matomo/plugins \
+    && mv /opt/matomo/plugins/wai-matomo-plugin-LoginFilterIp-${MATOMO_PLUGIN_LOGINFILTERIP_VERSION} /opt/matomo/plugins/LoginFilterIp \
     && rm -rf LoginFilterIp.zip \
     && sed -i -E -e 's/(@MATOMO_PLUGINS@)/Plugins[] = "LoginFilterIp"\n\1/g' /opt/matomo/config/config.ini.php \
     && sed -i -E -e 's/(@MATOMO_PLUGINS_INSTALLED@)/PluginsInstalled[] = "LoginFilterIp"\n\1/g' /opt/matomo/config/config.ini.php \
