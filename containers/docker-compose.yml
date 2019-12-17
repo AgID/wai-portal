@@ -11,6 +11,10 @@ volumes:
     driver: local
   matomo-install:
     driver: local
+  mariadb-data:
+    driver: local
+  elasticsearch-data:
+    driver: local
 
 services:
 # php-fpm
@@ -22,6 +26,7 @@ services:
         - ENV=${ENV}
         - PHP_VERSION=${PHP_VERSION}
         - INSTALL_XDEBUG=${PHP_FPM_INSTALL_XDEBUG}
+        - APP_CODE_PATH_CONTAINER=${APP_CODE_PATH_CONTAINER}
     volumes:
       - ${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}
       - ${APP_LOGS_PATH_HOST}:${APP_LOGS_PATH_CONTAINER}
@@ -82,8 +87,7 @@ services:
   mariadb:
     image: mariadb
     volumes:
-      - ${DATA_PATH_HOST}/mariadb:/var/lib/mysql
-      - ${APP_LOGS_PATH_HOST}:${APP_LOGS_PATH_CONTAINER}
+      - mariadb-data:/var/lib/mysql
       - matomo-install:/opt/matomo-install/
     environment:
       - MYSQL_DATABASE=${MARIADB_DATABASE}
@@ -123,8 +127,12 @@ services:
         - MATOMO_ROOT_APIKEY=${MATOMO_ROOT_APIKEY}
         - MATOMO_VERSION=${MATOMO_VERSION}
         - MATOMO_WAI_THEME_VERSION=${MATOMO_WAI_THEME_VERSION}
-        - MATOMO_PLUGIN_DISABLESITETRACKING_VERSION=${MATOMO_PLUGIN_DISABLESITETRACKING_VERSION}
         - MATOMO_WAI_URL=${MATOMO_WAI_URL}
+        - MATOMO_PLUGIN_DISABLESITETRACKING_VERSION=${MATOMO_PLUGIN_DISABLESITETRACKING_VERSION}
+        # - MATOMO_PLUGIN_QUEUEDTRACKING_VERSION=${MATOMO_PLUGIN_QUEUEDTRACKING_VERSION}
+        # - MATOMO_PLUGIN_PROTECTTRACKID_VERSION=${MATOMO_PLUGIN_PROTECTTRACKID_VERSION}
+        # - MATOMO_PLUGIN_CUSTOMDIMENSIONS_VERSION=${MATOMO_PLUGIN_CUSTOMDIMENSIONS_VERSION}
+        # - MATOMO_PLUGIN_LOGINFILTERIP_VERSION=${MATOMO_PLUGIN_LOGINFILTERIP_VERSION}
     volumes:
       - matomo:/opt/matomo/
       - matomo-install:/opt/matomo-install/
@@ -181,7 +189,7 @@ services:
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
       - TAKE_FILE_OWNERSHIP=1
     volumes:
-      - ${DATA_PATH_HOST}/elasticsearch:/usr/share/elasticsearch/data
+      - elasticsearch-data:/usr/share/elasticsearch/data
     ulimits:
       memlock:
         soft: -1

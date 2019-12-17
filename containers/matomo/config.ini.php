@@ -15,10 +15,19 @@ port = 3306
 
 [General]
 salt = "01106e8d05b7c61b81cbf572dccc977c"
-trusted_hosts[] = "localhost:9443"
-enable_trusted_host_check = 0
+trusted_hosts[] = "@MATOMO_WAI_URL@:9443"
+enable_trusted_host_check = 1
 force_ssl = 1
 enable_update_users_email = 0
+emails_enabled = 0
+assume_secure_protocol = 1
+enable_update_communication = 0
+enable_auto_update = 0
+show_update_notification_to_superusers_only = 1
+proxy_uri_header = 1
+enable_general_settings_admin = 0
+browser_archiving_disabled_enforce = 1
+enable_browser_archiving_triggering = 0
 
 [Plugins]
 Plugins[] = "CorePluginsAdmin"
@@ -81,8 +90,8 @@ Plugins[] = "Marketplace"
 Plugins[] = "ProfessionalServices"
 Plugins[] = "UserId"
 Plugins[] = "CustomPiwikJs"
-Plugins[] = "DisableTracking"
 Plugins[] = "WAIMatomoTheme"
+@MATOMO_PLUGINS@
 
 [PluginsInstalled]
 PluginsInstalled[] = "Diagnostics"
@@ -145,9 +154,11 @@ PluginsInstalled[] = "Marketplace"
 PluginsInstalled[] = "ProfessionalServices"
 PluginsInstalled[] = "UserId"
 PluginsInstalled[] = "CustomPiwikJs"
-PluginsInstalled[] = "DisableTracking"
 PluginsInstalled[] = "Tour"
 PluginsInstalled[] = "WAIMatomoTheme"
+@MATOMO_PLUGINS_INSTALLED@
 
 [WAIMatomoTheme]
 waiUrl = "https://@MATOMO_WAI_URL@"
+
+@MATOMO_MORE_CONFIG@

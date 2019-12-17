@@ -4,6 +4,14 @@
 # This property file is need for phing to build the project.
 # Adjust your settings and copy this file to env/build.properties.
 
+# PHP
+# ---
+PHP_VERSION=7.3
+
+# Container
+# ---------
+APP_CODE_PATH_CONTAINER=/var/www/html
+
 # Application
 # -----------
 APP_VERSION=0.1-alpha
@@ -147,10 +155,17 @@ MATOMO_ROOT_APIKEY=d300edfad46f2723f0df5b5b5877033b
 MATOMO_VERSION=3.13.0
 
 # Matomo WAI theme version
-MATOMO_WAI_THEME_VERSION=0.3.1-alpha
+MATOMO_WAI_THEME_VERSION=0.3.2-alpha
 
-# Matomo plugin DisableSiteTracking version
-MATOMO_PLUGIN_DISABLESITETRACKING_VERSION=1.0.4
+# Matomo plugins versions
+MATOMO_PLUGIN_DISABLESITETRACKING_VERSION=v1.0.5-RC1
+MATOMO_PLUGIN_QUEUEDTRACKING_VERSION=3.3.5
+MATOMO_PLUGIN_PROTECTTRACKID_VERSION=1.0.0
+MATOMO_PLUGIN_CUSTOMDIMENSIONS_VERSION=3.1.9
+MATOMO_PLUGIN_LOGINFILTERIP_VERSION=0.1.0
+
+# Matomo phpredis extension version
+MATOMO_PHPREDIS_VERSION=5.1.1
 
 # Analytics Service URLs
 # ----------------------

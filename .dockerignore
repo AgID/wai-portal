@@ -1,0 +1,32 @@
+# exclude all
+*
+
+# includes
+!app
+
+!bootstrap
+bootstrap/cache/*
+
+!config
+
+!database
+database/testing.sqlite
+
+!public
+!resources
+!routes
+
+!storage
+storage/app/*
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/views/*
+storage/logs/*
+
+!artisan
+!composer.*
+!package*.json
+!webpack.mix.js
+!.eslintrc.js
+!.node-version
+!.stylelintrc.js
