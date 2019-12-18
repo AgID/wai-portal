@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\UserPermission;
 use App\Models\PublicAdministration;
 use Illuminate\Http\Request;
+use Symfony\Component\Yaml\Yaml;
 
 class AnalyticsController extends Controller
 {
@@ -25,6 +26,15 @@ class AnalyticsController extends Controller
             return redirect()->route('websites.index');
         }
 
-        return view('pages.analytics')->with(['publicAdministration' => $publicAdministration]);
+        if ($user->cannot(UserPermission::ACCESS_ADMIN_AREA)) {
+            $publicAdministration = current_public_administration();
+        }
+
+        if ($publicAdministration->hasRollUp()) {
+            $allWidgets = Yaml::parseFile(resource_path('data/widgets.yml'));
+            $widgets = $allWidgets['pa'] ?? [];
+        }
+
+        return view('pages.analytics')->with(['publicAdministration' => $publicAdministration, 'widgets' => $widgets ?? []]);
     }
 }

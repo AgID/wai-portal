@@ -34,51 +34,40 @@
     </div>
 </div>
 <div class="container py-3">
+    @if ($publicAdministration->status->is(PublicAdministrationStatus::ACTIVE))
+    @foreach($widgets as $widgetsRow)
     <div class="row">
-        <div class="col-lg-4">
+        @foreach($widgetsRow as $widget)
+        <div class="col-lg-{{ $widget['span'] ?? 4}}">
             <div class="card-wrapper card-space">
                 <div class="card card-bg">
-                    <div class="card-body"></div>
+                    <div class="card-body">
+                        <h5 class="card-title big-heading">{{ __($widget['title']) }}</h5>
+                        <iframe
+                            id="iFrameResizer{{ $loop->parent->index }}{{ $loop->index }}"
+                            title="{{ __($widget['title']) }}"
+                            class="auto-resizeable"
+                            sandbox="allow-same-origin allow-scripts"
+                            src="{{ config('analytics-service.public_url') }}/{{ $widget['url'] }}&token_auth={{ $publicAdministration->token_auth }}&idSite={{ $publicAdministration->rollup_id }}&show_related_reports=0"
+                            frameborder="0"
+                            width="100%"
+                            height="350"
+                            marginheight="0"
+                            marginwidth="0"
+                            scrolling="no"></iframe>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-lg-4">
-            <div class="card-wrapper card-space">
-                <div class="card card-bg">
-                    <div class="card-body"></div>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-4">
-            <div class="card-wrapper card-space">
-                <div class="card card-bg">
-                    <div class="card-body"></div>
-                </div>
-            </div>
-        </div>
+        @endforeach
     </div>
-    <div class="row">
-        <div class="col-lg-4">
-            <div class="card-wrapper card-space">
-                <div class="card card-bg">
-                    <div class="card-body"></div>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-4">
-            <div class="card-wrapper card-space">
-                <div class="card card-bg">
-                    <div class="card-body"></div>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-4">
-            <div class="card-wrapper card-space">
-                <div class="card card-bg">
-                    <div class="card-body"></div>
-                </div>
-            </div>
-        </div>
+    @endforeach
+    @else
+    <div class="d-flex justify-content-center pb-5">
+        <p class="text-serif text-center">
+            {{ __('Sembra che la tua pubblica amministrazione non sia ancora attiva. Quando inizieremo a ricevere dati, in questa sezione potrai vedere un riepilogo di tutti i tuoi siti web.') }}
+        </p>
     </div>
+    @endif
 </div>
 @endsection

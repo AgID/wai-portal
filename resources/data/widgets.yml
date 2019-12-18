@@ -11,3 +11,16 @@ public:
       url: index.php?module=Widgetize&action=iframe&disableLink=0&widget=1&moduleToWidgetize=DevicesDetection&actionToWidgetize=getOsFamilies&period=day&date=today&disableLink=1&widget=1
     - title: Browser
       url: index.php?module=Widgetize&action=iframe&disableLink=0&widget=1&moduleToWidgetize=DevicesDetection&actionToWidgetize=getBrowsers&period=day&date=today&disableLink=1&widget=1
+pa:
+  -
+    - title: Visite in tempo reale
+      url: index.php?module=Widgetize&action=iframe&disableLink=0&widget=1&moduleToWidgetize=Live&actionToWidgetize=getSimpleLastVisitCount&period=day&date=today&disableLink=1&widget=1
+    - title: Visite per browser
+      url: index.php?module=Widgetize&action=iframe&disableLink=0&widget=1&moduleToWidgetize=DevicesDetection&actionToWidgetize=getBrowsers&period=day&date=today&disableLink=1&widget=1&viewDataTable=graphPie
+    - title: Provenienza geografica degli utenti
+      url: index.php?module=Widgetize&action=iframe&disableLink=0&widget=1&moduleToWidgetize=UserCountryMap&actionToWidgetize=visitorMap&period=day&date=today&disableLink=1&widget=1
+  -
+    - title: Categoria dispositivo
+      url: index.php?module=Widgetize&action=iframe&disableLink=0&widget=1&moduleToWidgetize=DevicesDetection&actionToWidgetize=getType&period=day&date=today&disableLink=1&widget=1&viewDataTable=graphPie
+    - title: Visita per modello di dispositivo
+      url: index.php?module=Widgetize&action=iframe&disableLink=0&widget=1&moduleToWidgetize=DevicesDetection&actionToWidgetize=getModel&period=day&date=today&disableLink=1&widget=1&viewDataTable=graphPie
