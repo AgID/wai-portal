@@ -151,6 +151,15 @@ MATOMO_ROOT_PASSWORD=Password
 # Matomo super user API Key, put any MD5 hash.
 MATOMO_ROOT_APIKEY=d300edfad46f2723f0df5b5b5877033b
 
+# Matomo public dashboard user name
+MATOMO_PUBLIC_USER=viewer
+
+# Matomo public dashboard user password
+MATOMO_PUBLIC_USER_PASSWORD=ViewerPassword
+
+# Matomo public dashboard user API Key, put any MD5 hash.
+MATOMO_PUBLIC_USER_APIKEY=2e366e516874507946dd43d09a5b5927
+
 # Matomo version
 MATOMO_VERSION=3.13.0
 

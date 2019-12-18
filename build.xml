@@ -84,6 +84,8 @@
                     <token key="SPID_SP_PRIVATE_KEY" value="${SPID_SP_PRIVATE_KEY}" />
                     <token key="SPID_SP_CERTIFICATE" value="${SPID_SP_CERTIFICATE}" />
                     <token key="ANALYTICS_ADMIN_TOKEN" value="${MATOMO_ROOT_APIKEY}" />
+                    <token key="ANALYTICS_VIEWER_USER" value="${MATOMO_PUBLIC_USER}" />
+                    <token key="ANALYTICS_VIEWER_TOKEN" value="${MATOMO_PUBLIC_USER_APIKEY}" />
                     <token key="ANALYTICS_API_BASE_URL" value="${ANALYTICS_API_BASE_URL}" />
                     <token key="ANALYTICS_API_SSL_VERIFY" value="${ANALYTICS_API_SSL_VERIFY}" />
                     <token key="ANALYTICS_PUBLIC_URL" value="${ANALYTICS_PUBLIC_URL}" />
@@ -93,6 +95,9 @@
                     <token key="MATOMO_ROOT_USER" value="${MATOMO_ROOT_USER}" />
                     <token key="MATOMO_ROOT_PASSWORD" value="${HASHED_MATOMO_ROOT_PASSWORD}" />
                     <token key="MATOMO_ROOT_APIKEY" value="${MATOMO_ROOT_APIKEY}" />
+                    <token key="MATOMO_PUBLIC_USER" value="${MATOMO_PUBLIC_USER}" />
+                    <token key="MATOMO_PUBLIC_USER_PASSWORD" value="${HASHED_MATOMO_PUBLIC_USER_PASSWORD}" />
+                    <token key="MATOMO_PUBLIC_USER_APIKEY" value="${MATOMO_PUBLIC_USER_APIKEY}" />
                     <token key="MATOMO_VERSION" value="${MATOMO_VERSION}" />
                     <token key="MATOMO_WAI_THEME_VERSION" value="${MATOMO_WAI_THEME_VERSION}" />
                     <token key="MATOMO_PLUGIN_DISABLESITETRACKING_VERSION" value="${MATOMO_PLUGIN_DISABLESITETRACKING_VERSION}" />
@@ -122,6 +127,13 @@
         </php>
         <php function="password_hash" returnProperty="HASHED_MATOMO_ROOT_PASSWORD">
             <param value="${HASHED_MATOMO_ROOT_PASSWORD}"/>
+            <param value="1"/> <!-- PHP constant PASSWORD_BCRYPT is 1 -->
+        </php>
+        <php function="md5" returnProperty="HASHED_MATOMO_PUBLIC_USER_PASSWORD">
+            <param value="${MATOMO_PUBLIC_USER_PASSWORD}"/>
+        </php>
+        <php function="password_hash" returnProperty="HASHED_MATOMO_PUBLIC_USER_PASSWORD">
+            <param value="${HASHED_MATOMO_PUBLIC_USER_PASSWORD}"/>
             <param value="1"/> <!-- PHP constant PASSWORD_BCRYPT is 1 -->
         </php>
         <if>

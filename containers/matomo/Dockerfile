@@ -112,3 +112,10 @@ RUN sed -i -e s/@MATOMO_ROOT_USER@/${MATOMO_ROOT_USER}/g /opt/matomo-install/ins
     sed -i -e s/@MATOMO_DB_PASSWORD@/${MATOMO_DB_PASSWORD}/g /opt/matomo-install/install_matomo_db.sh && \
     sed -i -e s#@MATOMO_ROOT_PASSWORD@#${MATOMO_ROOT_PASSWORD}#g /opt/matomo-install/install_matomo_db.sh && \
     sed -i -e s/@MATOMO_ROOT_APIKEY@/${MATOMO_ROOT_APIKEY}/g /opt/matomo-install/install_matomo_db.sh
+
+ARG MATOMO_PUBLIC_USER
+ARG MATOMO_PUBLIC_USER_PASSWORD
+ARG MATOMO_PUBLIC_USER_APIKEY
+RUN sed -i -e s/@MATOMO_PUBLIC_USER@/${MATOMO_PUBLIC_USER}/g /opt/matomo-install/install_matomo_db.sh && \
+    sed -i -e s#@MATOMO_PUBLIC_USER_PASSWORD@#${MATOMO_PUBLIC_USER_PASSWORD}#g /opt/matomo-install/install_matomo_db.sh && \
+    sed -i -e s/@MATOMO_PUBLIC_USER_APIKEY@/${MATOMO_PUBLIC_USER_APIKEY}/g /opt/matomo-install/install_matomo_db.sh
