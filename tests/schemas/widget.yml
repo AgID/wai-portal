@@ -1,0 +1,12 @@
+uri: tag:widget
+schema:
+  type: "//rec"
+  required:
+    title: "//str"
+    url: "//str"
+  optional:
+    span:
+      type: "//int"
+      range:
+        min: 1
+        max: 12

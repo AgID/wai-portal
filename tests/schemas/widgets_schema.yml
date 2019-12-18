@@ -1,0 +1,16 @@
+type: "//rec"
+required:
+  public:
+    type: "//arr"
+    length: { min: 1 }
+    contents:
+      type: "//arr"
+      length: { min: 1 }
+      contents: "tag:widget"
+  pa:
+    type: "//arr"
+    length: { min: 1 }
+    contents:
+      type: "//arr"
+      length: { min: 1 }
+      contents: "tag:widget"
