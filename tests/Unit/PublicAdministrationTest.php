@@ -16,6 +16,9 @@ class PublicAdministrationTest extends TestCase
 {
     use RefreshDatabase;
 
+    /**
+     * Test registered public administrations counter.
+     */
     public function testPublicAdministrationCounter(): void
     {
         $this->assertEquals(0, PublicAdministration::getCount());

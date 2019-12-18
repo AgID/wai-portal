@@ -16,14 +16,30 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
 use Tests\TestCase;
 
+/**
+ * Websites events listener tests.
+ */
 class WebsiteEventsSubscriberTest extends TestCase
 {
     use RefreshDatabase;
 
+    /**
+     * The public administration the website belongs to.
+     *
+     * @var PublicAdministration the public administration
+     */
     private $publicAdministration;
 
+    /**
+     * The activated website.
+     *
+     * @var Website the website
+     */
     private $website;
 
+    /**
+     * Pre-tests setup.
+     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -39,6 +55,9 @@ class WebsiteEventsSubscriberTest extends TestCase
         Config::set('analytics-service.viewer_login', 'public_viewer');
     }
 
+    /**
+     * Test roll-up sites updated.
+     */
     public function testWebsiteActivatedRollUpsUpdate(): void
     {
         $this->app->bind('analytics-service', function () {
@@ -60,6 +79,9 @@ class WebsiteEventsSubscriberTest extends TestCase
         event(new WebsiteActivated($this->website));
     }
 
+    /**
+     * Test roll-up sites throwing exception.
+     */
     public function testWebsiteActivatedRollUpsUpdateFail(): void
     {
         $this->app->bind('analytics-service', function () {
@@ -99,6 +121,9 @@ class WebsiteEventsSubscriberTest extends TestCase
         event(new WebsiteActivated($this->website));
     }
 
+    /**
+     * Test roll-up sites update for primary website.
+     */
     public function testPrimaryWebsiteActivatedRollUpsUpdate(): void
     {
         Event::fakeFor(function () {

@@ -489,6 +489,17 @@ class MatomoService implements AnalyticsServiceContract
         return $this->apiCall($params);
     }
 
+    /**
+     * Register a new analytics service report.
+     *
+     * @param string $name the report name
+     * @param array $idSites the Analytics Service websites IDs
+     *
+     * @throws CommandErrorException if command is unsuccessful
+     * @throws AnalyticsServiceException if unable to connect the Analytics Service
+     *
+     * @return int the Analytics Service report ID
+     */
     public function registerRollUp(string $name, array $idSites): int
     {
         $params = [
@@ -503,6 +514,17 @@ class MatomoService implements AnalyticsServiceContract
         return $this->apiCall($params)['value'];
     }
 
+    /**
+     * Update an existing analytics service report.
+     * NOTE: the given Analytics Service websites IDs list will replace
+     *       the current one.
+     *
+     * @param string $idRollUp the Analytics Service report ID
+     * @param array $idSites the Analytics Service websites IDs
+     *
+     * @throws CommandErrorException if command is unsuccessful
+     * @throws AnalyticsServiceException if unable to connect the Analytics Service
+     */
     public function updateRollUp(string $idRollUp, array $idSites): void
     {
         $params = [

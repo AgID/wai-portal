@@ -18,6 +18,8 @@ use App\Events\Website\WebsiteStatusChanged;
 use App\Events\Website\WebsiteUnarchived;
 use App\Events\Website\WebsiteUpdated;
 use App\Events\Website\WebsiteUrlChanged;
+use App\Exceptions\AnalyticsServiceException;
+use App\Exceptions\CommandErrorException;
 use App\Models\Website;
 use App\Traits\InteractsWithRedisIndex;
 use Exception;
@@ -413,6 +415,15 @@ class WebsiteEventsSubscriber implements ShouldQueue
         );
     }
 
+    /**
+     * Grant permission to public dashboard user on a website.
+     *
+     * @param Website $website the new website
+     *
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     * @throws AnalyticsServiceException if unable to connect the Analytics Service
+     * @throws CommandErrorException if command is unsuccessful
+     */
     private function updatePublicDashboardUser(Website $website): void
     {
         app()->make('analytics-service')->setWebsiteAccess(config('analytics-service.viewer_login'), WebsiteAccessType::VIEW, $website->analytics_id);

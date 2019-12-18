@@ -229,7 +229,23 @@ interface AnalyticsService
      */
     public function getSiteLastDaysVisits(string $idSite, int $days): array;
 
+    /**
+     * Register a new analytics service report.
+     *
+     * @param string $name the report name
+     * @param array $idSites the Analytics Service websites IDs
+     *
+     * @return int the Analytics Service report ID
+     */
     public function registerRollUp(string $name, array $idSites): int;
 
+    /**
+     * Update an existing analytics service report.
+     * NOTE: the given Analytics Service websites IDs list will replace
+     *       the current one.
+     *
+     * @param string $idRollUp the Analytics Service report ID
+     * @param array $idSites the Analytics Service websites IDs
+     */
     public function updateRollUp(string $idRollUp, array $idSites): void;
 }

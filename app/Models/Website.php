@@ -25,6 +25,11 @@ class Website extends Model
     use SoftDeletes;
     use CastsEnums;
 
+    /**
+     * Total active websites count cache key.
+     *
+     * @var string the key
+     */
     public const WEBSITE_COUNT_KEY = 'websiteCount';
 
     /**
@@ -73,6 +78,11 @@ class Website extends Model
         'restored' => WebsiteRestored::class,
     ];
 
+    /**
+     * Get total active websites counter.
+     *
+     * @return int the count
+     */
     public static function getCount(): int
     {
         return Cache::rememberForever(self::WEBSITE_COUNT_KEY, function () {

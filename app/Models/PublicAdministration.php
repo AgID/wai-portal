@@ -28,6 +28,11 @@ class PublicAdministration extends Model
     use Notifiable;
     use HasAnalyticsDashboard;
 
+    /**
+     * Active public administrations count cache key.
+     *
+     * @var string the key
+     */
     public const PUBLIC_ADMINISTRATION_COUNT_KEY = 'paCount';
 
     /**
@@ -92,6 +97,11 @@ class PublicAdministration extends Model
         return PublicAdministration::onlyTrashed()->where('ipa_code', $ipa_code)->first();
     }
 
+    /**
+     * Get active public administrations counter.
+     *
+     * @return int the count
+     */
     public static function getCount(): int
     {
         return Cache::rememberForever(self::PUBLIC_ADMINISTRATION_COUNT_KEY, function () {

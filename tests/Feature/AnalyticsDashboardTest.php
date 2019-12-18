@@ -13,14 +13,30 @@ use Silber\Bouncer\BouncerFacade as Bouncer;
 use Symfony\Component\Yaml\Yaml;
 use Tests\TestCase;
 
+/**
+ * Public Administration analytics dashboard controller tests.
+ */
 class AnalyticsDashboardTest extends TestCase
 {
     use RefreshDatabase;
 
+    /**
+     * The authenticated user.
+     *
+     * @var User the user
+     */
     private $user;
 
+    /**
+     * The public administration the user belongs to.
+     *
+     * @var PublicAdministration the public administration
+     */
     private $publicAdministration;
 
+    /**
+     * Pre-tests setup.
+     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -34,6 +50,9 @@ class AnalyticsDashboardTest extends TestCase
         Bouncer::dontCache();
     }
 
+    /**
+     * Test view redirect due to incomplete user registration.
+     */
     public function testPendingUserRedirect(): void
     {
         $user = factory(User::class)->create([
@@ -47,6 +66,9 @@ class AnalyticsDashboardTest extends TestCase
             ->assertRedirect(route('websites.index'));
     }
 
+    /**
+     * Test empty dashboard view due to pending public administration.
+     */
     public function testUserEmptyPublicAdministrationDashboard(): void
     {
         $this->actingAs($this->user)
@@ -62,6 +84,9 @@ class AnalyticsDashboardTest extends TestCase
             ]);
     }
 
+    /**
+     * Test dashboard view.
+     */
     public function testUserPublicAdministrationDashboard(): void
     {
         $this->publicAdministration->rollup_id = 1;
@@ -82,6 +107,9 @@ class AnalyticsDashboardTest extends TestCase
             ]);
     }
 
+    /**
+     * Test empty dashboard view due to pending public administration acting as super-admin.
+     */
     public function testSuperAdminEmptyPublicAdministrationDashboard(): void
     {
         $this->user->assign(UserRole::SUPER_ADMIN);
@@ -96,6 +124,9 @@ class AnalyticsDashboardTest extends TestCase
             ]);
     }
 
+    /**
+     * Test dashboard view acting as super-admin.
+     */
     public function testSuperAdminPublicAdministrationDashboard(): void
     {
         $this->publicAdministration->rollup_id = 1;

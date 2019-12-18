@@ -5,18 +5,32 @@ namespace App\Traits;
 use App\Contracts\AnalyticsService;
 use App\Enums\WebsiteAccessType;
 use App\Enums\WebsiteType;
-use App\Exceptions\AnalyticsServiceAccountException;
 use App\Models\Website;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
+/**
+ * Public administration dashboard user management.
+ */
 trait HasAnalyticsDashboard
 {
+    /**
+     * Check public administration has a dashboard report.
+     *
+     * @return bool true if has a report, false otherwise
+     */
     public function hasRollUp(): bool
     {
         return !empty($this->rollup_id);
     }
 
+    /**
+     * Register the analytics report for the public administration.
+     *
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException if unable to bind to the service
+     * @throws \App\Exceptions\AnalyticsServiceException if unable to connect to the Analytics Service
+     * @throws \App\Exceptions\CommandErrorException if command finishes with error
+     */
     public function registerRollUp(): void
     {
         $analyticsService = app()->make('analytics-service');
@@ -32,6 +46,15 @@ trait HasAnalyticsDashboard
         $this->save();
     }
 
+    /**
+     * Update an existing analytics report for the public administration.
+     *
+     * @param Website $website the website to add into public administration rollup report
+     *
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException if unable to bind to the service
+     * @throws \App\Exceptions\AnalyticsServiceException if unable to connect to the Analytics Service
+     * @throws \App\Exceptions\CommandErrorException if command finishes with error
+     */
     public function updateRollUp(Website $website): void
     {
         if (empty($this->rollup_id)) {
@@ -48,6 +71,14 @@ trait HasAnalyticsDashboard
         $analyticsService->setWebsiteAccess($this->ipa_code, WebsiteAccessType::VIEW, $website->analytics_id);
     }
 
+    /**
+     * Register an analytics account for the public administration.
+     *
+     * @param AnalyticsService $analyticsService the analytics service
+     *
+     * @throws \App\Exceptions\AnalyticsServiceException if unable to connect to the Analytics Service
+     * @throws \App\Exceptions\CommandErrorException if command finishes with error
+     */
     protected function registerAccount(AnalyticsService $analyticsService): void
     {
         $hashedAnalyticsPassword = md5(Str::random(rand(32, 48)) . config('app.salt'));

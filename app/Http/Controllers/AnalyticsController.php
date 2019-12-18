@@ -7,6 +7,9 @@ use App\Models\PublicAdministration;
 use Illuminate\Http\Request;
 use Symfony\Component\Yaml\Yaml;
 
+/**
+ * Public Administration analytics dashboard controller.
+ */
 class AnalyticsController extends Controller
 {
     /**

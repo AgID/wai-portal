@@ -12,12 +12,23 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Log;
 use Tests\TestCase;
 
+/**
+ * Public administrations events listener tests.
+ */
 class PublicAdministrationEventsSubscriberTest extends TestCase
 {
     use RefreshDatabase;
 
+    /**
+     * The public administration.
+     *
+     * @var PublicAdministration the public administration
+     */
     public $publicAdministration;
 
+    /**
+     * Pre-tests setup.
+     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -30,6 +41,9 @@ class PublicAdministrationEventsSubscriberTest extends TestCase
         ]);
     }
 
+    /**
+     * Test roll-up registering successful on public administration activation.
+     */
     public function testPublicAdministrationActivatedRollUpRegistering(): void
     {
         $this->app->bind('analytics-service', function () {
@@ -65,6 +79,9 @@ class PublicAdministrationEventsSubscriberTest extends TestCase
         event(new PublicAdministrationActivated($this->publicAdministration));
     }
 
+    /**
+     * Test roll-up registering throwing exception.
+     */
     public function testPublicAdministrationActivatedRollUpRegisteringFail(): void
     {
         $this->app->bind('analytics-service', function () {

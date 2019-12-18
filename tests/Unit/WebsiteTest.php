@@ -16,6 +16,9 @@ class WebsiteTest extends TestCase
 {
     use RefreshDatabase;
 
+    /**
+     * Test registered and active websites counter.
+     */
     public function testPublicAdministrationCounter(): void
     {
         $this->assertEquals(0, Website::getCount());
