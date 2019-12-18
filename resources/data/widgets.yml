@@ -2,14 +2,14 @@ public:
   -
     - title: Riepilogo generale
       url: index.php?module=Widgetize&action=iframe&forceView=1&viewDataTable=sparklines&disableLink=0&widget=1&moduleToWidgetize=VisitsSummary&actionToWidgetize=get&period=day&date=today&disableLink=1&widget=1
-    - title: Localizzazione
+    - title: Provenienza geografica degli utenti
       url: index.php?module=Widgetize&action=iframe&disableLink=0&widget=1&moduleToWidgetize=UserCountryMap&actionToWidgetize=visitorMap&period=day&date=today&disableLink=1&widget=1
   -
-    - title: Tipologia di dispositivo
+    - title: Categoria dispositivo
       url: index.php?module=Widgetize&action=iframe&disableLink=0&widget=1&moduleToWidgetize=DevicesDetection&actionToWidgetize=getType&period=day&date=today&disableLink=1&widget=1
     - title: Sistemi Operativi
       url: index.php?module=Widgetize&action=iframe&disableLink=0&widget=1&moduleToWidgetize=DevicesDetection&actionToWidgetize=getOsFamilies&period=day&date=today&disableLink=1&widget=1
-    - title: Browser
+    - title: Visite per browser
       url: index.php?module=Widgetize&action=iframe&disableLink=0&widget=1&moduleToWidgetize=DevicesDetection&actionToWidgetize=getBrowsers&period=day&date=today&disableLink=1&widget=1
 pa:
   -
