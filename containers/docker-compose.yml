@@ -64,6 +64,7 @@ services:
       args:
         - PHP_UPSTREAM_CONTAINER=${NGINX_PHP_UPSTREAM_CONTAINER}
         - PHP_UPSTREAM_PORT=${NGINX_PHP_UPSTREAM_PORT}
+        - ALLOWED_ANCESTORS=${ALLOWED_ANCESTORS}
     volumes:
       - type: bind
         source: ${APP_CODE_PATH_HOST}
