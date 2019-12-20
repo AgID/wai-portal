@@ -1,1 +1,1 @@
-* * * * * /usr/local/bin/php /var/www/artisan schedule:run >> /dev/null 2>&1
+* * * * * /usr/local/bin/php @APP_CODE_PATH_CONTAINER@/artisan schedule:run >> /dev/null 2>&1

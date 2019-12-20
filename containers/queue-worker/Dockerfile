@@ -13,11 +13,15 @@ RUN docker-php-ext-install pdo_mysql bcmath intl
 # clean apk
 RUN rm /var/cache/apk/*
 
+ARG APP_CODE_PATH_CONTAINER
+
 # supervisord conf
 COPY supervisord.conf /etc/supervisord.conf
+RUN sed -i -e s#@APP_CODE_PATH_CONTAINER@#${APP_CODE_PATH_CONTAINER}#g /etc/supervisord.conf
 
 # cron scheduler
 COPY ./cron-laravel-scheduler /
+RUN sed -i -e s#@APP_CODE_PATH_CONTAINER@#${APP_CODE_PATH_CONTAINER}#g /cron-laravel-scheduler
 
 # entrypoint
 COPY ./entrypoint.sh /entrypoint.sh
