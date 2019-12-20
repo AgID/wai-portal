@@ -119,18 +119,7 @@
                         <div class="card card-bg">
                             <div class="card-body">
                                 <h5 class="card-title big-heading">{{ __('Riepilogo portale') }}</h5>
-                                <table class="table">
-                                    <tbody>
-                                    <tr>
-                                        <td>{{ __('Pubbliche Amministrazioni registrate') }}</td>
-                                        <td>{{ $publicAdministrationsCount }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>{{ __('Siti web attivi') }}</td>
-                                        <td>{{ $websitesCount }}</td>
-                                    </tr>
-                                    </tbody>
-                                </table>
+                                @include('layouts.includes.portal_widget', ['publicAdministrationsCounter' => $publicAdministrationsCount, 'websitesCounter' => $websitesCount])
                             </div>
                         </div>
                     </div>
@@ -145,18 +134,7 @@
                         <div class="card card-bg">
                             <div class="card-body">
                                 <h5 class="card-title big-heading">{{ __('Riepilogo portale') }}</h5>
-                                <table class="table">
-                                    <tbody>
-                                        <tr>
-                                            <td>{{ __('Pubbliche Amministrazioni registrate') }}</td>
-                                            <td>{{ $publicAdministrationsCount }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>{{ __('Siti web attivi') }}</td>
-                                            <td>{{ $websitesCount }}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                @include('layouts.includes.portal_widget', ['publicAdministrationsCounter' => $publicAdministrationsCount, 'websitesCounter' => $websitesCount])
                             </div>
                         </div>
                     </div>
