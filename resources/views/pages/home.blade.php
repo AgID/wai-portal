@@ -112,7 +112,7 @@
                     {{ __('Questa sezione espone alcuni set di dati che mostrano la maniera in cui i cittadini interagiscono online con i siti web della pubblica amministrazione italiana.') }}
                 </p>
             </div>
-            @if (empty('analytics-service.public_dashboard'))
+            @if (empty(config('analytics-service.public_dashboard')))
             <div class="row">
                 <div class="col-lg-12">
                     <div class="card-wrapper card-space">

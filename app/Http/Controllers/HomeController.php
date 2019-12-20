@@ -20,7 +20,11 @@ class HomeController extends Controller
         $allWidgets = Yaml::parseFile(resource_path('data/widgets.yml'));
         $publicAdministrationsCount = PublicAdministration::getCount();
         $websitesCount = Website::getCount();
-        $widgets = $allWidgets['public'] ?? [];
+
+        $widgets = [];
+        if (config('analytics-service.public_dashboard')) {
+            $widgets = $allWidgets['public'] ?? [];
+        }
 
         return view('pages.home')->with(compact('publicAdministrationsCount', 'websitesCount', 'widgets'));
     }
