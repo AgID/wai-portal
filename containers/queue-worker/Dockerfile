@@ -11,8 +11,7 @@ RUN apk --update add supervisor icu-dev
 RUN docker-php-ext-install pdo_mysql bcmath intl
 
 # clean apk
-RUN apk del icu-dev \
-    && rm /var/cache/apk/*
+RUN rm /var/cache/apk/*
 
 # supervisord conf
 COPY supervisord.conf /etc/supervisord.conf
