@@ -30,3 +30,6 @@ storage/logs/*
 !.eslintrc.js
 !.node-version
 !.stylelintrc.js
+
+# Ignore local files
+**/.DS_Store
