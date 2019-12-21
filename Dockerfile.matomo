@@ -35,6 +35,8 @@ RUN echo "expose_php = Off" >> /opt/bitnami/php/etc/conf.d/wai.ini && \
     echo "error_log = /dev/stderr" >> /opt/bitnami/php/etc/php-fpm.d/10-wai-log.conf && \
     echo "user = www-data" >> /opt/bitnami/php/etc/php-fpm.d/99-wai.conf && \
     echo "group = www-data" >> /opt/bitnami/php/etc/php-fpm.d/99-wai.conf && \
+    echo "catch_workers_output = true" >> /opt/bitnami/php/etc/php-fpm.d/99-wai.conf && \
+    echo "decorate_workers_output = false" >> /opt/bitnami/php/etc/php-fpm.d/99-wai.conf && \
     mv /opt/bitnami/php/etc/php-fpm.d/www.conf /opt/bitnami/php/etc/php-fpm.d/50-www.conf
 
 COPY --from=matomo-codebase --chown=www-data:www-data /opt/matomo /var/www/html
