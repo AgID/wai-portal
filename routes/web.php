@@ -162,7 +162,8 @@ Route::middleware('spid.auth', 'auth', 'verified:verification.notice')->group(fu
         ->name('analytics');
 
     Route::get('/search-ipa-index', 'SearchIpaIndexController@search')
-        ->name('ipa.search');
+        ->name('ipa.search')
+        ->middleware('throttle:60,1');
 
     Route::middleware('authorize.analytics:' . UserPermission::VIEW_LOGS)->group(function () {
         Route::prefix('/logs')->group(function () {
@@ -173,10 +174,12 @@ Route::middleware('spid.auth', 'auth', 'verified:verification.notice')->group(fu
                 ->name('logs.data');
 
             Route::get('/search-website-index', 'Logs\SearchIndexController@searchWebsite')
-                ->name('logs.websites.search');
+                ->name('logs.websites.search')
+                ->middleware('throttle:60,1');
 
             Route::get('/search-user-index', 'Logs\SearchIndexController@searchUser')
-                ->name('logs.users.search');
+                ->name('logs.users.search')
+                ->middleware('throttle:60,1');
         });
     });
 
@@ -290,10 +293,12 @@ Route::middleware('auth.admin', 'verified:admin.verification.notice')->group(fun
                     ->name('admin.logs.data');
 
                 Route::get('/search-website-index', 'Logs\SearchIndexController@searchWebsite')
-                    ->name('admin.logs.websites.search');
+                    ->name('admin.logs.websites.search')
+                    ->middleware('throttle:60,1');
 
                 Route::get('/search-user-index', 'Logs\SearchIndexController@searchUser')
-                    ->name('admin.logs.users.search');
+                    ->name('admin.logs.users.search')
+                    ->middleware('throttle:60,1');
             });
 
             Route::prefix('/users')->group(function () {
