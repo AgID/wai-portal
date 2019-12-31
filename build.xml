@@ -332,7 +332,7 @@
                 <echo msg="Installing Matomo database..."/>
                 <exec command="docker-compose exec mariadb bash /opt/matomo-install/install_matomo_db.sh" dir="containers" checkreturn="true"/>
                 <exec command="docker-compose exec mariadb bash /opt/matomo-install/install_plugins_db.sh" dir="containers" checkreturn="true"/>
-                <exec command="docker-compose exec mariadb rm -Rf /opt/matomo-install/*" dir="containers" checkreturn="true"/>
+                <exec command="docker-compose exec mariadb sh -c 'rm -Rf /opt/matomo-install/*'" dir="containers" checkreturn="true"/>
             </then>
         </if>
         <!-- Initialize ElasticSearch -->
