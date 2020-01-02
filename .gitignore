@@ -12,6 +12,7 @@
 /containers/**/xdebug.ini
 /containers/spid-testenv/conf/config.yaml
 /containers/spid-testenv/conf/sp_metadata.xml
+/containers/matomo/premium_plugins
 
 # testing
 /coverage

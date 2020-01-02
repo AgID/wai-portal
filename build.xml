@@ -371,6 +371,30 @@
                 <exec command="docker-compose exec -u www-data php-fpm php artisan db:seed" dir="containers" passthru="true" checkreturn="true"/>
             </then>
         </if>
+        <!-- Install premium plugins -->
+        <echo msg="Updating matomo configuration for premium plugins..." />
+        <exec command="docker cp matomo/premium_plugins $(docker-compose ps -q php-fpm):/tmp"
+              dir="containers" checkreturn="true"/>
+        <exec command="docker-compose exec php-fpm chmod +x /tmp/premium_plugins/install_premium_plugins_config.sh"
+              dir="containers" checkreturn="true"/>
+        <exec command="docker-compose exec php-fpm /tmp/premium_plugins/install_premium_plugins_config.sh"
+              dir="containers" checkreturn="true"/>
+        <exec command="docker-compose exec php-fpm rm -Rf /tmp/premium_plugins"
+              dir="containers" checkreturn="true"/>
+        <echo msg="Updating matomo database for premium plugins..." />
+        <exec command="docker cp matomo/premium_plugins $(docker-compose ps -q mariadb):/tmp"
+              dir="containers" checkreturn="true"/>
+        <exec command="docker-compose exec mariadb chmod +x /tmp/premium_plugins/install_premium_plugins_db.sh"
+              dir="containers" checkreturn="true"/>
+        <exec command="docker-compose exec mariadb /tmp/premium_plugins/install_premium_plugins_db.sh
+              --public-user ${MATOMO_PUBLIC_USER}
+              --rollup-id ${MATOMO_PUBLIC_ROLLUP_ID}
+              --db-user root
+              --db-password ${MARIADB_ROOT_PASSWORD}
+              --database matomo"
+              dir="containers" checkreturn="true"/>
+        <exec command="docker-compose exec mariadb rm -Rf /tmp/premium_plugins"
+              dir="containers" checkreturn="true"/>
         <!-- Clear sessions and caches -->
         <echo msg="Clearing sessions and caches..."/>
         <exec command="docker-compose exec -u www-data php-fpm php artisan view:clear" dir="containers" passthru="true" checkreturn="true"/>
