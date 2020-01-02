@@ -317,8 +317,7 @@
         <!-- Set files ownership -->
         <echo msg="Setting files ownership..."/>
         <exec command="docker-compose exec php-fpm chown -R www-data:www-data storage database .env" dir="containers" checkreturn="true"/>
-        <exec command="docker-compose exec php-fpm chown -R www-data:www-data /opt/matomo/tmp" dir="containers" checkreturn="true"/>
-        <exec command="docker-compose exec php-fpm chown www-data:www-data /opt/matomo/config/config.ini.php" dir="containers" checkreturn="true"/>
+        <exec command="docker-compose exec php-fpm chown -R www-data:www-data /opt/matomo" dir="containers" checkreturn="true"/>
         <!-- Wait for mariadb container to start gracefully -->
         <echo msg="Waiting for database container to be ready..."/>
         <retry retryDelay="5" retryCount="12">
