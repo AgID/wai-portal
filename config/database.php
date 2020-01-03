@@ -146,6 +146,7 @@ return [
                     'parameters' => [
                         'password' => env('REDIS_PASSWORD'),
                         'database' => env('REDIS_QUEUE_DB', 3),
+                        'timeout' => 0.5,
                     ],
                 ],
             ]
@@ -160,6 +161,7 @@ return [
                     'parameters' => [
                         'password' => env('REDIS_PASSWORD'),
                         'database' => env('REDIS_SESSIONS_DB', 2),
+                        'timeout' => 0.5,
                     ],
                 ],
             ]
@@ -174,6 +176,7 @@ return [
                     'parameters' => [
                         'password' => env('REDIS_PASSWORD'),
                         'database' => env('REDIS_CACHE_DB', 1),
+                        'timeout' => 0.5,
                     ],
                 ],
             ]
@@ -188,6 +191,7 @@ return [
                     'parameters' => [
                         'password' => env('REDIS_IPA_INDEX_PASSWORD'),
                         'database' => 0,
+                        'timeout' => 0.5,
                     ],
                 ],
             ]
@@ -202,6 +206,7 @@ return [
                     'parameters' => [
                         'password' => env('REDIS_PASSWORD'),
                         'database' => 0,
+                        'timeout' => 0.5,
                     ],
                 ],
             ]
@@ -216,6 +221,7 @@ return [
                     'parameters' => [
                         'password' => env('REDIS_PASSWORD'),
                         'database' => 0,
+                        'timeout' => 0.5,
                     ],
                 ],
             ]
