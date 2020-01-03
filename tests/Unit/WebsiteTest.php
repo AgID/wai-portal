@@ -6,6 +6,7 @@ use App\Enums\WebsiteStatus;
 use App\Models\PublicAdministration;
 use App\Models\Website;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Cache;
 use Tests\TestCase;
 
 /**
@@ -14,6 +15,23 @@ use Tests\TestCase;
 class WebsiteTest extends TestCase
 {
     use RefreshDatabase;
+
+    public function testPublicAdministrationCounter(): void
+    {
+        $this->assertEquals(0, Website::getCount());
+
+        Cache::forget(Website::WEBSITE_COUNT_KEY);
+        $publicAdministration = factory(PublicAdministration::class)->create();
+        $website = factory(Website::class)->make([
+            'public_administration_id' => $publicAdministration->id,
+        ]);
+        $this->assertEquals(0, Website::getCount());
+
+        Cache::forget(Website::WEBSITE_COUNT_KEY);
+        $website->status = WebsiteStatus::ACTIVE;
+        $website->save();
+        $this->assertEquals(1, Website::getCount());
+    }
 
     /**
      * Test website creation routine.
