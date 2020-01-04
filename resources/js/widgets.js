@@ -3,13 +3,15 @@ const iframeResizer = require('iframe-resizer').iframeResize;
 export default (() => {
     const analyticsWidgets = [...document.querySelectorAll('iframe.auto-resizeable')];
 
-    const onFrameLoaded = () => {
-        iframeResizer({ heightCalculationMethod: 'lowestElement' });
+    const onFrameLoaded = iframe => {
+        iframeResizer({ heightCalculationMethod: 'lowestElement' }, iframe);
     }
 
     const init = () => {
         analyticsWidgets.map(widget => {
-            widget.addEventListener("load", onFrameLoaded);
+            widget.addEventListener('load', event => {
+                onFrameLoaded(event.currentTarget)
+            });
         });
     }
 
