@@ -112,9 +112,8 @@
                     {{ __('Questa sezione espone alcuni set di dati che mostrano la maniera in cui i cittadini interagiscono online con i siti web della pubblica amministrazione italiana.') }}
                 </p>
             </div>
-            @if (empty(config('analytics-service.public_dashboard')))
             <div class="row">
-                <div class="col-lg-12">
+                <div class="col-lg">
                     <div class="card-wrapper card-space">
                         <div class="card card-bg">
                             <div class="card-body">
@@ -124,30 +123,14 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            @else
-            @foreach($widgets as $widgetsRow)
-            <div class="row">
-                @if ($loop->first)
-                <div class="col-lg-4">
-                    <div class="card-wrapper card-space">
-                        <div class="card card-bg">
-                            <div class="card-body">
-                                <h5 class="card-title big-heading">{{ __('Riepilogo portale') }}</h5>
-                                @include('layouts.includes.portal_widget', ['publicAdministrationsCounter' => $publicAdministrationsCount, 'websitesCounter' => $websitesCount])
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                @endif
-                @foreach($widgetsRow as $widget)
-                <div class="col-lg-{{ $widget['span'] ?? 4}}">
+                @foreach($widgets as $widget)
+                <div class="col-lg-{{ $widget['span'] ?? 4 }}">
                     <div class="card-wrapper card-space">
                         <div class="card card-bg">
                             <div class="card-body">
                                 <h5 class="card-title big-heading">{{ __($widget['title']) }}</h5>
                                 <iframe
-                                    id="iFrameResizer{{ $loop->parent->index }}{{ $loop->index }}"
+                                    id="widget-{{ $loop->index }}"
                                     title="{{ __($widget['title']) }}"
                                     class="auto-resizeable"
                                     sandbox="allow-same-origin allow-scripts"
@@ -164,8 +147,6 @@
                 </div>
                 @endforeach
             </div>
-            @endforeach
-            @endif
         </div>
     </div>
     <div class="py-5">
