@@ -121,13 +121,13 @@ class HasAnalyticsDashboardTest extends TestCase
     }
 
     /**
-     * Test roll-up update successful.
+     * Test add to roll-up successful.
      *
      * @throws \App\Exceptions\AnalyticsServiceException if command is unsuccessful
      * @throws \App\Exceptions\CommandErrorException if unable to connect the Analytics Service
      * @throws \Illuminate\Contracts\Container\BindingResolutionException if unable to bind to the service
      */
-    public function testUpdateRollUp(): void
+    public function testAddToRollUp(): void
     {
         $this->publicAdministration->rollup_id = 3;
         $newWebsite = factory(Website::class)->create([
@@ -154,7 +154,7 @@ class HasAnalyticsDashboardTest extends TestCase
             });
         });
 
-        $this->publicAdministration->updateRollUp($newWebsite);
+        $this->publicAdministration->addToRollUp($newWebsite);
     }
 
     /**
@@ -173,7 +173,7 @@ class HasAnalyticsDashboardTest extends TestCase
             });
         });
 
-        $this->publicAdministration->updateRollUp($this->website);
+        $this->publicAdministration->addToRollUp($this->website);
         $this->assertTrue(null === $this->publicAdministration->rollup_id && null === $this->publicAdministration->token_auth);
     }
 }

@@ -47,7 +47,7 @@ trait HasAnalyticsDashboard
     }
 
     /**
-     * Update an existing analytics report for the public administration.
+     * Add the specified website to an existing analytics report for the public administration.
      *
      * @param Website $website the website to add into public administration rollup report
      *
@@ -55,7 +55,7 @@ trait HasAnalyticsDashboard
      * @throws \App\Exceptions\AnalyticsServiceException if unable to connect to the Analytics Service
      * @throws \App\Exceptions\CommandErrorException if command finishes with error
      */
-    public function updateRollUp(Website $website): void
+    public function addToRollUp(Website $website): void
     {
         if (empty($this->rollup_id)) {
             //NOTE: return immediately since the public administration
