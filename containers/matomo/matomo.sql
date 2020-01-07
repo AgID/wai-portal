@@ -498,7 +498,8 @@ INSERT INTO `option` VALUES
   ('version_VisitsSummary','3.13.0',1),
   ('version_VisitTime','3.13.0',1),
   ('version_WebsiteMeasurable','3.13.0',1),
-  ('version_Widgetize','3.13.0',1);
+  ('version_Widgetize','3.13.0',1),
+  ('anonymous_defaultReport','Login',0);
 /*!40000 ALTER TABLE `option` ENABLE KEYS */;
 UNLOCK TABLES;
 
