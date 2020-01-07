@@ -3,14 +3,8 @@ required:
   public:
     type: "//arr"
     length: { min: 1 }
-    contents:
-      type: "//arr"
-      length: { min: 1 }
-      contents: "tag:widget"
+    contents: "tag:widget"
   pa:
     type: "//arr"
     length: { min: 1 }
-    contents:
-      type: "//arr"
-      length: { min: 1 }
-      contents: "tag:widget"
+    contents: "tag:widget"

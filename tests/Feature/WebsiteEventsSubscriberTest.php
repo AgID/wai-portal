@@ -73,7 +73,7 @@ class WebsiteEventsSubscriberTest extends TestCase
         });
 
         $this->partialMock(HasAnalyticsDashboard::class)
-            ->shouldReceive('updateRollUp')
+            ->shouldReceive('addToRollUp')
             ->withArgs([$this->website]);
 
         event(new WebsiteActivated($this->website));
@@ -98,7 +98,7 @@ class WebsiteEventsSubscriberTest extends TestCase
         });
 
         $this->partialMock(HasAnalyticsDashboard::class)
-            ->shouldReceive('updateRollUp')
+            ->shouldReceive('addToRollUp')
             ->withArgs([$this->website])
             ->andThrow(\Exception::class, 'Public administration rollup exception reporting');
 
@@ -144,7 +144,7 @@ class WebsiteEventsSubscriberTest extends TestCase
         });
 
         $this->partialMock(HasAnalyticsDashboard::class)
-            ->shouldNotReceive('updateRollUp');
+            ->shouldNotReceive('addToRollUp');
 
         event(new WebsiteActivated($this->website));
     }

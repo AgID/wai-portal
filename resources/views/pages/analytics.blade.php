@@ -35,16 +35,15 @@
 </div>
 <div class="container py-3">
     @if ($publicAdministration->status->is(PublicAdministrationStatus::ACTIVE))
-    @foreach($widgets as $widgetsRow)
     <div class="row">
-        @foreach($widgetsRow as $widget)
-        <div class="col-lg-{{ $widget['span'] ?? 4}}">
+        @foreach($widgets as $widget)
+        <div class="col-lg-{{ $widget['span'] ?? 4 }}">
             <div class="card-wrapper card-space">
                 <div class="card card-bg">
                     <div class="card-body">
                         <h5 class="card-title big-heading">{{ __($widget['title']) }}</h5>
                         <iframe
-                            id="iFrameResizer{{ $loop->parent->index }}{{ $loop->index }}"
+                            id="widget-{{ $loop->index }}"
                             title="{{ __($widget['title']) }}"
                             class="auto-resizeable"
                             sandbox="allow-same-origin allow-scripts"
@@ -61,7 +60,6 @@
         </div>
         @endforeach
     </div>
-    @endforeach
     @else
     <div class="d-flex justify-content-center pb-5">
         <p class="text-serif text-center">

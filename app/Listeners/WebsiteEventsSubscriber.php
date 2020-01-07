@@ -103,7 +103,7 @@ class WebsiteEventsSubscriber implements ShouldQueue
         //      by "public administration activated" event handler
         if (!$website->type->is(WebsiteType::PRIMARY)) {
             try {
-                $website->publicAdministration->updateRollUp($website);
+                $website->publicAdministration->addToRollUp($website);
             } catch (Exception $exception) {
                 report($exception);
             }
