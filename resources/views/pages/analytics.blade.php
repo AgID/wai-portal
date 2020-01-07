@@ -47,7 +47,7 @@
                             title="{{ __($widget['title']) }}"
                             class="auto-resizeable"
                             sandbox="allow-same-origin allow-scripts"
-                            src="{{ config('analytics-service.public_url') }}/{{ $widget['url'] }}&token_auth={{ $publicAdministration->token_auth }}&idSite={{ $publicAdministration->rollup_id }}&show_related_reports=0"
+                            src="{{ config('analytics-service.public_url') }}/{{ $widget['url'] }}&token_auth={{ $publicAdministration->token_auth }}&idSite={{ $publicAdministration->rollup_id }}&show_related_reports=0&language={{ $locale }}"
                             frameborder="0"
                             width="100%"
                             height="350"
