@@ -12,6 +12,7 @@ export default (() => {
             widget.addEventListener('load', event => {
                 onFrameLoaded(event.currentTarget)
             });
+            widget.src = widget.dataset.src;
         });
     }
 

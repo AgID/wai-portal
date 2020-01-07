@@ -132,9 +132,10 @@
                                 <iframe
                                     id="widget-{{ $loop->index }}"
                                     title="{{ __($widget['title']) }}"
+                                    src=""
                                     class="auto-resizeable"
                                     sandbox="allow-same-origin allow-scripts"
-                                    src="{{ config('analytics-service.public_url') }}/{{ $widget['url'] }}&idSite={{ config('analytics-service.public_dashboard') }}&show_footer_icons=0&show_related_reports=0&language={{ $locale }}"
+                                    data-src="{{ config('analytics-service.public_url') }}/{{ $widget['url'] }}&idSite={{ config('analytics-service.public_dashboard') }}&show_footer_icons=0&show_related_reports=0&language={{ $locale }}"
                                     frameborder="0"
                                     width="100%"
                                     height="350"
