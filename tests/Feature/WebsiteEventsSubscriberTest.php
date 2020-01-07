@@ -11,7 +11,6 @@ use App\Models\Website;
 use App\Services\MatomoService;
 use App\Traits\HasAnalyticsDashboard;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
 use Tests\TestCase;
