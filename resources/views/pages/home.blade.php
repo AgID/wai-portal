@@ -129,11 +129,12 @@
                         <div class="card card-bg">
                             <div class="card-body">
                                 <h5 class="card-title big-heading">{{ __($widget['title']) }}</h5>
+                                <img id="spinner-widget-{{ $loop->index }}" class="icon mx-auto d-block" alt="Widget loading spinner" src="{{ asset('images/loading.svg') }}">
                                 <iframe
                                     id="widget-{{ $loop->index }}"
                                     title="{{ __($widget['title']) }}"
                                     src=""
-                                    class="auto-resizeable"
+                                    class="auto-resizeable invisible"
                                     sandbox="allow-same-origin allow-scripts"
                                     data-src="{{ config('analytics-service.public_url') }}/{{ $widget['url'] }}&idSite={{ config('analytics-service.public_dashboard') }}&show_footer_icons=0&show_related_reports=0&language={{ $locale }}"
                                     frameborder="0"

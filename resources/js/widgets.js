@@ -4,6 +4,8 @@ export default (() => {
     const analyticsWidgets = [...document.querySelectorAll('iframe.auto-resizeable')];
 
     const onFrameLoaded = iframe => {
+        document.getElementById('spinner-' + iframe.id).remove()
+        iframe.classList.remove('invisible');
         iframeResizer({ heightCalculationMethod: 'lowestElement' }, iframe);
     }
 
