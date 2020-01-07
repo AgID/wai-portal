@@ -1,10 +1,25 @@
 type: "//rec"
 required:
-  public:
-    type: "//arr"
-    length: { min: 1 }
-    contents: "tag:widget"
-  pa:
-    type: "//arr"
-    length: { min: 1 }
-    contents: "tag:widget"
+  it:
+    type: "//rec"
+    required:
+      public:
+        type: "//arr"
+        length: { min: 1 }
+        contents: "tag:widget"
+      pa:
+        type: "//arr"
+        length: { min: 1 }
+        contents: "tag:widget"
+optional:
+  en:
+    type: "//rec"
+    required:
+      public:
+        type: "//arr"
+        length: { min: 1 }
+        contents: "tag:widget"
+      pa:
+        type: "//arr"
+        length: { min: 1 }
+        contents: "tag:widget"
