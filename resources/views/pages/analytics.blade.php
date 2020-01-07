@@ -42,12 +42,14 @@
                 <div class="card card-bg">
                     <div class="card-body">
                         <h5 class="card-title big-heading">{{ __($widget['title']) }}</h5>
+                        <img id="spinner-widget-{{ $loop->index }}" class="icon mx-auto d-block" alt="Widget loading spinner" src="{{ asset('images/loading.svg') }}">
                         <iframe
                             id="widget-{{ $loop->index }}"
                             title="{{ __($widget['title']) }}"
-                            class="auto-resizeable"
+                            class="auto-resizeable  invisible"
                             sandbox="allow-same-origin allow-scripts"
-                            src="{{ config('analytics-service.public_url') }}/{{ $widget['url'] }}&token_auth={{ $publicAdministration->token_auth }}&idSite={{ $publicAdministration->rollup_id }}&show_related_reports=0&language={{ $locale }}"
+                            src=""
+                            data-src="{{ config('analytics-service.public_url') }}/{{ $widget['url'] }}&token_auth={{ $publicAdministration->token_auth }}&idSite={{ $publicAdministration->rollup_id }}&show_related_reports=0&language={{ $locale }}"
                             frameborder="0"
                             width="100%"
                             height="350"
