@@ -84,8 +84,6 @@
                     <token key="SPID_SP_PRIVATE_KEY" value="${SPID_SP_PRIVATE_KEY}" />
                     <token key="SPID_SP_CERTIFICATE" value="${SPID_SP_CERTIFICATE}" />
                     <token key="ANALYTICS_ADMIN_TOKEN" value="${MATOMO_ROOT_APIKEY}" />
-                    <token key="ANALYTICS_VIEWER_USER" value="${MATOMO_PUBLIC_USER}" />
-                    <token key="ANALYTICS_VIEWER_TOKEN" value="${MATOMO_PUBLIC_USER_APIKEY}" />
                     <token key="ANALYTICS_API_BASE_URL" value="${ANALYTICS_API_BASE_URL}" />
                     <token key="ANALYTICS_API_SSL_VERIFY" value="${ANALYTICS_API_SSL_VERIFY}" />
                     <token key="ANALYTICS_PUBLIC_URL" value="${ANALYTICS_PUBLIC_URL}" />
@@ -387,7 +385,6 @@
         <exec command="docker-compose exec mariadb chmod +x /tmp/premium_plugins/install_premium_plugins_db.sh"
               dir="containers" checkreturn="true"/>
         <exec command="docker-compose exec mariadb /tmp/premium_plugins/install_premium_plugins_db.sh
-              --public-user ${MATOMO_PUBLIC_USER}
               --rollup-id ${MATOMO_PUBLIC_ROLLUP_ID}
               --db-user root
               --db-password ${MARIADB_ROOT_PASSWORD}

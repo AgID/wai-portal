@@ -781,8 +781,7 @@ LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
 INSERT INTO `user` VALUES
   ('anonymous','','anonymous','anonymous@example.org','','anonymous',0,'2019-01-29 21:56:58','2019-01-29 00:00:00'),
-  ('admin','$2y$10$fxWOt62b6I4ofycE762dTOD2YfgmtVgMnsnDa6n/KEZ774dl4lsbS','admin','admin@example.com','','2e3592b5b19bf5b4e3f804a13a1665d6',1,'2019-01-29 00:00:00','2019-01-29 00:00:00'),
-  ('viewer','$2y$10$dnDu1xButZ7gmElfctG93uoLfrjEC0tTgGC4d6EIrDt5SOWADduZ6','viewer','viewer@example.com','','2e366e516874507946dd43d09a5b5927',0,'2019-01-29 00:00:00','2019-01-29 00:00:00');
+  ('admin','$2y$10$fxWOt62b6I4ofycE762dTOD2YfgmtVgMnsnDa6n/KEZ774dl4lsbS','admin','admin@example.com','','2e3592b5b19bf5b4e3f804a13a1665d6',1,'2019-01-29 00:00:00','2019-01-29 00:00:00');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 

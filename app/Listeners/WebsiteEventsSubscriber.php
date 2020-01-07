@@ -426,6 +426,6 @@ class WebsiteEventsSubscriber implements ShouldQueue
      */
     private function updatePublicDashboardUser(Website $website): void
     {
-        app()->make('analytics-service')->setWebsiteAccess(config('analytics-service.viewer_login'), WebsiteAccessType::VIEW, $website->analytics_id);
+        app()->make('analytics-service')->setWebsiteAccess('anonymous', WebsiteAccessType::VIEW, $website->analytics_id);
     }
 }
