@@ -51,8 +51,6 @@ class WebsiteEventsSubscriberTest extends TestCase
             'public_administration_id' => $this->publicAdministration->id,
             'analytics_id' => 1,
         ]);
-
-        Config::set('analytics-service.viewer_login', 'public_viewer');
     }
 
     /**
@@ -64,7 +62,7 @@ class WebsiteEventsSubscriberTest extends TestCase
             return $this->partialMock(MatomoService::class, function ($mock) {
                 $mock->shouldReceive('setWebsiteAccess')
                     ->withArgs([
-                        'public_viewer',
+                        'anonymous',
                         WebsiteAccessType::VIEW,
                         $this->website->analytics_id,
                     ])
@@ -88,7 +86,7 @@ class WebsiteEventsSubscriberTest extends TestCase
             return $this->partialMock(MatomoService::class, function ($mock) {
                 $mock->shouldReceive('setWebsiteAccess')
                     ->withArgs([
-                        'public_viewer',
+                        'anonymous',
                         WebsiteAccessType::VIEW,
                         $this->website->analytics_id,
                     ])
@@ -135,7 +133,7 @@ class WebsiteEventsSubscriberTest extends TestCase
             return $this->partialMock(MatomoService::class, function ($mock) {
                 $mock->shouldReceive('setWebsiteAccess')
                     ->withArgs([
-                        'public_viewer',
+                        'anonymous',
                         WebsiteAccessType::VIEW,
                         $this->website->analytics_id,
                     ])

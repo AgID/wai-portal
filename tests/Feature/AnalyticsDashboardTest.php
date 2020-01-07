@@ -92,7 +92,7 @@ class AnalyticsDashboardTest extends TestCase
         $this->publicAdministration->rollup_id = 1;
         $this->publicAdministration->save();
 
-        $widgets = Yaml::parseFile(resource_path('data/widgets.yml'))['pa'];
+        $widgets = Yaml::parseFile(resource_path('data/widgets.yml'))[$this->app->getLocale()]['pa'];
 
         $this->actingAs($this->user)
             ->withSession([
@@ -133,7 +133,7 @@ class AnalyticsDashboardTest extends TestCase
         $this->publicAdministration->save();
         $this->user->assign(UserRole::SUPER_ADMIN);
         $this->user->allow(UserPermission::ACCESS_ADMIN_AREA);
-        $widgets = Yaml::parseFile(resource_path('data/widgets.yml'))['pa'];
+        $widgets = Yaml::parseFile(resource_path('data/widgets.yml'))[$this->app->getLocale()]['pa'];
 
         $this->actingAs($this->user)
             ->get(route('admin.publicAdministration.analytics', ['publicAdministration' => $this->publicAdministration->ipa_code]))
