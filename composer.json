@@ -20,7 +20,7 @@
         "fideloper/proxy": "^4.2",
         "guzzlehttp/guzzle": "^6.3",
         "italia/spid-laravel": "^0.9.5@beta",
-        "laravel/framework": "6.9.*",
+        "laravel/framework": "6.10.*",
         "laravel/tinker": "^2.0",
         "predis/predis": "^1.1",
         "silber/bouncer": "v1.0.0-rc.6",
