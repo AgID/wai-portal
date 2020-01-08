@@ -7,7 +7,7 @@
  */
 
 return [
-    'sp_entity_id' => 'https://spid.agid.gov.it',
+    'sp_entity_id' => 'https://webanalytics.italia.it',
     'sp_base_url' => env('APP_URL'),
     'sp_service_name' => 'Web Analytics Italia',
     'sp_organization_name' => 'AGID',
