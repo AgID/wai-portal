@@ -113,50 +113,41 @@
                 </p>
             </div>
             <div class="row">
-                <div class="col-lg-4">
+                <div class="col-lg">
                     <div class="card-wrapper card-space">
                         <div class="card card-bg">
-                            <div class="card-body"></div>
+                            <div class="card-body">
+                                <h5 class="card-title big-heading">{{ __('Riepilogo portale') }}</h5>
+                                @include('layouts.includes.portal_widget', ['publicAdministrationsCounter' => $publicAdministrationsCount, 'websitesCounter' => $websitesCount])
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-4">
+                @foreach($widgets as $widget)
+                <div class="col-lg-{{ $widget['span'] ?? 4 }}">
                     <div class="card-wrapper card-space">
                         <div class="card card-bg">
-                            <div class="card-body"></div>
+                            <div class="card-body">
+                                <h5 class="card-title big-heading">{{ $widget['title'][$locale] ?? $widget['title'][config('app.fallback_locale')] }}</h5>
+                                <img id="spinner-widget-{{ $loop->index }}" class="icon mx-auto d-block" alt="Widget loading spinner" src="{{ asset('images/loading.svg') }}">
+                                <iframe
+                                    id="widget-{{ $loop->index }}"
+                                    title="{{ $widget['title'][$locale] ?? $widget['title'][config('app.fallback_locale')] }}"
+                                    src=""
+                                    class="auto-resizeable invisible"
+                                    sandbox="allow-same-origin allow-scripts"
+                                    data-src="{{ config('analytics-service.public_url') }}/{{ $widget['url'] }}&idSite={{ config('analytics-service.public_dashboard') }}&show_footer_icons=0&show_related_reports=0&language={{ $locale }}"
+                                    frameborder="0"
+                                    width="100%"
+                                    height="350"
+                                    marginheight="0"
+                                    marginwidth="0"
+                                    scrolling="no"></iframe>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-4">
-                    <div class="card-wrapper card-space">
-                        <div class="card card-bg">
-                            <div class="card-body"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-4">
-                    <div class="card-wrapper card-space">
-                        <div class="card card-bg">
-                            <div class="card-body"></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="card-wrapper card-space">
-                        <div class="card card-bg">
-                            <div class="card-body"></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="card-wrapper card-space">
-                        <div class="card card-bg">
-                            <div class="card-body"></div>
-                        </div>
-                    </div>
-                </div>
+                @endforeach
             </div>
         </div>
     </div>

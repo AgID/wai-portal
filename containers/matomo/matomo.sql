@@ -365,6 +365,7 @@ INSERT INTO `option` VALUES
   ('PrivacyManager.doNotTrackEnabled','1',0),
   ('PrivacyManager.ipAnonymizerEnabled','1',0),
   ('SitesManager_DefaultTimezone','Europe/Rome',0),
+  ('SitesManager_DefaultCurrency','EUR',0),
   ('UpdateCheck_LastTimeChecked','1548799026',1),
   ('UpdateCheck_LatestVersion','3.13.0',0),
   ('usercountry.location_provider','geoip2php',0),
@@ -497,7 +498,8 @@ INSERT INTO `option` VALUES
   ('version_VisitsSummary','3.13.0',1),
   ('version_VisitTime','3.13.0',1),
   ('version_WebsiteMeasurable','3.13.0',1),
-  ('version_Widgetize','3.13.0',1);
+  ('version_Widgetize','3.13.0',1),
+  ('anonymous_defaultReport','Login',0);
 /*!40000 ALTER TABLE `option` ENABLE KEYS */;
 UNLOCK TABLES;
 

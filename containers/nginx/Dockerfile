@@ -11,6 +11,7 @@ ADD ./certs/server.key /var/ssl/
 
 ARG PHP_UPSTREAM_CONTAINER=php-fpm
 ARG PHP_UPSTREAM_PORT=9000
+ARG ALLOWED_ANCESTORS=https://localhost
 
 # Remove the default conf
 RUN rm /etc/nginx/conf.d/default.conf
@@ -20,6 +21,9 @@ ADD ./conf/upstream.conf /etc/nginx/conf.d/
 ADD ./conf/application.conf /etc/nginx/sites-available/
 ADD ./conf/matomo.conf /etc/nginx/sites-available/
 
+RUN sed -i -e s/@PHP_UPSTREAM_CONTAINER@/${PHP_UPSTREAM_CONTAINER}/g /etc/nginx/conf.d/upstream.conf
+RUN sed -i -e s/@PHP_UPSTREAM_PORT@/${PHP_UPSTREAM_PORT}/g /etc/nginx/conf.d/upstream.conf
+RUN sed -i -e s#@ALLOWED_ANCESTORS@#${ALLOWED_ANCESTORS}#g /etc/nginx/sites-available/matomo.conf
 
 CMD ["nginx"]
 

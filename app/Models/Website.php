@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 
 /**
  * Website model.
@@ -23,6 +24,13 @@ class Website extends Model
 {
     use SoftDeletes;
     use CastsEnums;
+
+    /**
+     * Total active websites count cache key.
+     *
+     * @var string the key
+     */
+    public const WEBSITE_COUNT_KEY = 'websiteCount';
 
     /**
      * The attributes that are mass assignable.
@@ -69,6 +77,18 @@ class Website extends Model
         'deleted' => WebsiteDeleted::class,
         'restored' => WebsiteRestored::class,
     ];
+
+    /**
+     * Get total active websites counter.
+     *
+     * @return int the count
+     */
+    public static function getCount(): int
+    {
+        return Cache::rememberForever(self::WEBSITE_COUNT_KEY, function () {
+            return Website::where('status', WebsiteStatus::ACTIVE)->count();
+        });
+    }
 
     /**
      * Get the route key for the model.

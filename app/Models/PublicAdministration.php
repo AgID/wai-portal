@@ -6,6 +6,7 @@ use App\Enums\PublicAdministrationStatus;
 use App\Enums\UserRole;
 use App\Enums\UserStatus;
 use App\Notifications\WebsiteActivatedPublicAdministrationEmail;
+use App\Traits\HasAnalyticsDashboard;
 use BenSampo\Enum\Traits\CastsEnums;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -14,6 +15,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\Cache;
 use Silber\Bouncer\BouncerFacade as Bouncer;
 
 /**
@@ -24,6 +26,14 @@ class PublicAdministration extends Model
     use CastsEnums;
     use SoftDeletes;
     use Notifiable;
+    use HasAnalyticsDashboard;
+
+    /**
+     * Active public administrations count cache key.
+     *
+     * @var string the key
+     */
+    public const PUBLIC_ADMINISTRATION_COUNT_KEY = 'paCount';
 
     /**
      * The attributes that are mass assignable.
@@ -42,6 +52,7 @@ class PublicAdministration extends Model
         'region',
         'type',
         'status',
+        'rollup_id',
     ];
 
     /**
@@ -84,6 +95,18 @@ class PublicAdministration extends Model
     public static function findTrashedByIpaCode(string $ipa_code): ?PublicAdministration
     {
         return PublicAdministration::onlyTrashed()->where('ipa_code', $ipa_code)->first();
+    }
+
+    /**
+     * Get active public administrations counter.
+     *
+     * @return int the count
+     */
+    public static function getCount(): int
+    {
+        return Cache::rememberForever(self::PUBLIC_ADMINISTRATION_COUNT_KEY, function () {
+            return PublicAdministration::all('ipa_code')->count();
+        });
     }
 
     /**

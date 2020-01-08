@@ -3,6 +3,8 @@
 namespace App\Listeners;
 
 use App\Enums\Logs\EventType;
+use App\Enums\WebsiteAccessType;
+use App\Enums\WebsiteType;
 use App\Events\Website\PrimaryWebsiteNotTracking;
 use App\Events\Website\WebsiteActivated;
 use App\Events\Website\WebsiteAdded;
@@ -16,9 +18,14 @@ use App\Events\Website\WebsiteStatusChanged;
 use App\Events\Website\WebsiteUnarchived;
 use App\Events\Website\WebsiteUpdated;
 use App\Events\Website\WebsiteUrlChanged;
+use App\Exceptions\AnalyticsServiceException;
+use App\Exceptions\CommandErrorException;
+use App\Models\Website;
 use App\Traits\InteractsWithRedisIndex;
+use Exception;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Events\Dispatcher;
+use Illuminate\Support\Facades\Cache;
 
 /**
  * Websites related events subscriber.
@@ -85,6 +92,22 @@ class WebsiteEventsSubscriber implements ShouldQueue
                 'pa' => $website->publicAdministration->ipa_code,
             ]
         );
+
+        try {
+            $this->updatePublicDashboardUser($website);
+        } catch (Exception $exception) {
+            report($exception);
+        }
+
+        //NOTE: primary websites are added to roll up report
+        //      by "public administration activated" event handler
+        if (!$website->type->is(WebsiteType::PRIMARY)) {
+            try {
+                $website->publicAdministration->addToRollUp($website);
+            } catch (Exception $exception) {
+                report($exception);
+            }
+        }
     }
 
     /**
@@ -105,6 +128,7 @@ class WebsiteEventsSubscriber implements ShouldQueue
      */
     public function onWebsiteStatusChanged(WebsiteStatusChanged $event): void
     {
+        Cache::forget(Website::WEBSITE_COUNT_KEY);
         $website = $event->getWebsite();
         logger()->notice(
             'Website ' . $website->info . ' status changed from "' . $event->getOldStatus()->description . '" to "' . $website->status->description . '"',
@@ -241,6 +265,7 @@ class WebsiteEventsSubscriber implements ShouldQueue
      */
     public function onPurged(WebsitePurged $event): void
     {
+        Cache::forget(Website::WEBSITE_COUNT_KEY);
         $website = json_decode($event->getWebsiteJson());
         $websiteInfo = '"' . e($website->name) . '" [' . $website->slug . ']';
         //NOTE: toJson: relationship attributes are snake_case
@@ -388,5 +413,19 @@ class WebsiteEventsSubscriber implements ShouldQueue
             'App\Events\Website\PrimaryWebsiteNotTracking',
             'App\Listeners\WebsiteEventsSubscriber@onPrimaryWebsiteNotTracking'
         );
+    }
+
+    /**
+     * Grant permission to public dashboard user on a website.
+     *
+     * @param Website $website the new website
+     *
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     * @throws AnalyticsServiceException if unable to connect the Analytics Service
+     * @throws CommandErrorException if command is unsuccessful
+     */
+    private function updatePublicDashboardUser(Website $website): void
+    {
+        app()->make('analytics-service')->setWebsiteAccess('anonymous', WebsiteAccessType::VIEW, $website->analytics_id);
     }
 }

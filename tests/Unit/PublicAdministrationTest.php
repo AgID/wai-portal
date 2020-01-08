@@ -6,6 +6,7 @@ use App\Models\PublicAdministration;
 use App\Models\User;
 use App\Models\Website;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Cache;
 use Tests\TestCase;
 
 /**
@@ -14,6 +15,19 @@ use Tests\TestCase;
 class PublicAdministrationTest extends TestCase
 {
     use RefreshDatabase;
+
+    /**
+     * Test registered public administrations counter.
+     */
+    public function testPublicAdministrationCounter(): void
+    {
+        $this->assertEquals(0, PublicAdministration::getCount());
+
+        Cache::forget(PublicAdministration::PUBLIC_ADMINISTRATION_COUNT_KEY);
+        factory(PublicAdministration::class)->create();
+
+        $this->assertEquals(1, PublicAdministration::getCount());
+    }
 
     /**
      * Test public administration creation routine.

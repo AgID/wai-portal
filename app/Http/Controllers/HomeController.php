@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PublicAdministration;
+use App\Models\Website;
 use Illuminate\Support\Arr;
 use Illuminate\View\View;
 use Symfony\Component\Yaml\Yaml;
@@ -15,7 +17,18 @@ class HomeController extends Controller
      */
     public function home(): View
     {
-        return view('pages.home');
+        $allWidgets = Yaml::parseFile(resource_path('data/widgets.yml'));
+        $publicAdministrationsCount = PublicAdministration::getCount();
+        $websitesCount = Website::getCount();
+
+        $locale = app()->getLocale();
+
+        $widgets = [];
+        if (config('analytics-service.public_dashboard')) {
+            $widgets = $allWidgets['public'] ?? [];
+        }
+
+        return view('pages.home')->with(compact('publicAdministrationsCount', 'websitesCount', 'widgets', 'locale'));
     }
 
     /**

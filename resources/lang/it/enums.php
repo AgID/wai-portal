@@ -92,7 +92,7 @@ return [
         ],
         WebsiteStatus::ARCHIVED => [
             'short' => 'archiviato',
-            'long' => 'Il sito web è stato archiviato. 🛑'
+            'long' => 'Il sito web è stato archiviato. 🛑',
         ],
     ],
 

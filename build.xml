@@ -87,6 +87,7 @@
                     <token key="ANALYTICS_API_BASE_URL" value="${ANALYTICS_API_BASE_URL}" />
                     <token key="ANALYTICS_API_SSL_VERIFY" value="${ANALYTICS_API_SSL_VERIFY}" />
                     <token key="ANALYTICS_PUBLIC_URL" value="${ANALYTICS_PUBLIC_URL}" />
+                    <token key="ANALYTICS_PUBLIC_DASHBOARD_ID" value="${MATOMO_PUBLIC_ROLLUP_ID}" />
                     <token key="MATOMO_DB_READER" value="${MATOMO_DB_READER}" />
                     <token key="MATOMO_DB_USER" value="${MATOMO_DB_USER}" />
                     <token key="MATOMO_DB_PASSWORD" value="${MATOMO_DB_PASSWORD}" />
@@ -304,8 +305,7 @@
         <!-- Set files ownership -->
         <echo msg="Setting files ownership..."/>
         <exec command="docker-compose exec php-fpm chown -R www-data:www-data storage database .env" dir="containers" checkreturn="true"/>
-        <exec command="docker-compose exec php-fpm chown -R www-data:www-data /opt/matomo/tmp" dir="containers" checkreturn="true"/>
-        <exec command="docker-compose exec php-fpm chown www-data:www-data /opt/matomo/config/config.ini.php" dir="containers" checkreturn="true"/>
+        <exec command="docker-compose exec php-fpm chown -R www-data:www-data /opt/matomo" dir="containers" checkreturn="true"/>
         <!-- Wait for mariadb container to start gracefully -->
         <echo msg="Waiting for database container to be ready..."/>
         <retry retryDelay="5" retryCount="12">
@@ -319,7 +319,7 @@
                 <echo msg="Installing Matomo database..."/>
                 <exec command="docker-compose exec mariadb bash /opt/matomo-install/install_matomo_db.sh" dir="containers" checkreturn="true"/>
                 <exec command="docker-compose exec mariadb bash /opt/matomo-install/install_plugins_db.sh" dir="containers" checkreturn="true"/>
-                <exec command="docker-compose exec mariadb rm -Rf /opt/matomo-install/*" dir="containers" checkreturn="true"/>
+                <exec command="docker-compose exec mariadb sh -c 'rm -Rf /opt/matomo-install/*'" dir="containers" checkreturn="true"/>
             </then>
         </if>
         <!-- Initialize ElasticSearch -->
@@ -359,6 +359,29 @@
                 <exec command="docker-compose exec -u www-data php-fpm php artisan db:seed" dir="containers" passthru="true" checkreturn="true"/>
             </then>
         </if>
+        <!-- Install premium plugins -->
+        <echo msg="Updating matomo configuration for premium plugins..." />
+        <exec command="docker cp matomo/premium_plugins $(docker-compose ps -q php-fpm):/tmp"
+              dir="containers" checkreturn="true"/>
+        <exec command="docker-compose exec php-fpm chmod +x /tmp/premium_plugins/install_premium_plugins_config.sh"
+              dir="containers" checkreturn="true"/>
+        <exec command="docker-compose exec php-fpm /tmp/premium_plugins/install_premium_plugins_config.sh"
+              dir="containers" checkreturn="true"/>
+        <exec command="docker-compose exec php-fpm rm -Rf /tmp/premium_plugins"
+              dir="containers" checkreturn="true"/>
+        <echo msg="Updating matomo database for premium plugins..." />
+        <exec command="docker cp matomo/premium_plugins $(docker-compose ps -q mariadb):/tmp"
+              dir="containers" checkreturn="true"/>
+        <exec command="docker-compose exec mariadb chmod +x /tmp/premium_plugins/install_premium_plugins_db.sh"
+              dir="containers" checkreturn="true"/>
+        <exec command="docker-compose exec mariadb /tmp/premium_plugins/install_premium_plugins_db.sh
+              --rollup-id ${MATOMO_PUBLIC_ROLLUP_ID}
+              --db-user root
+              --db-password ${MARIADB_ROOT_PASSWORD}
+              --database matomo"
+              dir="containers" checkreturn="true"/>
+        <exec command="docker-compose exec mariadb rm -Rf /tmp/premium_plugins"
+              dir="containers" checkreturn="true"/>
         <!-- Clear sessions and caches -->
         <echo msg="Clearing sessions and caches..."/>
         <exec command="docker-compose exec -u www-data php-fpm php artisan view:clear" dir="containers" passthru="true" checkreturn="true"/>

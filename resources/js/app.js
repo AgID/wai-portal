@@ -18,6 +18,7 @@ import SearchIpa from './searchIpa';
 import Notification from './notification';
 import PublicAdministrationSelector from './publicAdministrationSelector';
 import FaqSelector from './faqSelector';
+import WidgetResizer from './widgets';
 
 $(document).ready(() => {
     Forms.init();
@@ -29,6 +30,7 @@ $(document).ready(() => {
     UserVerificationResend.init();
     PublicAdministrationSelector.init();
     FaqSelector.init();
+    WidgetResizer.init();
     Datatables.init([
         datatableApi => LogsDatatables.preDatatableInit(datatableApi),
     ], [

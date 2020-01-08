@@ -490,6 +490,54 @@ class MatomoService implements AnalyticsServiceContract
     }
 
     /**
+     * Register a new analytics service report.
+     *
+     * @param string $name the report name
+     * @param array $idSites the Analytics Service websites IDs
+     *
+     * @throws CommandErrorException if command is unsuccessful
+     * @throws AnalyticsServiceException if unable to connect the Analytics Service
+     *
+     * @return int the Analytics Service report ID
+     */
+    public function registerRollUp(string $name, array $idSites): int
+    {
+        $params = [
+            'sourceIdSites' => $idSites,
+            'method' => 'RollUpReporting.addRollUp',
+            'name' => $name,
+            'timezone' => 'Europe/Rome',
+            'currency' => 'EUR',
+            'token_auth' => $this->tokenAuth,
+        ];
+
+        return $this->apiCall($params)['value'];
+    }
+
+    /**
+     * Update an existing analytics service report.
+     * NOTE: the given Analytics Service websites IDs list will replace
+     *       the current one.
+     *
+     * @param string $idRollUp the Analytics Service report ID
+     * @param array $idSites the Analytics Service websites IDs
+     *
+     * @throws CommandErrorException if command is unsuccessful
+     * @throws AnalyticsServiceException if unable to connect the Analytics Service
+     */
+    public function updateRollUp(string $idRollUp, array $idSites): void
+    {
+        $params = [
+            'sourceIdSites' => $idSites,
+            'method' => 'RollUpReporting.updateRollUp',
+            'idSite' => $idRollUp,
+            'token_auth' => $this->tokenAuth,
+        ];
+
+        $this->apiCall($params);
+    }
+
+    /**
      * Make an API call to Analytics Service.
      *
      * @param array $params the request parameter

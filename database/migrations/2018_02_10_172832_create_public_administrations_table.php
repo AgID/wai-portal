@@ -24,6 +24,8 @@ class CreatePublicAdministrationsTable extends Migration
             $table->string('rtd_name')->nullable();
             $table->string('rtd_mail')->nullable();
             $table->string('rtd_pec')->nullable();
+            $table->string('token_auth')->nullable();
+            $table->integer('rollup_id')->unsigned()->nullable();
             $table->string('city');
             $table->string('county');
             $table->string('region');

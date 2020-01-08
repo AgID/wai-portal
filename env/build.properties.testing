@@ -167,6 +167,9 @@ MATOMO_PLUGIN_LOGINFILTERIP_VERSION=0.1.0
 # Matomo phpredis extension version
 MATOMO_PHPREDIS_VERSION=5.1.1
 
+# Matomo public RollUp report ID
+MATOMO_PUBLIC_ROLLUP_ID=
+
 # Analytics Service URLs
 # ----------------------
 
