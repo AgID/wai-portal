@@ -128,11 +128,11 @@
                     <div class="card-wrapper card-space">
                         <div class="card card-bg">
                             <div class="card-body">
-                                <h5 class="card-title big-heading">{{ __($widget['title']) }}</h5>
+                                <h5 class="card-title big-heading">{{ $widget['title'][$locale] ?? $widget['title'][config('app.fallback_locale')] }}</h5>
                                 <img id="spinner-widget-{{ $loop->index }}" class="icon mx-auto d-block" alt="Widget loading spinner" src="{{ asset('images/loading.svg') }}">
                                 <iframe
                                     id="widget-{{ $loop->index }}"
-                                    title="{{ __($widget['title']) }}"
+                                    title="{{ $widget['title'][$locale] ?? $widget['title'][config('app.fallback_locale')] }}"
                                     src=""
                                     class="auto-resizeable invisible"
                                     sandbox="allow-same-origin allow-scripts"

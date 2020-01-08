@@ -37,8 +37,7 @@ class AnalyticsController extends Controller
 
         if ($publicAdministration->hasRollUp()) {
             $allWidgets = Yaml::parseFile(resource_path('data/widgets.yml'));
-            $locale = array_key_exists($locale, $allWidgets) ? $locale : config('app.fallback_locale');
-            $widgets = $allWidgets[$locale]['pa'] ?? [];
+            $widgets = $allWidgets['pa'] ?? [];
         }
 
         return view('pages.analytics')->with(['publicAdministration' => $publicAdministration, 'widgets' => $widgets ?? [], 'locale' => $locale]);

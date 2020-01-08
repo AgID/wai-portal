@@ -2,7 +2,12 @@ uri: tag:widget
 schema:
   type: "//rec"
   required:
-    title: "//str"
+    title:
+      type: "//rec"
+      required:
+        it: "//str"
+      optional:
+        en: "//str"
     url: "//str"
   optional:
     span:

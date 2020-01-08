@@ -21,12 +21,11 @@ class HomeController extends Controller
         $publicAdministrationsCount = PublicAdministration::getCount();
         $websitesCount = Website::getCount();
 
-        $currentLocale = app()->getLocale();
-        $locale = array_key_exists($currentLocale, $allWidgets) ? $currentLocale : config('app.fallback_locale');
+        $locale = app()->getLocale();
 
         $widgets = [];
         if (config('analytics-service.public_dashboard')) {
-            $widgets = $allWidgets[$locale]['public'] ?? [];
+            $widgets = $allWidgets['public'] ?? [];
         }
 
         return view('pages.home')->with(compact('publicAdministrationsCount', 'websitesCount', 'widgets', 'locale'));
