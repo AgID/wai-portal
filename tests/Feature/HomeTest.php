@@ -37,7 +37,7 @@ class HomeTest extends TestCase
     {
         Config::set('analytics-service.public_dashboard', 2);
 
-        $widgets = Yaml::parseFile(resource_path('data/widgets.yml'))[$this->app->getLocale()]['public'];
+        $widgets = Yaml::parseFile(resource_path('data/widgets.yml'))['public'];
 
         $this->get(route('home'))
             ->assertViewIs('pages.home')
