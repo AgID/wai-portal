@@ -101,6 +101,8 @@
                     <token key="MATOMO_PLUGIN_PROTECTTRACKID_VERSION" value="${MATOMO_PLUGIN_PROTECTTRACKID_VERSION}" />
                     <token key="MATOMO_PLUGIN_CUSTOMDIMENSIONS_VERSION" value="${MATOMO_PLUGIN_CUSTOMDIMENSIONS_VERSION}" />
                     <token key="MATOMO_PLUGIN_LOGINFILTERIP_VERSION" value="${MATOMO_PLUGIN_LOGINFILTERIP_VERSION}" />
+                    <token key="MATOMO_PLUGIN_TRACKERHOSTNAME_VERSION" value="${MATOMO_PLUGIN_TRACKERHOSTNAME_VERSION}" />
+                    <token key="MATOMO_INGESTION_HOSTNAME" value="${MATOMO_INGESTION_HOSTNAME}" />
                 </replacetokens>
             </filterchain>
         </copy>

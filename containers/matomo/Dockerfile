@@ -12,6 +12,8 @@ ARG MATOMO_PLUGIN_QUEUEDTRACKING_VERSION
 ARG MATOMO_PLUGIN_PROTECTTRACKID_VERSION
 ARG MATOMO_PLUGIN_CUSTOMDIMENSIONS_VERSION
 ARG MATOMO_PLUGIN_LOGINFILTERIP_VERSION
+ARG MATOMO_PLUGIN_TRACKERHOSTNAME_VERSION
+ARG MATOMO_INGESTION_HOSTNAME
 
 RUN curl -fsSL -o matomo.tar.gz \
         "https://builds.matomo.org/matomo-${MATOMO_VERSION}.tar.gz" \
@@ -86,6 +88,19 @@ RUN if [ -n "$MATOMO_PLUGIN_LOGINFILTERIP_VERSION" ]; then \
     && sed -i -E -e 's/(@MATOMO_MORE_CONFIG@)/[LoginFilterIp]\n\1/g' /opt/matomo/config/config.ini.php \
     && sed -i -E -e 's/(@MATOMO_MORE_CONFIG@)/allow_login_from[] = "localhost"\n\1/g' /opt/matomo/config/config.ini.php \
     && sed -i -E -e 's/(@MATOMO_MORE_CONFIG@)/allow_login_from[] = "@MATOMO_WAI_URL@"\n\1/g' /opt/matomo/config/config.ini.php \
+;fi
+
+RUN if [ -n "$MATOMO_PLUGIN_TRACKERHOSTNAME_VERSION" ]; then \
+    curl -fsSL -o TrackerHostname.tar.gz \
+        "https://github.com/AgID/wai-matomo-plugin-TrackerHostname/releases/download/${MATOMO_PLUGIN_TRACKERHOSTNAME_VERSION}/TrackerHostname-${MATOMO_PLUGIN_TRACKERHOSTNAME_VERSION}.tar.gz" \
+    && tar -xzf TrackerHostname.tar.gz -C /opt/matomo/plugins \
+    && rm -rf TrackerHostname.tar.gz \
+    && sed -i -E -e 's/(@MATOMO_PLUGINS@)/Plugins[] = "TrackerHostname"\n\1/g' /opt/matomo/config/config.ini.php \
+    && sed -i -E -e 's/(@MATOMO_PLUGINS_INSTALLED@)/PluginsInstalled[] = "TrackerHostname"\n\1/g' /opt/matomo/config/config.ini.php \
+    && if [ -n "$MATOMO_INGESTION_HOSTNAME" ]; then \
+        sed -i -E -e 's/(@MATOMO_MORE_CONFIG@)/[TrackerHostname]\n\1/g' /opt/matomo/config/config.ini.php \
+        && sed -i -E -e 's/(@MATOMO_MORE_CONFIG@)/hostname = "${MATOMO_INGESTION_HOSTNAME}"\n\1/g' /opt/matomo/config/config.ini.php \
+    ;fi \
 ;fi
 
 ARG MATOMO_WAI_URL
