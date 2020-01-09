@@ -92,7 +92,7 @@ RUN if [ -n "$MATOMO_PLUGIN_LOGINFILTERIP_VERSION" ]; then \
 
 RUN if [ -n "$MATOMO_PLUGIN_TRACKERHOSTNAME_VERSION" ]; then \
     curl -fsSL -o TrackerHostname.tar.gz \
-        "https://github.com/Valair/wai-matomo-plugin-TrackerHostname/releases/download/${MATOMO_PLUGIN_TRACKERHOSTNAME_VERSION}/TrackerHostname-${MATOMO_PLUGIN_TRACKERHOSTNAME_VERSION}.tar.gz" \
+        "https://github.com/AgID/wai-matomo-plugin-TrackerHostname/releases/download/${MATOMO_PLUGIN_TRACKERHOSTNAME_VERSION}/TrackerHostname-${MATOMO_PLUGIN_TRACKERHOSTNAME_VERSION}.tar.gz" \
     && tar -xzf TrackerHostname.tar.gz -C /opt/matomo/plugins \
     && rm -rf TrackerHostname.tar.gz \
     && sed -i -E -e 's/(@MATOMO_PLUGINS@)/Plugins[] = "TrackerHostname"\n\1/g' /opt/matomo/config/config.ini.php \
