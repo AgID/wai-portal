@@ -34,7 +34,7 @@ RUN curl -fsSL -o GeoIPCity.tar.gz \
     && rm -rf GeoIPCity.tar.gz /tmp/geocity
 
 RUN curl -fsSL -o WAIMatomoTheme.tar.gz \
-        "https://github.com/agid/wai-matomo-theme/releases/download/v${MATOMO_WAI_THEME_VERSION}/wai-matomo-theme_${MATOMO_WAI_THEME_VERSION}_auto_activate.tar.gz" \
+        "https://github.com/agid/wai-matomo-theme/releases/download/${MATOMO_WAI_THEME_VERSION}/wai-matomo-theme_${MATOMO_WAI_THEME_VERSION}_auto_activate.tar.gz" \
     && tar -xf WAIMatomoTheme.tar.gz -C /opt/matomo/plugins \
     && rm -rf WAIMatomoTheme.tar.gz
 
