@@ -212,6 +212,11 @@ ELASTICSEARCH_IGNORE_EXCEPTIONS=false
 KIBANA_VERSION=7.4.1
 KIBANA_PORT=5601
 
+# SPID test identity provider
+# ---------------------------
+
+SPID_TESTENV_HOSTNAME=localhost
+
 # Debugging
 # ---------
 

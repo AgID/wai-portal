@@ -83,6 +83,7 @@
                     <token key="PEC_ENCRYPTION" value="${PEC_ENCRYPTION}" />
                     <token key="SPID_SP_PRIVATE_KEY" value="${SPID_SP_PRIVATE_KEY}" />
                     <token key="SPID_SP_CERTIFICATE" value="${SPID_SP_CERTIFICATE}" />
+                    <token key="SPID_TESTENV_HOSTNAME" value="${SPID_TESTENV_HOSTNAME}" />
                     <token key="ANALYTICS_ADMIN_TOKEN" value="${MATOMO_ROOT_APIKEY}" />
                     <token key="ANALYTICS_API_BASE_URL" value="${ANALYTICS_API_BASE_URL}" />
                     <token key="ANALYTICS_API_SSL_VERIFY" value="${ANALYTICS_API_SSL_VERIFY}" />
