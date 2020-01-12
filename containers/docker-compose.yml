@@ -168,7 +168,7 @@ services:
 
 # spid-testenv
   spid-testenv:
-    image: italia/spid-testenv2
+    image: italia/spid-testenv2:1.0.1
     volumes:
       - ./spid-testenv/conf:/app/conf
     ports:
