@@ -19,7 +19,7 @@
         "ethanhann/redisearch-php": "^1.0",
         "fideloper/proxy": "^4.2",
         "guzzlehttp/guzzle": "^6.3",
-        "italia/spid-laravel": "^0.9.5@beta",
+        "italia/spid-laravel": "^0.10.0@beta",
         "laravel/framework": "6.9.*",
         "laravel/tinker": "^2.0",
         "predis/predis": "^1.1",
