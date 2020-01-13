@@ -83,7 +83,16 @@
                     <token key="PEC_ENCRYPTION" value="${PEC_ENCRYPTION}" />
                     <token key="SPID_SP_PRIVATE_KEY" value="${SPID_SP_PRIVATE_KEY}" />
                     <token key="SPID_SP_CERTIFICATE" value="${SPID_SP_CERTIFICATE}" />
-                    <token key="SPID_TESTENV_HOSTNAME" value="${SPID_TESTENV_HOSTNAME}" />
+                    <token key="SPID_TESTENV_ENABLED" value="${SPID_TESTENV_ENABLED}" />
+                    <token key="SPID_TESTENV_ENTITY_ID" value="${SPID_TESTENV_ENTITY_ID}" />
+                    <token key="SPID_TESTENV_SSO" value="${SPID_TESTENV_SSO}" />
+                    <token key="SPID_TESTENV_SLO" value="${SPID_TESTENV_SLO}" />
+                    <token key="SPID_TESTENV_CERT" value="${SPID_TESTENV_CERT}" />
+                    <token key="SPID_VALIDATOR_IDP_ENABLED" value="${SPID_VALIDATOR_IDP_ENABLED}" />
+                    <token key="SPID_VALIDATOR_IDP_ENTITY_ID" value="${SPID_VALIDATOR_IDP_ENTITY_ID}" />
+                    <token key="SPID_VALIDATOR_IDP_SSO" value="${SPID_VALIDATOR_IDP_SSO}" />
+                    <token key="SPID_VALIDATOR_IDP_SLO" value="${SPID_VALIDATOR_IDP_SLO}" />
+                    <token key="SPID_VALIDATOR_IDP_CERT" value="${SPID_VALIDATOR_IDP_CERT}" />
                     <token key="ANALYTICS_ADMIN_TOKEN" value="${MATOMO_ROOT_APIKEY}" />
                     <token key="ANALYTICS_API_BASE_URL" value="${ANALYTICS_API_BASE_URL}" />
                     <token key="ANALYTICS_API_SSL_VERIFY" value="${ANALYTICS_API_SSL_VERIFY}" />
