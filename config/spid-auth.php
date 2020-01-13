@@ -39,9 +39,9 @@ return [
     'sp_spid_level' => 'https://www.spid.gov.it/SpidL1',
 
     'test_idp' => 'production' === env('APP_ENV') ? false : [
-        'entityId' => env('APP_URL') . ':8088',
-        'sso_endpoint' => env('APP_URL') . ':8088/sso',
-        'slo_endpoint' => env('APP_URL') . ':8088/slo',
+        'entityId' => 'https://' . env('SPID_TESTENV_HOSTNAME') . ':8088',
+        'sso_endpoint' => 'https://' . env('SPID_TESTENV_HOSTNAME') . ':8088/sso',
+        'slo_endpoint' => 'https://' . env('SPID_TESTENV_HOSTNAME') . ':8088/slo',
         'x509cert' => 'MIICljCCAX4CCQDtboNbedrFLzANBgkqhkiG9w0BAQsFADANMQswCQYDVQQGEwJJVDAeFw0xOTAxMjMxMjA5MDVaFw0xOTAyMjIxMjA5MDVaMA0xCzAJBgNVBAYTAklUMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxt1xYjyuK1mi4j2bKlwAn0bQzAcyeYdwjYHqJ3RarPXntjQhjKMorwC5IbdN9JCT7T/ISeGbs1vFUbF5H22f/GLR9WRbHLiSlof1rw2gkYsimJw18nI4qqmk1cGfNIU/1Q73oXhZ135QjejZdO+0Ss/ToHzBlQz9U96EWdSVtTeohePHn1HKx5bk5FLfCtRAUzolsQH02IOmTAo5yvxhdKUoSCg8iv6c3St5F7eX9e0WgTFFUEyYzyZJYi1LzE/t3dHsRJ2RFf5opsvs03+9STwei9PRCEBZy9G34lYUbbarSLVXx/LX8+y0cZtRhoJKR+Mbx/bncsjyXYyXoJjCAQIDAQABMA0GCSqGSIb3DQEBCwUAA4IBAQAWoj1MgTXhp6bQWNUgR2CR1XCZ9I1tpQkTnhpyVu0ndjzbRe+oDdOARSqyKOezrlrIWN4Ht7IisP/he04yGE295cm78fp7u2NaxrVizNJUw9hlHUs94o44NqlW+sQ6s7hDQfW6Pli0/sRWnCfLGethyXEHvMTlMm6w87UfHBHFdGr35OIy7Yin4rzw4DXOUrPLIyh5Ys9girZrdUMi+kY3pu7R5Hz2YjqhAObTxgm/JcU1oWiix3obxKo0jXU5HoXtXLmWoEB1QJb/Vfr7ai+UlIsRzD8HfTeJOANYojNfZlG46uXoXw1lTq8IARj8+tWT/Vq5hqimWtGh68vNNS2a',
     ],
 
