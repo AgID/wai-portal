@@ -12,6 +12,7 @@ use Illuminate\Session\TokenMismatchException;
 use Italia\SPIDAuth\Exceptions\SPIDLoginAnomalyException;
 use Italia\SPIDAuth\Exceptions\SPIDLoginException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Throwable;
 
 /**
  * Base exceptions handler.
@@ -111,9 +112,11 @@ class Handler extends ExceptionHandler
             'event' => EventType::EXCEPTION,
             'exception_type' => ExceptionType::GENERIC,
         ];
-        if (auth()->check()) {
-            $context['user'] = auth()->user()->uuid;
-        }
+        try {
+            if (auth()->check()) {
+                $context['user'] = auth()->user()->uuid;
+            }
+        } catch (Throwable $t) {}
 
         return $context;
     }
