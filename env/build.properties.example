@@ -41,6 +41,20 @@ LOG_SLACK_USERNAME=
 SPID_SP_PRIVATE_KEY=
 SPID_SP_CERTIFICATE=
 
+# SPID test identity providers
+# ----------------------------
+
+SPID_TESTENV_ENABLED=
+SPID_TESTENV_ENTITY_ID=
+SPID_TESTENV_SSO=
+SPID_TESTENV_SLO=
+SPID_TESTENV_CERT=
+SPID_VALIDATOR_IDP_ENABLED=false
+SPID_VALIDATOR_IDP_ENTITY_ID=
+SPID_VALIDATOR_IDP_SSO=
+SPID_VALIDATOR_IDP_SLO=
+SPID_VALIDATOR_IDP_CERT=
+
 # Cron authentication
 # -------------------
 
@@ -211,11 +225,6 @@ ELASTICSEARCH_IGNORE_EXCEPTIONS=false
 
 KIBANA_VERSION=7.4.1
 KIBANA_PORT=5601
-
-# SPID test identity provider
-# ---------------------------
-
-SPID_TESTENV_HOSTNAME=localhost
 
 # Debugging
 # ---------
