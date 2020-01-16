@@ -38,6 +38,7 @@ LOG_SLACK_USERNAME=
 # Refer to https://github.com/italia/spid-metadata-signer for
 # key and certificate generation.
 
+SPID_SP_ENTITY_ID=
 SPID_SP_PRIVATE_KEY=
 SPID_SP_CERTIFICATE=
 
