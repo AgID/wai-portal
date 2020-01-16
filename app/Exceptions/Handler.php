@@ -116,7 +116,8 @@ class Handler extends ExceptionHandler
             if (auth()->check()) {
                 $context['user'] = auth()->user()->uuid;
             }
-        } catch (Throwable $t) {}
+        } catch (Throwable $t) {
+        }
 
         return $context;
     }
