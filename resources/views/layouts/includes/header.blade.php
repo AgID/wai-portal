@@ -2,6 +2,7 @@
 <div class="it-header-wrapper" role="banner">
     @include('layouts.includes.skiplinks')
     @include('layouts.includes.slim_header')
+    @include('layouts.includes.highlight_bar')
     <div class="it-nav-wrapper {{ implode(' ', $classes ?? []) }}">
         <div class="it-header-center-wrapper">
             <div class="container">
