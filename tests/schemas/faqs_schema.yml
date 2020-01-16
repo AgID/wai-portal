@@ -9,6 +9,8 @@ required:
         themes: "//str"
         question: "//str"
         answer: "//str"
+      optional:
+        id: "//str"
 optional:
   en:
     type: "//arr"
@@ -19,3 +21,5 @@ optional:
         themes: "//str"
         question: "//str"
         answer: "//str"
+      optional:
+        id: "//str"

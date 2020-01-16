@@ -54,12 +54,12 @@
         <div class="faqs-wrapper">
             <div class="faqs collapse-div ml-sm-5" role="tablist">
                 @foreach ($faqs as $faq)
-                <div id="faq-{{ $loop->iteration }}" class="faq" data-themes="{{ $faq['themes'] }}">
+                <div id="{{ $faq['id'] ?? Str::slug($faq['question']) }}" class="faq" data-themes="{{ $faq['themes'] }}">
                     <div class="collapse-header" id="faq-{{ $loop->iteration }}-heading">
                         <button class="text-secondary d-flex flex-wrap flex-md-nowrap align-items-center" data-toggle="collapse" data-target="#faq-{{ $loop->iteration }}-body" aria-expanded="false" aria-controls="faq-{{ $loop->iteration }}-body">
                             <span class="mr-auto">
                                 {{ $faq['question'] }}
-                                <a class="faq-anchor" href="#faq-{{ $loop->iteration }}">
+                                <a class="faq-anchor" href="#{{ $faq['id'] ?? Str::slug($faq['question']) }}">
                                     <svg class="icon icon-sm"><use xlink:href="{{ asset('svg/sprite.svg#it-link') }}"></use></svg>
                                 </a>
                             </span>
