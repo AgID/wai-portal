@@ -188,3 +188,15 @@ it:
       La fattibilità è subordinata all’analisi, caso per caso, delle
       caratteristiche dei dati (struttura e quantità) in termini di
       compatibilità con la piattaforma WAI.
+
+  - themes: generale
+    id: public-playground
+    question: |
+      Cos'è l'ambiente "public playground"?
+    answer: |
+      Si tratta di un'istanza parallela di Web Analytics Italia con la quale è
+      possibile effettuare in tutta sicurezza qualunque prova senza paura di
+      sbagliare.
+
+      Tutti i dati memorizzati in questa istanza sono automaticamente resettati
+      ogni fine settimana.
