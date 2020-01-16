@@ -79,6 +79,13 @@ required:
           trackers:
             type: "//map"
             values: "//str"
+          highlight:
+            type: "//rec"
+            required:
+              public-plauground: "//str"
+              staging: "//str"
+            optional:
+              production: "//str"
 optional:
   en:
     type: "//rec"
@@ -158,3 +165,10 @@ optional:
           trackers:
             type: "//map"
             values: "//str"
+          highlight:
+            type: "//rec"
+            required:
+              public-plauground: "//str"
+              staging: "//str"
+            optional:
+              production: "//str"
