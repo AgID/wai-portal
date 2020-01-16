@@ -1997,11 +1997,6 @@
                 "ext-openssl": "Install openssl lib in order to handle with x509 certs (require to support sign and encryption)"
             },
             "type": "library",
-            "extra": {
-                "patches_applied": {
-                    "Compatibility with SPID": "https://rawgit.com/italia/spid-laravel/master/patches/php-saml-3.4.1-spid.patch"
-                }
-            },
             "autoload": {
                 "psr-4": {
                     "OneLogin\\": "src/"
@@ -2018,7 +2013,12 @@
                 "onelogin",
                 "saml"
             ],
-            "time": "2019-11-25T17:30:07+00:00"
+            "time": "2019-11-25T17:30:07+00:00",
+            "extra": {
+                "patches_applied": {
+                    "Compatibility with SPID": "https://rawgit.com/italia/spid-laravel/master/patches/php-saml-3.4.1-spid.patch"
+                }
+            }
         },
         {
             "name": "opis/closure",
@@ -7601,16 +7601,16 @@
         },
         {
             "name": "symfony/thanks",
-            "version": "v1.2.4",
+            "version": "v1.2.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/thanks.git",
-                "reference": "6021b6862da1e91d3673aab0f2045a91d0f5ac79"
+                "reference": "a8a5fbe3907a52cb7e2bb704d3b0231782b4193c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/thanks/zipball/6021b6862da1e91d3673aab0f2045a91d0f5ac79",
-                "reference": "6021b6862da1e91d3673aab0f2045a91d0f5ac79",
+                "url": "https://api.github.com/repos/symfony/thanks/zipball/a8a5fbe3907a52cb7e2bb704d3b0231782b4193c",
+                "reference": "a8a5fbe3907a52cb7e2bb704d3b0231782b4193c",
                 "shasum": ""
             },
             "require": {
@@ -7640,7 +7640,7 @@
                 }
             ],
             "description": "Encourages sending ⭐ and 💵 to fellow PHP package maintainers (not limited to Symfony components)!",
-            "time": "2019-11-29T16:13:13+00:00"
+            "time": "2020-01-15T17:39:29+00:00"
         },
         {
             "name": "theseer/tokenizer",
