@@ -38,6 +38,7 @@ return [
     'sp_private_key' => env('SPID_SP_PRIVATE_KEY'),
     'sp_spid_level' => 'https://www.spid.gov.it/SpidL1',
 
+    'hide_real_idps' => 'production' !== env('APP_ENV'),
     'test_idp' => env('SPID_TESTENV_ENABLED', false) ? [
         'entityId' => env('SPID_TESTENV_ENTITY_ID'),
         'sso_endpoint' => env('SPID_TESTENV_SSO'),

@@ -11,8 +11,10 @@
         <a href="{{ route('home') }}">{{ __('torna alla pagina iniziale') }}</a>.
     </p>
 @else
-    {{ __("La pagina che hai richiesto è raggiungibile solo dopo l'autenticazione.") }}<br>
-    <div class="agid-spid-enter-button mt-5" aria-live="polite" data-size="m"></div>
-    <small class="text-muted"><em>{{ __("Se avevi già effettuato l'accesso è probabile che la tua sessione sia scaduta per inattività.") }}</em></small>
+    <p>{{ __("La pagina che hai richiesto è raggiungibile solo dopo l'autenticazione.") }}</p>
+    <p>
+        {{ __("Usa il bottone 'Entra con SPID' che trovi in alto a destra nella pagina.") }}<br>
+        <small class="text-muted"><em>{{ __("Se avevi già effettuato l'accesso è probabile che la tua sessione sia scaduta per inattività.") }}</em></small>
+    </p>
 @endcan
 @endsection

@@ -3,7 +3,6 @@
 
   .it-nav-wrapper {
     position: relative;
-    z-index: 3;
 
     &.tall {
       height: calc(#{$header-center-max-height-mob} + (#{$header-center-max-height-mob} / 2));
@@ -134,7 +133,9 @@
         }
 
         .navbar-collapsable {
-          z-index: 5;
+          @include media-breakpoint-down(md) {
+            z-index: 5;
+          }
 
           .menu-wrapper {
             right: 0;
@@ -226,26 +227,31 @@
   }
 
   .it-header-slim-wrapper {
+    padding: 6px 18px;
     background: none;
     border-bottom: 1px solid rgba($header-slim-text-color, 0.2);
+
+    @include media-breakpoint-up(lg) {
+      padding: 0;
+    }
 
     .it-header-slim-wrapper-content {
       .nav-mobile {
         line-height: 2.2;
 
+        @include media-breakpoint-down(md) {
+          font-size: 16px;
+        }
+
         .it-opener {
           position: absolute;
-          top: -6.5px;
+          top: -6px;
           width: 48px;
           height: 48px;
           display: inline-flex !important;
           align-items: center;
           justify-content: center;
           margin-left: 4px;
-
-          @include media-breakpoint-up(sm) {
-            height: 53px;
-          }
         }
       }
 
@@ -253,6 +259,16 @@
         ul.link-list {
           li.delimiter {
             border-right: 1px solid rgba($header-slim-text-color, 0.2);
+          }
+        }
+      }
+
+      @include media-breakpoint-only(lg) {
+        ul.link-list {
+          a {
+            font-size: 14px;
+            padding-top: 8px;
+            padding-bottom: 8px;
           }
         }
       }
@@ -269,6 +285,8 @@
   }
 
   .highlight-bar {
+    z-index: 4;
+
     p {
       margin-bottom: 0;
 
