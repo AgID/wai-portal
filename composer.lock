@@ -5577,16 +5577,16 @@
         },
         {
             "name": "laravel/dusk",
-            "version": "v5.7.0",
+            "version": "v5.8.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/dusk.git",
-                "reference": "9881d5c9aa7435602899b8e51843c6ec9f3d6cc5"
+                "reference": "d67fe1d0797fc2886d9229f011be9af8ee069750"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/dusk/zipball/9881d5c9aa7435602899b8e51843c6ec9f3d6cc5",
-                "reference": "9881d5c9aa7435602899b8e51843c6ec9f3d6cc5",
+                "url": "https://api.github.com/repos/laravel/dusk/zipball/d67fe1d0797fc2886d9229f011be9af8ee069750",
+                "reference": "d67fe1d0797fc2886d9229f011be9af8ee069750",
                 "shasum": ""
             },
             "require": {
@@ -5641,7 +5641,7 @@
                 "testing",
                 "webdriver"
             ],
-            "time": "2019-12-17T17:19:21+00:00"
+            "time": "2020-01-07T18:54:17+00:00"
         },
         {
             "name": "maximebf/debugbar",
