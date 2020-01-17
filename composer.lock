@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bc61e3061ba7577c5388f49e87598a4a",
+    "content-hash": "337aea74cc7c4c24591e763a05e55fd8",
     "packages": [
         {
             "name": "bensampo/laravel-enum",
@@ -1701,6 +1701,60 @@
             "time": "2020-01-16T01:18:13+00:00"
         },
         {
+            "name": "league/commonmark-ext-external-link",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/thephpleague/commonmark-ext-external-link.git",
+                "reference": "b2e68fd3dedb8ef9b4c666f2adbe48775466680f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/thephpleague/commonmark-ext-external-link/zipball/b2e68fd3dedb8ef9b4c666f2adbe48775466680f",
+                "reference": "b2e68fd3dedb8ef9b4c666f2adbe48775466680f",
+                "shasum": ""
+            },
+            "require": {
+                "league/commonmark": "^1.0",
+                "php": "^7.1"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^7.5"
+            },
+            "type": "commonmark-extension",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.1-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "League\\CommonMark\\Ext\\ExternalLink\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Colin O'Dell",
+                    "email": "colinodell@gmail.com",
+                    "homepage": "https://www.colinodell.com",
+                    "role": "Lead Developer"
+                }
+            ],
+            "description": "Extension for league/commonmark which adds extra classes and HTML attributes to external links",
+            "homepage": "https://github.com/thephpleague/commonmark-ext-external-link",
+            "keywords": [
+                "commonmark",
+                "extension",
+                "links",
+                "markdown"
+            ],
+            "time": "2019-06-29T11:41:14+00:00"
+        },
+        {
             "name": "league/commonmark-ext-table",
             "version": "v2.1.0",
             "source": {
@@ -2148,6 +2202,11 @@
                 "ext-openssl": "Install openssl lib in order to handle with x509 certs (require to support sign and encryption)"
             },
             "type": "library",
+            "extra": {
+                "patches_applied": {
+                    "Compatibility with SPID": "https://rawgit.com/italia/spid-laravel/master/patches/php-saml-3.4.1-spid.patch"
+                }
+            },
             "autoload": {
                 "psr-4": {
                     "OneLogin\\": "src/"
@@ -2164,12 +2223,7 @@
                 "onelogin",
                 "saml"
             ],
-            "time": "2019-11-25T17:30:07+00:00",
-            "extra": {
-                "patches_applied": {
-                    "Compatibility with SPID": "https://rawgit.com/italia/spid-laravel/master/patches/php-saml-3.4.1-spid.patch"
-                }
-            }
+            "time": "2019-11-25T17:30:07+00:00"
         },
         {
             "name": "opis/closure",
