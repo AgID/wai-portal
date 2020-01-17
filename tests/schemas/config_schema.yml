@@ -82,8 +82,9 @@ required:
           highlight:
             type: "//rec"
             required:
-              public-plauground: "//str"
+              public-playground: "//str"
               staging: "//str"
+              local: "//str"
             optional:
               production: "//str"
 optional:
