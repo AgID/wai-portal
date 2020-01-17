@@ -8,7 +8,7 @@ import I18n from './i18n';
  * Keep jQuery in the window object for legacy scripts
  */
 
-window.$ = jQuery;
+window.$ = window.jQuery = jQuery;
 
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests
