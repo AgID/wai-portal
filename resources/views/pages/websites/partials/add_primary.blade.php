@@ -13,7 +13,7 @@
                             </div>
                         </div>
                         <label for="public_administration_name">{{ __('Pubblica amministrazione') }}</label>
-                        <input type="search" autocomplete="off" class="form-control autocomplete{{ $errors->has('public_administration_name') ? ' is-invalid' : '' }}" id="public_administration_name" name="public_administration_name" data-search="searchIpa" data-source={{ route('ipa.search') }} value="{{ old('public_administration_name') }}" maxlength="255" aria-labelledby="pa_name-input-help" aria-required="true" required>
+                        <input type="search" autocomplete="off" class="form-control autocomplete{{ $errors->has('public_administration_name') ? ' is-invalid' : '' }}" id="public_administration_name" name="public_administration_name" data-search="searchIpa" data-source={{ route('ipa.search') }} value="{{ old('public_administration_name') }}" maxlength="255" aria-describedby="pa_name-input-help" aria-required="true" required>
                         <ul class="autocomplete-list"></ul>
                         <div class="searching-icon input-group-append">
                             <div class="input-group-text">

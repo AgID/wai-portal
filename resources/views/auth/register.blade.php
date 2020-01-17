@@ -15,7 +15,7 @@
                         <div class="input-group-text"><svg class="icon icon-sm"><use xlink:href="{{ asset('svg/sprite.svg#it-mail') }}"></use></svg></div>
                     </div>
                     <label for="email">{{ __('Indirizzo email di lavoro') }}</label>
-                    <input type="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" id="email" name="email" value="{{ old('email') }}" maxlength="255" aria-labelledby="email-input-help" aria-required="true" required>
+                    <input type="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" id="email" name="email" value="{{ old('email') }}" maxlength="255" aria-describedby="email-input-help" aria-required="true" required>
                     @error('email')
                     <div class="invalid-feedback">{{ $errors->first('email') }}</div>
                     @else
