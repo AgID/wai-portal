@@ -36,7 +36,7 @@
                     <div class="input-group-text"><svg class="icon icon-sm"><use xlink:href="{{ asset('svg/sprite.svg#it-mail') }}"></use></svg></div>
                 </div>
                 <label for="email">{{ __('Indirizzo email di lavoro') }}</label>
-                <input type="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" id="email" name="email" value="{{ old('email', $user->email ?? '') }}" maxlength="255" aria-labelledby="email-input-help" aria-required="true" required>
+                <input type="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" id="email" name="email" value="{{ old('email', $user->email ?? '') }}" maxlength="255" aria-describedby="email-input-help" aria-required="true" required>
                 @error('email')
                 <div class="invalid-feedback">{{ $errors->first('email') }}</div>
                 @else
@@ -72,7 +72,7 @@
             <div class="toggles w-100 px-3 py-2 lightgrey-bg-c1">
                 <label class="mb-0" for="is_admin">
                     {{ __('Utente con ruolo di amministratore') }}
-                    <input class="{{ $errors->has('is_admin') ? 'is-invalid' : '' }}" type="checkbox" id="is_admin" name="is_admin" value="1" aria-labelledby="is_admin-help" {{ old('is_admin', !session()->hasOldInput() && ($isAdmin ?? false)) ? 'checked' : '' }} disabled>
+                    <input class="{{ $errors->has('is_admin') ? 'is-invalid' : '' }}" type="checkbox" id="is_admin" name="is_admin" value="1" aria-describedby="is_admin-help" {{ old('is_admin', !session()->hasOldInput() && ($isAdmin ?? false)) ? 'checked' : '' }} disabled>
                     <span class="lever"></span>
                     @error('is_admin')
                     <div class="invalid-feedback">{{ $errors->first('is_admin') }}</div>
