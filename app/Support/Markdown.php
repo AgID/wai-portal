@@ -11,7 +11,11 @@ use League\CommonMark\Ext\ExternalLink\ExternalLinkExtension;
  */
 class Markdown extends CommonMarkConverter
 {
-    function __construct() {
+    /**
+     * Default constructor.
+     */
+    public function __construct()
+    {
         $environment = Environment::createCommonMarkEnvironment();
         $environment->addExtension(new ExternalLinkExtension());
         $config = [
