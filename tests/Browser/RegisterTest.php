@@ -24,8 +24,8 @@ class RegisterTest extends DuskTestCase
                     ->assertPathIs('/spid/login')
                     ->waitForText('Entra con SPID')
                     ->click('@spid_login_button')
-                    ->waitForText('Scegli il tuo provider SPID')
-                    ->assertSee('Scegli il tuo provider SPID');
+                    ->waitForText('Non hai SPID?')
+                    ->assertSee('Non hai SPID?');
         });
         $this->injectFakeSpidSession();
         $this->browse(function (Browser $browser) {

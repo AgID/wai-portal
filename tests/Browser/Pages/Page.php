@@ -33,8 +33,7 @@ abstract class Page extends BasePage
             '@slim_header' => '.it-header-slim-wrapper',
             '@header' => '.it-header-center-wrapper',
             '@footer' => '.it-footer',
-            '@spid_login_button' => '.agid-spid-enter',
-            '@spid-idp-test_button' => '.agid-spid-idp-test',
+            '@spid_login_button' => '.italia-it-button.button-spid',
         ];
     }
 }
