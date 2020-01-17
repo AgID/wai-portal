@@ -26,12 +26,10 @@ COPY ./install_matomo_db.sh /opt/matomo-install/install_matomo_db.sh
 COPY ./install_plugins_db.sh /opt/matomo-install/install_plugins_db.sh
 COPY ./plugins-sql/* /opt/matomo-install/plugins/
 
-RUN curl -fsSL -o GeoIPCity.tar.gz \
-        "https://geolite.maxmind.com/download/geoip/database/GeoLite2-City.tar.gz" \
-    && mkdir /tmp/geocity \
-    && tar -xf GeoIPCity.tar.gz -C /tmp/geocity/ --strip-components=1 \
-    && mv /tmp/geocity/*.mmdb /opt/matomo/misc/ \
-    && rm -rf GeoIPCity.tar.gz /tmp/geocity
+RUN curl -fsSL -o DBIP-City.mmdb.gz \
+        "https://download.db-ip.com/free/dbip-city-lite-`date +%Y-%m`.mmdb.gz" \
+    && gunzip DBIP-City.mmdb.gz \
+    && mv DBIP-City.mmdb /opt/matomo/misc/
 
 RUN curl -fsSL -o WAIMatomoTheme.tar.gz \
         "https://github.com/agid/wai-matomo-theme/releases/download/${MATOMO_WAI_THEME_VERSION}/wai-matomo-theme_${MATOMO_WAI_THEME_VERSION}_auto_activate.tar.gz" \
