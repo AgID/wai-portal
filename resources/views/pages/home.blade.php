@@ -179,7 +179,7 @@
                 <div class="col-lg-6 p-5 d-flex flex-column justify-content-between">
                     <div>
                         <h5 class="section-header long-dash">{{ __('accesso alla piattaforma') }}</h5>
-                        <p class="text-serif mb-5">
+                        <p class="text-serif">
                             @guest
                             {{ __('Accedi con le tue credenziali SPID e registra la tua PA su :app.', ['app' => config('app.name')]) }}
                             <br>
@@ -192,10 +192,7 @@
                         </p>
                     </div>
                     @guest
-                    <div class="home-spid-button">
-                        <div class="agid-spid-enter-button" aria-live="polite" data-size="m"></div>
-                        <small>Non hai SPID? <a href="https://www.spid.gov.it/richiedi-spid">Scopri di più <svg class="icon icon-sm align-bottom"><use xlink:href="{{ asset('svg/sprite.svg#it-external-link') }}"></use></svg></a></small>
-                    </div>
+                    <p>{!! __("Usa il bottone 'Entra con SPID' che trovi :back-to-top a destra nella pagina.", ['back-to-top' => '<a href="#" data-attribute="back-to-top">' . __('in alto') . '</a>']) !!}</p>
                     @else
                     <div>
                     @component('layouts.components.link_button', [

@@ -30,7 +30,7 @@ class ViewServiceProvider extends ServiceProvider
         });
 
         Blade::directive('markdown', function ($markdown) {
-            return "<?php echo (new Markdown())->text($markdown); ?>";
+            return "<?php echo (new Markdown())->convertToHtml($markdown); ?>";
         });
 
         Blade::directive('excerpt', function ($markdown) {
