@@ -30,7 +30,7 @@
         "laravel-mix-stylelint": "^0.2.0",
         "popper.js": "^1.16.0",
         "resolve-url-loader": "^2.3.1",
-        "sass": "^1.24.5",
+        "sass": "^1.25.0",
         "sass-loader": "^8.0.2",
         "stylelint": "^13.0.0",
         "stylelint-config-recommended": "^3.0.0",
