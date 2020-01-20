@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "337aea74cc7c4c24591e763a05e55fd8",
+    "content-hash": "6f143cbff3538b241583d5dba8749720",
     "packages": [
         {
             "name": "bensampo/laravel-enum",
@@ -502,16 +502,16 @@
         },
         {
             "name": "elasticsearch/elasticsearch",
-            "version": "v7.4.1",
+            "version": "v7.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/elastic/elasticsearch-php.git",
-                "reference": "39eb8c046184e9a305288509fe48f02a2307de90"
+                "reference": "81fbecb1046b801729fc10e2c494fffd683b0518"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/elastic/elasticsearch-php/zipball/39eb8c046184e9a305288509fe48f02a2307de90",
-                "reference": "39eb8c046184e9a305288509fe48f02a2307de90",
+                "url": "https://api.github.com/repos/elastic/elasticsearch-php/zipball/81fbecb1046b801729fc10e2c494fffd683b0518",
+                "reference": "81fbecb1046b801729fc10e2c494fffd683b0518",
                 "shasum": ""
             },
             "require": {
@@ -561,7 +561,7 @@
                 "elasticsearch",
                 "search"
             ],
-            "time": "2019-11-26T11:59:39+00:00"
+            "time": "2019-12-19T15:48:35+00:00"
         },
         {
             "name": "ethanhann/redis-raw",
@@ -2202,11 +2202,6 @@
                 "ext-openssl": "Install openssl lib in order to handle with x509 certs (require to support sign and encryption)"
             },
             "type": "library",
-            "extra": {
-                "patches_applied": {
-                    "Compatibility with SPID": "https://rawgit.com/italia/spid-laravel/master/patches/php-saml-3.4.1-spid.patch"
-                }
-            },
             "autoload": {
                 "psr-4": {
                     "OneLogin\\": "src/"
@@ -2223,7 +2218,12 @@
                 "onelogin",
                 "saml"
             ],
-            "time": "2019-11-25T17:30:07+00:00"
+            "time": "2019-11-25T17:30:07+00:00",
+            "extra": {
+                "patches_applied": {
+                    "Compatibility with SPID": "https://rawgit.com/italia/spid-laravel/master/patches/php-saml-3.4.1-spid.patch"
+                }
+            }
         },
         {
             "name": "opis/closure",
