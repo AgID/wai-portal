@@ -123,7 +123,7 @@ Breadcrumbs::for('admin.dashboard', function ($trail) {
 
 // Web Analytics Italia > Super admin dashboard > Logs view
 Breadcrumbs::for('admin.logs.show', function ($trail) {
-    $trail->parent('dashboard');
+    $trail->parent('admin.dashboard');
     $trail->push(__('Visualizzazione log'), route('admin.logs.show'));
 });
 
