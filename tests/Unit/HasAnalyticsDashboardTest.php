@@ -130,10 +130,13 @@ class HasAnalyticsDashboardTest extends TestCase
     public function testAddToRollUp(): void
     {
         $this->publicAdministration->rollup_id = 3;
-        $newWebsite = factory(Website::class)->create([
-            'public_administration_id' => $this->publicAdministration->id,
-            'analytics_id' => 2,
-        ]);
+        do {
+            $newWebsite = factory(Website::class)->make([
+                'public_administration_id' => $this->publicAdministration->id,
+                'analytics_id' => 2,
+            ]);
+        } while ($newWebsite->slug === $this->website->slug);
+        $newWebsite->save();
 
         $this->app->bind('analytics-service', function () use ($newWebsite) {
             return $this->partialMock(MatomoService::class, function ($mock) use ($newWebsite) {
