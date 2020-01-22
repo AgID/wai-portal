@@ -20,7 +20,7 @@
         "fideloper/proxy": "^4.2",
         "guzzlehttp/guzzle": "^6.3",
         "italia/spid-laravel": "^0.13.0@beta",
-        "laravel/framework": "6.11.*",
+        "laravel/framework": "6.12.*",
         "laravel/tinker": "^2.0",
         "league/commonmark": "^1.2",
         "league/commonmark-ext-external-link": "^1.0",
