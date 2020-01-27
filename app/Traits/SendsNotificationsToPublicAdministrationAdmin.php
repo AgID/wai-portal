@@ -9,6 +9,7 @@ use App\Notifications\UserInvitedEmail;
 use App\Notifications\UserPrimaryWebsiteNotTrackingEmail;
 use App\Notifications\UserReactivatedEmail;
 use App\Notifications\UserSuspendedEmail;
+use App\Notifications\UserWebsiteAccessChangedEmail;
 use App\Notifications\UserWebsiteActivatedEmail;
 use App\Notifications\UserWebsiteAddedEmail;
 use App\Notifications\UserWebsiteArchivedEmail;
@@ -110,6 +111,13 @@ trait SendsNotificationsToPublicAdministrationAdmin
     {
         $this->getActiveAdministrators()->each(function (User $administrator) use ($website) {
             $administrator->notify(new UserWebsiteUrlChangedEmail($website));
+        });
+    }
+
+    public function sendWebsiteAccessChangedNotificationToAdministrators(User $user): void
+    {
+        $this->getActiveAdministrators()->each(function (User $administrator) use ($user) {
+            $administrator->notify(new UserWebsiteAccessChangedEmail($user));
         });
     }
 }
