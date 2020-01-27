@@ -120,18 +120,6 @@ class PublicAdministration extends Model
     }
 
     /**
-     * Get recipient for mail notifications.
-     *
-     * @param Notification $notification the notification
-     *
-     * @return array|string the recipient
-     */
-    public function routeNotificationForMail($notification)
-    {
-        return empty(trim($this->name)) ? $this->pec_address : [$this->pec_address, $this->name];
-    }
-
-    /**
      * The users belonging to this Public Administration.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany the relation to the users belonging to this Public Administration

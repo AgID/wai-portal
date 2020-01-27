@@ -146,18 +146,6 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
-     * Get recipient for mail notifications.
-     *
-     * @param Notification $notification the notification
-     *
-     * @return array|string the recipient
-     */
-    public function routeNotificationForMail($notification)
-    {
-        return empty($this->full_name) ? $this->email : [$this->email, $this->full_name];
-    }
-
-    /**
      * The password reset token.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne the relation with password reset token
