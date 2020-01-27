@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Website;
 use App\Notifications\UserActivatedEmail;
 use App\Notifications\UserInvitedEmail;
+use App\Notifications\UserPrimaryWebsiteNotTrackingEmail;
 use App\Notifications\UserReactivatedEmail;
 use App\Notifications\UserSuspendedEmail;
 use App\Notifications\UserWebsiteActivatedEmail;
@@ -70,6 +71,13 @@ trait SendsNotificationsToPublicAdministrationAdmin
     {
         $this->getActiveAdministrators()->each(function (User $administrator) use ($website) {
             $administrator->notify(new UserWebsiteUnarchivedEmail($website));
+        });
+    }
+
+    public function sendPrimaryWebsiteNotTrackingNotificationToAdministrators(): void
+    {
+        $this->getActiveAdministrators()->each(function (User $administrator) {
+            $administrator->notify(new UserPrimaryWebsiteNotTrackingEmail());
         });
     }
 }

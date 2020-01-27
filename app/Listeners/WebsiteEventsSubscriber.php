@@ -330,13 +330,8 @@ class WebsiteEventsSubscriber implements ShouldQueue
     {
         $website = $event->getWebsite();
 
-        //TODO: da testare e verificare per attività "Invio mail e PEC"
-//        $publicAdministration = $website->publicAdministration;
-//        //Notify Website administrators
-//        $users = $publicAdministration->getAdministrators();
-//        foreach ($users as $user) {
-//            $user->sendPrimaryWebsiteNotTrackingNotification();
-//        }
+        //Notify public administration administrators
+        $website->publicAdministration->sendPrimaryWebsiteNotTrackingNotificationToAdministrators();
 
         logger()->notice(
             'Primary website ' . $website->info . ' tracking inactive.',
