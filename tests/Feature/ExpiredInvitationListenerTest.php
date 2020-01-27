@@ -6,7 +6,7 @@ use App\Enums\UserRole;
 use App\Events\User\UserInvitationLinkExpired;
 use App\Models\PublicAdministration;
 use App\Models\User;
-use App\Notifications\ExpiredInvitationLinkVisitedEmail;
+use App\Notifications\UserExpiredInvitationLinkVisitedEmail;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Notification;
@@ -61,7 +61,7 @@ class ExpiredInvitationListenerTest extends TestCase
 
         Notification::assertSentTo(
             [$this->publicAdministrationAdmin],
-            ExpiredInvitationLinkVisitedEmail::class,
+            UserExpiredInvitationLinkVisitedEmail::class,
             function ($notification, $channels) use ($user) {
                 $this->assertEquals($channels, ['mail']);
                 $mail = $notification->toMail($this->publicAdministrationAdmin)->build();

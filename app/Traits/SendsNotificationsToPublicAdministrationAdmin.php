@@ -5,6 +5,7 @@ namespace App\Traits;
 use App\Models\User;
 use App\Models\Website;
 use App\Notifications\UserActivatedEmail;
+use App\Notifications\UserExpiredInvitationLinkVisitedEmail;
 use App\Notifications\UserInvitedEmail;
 use App\Notifications\UserPrimaryWebsiteNotTrackingEmail;
 use App\Notifications\UserReactivatedEmail;
@@ -118,6 +119,13 @@ trait SendsNotificationsToPublicAdministrationAdmin
     {
         $this->getActiveAdministrators()->each(function (User $administrator) use ($user) {
             $administrator->notify(new UserWebsiteAccessChangedEmail($user));
+        });
+    }
+
+    public function sendExpiredInvitationLinkVisitedToAdministrators(User $invitedUser): void
+    {
+        $this->getActiveAdministrators()->each(function (User $administrator) use ($invitedUser) {
+            $administrator->notify(new UserExpiredInvitationLinkVisitedEmail($invitedUser));
         });
     }
 }

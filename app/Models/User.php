@@ -7,7 +7,6 @@ use App\Enums\UserStatus;
 use App\Events\User\UserRestored;
 use App\Events\User\UserUpdated;
 use App\Events\User\UserUpdating;
-use App\Notifications\ExpiredInvitationLinkVisitedEmail;
 use App\Traits\HasAnalyticsServiceAccount;
 use App\Traits\HasWebsitePermissions;
 use App\Traits\SendsNotificationsToUser;
@@ -257,15 +256,5 @@ class User extends Authenticatable implements MustVerifyEmail
         });
 
         return 1 === $activeSuperAdministrators->count() && $this->is($activeSuperAdministrators->first());
-    }
-
-    /**
-     * Notify an expired verification URL was used.
-     *
-     * @param User $user the user the expired URL refers to
-     */
-    public function sendExpiredInvitationLinkVisited(User $user): void
-    {
-        $this->notify(new ExpiredInvitationLinkVisitedEmail($user));
     }
 }
