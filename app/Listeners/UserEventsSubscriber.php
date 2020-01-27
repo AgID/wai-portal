@@ -16,6 +16,7 @@ use App\Events\User\UserStatusChanged;
 use App\Events\User\UserSuspended;
 use App\Events\User\UserUpdated;
 use App\Events\User\UserWebsiteAccessChanged;
+use App\Models\PublicAdministration;
 use App\Traits\InteractsWithRedisIndex;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Auth\Events\Registered;
@@ -234,7 +235,16 @@ class UserEventsSubscriber implements ShouldQueue
     public function onSuspended(UserSuspended $event): void
     {
         $user = $event->getUser();
-        logger()->info(
+
+        //Notify user
+        $user->sendSuspendedNotification();
+
+        //Notify public administration administrators
+        $user->publicAdministrations()->each(function (PublicAdministration $publicAdministration) use ($user) {
+            $publicAdministration->sendUserSuspendedNotificationToAdministrators($user);
+        });
+
+        logger()->notice(
             'User ' . $user->uuid . ' suspended.',
             [
                 'user' => $user->uuid,
@@ -251,7 +261,16 @@ class UserEventsSubscriber implements ShouldQueue
     public function onReactivated(UserReactivated $event): void
     {
         $user = $event->getUser();
-        logger()->info(
+
+        //Notify user
+        $user->sendReactivatedNotification();
+
+        //Notify public administration administrators
+        $user->publicAdministrations()->each(function (PublicAdministration $publicAdministration) use ($user) {
+            $publicAdministration->sendUserReactivatedNotificationToAdministrators($user);
+        });
+
+        logger()->notice(
             'User ' . $user->uuid . ' reactivated.',
             [
                 'user' => $user->uuid,
