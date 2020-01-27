@@ -40,7 +40,7 @@ return [
     |
     */
 
-    'archive_warning' => env('ARCHIVING_WEBSITE_WARNING', 60),
+    'archive_warning' => env('ARCHIVING_WEBSITE_WARNING', 10),
 
     /*
     |--------------------------------------------------------------------------
@@ -78,6 +78,6 @@ return [
     |
     */
 
-    'archive_expire' => env('ARCHIVING_WEBSITE_ARCHIVE', 90),
+    'archive_expire' => env('ARCHIVING_WEBSITE_ARCHIVE', 20),
 
 ];
