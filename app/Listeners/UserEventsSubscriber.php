@@ -105,12 +105,20 @@ class UserEventsSubscriber implements ShouldQueue
     public function onActivated(UserActivated $event): void
     {
         $user = $event->getUser();
+        $publicAdministration = $event->getPublicAdministration();
+
+        //Notify user
+        $user->sendActivatedNotification();
+
+        //Notify public administration administrators
+        $publicAdministration->sendUserActivatedNotificationToAdministrators($user);
+
         logger()->notice(
             'User ' . $user->uuid . ' activated',
             [
                 'event' => EventType::USER_ACTIVATED,
                 'user' => $user->uuid,
-                'pa' => $event->getPublicAdministration()->ipa_code,
+                'pa' => $publicAdministration->ipa_code,
             ]
         );
     }

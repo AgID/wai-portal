@@ -9,7 +9,6 @@ use App\Events\User\UserUpdated;
 use App\Events\User\UserUpdating;
 use App\Notifications\ExpiredInvitationLinkVisitedEmail;
 use App\Notifications\PrimaryWebsiteNotTrackingUserEmail;
-use App\Notifications\WebsiteActivatedUserEmail;
 use App\Notifications\WebsiteArchivedUserEmail;
 use App\Notifications\WebsiteArchivingUserEmail;
 use App\Notifications\WebsitePurgingUserEmail;
@@ -262,16 +261,6 @@ class User extends Authenticatable implements MustVerifyEmail
         });
 
         return 1 === $activeSuperAdministrators->count() && $this->is($activeSuperAdministrators->first());
-    }
-
-    /**
-     * Notify website activated.
-     *
-     * @param Website $website the website
-     */
-    public function sendWebsiteActivatedNotification(Website $website): void
-    {
-        $this->notify(new WebsiteActivatedUserEmail($website));
     }
 
     /**

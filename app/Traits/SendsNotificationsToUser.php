@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use App\Models\PublicAdministration;
+use App\Notifications\ActivatedEmail;
 use App\Notifications\PasswordChangedEmail;
 use App\Notifications\PasswordResetRequestEmail;
 use App\Notifications\VerifyEmail;
@@ -29,4 +30,8 @@ trait SendsNotificationsToUser
         $this->notify(new PasswordResetRequestEmail($token));
     }
 
+    public function sendActivatedNotification(): void
+    {
+        $this->notify(new ActivatedEmail());
+    }
 }
