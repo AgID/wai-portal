@@ -176,11 +176,9 @@ class PublicAdministration extends Model
             return $this->users()->where('status', UserStatus::PENDING)->get();
         }
 
-        Bouncer::scope()->to($this->id);
-        $administrators = User::whereIs(UserRole::ADMIN)->get();
-        Bouncer::scope()->to(session('tenant_id'));
-
-        return $administrators;
+        return Bouncer::scope()->onceTo($this->id, function () {
+            return User::whereIs(UserRole::ADMIN)->get();
+        });
     }
 
     /**
@@ -206,11 +204,9 @@ class PublicAdministration extends Model
             return Collection::make();
         }
 
-        Bouncer::scope()->to($this->id);
-        $nonAdministrators = User::whereIs(UserRole::DELEGATED)->get();
-        Bouncer::scope()->to(session('tenant_id'));
-
-        return $nonAdministrators;
+        return Bouncer::scope()->onceTo($this->id, function () {
+            return User::whereIs(UserRole::DELEGATED)->get();
+        });
     }
 
     /**
