@@ -17,6 +17,7 @@ use App\Events\User\UserSuspended;
 use App\Events\User\UserUpdated;
 use App\Events\User\UserWebsiteAccessChanged;
 use App\Traits\InteractsWithRedisIndex;
+use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -283,6 +284,21 @@ class UserEventsSubscriber implements ShouldQueue
         );
     }
 
+    public function onPasswordReset(PasswordReset $event): void
+    {
+        $user = $event->user;
+
+        //Notify user
+        $user->sendPasswordChangedNotification();
+
+        logger()->notice('Password successfully changed for user ' . $user->uuid,
+            [
+                'event' => EventType::USER_PASSWORD_RESET_COMPLETED,
+                'user' => $user->uuid,
+            ]
+        );
+    }
+
     /**
      * Register the listeners for the subscriber.
      *
@@ -358,6 +374,11 @@ class UserEventsSubscriber implements ShouldQueue
         $events->listen(
             'App\Events\User\UserRestored',
             'App\Listeners\UserEventsSubscriber@OnRestored'
+        );
+
+        $events->listen(
+            'Illuminate\Auth\Events\PasswordReset',
+            'App\Listeners\UserEventsSubscriber@onPasswordReset'
         );
     }
 }

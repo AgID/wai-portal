@@ -8,7 +8,6 @@ use App\Events\User\UserLogin;
 use App\Events\User\UserLogout;
 use App\Http\Controllers\Controller;
 use App\Jobs\ClearPasswordResetToken;
-use App\Jobs\SendPasswordResetEmail;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Auth\Events\PasswordReset;
@@ -158,8 +157,7 @@ class SuperAdminAuthController extends Controller
         ]);
 
         $user->load('passwordResetToken');
-
-        dispatch(new SendPasswordResetEmail($user, $token));
+        $user->sendPasswordResetRequestNotification($token);
         dispatch(new ClearPasswordResetToken($user->passwordResetToken))->delay(now()->addHour());
 
         return redirect()->home()->withNotification([
