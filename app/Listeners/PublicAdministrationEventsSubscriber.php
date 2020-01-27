@@ -154,8 +154,12 @@ class PublicAdministrationEventsSubscriber implements ShouldQueue
     public function onPurged(PublicAdministrationPurged $event): void
     {
         Cache::forget(PublicAdministration::PUBLIC_ADMINISTRATION_COUNT_KEY);
+        $user = $event->getUser();
         $publicAdministration = json_decode($event->getPublicAdministrationJson());
         $publicAdministrationInfo = '"' . $publicAdministration->name . '" [' . $publicAdministration->ipa_code . ']';
+
+        $user->sendPublicAdministrationPurgedNotification($publicAdministration);
+
         logger()->notice(
             'Public Administration ' . $publicAdministrationInfo . ' purged',
             [
