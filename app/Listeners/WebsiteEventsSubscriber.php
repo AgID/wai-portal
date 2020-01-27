@@ -81,13 +81,15 @@ class WebsiteEventsSubscriber implements ShouldQueue
     {
         $website = $event->getWebsite();
 
-        //TODO: da testare e verificare per attività "Invio mail e PEC"
-//        $publicAdministration = $website->publicAdministration;
-//        //Notify Website administrators
-//        $users = $publicAdministration->getAdministrators();
-//        foreach ($users as $user) {
-//            $user->sendWebsiteActivatedNotification($website);
-//        }
+        $publicAdministration = $website->publicAdministration;
+
+        //Notify public administration administrators
+        $publicAdministration->sendWebsiteActivatedNotificationToAdministrators($website);
+
+        if ($publicAdministration->rtd_mail) {
+            //Notify RTD
+            $publicAdministration->sendWebsiteActivatedNotificationToRTD($website);
+        }
 
         logger()->notice(
             'Website ' . $website->info . ' activated',

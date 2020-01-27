@@ -8,6 +8,7 @@ use App\Notifications\UserActivatedEmail;
 use App\Notifications\UserInvitedEmail;
 use App\Notifications\UserReactivatedEmail;
 use App\Notifications\UserSuspendedEmail;
+use App\Notifications\UserWebsiteActivatedEmail;
 use App\Notifications\UserWebsiteAddedEmail;
 
 trait SendsNotificationsToPublicAdministrationAdmin
@@ -44,6 +45,15 @@ trait SendsNotificationsToPublicAdministrationAdmin
     {
         $this->getActiveAdministrators()->except([$user->id])->each(function (User $administrator) use ($website) {
             $administrator->notify(new UserWebsiteAddedEmail($website));
+        });
+    }
+
+    public function sendWebsiteActivatedNotificationToAdministrators(Website $website): void
+    {
+        $this->getActiveAdministrators()->each(function (User $administrator) use ($website) {
+            if ($administrator->email !== $this->rtd_mail) {
+                $administrator->notify(new UserWebsiteActivatedEmail($website));
+            }
         });
     }
 }

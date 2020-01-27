@@ -5,7 +5,6 @@ namespace App\Models;
 use App\Enums\PublicAdministrationStatus;
 use App\Enums\UserRole;
 use App\Enums\UserStatus;
-use App\Notifications\WebsiteActivatedPublicAdministrationEmail;
 use App\Traits\HasAnalyticsDashboard;
 use App\Traits\SendsNotificationsToPublicAdministrationAdmin;
 use App\Traits\SendsNotificationsToPublicAdministrationRTD;
@@ -199,15 +198,5 @@ class PublicAdministration extends Model
         return Bouncer::scope()->onceTo($this->id, function () {
             return User::whereIs(UserRole::DELEGATED)->get();
         });
-    }
-
-    /**
-     * Notify website activated.
-     *
-     * @param Website $website the website
-     */
-    public function sendWebsiteActivatedNotification(Website $website): void
-    {
-        $this->notify(new WebsiteActivatedPublicAdministrationEmail($website));
     }
 }

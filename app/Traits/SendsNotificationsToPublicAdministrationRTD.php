@@ -2,7 +2,9 @@
 
 namespace App\Traits;
 
+use App\Models\Website;
 use App\Notifications\RTDPublicAdministrationRegisteredEmail;
+use App\Notifications\RTDWebsiteActivatedEmail;
 
 trait SendsNotificationsToPublicAdministrationRTD
 {
@@ -13,5 +15,10 @@ trait SendsNotificationsToPublicAdministrationRTD
         if ($this->users()->first()->email !== $this->rtd_mail) {
             $this->notify(new RTDPublicAdministrationRegisteredEmail());
         }
+    }
+
+    public function sendWebsiteActivatedNotificationToRTD(Website $website): void
+    {
+        $this->notify(new RTDWebsiteActivatedEmail($website));
     }
 }
