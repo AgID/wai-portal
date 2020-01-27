@@ -31,7 +31,15 @@ class PublicAdministrationEventsSubscriber implements ShouldQueue
         Cache::forget(PublicAdministration::PUBLIC_ADMINISTRATION_COUNT_KEY);
         $publicAdministration = $event->getPublicAdministration();
         $user = $event->getUser();
-        //TODO: inviare PEC a PA per la notifica?
+
+        //Notify registering user
+        $user->sendPublicAdministrationRegisteredNotification($publicAdministration);
+
+        if ($publicAdministration->rtd_mail) {
+            //Notify RTD
+            $publicAdministration->sendPublicAdministrationRegisteredNotificationToRTD();
+        }
+
         logger()->notice(
             'User ' . $user->uuid . ' registered Public Administration ' . $publicAdministration->info,
             [

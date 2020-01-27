@@ -6,6 +6,7 @@ use App\Models\PublicAdministration;
 use App\Notifications\ActivatedEmail;
 use App\Notifications\PasswordChangedEmail;
 use App\Notifications\PasswordResetRequestEmail;
+use App\Notifications\PublicAdministrationRegisteredEmail;
 use App\Notifications\ReactivatedEmail;
 use App\Notifications\SuspendedEmail;
 use App\Notifications\VerifyEmail;
@@ -45,5 +46,10 @@ trait SendsNotificationsToUser
     public function sendReactivatedNotification(): void
     {
         $this->notify(new ReactivatedEmail());
+    }
+
+    public function sendPublicAdministrationRegisteredNotification(PublicAdministration $publicAdministration): void
+    {
+        $this->notify(new PublicAdministrationRegisteredEmail($publicAdministration));
     }
 }
