@@ -67,6 +67,10 @@ class PublicAdministrationEventsSubscriber implements ShouldQueue
             report($exception);
         }
 
+        //Notify user (this user is also the only public administration administrator)
+        $user = $publicAdministration->users()->first();
+        $user->sendPublicAdministrationActivatedNotification($publicAdministration);
+
         logger()->notice(
             'Public Administration ' . $publicAdministration->info . ' activated',
             [

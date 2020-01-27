@@ -7,6 +7,7 @@ use App\Models\Website;
 use App\Notifications\ActivatedEmail;
 use App\Notifications\PasswordChangedEmail;
 use App\Notifications\PasswordResetRequestEmail;
+use App\Notifications\PublicAdministrationActivatedEmail;
 use App\Notifications\PublicAdministrationPurgedEmail;
 use App\Notifications\PublicAdministrationRegisteredEmail;
 use App\Notifications\ReactivatedEmail;
@@ -64,5 +65,10 @@ trait SendsNotificationsToUser
     public function sendPublicAdministrationPurgedNotification($publicAdministration): void
     {
         $this->notify(new PublicAdministrationPurgedEmail($publicAdministration));
+    }
+
+    public function sendPublicAdministrationActivatedNotification(PublicAdministration $publicAdministration): void
+    {
+        $this->notify(new PublicAdministrationActivatedEmail($publicAdministration));
     }
 }
