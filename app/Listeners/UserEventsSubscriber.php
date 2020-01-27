@@ -131,8 +131,17 @@ class UserEventsSubscriber implements ShouldQueue
      */
     public function onUpdated(UserUpdated $event): void
     {
+        $user = $event->getUser();
+
         //Update Redisearch websites index
-        $this->updateUsersIndex($event->getUser());
+        $this->updateUsersIndex($user);
+
+        logger()->notice('User ' . $user->uuid . ' updated',
+            [
+                'event' => EventType::USER_UPDATED,
+                'user' => $user->uuid,
+            ]
+        );
     }
 
     /**

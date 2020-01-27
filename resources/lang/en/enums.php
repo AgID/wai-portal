@@ -151,6 +151,7 @@ return [
         EventType::WEBSITES_INDEXING_COMPLETED => 'Websites index update completed',
         EventType::EXPIRED_USER_INVITATION_USED => 'Activation attempt using expired invitation',
         EventType::USER_PASSWORD_RESET_COMPLETED => 'User password reset completed',
+        EventType::USER_UPDATED => 'User updated',
         EventType::MAIL_SENT => 'Mail sent',
     ],
 
