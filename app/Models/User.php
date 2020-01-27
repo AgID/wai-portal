@@ -8,7 +8,6 @@ use App\Events\User\UserRestored;
 use App\Events\User\UserUpdated;
 use App\Events\User\UserUpdating;
 use App\Notifications\ExpiredInvitationLinkVisitedEmail;
-use App\Notifications\WebsiteArchivingUserEmail;
 use App\Notifications\WebsitePurgingUserEmail;
 use App\Traits\HasAnalyticsServiceAccount;
 use App\Traits\HasWebsitePermissions;
@@ -269,17 +268,6 @@ class User extends Authenticatable implements MustVerifyEmail
     public function sendWebsitePurgingNotification(Website $website): void
     {
         $this->notify(new WebsitePurgingUserEmail($website));
-    }
-
-    /**
-     * Notify website scheduled for archiving.
-     *
-     * @param Website $website the website
-     * @param int $daysLeft the number of days left before automatic archiving
-     */
-    public function sendWebsiteArchivingNotification(Website $website, int $daysLeft): void
-    {
-        $this->notify(new WebsiteArchivingUserEmail($website, $daysLeft));
     }
 
     /**

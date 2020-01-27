@@ -4,26 +4,13 @@ namespace App\Mail;
 
 use App\Models\User;
 use App\Models\Website;
-use Illuminate\Bus\Queueable;
-use Illuminate\Mail\Mailable;
-use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Lang;
 
 /**
  * User mail for website scheduled for archiving notification.
  */
-class UserWebsiteArchiving extends Mailable
+class UserWebsiteArchiving extends UserMailable
 {
-    use Queueable;
-    use SerializesModels;
-
-    /**
-     * The user to notify.
-     *
-     * @var User the user
-     */
-    protected $user;
-
     /**
      * The scheduled to be archived website.
      *
@@ -41,13 +28,13 @@ class UserWebsiteArchiving extends Mailable
     /**
      * Mail constructor.
      *
-     * @param User $user the user
+     * @param User $recipient the user
      * @param Website $website the website
      * @param int $daysLeft the number of days left
      */
-    public function __construct(User $user, Website $website, int $daysLeft)
+    public function __construct(User $recipient, Website $website, int $daysLeft)
     {
-        $this->user = $user;
+        parent::__construct($recipient);
         $this->website = $website;
         $this->daysLeft = $daysLeft;
     }
@@ -59,12 +46,12 @@ class UserWebsiteArchiving extends Mailable
      */
     public function build(): UserWebsiteArchiving
     {
-        return $this->subject(__('[Attenzione] - Avviso archiviazione'))
-                    ->markdown('mail.website_archiving_user_email')->with([
-                        'locale' => Lang::getLocale(),
-                        'fullName' => $this->user->full_name,
-                        'website' => $this->website->name,
-                        'daysLeft' => $this->daysLeft,
-                    ]);
+        return $this->subject(__('[Attenzione] - Avviso sito web in archiviazione'))
+            ->markdown('mail.user_website_archiving')->with([
+                'locale' => Lang::getLocale(),
+                'user' => $this->recipient,
+                'website' => $this->website,
+                'daysLeft' => $this->daysLeft,
+            ]);
     }
 }

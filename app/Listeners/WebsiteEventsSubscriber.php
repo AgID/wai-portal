@@ -174,12 +174,8 @@ class WebsiteEventsSubscriber implements ShouldQueue
     {
         $website = $event->getWebsite();
 
-        //TODO: da testare e verificare per attività "Invio mail e PEC"
-//        //Notify website administrators
-//        $users = $website->getAdministrators($website);
-//        foreach ($users as $user) {
-//            $user->sendWebsiteArchivingNotification($website, $event->getWebsite());
-//        }
+        //Notify public administration administrators
+        $website->publicAdministration->sendWebsiteArchivingNotificationToAdministrators($website, $event->getDaysLeft());
 
         logger()->notice(
             'Website ' . $website->info . ' reported as not active and scheduled for archiving',

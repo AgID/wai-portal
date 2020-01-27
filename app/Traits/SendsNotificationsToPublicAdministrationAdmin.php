@@ -12,6 +12,7 @@ use App\Notifications\UserSuspendedEmail;
 use App\Notifications\UserWebsiteActivatedEmail;
 use App\Notifications\UserWebsiteAddedEmail;
 use App\Notifications\UserWebsiteArchivedEmail;
+use App\Notifications\UserWebsiteArchivingEmail;
 use App\Notifications\UserWebsiteUnarchivedEmail;
 
 trait SendsNotificationsToPublicAdministrationAdmin
@@ -78,6 +79,13 @@ trait SendsNotificationsToPublicAdministrationAdmin
     {
         $this->getActiveAdministrators()->each(function (User $administrator) {
             $administrator->notify(new UserPrimaryWebsiteNotTrackingEmail());
+        });
+    }
+
+    public function sendWebsiteArchivingNotificationToAdministrators(Website $website, int $daysLeft): void
+    {
+        $this->getActiveAdministrators()->each(function (User $administrator) use ($website, $daysLeft) {
+            $administrator->notify(new UserWebsiteArchivingEmail($website, $daysLeft));
         });
     }
 }
