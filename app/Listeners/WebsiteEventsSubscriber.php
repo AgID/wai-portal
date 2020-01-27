@@ -21,6 +21,7 @@ use App\Events\Website\WebsiteUpdated;
 use App\Events\Website\WebsiteUrlChanged;
 use App\Exceptions\AnalyticsServiceException;
 use App\Exceptions\CommandErrorException;
+use App\Models\PublicAdministration;
 use App\Models\Website;
 use App\Traits\InteractsWithRedisIndex;
 use Exception;
@@ -110,7 +111,7 @@ class WebsiteEventsSubscriber implements ShouldQueue
         //      by "public administration activated" event handler
         if (!$website->type->is(WebsiteType::PRIMARY)) {
             try {
-                $website->publicAdministration->addToRollUp($website);
+                $publicAdministration->addToRollUp($website);
             } catch (Exception $exception) {
                 report($exception);
             }
@@ -265,13 +266,23 @@ class WebsiteEventsSubscriber implements ShouldQueue
         Cache::forget(Website::WEBSITE_COUNT_KEY);
         $website = json_decode($event->getWebsiteJson());
         $websiteInfo = '"' . e($website->name) . '" [' . $website->slug . ']';
+        $publicAdministration = json_decode($event->getPublicAdministrationJson());
+
+        //NOTE: for primary websites use PublicAdministrationPurged
+        //      event to notify administrators
+        if (WebsiteType::PRIMARY !== $website->type) {
+            //Notify public administration administrators
+            $publicAdministration = PublicAdministration::findByIpaCode($publicAdministration->ipa_code);
+            $publicAdministration->sendWebsitePurgedNotificationToAdministrators($website);
+        }
+
         //NOTE: toJson: relationship attributes are snake_case
         logger()->notice(
             'Website ' . $websiteInfo . ' purged',
             [
                 'event' => EventType::WEBSITE_PURGED,
                 'website' => $website->id,
-                'pa' => $website->public_administration->ipa_code,
+                'pa' => $publicAdministration->ipa_code,
             ]
         );
     }

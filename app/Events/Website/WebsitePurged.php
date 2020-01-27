@@ -14,14 +14,17 @@ class WebsitePurged
      */
     protected $websiteJson;
 
+    protected $publicAdministrationJson;
+
     /**
      * Event constructor.
      *
      * @param string $websiteJson the JSON string of the website
      */
-    public function __construct(string $websiteJson)
+    public function __construct(string $websiteJson, string $publicAdministrationJson)
     {
         $this->websiteJson = $websiteJson;
+        $this->publicAdministrationJson = $publicAdministrationJson;
     }
 
     /**
@@ -32,5 +35,10 @@ class WebsitePurged
     public function getWebsiteJson(): string
     {
         return $this->websiteJson;
+    }
+
+    public function getPublicAdministrationJson(): string
+    {
+        return $this->publicAdministrationJson;
     }
 }

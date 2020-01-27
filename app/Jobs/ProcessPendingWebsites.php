@@ -110,7 +110,7 @@ class ProcessPendingWebsites implements ShouldQueue
 
                         $analyticsService->deleteSite($website->analytics_id);
 
-                        event(new WebsitePurged($website->toJson()));
+                        event(new WebsitePurged($website->toJson(), $publicAdministration->toJson()));
 
                         return [
                             'purged' => [
