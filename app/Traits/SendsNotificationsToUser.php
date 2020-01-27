@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use App\Models\PublicAdministration;
+use App\Models\Website;
 use App\Notifications\ActivatedEmail;
 use App\Notifications\PasswordChangedEmail;
 use App\Notifications\PasswordResetRequestEmail;
@@ -10,6 +11,7 @@ use App\Notifications\PublicAdministrationRegisteredEmail;
 use App\Notifications\ReactivatedEmail;
 use App\Notifications\SuspendedEmail;
 use App\Notifications\VerifyEmail;
+use App\Notifications\WebsiteAddedEmail;
 
 trait SendsNotificationsToUser
 {
@@ -51,5 +53,10 @@ trait SendsNotificationsToUser
     public function sendPublicAdministrationRegisteredNotification(PublicAdministration $publicAdministration): void
     {
         $this->notify(new PublicAdministrationRegisteredEmail($publicAdministration));
+    }
+
+    public function sendWebsiteAddedNotification(Website $website): void
+    {
+        $this->notify(new WebsiteAddedEmail($website));
     }
 }

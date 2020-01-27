@@ -3,10 +3,12 @@
 namespace App\Traits;
 
 use App\Models\User;
+use App\Models\Website;
 use App\Notifications\UserActivatedEmail;
 use App\Notifications\UserInvitedEmail;
 use App\Notifications\UserReactivatedEmail;
 use App\Notifications\UserSuspendedEmail;
+use App\Notifications\UserWebsiteAddedEmail;
 
 trait SendsNotificationsToPublicAdministrationAdmin
 {
@@ -35,6 +37,13 @@ trait SendsNotificationsToPublicAdministrationAdmin
     {
         $this->getActiveAdministrators()->except([$user->id])->each(function (User $administrator) use ($user) {
             $administrator->notify(new UserReactivatedEmail($user));
+        });
+    }
+
+    public function sendWebsiteAddedNotificationToAdministrators(Website $website, User $user): void
+    {
+        $this->getActiveAdministrators()->except([$user->id])->each(function (User $administrator) use ($website) {
+            $administrator->notify(new UserWebsiteAddedEmail($website));
         });
     }
 }

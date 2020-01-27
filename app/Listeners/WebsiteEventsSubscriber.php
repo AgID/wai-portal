@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Enums\Logs\EventType;
+use App\Enums\UserRole;
 use App\Enums\WebsiteAccessType;
 use App\Enums\WebsiteType;
 use App\Events\Website\PrimaryWebsiteNotTracking;
@@ -42,28 +43,32 @@ class WebsiteEventsSubscriber implements ShouldQueue
     public function onAdded(WebsiteAdded $event): void
     {
         $website = $event->getWebsite();
+        $user = $event->getUser();
 
-        //TODO: da testare e verificare per attività "Invio mail e PEC"
-//        $publicAdministration = $website->publicAdministration;
-//        //Notify Website administrators
-//        $users = $publicAdministration->getAdministrators();
-//        foreach ($users as $user) {
-//            $user->sendWebsiteActivatedNotification($website);
-//        }
-//
-//        //Notify Public Administration
-//        $publicAdministration->sendWebsiteActivatedNotification($website);
+        $context = [
+            'event' => EventType::WEBSITE_ADDED,
+            'website' => $website->id,
+            'pa' => $website->publicAdministration->ipa_code,
+        ];
+
+        if (!$user->isAn(UserRole::SUPER_ADMIN)) {
+            $context['user'] = $user->uuid;
+        }
+
+        if (!$website->type->is(WebsiteType::PRIMARY)) {
+            //Notify the registering user
+            $user->sendWebsiteAddedNotification($website);
+        }
+
+        //Notify public administration administrators
+        $website->publicAdministration->sendWebsiteAddedNotificationToAdministrators($website, $user);
 
         //Update Redisearch websites index
         $this->updateWebsitesIndex($website);
 
         logger()->notice(
             'Website ' . $website->info . ' added of type ' . $website->type->description,
-            [
-                'event' => EventType::WEBSITE_ADDED,
-                'website' => $website->id,
-                'pa' => $website->publicAdministration->ipa_code,
-            ]
+            $context
         );
     }
 
