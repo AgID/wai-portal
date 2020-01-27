@@ -202,12 +202,8 @@ class WebsiteEventsSubscriber implements ShouldQueue
         $manual = $event->isManual();
         $reason = $manual ? 'manually' : 'due to inactivity';
 
-        //TODO: da testare e verificare per attività "Invio mail e PEC"
-//        //Notify website administrators
-//        $users = $website->getAdministrators($website,);
-//        foreach ($users as $user) {
-//            $user->sendWebsiteArchivedNotification($website, $manual);
-//        }
+        //Notify public administration administrators
+        $website->publicAdministration->sendWebsiteArchivedNotificationToAdministrators($website, $manual);
 
         logger()->notice(
             'Website ' . $website->info . ' archived ' . $reason,
@@ -227,7 +223,10 @@ class WebsiteEventsSubscriber implements ShouldQueue
     public function onUnarchived(WebsiteUnarchived $event): void
     {
         $website = $event->getWebsite();
-        //TODO: notificare qualcuno? è un'azione solo manuale
+
+        //Notify public administration administrators
+        $website->publicAdministration->sendWebsiteUnarchivedNotificationToAdministrators($website);
+
         logger()->notice(
             'Website ' . $website->info . ' unarchived manually',
             [

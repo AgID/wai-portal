@@ -10,6 +10,8 @@ use App\Notifications\UserReactivatedEmail;
 use App\Notifications\UserSuspendedEmail;
 use App\Notifications\UserWebsiteActivatedEmail;
 use App\Notifications\UserWebsiteAddedEmail;
+use App\Notifications\UserWebsiteArchivedEmail;
+use App\Notifications\UserWebsiteUnarchivedEmail;
 
 trait SendsNotificationsToPublicAdministrationAdmin
 {
@@ -54,6 +56,20 @@ trait SendsNotificationsToPublicAdministrationAdmin
             if ($administrator->email !== $this->rtd_mail) {
                 $administrator->notify(new UserWebsiteActivatedEmail($website));
             }
+        });
+    }
+
+    public function sendWebsiteArchivedNotificationToAdministrators(Website $website, bool $manually): void
+    {
+        $this->getActiveAdministrators()->each(function (User $administrator) use ($website, $manually) {
+            $administrator->notify(new UserWebsiteArchivedEmail($website, $manually));
+        });
+    }
+
+    public function sendWebsiteUnarchivedNotificationToAdministrators(Website $website): void
+    {
+        $this->getActiveAdministrators()->each(function (User $administrator) use ($website) {
+            $administrator->notify(new UserWebsiteUnarchivedEmail($website));
         });
     }
 }

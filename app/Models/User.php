@@ -9,7 +9,6 @@ use App\Events\User\UserUpdated;
 use App\Events\User\UserUpdating;
 use App\Notifications\ExpiredInvitationLinkVisitedEmail;
 use App\Notifications\PrimaryWebsiteNotTrackingUserEmail;
-use App\Notifications\WebsiteArchivedUserEmail;
 use App\Notifications\WebsiteArchivingUserEmail;
 use App\Notifications\WebsitePurgingUserEmail;
 use App\Traits\HasAnalyticsServiceAccount;
@@ -282,17 +281,6 @@ class User extends Authenticatable implements MustVerifyEmail
     public function sendWebsiteArchivingNotification(Website $website, int $daysLeft): void
     {
         $this->notify(new WebsiteArchivingUserEmail($website, $daysLeft));
-    }
-
-    /**
-     * Notify website archived.
-     *
-     * @param Website $website the website
-     * @param bool $manual whether the website was archived manually
-     */
-    public function sendWebsiteArchivedNotification(Website $website, bool $manual): void
-    {
-        $this->notify(new WebsiteArchivedUserEmail($website, $manual));
     }
 
     /**
