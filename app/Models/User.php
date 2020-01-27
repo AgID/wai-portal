@@ -8,7 +8,6 @@ use App\Events\User\UserRestored;
 use App\Events\User\UserUpdated;
 use App\Events\User\UserUpdating;
 use App\Notifications\ExpiredInvitationLinkVisitedEmail;
-use App\Notifications\WebsitePurgingUserEmail;
 use App\Traits\HasAnalyticsServiceAccount;
 use App\Traits\HasWebsitePermissions;
 use App\Traits\SendsNotificationsToUser;
@@ -258,16 +257,6 @@ class User extends Authenticatable implements MustVerifyEmail
         });
 
         return 1 === $activeSuperAdministrators->count() && $this->is($activeSuperAdministrators->first());
-    }
-
-    /**
-     * Notify website scheduled for purging.
-     *
-     * @param Website $website the website
-     */
-    public function sendWebsitePurgingNotification(Website $website): void
-    {
-        $this->notify(new WebsitePurgingUserEmail($website));
     }
 
     /**

@@ -13,6 +13,7 @@ use App\Notifications\UserWebsiteActivatedEmail;
 use App\Notifications\UserWebsiteAddedEmail;
 use App\Notifications\UserWebsiteArchivedEmail;
 use App\Notifications\UserWebsiteArchivingEmail;
+use App\Notifications\UserWebsitePurgingEmail;
 use App\Notifications\UserWebsiteUnarchivedEmail;
 
 trait SendsNotificationsToPublicAdministrationAdmin
@@ -86,6 +87,13 @@ trait SendsNotificationsToPublicAdministrationAdmin
     {
         $this->getActiveAdministrators()->each(function (User $administrator) use ($website, $daysLeft) {
             $administrator->notify(new UserWebsiteArchivingEmail($website, $daysLeft));
+        });
+    }
+
+    public function sendWebsitePurgingNotificationToAdministrators(Website $website): void
+    {
+        $this->getActiveAdministrators()->each(function (User $administrator) use ($website) {
+            $administrator->notify(new UserWebsitePurgingEmail($website));
         });
     }
 }

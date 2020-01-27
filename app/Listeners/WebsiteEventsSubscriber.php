@@ -242,13 +242,8 @@ class WebsiteEventsSubscriber implements ShouldQueue
     {
         $website = $event->getWebsite();
 
-        //TODO: da testare e verificare per attività "Invio mail e PEC"
-//        $publicAdministration = $website->publicAdministration;
-//        //Notify Website administrators
-//        $users = $publicAdministration->getAdministrators();
-//        foreach ($users as $user) {
-//            $user->sendWebsitePurgingNotification($website);
-//        }
+        //Notify public administration administrators
+        $website->publicAdministration->sendWebsitePurgingNotificationToAdministrators($website);
 
         logger()->notice(
             'Website ' . $website->info . ' scheduled purging',

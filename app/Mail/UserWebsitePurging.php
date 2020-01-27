@@ -4,26 +4,13 @@ namespace App\Mail;
 
 use App\Models\User;
 use App\Models\Website;
-use Illuminate\Bus\Queueable;
-use Illuminate\Mail\Mailable;
-use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Lang;
 
 /**
  * User mail for website scheduled for purging notification.
  */
-class UserWebsitePurging extends Mailable
+class UserWebsitePurging extends UserMailable
 {
-    use Queueable;
-    use SerializesModels;
-
-    /**
-     * The user to notify.
-     *
-     * @var User the user
-     */
-    protected $user;
-
     /**
      * The activated website.
      *
@@ -34,12 +21,12 @@ class UserWebsitePurging extends Mailable
     /**
      * Mail constructor.
      *
-     * @param User $user the user
+     * @param User $recipient the user
      * @param Website $website the website
      */
-    public function __construct(User $user, Website $website)
+    public function __construct(User $recipient, Website $website)
     {
-        $this->user = $user;
+        parent::__construct($recipient);
         $this->website = $website;
     }
 
@@ -50,11 +37,11 @@ class UserWebsitePurging extends Mailable
      */
     public function build(): UserWebsitePurging
     {
-        return $this->subject(__('[Attenzione] - Avviso rimozione'))
-                    ->markdown('mail.website_purging_user_email')->with([
-                        'locale' => Lang::getLocale(),
-                        'fullName' => $this->user->full_name,
-                        'website' => $this->website->name,
-                    ]);
+        return $this->subject(__('[Attenzione] - Avviso sito web in eliminazione'))
+            ->markdown('mail.user_website_purging')->with([
+                'locale' => Lang::getLocale(),
+                'user' => $this->recipient,
+                'website' => $this->website,
+            ]);
     }
 }
