@@ -88,13 +88,13 @@ class UserEventsSubscriber implements ShouldQueue
      */
     public function onVerified(Verified $event): void
     {
-        logger()->info(
+        logger()->notice(
             'User ' . $event->user->uuid . ' confirmed email address.',
             [
                 'event' => EventType::USER_VERIFIED,
                 'user' => $event->user->uuid,
             ]
-        ); //TODO: notify me!
+        );
     }
 
     /**
