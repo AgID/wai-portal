@@ -7,6 +7,7 @@ use App\Enums\UserRole;
 use App\Enums\UserStatus;
 use App\Notifications\WebsiteActivatedPublicAdministrationEmail;
 use App\Traits\HasAnalyticsDashboard;
+use App\Traits\SendsNotificationsToPublicAdministrationAdmin;
 use BenSampo\Enum\Traits\CastsEnums;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -27,6 +28,7 @@ class PublicAdministration extends Model
     use SoftDeletes;
     use Notifiable;
     use HasAnalyticsDashboard;
+    use SendsNotificationsToPublicAdministrationAdmin;
 
     /**
      * Active public administrations count cache key.

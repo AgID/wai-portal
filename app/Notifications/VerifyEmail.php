@@ -5,10 +5,7 @@ namespace App\Notifications;
 use App\Enums\UserRole;
 use App\Mail\AccountVerification;
 use App\Models\PublicAdministration;
-use App\Models\User;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Notification;
+use Illuminate\Mail\Mailable;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\URL;
@@ -16,46 +13,23 @@ use Illuminate\Support\Facades\URL;
 /**
  * User email verification.
  */
-class VerifyEmail extends Notification implements ShouldQueue
+class VerifyEmail extends UserEmailNotification
 {
-    use Queueable;
-
     /**
      * The public administration selected for the invitation.
      *
      * @var \App\Models\PublicAdministration the public administration
      */
-    public $publicAdministration;
-
-    /**
-     * The user issuing the invitation.
-     *
-     * @var \App\Models\User the inviting user
-     */
-    public $invitedBy;
+    protected $publicAdministration;
 
     /**
      * Create a new notification instance.
      *
      * @param PublicAdministration|null $publicAdministration the public administration this user belongs to or null if it is a super admin
-     * @param User|null $invitedBy the inviting user or null if none
      */
-    public function __construct(?PublicAdministration $publicAdministration = null, ?User $invitedBy = null)
+    public function __construct(?PublicAdministration $publicAdministration = null)
     {
         $this->publicAdministration = $publicAdministration;
-        $this->invitedBy = $invitedBy;
-    }
-
-    /**
-     * Get the notification's channels.
-     *
-     * @param mixed $notifiable the source
-     *
-     * @return array|string the channels array or the channel name
-     */
-    public function via($notifiable)
-    {
-        return ['mail'];
     }
 
     /**
@@ -65,16 +39,13 @@ class VerifyEmail extends Notification implements ShouldQueue
      *
      * @return \App\Mail\AccountVerification the email
      */
-    public function toMail($notifiable): AccountVerification
+    protected function buildEmail($notifiable): Mailable
     {
-        $accountVerificationMail = new AccountVerification(
+        return new AccountVerification(
             $notifiable,
             $this->verificationUrl($notifiable),
             $this->publicAdministration,
-            $this->invitedBy
         );
-
-        return $accountVerificationMail->to($notifiable->email);
     }
 
     /**

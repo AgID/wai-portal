@@ -9,13 +9,13 @@ use App\Events\User\UserUpdated;
 use App\Events\User\UserUpdating;
 use App\Notifications\ExpiredInvitationLinkVisitedEmail;
 use App\Notifications\PrimaryWebsiteNotTrackingUserEmail;
-use App\Notifications\VerifyEmail;
 use App\Notifications\WebsiteActivatedUserEmail;
 use App\Notifications\WebsiteArchivedUserEmail;
 use App\Notifications\WebsiteArchivingUserEmail;
 use App\Notifications\WebsitePurgingUserEmail;
 use App\Traits\HasAnalyticsServiceAccount;
 use App\Traits\HasWebsitePermissions;
+use App\Traits\SendsNotificationsToUser;
 use BenSampo\Enum\Traits\CastsEnums;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -38,6 +38,7 @@ class User extends Authenticatable implements MustVerifyEmail
     use HasRolesAndAbilities;
     use HasWebsitePermissions;
     use HasAnalyticsServiceAccount;
+    use SendsNotificationsToUser;
     use SoftDeletes;
 
     /**
@@ -223,16 +224,6 @@ class User extends Authenticatable implements MustVerifyEmail
                 'longDescription' => UserRole::getLongDescription($role->name),
             ];
         });
-    }
-
-    /**
-     * Configure information for notifications over mail channel.
-     *
-     * @param PublicAdministration|null $publicAdministration the public administration the user belongs to or null if user is registering a new Public Administration
-     */
-    public function sendEmailVerificationNotification(?PublicAdministration $publicAdministration = null): void
-    {
-        $this->notify(new VerifyEmail($publicAdministration));
     }
 
     /**

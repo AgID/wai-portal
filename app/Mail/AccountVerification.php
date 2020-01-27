@@ -6,35 +6,16 @@ use App\Enums\UserRole;
 use App\Enums\UserStatus;
 use App\Models\PublicAdministration;
 use App\Models\User;
-use Illuminate\Bus\Queueable;
-use Illuminate\Mail\Mailable;
-use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Lang;
 
-class AccountVerification extends Mailable
+class AccountVerification extends UserMailable
 {
-    use Queueable;
-    use SerializesModels;
-
-    /**
-     * The user this mail will be sent to.
-     *
-     * @var User
-     */
-    public $user;
-
     /**
      * The public administration selected for the invitation.
      *
      * @var \App\Models\PublicAdministration
      */
     public $publicAdministration;
-
-    /**
-     * The user issuing the invitation.
-     *
-     * @var \App\Models\User
-     */
-    public $invitedBy;
 
     /**
      * The signed url user for account verification.
@@ -46,16 +27,14 @@ class AccountVerification extends Mailable
     /**
      * Create a new message instance.
      *
-     * @param User $user the user to activate
+     * @param User $recipient the user to activate
      * @param string $signedUrl ths activation signed URL
      * @param PublicAdministration|null $publicAdministration the public administration the user belongs to
-     * @param User|null $invitedBy the inviting user or null if none
      */
-    public function __construct(User $user, string $signedUrl, ?PublicAdministration $publicAdministration = null, ?User $invitedBy = null)
+    public function __construct(User $recipient, string $signedUrl, ?PublicAdministration $publicAdministration = null)
     {
-        $this->user = $user;
+        parent::__construct($recipient);
         $this->publicAdministration = $publicAdministration;
-        $this->invitedBy = $invitedBy;
         $this->signedUrl = $signedUrl;
     }
 
@@ -66,22 +45,23 @@ class AccountVerification extends Mailable
      */
     public function build(): AccountVerification
     {
-        if ($this->user->status->is(UserStatus::INVITED)) {
-            if ($this->user->isA(UserRole::SUPER_ADMIN)) {
+        if ($this->recipient->status->is(UserStatus::INVITED)) {
+            $this->subject(__('Invito su :app', ['app' => config('app.name')]));
+            if ($this->recipient->isA(UserRole::SUPER_ADMIN)) {
                 $mailTemplate = 'mail.admin_invited_verification';
             } else {
                 $mailTemplate = 'mail.invited_verification';
             }
         } else {
+            $this->subject(__('Registrazione su :app', ['app' => config('app.name')]));
             $mailTemplate = 'mail.verification';
         }
 
-        return $this->subject(__('Invito per :app', ['app' => config('app.name')]))
-                    ->markdown($mailTemplate)->with([
-                        'user' => $this->user,
-                        'publicAdministration' => $this->publicAdministration,
-                        'invitedBy' => $this->invitedBy,
-                        'signedUrl' => $this->signedUrl,
-                    ]);
+        return $this->markdown($mailTemplate)->with([
+            'locale' => Lang::getLocale(),
+            'user' => $this->recipient,
+            'publicAdministration' => $this->publicAdministration,
+            'signedUrl' => $this->signedUrl,
+        ]);
     }
 }

@@ -65,14 +65,19 @@ class UserEventsSubscriber implements ShouldQueue
             'event' => EventType::USER_INVITED,
             'user' => $user->uuid,
         ];
-        if (null !== $event->getPublicAdministration()) {
+
+        $publicAdministration = $event->getPublicAdministration();
+
+        if (null !== $publicAdministration) {
             $context['pa'] = $event->getPublicAdministration()->ipa_code;
+
+            //Notify public administration administrators
+            $publicAdministration->sendUserInvitedNotificationToAdministrators($user);
         }
         logger()->notice(
             'New user invited: ' . $user->uuid . ' by ' . $invitedBy->uuid,
             $context
         );
-        //TODO: if the new user is invited as an admin then notify the public administration via PEC
     }
 
     /**
