@@ -32,10 +32,6 @@
         padding: 1em 2em;
         background-color: #ffffff;
     }
-    .mail-page-container p:first-of-type {
-        font-weight: 700;
-        font-size: 1.5rem;
-    }
     .mail-footer {
         display: block;
     }
