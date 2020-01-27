@@ -376,12 +376,12 @@ class UserEventsSubscriber implements ShouldQueue
 
         $events->listen(
             'App\Events\User\UserDeleted',
-            'App\Listeners\UserEventsSubscriber@OnDeleted'
+            'App\Listeners\UserEventsSubscriber@onDeleted'
         );
 
         $events->listen(
             'App\Events\User\UserRestored',
-            'App\Listeners\UserEventsSubscriber@OnRestored'
+            'App\Listeners\UserEventsSubscriber@onRestored'
         );
 
         $events->listen(
