@@ -8,6 +8,9 @@ use App\Models\PublicAdministration;
 use App\Models\User;
 use Illuminate\Support\Facades\Lang;
 
+/**
+ * Account verification email.
+ */
 class AccountVerification extends UserMailable
 {
     /**
@@ -41,7 +44,7 @@ class AccountVerification extends UserMailable
     /**
      * Build the message.
      *
-     * @return \App\Mail\AccountVerification
+     * @return AccountVerification the email
      */
     public function build(): AccountVerification
     {

@@ -7,21 +7,21 @@ use App\Models\Website;
 use Illuminate\Support\Facades\Lang;
 
 /**
- * User mail for website scheduled for purging notification.
+ * Website scheduled for purging email to public administration administrators.
  */
 class UserWebsitePurging extends UserMailable
 {
     /**
-     * The activated website.
+     * The website scheduled for purging.
      *
      * @var Website the website
      */
     protected $website;
 
     /**
-     * Mail constructor.
+     * Default constructor.
      *
-     * @param User $recipient the user
+     * @param User $recipient the mail recipient
      * @param Website $website the website
      */
     public function __construct(User $recipient, Website $website)

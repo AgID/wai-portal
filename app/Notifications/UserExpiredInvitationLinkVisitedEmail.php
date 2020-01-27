@@ -7,7 +7,7 @@ use App\Models\User;
 use Illuminate\Mail\Mailable;
 
 /**
- * Expired URL visited notification.
+ * Expired URL visited notification to public administration administrators.
  */
 class UserExpiredInvitationLinkVisitedEmail extends UserEmailNotification
 {

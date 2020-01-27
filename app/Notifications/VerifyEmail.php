@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\URL;
 
 /**
- * User email verification.
+ * User verification email notification.
  */
 class VerifyEmail extends UserEmailNotification
 {
@@ -33,11 +33,11 @@ class VerifyEmail extends UserEmailNotification
     }
 
     /**
-     * Get the mail representation of the notification.
+     * Initialize the mail message.
      *
-     * @param mixed $notifiable the user
+     * @param mixed $notifiable the target
      *
-     * @return \App\Mail\AccountVerification the email
+     * @return Mailable the mail message
      */
     protected function buildEmail($notifiable): Mailable
     {

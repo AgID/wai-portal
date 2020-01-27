@@ -6,12 +6,32 @@ use App\Models\PublicAdministration;
 use App\Models\User;
 use Illuminate\Support\Facades\Lang;
 
+/**
+ * Public administration registered email.
+ */
 class PublicAdministrationRegistered extends UserMailable
 {
+    /**
+     * The registered public administration.
+     *
+     * @var PublicAdministration the public administration
+     */
     protected $publicAdministration;
 
+    /**
+     * The Javascript tracking code.
+     *
+     * @var string the tracking code
+     */
     protected $javascriptSnippet;
 
+    /**
+     * Default constructor.
+     *
+     * @param User $recipient the mail recipient
+     * @param PublicAdministration $publicAdministration the registered public administration
+     * @param string $javascriptSnippet the tracking code
+     */
     public function __construct(User $recipient, PublicAdministration $publicAdministration, string $javascriptSnippet)
     {
         parent::__construct($recipient);
@@ -19,6 +39,11 @@ class PublicAdministrationRegistered extends UserMailable
         $this->javascriptSnippet = $javascriptSnippet;
     }
 
+    /**
+     * Build the message.
+     *
+     * @return PublicAdministrationRegistered the email
+     */
     public function build(): PublicAdministrationRegistered
     {
         return $this->subject(__('Pubblica amministrazione registrata'))

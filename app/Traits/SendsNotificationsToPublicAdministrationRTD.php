@@ -6,8 +6,14 @@ use App\Models\Website;
 use App\Notifications\RTDPublicAdministrationRegisteredEmail;
 use App\Notifications\RTDWebsiteActivatedEmail;
 
+/**
+ * Notifications to public administration RTD management.
+ */
 trait SendsNotificationsToPublicAdministrationRTD
 {
+    /**
+     * Send public administration registere notification.
+     */
     public function sendPublicAdministrationRegisteredNotificationToRTD(): void
     {
         //NOTE: don't send notification to RTD
@@ -17,6 +23,11 @@ trait SendsNotificationsToPublicAdministrationRTD
         }
     }
 
+    /**
+     * Send website activated notification.
+     *
+     * @param Website $website the activated website
+     */
     public function sendWebsiteActivatedNotificationToRTD(Website $website): void
     {
         $this->notify(new RTDWebsiteActivatedEmail($website));

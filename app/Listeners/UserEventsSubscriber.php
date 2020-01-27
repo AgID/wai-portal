@@ -3,7 +3,6 @@
 namespace App\Listeners;
 
 use App\Enums\Logs\EventType;
-use App\Enums\UserStatus;
 use App\Events\User\UserActivated;
 use App\Events\User\UserDeleted;
 use App\Events\User\UserEmailChanged;
@@ -324,6 +323,11 @@ class UserEventsSubscriber implements ShouldQueue
         );
     }
 
+    /**
+     * Handle password reset completed events.
+     *
+     * @param PasswordReset $event the event
+     */
     public function onPasswordReset(PasswordReset $event): void
     {
         $user = $event->user;

@@ -4,8 +4,16 @@ namespace App\Mail;
 
 use Illuminate\Support\Facades\Lang;
 
+/**
+ * User suspended email.
+ */
 class Suspended extends UserMailable
 {
+    /**
+     * Build the message.
+     *
+     * @return Suspended the email
+     */
     public function build(): Suspended
     {
         return $this->subject(__('Utente sospeso'))

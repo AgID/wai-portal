@@ -6,21 +6,21 @@ use App\Models\User;
 use Illuminate\Support\Facades\Lang;
 
 /**
- * Expired invitation link used email.
+ * Expired invitation link used email to public administration administrators.
  */
 class UserExpiredInvitationLinkVisited extends UserMailable
 {
     /**
      * The invited user the expired link refers to.
      *
-     * @var User the invited user
+     * @var User the user
      */
     protected $invitedUser;
 
     /**
      * Default constructor.
      *
-     * @param User $recipient the user to notify
+     * @param User $recipient the mail recipient
      * @param User $invitedUser the invited user
      */
     public function __construct(User $recipient, User $invitedUser)

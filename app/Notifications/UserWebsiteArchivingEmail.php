@@ -7,12 +7,12 @@ use App\Models\Website;
 use Illuminate\Mail\Mailable;
 
 /**
- * Website scheduled for archiving user notification.
+ * Website scheduled for archiving email notification to public administration administrators.
  */
 class UserWebsiteArchivingEmail extends UserEmailNotification
 {
     /**
-     * The website.
+     * The website scheduled for archiving.
      *
      * @var Website the website
      */
@@ -37,6 +37,13 @@ class UserWebsiteArchivingEmail extends UserEmailNotification
         $this->daysLeft = $daysLeft;
     }
 
+    /**
+     * Initialize the mail message.
+     *
+     * @param mixed $notifiable the target
+     *
+     * @return Mailable the mail message
+     */
     protected function buildEmail($notifiable): Mailable
     {
         return new UserWebsiteArchiving($notifiable, $this->website, $this->daysLeft);

@@ -7,7 +7,7 @@ use App\Models\Website;
 use Illuminate\Support\Facades\Lang;
 
 /**
- * User mail for website scheduled for archiving notification.
+ * Website scheduled for archiving email to public administration administrators.
  */
 class UserWebsiteArchiving extends UserMailable
 {
@@ -26,10 +26,10 @@ class UserWebsiteArchiving extends UserMailable
     protected $daysLeft;
 
     /**
-     * Mail constructor.
+     * Default constructor.
      *
-     * @param User $recipient the user
-     * @param Website $website the website
+     * @param User $recipient the mail recipient
+     * @param Website $website the website scheduled for archiving
      * @param int $daysLeft the number of days left
      */
     public function __construct(User $recipient, Website $website, int $daysLeft)

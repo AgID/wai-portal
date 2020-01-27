@@ -9,7 +9,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Notifications\Notification;
 
 /**
- * Website archived user notification.
+ * Website archived user notification to public administration administrators.
  */
 class UserWebsiteArchivedEmail extends UserEmailNotification
 {
@@ -31,7 +31,7 @@ class UserWebsiteArchivedEmail extends UserEmailNotification
      * Notification constructor.
      *
      * @param Website $website the website
-     * @param bool $manual wether the website was archived manually
+     * @param bool $manually whether the website was archived manually
      */
     public function __construct(Website $website, bool $manually)
     {
@@ -39,6 +39,13 @@ class UserWebsiteArchivedEmail extends UserEmailNotification
         $this->manually = $manually;
     }
 
+    /**
+     * Initialize the mail message.
+     *
+     * @param mixed $notifiable the target
+     *
+     * @return Mailable the mail message
+     */
     protected function buildEmail($notifiable): Mailable
     {
         return new UserWebsiteArchived($notifiable, $this->website, $this->manually);

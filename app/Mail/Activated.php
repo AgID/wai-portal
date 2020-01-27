@@ -4,8 +4,16 @@ namespace App\Mail;
 
 use Illuminate\Support\Facades\Lang;
 
+/**
+ * User activated email.
+ */
 class Activated extends UserMailable
 {
+    /**
+     * Build the message.
+     *
+     * @return Activated the email
+     */
     public function build(): Activated
     {
         return $this->subject(__('Utente attivato'))

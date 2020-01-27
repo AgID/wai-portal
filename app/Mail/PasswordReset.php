@@ -5,6 +5,9 @@ namespace App\Mail;
 use App\Models\User;
 use Illuminate\Support\Facades\Lang;
 
+/**
+ * Password reset request email.
+ */
 class PasswordReset extends UserMailable
 {
     /**
@@ -17,7 +20,8 @@ class PasswordReset extends UserMailable
     /**
      * Create a new message instance.
      *
-     * @param User $recipient
+     * @param User $recipient the user requesting the password change
+     * @param string $token the reset token
      */
     public function __construct(User $recipient, string $token)
     {
@@ -28,7 +32,7 @@ class PasswordReset extends UserMailable
     /**
      * Build the message.
      *
-     * @return $this
+     * @return PasswordReset the email
      */
     public function build(): PasswordReset
     {

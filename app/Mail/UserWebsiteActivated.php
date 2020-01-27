@@ -7,7 +7,7 @@ use App\Models\Website;
 use Illuminate\Support\Facades\Lang;
 
 /**
- * User mail for website activation notification.
+ * Website activated email to public administration administrators.
  */
 class UserWebsiteActivated extends UserMailable
 {
@@ -19,10 +19,10 @@ class UserWebsiteActivated extends UserMailable
     protected $website;
 
     /**
-     * Mail constructor.
+     * Default constructor.
      *
-     * @param User $recipient the user
-     * @param Website $website the website
+     * @param User $recipient the mail recipient
+     * @param Website $website the activated website
      */
     public function __construct(User $recipient, Website $website)
     {

@@ -3,13 +3,11 @@
 namespace App\Notifications;
 
 use App\Mail\UserWebsitePurging;
-use App\Models\User;
 use App\Models\Website;
 use Illuminate\Mail\Mailable;
-use Illuminate\Notifications\Notification;
 
 /**
- * Website scheduled for purging user notification.
+ * Website scheduled for purging email notification to public administration administrators.
  */
 class UserWebsitePurgingEmail extends UserEmailNotification
 {
@@ -30,6 +28,13 @@ class UserWebsitePurgingEmail extends UserEmailNotification
         $this->website = $website;
     }
 
+    /**
+     * Initialize the mail message.
+     *
+     * @param mixed $notifiable the target
+     *
+     * @return Mailable the mail message
+     */
     protected function buildEmail($notifiable): Mailable
     {
         return new UserWebsitePurging($notifiable, $this->website);
