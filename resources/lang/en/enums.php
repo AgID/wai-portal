@@ -152,6 +152,7 @@ return [
         EventType::EXPIRED_USER_INVITATION_USED => 'Activation attempt using expired invitation',
         EventType::USER_PASSWORD_RESET_COMPLETED => 'User password reset completed',
         EventType::USER_UPDATED => 'User updated',
+        EventType::WEBSITE_UPDATED => 'Website updated',
         EventType::MAIL_SENT => 'Mail sent',
     ],
 

@@ -16,6 +16,7 @@ use App\Notifications\UserWebsiteArchivingEmail;
 use App\Notifications\UserWebsitePurgedEmail;
 use App\Notifications\UserWebsitePurgingEmail;
 use App\Notifications\UserWebsiteUnarchivedEmail;
+use App\Notifications\UserWebsiteUrlChangedEmail;
 
 trait SendsNotificationsToPublicAdministrationAdmin
 {
@@ -102,6 +103,13 @@ trait SendsNotificationsToPublicAdministrationAdmin
     {
         $this->getActiveAdministrators()->each(function (User $administrator) use ($website) {
             $administrator->notify(new UserWebsitePurgedEmail($website));
+        });
+    }
+
+    public function sendWebsiteUrlChangedNotificationToAdministrators($website): void
+    {
+        $this->getActiveAdministrators()->each(function (User $administrator) use ($website) {
+            $administrator->notify(new UserWebsiteUrlChangedEmail($website));
         });
     }
 }

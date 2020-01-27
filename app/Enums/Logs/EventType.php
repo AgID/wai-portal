@@ -209,6 +209,8 @@ class EventType extends Enum implements LocalizedEnum
 
     public const USER_UPDATED = 40;
 
+    public const WEBSITE_UPDATED = 41;
+
     /**
      * Mail sent event.
      */

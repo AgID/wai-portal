@@ -125,8 +125,18 @@ class WebsiteEventsSubscriber implements ShouldQueue
      */
     public function onUpdated(WebsiteUpdated $event): void
     {
+        $website = $event->getWebsite();
+
         //Update Redisearch websites index
-        $this->updateWebsitesIndex($event->getWebsite());
+        $this->updateWebsitesIndex($website);
+
+        logger()->notice('Website ' . $website->info . ' updated',
+            [
+                'event' => EventType::WEBSITE_UPDATED,
+                'website' => $website->slug,
+                'pa' => $website->publicAdministration->ipa_code,
+            ]
+        );
     }
 
     /**
@@ -156,6 +166,10 @@ class WebsiteEventsSubscriber implements ShouldQueue
     public function onWebsiteUrlChanged(WebsiteUrlChanged $event): void
     {
         $website = $event->getWebsite();
+
+        //Notify public administration administrators
+        $website->publicAdministration->sendWebsiteUrlChangedNotificationToAdministrators($website);
+
         logger()->notice(
             'Website' . $website->info . ' URL updated from ' . e($event->getOldUrl()) . ' to ' . e($website->url),
             [
