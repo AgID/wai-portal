@@ -9,4 +9,4 @@ Ti preghiamo di verificare:
 - che il codice stia funzionando correttamente.
 
 Per avere supporto su questo argomento, puoi consultare
-la [guida dedicata di WAI](https://docs.italia.it/)
+la [guida dedicata di WAI]({{ config('site.kb.link') }})
