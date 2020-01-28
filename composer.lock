@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "bensampo/laravel-enum",
-            "version": "v1.29",
+            "version": "v1.30",
             "source": {
                 "type": "git",
                 "url": "https://github.com/BenSampo/laravel-enum.git",
-                "reference": "85915cbba12c2270d8b3147171dced92c075e282"
+                "reference": "991257b18783f738df98a94e6e11ab8574cc7dea"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/BenSampo/laravel-enum/zipball/85915cbba12c2270d8b3147171dced92c075e282",
-                "reference": "85915cbba12c2270d8b3147171dced92c075e282",
+                "url": "https://api.github.com/repos/BenSampo/laravel-enum/zipball/991257b18783f738df98a94e6e11ab8574cc7dea",
+                "reference": "991257b18783f738df98a94e6e11ab8574cc7dea",
                 "shasum": ""
             },
             "require": {
@@ -75,7 +75,7 @@
                 "package",
                 "validation"
             ],
-            "time": "2020-01-03T10:34:19+00:00"
+            "time": "2020-01-27T22:10:39+00:00"
         },
         {
             "name": "cweagans/composer-patches",
@@ -994,6 +994,7 @@
                 }
             ],
             "description": "Provides a simple API and specification that abstracts away the details of HTTP into a single PHP function.",
+            "abandoned": true,
             "time": "2018-07-31T13:22:33+00:00"
         },
         {
@@ -1044,6 +1045,7 @@
                 "Guzzle",
                 "stream"
             ],
+            "abandoned": true,
             "time": "2014-10-12T19:18:40+00:00"
         },
         {
@@ -2203,11 +2205,6 @@
                 "ext-openssl": "Install openssl lib in order to handle with x509 certs (require to support sign and encryption)"
             },
             "type": "library",
-            "extra": {
-                "patches_applied": {
-                    "Compatibility with SPID": "https://rawgit.com/italia/spid-laravel/master/patches/php-saml-3.4.1-spid.patch"
-                }
-            },
             "autoload": {
                 "psr-4": {
                     "OneLogin\\": "src/"
@@ -2224,7 +2221,12 @@
                 "onelogin",
                 "saml"
             ],
-            "time": "2019-11-25T17:30:07+00:00"
+            "time": "2019-11-25T17:30:07+00:00",
+            "extra": {
+                "patches_applied": {
+                    "Compatibility with SPID": "https://rawgit.com/italia/spid-laravel/master/patches/php-saml-3.4.1-spid.patch"
+                }
+            }
         },
         {
             "name": "opis/closure",
