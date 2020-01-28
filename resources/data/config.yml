@@ -17,6 +17,9 @@ it:
         Questo è l'ambiente di **staging**. L'istanza potrebbe essere resettata senza preavviso.
       local: |
         Questo è l'ambiente di sviluppo locale di **Web Analytics Italia**.
+    kb:
+      name: Guida utente Web Analytics Italia
+      link: https://docs.italia.it/AgID/wai/wai-user-guide-docs/it/stabile/
 
     menu_items:
       primary:
