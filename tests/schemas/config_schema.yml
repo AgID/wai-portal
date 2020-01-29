@@ -45,6 +45,11 @@ required:
                 url: "//str"
               optional:
                 class: "//str"
+          kb:
+            type: "//rec"
+            required:
+              name: "//str"
+              link: "//str"
         optional:
           pill: "//str"
           footer_links:
@@ -132,6 +137,11 @@ optional:
                 url: "//str"
               optional:
                 class: "//str"
+          kb:
+            type: "//rec"
+            required:
+              name: "//str"
+              link: "//str"
         optional:
           pill: "//str"
           footer_links:
