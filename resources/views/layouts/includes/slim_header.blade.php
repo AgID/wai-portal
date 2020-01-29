@@ -69,7 +69,10 @@
                                 @can(UserPermission::ACCESS_ADMIN_AREA)
                                 @include('layouts.includes.super_admin_menu')
                                 @else
-                                    @include('spid-auth::spid-button', ['size' => 'm'])
+                                    @include('spid-auth::spid-button', [
+                                        'size' => 'm',
+                                        'rightAlign' => true,
+                                    ])
                                 @endcan
                             @endif
                         </div>
