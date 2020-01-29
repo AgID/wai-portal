@@ -153,7 +153,7 @@ class UserEventsSubscriber implements ShouldQueue
     {
         $user = $event->getUser();
 
-        $user->sendEmailVerificationNotification($user->status->is(UserStatus::INVITED) ? $user->publicAdministrations()->first() : null);
+        $user->sendEmailVerificationNotification($user->publicAdministrations()->first());
 
         logger()->notice('User ' . $user->uuid . ' email address changed',
             [
