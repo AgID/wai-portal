@@ -129,7 +129,7 @@ class MonitorWebsitesTest extends TestCase
         ]);
 
         Carbon::now()->setWeekStartsAt(Carbon::SUNDAY);
-        $date = Carbon::now()->startOfWeek()->addWeek(1)->addDays($notificationWeekDay);
+        $date = Carbon::now()->startOfWeek()->addWeek()->addDays($notificationWeekDay);
         Carbon::setTestNow($date);
 
         $job = new MonitorWebsitesTracking();
@@ -177,14 +177,14 @@ class MonitorWebsitesTest extends TestCase
             'query' => [
                 'rec' => '1',
                 'idsite' => $analyticsId,
-                'cdt' => now()->subDays($daysToSub + 1)->timestamp,
+                'cdt' => now()->subDays($daysToSub)->timestamp,
                 'token_auth' => config('analytics-service.admin_token'),
             ],
             'verify' => false,
         ]);
 
         Carbon::now()->setWeekStartsAt(Carbon::SUNDAY);
-        $date = Carbon::now()->startOfWeek()->addWeek(1)->addDays($notificationWeekDay + 1);
+        $date = Carbon::now()->startOfWeek()->addWeek()->addDays($notificationWeekDay + 1);
         Carbon::setTestNow($date);
 
         $job = new MonitorWebsitesTracking();
@@ -281,7 +281,7 @@ class MonitorWebsitesTest extends TestCase
         ]);
 
         Carbon::now()->setWeekStartsAt(Carbon::SUNDAY);
-        $date = Carbon::now()->startOfWeek()->addWeek(1)->addDays($notificationWeekDay);
+        $date = Carbon::now()->startOfWeek()->addWeek()->addDays($notificationWeekDay);
         Carbon::setTestNow($date);
 
         $job = new MonitorWebsitesTracking();

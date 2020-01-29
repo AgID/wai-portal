@@ -7,13 +7,14 @@ use App\Enums\UserRole;
 use App\Enums\UserStatus;
 use App\Events\User\UserUpdated;
 use App\Jobs\ClearPasswordResetToken;
-use App\Jobs\SendPasswordResetEmail;
 use App\Models\User;
+use App\Notifications\PasswordResetRequestEmail;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Str;
 use Silber\Bouncer\BouncerFacade as Bouncer;
@@ -57,6 +58,7 @@ class SuperAdminUserPasswordTest extends TestCase
     public function testSendResetPasswordSuccessful(): void
     {
         Queue::fake();
+        Notification::fake();
         $this->post(
             route('admin.password.reset.send'),
             [
@@ -65,7 +67,7 @@ class SuperAdminUserPasswordTest extends TestCase
             )
             ->assertRedirect(route('home'));
 
-        Queue::assertPushed(SendPasswordResetEmail::class);
+        Notification::assertSentTo([$this->user], PasswordResetRequestEmail::class);
         Queue::assertPushed(ClearPasswordResetToken::class);
     }
 
@@ -75,6 +77,7 @@ class SuperAdminUserPasswordTest extends TestCase
     public function testSendResetPasswordWrongEmail(): void
     {
         Queue::fake();
+        Notification::fake();
         $this->post(
             route('admin.password.reset.send'),
             [
@@ -83,7 +86,7 @@ class SuperAdminUserPasswordTest extends TestCase
             )
             ->assertRedirect(route('home'));
 
-        Queue::assertNotPushed(SendPasswordResetEmail::class);
+        Notification::assertNothingSent();
         Queue::assertNotPushed(ClearPasswordResetToken::class);
     }
 
