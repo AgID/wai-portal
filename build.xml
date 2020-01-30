@@ -82,6 +82,8 @@
                     <token key="PEC_PASSWORD" value="${PEC_PASSWORD}" />
                     <token key="PEC_ENCRYPTION" value="${PEC_ENCRYPTION}" />
                     <token key="SPID_SP_ENTITY_ID" value="${SPID_SP_ENTITY_ID}" />
+                    <token key="SPID_SP_ACS_INDEX" value="${SPID_SP_ACS_INDEX}" />
+                    <token key="SPID_SP_ATTRIBUTES_INDEX" value="${SPID_SP_ATTRIBUTES_INDEX}" />
                     <token key="SPID_SP_PRIVATE_KEY" value="${SPID_SP_PRIVATE_KEY}" />
                     <token key="SPID_SP_CERTIFICATE" value="${SPID_SP_CERTIFICATE}" />
                     <token key="SPID_TESTENV_ENABLED" value="${SPID_TESTENV_ENABLED}" />

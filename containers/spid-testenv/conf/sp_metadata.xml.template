@@ -3,7 +3,7 @@
 <md:EntityDescriptor
     xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata"
     xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
-    entityID="https://webanalytics.italia.it">
+    entityID="@SPID_SP_ENTITY_ID@">
 
     <md:SPSSODescriptor
         protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol"
@@ -35,10 +35,10 @@
         <md:AssertionConsumerService
             Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
             Location="https://@HOSTNAME@/spid/acs"
-            index="0"
+            index="@SPID_SP_ACS_INDEX@"
             isDefault="true" />
 
-        <md:AttributeConsumingService index="0">
+        <md:AttributeConsumingService index="@SPID_SP_ATTRIBUTES_INDEX@">
             <md:ServiceName xml:lang="it">Web Analytics Italia</md:ServiceName>
             <md:ServiceDescription xml:lang="it">I dati dei siti web della PA</md:ServiceDescription>
             <md:RequestedAttribute Name="name" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:basic"/>
