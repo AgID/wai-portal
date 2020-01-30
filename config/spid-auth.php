@@ -13,8 +13,8 @@ return [
     'sp_organization_name' => 'AGID',
     'sp_organization_display_name' => "Agenzia per l'Italia digitale",
     'sp_organization_url' => 'https://www.agid.gov.it',
-    'sp_acs_index' => env('SPID_SP_ACS_INDEX'),
-    'sp_attributes_index' => env('SPID_SP_ATTRIBUTES_INDEX'),
+    'sp_acs_index' => intval(env('SPID_SP_ACS_INDEX')),
+    'sp_attributes_index' => intval(env('SPID_SP_ATTRIBUTES_INDEX')),
     'sp_requested_attributes' => [
         'spidCode',
         'name',
