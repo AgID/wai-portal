@@ -1098,16 +1098,16 @@
         },
         {
             "name": "italia/spid-laravel",
-            "version": "v0.14.0-beta",
+            "version": "v0.15.0-beta",
             "source": {
                 "type": "git",
                 "url": "https://github.com/italia/spid-laravel.git",
-                "reference": "933588f556dd1f617c86a890dbb44674440e962b"
+                "reference": "d9c989075f4005bee40205fe726608da10ceb716"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/italia/spid-laravel/zipball/933588f556dd1f617c86a890dbb44674440e962b",
-                "reference": "933588f556dd1f617c86a890dbb44674440e962b",
+                "url": "https://api.github.com/repos/italia/spid-laravel/zipball/d9c989075f4005bee40205fe726608da10ceb716",
+                "reference": "d9c989075f4005bee40205fe726608da10ceb716",
                 "shasum": ""
             },
             "require": {
@@ -1161,7 +1161,7 @@
                 "laravel",
                 "php"
             ],
-            "time": "2020-01-22T21:51:49+00:00"
+            "time": "2020-01-29T11:14:07+00:00"
         },
         {
             "name": "jakub-onderka/php-console-color",
