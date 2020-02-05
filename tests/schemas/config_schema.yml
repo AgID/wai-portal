@@ -15,6 +15,7 @@ required:
               logo: "//str"
           privacy_policy: "//str"
           logo: "//str"
+          logo_raster: "//str"
           menu_items:
             type: "//rec"
             required:
