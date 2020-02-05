@@ -1,4 +1,4 @@
-Hi {{ $user->name }},
+Hello {{ $user->name }},
 
 the website "{{ $website->name }}" has been
-successfully added on [{{ config('app.name') }}]({{ url('/') }}).
+added on [{{ config('app.name') }}]({{ url('/') }}).

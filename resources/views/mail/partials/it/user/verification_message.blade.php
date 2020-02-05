@@ -1,6 +1,6 @@
 Ciao {{ $user->full_name }},
 
-grazie per esserti registrato su [{{ config('app.name') }}]({{ url('/') }})!!
+grazie per esserti registrato su [{{ config('app.name') }}]({{ url('/') }})!
 
 Per completare l'iscrizione
 conferma il tuo indirizzo email.

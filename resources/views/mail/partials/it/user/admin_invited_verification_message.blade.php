@@ -1,6 +1,7 @@
 Ciao {{ $user->name }},
 
-sei stato invitato/a su [{{ config('app.name') }}]({{ url('/') }}) come super amministratore.
+sei stato invitato/a su [{{ config('app.name') }}]({{ url('/') }}) come
+**super amministratore**.
 
 Per completare la tua iscrizione, conferma il tuo indirizzo email.
 

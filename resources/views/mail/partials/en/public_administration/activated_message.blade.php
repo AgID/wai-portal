@@ -1,10 +1,10 @@
-Hi {{ $user->name }},
+Hello {{ $user->name }},
 
-your public administration ({{ $publicAdministration->name }}) has been
-successfully activated on [{{ config('app.name') }}]({{ url('/') }}).
+the public administration **{{ $publicAdministration->name }}**
+has been correctly activated on [{{ config('app.name') }}]({{ url('/') }}).
 
-From now on traffic data of the institutional website will be gathered
-and processed on the platform.
+From this moment on, the traffic data related to the institutional site
+of the administration will be collected and processed by the platform.
 
-If you need support on any topic related to {{ config('app.name_short') }},
-you can visit the [guide](https://docs.italia.it/).
+If you need support on this or other arguments related to {{ config('app.name_short') }},
+you can browse the [user guide]({{ config('site.kb.link') }}).

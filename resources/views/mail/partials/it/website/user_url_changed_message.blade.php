@@ -1,8 +1,8 @@
 Ciao {{ $user->name }},
 
-ti informiamo che la URL del sito "{{ $website->name }}" registrato
-su [{{ config('app.name') }}]({{ url('/') }}) e relativo
-alla pubblica amministrazione ({{ $website->publicAdministration->name }}),
-è stata modificata.
+ti informiamo che il campo *URL* del sito **{{ $website->name }}** della tua pubblica
+amministrazione **{{ $website->publicAdministration->name }}**,
+è stato modificato su [{{ config('app.name') }}]({{ url('/') }}).
 
-Puoi visualizzare la modifica accedendo alla [sezione dedicata alla gestione siti]({{ url(route('websites.index')) }}).
+Puoi visualizzare la modifica accedendo alla
+[pagina gestione sito]({{ route('websites.show', ['website' => $website]) }}).

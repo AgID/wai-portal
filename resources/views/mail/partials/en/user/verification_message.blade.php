@@ -1,4 +1,4 @@
-Hi {{ $user->full_name }},
+Hello {{ $user->full_name }},
 
 thank you for registering on [{{ config('app.name') }}]({{ url('/') }})!
 

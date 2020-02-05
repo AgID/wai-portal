@@ -1,4 +1,4 @@
-Hi {{ $user->name }},
+Hello {{ $user->name }},
 
 your account on [{{ config('app.name') }}]({{ url('/') }}) has been reactivated.
 
