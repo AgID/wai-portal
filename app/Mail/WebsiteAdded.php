@@ -46,7 +46,7 @@ class WebsiteAdded extends UserMailable
      */
     public function build(): WebsiteAdded
     {
-        return $this->subject(__('Sito web aggiunto'))
+        return $this->subject(__('Nuovo sito web aggiunto'))
             ->markdown('mail.added_website')->with([
                 'locale' => Lang::getLocale(),
                 'user' => $this->recipient,

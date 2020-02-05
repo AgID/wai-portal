@@ -37,7 +37,7 @@ class UserWebsiteUnarchived extends UserMailable
      */
     public function build(): UserWebsiteUnarchived
     {
-        return $this->subject(__('[Info] - Sito web riattivato'))
+        return $this->subject(__('Sito web riattivato'))
             ->markdown('mail.user_website_unarchived')->with([
                 'locale' => Lang::getLocale(),
                 'user' => $this->recipient,

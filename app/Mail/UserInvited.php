@@ -46,7 +46,7 @@ class UserInvited extends UserMailable
      */
     public function build(): UserInvited
     {
-        return $this->subject(__('[Info] - Utente invitato'))
+        return $this->subject(__('Nuovo utente invitato'))
             ->markdown('mail.user_invited')->with([
                 'locale' => Lang::getLocale(),
                 'user' => $this->recipient,

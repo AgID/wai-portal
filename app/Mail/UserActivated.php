@@ -36,7 +36,7 @@ class UserActivated extends UserMailable
      */
     public function build(): UserActivated
     {
-        return $this->subject(__('[Info] - Utente attivato'))
+        return $this->subject(__('Utente attivato'))
             ->markdown('mail.user_activated')->with([
                 'locale' => Lang::getLocale(),
                 'user' => $this->recipient,

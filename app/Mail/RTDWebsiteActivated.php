@@ -37,7 +37,7 @@ class RTDWebsiteActivated extends RTDMailable
      */
     public function build(): RTDWebsiteActivated
     {
-        return $this->subject(__('[Info] - Sito web attivato'))
+        return $this->subject(__('Sito web attivato'))
             ->markdown('mail.rtd_website_activated')->with([
                 'locale' => Lang::getLocale(),
                 'publicAdministration' => $this->recipient,

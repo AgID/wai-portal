@@ -36,7 +36,7 @@ class UserReactivated extends UserMailable
      */
     public function build(): UserReactivated
     {
-        return $this->subject(__('[Info] - Utente riattivato'))
+        return $this->subject(__('Utente riattivato'))
             ->markdown('mail.user_reactivated')->with([
                 'locale' => Lang::getLocale(),
                 'user' => $this->recipient,

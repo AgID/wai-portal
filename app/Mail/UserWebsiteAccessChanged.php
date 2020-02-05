@@ -36,7 +36,7 @@ class UserWebsiteAccessChanged extends UserMailable
      */
     public function build(): UserWebsiteAccessChanged
     {
-        return $this->subject(__('[Info] - Permessi utente modificati'))
+        return $this->subject(__('Permessi utente modificati'))
             ->markdown('mail.user_website_access_changed')->with([
                 'locale' => Lang::getLocale(),
                 'user' => $this->recipient,
