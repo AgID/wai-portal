@@ -116,6 +116,21 @@
         }
     }
     /* Content styles */
+    .mail-highlight-bar {
+        background-color: #75ebe7;
+        padding-top: 16px !important;
+        padding-bottom: 16px !important;
+    }
+    .mail-highlight-bar-content {
+        margin-left: 24px !important;
+        margin-right: 24px !important;
+        text-align: center;
+        color: #17324d;
+    }
+    .mail-highlight-bar-content p {
+        font-family: 'Titillium Web', 'Roboto', sans-serif !important;
+        margin: 0;
+    }
     .mail-main-header, .mail-slim-header {
         padding-right: 1em;
         padding-left: 1em;

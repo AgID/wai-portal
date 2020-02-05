@@ -1,5 +1,6 @@
 <tr>
     <td class="mail-header">
+        @include('mail.templates.html.highlight_bar')
         <div class="mail-slim-header">
             <div class="container">
                 <a class="d-inline-block text-white py-2" href="{{ config('site.owner.link') }}">{{ config('site.owner.name') }}</a>
