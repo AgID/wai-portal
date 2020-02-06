@@ -37,7 +37,7 @@ class PublicAdministrationActivated extends UserMailable
      */
     public function build(): PublicAdministrationActivated
     {
-        return $this->subject(__('[Info] - Pubblica amministrazione attiva'))
+        return $this->subject(__('Pubblica amministrazione attivata'))
             ->markdown('mail.activated_public_administration')->with([
                 'locale' => Lang::getLocale(),
                 'user' => $this->recipient,

@@ -1,7 +1,7 @@
-Hi,
+Hello,
 
-you have been invited for your PA ({{ $publicAdministration->name }})
-on [{{ config('app.name') }}]({{ url('/') }}).
+you have been invited for your public administration
+**{{ $publicAdministration->name }}** on [{{ config('app.name') }}]({{ url('/') }}).
 
 In order to complete your registration, you must login with your SPID
 account and confirm your email.

@@ -1,4 +1,4 @@
-Hi {{ $user->name }},
+Hello {{ $user->name }},
 
 we received a request to reset your password for [{{ config('app.name') }}]({{ url('/') }}).
 

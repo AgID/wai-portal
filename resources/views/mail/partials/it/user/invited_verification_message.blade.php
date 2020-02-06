@@ -1,7 +1,7 @@
 Ciao,
 
-sei stato invitato/a per la tua PA ({{ $publicAdministration->name }}) su
-[{{ config('app.name') }}]({{ url('/') }}).
+sei stato invitato/a per la tua pubblica amministrazione
+**{{ $publicAdministration->name }}** su [{{ config('app.name') }}]({{ url('/') }}).
 
 Per completare la tua iscrizione devi effettuare l'accesso con SPID
 e confermare il tuo indirizzo email.

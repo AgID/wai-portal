@@ -1,3 +1,3 @@
-Hi {{ $user->name }},
+Hello {{ $user->name }},
 
-the user {{ $reactivatedUser->full_name }} has been reactivated.
+the user **{{ $reactivatedUser->full_name }}** has been reactivated.

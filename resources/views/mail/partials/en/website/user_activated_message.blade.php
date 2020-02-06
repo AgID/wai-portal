@@ -1,5 +1,7 @@
-Hi {{ $user->name }},
+Hello {{ $user->name }},
 
-the website "{{ $website->name }}" has been
-successfully activated; from now on, you can manage it
-by accessing the portal [{{ config('app.name') }}]({{ url('/') }}).
+the website **{{ $website->name }}** has been
+successfully activated.
+
+You can now manage it using the
+[websites management page]({{ url(route('websites.index')) }}).

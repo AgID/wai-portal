@@ -37,7 +37,7 @@ class UserWebsiteUrlChanged extends UserMailable
      */
     public function build(): UserWebsiteUrlChanged
     {
-        return $this->subject(__('[Info] - URL sito web modificato'))
+        return $this->subject(__('Modifica URL sito web'))
             ->markdown('mail.user_website_url_changed')->with([
                 'locale' => Lang::getLocale(),
                 'user' => $this->recipient,

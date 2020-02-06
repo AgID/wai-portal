@@ -183,8 +183,10 @@ class MonitorWebsitesTest extends TestCase
             'verify' => false,
         ]);
 
-        Carbon::now()->setWeekStartsAt(Carbon::SUNDAY);
-        $date = Carbon::now()->startOfWeek()->addWeek()->addDays($notificationWeekDay + 1);
+        $date = Carbon::now();
+        if (Carbon::now()->dayOfWeek === $notificationWeekDay) {
+            $date = $date->addDay();
+        }
         Carbon::setTestNow($date);
 
         $job = new MonitorWebsitesTracking();

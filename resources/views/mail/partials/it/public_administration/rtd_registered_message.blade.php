@@ -1,4 +1,5 @@
 Ciao {{ $publicAdministration->rtd_name ?? '' }}
 
-ti informiamo che la tua Pubblica Amministrazione è
+in qualità di *Responsabile per la transizione al digitale* ti informiamo che
+la tua Pubblica Amministrazione **{{ $publicAdministration->name }}** è
 stata registrata con successo su [{{ config('app.name') }}]({{ url('/') }}).

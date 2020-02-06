@@ -37,7 +37,7 @@ class UserWebsitePurging extends UserMailable
      */
     public function build(): UserWebsitePurging
     {
-        return $this->subject(__('[Attenzione] - Avviso sito web in eliminazione'))
+        return $this->subject(__('[Attenzione] - Sito web in eliminazione'))
             ->markdown('mail.user_website_purging')->with([
                 'locale' => Lang::getLocale(),
                 'user' => $this->recipient,

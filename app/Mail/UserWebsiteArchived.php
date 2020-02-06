@@ -46,7 +46,7 @@ class UserWebsiteArchived extends UserMailable
      */
     public function build(): UserWebsiteArchived
     {
-        return $this->subject(__('[Info] - Sito web archiviato'))
+        return $this->subject(__('Sito web archiviato'))
             ->markdown('mail.user_website_archived')->with([
                 'locale' => Lang::getLocale(),
                 'user' => $this->recipient,

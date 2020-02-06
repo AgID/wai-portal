@@ -265,7 +265,7 @@ class WebsiteEventsSubscriberTest extends TestCase
                 $this->assertEquals($this->user->uuid, $mail->viewData['user']['uuid']);
                 $this->assertEquals($this->website->slug, $mail->viewData['website']['slug']);
                 $this->assertEquals('fakesnippet', $mail->viewData['javascriptSnippet']);
-                $this->assertEquals($mail->subject, __('Sito web aggiunto'));
+                $this->assertEquals($mail->subject, __('Nuovo sito web aggiunto'));
 
                 return $mail->hasTo($this->user->email, $this->user->full_name);
             }
@@ -279,7 +279,7 @@ class WebsiteEventsSubscriberTest extends TestCase
                 $mail = $notification->toMail($secondUser)->build();
                 $this->assertEquals($secondUser->uuid, $mail->viewData['user']['uuid']);
                 $this->assertEquals($this->website->slug, $mail->viewData['website']['slug']);
-                $this->assertEquals($mail->subject, __('[Info] - Sito web aggiunto'));
+                $this->assertEquals($mail->subject, __('Nuovo sito web aggiunto'));
 
                 return $mail->hasTo($secondUser->email, $secondUser->full_name);
             }
@@ -346,7 +346,7 @@ class WebsiteEventsSubscriberTest extends TestCase
                 $this->assertEquals($this->user->uuid, $mail->viewData['user']['uuid']);
                 $this->assertEquals($this->website->slug, $mail->viewData['website']['slug']);
                 $this->assertEquals('fakesnippet', $mail->viewData['javascriptSnippet']);
-                $this->assertEquals($mail->subject, __('Sito web aggiunto'));
+                $this->assertEquals($mail->subject, __('Nuovo sito web aggiunto'));
 
                 return $mail->hasTo($this->user->email, $this->user->full_name);
             }
@@ -360,7 +360,7 @@ class WebsiteEventsSubscriberTest extends TestCase
                 $mail = $notification->toMail($secondUser)->build();
                 $this->assertEquals($secondUser->uuid, $mail->viewData['user']['uuid']);
                 $this->assertEquals($this->website->slug, $mail->viewData['website']['slug']);
-                $this->assertEquals($mail->subject, __('[Info] - Sito web aggiunto'));
+                $this->assertEquals($mail->subject, __('Nuovo sito web aggiunto'));
 
                 return $mail->hasTo($secondUser->email, $secondUser->full_name);
             }
@@ -425,7 +425,7 @@ class WebsiteEventsSubscriberTest extends TestCase
                 $mail = $notification->toMail($secondUser)->build();
                 $this->assertEquals($secondUser->uuid, $mail->viewData['user']['uuid']);
                 $this->assertEquals($this->website->slug, $mail->viewData['website']['slug']);
-                $this->assertEquals($mail->subject, __('[Info] - Sito web aggiunto'));
+                $this->assertEquals($mail->subject, __('Nuovo sito web aggiunto'));
 
                 return $mail->hasTo($secondUser->email, $secondUser->full_name);
             }
@@ -470,7 +470,7 @@ class WebsiteEventsSubscriberTest extends TestCase
                 $mail = $notification->toMail($this->user)->build();
                 $this->assertEquals($this->user->uuid, $mail->viewData['user']['uuid']);
                 $this->assertEquals($this->website->slug, $mail->viewData['website']['slug']);
-                $this->assertEquals($mail->subject, __('[Info] - Sito web attivato'));
+                $this->assertEquals($mail->subject, __('Sito web attivato'));
 
                 return $mail->hasTo($this->user->email, $this->user->full_name);
             }
@@ -484,7 +484,7 @@ class WebsiteEventsSubscriberTest extends TestCase
                 $mail = $notification->toMail($this->publicAdministration)->build();
                 $this->assertEquals($this->publicAdministration->ipa_code, $mail->viewData['publicAdministration']['ipa_code']);
                 $this->assertEquals($this->website->slug, $mail->viewData['website']['slug']);
-                $this->assertEquals($mail->subject, __('[Info] - Sito web attivato'));
+                $this->assertEquals($mail->subject, __('Sito web attivato'));
 
                 return $mail->hasTo($this->publicAdministration->rtd_mail, $this->publicAdministration->rtd_name);
             }
@@ -530,7 +530,7 @@ class WebsiteEventsSubscriberTest extends TestCase
                 $mail = $notification->toMail($this->user)->build();
                 $this->assertEquals($this->user->uuid, $mail->viewData['user']['uuid']);
                 $this->assertEquals($this->website->slug, $mail->viewData['website']['slug']);
-                $this->assertEquals($mail->subject, __('[Info] - Sito web attivato'));
+                $this->assertEquals($mail->subject, __('Sito web attivato'));
 
                 return $mail->hasTo($this->user->email, $this->user->full_name);
             }
@@ -564,7 +564,7 @@ class WebsiteEventsSubscriberTest extends TestCase
                 $this->assertEquals($this->user->uuid, $mail->viewData['user']['uuid']);
                 $this->assertEquals($this->website->slug, $mail->viewData['website']['slug']);
                 $this->assertTrue($mail->viewData['manually']);
-                $this->assertEquals($mail->subject, __('[Info] - Sito web archiviato'));
+                $this->assertEquals($mail->subject, __('Sito web archiviato'));
 
                 return $mail->hasTo($this->user->email, $this->user->full_name);
             }
@@ -593,7 +593,7 @@ class WebsiteEventsSubscriberTest extends TestCase
                 $this->assertEquals($this->user->uuid, $mail->viewData['user']['uuid']);
                 $this->assertEquals($this->website->slug, $mail->viewData['website']['slug']);
                 $this->assertFalse($mail->viewData['manually']);
-                $this->assertEquals($mail->subject, __('[Info] - Sito web archiviato'));
+                $this->assertEquals($mail->subject, __('Sito web archiviato'));
 
                 return $mail->hasTo($this->user->email, $this->user->full_name);
             }
@@ -621,7 +621,7 @@ class WebsiteEventsSubscriberTest extends TestCase
                 $mail = $notification->toMail($this->user)->build();
                 $this->assertEquals($this->user->uuid, $mail->viewData['user']['uuid']);
                 $this->assertEquals($this->website->slug, $mail->viewData['website']['slug']);
-                $this->assertEquals($mail->subject, __('[Info] - Sito web riattivato'));
+                $this->assertEquals($mail->subject, __('Sito web riattivato'));
 
                 return $mail->hasTo($this->user->email, $this->user->full_name);
             }
@@ -677,7 +677,7 @@ class WebsiteEventsSubscriberTest extends TestCase
                 $this->assertEquals($this->user->uuid, $mail->viewData['user']['uuid']);
                 $this->assertEquals($this->website->slug, $mail->viewData['website']['slug']);
                 $this->assertEquals(2, $mail->viewData['daysLeft']);
-                $this->assertEquals($mail->subject, __('[Attenzione] - Avviso sito web in archiviazione'));
+                $this->assertEquals($mail->subject, __('[Attenzione] - Sito web in archiviazione'));
 
                 return $mail->hasTo($this->user->email, $this->user->full_name);
             }
@@ -705,7 +705,7 @@ class WebsiteEventsSubscriberTest extends TestCase
                 $mail = $notification->toMail($this->user)->build();
                 $this->assertEquals($this->user->uuid, $mail->viewData['user']['uuid']);
                 $this->assertEquals($this->website->slug, $mail->viewData['website']['slug']);
-                $this->assertEquals($mail->subject, __('[Attenzione] - Avviso sito web in eliminazione'));
+                $this->assertEquals($mail->subject, __('[Attenzione] - Sito web in eliminazione'));
 
                 return $mail->hasTo($this->user->email, $this->user->full_name);
             }
@@ -834,7 +834,7 @@ class WebsiteEventsSubscriberTest extends TestCase
                 $mail = $notification->toMail($this->user)->build();
                 $this->assertEquals($this->user->uuid, $mail->viewData['user']['uuid']);
                 $this->assertEquals($this->website->slug, $mail->viewData['website']['slug']);
-                $this->assertEquals($mail->subject, __('[Info] - URL sito web modificato'));
+                $this->assertEquals($mail->subject, __('Modifica URL sito web'));
 
                 return $mail->hasTo($this->user->email, $this->user->full_name);
             }

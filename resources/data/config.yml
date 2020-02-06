@@ -7,6 +7,7 @@ it:
       logo: /images/agid-logo.svg
     privacy_policy: /privacy
     logo: /images/wai-logo.svg
+    logo_raster: /images/wai-logo.png
     pill: alpha
     highlight:
       production: |

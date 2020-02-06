@@ -1,6 +1,7 @@
-Hi {{ $user->name }},
+Hello {{ $user->name }},
 
-you have been invited on [{{ config('app.name') }}]({{ url('/') }}) as super administrator.
+you have been invited on [{{ config('app.name') }}]({{ url('/') }}) as
+**super administrator**.
 
 In order to complete your registration, you must confirm your
 email.

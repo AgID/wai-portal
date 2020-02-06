@@ -108,7 +108,7 @@ class PublicAdministrationEventsSubscriberTest extends TestCase
                 $mail = $notification->toMail($this->user)->build();
                 $this->assertEquals($this->user->uuid, $mail->viewData['user']['uuid']);
                 $this->assertEquals($this->publicAdministration->ipa_code, $mail->viewData['publicAdministration']['ipa_code']);
-                $this->assertEquals($mail->subject, __('[Info] - Pubblica amministrazione attiva'));
+                $this->assertEquals($mail->subject, __('Pubblica amministrazione attivata'));
 
                 return $mail->hasTo($this->user->email, $this->user->full_name);
             }
@@ -196,7 +196,7 @@ class PublicAdministrationEventsSubscriberTest extends TestCase
                 $this->assertEquals($channels, ['mail']);
                 $mail = $notification->toMail($this->publicAdministration)->build();
                 $this->assertEquals($this->publicAdministration->ipa_code, $mail->viewData['publicAdministration']['ipa_code']);
-                $this->assertEquals($mail->subject, __('[Info] - Pubblica amministrazione registrata'));
+                $this->assertEquals($mail->subject, __('Pubblica amministrazione registrata'));
 
                 return $mail->hasTo($this->publicAdministration->rtd_mail, $this->publicAdministration->rtd_name);
             }

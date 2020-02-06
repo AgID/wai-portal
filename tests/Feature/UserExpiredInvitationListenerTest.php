@@ -58,7 +58,7 @@ class UserExpiredInvitationListenerTest extends TestCase
                 $mail = $notification->toMail($this->publicAdministrationAdmin)->build();
                 $this->assertEquals($this->publicAdministrationAdmin->uuid, $mail->viewData['user']['uuid']);
                 $this->assertEquals($user->uuid, $mail->viewData['invitedUser']['uuid']);
-                $this->assertEquals($mail->subject, __('[Info] - Avviso di utilizzo di un invito scaduto'));
+                $this->assertEquals($mail->subject, __('[Attenzione] - Utilizzo di un invito scaduto'));
 
                 return $mail->hasTo($this->publicAdministrationAdmin->email, $this->publicAdministrationAdmin->full_name);
             }

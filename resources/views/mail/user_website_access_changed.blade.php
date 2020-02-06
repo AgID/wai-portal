@@ -1,5 +1,5 @@
 @component('mail::message')
-# {{ __('Permessi modificati') }}
+# {{ __('Permessi utente modificati') }}
 
 @includeFirst(
     ['mail.partials.' . $locale . '.user.user_website_access_changed', 'mail.partials.' . config('app.fallback_locale') . '.user.user_website_access_changed'],

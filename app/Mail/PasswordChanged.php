@@ -16,7 +16,7 @@ class PasswordChanged extends UserMailable
      */
     public function build(): PasswordChanged
     {
-        return $this->subject(__('[Info] - Password modificata'))
+        return $this->subject(__('Password modificata'))
             ->markdown('mail.admin_password_changed')->with([
                 'locale' => Lang::getLocale(),
                 'user' => $this->recipient,

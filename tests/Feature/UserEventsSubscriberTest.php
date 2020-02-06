@@ -133,7 +133,7 @@ class UserEventsSubscriberTest extends TestCase
                 $this->assertEquals($channels, ['mail']);
                 $mail = $notification->toMail($this->user)->build();
                 $this->assertEquals($this->user->uuid, $mail->viewData['user']['uuid']);
-                $this->assertEquals($mail->subject, __('[Info] - Password modificata'));
+                $this->assertEquals($mail->subject, __('Password modificata'));
 
                 return $mail->hasTo($this->user->email, $this->user->full_name);
             }
@@ -198,7 +198,7 @@ class UserEventsSubscriberTest extends TestCase
                 $mail = $notification->toMail($secondUser)->build();
                 $this->assertEquals($secondUser->uuid, $mail->viewData['user']['uuid']);
                 $this->assertEquals($this->user->uuid, $mail->viewData['activatedUser']['uuid']);
-                $this->assertEquals($mail->subject, __('[Info] - Utente attivato'));
+                $this->assertEquals($mail->subject, __('Utente attivato'));
 
                 return $mail->hasTo($secondUser->email, $secondUser->full_name);
             }
@@ -212,7 +212,7 @@ class UserEventsSubscriberTest extends TestCase
                 $mail = $notification->toMail($thirdUser)->build();
                 $this->assertEquals($thirdUser->uuid, $mail->viewData['user']['uuid']);
                 $this->assertEquals($this->user->uuid, $mail->viewData['activatedUser']['uuid']);
-                $this->assertEquals($mail->subject, __('[Info] - Utente attivato'));
+                $this->assertEquals($mail->subject, __('Utente attivato'));
 
                 return $mail->hasTo($thirdUser->email, $thirdUser->full_name);
             }
@@ -290,7 +290,7 @@ class UserEventsSubscriberTest extends TestCase
                 $this->assertEquals($userInvited->uuid, $mail->viewData['invitedUser']['uuid']);
                 $this->assertEquals($this->user->uuid, $mail->viewData['user']['uuid']);
                 $this->assertEquals($publicAdministration->ipa_code, $mail->viewData['publicAdministration']['ipa_code']);
-                $this->assertEquals($mail->subject, __('[Info] - Utente invitato'));
+                $this->assertEquals($mail->subject, __('Nuovo utente invitato'));
 
                 return $mail->hasTo($this->user->email, $this->user->full_name);
             }
@@ -424,7 +424,7 @@ class UserEventsSubscriberTest extends TestCase
                 $mail = $notification->toMail($secondUser)->build();
                 $this->assertEquals($secondUser->uuid, $mail->viewData['user']['uuid']);
                 $this->assertEquals($this->user->uuid, $mail->viewData['suspendedUser']['uuid']);
-                $this->assertEquals($mail->subject, __('[Info] - Utente sospeso'));
+                $this->assertEquals($mail->subject, __('Utente sospeso'));
 
                 return $mail->hasTo($secondUser->email, $secondUser->full_name);
             }
@@ -481,7 +481,7 @@ class UserEventsSubscriberTest extends TestCase
                 $mail = $notification->toMail($secondUser)->build();
                 $this->assertEquals($secondUser->uuid, $mail->viewData['user']['uuid']);
                 $this->assertEquals($this->user->uuid, $mail->viewData['reactivatedUser']['uuid']);
-                $this->assertEquals($mail->subject, __('[Info] - Utente riattivato'));
+                $this->assertEquals($mail->subject, __('Utente riattivato'));
 
                 return $mail->hasTo($secondUser->email, $secondUser->full_name);
             }
@@ -699,7 +699,7 @@ class UserEventsSubscriberTest extends TestCase
                 $mail = $notification->toMail($this->user)->build();
                 $this->assertEquals($this->user->uuid, $mail->viewData['user']['uuid']);
                 $this->assertEquals($secondUser->uuid, $mail->viewData['modifiedUser']['uuid']);
-                $this->assertEquals($mail->subject, __('[Info] - Permessi utente modificati'));
+                $this->assertEquals($mail->subject, __('Permessi utente modificati'));
 
                 return $mail->hasTo($this->user->email, $this->user->full_name);
             }

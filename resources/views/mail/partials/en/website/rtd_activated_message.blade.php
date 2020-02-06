@@ -1,3 +1,6 @@
-Ciao {{ $publicAdministration->rtd_name ?? '' }}
+Hello {{ $publicAdministration->rtd_name ??? '' }}
 
-the website "{{ $website->name }}" has been successfully activated.
+as the *Digital Transition Manager* we inform you that the website
+**{{ $website->name }}** of your public administration
+**{{ $publicAdministration->name }}** has been correctly activated on
+[{{ config('app.name') }}]({{ url('/') }}).

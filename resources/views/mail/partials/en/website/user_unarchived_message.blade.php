@@ -1,5 +1,5 @@
-Hi {{ $user->name }},
+Hello {{ $user->name }},
 
-the website "{{ $website->name }}" registered on [{{ config('app.name') }}]({{ url('/') }})
-for your public administration ({{ $website->publicAdministration->name }}),
-has been successfully reactivated.
+the website **{{ $website->name }}** of your public administration
+**{{ $website->publicAdministration->name }}**, has been successfully reactivated
+on [{{ config('app.name') }}]({{ url('/') }}).

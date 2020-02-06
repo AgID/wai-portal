@@ -1,17 +1,19 @@
-Hi {{ $user->name }},
+Hello {{ $user->name }},
 
-we aren't receiving any data from the site "{{ $website->name }}"
-that you registered and activated on the [{{ config('app.name') }}]({{ url('/') }}).
+we're not getting any data from the **{{ $website->name }}** website that you
+registered and activated on [{{ config('app.name') }}]({{ url('/') }}).
 
 Please check:
-- to have included the tracking code on the website,
-- that the tracking code is working properly.
+- that you have included the tracking code in the website;
+- that the code is working properly.
 
-For more support on this topic, you can visit the [WAI guide](https://docs.italia.it/).
+For support on this topic, you can consult
+the [{{ config('app.name_short') }} guide]({{ config('site.kb.link') }}).
 
-If we receive no data in the next {{ $daysLeft }} days,
+If we continue to receive no data in the next {{ $daysLeft }} days,
 the website will be automatically archived.
 
-If the website isn't active anymore, you can ignore this message
-or access [{{ config('app.name') }}]({{ url('/') }})
-to manually archive the website.
+If the website is no longer active, you can ignore this email
+or access the
+[site management page]({{ route('websites.show', ['website' => $website]) }})
+to store the website manually.

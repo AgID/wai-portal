@@ -1,3 +1,7 @@
-Hi {{ $user->name }},
+Hello {{ $user->name }},
 
-permissions for user {{ $modifiedUser->full_name }} have been changed.
+please note that the user permissions **{{ $modifiedUser->full_name }}** have been
+modified.
+
+You can check the new permissions from his/her
+[profile]({{ url(route('users.show', ['user' => $this->invitedUser]) }}).

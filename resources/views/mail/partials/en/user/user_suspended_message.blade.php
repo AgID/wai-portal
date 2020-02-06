@@ -1,5 +1,6 @@
-Hi {{ $user->name }},
+Hello {{ $user->name }},
 
-the user {{ $suspendedUser->full_name }} has been suspended.
+the user **{{ $suspendedUser->full_name }}** has been suspended.
 
-You can reactivate him/her in the user management page.
+You can reactivate it at any time from the
+[user management page]({{ url(route('users.index')) }}).

@@ -36,7 +36,7 @@ class UserSuspended extends UserMailable
      */
     public function build(): UserSuspended
     {
-        return $this->subject(__('[Info] - Utente sospeso'))
+        return $this->subject(__('Utente sospeso'))
             ->markdown('mail.user_suspended')->with([
                 'locale' => Lang::getLocale(),
                 'user' => $this->recipient,

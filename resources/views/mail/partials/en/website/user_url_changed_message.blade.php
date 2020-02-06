@@ -1,9 +1,9 @@
-Hi {{ $user->name }},
+Hello {{ $user->name }},
 
-the URL of the website "{{ $website->name }}" registered
-on [{{ config('app.name') }}]({{ url('/') }}) for
-your public administration ({{ $publicAdministration }}),
-has been modified.
+please note that the *URL* field of the website **{{ $website->name }}** of your
+public administration ({{ $publicAdministration }}), has been modified on
+[{{ config('app.name') }}]({{ url('/') }}).
 
-You can view the changes by accessing the [section for website management]({{ url(route('websites.index')) }}).
+You can view the changes by accessing the
+[site management page]({{ route('websites.show', ['website' => $website]) }}).
 
