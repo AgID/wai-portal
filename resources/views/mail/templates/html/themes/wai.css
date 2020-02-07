@@ -124,6 +124,8 @@ code {
   font-size: 87.5%;
   color: #17324d;
   word-break: break-word;
+  display: block;
+  overflow: auto;
 }
 
 .container,
