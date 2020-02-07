@@ -120,14 +120,14 @@ it:
     question: Posso effettuare un tracciamento interdominio?
     answer: |
       Si, in WAI è possibile richiedere il tracciamento interdominio di due o
-      più siti dell’amministrazione. Questa funzionalità non sarà disponibile
+      più siti dell'amministrazione. Questa funzionalità non sarà disponibile
       durante la fase beta.
 
   - themes: analytics privacy
     question: Posso anonimizzare le visite dei miei utenti?
     answer: |
       Si, WAI utilizza utilizza di default il sistema di anonimizzazione
-      dell’indirizzo IP degli utenti, quindi non sarà necessario intraprendere
+      dell'indirizzo IP degli utenti, quindi non sarà necessario intraprendere
       altre azioni per rendere anonime le visite.
 
   - themes: privacy
@@ -158,11 +158,11 @@ it:
       presenti sul sito?
     answer: |
       Si, lo script di tracciamento di WAI è compatibile con altri script di
-      tracking eventualmente presenti sul sito dell’amministrazione (nel caso di
+      tracking eventualmente presenti sul sito dell'amministrazione (nel caso di
       altro script Matomo già presente sarà necessario inserire un unico script
       con server multipli).
 
-      L’amministrazione aderente a WAI può quindi continuare ad usare altre
+      L'amministrazione aderente a WAI può quindi continuare ad usare altre
       piattaforme di analisi dei dati contemporaneamente.
 
   - themes: privacy generale
@@ -170,8 +170,8 @@ it:
       Devo utilizzare dei plugin per inserire lo script di Matomo nei principali
       CMS?
     answer: |
-      L’utilizzo di plugin nel caso dei CMS non è obbligatorio. Potranno
-      facoltativamente essere utilizzati per semplificare l’inserimento dello
+      L'utilizzo di plugin nel caso dei CMS non è obbligatorio. Potranno
+      facoltativamente essere utilizzati per semplificare l'inserimento dello
       script di tracciamento.
 
       Matomo offre alcuni [plugin di
@@ -183,9 +183,9 @@ it:
       miei siti dalla mia infrastruttura a Web analytics Italia?
     answer: |
       Si, è necessaria una copia del database per migrare i dati da
-      un’infrastruttura Matomo *self-hosted* dell’amministrazione a WAI.
+      un'infrastruttura Matomo *self-hosted* dell'amministrazione a WAI.
 
-      La fattibilità è subordinata all’analisi, caso per caso, delle
+      La fattibilità è subordinata all'analisi, caso per caso, delle
       caratteristiche dei dati (struttura e quantità) in termini di
       compatibilità con la piattaforma WAI.
 

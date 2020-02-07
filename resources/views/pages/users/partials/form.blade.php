@@ -66,7 +66,7 @@
     @error('permissions')
     <div class="invalid-feedback">{{ $errors->first('permissions') }}</div>
     @enderror
-    <h6>{{ __('Puoi assegnare all’utente un ruolo di amministratore') }}</h6>
+    <h6>{{ __("Puoi assegnare all'utente un ruolo di amministratore") }}</h6>
     <div class="form-row justify-content-between">
         <div class="form-check d-flex align-items-center col-md-5 mb-5 mt-0">
             <div class="toggles w-100 px-3 py-2 lightgrey-bg-c1">
