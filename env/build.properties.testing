@@ -70,18 +70,20 @@ APP_SUPER_ADMIN_FISCAL_NUMBER=FSCLNB17A01H501X
 APP_SUPER_ADMIN_EMAIL=nome.cognome@example.com
 APP_SUPER_ADMIN_PASSWORD=password
 
-# Pending websites expirations
-# ----------------------------
+# Pending websites thresholds
+# ---------------------------
 
 PENDING_WEBSITE_WARNING=10
 PENDING_WEBSITE_REMOVE=15
 
-# Archive websites expirations
-# ----------------------------
+# Archive websites thresholds
+# ---------------------------
 
 ARCHIVING_WEBSITE_WARNING=10
 ARCHIVING_WEBSITE_ARCHIVE=20
-ARCHIVING_WEBSITE_NOTIFICATION_WEEK_DAY=1
+ARCHIVING_WEBSITE_NOTIFICATION_INTERVAL=5
+# Value must be between 1 = Monday and 7 = Sunday
+PRIMARY_WEBSITE_NOT_TRACKING_NOTIFICATION_WEEK_DAY=1
 ARCHIVING_WEBSITE_DAILY_NOTIFICATION=3
 
 # Database settings
@@ -130,7 +132,7 @@ REDIS_IPA_INDEX_SENTINELS=
 REDIS_IPA_INDEX_SENTINEL_SET=
 
 # Mail settings
-# ------------
+# -------------
 
 MAIL_HOST=mailhog
 MAIL_PORT=1025

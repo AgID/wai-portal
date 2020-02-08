@@ -51,7 +51,8 @@ class MonitorWebsitesTracking implements ShouldQueue
                 $daysWarning = (int) config('wai.archive_warning');
                 $daysArchive = (int) config('wai.archive_expire');
                 $daysDailyNotification = (int) config('wai.archive_warning_daily_notification');
-                $notificationDay = (int) config('wai.archive_warning_notification_day');
+                $notificationInterval = (int) config('wai.archive_warning_notification_interval');
+                $notificationDay = (int) config('wai.primary_website_not_tracking_notification_day');
 
                 // Check:
                 // - visits the last 24 hours
@@ -68,7 +69,7 @@ class MonitorWebsitesTracking implements ShouldQueue
                         // NOTE: primary website cannot be archived
                         if ($website->type->is(WebsiteType::PRIMARY)) {
                             // NOTE: prevent daily notifications spam
-                            if (Carbon::now()->dayOfWeek === $notificationDay) {
+                            if (Carbon::now()->isoWeekday() === $notificationDay) {
                                 event(new PrimaryWebsiteNotTracking($website));
 
                                 return [
@@ -100,11 +101,10 @@ class MonitorWebsitesTracking implements ShouldQueue
 
                     $lastVisit = max(array_keys($filteredVisits));
 
-                    if (Carbon::now()->subDays($daysWarning)->isAfter($lastVisit)) {
-                        if (Carbon::now()->dayOfWeek === $notificationDay || (Carbon::now()->subDays($daysArchive - $daysDailyNotification)->greaterThanOrEqualTo($lastVisit) && !$website->type->is(WebsiteType::PRIMARY))) {
-                            $daysLeft = $daysArchive - Carbon::now()->diffInDays($lastVisit);
-
-                            event(new WebsiteArchiving($website, $daysLeft));
+                    if (Carbon::now()->subDays($daysWarning)->greaterThanOrEqualTo($lastVisit)) {
+                        $daysLeft = Carbon::now()->diffInDays($lastVisit);
+                        if ((0 === ($daysLeft - $daysWarning) % $notificationInterval) || (Carbon::now()->subDays($daysArchive - $daysDailyNotification)->greaterThanOrEqualTo($lastVisit) && !$website->type->is(WebsiteType::PRIMARY))) {
+                            $website->type->is(WebsiteType::PRIMARY) ? event(new PrimaryWebsiteNotTracking($website)) : event(new WebsiteArchiving($website, $daysLeft));
 
                             return [
                                 'archiving' => [

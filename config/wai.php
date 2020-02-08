@@ -56,16 +56,29 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Archive website warning weekly notification
+    | Primary website not tracking weekly notification
     |--------------------------------------------------------------------------
     |
-    | This value is used to configure the day of the week (from '0', Sunday, to
-    | '6', Saturday)the system sends notification for scheduled website
-    | archiving when more than 'archive_warning_daily_notification' days left.
+    | This value is used to configure the day of the week (from '1', Monday, to
+    | '7', Sunday) the system sends notification for primary website not tracking
+    | after 'archive website expire' threshold has passed.
     |
     */
 
-    'archive_warning_notification_day' => env('ARCHIVING_WEBSITE_NOTIFICATION_WEEK_DAY', 1),
+    'primary_website_not_tracking_notification_day' => env('PRIMARY_WEBSITE_NOT_TRACKING_NOTIFICATION_WEEK_DAY', 1),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Archive website warning notification interval
+    |--------------------------------------------------------------------------
+    |
+    | This value is used to configure interval between notifications the
+    | system sends for scheduled website archiving when more than
+    | 'archive_warning_daily_notification' days left.
+    |
+    */
+
+    'archive_warning_notification_interval' => env('ARCHIVING_WEBSITE_NOTIFICATION_INTERVAL', 5),
 
     /*
     |--------------------------------------------------------------------------
