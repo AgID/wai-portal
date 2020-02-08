@@ -73,6 +73,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'last_access_at' => 'datetime',
         'email_verified_at' => 'datetime',
         'status' => 'integer',
+        'preferences' => 'array',
     ];
 
     /**
