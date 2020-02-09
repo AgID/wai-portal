@@ -150,6 +150,9 @@ return [
         EventType::USERS_INDEXING_COMPLETED => 'Aggiornamento indice utenti completato',
         EventType::WEBSITES_INDEXING_COMPLETED => 'Aggiornamento indice siti web completato',
         EventType::EXPIRED_USER_INVITATION_USED => 'Tentativo di attivazione con invito scaduto',
+        EventType::USER_PASSWORD_RESET_COMPLETED => 'Utente modifica password completata',
+        EventType::USER_UPDATED => 'Utente aggiornato',
+        EventType::WEBSITE_UPDATED => 'Sito web aggiornato',
         EventType::MAIL_SENT => 'Email inviata',
     ],
 

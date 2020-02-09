@@ -5,8 +5,9 @@ namespace App\Models;
 use App\Enums\PublicAdministrationStatus;
 use App\Enums\UserRole;
 use App\Enums\UserStatus;
-use App\Notifications\WebsiteActivatedPublicAdministrationEmail;
 use App\Traits\HasAnalyticsDashboard;
+use App\Traits\SendsNotificationsToPublicAdministrationAdmin;
+use App\Traits\SendsNotificationsToPublicAdministrationRTD;
 use BenSampo\Enum\Traits\CastsEnums;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -14,7 +15,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\Cache;
 use Silber\Bouncer\BouncerFacade as Bouncer;
 
@@ -27,6 +27,8 @@ class PublicAdministration extends Model
     use SoftDeletes;
     use Notifiable;
     use HasAnalyticsDashboard;
+    use SendsNotificationsToPublicAdministrationAdmin;
+    use SendsNotificationsToPublicAdministrationRTD;
 
     /**
      * Active public administrations count cache key.
@@ -120,18 +122,6 @@ class PublicAdministration extends Model
     }
 
     /**
-     * Get recipient for mail notifications.
-     *
-     * @param Notification $notification the notification
-     *
-     * @return array|string the recipient
-     */
-    public function routeNotificationForMail($notification)
-    {
-        return empty(trim($this->name)) ? $this->pec_address : [$this->pec_address, $this->name];
-    }
-
-    /**
      * The users belonging to this Public Administration.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany the relation to the users belonging to this Public Administration
@@ -176,11 +166,9 @@ class PublicAdministration extends Model
             return $this->users()->where('status', UserStatus::PENDING)->get();
         }
 
-        Bouncer::scope()->to($this->id);
-        $administrators = User::whereIs(UserRole::ADMIN)->get();
-        Bouncer::scope()->to(session('tenant_id'));
-
-        return $administrators;
+        return Bouncer::scope()->onceTo($this->id, function () {
+            return User::whereIs(UserRole::ADMIN)->get();
+        });
     }
 
     /**
@@ -206,20 +194,8 @@ class PublicAdministration extends Model
             return Collection::make();
         }
 
-        Bouncer::scope()->to($this->id);
-        $nonAdministrators = User::whereIs(UserRole::DELEGATED)->get();
-        Bouncer::scope()->to(session('tenant_id'));
-
-        return $nonAdministrators;
-    }
-
-    /**
-     * Notify website activated.
-     *
-     * @param Website $website the website
-     */
-    public function sendWebsiteActivatedNotification(Website $website): void
-    {
-        $this->notify(new WebsiteActivatedPublicAdministrationEmail($website));
+        return Bouncer::scope()->onceTo($this->id, function () {
+            return User::whereIs(UserRole::DELEGATED)->get();
+        });
     }
 }

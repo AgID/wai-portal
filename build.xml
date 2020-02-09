@@ -46,7 +46,8 @@
                     <token key="PENDING_WEBSITE_REMOVE" value="${PENDING_WEBSITE_REMOVE}" />
                     <token key="ARCHIVING_WEBSITE_WARNING" value="${ARCHIVING_WEBSITE_WARNING}" />
                     <token key="ARCHIVING_WEBSITE_ARCHIVE" value="${ARCHIVING_WEBSITE_ARCHIVE}" />
-                    <token key="ARCHIVING_WEBSITE_NOTIFICATION_WEEK_DAY" value="${ARCHIVING_WEBSITE_NOTIFICATION_WEEK_DAY}" />
+                    <token key="ARCHIVING_WEBSITE_NOTIFICATION_INTERVAL" value="${ARCHIVING_WEBSITE_NOTIFICATION_INTERVAL}" />
+                    <token key="PRIMARY_WEBSITE_NOT_TRACKING_NOTIFICATION_WEEK_DAY" value="${PRIMARY_WEBSITE_NOT_TRACKING_NOTIFICATION_WEEK_DAY}" />
                     <token key="ARCHIVING_WEBSITE_DAILY_NOTIFICATION" value="${ARCHIVING_WEBSITE_DAILY_NOTIFICATION}" />
                     <token key="ELASTICSEARCH_VERSION" value="${ELASTICSEARCH_VERSION}" />
                     <token key="ELASTICSEARCH_USER" value="${ELASTICSEARCH_USER}" />

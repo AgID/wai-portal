@@ -49,10 +49,11 @@ class CRUDAdminUserTest extends TestCase
         ]);
 
         Bouncer::dontCache();
-        Bouncer::scope()->to(0);
-        $this->user->assign(UserRole::SUPER_ADMIN);
-        $this->user->allow(UserPermission::MANAGE_USERS);
-        $this->user->allow(UserPermission::ACCESS_ADMIN_AREA);
+        Bouncer::scope()->onceTo(0, function () {
+            $this->user->assign(UserRole::SUPER_ADMIN);
+            $this->user->allow(UserPermission::MANAGE_USERS);
+            $this->user->allow(UserPermission::ACCESS_ADMIN_AREA);
+        });
     }
 
     /**
@@ -125,10 +126,11 @@ class CRUDAdminUserTest extends TestCase
             'email_verified_at' => Date::now(),
         ]);
 
-        Bouncer::scope()->to(0);
-        $user->assign(UserRole::SUPER_ADMIN);
-        $user->allow(UserPermission::ACCESS_ADMIN_AREA);
-        $user->allow(UserPermission::MANAGE_USERS);
+        Bouncer::scope()->onceTo(0, function () use ($user) {
+            $user->assign(UserRole::SUPER_ADMIN);
+            $user->allow(UserPermission::ACCESS_ADMIN_AREA);
+            $user->allow(UserPermission::MANAGE_USERS);
+        });
 
         $this->actingAs($this->user)
             ->put(route('admin.users.update', ['user' => $user]), [
@@ -179,9 +181,10 @@ class CRUDAdminUserTest extends TestCase
         $user = factory(User::class)->create([
             'status' => UserStatus::ACTIVE,
         ]);
-        Bouncer::scope()->to(0);
-        $user->assign(UserRole::SUPER_ADMIN);
-        $user->allow(UserPermission::ACCESS_ADMIN_AREA);
+        Bouncer::scope()->onceTo(0, function () use ($user) {
+            $user->assign(UserRole::SUPER_ADMIN);
+            $user->allow(UserPermission::ACCESS_ADMIN_AREA);
+        });
 
         $this->actingAs($this->user)
             ->json('patch', route('admin.users.suspend', ['user' => $user]))
@@ -211,9 +214,10 @@ class CRUDAdminUserTest extends TestCase
         $user = factory(User::class)->create([
             'status' => UserStatus::SUSPENDED,
         ]);
-        Bouncer::scope()->to(0);
-        $user->assign(UserRole::SUPER_ADMIN);
-        $user->allow(UserPermission::ACCESS_ADMIN_AREA);
+        Bouncer::scope()->onceTo(0, function () use ($user) {
+            $user->assign(UserRole::SUPER_ADMIN);
+            $user->allow(UserPermission::ACCESS_ADMIN_AREA);
+        });
 
         $this->actingAs($this->user)
             ->json('patch', route('admin.users.suspend', ['user' => $user]))
@@ -450,12 +454,13 @@ class CRUDAdminUserTest extends TestCase
         $analyticsId = app()->make('analytics-service')->registerSite($website->name . ' [' . $website->type . ']', $website->url, $publicAdministration->name);
         $website->analytics_id = $analyticsId;
         $website->save();
-        Bouncer::scope()->to($publicAdministration->id);
-        $user->assign(UserRole::ADMIN);
-        $user->registerAnalyticsServiceAccount();
-        Bouncer::allow($user)->to(UserPermission::READ_ANALYTICS, $website);
-        Bouncer::allow($user)->to(UserPermission::MANAGE_ANALYTICS, $website);
-        Bouncer::disallow($user)->to(UserPermission::NO_ACCESS, $website);
+        Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user, $website) {
+            $user->assign(UserRole::ADMIN);
+            $user->registerAnalyticsServiceAccount();
+            Bouncer::allow($user)->to(UserPermission::READ_ANALYTICS, $website);
+            Bouncer::allow($user)->to(UserPermission::MANAGE_ANALYTICS, $website);
+            Bouncer::disallow($user)->to(UserPermission::NO_ACCESS, $website);
+        });
         Bouncer::refreshFor($user);
         app()->make('analytics-service')->setWebsiteAccess($user->uuid, WebsiteAccessType::WRITE, $website->analytics_id);
 
@@ -502,9 +507,10 @@ class CRUDAdminUserTest extends TestCase
         ]);
         $user->registerAnalyticsServiceAccount();
 
-        Bouncer::scope()->to($publicAdministration->id);
-        $user->assign(UserRole::DELEGATED);
-        $user->allow(UserPermission::READ_ANALYTICS, $website);
+        Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user, $website) {
+            $user->assign(UserRole::DELEGATED);
+            $user->allow(UserPermission::READ_ANALYTICS, $website);
+        });
 
         $this->actingAs($this->user)
             ->put(route('admin.publicAdministration.users.update', [
@@ -529,7 +535,9 @@ class CRUDAdminUserTest extends TestCase
             ])
             ->assertRedirect(route('admin.publicAdministration.users.index', ['publicAdministration' => $publicAdministration]));
 
-        $this->assertTrue($user->isAn(UserRole::ADMIN));
+        Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user) {
+            $this->assertTrue($user->isAn(UserRole::ADMIN));
+        });
         Event::assertDispatched(UserWebsiteAccessChanged::class, function ($event) use ($user, $website) {
             return $user->is($event->getUser())
                 && $website->slug === $event->getWebsite()->slug
@@ -554,8 +562,9 @@ class CRUDAdminUserTest extends TestCase
         ]);
         $user->registerAnalyticsServiceAccount();
 
-        Bouncer::scope()->to($publicAdministration->id);
-        $user->assign(UserRole::ADMIN);
+        Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user) {
+            $user->assign(UserRole::ADMIN);
+        });
 
         $this->actingAs($this->user)
             ->put(route('admin.publicAdministration.users.update', [
@@ -578,7 +587,9 @@ class CRUDAdminUserTest extends TestCase
             ->assertRedirect(route('admin.publicAdministration.users.index', ['publicAdministration' => $publicAdministration]));
 
         Bouncer::refreshFor($user);
-        $this->assertTrue($user->isA(UserRole::DELEGATED));
+        Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user) {
+            $this->assertTrue($user->isA(UserRole::DELEGATED));
+        });
         Event::assertDispatched(UserWebsiteAccessChanged::class, function ($event) use ($user, $website) {
             return $user->is($event->getUser())
                 && $website->slug === $event->getWebsite()->slug
@@ -601,9 +612,10 @@ class CRUDAdminUserTest extends TestCase
         $website = factory(Website::class)->create([
             'public_administration_id' => $publicAdministration->id,
         ]);
-        Bouncer::scope()->to($publicAdministration->id);
-        $user->assign(UserRole::ADMIN);
-        $user->allow(UserPermission::MANAGE_USERS);
+        Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user) {
+            $user->assign(UserRole::ADMIN);
+            $user->allow(UserPermission::MANAGE_USERS);
+        });
 
         $this->actingAs($this->user)
             ->from(route('admin.publicAdministration.users.edit', [

@@ -103,14 +103,14 @@ class ProcessPendingWebsites implements ShouldQueue
                                 $pendingUser->deleteAnalyticsServiceAccount();
                                 $publicAdministration->forceDelete();
                             }
-                            event(new PublicAdministrationPurged($publicAdministration->toJson()));
+                            event(new PublicAdministrationPurged($publicAdministration->toJson(), $pendingUser));
                         } else {
                             $website->forceDelete();
                         }
 
                         $analyticsService->deleteSite($website->analytics_id);
 
-                        event(new WebsitePurged($website->toJson()));
+                        event(new WebsitePurged($website->toJson(), $publicAdministration->toJson()));
 
                         return [
                             'purged' => [

@@ -3,22 +3,13 @@
 namespace App\Mail;
 
 use App\Models\User;
-use Illuminate\Bus\Queueable;
-use Illuminate\Mail\Mailable;
-use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Lang;
 
-class PasswordReset extends Mailable
+/**
+ * Password reset request email.
+ */
+class PasswordReset extends UserMailable
 {
-    use Queueable;
-    use SerializesModels;
-
-    /**
-     * The user this mail will be sent to.
-     *
-     * @var User
-     */
-    protected $user;
-
     /**
      * The token user for password reset.
      *
@@ -29,25 +20,27 @@ class PasswordReset extends Mailable
     /**
      * Create a new message instance.
      *
-     * @param User $user
+     * @param User $recipient the user requesting the password change
+     * @param string $token the reset token
      */
-    public function __construct(User $user, string $token)
+    public function __construct(User $recipient, string $token)
     {
-        $this->user = $user;
+        parent::__construct($recipient);
         $this->token = $token;
     }
 
     /**
      * Build the message.
      *
-     * @return $this
+     * @return PasswordReset the email
      */
-    public function build()
+    public function build(): PasswordReset
     {
         return $this->subject(__('Reset della password'))
-                    ->markdown('mail.password_reset')->with([
-                        'user' => $this->user,
-                        'token' => $this->token,
-                    ]);
+            ->markdown('mail.admin_password_reset')->with([
+                'locale' => Lang::getLocale(),
+                'user' => $this->recipient,
+                'token' => $this->token,
+            ]);
     }
 }

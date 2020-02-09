@@ -6,10 +6,10 @@
                     <a class="text-white" href="">{{ __("Cos'è") }} {{ config('app.name') }}?</a>
                 </li>
                 <li class="list-inline-item ml-1">
-                    <a class="text-white" href="">{{ __('Aiuto') }}</a>
+                    <a class="text-white" href="{{ url(route('faq')) }}">{{ __('FAQ') }}</a>
                 </li>
                 <li class="list-inline-item ml-1">
-                    <a class="text-white" href="">{{ __('Contattaci') }}</a>
+                    <a class="text-white" href="{{ __(config('site.kb.link')) }}">{{ __(config('site.kb.name')) }}</a>
                 </li>
             </ul>
         </div>

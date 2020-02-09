@@ -23,9 +23,7 @@ class UserExpiredInvitationListener implements ShouldQueue
         $user = $event->getUser();
         if ($user->status->is(UserStatus::INVITED) && (!$user->isA(UserRole::SUPER_ADMIN))) {
             $publicAdministration = $user->publicAdministrations()->first();
-            $publicAdministration->getActiveAdministrators()->each(function ($administrator) use ($user) {
-                $administrator->sendExpiredInvitationLinkVisited($user);
-            });
+            $publicAdministration->sendExpiredInvitationLinkVisitedToAdministrators($user);
 
             logger()->info(
                 'User ' . $user->uuid . ' tried to use an expired invitation link.',

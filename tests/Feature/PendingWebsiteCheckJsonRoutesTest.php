@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\Website;
 use GuzzleHttp\Client as TrackingClient;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Event;
 use Silber\Bouncer\BouncerFacade as Bouncer;
 use Tests\TestCase;
 
@@ -72,6 +73,8 @@ class PendingWebsiteCheckJsonRoutesTest extends TestCase
         $this->user->registerAnalyticsServiceAccount();
         $this->user->setWriteAccessForWebsite($this->website);
         $this->user->syncWebsitesPermissionsToAnalyticsService();
+
+        Event::fake();
     }
 
     /**

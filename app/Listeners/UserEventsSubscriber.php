@@ -3,7 +3,6 @@
 namespace App\Listeners;
 
 use App\Enums\Logs\EventType;
-use App\Enums\UserStatus;
 use App\Events\User\UserActivated;
 use App\Events\User\UserDeleted;
 use App\Events\User\UserEmailChanged;
@@ -16,7 +15,9 @@ use App\Events\User\UserStatusChanged;
 use App\Events\User\UserSuspended;
 use App\Events\User\UserUpdated;
 use App\Events\User\UserWebsiteAccessChanged;
+use App\Models\PublicAdministration;
 use App\Traits\InteractsWithRedisIndex;
+use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -65,14 +66,19 @@ class UserEventsSubscriber implements ShouldQueue
             'event' => EventType::USER_INVITED,
             'user' => $user->uuid,
         ];
-        if (null !== $event->getPublicAdministration()) {
+
+        $publicAdministration = $event->getPublicAdministration();
+
+        if (null !== $publicAdministration) {
             $context['pa'] = $event->getPublicAdministration()->ipa_code;
+
+            //Notify public administration administrators
+            $publicAdministration->sendUserInvitedNotificationToAdministrators($user);
         }
         logger()->notice(
             'New user invited: ' . $user->uuid . ' by ' . $invitedBy->uuid,
             $context
         );
-        //TODO: if the new user is invited as an admin then notify the public administration via PEC
     }
 
     /**
@@ -82,13 +88,13 @@ class UserEventsSubscriber implements ShouldQueue
      */
     public function onVerified(Verified $event): void
     {
-        logger()->info(
+        logger()->notice(
             'User ' . $event->user->uuid . ' confirmed email address.',
             [
                 'event' => EventType::USER_VERIFIED,
                 'user' => $event->user->uuid,
             ]
-        ); //TODO: notify me!
+        );
     }
 
     /**
@@ -99,12 +105,20 @@ class UserEventsSubscriber implements ShouldQueue
     public function onActivated(UserActivated $event): void
     {
         $user = $event->getUser();
+        $publicAdministration = $event->getPublicAdministration();
+
+        //Notify user
+        $user->sendActivatedNotification();
+
+        //Notify public administration administrators
+        $publicAdministration->sendUserActivatedNotificationToAdministrators($user);
+
         logger()->notice(
             'User ' . $user->uuid . ' activated',
             [
                 'event' => EventType::USER_ACTIVATED,
                 'user' => $user->uuid,
-                'pa' => $event->getPublicAdministration()->ipa_code,
+                'pa' => $publicAdministration->ipa_code,
             ]
         );
     }
@@ -116,8 +130,17 @@ class UserEventsSubscriber implements ShouldQueue
      */
     public function onUpdated(UserUpdated $event): void
     {
+        $user = $event->getUser();
+
         //Update Redisearch websites index
-        $this->updateUsersIndex($event->getUser());
+        $this->updateUsersIndex($user);
+
+        logger()->notice('User ' . $user->uuid . ' updated',
+            [
+                'event' => EventType::USER_UPDATED,
+                'user' => $user->uuid,
+            ]
+        );
     }
 
     /**
@@ -129,7 +152,7 @@ class UserEventsSubscriber implements ShouldQueue
     {
         $user = $event->getUser();
 
-        $user->sendEmailVerificationNotification($user->status->is(UserStatus::INVITED) ? $user->publicAdministrations()->first() : null);
+        $user->sendEmailVerificationNotification($user->publicAdministrations()->first());
 
         logger()->notice('User ' . $user->uuid . ' email address changed',
             [
@@ -165,6 +188,10 @@ class UserEventsSubscriber implements ShouldQueue
         $user = $event->getUser();
         $website = $event->getWebsite();
         $accessType = $event->getAccessType();
+
+        //Notify public administration administrators
+        $website->publicAdministration->sendWebsiteAccessChangedNotificationToAdministrators($user);
+
         logger()->notice(
             'Granted "' . $accessType->description . '" access for website ' . $website->info . ' to user ' . $user->uuid,
             [
@@ -220,7 +247,16 @@ class UserEventsSubscriber implements ShouldQueue
     public function onSuspended(UserSuspended $event): void
     {
         $user = $event->getUser();
-        logger()->info(
+
+        //Notify user
+        $user->sendSuspendedNotification();
+
+        //Notify public administration administrators
+        $user->publicAdministrations()->each(function (PublicAdministration $publicAdministration) use ($user) {
+            $publicAdministration->sendUserSuspendedNotificationToAdministrators($user);
+        });
+
+        logger()->notice(
             'User ' . $user->uuid . ' suspended.',
             [
                 'user' => $user->uuid,
@@ -237,7 +273,16 @@ class UserEventsSubscriber implements ShouldQueue
     public function onReactivated(UserReactivated $event): void
     {
         $user = $event->getUser();
-        logger()->info(
+
+        //Notify user
+        $user->sendReactivatedNotification();
+
+        //Notify public administration administrators
+        $user->publicAdministrations()->each(function (PublicAdministration $publicAdministration) use ($user) {
+            $publicAdministration->sendUserReactivatedNotificationToAdministrators($user);
+        });
+
+        logger()->notice(
             'User ' . $user->uuid . ' reactivated.',
             [
                 'user' => $user->uuid,
@@ -273,6 +318,26 @@ class UserEventsSubscriber implements ShouldQueue
         logger()->notice('User ' . $user->uuid . ' restored.',
             [
                 'event' => EventType::USER_RESTORED,
+                'user' => $user->uuid,
+            ]
+        );
+    }
+
+    /**
+     * Handle password reset completed events.
+     *
+     * @param PasswordReset $event the event
+     */
+    public function onPasswordReset(PasswordReset $event): void
+    {
+        $user = $event->user;
+
+        //Notify user
+        $user->sendPasswordChangedNotification();
+
+        logger()->notice('Password successfully changed for user ' . $user->uuid,
+            [
+                'event' => EventType::USER_PASSWORD_RESET_COMPLETED,
                 'user' => $user->uuid,
             ]
         );
@@ -347,12 +412,17 @@ class UserEventsSubscriber implements ShouldQueue
 
         $events->listen(
             'App\Events\User\UserDeleted',
-            'App\Listeners\UserEventsSubscriber@OnDeleted'
+            'App\Listeners\UserEventsSubscriber@onDeleted'
         );
 
         $events->listen(
             'App\Events\User\UserRestored',
-            'App\Listeners\UserEventsSubscriber@OnRestored'
+            'App\Listeners\UserEventsSubscriber@onRestored'
+        );
+
+        $events->listen(
+            'Illuminate\Auth\Events\PasswordReset',
+            'App\Listeners\UserEventsSubscriber@onPasswordReset'
         );
     }
 }

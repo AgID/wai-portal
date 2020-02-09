@@ -138,7 +138,7 @@ class WebsiteController extends Controller
         $authUser->syncWebsitesPermissionsToAnalyticsService();
 
         event(new PublicAdministrationRegistered($publicAdministration, $authUser));
-        event(new WebsiteAdded($website));
+        event(new WebsiteAdded($website, $authUser));
 
         return redirect()->route('websites.index')->withModal([
             'title' => __('Il sito è stato inserito, adesso procedi ad attivarlo!'),
@@ -195,7 +195,7 @@ class WebsiteController extends Controller
             'status' => WebsiteStatus::PENDING,
         ]);
 
-        event(new WebsiteAdded($website));
+        event(new WebsiteAdded($website, auth()->user()));
 
         $currentPublicAdministration->getAdministrators()->map(function ($administrator) use ($website) {
             $administrator->setWriteAccessForWebsite($website);

@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Enums\Logs\EventType;
+use App\Enums\UserRole;
 use App\Enums\WebsiteAccessType;
 use App\Enums\WebsiteType;
 use App\Events\Website\PrimaryWebsiteNotTracking;
@@ -20,6 +21,7 @@ use App\Events\Website\WebsiteUpdated;
 use App\Events\Website\WebsiteUrlChanged;
 use App\Exceptions\AnalyticsServiceException;
 use App\Exceptions\CommandErrorException;
+use App\Models\PublicAdministration;
 use App\Models\Website;
 use App\Traits\InteractsWithRedisIndex;
 use Exception;
@@ -42,28 +44,32 @@ class WebsiteEventsSubscriber implements ShouldQueue
     public function onAdded(WebsiteAdded $event): void
     {
         $website = $event->getWebsite();
+        $user = $event->getUser();
 
-        //TODO: da testare e verificare per attività "Invio mail e PEC"
-//        $publicAdministration = $website->publicAdministration;
-//        //Notify Website administrators
-//        $users = $publicAdministration->getAdministrators();
-//        foreach ($users as $user) {
-//            $user->sendWebsiteActivatedNotification($website);
-//        }
-//
-//        //Notify Public Administration
-//        $publicAdministration->sendWebsiteActivatedNotification($website);
+        $context = [
+            'event' => EventType::WEBSITE_ADDED,
+            'website' => $website->id,
+            'pa' => $website->publicAdministration->ipa_code,
+        ];
+
+        if (!$user->isAn(UserRole::SUPER_ADMIN)) {
+            $context['user'] = $user->uuid;
+        }
+
+        if (!$website->type->is(WebsiteType::PRIMARY)) {
+            //Notify the registering user
+            $user->sendWebsiteAddedNotification($website);
+        }
+
+        //Notify public administration administrators
+        $website->publicAdministration->sendWebsiteAddedNotificationToAdministrators($website, $user);
 
         //Update Redisearch websites index
         $this->updateWebsitesIndex($website);
 
         logger()->notice(
             'Website ' . $website->info . ' added of type ' . $website->type->description,
-            [
-                'event' => EventType::WEBSITE_ADDED,
-                'website' => $website->id,
-                'pa' => $website->publicAdministration->ipa_code,
-            ]
+            $context
         );
     }
 
@@ -76,13 +82,15 @@ class WebsiteEventsSubscriber implements ShouldQueue
     {
         $website = $event->getWebsite();
 
-        //TODO: da testare e verificare per attività "Invio mail e PEC"
-//        $publicAdministration = $website->publicAdministration;
-//        //Notify Website administrators
-//        $users = $publicAdministration->getAdministrators();
-//        foreach ($users as $user) {
-//            $user->sendWebsiteActivatedNotification($website);
-//        }
+        $publicAdministration = $website->publicAdministration;
+
+        //Notify public administration administrators
+        $publicAdministration->sendWebsiteActivatedNotificationToAdministrators($website);
+
+        if ($publicAdministration->rtd_mail) {
+            //Notify RTD
+            $publicAdministration->sendWebsiteActivatedNotificationToRTD($website);
+        }
 
         logger()->notice(
             'Website ' . $website->info . ' activated',
@@ -103,7 +111,7 @@ class WebsiteEventsSubscriber implements ShouldQueue
         //      by "public administration activated" event handler
         if (!$website->type->is(WebsiteType::PRIMARY)) {
             try {
-                $website->publicAdministration->addToRollUp($website);
+                $publicAdministration->addToRollUp($website);
             } catch (Exception $exception) {
                 report($exception);
             }
@@ -117,8 +125,18 @@ class WebsiteEventsSubscriber implements ShouldQueue
      */
     public function onUpdated(WebsiteUpdated $event): void
     {
+        $website = $event->getWebsite();
+
         //Update Redisearch websites index
-        $this->updateWebsitesIndex($event->getWebsite());
+        $this->updateWebsitesIndex($website);
+
+        logger()->notice('Website ' . $website->info . ' updated',
+            [
+                'event' => EventType::WEBSITE_UPDATED,
+                'website' => $website->slug,
+                'pa' => $website->publicAdministration->ipa_code,
+            ]
+        );
     }
 
     /**
@@ -148,6 +166,10 @@ class WebsiteEventsSubscriber implements ShouldQueue
     public function onWebsiteUrlChanged(WebsiteUrlChanged $event): void
     {
         $website = $event->getWebsite();
+
+        //Notify public administration administrators
+        $website->publicAdministration->sendWebsiteUrlChangedNotificationToAdministrators($website);
+
         logger()->notice(
             'Website' . $website->info . ' URL updated from ' . e($event->getOldUrl()) . ' to ' . e($website->url),
             [
@@ -167,12 +189,8 @@ class WebsiteEventsSubscriber implements ShouldQueue
     {
         $website = $event->getWebsite();
 
-        //TODO: da testare e verificare per attività "Invio mail e PEC"
-//        //Notify website administrators
-//        $users = $website->getAdministrators($website);
-//        foreach ($users as $user) {
-//            $user->sendWebsiteArchivingNotification($website, $event->getWebsite());
-//        }
+        //Notify public administration administrators
+        $website->publicAdministration->sendWebsiteArchivingNotificationToAdministrators($website, $event->getDaysLeft());
 
         logger()->notice(
             'Website ' . $website->info . ' reported as not active and scheduled for archiving',
@@ -195,12 +213,8 @@ class WebsiteEventsSubscriber implements ShouldQueue
         $manual = $event->isManual();
         $reason = $manual ? 'manually' : 'due to inactivity';
 
-        //TODO: da testare e verificare per attività "Invio mail e PEC"
-//        //Notify website administrators
-//        $users = $website->getAdministrators($website,);
-//        foreach ($users as $user) {
-//            $user->sendWebsiteArchivedNotification($website, $manual);
-//        }
+        //Notify public administration administrators
+        $website->publicAdministration->sendWebsiteArchivedNotificationToAdministrators($website, $manual);
 
         logger()->notice(
             'Website ' . $website->info . ' archived ' . $reason,
@@ -220,7 +234,10 @@ class WebsiteEventsSubscriber implements ShouldQueue
     public function onUnarchived(WebsiteUnarchived $event): void
     {
         $website = $event->getWebsite();
-        //TODO: notificare qualcuno? è un'azione solo manuale
+
+        //Notify public administration administrators
+        $website->publicAdministration->sendWebsiteUnarchivedNotificationToAdministrators($website);
+
         logger()->notice(
             'Website ' . $website->info . ' unarchived manually',
             [
@@ -240,13 +257,8 @@ class WebsiteEventsSubscriber implements ShouldQueue
     {
         $website = $event->getWebsite();
 
-        //TODO: da testare e verificare per attività "Invio mail e PEC"
-//        $publicAdministration = $website->publicAdministration;
-//        //Notify Website administrators
-//        $users = $publicAdministration->getAdministrators();
-//        foreach ($users as $user) {
-//            $user->sendWebsitePurgingNotification($website);
-//        }
+        //Notify public administration administrators
+        $website->publicAdministration->sendWebsitePurgingNotificationToAdministrators($website);
 
         logger()->notice(
             'Website ' . $website->info . ' scheduled purging',
@@ -268,13 +280,23 @@ class WebsiteEventsSubscriber implements ShouldQueue
         Cache::forget(Website::WEBSITE_COUNT_KEY);
         $website = json_decode($event->getWebsiteJson());
         $websiteInfo = '"' . e($website->name) . '" [' . $website->slug . ']';
+        $publicAdministration = json_decode($event->getPublicAdministrationJson());
+
+        //NOTE: for primary websites use PublicAdministrationPurged
+        //      event to notify administrators
+        if (WebsiteType::PRIMARY !== $website->type) {
+            //Notify public administration administrators
+            $publicAdministration = PublicAdministration::findByIpaCode($publicAdministration->ipa_code);
+            $publicAdministration->sendWebsitePurgedNotificationToAdministrators($website);
+        }
+
         //NOTE: toJson: relationship attributes are snake_case
         logger()->notice(
             'Website ' . $websiteInfo . ' purged',
             [
                 'event' => EventType::WEBSITE_PURGED,
                 'website' => $website->id,
-                'pa' => $website->public_administration->ipa_code,
+                'pa' => $publicAdministration->ipa_code,
             ]
         );
     }
@@ -324,13 +346,8 @@ class WebsiteEventsSubscriber implements ShouldQueue
     {
         $website = $event->getWebsite();
 
-        //TODO: da testare e verificare per attività "Invio mail e PEC"
-//        $publicAdministration = $website->publicAdministration;
-//        //Notify Website administrators
-//        $users = $publicAdministration->getAdministrators();
-//        foreach ($users as $user) {
-//            $user->sendPrimaryWebsiteNotTrackingNotification();
-//        }
+        //Notify public administration administrators
+        $website->publicAdministration->sendPrimaryWebsiteNotTrackingNotificationToAdministrators();
 
         logger()->notice(
             'Primary website ' . $website->info . ' tracking inactive.',

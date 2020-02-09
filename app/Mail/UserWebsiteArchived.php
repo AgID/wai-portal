@@ -4,26 +4,13 @@ namespace App\Mail;
 
 use App\Models\User;
 use App\Models\Website;
-use Illuminate\Bus\Queueable;
-use Illuminate\Mail\Mailable;
-use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Lang;
 
 /**
- * User mail for website archived notification.
+ * Website archived email to public administration administrators.
  */
-class UserWebsiteArchived extends Mailable
+class UserWebsiteArchived extends UserMailable
 {
-    use Queueable;
-    use SerializesModels;
-
-    /**
-     * The user to notify.
-     *
-     * @var User the user
-     */
-    protected $user;
-
     /**
      * The archived website.
      *
@@ -34,22 +21,22 @@ class UserWebsiteArchived extends Mailable
     /**
      * Manual flag.
      *
-     * @var bool wether the website was archived manually
+     * @var bool whether the website was archived manually
      */
-    protected $manual;
+    protected $manually;
 
     /**
      * Mail constructor.
      *
-     * @param User $user the user
-     * @param Website $website the website
-     * @param bool $manual wether the website was archived manually
+     * @param User $recipient the mail recipient
+     * @param Website $website the archived website
+     * @param bool $manually whether the website was archived manually
      */
-    public function __construct(User $user, Website $website, bool $manual)
+    public function __construct(User $recipient, Website $website, bool $manually)
     {
-        $this->user = $user;
+        parent::__construct($recipient);
         $this->website = $website;
-        $this->manual = $manual;
+        $this->manually = $manually;
     }
 
     /**
@@ -59,13 +46,12 @@ class UserWebsiteArchived extends Mailable
      */
     public function build(): UserWebsiteArchived
     {
-        return $this->subject(__('[Info] - Sito web archiviato'))
-                    ->markdown('mail.website_archived_user_email')->with([
-                        'locale' => Lang::getLocale(),
-                        'fullName' => $this->user->full_name,
-                        'website' => $this->website->name,
-                        'manual' => $this->manual,
-                        'expire' => config('wai.archive_expire'),
-                    ]);
+        return $this->subject(__('Sito web archiviato'))
+            ->markdown('mail.user_website_archived')->with([
+                'locale' => Lang::getLocale(),
+                'user' => $this->recipient,
+                'website' => $this->website,
+                'manually' => $this->manually,
+            ]);
     }
 }
