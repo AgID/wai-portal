@@ -30,7 +30,7 @@ return [
             /*
              * This class determines if the webhook call should be stored and processed.
              */
-            'webhook_profile' => \Spatie\WebhookClient\WebhookProfile\ProcessEverythingWebhookProfile::class,
+            'webhook_profile' => \App\Http\Middleware\ClosedBetaWhitelistUpdateWebhookProfile::class,
 
             /*
              * The classname of the model to be used to store call. The class should be equal
