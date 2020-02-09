@@ -48,17 +48,18 @@ class MonitorWebsitesTracking implements ShouldQueue
             try {
                 $analyticsService = app()->make('analytics-service');
 
-                $daysWarning = (int) config('wai.archive_warning');
-                $daysArchive = (int) config('wai.archive_expire');
+                $intervalWarning = (int) config('wai.archive_warning');
+                $intervalArchive = (int) config('wai.archive_expire');
                 $daysDailyNotification = (int) config('wai.archive_warning_daily_notification');
-                $notificationDay = (int) config('wai.archive_warning_notification_day');
+                $notificationInterval = (int) config('wai.archive_warning_notification_interval');
+                $notificationDay = (int) config('wai.primary_website_not_tracking_notification_day');
 
                 // Check:
                 // - visits the last 24 hours
                 // - website created at least 'archive_expire' days before
                 //NOTE: Matomo report contains information for all the requested days, regardless of when the website was created
-                if (0 === $analyticsService->getLiveVisits($website->analytics_id, 1440) && Carbon::now()->subDays($daysArchive)->greaterThanOrEqualTo($website->created_at)) {
-                    $visits = $analyticsService->getSiteLastDaysVisits($website->analytics_id, $daysArchive);
+                if (0 === $analyticsService->getLiveVisits($website->analytics_id, 1440) && Carbon::now()->subDays($intervalArchive)->greaterThanOrEqualTo($website->created_at)) {
+                    $visits = $analyticsService->getSiteLastDaysVisits($website->analytics_id, $intervalArchive);
 
                     $filteredVisits = array_filter($visits, function ($visitCount) {
                         return $visitCount > 0;
@@ -68,7 +69,7 @@ class MonitorWebsitesTracking implements ShouldQueue
                         // NOTE: primary website cannot be archived
                         if ($website->type->is(WebsiteType::PRIMARY)) {
                             // NOTE: prevent daily notifications spam
-                            if (Carbon::now()->dayOfWeek === $notificationDay) {
+                            if (Carbon::now()->isoWeekday() === $notificationDay) {
                                 event(new PrimaryWebsiteNotTracking($website));
 
                                 return [
@@ -100,11 +101,11 @@ class MonitorWebsitesTracking implements ShouldQueue
 
                     $lastVisit = max(array_keys($filteredVisits));
 
-                    if (Carbon::now()->subDays($daysWarning)->isAfter($lastVisit)) {
-                        if (Carbon::now()->dayOfWeek === $notificationDay || (Carbon::now()->subDays($daysArchive - $daysDailyNotification)->greaterThanOrEqualTo($lastVisit) && !$website->type->is(WebsiteType::PRIMARY))) {
-                            $daysLeft = $daysArchive - Carbon::now()->diffInDays($lastVisit);
+                    if (Carbon::now()->subDays($intervalWarning)->greaterThanOrEqualTo($lastVisit)) {
+                        $daysLeftBeforeArchiving = Carbon::now()->diffInDays($lastVisit);
 
-                            event(new WebsiteArchiving($website, $daysLeft));
+                        if ((0 === ($daysLeftBeforeArchiving - $intervalWarning) % $notificationInterval) || (Carbon::now()->subDays($intervalArchive - $daysDailyNotification)->greaterThanOrEqualTo($lastVisit) && !$website->type->is(WebsiteType::PRIMARY))) {
+                            $website->type->is(WebsiteType::PRIMARY) ? event(new PrimaryWebsiteNotTracking($website)) : event(new WebsiteArchiving($website, $daysLeftBeforeArchiving));
 
                             return [
                                 'archiving' => [
