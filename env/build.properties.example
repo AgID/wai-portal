@@ -31,6 +31,10 @@ LOG_STACK_CHANNELS=
 LOG_SLACK_WEBHOOK_URL=
 LOG_SLACK_USERNAME=
 
+# Webhooks
+# --------
+CLOSED_BETA_WHITELIST_WEBHOOK_CLIENT_SECRET=
+
 # SPID Service Provider
 # ---------------------
 
