@@ -26,6 +26,7 @@
         "league/commonmark-ext-external-link": "^1.0",
         "predis/predis": "^1.1",
         "silber/bouncer": "v1.0.0-rc.6",
+        "spatie/laravel-webhook-client": "^2.3",
         "symfony/yaml": "^4.0",
         "yajra/laravel-datatables-fractal": "^1.0",
         "yajra/laravel-datatables-oracle": "~9.0"
