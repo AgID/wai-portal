@@ -50,6 +50,8 @@ class RouteServiceProvider extends ServiceProvider
         // NOTE: CronJobs routes disabled.
         // $this->mapCronRoutes();
 
+        $this->mapWebHooksRoutes();
+
         if (!$this->app->environment('production')) {
             $this->mapTestingRoutes();
         }
@@ -118,5 +120,13 @@ class RouteServiceProvider extends ServiceProvider
              ->middleware('api')
              ->namespace($this->namespace)
              ->group(base_path('routes/api.php'));
+    }
+
+    protected function mapWebHooksRoutes(): void
+    {
+        Route::prefix('hooks')
+            ->middleware('hooks')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/webhooks.php'));
     }
 }
