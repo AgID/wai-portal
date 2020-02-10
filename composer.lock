@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "bensampo/laravel-enum",
-            "version": "v1.30",
+            "version": "v1.31",
             "source": {
                 "type": "git",
                 "url": "https://github.com/BenSampo/laravel-enum.git",
-                "reference": "991257b18783f738df98a94e6e11ab8574cc7dea"
+                "reference": "b91974f89c09819f5a888b4b7b50ec798d1a9a44"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/BenSampo/laravel-enum/zipball/991257b18783f738df98a94e6e11ab8574cc7dea",
-                "reference": "991257b18783f738df98a94e6e11ab8574cc7dea",
+                "url": "https://api.github.com/repos/BenSampo/laravel-enum/zipball/b91974f89c09819f5a888b4b7b50ec798d1a9a44",
+                "reference": "b91974f89c09819f5a888b4b7b50ec798d1a9a44",
                 "shasum": ""
             },
             "require": {
@@ -28,10 +28,10 @@
             },
             "require-dev": {
                 "doctrine/dbal": "^2.9",
-                "laravel/framework": "5.8.*|^6.0",
-                "orchestra/testbench": "3.8.*|3.9.*",
-                "phpstan/phpstan": "^0.11.6",
-                "phpunit/phpunit": "7.5.*",
+                "laravel/framework": "5.6.*|5.7.*|5.8.*|^6.0",
+                "orchestra/testbench": "3.6.*|3.7.*|3.8.*|3.9.*|^4.0",
+                "phpstan/phpstan": "^0.12.8",
+                "phpunit/phpunit": "^7.5|^8.5",
                 "squizlabs/php_codesniffer": "^3.0"
             },
             "type": "library",
@@ -75,7 +75,7 @@
                 "package",
                 "validation"
             ],
-            "time": "2020-01-27T22:10:39+00:00"
+            "time": "2020-02-09T11:01:09+00:00"
         },
         {
             "name": "cweagans/composer-patches",
