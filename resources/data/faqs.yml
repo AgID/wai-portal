@@ -202,3 +202,47 @@ it:
       ogni fine settimana.
 
       [Vai all'ambiente public playground](https://play.webanalytics.italia.it/).
+
+  - themes: generale
+    id: verifica-tracciamento
+    question: |
+      In cosa consiste la verifica del tracciamento di un sito?
+    answer: |
+      Subito dopo l'inserimento, un sito web si trova nello stato "in attesa".
+      Da questo momento in poi la piattaforma WAI sarà pronta a ricevere
+      dati di tracciamento dal sito. I dati possono essere ricevuti solo dopo
+      che il codice con lo script di tracciamento sarà stato incluso nel sito.
+
+      La piattaforma WAI effettua dei controlli a intervalli di tempo regolari
+      per rilevare attività di tracciamento ed eventualmente cambiare lo stato
+      del sito in "attivo".
+
+      Nel caso del sito istituzionale, il passaggio del sito allo stato "attivo"
+      rende attivi a cascata anche la pubblica amministrazione e l'utente
+      amministratore che erano "in attesa".
+
+  - themes: generale
+    id: tipologie-siti
+    question: |
+      Come faccio a scegliere la tipologia di sito da inserire?
+    answer: |
+      Quando aggiungi a WAI un sito tematico o un'applicazione mobile (ossia un
+      sito o app che non siano il sito istituzionale principale della tua
+      amministrazione) devi indicare se si tratta di:
+
+      1. Un sito tematico informativo
+      2. Un sito tematico di servizi (interattivi e procedure online,
+        fra cui transazioni)
+      3. Un'applicazione per dispositivi mobili
+
+      Se il sito è completamente o prevalentemente informativo e descrittivo,
+      scegli la prima opzione.
+
+      Se il sito contiene servizi e procedure completamente o parzialmente
+      interattive/transattive, scegli sito di servizi. **Nota bene** che nel caso
+      in cui il servizio consta di un modulo (pdf, doc, etc.) da scaricare
+      (e inviare per email o pec o consegnare a mano o per raccomandata) non fa
+      parte di questa categoria, ma della categoria sito tematico informativo.
+
+      Per le applicazioni destinate ai dispositivi mobili, scegli la terza
+      opzione.
