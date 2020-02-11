@@ -55,8 +55,8 @@
             <div class="faqs collapse-div ml-sm-5" role="tablist">
                 @foreach ($faqs as $faq)
                 <div id="{{ $faq['id'] ?? Str::slug($faq['question']) }}" class="faq" data-themes="{{ $faq['themes'] }}">
-                    <div class="collapse-header" id="faq-{{ $loop->iteration }}-heading">
-                        <button class="text-secondary d-flex flex-wrap flex-md-nowrap align-items-center" data-toggle="collapse" data-target="#faq-{{ $loop->iteration }}-body" aria-expanded="false" aria-controls="faq-{{ $loop->iteration }}-body">
+                    <div class="collapse-header" id="{{ $faq['id'] ?? Str::slug($faq['question']) }}-heading">
+                        <button class="text-secondary d-flex flex-wrap flex-md-nowrap align-items-center" data-toggle="collapse" data-target="#{{ $faq['id'] ?? Str::slug($faq['question']) }}-body" aria-expanded="false" aria-controls="{{ $faq['id'] ?? Str::slug($faq['question']) }}-body">
                             <span class="mr-auto">
                                 {{ $faq['question'] }}
                                 <a class="faq-anchor" href="#{{ $faq['id'] ?? Str::slug($faq['question']) }}">
@@ -70,7 +70,7 @@
                             </span>
                         </button>
                     </div>
-                    <div id="faq-{{ $loop->iteration }}-body" class="collapse" role="tabpanel" aria-labelledby="faq-{{ $loop->iteration }}-heading">
+                    <div id="{{ $faq['id'] ?? Str::slug($faq['question']) }}-body" class="collapse" role="tabpanel" aria-labelledby="{{ $faq['id'] ?? Str::slug($faq['question']) }}-heading">
                         <div class="collapse-body text-serif">
                         @markdown($faq['answer'])
                         </div>
