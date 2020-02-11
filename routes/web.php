@@ -29,7 +29,10 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', 'HomeController@home')
     ->name('home');
 
-Route::get('/privacy', 'HomeController@privacy')
+Route::get('/how-to-join', 'HomeController@howToJoin')
+    ->name('how-to-join');
+
+    Route::get('/privacy', 'HomeController@privacy')
     ->name('privacy');
 
 Route::get('/legal-notes', 'HomeController@legalNotes')

@@ -60,6 +60,21 @@ class HomeController extends Controller
     }
 
     /**
+     * Show the "how to join" page.
+     *
+     * @return View the view
+     */
+    public function howToJoin(): View
+    {
+        $allSteps = Yaml::parseFile(resource_path('data/how-to-join-steps.yml'));
+        $currentLocale = app()->getLocale();
+        $stepsLocale = array_key_exists($currentLocale, $allSteps) ? $currentLocale : config('app.fallback_locale');
+        $steps = $allSteps[$stepsLocale];
+
+        return view('pages.how-to-join')->with(compact('steps'));
+    }
+
+    /**
      * Show the application open data page.
      *
      * @return View the view

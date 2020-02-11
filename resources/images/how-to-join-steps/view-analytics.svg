@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg version="1.1" id="Livello_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 351 125" style="enable-background:new 0 0 351 125;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#00366A;}
+	.st1{fill:#FFFFFF;}
+	.st2{fill:#D6DEE8;}
+	.st3{fill:#F7F9FA;}
+	.st4{fill-rule:evenodd;clip-rule:evenodd;fill:#73CDDE;}
+	.st5{fill-rule:evenodd;clip-rule:evenodd;fill:#0066CC;}
+	.st6{fill-rule:evenodd;clip-rule:evenodd;fill:#1B2679;}
+	.st7{fill:none;stroke:#E7ECEF;stroke-width:7;stroke-linecap:round;stroke-linejoin:round;}
+	.st8{fill:none;stroke:#00366A;stroke-width:7;stroke-linecap:round;stroke-linejoin:round;}
+</style>
+<g>
+	<path class="st0" d="M177.4,118.8H12.9V9.1C12.9,4.1,17,0,22,0h146.2c5,0,9.1,4.1,9.1,9.1L177.4,118.8L177.4,118.8z"/>
+	<path class="st1" d="M170.1,109.9H20.2c-0.9,0-1.6-0.7-1.6-1.6V7.5c0-0.9,0.7-1.6,1.6-1.6H170c0.9,0,1.6,0.7,1.6,1.6v100.8
+		C171.7,109.2,170.9,109.9,170.1,109.9z"/>
+	<path class="st2" d="M189.6,115.8H0.6c0,5,4.1,9.1,9.1,9.1h170.8C185.5,124.9,189.6,120.8,189.6,115.8L189.6,115.8L189.6,115.8z"/>
+	<path class="st3" d="M103.3,120.6H87c-1.5,0-2.9-0.8-3.6-2l-1.6-2.8h26.5l-1.6,2.8C106.2,119.8,104.8,120.6,103.3,120.6z"/>
+</g>
+<g>
+	<path class="st4" d="M109.2,64.1c0-21.8-14.7-42.2-36.5-42.2S32.5,43,32.5,64.8s17.7,39.5,39.5,39.5
+		C93.9,104.3,109.2,86,109.2,64.1"/>
+	<path class="st5" d="M74,65.9l28.2-25.5C95,32.4,81.1,27,70.3,27c-20.9,0-37.5,18.3-37.5,39.2s19.7,35.5,40.5,35.5
+		c12,0,24-3.4,31.2-13.1L74,65.9z"/>
+</g>
+<g>
+	<path class="st5" d="M158.4,98.3h-14.8c-3.4,0-6.1-2.2-6.1-4.8V27.1c0-2.7,2.7-4.8,6.1-4.8h14.8c3.4,0,6.1,2.2,6.1,4.8v66.3
+		C164.5,96.1,161.8,98.3,158.4,98.3"/>
+	<path class="st6" d="M190.3,98.6h-14.8c-3.4,0-6.1-2.2-6.1-4.8V40.2c0-2.7,2.7-4.8,6.1-4.8h14.8c3.4,0,6.1,2.2,6.1,4.8v53.5
+		C196.5,96.4,193.7,98.6,190.3,98.6"/>
+	<path class="st4" d="M210.1,97.5c-3.4,0-6.1-2.2-6.1-4.8V26.6c0-2.7,2.7-4.8,6.1-4.8h11.2c3.4,0,6.1,2.2,6.1,4.8v66.1
+		c0,2.7-2.7,4.8-6.1,4.8H210.1z"/>
+</g>
+<g>
+	<polyline class="st7" points="247.5,99 265.9,80.4 285.2,89.7 305.6,60 317.9,89.7 347.5,39 	"/>
+	<polyline class="st8" points="244.5,87 262.9,68.4 282.2,77.7 302.6,48 314.9,77.7 344.5,27 	"/>
+</g>
+</svg>

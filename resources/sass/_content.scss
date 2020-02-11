@@ -221,3 +221,19 @@ h3.section-header {
 .go-to-dashboard {
   border-width: 8px !important;
 }
+
+// How to join
+ol.how-to-join-steps {
+  counter-reset: steps-counter;
+  list-style: none;
+
+  li {
+    counter-increment: steps-counter;
+
+    .step-content {
+      .step-title::before {
+        content: counter(steps-counter) ". ";
+      }
+    }
+  }
+}
