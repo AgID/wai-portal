@@ -11,11 +11,16 @@ it:
     pill: alpha
     highlight:
       production: |
-        Il servizio **Web Analytics Italia** non è stato ancora rilasciato al pubblico. [Maggiori informazioni](https://designers.italia.it/progetti/web-analytics-italia/).
+        Il servizio **Web Analytics Italia** non è stato ancora rilasciato al
+        pubblico. [Maggiori
+        informazioni](https://designers.italia.it/progetti/web-analytics-italia/).
       public-playground: |
-        Questo è l'ambiente **public playground**. Ogni settimana il sistema viene automaticamente resettato. [Maggiori informazioni](/faq#public-playground).
+        Questo è l'ambiente **public playground**. Ogni settimana il sistema
+        viene automaticamente resettato. [Maggiori
+        informazioni](/faq#public-playground).
       staging: |
-        Questo è l'ambiente di **staging**. L'istanza potrebbe essere resettata senza preavviso.
+        Questo è l'ambiente di **staging**. L'istanza potrebbe essere resettata
+        senza preavviso.
       local: |
         Questo è l'ambiente di sviluppo locale di **Web Analytics Italia**.
     kb:
