@@ -122,6 +122,11 @@ class RouteServiceProvider extends ServiceProvider
              ->group(base_path('routes/api.php'));
     }
 
+    /**
+     * Define the "web hook" routes for the application.
+     *
+     * These routes are stateless.
+     */
     protected function mapWebHooksRoutes(): void
     {
         Route::prefix('hooks')

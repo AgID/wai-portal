@@ -10,12 +10,28 @@ use Spatie\WebhookClient\Exceptions\WebhookFailed;
 use Symfony\Component\Yaml\Yaml;
 use Tests\TestCase;
 
+/**
+ * Test closed beta whitelist update web hook controller.
+ */
 class ClosedBetaWebhookTest extends TestCase
 {
+    /**
+     * The content YAML string.
+     *
+     * @var string the string
+     */
     private $content;
 
+    /**
+     * The expected content signature.
+     *
+     * @var string the signature
+     */
     private $signature;
 
+    /**
+     * Pre-tests set up.
+     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -29,6 +45,9 @@ class ClosedBetaWebhookTest extends TestCase
         Config::set('app.url', 'https://nginx');
     }
 
+    /**
+     * Test web hook request fails due to missing content signature header.
+     */
     public function testWebhookErrorNoSignature(): void
     {
         $this->app->bind(Handler::class, function () {
@@ -49,6 +68,9 @@ class ClosedBetaWebhookTest extends TestCase
         $this->assertEquals(500, $response->getStatusCode());
     }
 
+    /**
+     * Test web hook request fails due to invalid content signature header.
+     */
     public function testWebhookErrorInvalidSignature(): void
     {
         $this->app->bind(Handler::class, function () {
@@ -70,6 +92,9 @@ class ClosedBetaWebhookTest extends TestCase
         $this->assertEquals(500, $response->getStatusCode());
     }
 
+    /**
+     * Test web hook request successful but processing blocked by profile.
+     */
     public function testWebhookWihoutProcessing(): void
     {
         $this->partialMock(UpdateClosedBetaWhitelist::class)
@@ -86,6 +111,9 @@ class ClosedBetaWebhookTest extends TestCase
         $this->assertJson($response->getBody(), json_encode(['message' => 'ok']));
     }
 
+    /**
+     * Test web hook request successful and processing launched.
+     */
     public function testWebhookSuccessful(): void
     {
         Config::set('wai.closed_beta', true);

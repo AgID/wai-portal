@@ -9,8 +9,14 @@ use Illuminate\Support\Facades\Storage;
 use Symfony\Component\Yaml\Yaml;
 use Tests\TestCase;
 
+/**
+ * Test closed beta whitelist web hook call processing job.
+ */
 class UpdateClosedBetaWhitelistTest extends TestCase
 {
+    /**
+     * Test job processing.
+     */
     public function testClosedBetaWhitelistUpdateJob(): void
     {
         $data = ['first item', 'second item'];

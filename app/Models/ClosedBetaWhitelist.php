@@ -8,8 +8,20 @@ use Spatie\WebhookClient\Models\WebhookCall;
 use Spatie\WebhookClient\WebhookConfig;
 use Symfony\Component\Yaml\Yaml;
 
+/**
+ * Closed beta whitelist web hook call model.
+ */
 class ClosedBetaWhitelist extends WebhookCall
 {
+    /**
+     * Store the request.
+     * NOTE: model are not persisted into database.
+     *
+     * @param WebhookConfig $config the web hook configuration
+     * @param Request $request the incoming request
+     *
+     * @return WebhookCall the model
+     */
     public static function storeWebhook(WebhookConfig $config, Request $request): WebhookCall
     {
         return self::make([
@@ -18,12 +30,28 @@ class ClosedBetaWhitelist extends WebhookCall
         ]);
     }
 
-    public function saveException(Exception $exception)
+    /**
+     * Save a web hook call processing exception.
+     * NOTE: field is not used, nothing to do; this method has been
+     *       overridden to avoid database saving.
+     *
+     * @param Exception $exception the exception
+     *
+     * @return ClosedBetaWhitelist the model instance
+     */
+    public function saveException(Exception $exception): ClosedBetaWhitelist
     {
         return $this;
     }
 
-    public function clearException()
+    /**
+     * Clear a previous web hook call processing exception.
+     * NOTE: field is not used, nothing to do; this method has been
+     *       overridden to avoid database saving.
+     *
+     * @return ClosedBetaWhitelist the model instance
+     */
+    public function clearException(): ClosedBetaWhitelist
     {
         return $this;
     }

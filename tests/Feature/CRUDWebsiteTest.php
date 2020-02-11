@@ -578,6 +578,9 @@ class CRUDWebsiteTest extends TestCase
         Event::assertNotDispatched(UserWebsiteAccessChanged::class);
     }
 
+    /**
+     * Test primary website successfully registered with closed beta.
+     */
     public function testStorePrimaryWebsiteSuccessfulClosedBeta(): void
     {
         Config::set('wai.closed_beta', true);
@@ -674,6 +677,9 @@ class CRUDWebsiteTest extends TestCase
         });
     }
 
+    /**
+     * Test primary website fail registration with closed beta due to ipa code not whitelisted.
+     */
     public function testStorePrimaryWebsiteFailValidationClosedBeta(): void
     {
         Config::set('wai.closed_beta', true);
