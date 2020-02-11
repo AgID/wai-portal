@@ -64,7 +64,7 @@
             </div>
             <small id="type-input-help" class="form-text text-muted">
                 {{ __('Non sai quale tipologia scegliere per il sito della tua PA?') }}
-                <a href={{ route('faq') }}>{{ __('Consulta le FAQ') }}</a>
+                <a href="{{ route('faq') }}#tipologie-siti">{{ __('Consulta le FAQ') }}</a>
             </small>
         </div>
     </div>

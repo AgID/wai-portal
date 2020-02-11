@@ -65,7 +65,7 @@
                     {{ __('Per impostare il tracciamento, usa il codice che trovi in questa pagina.') }}
                 </p>
                 <p class="text-serif">
-                    {{ __("Hai bisogno di aiuto con l'attivazione?") }} <a href={{ route('faq') }}>{{ __('Consulta le FAQ') }}</a>
+                    {{ __("Hai bisogno di aiuto con l'attivazione?") }} <a href="{{ route('faq') }}">{{ __('Consulta le FAQ') }}</a>
                 </p>
                 @endif
                 @elseif (!$website->type->is(WebsiteType::PRIMARY))
@@ -115,7 +115,7 @@
             <div>
                 <p class="text-serif">
                     {{ __('Hai dubbi sul significato dello stato del sito?') }}
-                    <a href={{ route('faq') }}>{{ __('Consulta le FAQ') }}</a>
+                    <a href="{{ route('faq') }}">{{ __('Consulta le FAQ') }}</a>
                 </p>
             </div>
             @endcomponent

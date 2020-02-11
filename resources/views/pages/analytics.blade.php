@@ -17,7 +17,7 @@
                 <p class="text-sans-serif">
                     {{ __('Serve a consultare il dettaglio di tutti i dati e impostare opzioni personalizzate per il tracciamento.') }}
                     {{ __('Vuoi saperne di più?') }}
-                    <a href={{ route('faq') }}>{{ __('Consulta le FAQ') }}</a>
+                    <a href="{{ route('faq') }}">{{ __('Consulta le FAQ') }}</a>
                 </p>
                 <a href="{{ route('analytics.service.login') }}" class="text-uppercase font-weight-bold text-decoration-none">
                     <svg class="icon icon-primary mr-2 align-middle">
