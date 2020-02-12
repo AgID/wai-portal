@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Mail\RTDPublicAdministrationRegistered;
+use App\Models\User;
 use Illuminate\Mail\Mailable;
 
 /**
@@ -10,6 +11,23 @@ use Illuminate\Mail\Mailable;
  */
 class RTDPublicAdministrationRegisteredEmail extends RTDEmailNotification
 {
+    /**
+     * The registering user.
+     *
+     * @var User the user
+     */
+    protected $registeringUser;
+
+    /**
+     * Default constructor.
+     *
+     * @param User $registeringUser the registering user
+     */
+    public function __construct(User $registeringUser)
+    {
+        $this->registeringUser = $registeringUser;
+    }
+
     /**
      * Initialize the mail message.
      *
@@ -19,6 +37,6 @@ class RTDPublicAdministrationRegisteredEmail extends RTDEmailNotification
      */
     protected function buildEmail($notifiable): Mailable
     {
-        return new RTDPublicAdministrationRegistered($notifiable);
+        return new RTDPublicAdministrationRegistered($notifiable, $this->registeringUser);
     }
 }
