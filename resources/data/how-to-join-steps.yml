@@ -10,7 +10,7 @@ it:
     description: |
       Dopo l'autenticazione, il primo sito web che devi inserire è quello
       istituzionale, cioè quello indicato su IndicePA. Solo in un secondo
-      momento potrai aggiungere anche siti secondari.
+      momento potrai aggiungere anche altri siti web.
 
       Per i siti istituzionali, il sistema auto compilerà alcuni dei campi
       richiesti in base alle informazioni presenti su IndicePA. Se i dati su
@@ -22,26 +22,35 @@ it:
       web. Il codice consente al sistema di tracciare le visite e numerosi altri
       dati relativi al comportamento dei visitatori sul tuo sito.
     image: tracking-code-email
-  - name: Inserisci il codice sul tuo sito
+  - name: Inserisci il codice nel tuo sito
     description: |
-      Il codice di tracciamento deve essere inserito nel sito. Se hai bisogno di
-      aiuto per portare a termine questo passo, puoi consultare la
+      Inserisci il codice di tracciamento all'interno della struttura del sito.
+
+      Se non sei tu a gestire direttamente il sito istituzionale, affida questo
+      compito a un amministratore, uno sviluppatore o al tuo fornitore.
+    description_small: |
+      Se hai bisogno di aiuto per portare a termine questo passo oppure stai
+      usando già *Matomo*, puoi consultare la
       [guida di WAI](https://docs.italia.it/agid/wai/wai-user-guide-docs/it/stabile/index.html).
     image: tracking-code-website
   - name: Il sistema verifica il tracciamento
     description: |
       WAI si occupa di verificare che il codice di tracciamento che hai inserito
       sul sito invii correttamente i dati statistici relativi al comportamento
-      dei visitatori. Solo a seguito di questa verifica sarai abilitato a
-      gestire la tua PA su Web Analytics Italia.
+      dei visitatori.
+
+      Solo a seguito di questa verifica sarai abilitato a gestire la tua PA su
+      Web Analytics Italia.
     description_small: |
       Se vuoi saperne di più sulla verifica,
       [leggi le FAQ](/faq#verifica-tracciamento).
     image: verify-tracking
   - name: Vedi gli analytics
     description: |
-      Dopo la verifica il sito risulterà attivo e potrai iniziare a vedere i
-      dati cliccando sull'apposita icona. Tieni presente che, mentre alcuni
-      report restituiranno immediatamente dei dati (es. log visitatori, tempo
-      reale), per altri sarà necessaria qualche ora di tracciamento.
+      Dopo la verifica, il sito risulterà attivo e potrai iniziare a vedere i
+      dati cliccando sull'apposita icona.
+
+      Tieni presente che, mentre alcuni indicatori restituiranno immediatamente
+      dei dati (es. log visitatori, tempo reale), per altri sarà necessaria
+      qualche giornata di tracciamento per avere dati significativi.
     image: view-analytics

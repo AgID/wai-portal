@@ -248,5 +248,9 @@ ol.how-to-join-steps {
         content: counter(steps-counter) ". ";
       }
     }
+
+    img {
+      max-height: 250px;
+    }
   }
 }
