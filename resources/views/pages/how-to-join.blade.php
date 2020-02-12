@@ -27,7 +27,7 @@
         <li>
             {{ __('credenziali SPID') }}
             <small>
-                (<a href="https://www.spid.gov.it/richiedi-spid" class="external-link" rel="noopener noreferrer">{{ __('come faccio a ottenerle?') }}</a>)
+                (<a href="https://www.spid.gov.it/richiedi-spid" class="external-link" target="_blank" rel="noopener noreferrer">{{ __('come faccio a ottenerle?') }}</a>)
             </small>
         </li>
         <li>
