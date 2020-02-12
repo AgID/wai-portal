@@ -151,7 +151,7 @@
             </div>
         </div>
     </div>
-    <div class="py-5">
+    {{-- <div class="py-5">
         <div class="container py-3">
             <h3 class="text-center">{{ __('Come iniziare a tracciare il traffico') }}</h3>
             <div class="d-flex justify-content-center pb-5">
@@ -160,7 +160,7 @@
                 </p>
             </div>
             <div class="row">
-                <div class="col-lg-6 p-5 border-bottom border-lg-bottom-0 border-lg-right d-flex flex-column justify-content-between">
+                <div class="col-lg-6 p-4 p-lg-5 border-bottom border-lg-bottom-0 border-lg-right d-flex flex-column justify-content-between">
                     <div>
                         <h5 class="section-header long-dash">{{ __('amministrazioni pilota') }}</h5>
                         <p class="text-serif mb-5">
@@ -176,7 +176,7 @@
                         @endcomponent
                     </div>
                 </div>
-                <div class="col-lg-6 p-5 d-flex flex-column justify-content-between">
+                <div class="col-lg-6 p-4 p-lg-5 d-flex flex-column justify-content-between">
                     <div>
                         <h5 class="section-header long-dash">{{ __('accesso alla piattaforma') }}</h5>
                         <p class="text-serif">
@@ -207,6 +207,37 @@
                     @endguest
                 </div>
             </div>
+        </div>
+    </div> --}}
+    <div class="container py-3">
+        <div class="row">
+            @component('layouts.components.box', ['classes' => 'p-5 up-xs-shadow'])
+            <h2 class="text-center mb-5">{{ __('Con :app puoi', ['app' => config('app.name')]) }}</h2>
+            <ul class="text-serif">
+                <li>
+                    <p class="lead mw-100">
+                        {{ __('monitorare gratuitamente le statistiche dei siti della tua PA') }}
+                    </p>
+                </li>
+                <li>
+                    <p class="lead mw-100">
+                        {{ __('capire come migliorare la fruizione delle tue pagine web e dei tuoi servizi digitali') }}
+                    </p>
+                </li>
+                <li>
+                    <p class="lead mw-100">
+                        {{ __('avere la proprietà, il controllo completo dei dati e la piena aderenza al GDPR') }}
+                    </p>
+                </li>
+                <li>
+                    <p class="lead mw-100">
+                        {!! __('beneficiare di strumenti ad hoc per pubblicare le statistiche dei siti monitorati (:art-7-cad) e per condividere i dati con i decisori interni', [
+                            'art-7-cad' => '<a href="https://docs.italia.it/italia/piano-triennale-ict/codice-amministrazione-digitale-docs/it/v2018-09-28/_rst/capo1_sezione2_art7.html" class="external-link" target="_blank" rel="noopener noreferrer">art. 7 CAD</a>'
+                        ]) !!}
+                    </p>
+                </li>
+            </ul>
+            @endcomponent
         </div>
     </div>
     <div class="bg-primary py-5 position-relative">
