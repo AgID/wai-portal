@@ -16,7 +16,7 @@ Breadcrumbs::for('how-to-join', function ($trail) {
 // Web Analytics Italia > FAQ
 Breadcrumbs::for('faq', function ($trail) {
     $trail->parent('home');
-    $trail->push(__('FAQ - Domande ricorrenti'), route('faq'));
+    $trail->push(__('FAQ - Domande frequenti'), route('faq'));
 });
 
 // Web Analytics Italia > Open data

@@ -1,6 +1,6 @@
 @extends('layouts.page')
 
-@section('title', __('FAQ - Domande ricorrenti'))
+@section('title', __('FAQ - Domande frequenti'))
 
 @section('content')
 <div class="text-serif mb-5">{{ __('Naviga per tema, per trovare le risposte che stai cercando. Non riesci a risolvere il tuo dubbio?') }} <a href="{{ route('contacts') }}">{{ __('Scrivici') }}</a>.</div>
