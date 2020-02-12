@@ -32,7 +32,7 @@
         </div>
         <div class="form-row">
             <div class="form-group mb-0 col text-center">
-                <button type="submit" class="btn btn-primary">{{ __('Accedi') }}</button><br>
+                <button type="submit" class="btn btn-primary mb-3">{{ __('Accedi') }}</button><br>
                 <a href="{{ route('admin.password.forgot.show') }}">
                     <small>{{ __('Password dimenticata?') }}</small>
                 </a>
