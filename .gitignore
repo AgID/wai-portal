@@ -19,6 +19,7 @@
 clover.xml
 /database/testing.sqlite
 /storage/debugbar
+.lighthouseci/
 
 # related to local development
 TODO

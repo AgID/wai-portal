@@ -435,30 +435,31 @@
                 <fail message="Testing not allowed in environments other than local or testing"/>
             </then>
         </if>
-        <!-- Set testing database file -->
-        <echo msg="Setting testing database file..."/>
+        <!-- Set testing database files and permissions -->
+        <echo msg="Setting testing files and permissions..."/>
         <exec command="docker-compose exec -u www-data php-fpm bash -c 'rm -f database/testing.sqlite; touch database/testing.sqlite'" dir="containers"/>
         <exec command="docker-compose exec php-fpm chown -R www-data:www-data tests" dir="containers" checkreturn="true"/>
         <!-- Execute phpunit to run unit tests -->
         <echo msg="Running unit tests [PHPUnit]..."/>
         <exec command="docker-compose exec -u www-data php-fpm vendor/phpunit/phpunit/phpunit" dir="containers" passthru="true" checkreturn="true"/>
         <!-- Install lighthouse -->
-        <exec command="docker-compose exec -u www-data php-fpm lighthouse-ci --version" dir="containers" returnProperty="checkLighthouse"/>
+        <exec command="docker-compose exec -u www-data php-fpm lhci --version" dir="containers" returnProperty="checkLighthouse"/>
         <if>
             <not><equals arg1="${checkLighthouse}" arg2="0"/></not>
             <then>
                 <echo msg="Installing lighthouse..."/>
                 <exec command="docker-compose exec php-fpm bash -c 'node-build $(cat .node-version) /usr/local'" dir="containers" checkreturn="true"/>
-                <exec command="docker-compose exec php-fpm npm install -g lighthouse-ci" dir="containers" checkreturn="true"/>
+                <exec command="docker-compose exec php-fpm npm install -g @lhci/cli" dir="containers" checkreturn="true"/>
             </then>
         </if>
         <!-- Execute dusk to run browser tests -->
         <echo msg="Running browser tests [Laravel Dusk]..."/>
-        <delete>
+        <delete quiet="true">
             <fileset dir="tests/Browser/lighthouse">
                 <include name="report-*"/>
             </fileset>
         </delete>
+        <delete dir="tests/Browser/lighthouse/.lighthouseci" quiet="true"/>
         <exec command="docker-compose exec -u www-data php-fpm php artisan dusk" dir="containers" passthru="true" checkreturn="true"/>
         <!-- Restore the Users/Websites indexes after tests -->
         <if>
