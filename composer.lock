@@ -5616,26 +5616,26 @@
         },
         {
             "name": "johnkary/phpunit-speedtrap",
-            "version": "v3.1.0",
+            "version": "v3.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/johnkary/phpunit-speedtrap.git",
-                "reference": "dac11b8640d4be7a70f336616947fa84f169835a"
+                "reference": "8c0e149b80c6e86c33315f05699512678655c158"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/johnkary/phpunit-speedtrap/zipball/dac11b8640d4be7a70f336616947fa84f169835a",
-                "reference": "dac11b8640d4be7a70f336616947fa84f169835a",
+                "url": "https://api.github.com/repos/johnkary/phpunit-speedtrap/zipball/8c0e149b80c6e86c33315f05699512678655c158",
+                "reference": "8c0e149b80c6e86c33315f05699512678655c158",
                 "shasum": ""
             },
             "require": {
                 "php": ">=7.1",
-                "phpunit/phpunit": "^7.0 || ^8.0"
+                "phpunit/phpunit": "^7.0 || ^8.0 || ^9.0"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.0-dev"
+                    "dev-master": "3.2-dev"
                 }
             },
             "autoload": {
@@ -5653,14 +5653,14 @@
                     "email": "john@johnkary.net"
                 }
             ],
-            "description": "Find slow tests in your PHPUnit test suite",
+            "description": "Find and report on slow tests in your PHPUnit test suite",
             "homepage": "https://github.com/johnkary/phpunit-speedtrap",
             "keywords": [
                 "phpunit",
                 "profile",
                 "slow"
             ],
-            "time": "2019-02-24T02:40:12+00:00"
+            "time": "2020-02-12T16:19:51+00:00"
         },
         {
             "name": "laravel/dusk",
