@@ -33,7 +33,7 @@
                     <div class="p-2">
                         <h4>
                             <a href="{{ isset($footerPrimaryMenuItem['route']) ? route($footerPrimaryMenuItem['route']) : $footerPrimaryMenuItem['url'] }}"
-                                {{ isset($footerPrimaryMenuItem['url']) ? 'class="external-link" target="_blank" rel="noopener noreferrer"' : ''}}>
+                                {!! isset($footerPrimaryMenuItem['url']) ? 'class="external-link" target="_blank" rel="noopener noreferrer"' : '' !!}>
                                 {{ __($footerPrimaryMenuItem['name']) }}</a>
                         </h4>
                     </div>
