@@ -12,6 +12,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
+use Illuminate\Http\Exceptions\ThrottleRequestsException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -290,6 +291,20 @@ class SuperAdminAuthController extends Controller
     public function username(): string
     {
         return 'email';
+    }
+
+    /**
+     * Redirect the user after determining they are locked out.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @throws \Illuminate\Validation\ValidationException
+     *
+     * @return void
+     */
+    protected function sendLockoutResponse(Request $request)
+    {
+        throw new ThrottleRequestsException('Too Many Attempts.');
     }
 
     /**
