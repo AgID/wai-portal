@@ -1,5 +1,16 @@
 it:
   - themes: generale
+    id: cos-e-wai
+    question: Che cos'è Web analytics Italia?
+    answer: |
+      **Web analytics Italia (WAI)** è una piattaforma nazionale di raccolta dei
+      dati sul traffico dei servizi digitali della Pubblica Amministrazione
+      italiana.
+
+      WAI espone pubblicamente alcuni dati aggregati rispetto alla fruizione
+      dei servizi digitali della PA da parte dei cittadini.
+
+  - themes: generale
     question: Quali sono le specifiche tecniche di Web analytics Italia?
     answer: |
       **Web analytics Italia (WAI)** si basa su tre componenti principali:

@@ -11,8 +11,7 @@ it:
     pill: alpha
     highlight:
       production: |
-        Il servizio **Web Analytics Italia** non è stato ancora rilasciato al
-        pubblico. [Maggiori
+        **Web Analytics Italia** è in una fase di beta chiusa. [Maggiori
         informazioni](https://designers.italia.it/progetti/web-analytics-italia/).
       public-playground: |
         Questo è l'ambiente **public playground**. Ogni settimana il sistema
@@ -25,7 +24,7 @@ it:
         Questo è l'ambiente di sviluppo locale di **Web Analytics Italia**.
     kb:
       name: Guida utente Web Analytics Italia
-      link: https://docs.italia.it/AgID/wai/wai-user-guide-docs/it/stabile/
+      link: https://docs.italia.it/agid/wai/wai-user-guide-docs/it/stabile/
 
     menu_items:
       primary:
