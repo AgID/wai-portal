@@ -9,8 +9,16 @@ use App\Models\User;
 use App\Notifications\SuperAdminPublicAdministrationNotFoundInIpaEmail;
 use Silber\Bouncer\BouncerFacade as Bouncer;
 
+/**
+ * System notifications to super-administrators.
+ */
 trait SendsNotificationsToSuperAdmin
 {
+    /**
+     * Send a registered public administration is missing from latest iPA.
+     *
+     * @param PublicAdministration $publicAdministration the missing public administration
+     */
     public function sendPublicAdministrationNotFoundInIpa(PublicAdministration $publicAdministration): void
     {
         Bouncer::scope()->onceTo(0, function () use ($publicAdministration) {

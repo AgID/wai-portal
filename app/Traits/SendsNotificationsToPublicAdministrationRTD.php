@@ -13,7 +13,7 @@ use App\Notifications\RTDWebsiteActivatedEmail;
 trait SendsNotificationsToPublicAdministrationRTD
 {
     /**
-     * Send public administration registere notification.
+     * Send public administration registered notification.
      */
     public function sendPublicAdministrationRegisteredNotificationToRTD(): void
     {
@@ -34,6 +34,9 @@ trait SendsNotificationsToPublicAdministrationRTD
         $this->notify(new RTDWebsiteActivatedEmail($website));
     }
 
+    /**
+     * Send public administration RTD email changed.
+     */
     public function sendPublicAdministrationUpdatedRTD(): void
     {
         $this->notify(new RTDEmailAddressChangedEmail());

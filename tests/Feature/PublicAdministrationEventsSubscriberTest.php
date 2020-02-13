@@ -46,8 +46,18 @@ class PublicAdministrationEventsSubscriberTest extends TestCase
      */
     public $publicAdministration;
 
+    /**
+     * The website.
+     *
+     * @var Website the website
+     */
     public $website;
 
+    /**
+     * The user.
+     *
+     * @var User the user
+     */
     public $user;
 
     /**
@@ -152,6 +162,9 @@ class PublicAdministrationEventsSubscriberTest extends TestCase
         );
     }
 
+    /**
+     * Test public administration registered with email sent to RTD.
+     */
     public function testPublicAdministrationRegisteredWithRTD(): void
     {
         Cache::shouldReceive('forget')->once()->withArgs([
@@ -209,6 +222,9 @@ class PublicAdministrationEventsSubscriberTest extends TestCase
         );
     }
 
+    /**
+     * Test public administration registered without email to RTD.
+     */
     public function testPublicAdministrationRegisteredWithoutRTD(): void
     {
         Event::fakeFor(function () {
@@ -264,6 +280,9 @@ class PublicAdministrationEventsSubscriberTest extends TestCase
         );
     }
 
+    /**
+     * Test public administration purged.
+     */
     public function testPublicAdministrationPurged(): void
     {
         Cache::shouldReceive('forget')->once()->withArgs([PublicAdministration::PUBLIC_ADMINISTRATION_COUNT_KEY]);
@@ -293,6 +312,9 @@ class PublicAdministrationEventsSubscriberTest extends TestCase
         );
     }
 
+    /**
+     * Test public administration primary website updated.
+     */
     public function testPublicAdministrationPrimaryWebsiteUpdated(): void
     {
         $this->expectLogMessage('warning', [
@@ -306,6 +328,9 @@ class PublicAdministrationEventsSubscriberTest extends TestCase
         event(new PublicAdministrationPrimaryWebsiteUpdated($this->publicAdministration, $this->website, 'https://newurl.local'));
     }
 
+    /**
+     * Test public administration updated.
+     */
     public function testPublicAdministrationUpdated(): void
     {
         $this->expectLogMessage('notice', [
@@ -324,6 +349,9 @@ class PublicAdministrationEventsSubscriberTest extends TestCase
         );
     }
 
+    /**
+     * Test public administration updated with RTD email update.
+     */
     public function testPendingPublicAdministrationUpdatedWithRTDChange(): void
     {
         Event::fakeFor(function () {
@@ -357,6 +385,9 @@ class PublicAdministrationEventsSubscriberTest extends TestCase
         );
     }
 
+    /**
+     * Test public administration updated with RTD email update.
+     */
     public function testActivePublicAdministrationUpdatedWithRTDChange(): void
     {
         $invitedAdmin = factory(User::class)->state('invited')->create();
@@ -407,6 +438,9 @@ class PublicAdministrationEventsSubscriberTest extends TestCase
         );
     }
 
+    /**
+     * Test public administration not found in iPA.
+     */
     public function testPublicAdministrationNotFoundInIpa(): void
     {
         Bouncer::dontCache();
@@ -447,6 +481,9 @@ class PublicAdministrationEventsSubscriberTest extends TestCase
         );
     }
 
+    /**
+     * Test public administration activation fail.
+     */
     public function testPublicAdministrationActivationFailed(): void
     {
         $this->expectLogMessage('error', [
