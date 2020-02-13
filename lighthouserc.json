@@ -3,7 +3,12 @@
     "collect": {
       "numberOfRuns": 1,
       "settings": {
-        "chromeFlags": "--ignore-certificate-errors --no-sandbox"
+        "chromeFlags": "--ignore-certificate-errors --no-sandbox",
+        "onlyCategories": [
+            "best-practices",
+            "accessibility",
+            "seo"
+        ]
       }
     },
     "assert": {
