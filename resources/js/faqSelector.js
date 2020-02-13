@@ -94,8 +94,7 @@ export default (() => {
             renderFaqs();
         });
 
-        const isFaqSelectedInUrl = window.location.hash && window.location.hash.startsWith('#faq-');
-        isFaqSelectedInUrl && $(`${window.location.hash}-body`).collapse('show');
+        window.location.hash && $(`${window.location.hash}-body`).collapse('show');
     };
 
     return { init };

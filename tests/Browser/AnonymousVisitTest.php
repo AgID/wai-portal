@@ -3,7 +3,9 @@
 namespace Tests\Browser;
 
 use Laravel\Dusk\Browser;
+use Tests\Browser\Pages\Faqs;
 use Tests\Browser\Pages\Home;
+use Tests\Browser\Pages\HowToJoin;
 use Tests\DuskTestCase;
 
 class AnonymousVisitTest extends DuskTestCase
@@ -25,6 +27,9 @@ class AnonymousVisitTest extends DuskTestCase
                     ->assertSee('Entra con SPID')
                     ->visit('/analytics')
                     ->assertSee(__("La pagina che hai richiesto è raggiungibile solo dopo l'autenticazione."));
+
+            $browser->visit(new Faqs());
+            $browser->visit(new HowToJoin());
         });
     }
 }

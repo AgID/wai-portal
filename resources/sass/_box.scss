@@ -4,6 +4,12 @@
   box-shadow: $default-shadow;
   width: 100%;
 
+  &.up-xs-shadow {
+    @include media-breakpoint-down(xs) {
+      box-shadow: none;
+    }
+  }
+
   .page-background-graphic & {
     background: $white;
   }

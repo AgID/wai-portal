@@ -11,11 +11,16 @@ it:
     pill: alpha
     highlight:
       production: |
-        Il servizio **Web Analytics Italia** non è stato ancora rilasciato al pubblico. [Maggiori informazioni](https://designers.italia.it/progetti/web-analytics-italia/).
+        Il servizio **Web Analytics Italia** non è stato ancora rilasciato al
+        pubblico. [Maggiori
+        informazioni](https://designers.italia.it/progetti/web-analytics-italia/).
       public-playground: |
-        Questo è l'ambiente **public playground**. Ogni settimana il sistema viene automaticamente resettato. [Maggiori informazioni](/faq#public-playground).
+        Questo è l'ambiente **public playground**. Ogni settimana il sistema
+        viene automaticamente resettato. [Maggiori
+        informazioni](/faq#public-playground).
       staging: |
-        Questo è l'ambiente di **staging**. L'istanza potrebbe essere resettata senza preavviso.
+        Questo è l'ambiente di **staging**. L'istanza potrebbe essere resettata
+        senza preavviso.
       local: |
         Questo è l'ambiente di sviluppo locale di **Web Analytics Italia**.
     kb:
@@ -31,12 +36,12 @@ it:
         - name: Utenti
           route: users.index
       secondary:
+        - name: Come partecipare
+          route: how-to-join
         - name: Open data
           route: open-data
         - name: FAQ
           route: faq
-        - name: Contattaci
-          route: contacts
 
     slim_header_links:
       - name: Piano triennale
@@ -56,12 +61,12 @@ it:
 
     footer_links:
       primary:
+        - name: Come partecipare
+          route: how-to-join
         - name: Domande frequenti
           route: faq
         - name: Open data
           route: open-data
-        - name: Contattaci
-          route: contacts
         - name: Dichiarazione di accessibilità
           url: https://form.agid.gov.it/
       secondary:
@@ -69,6 +74,8 @@ it:
           route: privacy
         - name: Note legali
           route: legal-notes
+        - name: Contattaci
+          route: contacts
 
     social:
       - name: facebook

@@ -13,7 +13,7 @@
                             </div>
                         </div>
                         <label for="public_administration_name">{{ __('Pubblica amministrazione') }}</label>
-                        <input type="search" autocomplete="off" class="form-control autocomplete{{ $errors->has('public_administration_name') ? ' is-invalid' : '' }}" id="public_administration_name" name="public_administration_name" data-search="searchIpa" data-source={{ route('ipa.search') }} value="{{ old('public_administration_name') }}" maxlength="255" aria-describedby="pa_name-input-help" aria-required="true" required>
+                        <input type="search" autocomplete="off" class="form-control autocomplete{{ $errors->has('public_administration_name') ? ' is-invalid' : '' }}" id="public_administration_name" name="public_administration_name" data-search="searchIpa" data-source="{{ route('ipa.search') }}" value="{{ old('public_administration_name') }}" maxlength="255" aria-describedby="pa_name-input-help" aria-required="true" required>
                         <ul class="autocomplete-list"></ul>
                         <div class="searching-icon input-group-append">
                             <div class="input-group-text">
@@ -82,7 +82,7 @@
             <div id="rtd_mail_present" class="d-none">
                 <p>
                     {!! __('Bene, la tua pubblica amministrazione ha indicato su :ipa il recapito del :rtd. 👍🏼', [
-                        'ipa' => '<a href="https://www.indicepa.gov.it/" class="external-link">' . __('IndicePA') . '</a>',
+                        'ipa' => '<a href="https://www.indicepa.gov.it/" class="external-link" target="_blank" rel="noopener noreferrer">' . __('IndicePA') . '</a>',
                         'rtd' => '<strong>' . __('Responsabile ufficio per la transizione al digitale') . '</strong>',
                     ]) !!}
                 </p>
@@ -97,7 +97,7 @@
             <div id="rtd_mail_missing" class="d-none">
                 <p>
                     {!! __('Sembra che la tua pubblica amministrazione non abbia indicato su :ipa il recapito del/la :rtd. 🙁', [
-                        'ipa' => '<a href="https://www.indicepa.gov.it/" class="external-link">' . __('IndicePA') . '</a>',
+                        'ipa' => '<a href="https://www.indicepa.gov.it/" class="external-link" target="_blank" rel="noopener noreferrer">' . __('IndicePA') . '</a>',
                         'rtd' => '<strong>' . __('Responsabile ufficio per la transizione al digitale') . '</strong>',
                     ]) !!}
                 </p>
@@ -123,7 +123,7 @@
         <div class="form-group col-md-6 pl-md-5 d-flex flex-column justify-content-between">
             <p>{{ __('Se riscontri delle inesattezze nei dati visualizzati potresti non riuscire a completare la procedura. Interrompi adesso e riprendi dopo che saranno stati corretti.') }}</p>
             <div>
-                <a href="https://www.indicepa.gov.it/" role="button" class="btn btn-icon btn-outline-primary">
+                <a href="https://www.indicepa.gov.it/" role="button" class="btn btn-icon btn-outline-primary" target="_blank" srel="noopener noreferrer">
                     <span class="mr-1">{{ __('I dati NON sono corretti') }}</span>
                     <svg class="icon icon-primary">
                         <use xlink:href="{{ asset('svg/sprite.svg#it-external-link') }}"></use>

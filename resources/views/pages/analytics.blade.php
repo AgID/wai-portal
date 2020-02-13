@@ -12,12 +12,12 @@
         </div>
         <div class="col-md-6">
             @cannot(UserPermission::ACCESS_ADMIN_AREA)
-            <div class="go-to-dashboard callout callout-highlight my-0 pl-4 primary-border-color-c1">
+            <div class="thick-border callout callout-highlight my-0 pl-4 primary-border-color-c1">
                 <div class="callout-title">{{ __('dashboard') }}</div>
                 <p class="text-sans-serif">
                     {{ __('Serve a consultare il dettaglio di tutti i dati e impostare opzioni personalizzate per il tracciamento.') }}
                     {{ __('Vuoi saperne di più?') }}
-                    <a href={{ route('faq') }}>{{ __('Consulta le FAQ') }}</a>
+                    <a href="{{ route('faq') }}">{{ __('Consulta le FAQ') }}</a>
                 </p>
                 <a href="{{ route('analytics.service.login') }}" class="text-uppercase font-weight-bold text-decoration-none">
                     <svg class="icon icon-primary mr-2 align-middle">

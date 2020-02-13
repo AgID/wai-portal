@@ -35,13 +35,13 @@
     @endisset
     <table class="Datatable table responsive{{ ($datatableOptions['textWrap'] ?? false) ? '' : ' nowrap' }}"
         @if (!empty($datatableOptions['serverSide']))
-        data-dt-server-side={{ $datatableOptions['serverSide'] ? 'true' : 'false' }}
+        data-dt-server-side="{{ $datatableOptions['serverSide'] ? 'true' : 'false' }}"
         @endif
         @if (!empty($datatableOptions['processing']))
-        data-dt-processing={{ $datatableOptions['processing'] ? 'true' : 'false' }}
+        data-dt-processing="{{ $datatableOptions['processing'] ? 'true' : 'false' }}"
         @endif
         @if (!empty($datatableOptions['searching']))
-        data-dt-searching={{ $datatableOptions['searching'] ? 'true' : 'false' }}
+        data-dt-searching="{{ $datatableOptions['searching'] ? 'true' : 'false' }}"
         @endif
         data-dt-source="{{ url($source) }}"
         data-dt-columns="{{ json_encode($columns) }}"

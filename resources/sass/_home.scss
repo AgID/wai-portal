@@ -93,13 +93,14 @@
     .home-forward {
       position: absolute;
       left: calc(50% - 28px);
-      bottom: 1em;
+      top: 6em;
       width: 56px;
       height: 56px;
-      background: $primary;
+      background: $primary-a10;
       border-radius: 50%;
       text-align: center;
       display: none;
+      transition: all 0.2s ease-in-out;
 
       @include media-breakpoint-up(lg) {
         display: block;
@@ -113,7 +114,7 @@
       }
 
       &:hover {
-        background: darken($primary, 10%);
+        background: darken($primary-a10, 10%);
         text-decoration: none;
       }
     }

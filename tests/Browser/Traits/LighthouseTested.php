@@ -23,21 +23,34 @@ trait LighthouseTested
             return;
         }
 
-        $lighthouse = new Process([
-            'lighthouse-ci',
+        $lighthouseCollect = new Process([
+            'lhci',
+            'collect',
+            '--config',
+            base_path() . '/lighthouserc.json',
+            '--url',
             $pageUrl,
-            '--port=9222',
-            '--seo=100',
-            '--accessibility=100',
-            '--best-practices=100',
         ]);
+        $lighthouseCollect->setWorkingDirectory(base_path('tests/Browser/lighthouse'));
 
-        $lighthouse->run();
+        $lighthouseAssert = new Process([
+            'lhci',
+            'assert',
+            '--config',
+            base_path() . '/lighthouserc.json',
+        ]);
+        $lighthouseAssert->setWorkingDirectory(base_path('tests/Browser/lighthouse'));
 
-        file_put_contents($reportPath, $lighthouse->getOutput());
+        $lighthouseCollect->run();
+        $lighthouseAssert->run();
 
-        if (!$lighthouse->isSuccessful()) {
-            Assert::fail('lighthouse test failed on ' . $this->url() . ":\n" . $lighthouse->getOutput());
+        file_put_contents($reportPath, $lighthouseCollect->getOutput());
+        file_put_contents($reportPath, $lighthouseCollect->getErrorOutput(), FILE_APPEND);
+        file_put_contents($reportPath, $lighthouseAssert->getOutput(), FILE_APPEND);
+        file_put_contents($reportPath, $lighthouseAssert->getErrorOutput(), FILE_APPEND);
+
+        if (!$lighthouseAssert->isSuccessful()) {
+            Assert::fail('lighthouse test failed on ' . $this->url() . ":\n" . $lighthouseAssert->getErrorOutput());
         }
     }
 }

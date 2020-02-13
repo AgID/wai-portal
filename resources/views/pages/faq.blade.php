@@ -1,6 +1,6 @@
 @extends('layouts.page')
 
-@section('title', __('FAQ - Domande ricorrenti'))
+@section('title', __('FAQ - Domande frequenti'))
 
 @section('content')
 <div class="text-serif mb-5">{{ __('Naviga per tema, per trovare le risposte che stai cercando. Non riesci a risolvere il tuo dubbio?') }} <a href="{{ route('contacts') }}">{{ __('Scrivici') }}</a>.</div>
@@ -54,26 +54,24 @@
         <div class="faqs-wrapper">
             <div class="faqs collapse-div ml-sm-5" role="tablist">
                 @foreach ($faqs as $faq)
-                <div id="{{ $faq['id'] ?? Str::slug($faq['question']) }}" class="faq" data-themes="{{ $faq['themes'] }}">
-                    <div class="collapse-header" id="faq-{{ $loop->iteration }}-heading">
-                        <button class="text-secondary d-flex flex-wrap flex-md-nowrap align-items-center" data-toggle="collapse" data-target="#faq-{{ $loop->iteration }}-body" aria-expanded="false" aria-controls="faq-{{ $loop->iteration }}-body">
-                            <span class="mr-auto">
-                                {{ $faq['question'] }}
-                                <a class="faq-anchor" href="#{{ $faq['id'] ?? Str::slug($faq['question']) }}">
-                                    <svg class="icon icon-sm"><use xlink:href="{{ asset('svg/sprite.svg#it-link') }}"></use></svg>
-                                </a>
-                            </span>
-                            <span class="d-flex flex-wrap flex-md-nowrap flex-md-column align-items-end justify-content-end align-self-end align-self-md-center mt-2 mt-md-0 ml-auto">
-                            @foreach (explode(' ', $faq['themes']) as $theme)
-                                <small><span class="badge badge-pill badge-primary py-1 mx-2">{{ ucfirst($theme) }}</span></small>
-                            @endforeach
-                            </span>
-                        </button>
-                    </div>
-                    <div id="faq-{{ $loop->iteration }}-body" class="collapse" role="tabpanel" aria-labelledby="faq-{{ $loop->iteration }}-heading">
-                        <div class="collapse-body text-serif">
-                        @markdown($faq['answer'])
-                        </div>
+                <div class="faq collapse-header" id="{{ $faq['id'] ?? Str::slug($faq['question']) }}" role="tab" data-themes="{{ $faq['themes'] }}">
+                    <button class="text-secondary d-flex flex-wrap flex-md-nowrap align-items-center" data-toggle="collapse" data-target="#{{ $faq['id'] ?? Str::slug($faq['question']) }}-body" aria-expanded="false" aria-controls="{{ $faq['id'] ?? Str::slug($faq['question']) }}-body">
+                        <span class="mr-auto">
+                            {{ $faq['question'] }}
+                            <a class="faq-anchor" href="#{{ $faq['id'] ?? Str::slug($faq['question']) }}" aria-labelledby="{{ $faq['id'] ?? Str::slug($faq['question']) }}">
+                                <svg class="icon icon-sm"><use xlink:href="{{ asset('svg/sprite.svg#it-link') }}"></use></svg>
+                            </a>
+                        </span>
+                        <span class="d-flex flex-wrap flex-md-nowrap flex-md-column align-items-end justify-content-end align-self-end align-self-md-center mt-2 mt-md-0 ml-auto">
+                        @foreach (explode(' ', $faq['themes']) as $theme)
+                            <small><span class="badge badge-pill badge-primary py-1 mx-2">{{ ucfirst($theme) }}</span></small>
+                        @endforeach
+                        </span>
+                    </button>
+                </div>
+                <div id="{{ $faq['id'] ?? Str::slug($faq['question']) }}-body" class="collapse faq" aria-labelledby="{{ $faq['id'] ?? Str::slug($faq['question']) }}" data-themes="{{ $faq['themes'] }}">
+                    <div class="collapse-body text-serif">
+                    @markdown($faq['answer'])
                     </div>
                 </div>
                 @endforeach

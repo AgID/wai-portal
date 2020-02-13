@@ -127,7 +127,7 @@
             <div>
                 <p class="text-serif">
                     {{ __("Hai dubbi sul significato dello stato dell'utente?") }}
-                    <a href={{ route('faq') }}>{{ __('Consulta le FAQ') }}</a>
+                    <a href="{{ route('faq') }}">{{ __('Consulta le FAQ') }}</a>
                 </p>
             </div>
             @endcomponent
@@ -152,7 +152,7 @@
             <div class="col">
                 <p class="mt-5 mb-0 text-serif">
                     {{ __("Vuoi saperne di più su ruoli e permessi?") }}
-                    <a href={{ route('faq') }}>{{ __('Consulta le FAQ') }}</a>
+                    <a href="{{ route('faq') }}">{{ __('Consulta le FAQ') }}</a>
                 </p>
             </div>
             @endforeach
