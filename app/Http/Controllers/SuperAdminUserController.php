@@ -86,9 +86,9 @@ class SuperAdminUserController extends Controller
     {
         $input = $request->all();
         $validatedData = validator($input, [
-            'name' => 'required',
-            'family_name' => 'required',
-            'email' => 'required|email',
+            'name' => 'required|alpha_name|min:2|max:50',
+            'family_name' => 'required|alpha_name|min:2|max:50',
+            'email' => 'required|email:rfc,dns|max:75',
         ])->after(function ($validator) use ($input) {
             if (array_key_exists('email', $input) && User::where('email', $input['email'])
                 ->whereIs(UserRole::SUPER_ADMIN)->get()->isNotEmpty()) {
@@ -165,9 +165,9 @@ class SuperAdminUserController extends Controller
     {
         $input = $request->all();
         $validatedData = validator($input, [
-            'name' => 'required',
-            'family_name' => 'required',
-            'email' => 'required|email',
+            'name' => 'required|alpha_name|min:2|max:50',
+            'family_name' => 'required|alpha_name|min:2|max:50',
+            'email' => 'required|email:rfc,dns|max:75',
         ])->after(function ($validator) use ($input, $user) {
             if (array_key_exists('email', $input) && User::where('email', $input['email'])
                 ->where('id', '<>', $user->id)->whereIs(UserRole::SUPER_ADMIN)->get()->isNotEmpty()) {

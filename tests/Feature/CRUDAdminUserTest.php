@@ -77,7 +77,7 @@ class CRUDAdminUserTest extends TestCase
         $this->actingAs($this->user)
             ->post(route('admin.users.store'), [
                 '_token' => 'test',
-                'email' => 'new@email.local',
+                'email' => 'new@example.com',
                 'name' => 'Mario',
                 'family_name' => 'Rossi',
             ])
@@ -90,7 +90,7 @@ class CRUDAdminUserTest extends TestCase
 
         Event::assertDispatched(UserInvited::class, function ($event) {
             return
-                'new@email.local' === $event->getUser()->email
+                'new@example.com' === $event->getUser()->email
                 && null === $event->getPublicAdministration()
                 && $this->user->is($event->getInvitedBy());
         });
@@ -135,7 +135,7 @@ class CRUDAdminUserTest extends TestCase
         $this->actingAs($this->user)
             ->put(route('admin.users.update', ['user' => $user]), [
                 '_token' => 'test',
-                'email' => 'new@email.local',
+                'email' => 'new@example.com',
                 'name' => 'Mario',
                 'family_name' => 'Rossi',
             ])
@@ -147,7 +147,7 @@ class CRUDAdminUserTest extends TestCase
         Event::assertDispatched(UserUpdated::class, function ($event) {
             $user = $event->getUser();
 
-            return 'new@email.local' === $user->email
+            return 'new@example.com' === $user->email
                 && 'Mario' === $user->name
                 && 'Rossi' === $user->family_name;
         });
@@ -319,7 +319,7 @@ class CRUDAdminUserTest extends TestCase
      */
     public function testPublicAdministrationCreateAdminUserSuccessful(): void
     {
-        $email = 'new@user.local';
+        $email = 'new@example.com';
         $fiscalNumber = 'ESXLKY44P09I168D';
         $publicAdministration = factory(PublicAdministration::class)
             ->state('active')
@@ -368,7 +368,7 @@ class CRUDAdminUserTest extends TestCase
      */
     public function testPublicAdministrationCreateUserSuccessful(): void
     {
-        $email = 'new@user.local';
+        $email = 'new@example.com';
         $fiscalNumber = 'ESXLKY44P09I168D';
         $publicAdministration = factory(PublicAdministration::class)
             ->state('active')
@@ -470,7 +470,7 @@ class CRUDAdminUserTest extends TestCase
                     'user' => $user,
             ]), [
                 '_token' => 'test',
-                'email' => 'new@email.local',
+                'email' => 'new@example.com',
                 'fiscal_number' => $user->fiscal_number,
                 'is_admin' => '1',
                 'permissions' => [
@@ -483,7 +483,7 @@ class CRUDAdminUserTest extends TestCase
 
         $this->user->refresh();
         Event::assertDispatched(UserUpdated::class, function ($event) {
-            return 'new@email.local' === $event->getUser()->email;
+            return 'new@example.com' === $event->getUser()->email;
         });
 
         $user->deleteAnalyticsServiceAccount();

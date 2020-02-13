@@ -40,10 +40,10 @@ class StorePrimaryWebsiteRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'public_administration_name' => 'required',
-            'url' => 'required|unique:websites',
-            'rtd_mail' => 'nullable|email',
-            'ipa_code' => 'required|unique:public_administrations',
+            'public_administration_name' => 'required|max:255',
+            'url' => 'required|unique:websites|max:255',
+            'rtd_mail' => 'nullable|email|max:75',
+            'ipa_code' => 'required|unique:public_administrations|max:25',
             'correct_confirmation' => 'accepted',
         ];
     }

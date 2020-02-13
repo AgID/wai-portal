@@ -10,7 +10,7 @@
             <div class="form-group px-4">
                 <div class="input-group">
                     <label for="faq-search">{{ __('Cerca tra le FAQ') }}</label>
-                    <input type="search" class="form-control" id="faq-search" maxlength="255">
+                    <input type="search" class="form-control" id="faq-search" maxlength="50">
                     <div class="input-group-append">
                         <div class="input-group-text"><svg class="icon icon-sm"><use xlink:href="{{ asset('svg/sprite.svg#it-search') }}"></use></svg></div>
                     </div>

@@ -36,6 +36,7 @@ class UpdateWebsiteRequest extends StoreWebsiteRequest
                 'required',
                 Rule::unique('websites')->ignore($this->route('website')->id),
                 'url',
+                'max:255',
             ];
         }
 

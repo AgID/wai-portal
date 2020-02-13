@@ -1,7 +1,7 @@
 <div id="log-filters">
     <h5 class="section-header">{{ __('ricerca e filtri') }}</h5>
     @can(UserPermission::ACCESS_ADMIN_AREA)
-    <input type="hidden" id="ipa_code" name="ipa_code" value="{{ session('super_admin_tenant_ipa_code') }}">
+    <input type="hidden" id="ipa_code" name="ipa_code" maxlength="25" value="{{ session('super_admin_tenant_ipa_code') }}">
     <div id="public-administration-selected" class="alert alert-info alert-dismissible rounded fade show{{ session()->has('super_admin_tenant_ipa_code') ? '' : ' d-none' }}" role="alert">
         {{ __('Stai visualizzando i messaggi log relativi alla pubblica amministrazione selezionata nella barra di navigazione.') }}<br>
         {!! __('In alternativa puoi :show_all_logs', ['show_all_logs' => '<a href="#" id="reset-ipa_code-filter">' . __('visualizzare i log relativi a tutte le pubbliche amministrazioni') . '</a>.']) !!}
@@ -15,7 +15,7 @@
         <div class="col-md-4">
             <div class="it-datepicker-wrapper">
                 <div class="form-group">
-                    <input type="text" class="form-control it-date-datepicker" name="start_date" id="start_date" value="{{ old('start_date') }}" maxlength="255">
+                    <input type="text" class="form-control it-date-datepicker" name="start_date" id="start_date" value="{{ old('start_date') }}" maxlength="50">
                     <label for="start_date">{{ __('Data di inizio') }}</label>
                     <div class="invalid-feedback"></div>
                 </div>
@@ -29,7 +29,7 @@
         <div class="col-md-4">
             <div class="it-datepicker-wrapper">
                 <div class="form-group">
-                    <input type="text" class="form-control it-date-datepicker" name="end_date" id="end_date" value="{{ old('end_date') }}" maxlength="255">
+                    <input type="text" class="form-control it-date-datepicker" name="end_date" id="end_date" value="{{ old('end_date') }}" maxlength="50">
                     <label for="end_date">{{ __('Data di fine') }}</label>
                     <div class="invalid-feedback"></div>
                 </div>
@@ -100,7 +100,7 @@
         <div class="form-group col-md-6">
             <div class="input-group">
                 <label for="website_id">{{ __('Sito web') }}</label>
-                <input type="search" autocomplete="off" class="form-control autocomplete" id="website_id" name="website_id" data-search="searchWebsites" data-source="{{ $searchWebsitesEndpoint }}" value="{{ old('website_id') }}" maxlength="255">
+                <input type="search" autocomplete="off" class="form-control autocomplete" id="website_id" name="website_id" data-search="searchWebsites" data-source="{{ $searchWebsitesEndpoint }}" value="{{ old('website_id') }}" maxlength="50">
                 <ul class="autocomplete-list"></ul>
                 <div class="searching-icon input-group-append">
                     <div class="input-group-text">
@@ -113,7 +113,7 @@
         <div class="form-group col-md-6">
             <div class="input-group">
                 <label for="user_uuid">{{ __('Utente') }}</label>
-                <input type="search" autocomplete="off" class="form-control autocomplete" id="user_uuid" name="user_uuid" data-search="searchUsers" data-source="{{ $searchUsersEndpoint }}" value="{{ old('user_uuid') }}" maxlength="255">
+                <input type="search" autocomplete="off" class="form-control autocomplete" id="user_uuid" name="user_uuid" data-search="searchUsers" data-source="{{ $searchUsersEndpoint }}" value="{{ old('user_uuid') }}" maxlength="50">
                 <ul class="autocomplete-list"></ul>
                 <div class="searching-icon input-group-append">
                     <div class="input-group-text">

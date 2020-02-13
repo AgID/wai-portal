@@ -43,16 +43,21 @@ class ProfileController extends Controller
         $validator = validator($request->all(), [
             'email' => [
                 'required',
-                'email',
+                'email:rfc,dns',
                 Rule::unique('users')->ignore($user->id),
+                'max:75',
             ],
             'name' => [
                 'required',
-                'string',
+                'alpha_name',
+                'min:2',
+                'max:50',
             ],
             'family_name' => [
                 'required',
-                'string',
+                'alpha_name',
+                'min:2',
+                'max:50',
             ],
         ]);
 

@@ -19,6 +19,8 @@ return [
     'alpha' => 'Il campo :attribute può contenere solo lettere.',
     'alpha_dash' => 'Il campo :attribute può contenere solo lettere, numeri e trattini.',
     'alpha_num' => 'Il campo :attribute può contenere solo lettere e numeri.',
+    'alpha_name' => 'Il campo :attribute può contenere solo lettere, spazi e apostrofo.',
+    'alpha_site' => 'Il campo :attribute può contenere solo lettere, spazi e punteggiatura.',
     'array' => 'Il campo :attribute deve essere un array.',
     'before' => 'Il campo :attribute deve essere precedente al :date.',
     'before_or_equal' => 'Il campo :attribute deve essere precedente o uguale al :date.',
