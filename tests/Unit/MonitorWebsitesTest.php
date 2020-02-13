@@ -56,7 +56,7 @@ class MonitorWebsitesTest extends TestCase
 
         $publicAdministration = factory(PublicAdministration::class)->create();
         $website = factory(Website::class)->state('active')->create([
-            'type' => WebsiteType::SECONDARY,
+            'type' => WebsiteType::SERVICE,
             'public_administration_id' => $publicAdministration->id,
             'created_at' => now()->subDays((int) config('wai.archive_expire') + 1),
         ]);
@@ -105,7 +105,7 @@ class MonitorWebsitesTest extends TestCase
 
         $publicAdministration = factory(PublicAdministration::class)->create();
         $website = factory(Website::class)->state('active')->create([
-            'type' => WebsiteType::SECONDARY,
+            'type' => WebsiteType::MOBILE,
             'public_administration_id' => $publicAdministration->id,
             'created_at' => now()->subDays((int) config('wai.archive_expire') + 1),
         ]);
@@ -154,7 +154,7 @@ class MonitorWebsitesTest extends TestCase
 
         $publicAdministration = factory(PublicAdministration::class)->create();
         $website = factory(Website::class)->state('active')->create([
-            'type' => WebsiteType::SECONDARY,
+            'type' => WebsiteType::INFORMATIONAL,
             'public_administration_id' => $publicAdministration->id,
             'created_at' => now()->subDays((int) config('wai.archive_expire') + 1),
         ]);
@@ -204,7 +204,7 @@ class MonitorWebsitesTest extends TestCase
 
         $publicAdministration = factory(PublicAdministration::class)->create();
         $website = factory(Website::class)->state('active')->create([
-            'type' => WebsiteType::SECONDARY,
+            'type' => WebsiteType::SERVICE,
             'public_administration_id' => $publicAdministration->id,
             'created_at' => now()->subDays((int) config('wai.archive_expire') + 1),
         ]);
@@ -251,7 +251,7 @@ class MonitorWebsitesTest extends TestCase
 
         $publicAdministration = factory(PublicAdministration::class)->create();
         $website = factory(Website::class)->state('active')->create([
-            'type' => WebsiteType::SECONDARY,
+            'type' => WebsiteType::INFORMATIONAL,
             'public_administration_id' => $publicAdministration->id,
             'created_at' => now()->subDays($daysToSub),
         ]);
@@ -300,7 +300,7 @@ class MonitorWebsitesTest extends TestCase
 
         $publicAdministration = factory(PublicAdministration::class)->create();
         $website = factory(Website::class)->state('active')->create([
-            'type' => WebsiteType::PRIMARY,
+            'type' => WebsiteType::INSTITUTIONAL,
             'public_administration_id' => $publicAdministration->id,
             'created_at' => now()->subDays($daysToSub),
         ]);
@@ -351,7 +351,7 @@ class MonitorWebsitesTest extends TestCase
 
         $publicAdministration = factory(PublicAdministration::class)->create();
         $website = factory(Website::class)->state('active')->create([
-            'type' => WebsiteType::SECONDARY,
+            'type' => WebsiteType::MOBILE,
             'public_administration_id' => $publicAdministration->id,
             'created_at' => now()->subDays((int) config('wai.archive_expire') + 1),
         ]);
@@ -400,7 +400,7 @@ class MonitorWebsitesTest extends TestCase
 
         $publicAdministration = factory(PublicAdministration::class)->create();
         $website = factory(Website::class)->state('active')->create([
-            'type' => WebsiteType::PRIMARY,
+            'type' => WebsiteType::INSTITUTIONAL,
             'public_administration_id' => $publicAdministration->id,
             'created_at' => now()->subDays((int) config('wai.archive_expire') + 1),
         ]);
@@ -440,7 +440,7 @@ class MonitorWebsitesTest extends TestCase
     {
         $publicAdministration = factory(PublicAdministration::class)->create();
         $website = factory(Website::class)->state('active')->create([
-            'type' => WebsiteType::SECONDARY,
+            'type' => WebsiteType::INFORMATIONAL,
             'public_administration_id' => $publicAdministration->id,
             'created_at' => now()->subDays((int) config('wai.archive_expire') + 1),
         ]);

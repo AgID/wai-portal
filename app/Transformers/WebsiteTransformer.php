@@ -97,7 +97,7 @@ class WebsiteTransformer extends TransformerAbstract
                     'title' => __('modifica'),
                 ];
 
-                if (!$website->type->is(WebsiteType::PRIMARY)) {
+                if (!$website->type->is(WebsiteType::INSTITUTIONAL)) {
                     if ($website->status->is(WebsiteStatus::ACTIVE)) {
                         $data['buttons'][] = [
                             'link' => $authUserCanAccessAdminArea
@@ -152,7 +152,7 @@ class WebsiteTransformer extends TransformerAbstract
         }
 
         if ($authUserCanAccessAdminArea) {
-            if (!$website->type->is(WebsiteType::PRIMARY)) {
+            if (!$website->type->is(WebsiteType::INSTITUTIONAL)) {
                 if ($website->trashed()) {
                     $data['status'] = '';
                     $data['trashed'] = true;

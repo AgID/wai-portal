@@ -77,7 +77,7 @@ class UpdatePublicAdministrationsFromIpaTest extends TestCase
             'url' => 'www.camera.com',
             'slug' => Str::slug('www.camera.com'),
             'public_administration_id' => $public_administration->id,
-            'type' => WebsiteType::PRIMARY,
+            'type' => WebsiteType::INSTITUTIONAL,
         ]);
 
         $job = new ProcessPublicAdministrationsUpdateFromIpa();

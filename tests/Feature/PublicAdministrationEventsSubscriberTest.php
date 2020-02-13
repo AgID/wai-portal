@@ -56,7 +56,7 @@ class PublicAdministrationEventsSubscriberTest extends TestCase
         $this->publicAdministration->users()->sync([$this->user->id]);
         $this->publicAdministration->save();
         $this->website = factory(Website::class)->create([
-            'type' => WebsiteType::PRIMARY,
+            'type' => WebsiteType::INSTITUTIONAL,
             'analytics_id' => 1,
             'public_administration_id' => $this->publicAdministration->id,
         ]);

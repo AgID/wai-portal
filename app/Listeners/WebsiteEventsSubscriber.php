@@ -56,7 +56,7 @@ class WebsiteEventsSubscriber implements ShouldQueue
             $context['user'] = $user->uuid;
         }
 
-        if (!$website->type->is(WebsiteType::PRIMARY)) {
+        if (!$website->type->is(WebsiteType::INSTITUTIONAL)) {
             //Notify the registering user
             $user->sendWebsiteAddedNotification($website);
         }
@@ -109,7 +109,7 @@ class WebsiteEventsSubscriber implements ShouldQueue
 
         //NOTE: primary websites are added to roll up report
         //      by "public administration activated" event handler
-        if (!$website->type->is(WebsiteType::PRIMARY)) {
+        if (!$website->type->is(WebsiteType::INSTITUTIONAL)) {
             try {
                 $publicAdministration->addToRollUp($website);
             } catch (Exception $exception) {
@@ -284,7 +284,7 @@ class WebsiteEventsSubscriber implements ShouldQueue
 
         //NOTE: for primary websites use PublicAdministrationPurged
         //      event to notify administrators
-        if (WebsiteType::PRIMARY !== $website->type) {
+        if (WebsiteType::INSTITUTIONAL !== $website->type) {
             //Notify public administration administrators
             $publicAdministration = PublicAdministration::findByIpaCode($publicAdministration->ipa_code);
             $publicAdministration->sendWebsitePurgedNotificationToAdministrators($website);

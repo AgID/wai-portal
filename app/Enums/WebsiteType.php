@@ -11,22 +11,22 @@ use BenSampo\Enum\Enum;
 final class WebsiteType extends Enum implements LocalizedEnum
 {
     /**
-     * Primary Public Administration site.
+     * Institutional Public Administration site.
      */
-    public const PRIMARY = 0;
+    public const INSTITUTIONAL = 0;
 
     /**
-     * Generic addition site.
+     * Informational Public Administration site.
      */
-    public const SECONDARY = 1;
+    public const INFORMATIONAL = 1;
 
     /**
-     * Web application site.
+     * Digital Services Public Administration site.
      */
-    public const WEBAPP = 2;
+    public const SERVICE = 2;
 
     /**
-     * Testing site.
+     * Mobile application.
      */
-    public const TESTING = 3;
+    public const MOBILE = 3;
 }

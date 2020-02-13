@@ -68,7 +68,7 @@
                     {{ __("Hai bisogno di aiuto con l'attivazione?") }} <a href="{{ route('faq') }}">{{ __('Consulta le FAQ') }}</a>
                 </p>
                 @endif
-                @elseif (!$website->type->is(WebsiteType::PRIMARY))
+                @elseif (!$website->type->is(WebsiteType::INSTITUTIONAL))
                 @can(UserPermission::MANAGE_WEBSITES)
                 @if ($website->status->is(WebsiteStatus::ACTIVE))
                 <h5 class="section-header">{{ __('archiviazione') }}</h5>

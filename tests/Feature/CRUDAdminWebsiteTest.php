@@ -62,7 +62,7 @@ class CRUDAdminWebsiteTest extends TestCase
             ->create();
         $this->website = factory(Website::class)->make([
             'public_administration_id' => $this->publicAdministration->id,
-            'type' => WebsiteType::TESTING,
+            'type' => WebsiteType::INFORMATIONAL,
         ]);
         $analyticsId = $this->app->make('analytics-service')->registerSite($this->website->name . ' [' . $this->website->type->value . ']', $this->website->url, $this->publicAdministration->name);
         $this->website->analytics_id = $analyticsId;
@@ -135,7 +135,7 @@ class CRUDAdminWebsiteTest extends TestCase
     public function testDeleteWebsitePrimaryFail(): void
     {
         Event::fakeFor(function () {
-            $this->website->type = WebsiteType::PRIMARY;
+            $this->website->type = WebsiteType::INSTITUTIONAL;
             $this->website->save();
         });
 

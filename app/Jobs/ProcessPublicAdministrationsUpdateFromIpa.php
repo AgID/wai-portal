@@ -90,7 +90,7 @@ class ProcessPublicAdministrationsUpdateFromIpa implements ShouldQueue
             return [];
         })->all();
 
-        $primaryWebsite = $publicAdministration->websites()->where('type', WebsiteType::PRIMARY)->first();
+        $primaryWebsite = $publicAdministration->websites()->where('type', WebsiteType::INSTITUTIONAL)->first();
         if (!empty($primaryWebsite) && !empty($updatedPublicAdministration['site']) && $primaryWebsite->slug !== Str::slug($updatedPublicAdministration['site'])) {
             $updates['site'] = [
                 'old' => $primaryWebsite->url,

@@ -98,7 +98,7 @@ class WebsiteEventsSubscriberTest extends TestCase
     public function testWebsiteActivatedRollUpsUpdate(): void
     {
         Event::fakeFor(function () {
-            $this->website->type = WebsiteType::SECONDARY;
+            $this->website->type = WebsiteType::INFORMATIONAL;
             $this->website->save();
         });
 
@@ -142,7 +142,7 @@ class WebsiteEventsSubscriberTest extends TestCase
     public function testWebsiteActivatedRollUpsUpdateFail(): void
     {
         Event::fakeFor(function () {
-            $this->website->type = WebsiteType::SECONDARY;
+            $this->website->type = WebsiteType::SERVICE;
             $this->website->save();
         });
 
@@ -216,7 +216,7 @@ class WebsiteEventsSubscriberTest extends TestCase
     public function testWebsiteAddedByUser(): void
     {
         Event::fakeFor(function () {
-            $this->website->type = WebsiteType::SECONDARY;
+            $this->website->type = WebsiteType::SERVICE;
             $this->website->save();
         });
         $secondUser = factory(User::class)->state('active')->create();
@@ -294,7 +294,7 @@ class WebsiteEventsSubscriberTest extends TestCase
     public function testWebsiteAddedBySuperAdmin(): void
     {
         Event::fakeFor(function () {
-            $this->website->type = WebsiteType::SECONDARY;
+            $this->website->type = WebsiteType::MOBILE;
             $this->website->save();
         });
         $secondUser = factory(User::class)->state('active')->create();
@@ -715,7 +715,7 @@ class WebsiteEventsSubscriberTest extends TestCase
     public function testWebsitePurged(): void
     {
         Event::fakeFor(function () {
-            $this->website->type = WebsiteType::SECONDARY;
+            $this->website->type = WebsiteType::MOBILE;
             $this->website->save();
         });
 

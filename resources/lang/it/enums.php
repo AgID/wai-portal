@@ -97,10 +97,10 @@ return [
     ],
 
     WebsiteType::class => [
-        WebsiteType::PRIMARY => 'sito istituzionale',
-        WebsiteType::SECONDARY => 'informativo o tematico',
-        WebsiteType::WEBAPP => 'interattivo o web application',
-        WebsiteType::TESTING => 'testing o staging',
+        WebsiteType::INSTITUTIONAL => 'sito istituzionale',
+        WebsiteType::INFORMATIONAL => 'sito informativo',
+        WebsiteType::SERVICE => 'sito di servizi',
+        WebsiteType::MOBILE => 'applicazione per dispositivi mobili',
     ],
 
     WebsiteAccessType::class => [

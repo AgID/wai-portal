@@ -67,7 +67,7 @@ class MonitorWebsitesTracking implements ShouldQueue
 
                     if (empty($filteredVisits)) {
                         // NOTE: primary website cannot be archived
-                        if ($website->type->is(WebsiteType::PRIMARY)) {
+                        if ($website->type->is(WebsiteType::INSTITUTIONAL)) {
                             // NOTE: prevent daily notifications spam
                             if (Carbon::now()->isoWeekday() === $notificationDay) {
                                 event(new PrimaryWebsiteNotTracking($website));
@@ -104,8 +104,8 @@ class MonitorWebsitesTracking implements ShouldQueue
                     if (Carbon::now()->subDays($intervalWarning)->greaterThanOrEqualTo($lastVisit)) {
                         $daysLeftBeforeArchiving = Carbon::now()->diffInDays($lastVisit);
 
-                        if ((0 === ($daysLeftBeforeArchiving - $intervalWarning) % $notificationInterval) || (Carbon::now()->subDays($intervalArchive - $daysDailyNotification)->greaterThanOrEqualTo($lastVisit) && !$website->type->is(WebsiteType::PRIMARY))) {
-                            $website->type->is(WebsiteType::PRIMARY) ? event(new PrimaryWebsiteNotTracking($website)) : event(new WebsiteArchiving($website, $daysLeftBeforeArchiving));
+                        if ((0 === ($daysLeftBeforeArchiving - $intervalWarning) % $notificationInterval) || (Carbon::now()->subDays($intervalArchive - $daysDailyNotification)->greaterThanOrEqualTo($lastVisit) && !$website->type->is(WebsiteType::INSTITUTIONAL))) {
+                            $website->type->is(WebsiteType::INSTITUTIONAL) ? event(new PrimaryWebsiteNotTracking($website)) : event(new WebsiteArchiving($website, $daysLeftBeforeArchiving));
 
                             return [
                                 'archiving' => [
