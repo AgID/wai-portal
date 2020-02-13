@@ -79,7 +79,7 @@ class CRUDWebsiteTest extends TestCase
         $this->website = factory(Website::class)->create([
             'public_administration_id' => $this->publicAdministration->id,
             'status' => WebsiteStatus::ACTIVE,
-            'type' => WebsiteType::PRIMARY,
+            'type' => WebsiteType::INSTITUTIONAL,
         ]);
         $this->publicAdministration->users()->sync([$this->user->id]);
 
@@ -241,9 +241,9 @@ class CRUDWebsiteTest extends TestCase
             ])
             ->from(route('websites.create'))
             ->post(route('websites.store'), [
-                'website_name' => 'Sito secondario',
+                'website_name' => 'Sito tematico',
                 'url' => 'https://www.test.local',
-                'type' => WebsiteType::TESTING,
+                'type' => WebsiteType::INFORMATIONAL,
                 'permissions' => [
                     $secondUser->id => [
                         UserPermission::READ_ANALYTICS,
@@ -296,7 +296,7 @@ class CRUDWebsiteTest extends TestCase
             ->from(route('websites.create'))
             ->post(route('websites.store'), [
                 'url' => 'www.camera.it',
-                'type' => WebsiteType::PRIMARY,
+                'type' => WebsiteType::INSTITUTIONAL,
             ])
             ->assertSessionHasErrors([
                 'website_name',
@@ -334,7 +334,7 @@ class CRUDWebsiteTest extends TestCase
 
         do {
             $secondWebsite = factory(Website::class)->make([
-                'type' => WebsiteType::WEBAPP,
+                'type' => WebsiteType::MOBILE,
                 'public_administration_id' => $this->publicAdministration->id,
             ]);
         } while ($secondWebsite->slug === $this->website->slug);
@@ -351,9 +351,9 @@ class CRUDWebsiteTest extends TestCase
             ])
             ->from(route('websites.edit', ['website' => $secondWebsite->slug]))
             ->put(route('websites.update', ['website' => $secondWebsite->slug]), [
-                'website_name' => 'Nuovo nome sito secondario',
+                'website_name' => 'Nuovo nome sito tematico',
                 'url' => 'https://www.test.local',
-                'type' => WebsiteType::TESTING,
+                'type' => WebsiteType::INFORMATIONAL,
                 'permissions' => [
                     $secondUser->id => [
                         UserPermission::READ_ANALYTICS,
@@ -371,8 +371,8 @@ class CRUDWebsiteTest extends TestCase
             $website = $event->getWebsite();
 
             return Str::slug('https://www.test.local') === $website->slug
-                && 'Nuovo nome sito secondario' === $website->name
-                && WebsiteType::TESTING === $website->type->value;
+                && 'Nuovo nome sito tematico' === $website->name
+                && WebsiteType::INFORMATIONAL === $website->type->value;
         });
 
         Event::assertDispatched(UserWebsiteAccessChanged::class, function ($event) use ($secondUser) {
@@ -395,7 +395,7 @@ class CRUDWebsiteTest extends TestCase
     {
         do {
             $secondWebsite = factory(Website::class)->make([
-                'type' => WebsiteType::WEBAPP,
+                'type' => WebsiteType::MOBILE,
                 'public_administration_id' => $this->publicAdministration->id,
             ]);
         } while ($this->website->slug === $secondWebsite->slug);
@@ -410,7 +410,7 @@ class CRUDWebsiteTest extends TestCase
             ->from(route('websites.edit', ['website' => $secondWebsite->slug]))
             ->put(route('websites.update', ['website' => $secondWebsite->slug]), [
                 'url' => 'www.camera.it',
-                'type' => WebsiteType::PRIMARY,
+                'type' => WebsiteType::INSTITUTIONAL,
             ])
             ->assertSessionHasErrors([
                 'website_name',
@@ -499,7 +499,7 @@ class CRUDWebsiteTest extends TestCase
             ->put(route('websites.update', ['website' => $this->website->slug]), [
                 'website_name' => $this->website->name,
                 'url' => $this->website->url,
-                'type' => WebsiteType::getDescription(WebsiteType::PRIMARY),
+                'type' => WebsiteType::getDescription(WebsiteType::INSTITUTIONAL),
                 'permissions' => [
                     $secondUser->id => [
                         UserPermission::READ_ANALYTICS,
@@ -551,7 +551,7 @@ class CRUDWebsiteTest extends TestCase
             ->from(route('websites.edit', ['website' => $this->website->slug]))
             ->put(route('websites.update', ['website' => $this->website->slug]), [
                 'url' => 'https://www.test.local',
-                'type' => WebsiteType::TESTING,
+                'type' => WebsiteType::INFORMATIONAL,
                 'permissions' => [
                     $secondUser->id => [
                         UserPermission::READ_ANALYTICS,

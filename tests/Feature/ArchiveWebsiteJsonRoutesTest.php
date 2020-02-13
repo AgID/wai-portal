@@ -67,7 +67,7 @@ class ArchiveWebsiteJsonRoutesTest extends TestCase
         $this->publicAdministration->users()->sync($this->user->id);
         $this->website = factory(Website::class)->create([
             'status' => WebsiteStatus::ACTIVE,
-            'type' => WebsiteType::SECONDARY,
+            'type' => WebsiteType::INFORMATIONAL,
             'public_administration_id' => $this->publicAdministration->id,
         ]);
 
@@ -156,7 +156,7 @@ class ArchiveWebsiteJsonRoutesTest extends TestCase
      */
     public function testArchiveFailOnPrimarySiteRoute(): void
     {
-        $this->website->type = WebsiteType::PRIMARY;
+        $this->website->type = WebsiteType::INSTITUTIONAL;
         $this->website->save();
 
         $response = $this->actingAs($this->user, 'web')
@@ -211,7 +211,7 @@ class ArchiveWebsiteJsonRoutesTest extends TestCase
 //    {
 //        $website = factory(Website::class)->create([
 //            'public_administration_id' => $this->publicAdministration->id,
-//            'type' => WebsiteType::SECONDARY,
+//            'type' => WebsiteType::INFORMATIONAL,
 //            'status' => WebsiteStatus::ACTIVE,
 //        ]);
 //
@@ -290,7 +290,7 @@ class ArchiveWebsiteJsonRoutesTest extends TestCase
      */
     public function testUnarchiveFailOnPrimarySiteRoute(): void
     {
-        $this->website->type = WebsiteType::PRIMARY;
+        $this->website->type = WebsiteType::INSTITUTIONAL;
         $this->website->save();
 
         $response = $this->actingAs($this->user, 'web')
@@ -346,7 +346,7 @@ class ArchiveWebsiteJsonRoutesTest extends TestCase
 //        $website = factory(Website::class)->create([
 //            'public_administration_id' => $this->publicAdministration->id,
 //            'status' => WebsiteStatus::ARCHIVED,
-//            'type' => WebsiteType::SECONDARY,
+//            'type' => WebsiteType::INFORMATIONAL,
 //        ]);
 //
 //        $response = $this->actingAs($this->user)
