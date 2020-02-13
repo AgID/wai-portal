@@ -281,6 +281,7 @@
                 <exec command="docker cp phpunit.dusk.xml application-container:${APP_CODE_PATH_CONTAINER}" checkreturn="true"/>
                 <exec command="docker cp phpunit.xml application-container:${APP_CODE_PATH_CONTAINER}" checkreturn="true"/>
                 <exec command="docker cp .node-version application-container:${APP_CODE_PATH_CONTAINER}" checkreturn="true"/>
+                <exec command="docker cp lighthouserc.json application-container:${APP_CODE_PATH_CONTAINER}" checkreturn="true"/>
             </then>
             <else>
                 <echo msg="Create log directories if needed..."/>
