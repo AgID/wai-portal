@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use App\Models\Website;
+use App\Notifications\RTDEmailAddressChangedEmail;
 use App\Notifications\RTDPublicAdministrationRegisteredEmail;
 use App\Notifications\RTDWebsiteActivatedEmail;
 
@@ -31,5 +32,10 @@ trait SendsNotificationsToPublicAdministrationRTD
     public function sendWebsiteActivatedNotificationToRTD(Website $website): void
     {
         $this->notify(new RTDWebsiteActivatedEmail($website));
+    }
+
+    public function sendPublicAdministrationUpdatedRTD(): void
+    {
+        $this->notify(new RTDEmailAddressChangedEmail());
     }
 }

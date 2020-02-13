@@ -15,6 +15,7 @@ use App\Traits\SendsNotificationsToSuperAdmin;
 use Exception;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Events\Dispatcher;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cache;
 
 /**
@@ -108,6 +109,12 @@ class PublicAdministrationEventsSubscriber implements ShouldQueue
     public function onUpdated(PublicAdministrationUpdated $event): void
     {
         $publicAdministration = $event->getPublicAdministration();
+
+        if (Arr::has($event->getUpdates(), 'rtd_mail')) {
+            //Notify new RTD
+            $publicAdministration->sendPublicAdministrationUpdatedRTD();
+        }
+
         logger()->notice(
             'Public Administration ' . $publicAdministration->info . ' updated',
             [
