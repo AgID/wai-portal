@@ -119,7 +119,7 @@ class WebsiteController extends Controller
         $website = Website::create([
             'name' => $publicAdministration->name,
             'url' => $primaryWebsiteURL,
-            'type' => WebsiteType::PRIMARY,
+            'type' => WebsiteType::INSTITUTIONAL,
             'public_administration_id' => $publicAdministration->id,
             'analytics_id' => $analyticsId,
             'slug' => Str::slug($primaryWebsiteURL),
@@ -283,7 +283,7 @@ class WebsiteController extends Controller
             ? $publicAdministration
             : current_public_administration();
 
-        if (!$website->type->is(WebsiteType::PRIMARY)) {
+        if (!$website->type->is(WebsiteType::INSTITUTIONAL)) {
             if ($website->slug !== Str::slug($validatedData['url'])) {
                 app()->make('analytics-service')->updateSite($website->analytics_id, $validatedData['website_name'] . ' [' . $validatedData['type'] . ']', $validatedData['url'], $website->publicAdministration->name);
             }
@@ -325,7 +325,7 @@ class WebsiteController extends Controller
         }
 
         try {
-            if ($website->type->is(WebsiteType::PRIMARY)) {
+            if ($website->type->is(WebsiteType::INSTITUTIONAL)) {
                 throw new OperationNotAllowedException('Delete request not allowed on primary website ' . $website->info . '.');
             }
 
@@ -449,7 +449,7 @@ class WebsiteController extends Controller
         }
 
         try {
-            if (!$website->type->is(WebsiteType::PRIMARY)) {
+            if (!$website->type->is(WebsiteType::INSTITUTIONAL)) {
                 if ($website->status->is(WebsiteStatus::ACTIVE)) {
                     $website->status = WebsiteStatus::ARCHIVED;
                     app()->make('analytics-service')->changeArchiveStatus($website->analytics_id, WebsiteStatus::ARCHIVED);
@@ -501,7 +501,7 @@ class WebsiteController extends Controller
     public function unarchive(PublicAdministration $publicAdministration, Website $website)
     {
         try {
-            if (!$website->type->is(WebsiteType::PRIMARY)) {
+            if (!$website->type->is(WebsiteType::INSTITUTIONAL)) {
                 if ($website->status->is(WebsiteStatus::ACTIVE)) {
                     return $this->notModifiedResponse();
                 }

@@ -39,7 +39,7 @@ class StoreWebsiteRequest extends FormRequest
             'url' => 'required|url|unique:websites|max:255',
             'type' => [
                 'required',
-                Rule::in([WebsiteType::SECONDARY, WebsiteType::WEBAPP, WebsiteType::TESTING]),
+                Rule::in([WebsiteType::INFORMATIONAL, WebsiteType::SERVICE, WebsiteType::MOBILE]),
             ],
             'permissions' => 'array',
             'permissions.*' => 'array',

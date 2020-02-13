@@ -13,7 +13,7 @@ $factory->define(Website::class, function (Faker $faker) {
     return [
         'name' => $faker->words(5, true),
         'url' => $domain_name,
-        'type' => WebsiteType::PRIMARY,
+        'type' => WebsiteType::INSTITUTIONAL,
         'slug' => Str::slug($domain_name),
         'analytics_id' => rand(),
         'status' => WebsiteStatus::PENDING,
