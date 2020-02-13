@@ -32,7 +32,7 @@ Route::get('/', 'HomeController@home')
 Route::get('/how-to-join', 'HomeController@howToJoin')
     ->name('how-to-join');
 
-    Route::get('/privacy', 'HomeController@privacy')
+Route::get('/privacy', 'HomeController@privacy')
     ->name('privacy');
 
 Route::get('/legal-notes', 'HomeController@legalNotes')
