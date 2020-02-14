@@ -73,11 +73,11 @@ class HomeTest extends TestCase
     /**
      * Test open data view.
      */
-    public function testOpenDataView(): void
-    {
-        $this->get(route('open-data'))
-            ->assertViewIs('pages.open-data');
-    }
+    // public function testOpenDataView(): void
+    // {
+    //     $this->get(route('open-data'))
+    //         ->assertViewIs('pages.open-data');
+    // }
 
     /**
      * Test privacy view.
