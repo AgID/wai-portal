@@ -5,11 +5,9 @@ namespace Tests\Unit;
 use App\Events\Jobs\ClosedBetaWhitelistUpdateFailed;
 use App\Jobs\UpdateClosedBetaWhitelist;
 use App\Models\ClosedBetaWhitelist;
-use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Event;
-use Symfony\Component\Yaml\Yaml;
 use Tests\TestCase;
 
 /**

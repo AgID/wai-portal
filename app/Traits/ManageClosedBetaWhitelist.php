@@ -7,12 +7,17 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Symfony\Component\Yaml\Yaml;
 
+/**
+ * Manage closed beta whitelist retrieve.
+ */
 trait ManageClosedBetaWhitelist
 {
     /**
-     * @param array|null $payload
+     * Get the closed beta whitelist.
      *
-     * @return Collection
+     * @param array|null $payload the webhook parameters or null to use local configuration
+     *
+     * @return Collection the closed beta whitelist
      */
     public function download(?array $payload = null): Collection
     {
