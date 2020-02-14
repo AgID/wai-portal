@@ -79,10 +79,10 @@ class HomeController extends Controller
      *
      * @return View the view
      */
-    public function openData(): View
-    {
-        return view('pages.open-data');
-    }
+    // public function openData(): View
+    // {
+    //     return view('pages.open-data');
+    // }
 
     /**
      * Show the application privacy info.

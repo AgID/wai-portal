@@ -37,8 +37,8 @@ it:
       secondary:
         - name: Come partecipare
           route: how-to-join
-        - name: Open data
-          route: open-data
+        # - name: Open data
+        #   route: open-data
         - name: FAQ
           route: faq
 
@@ -59,15 +59,15 @@ it:
         url: https://github.com/italia/
 
     footer_links:
-      primary:
-        - name: Come partecipare
-          route: how-to-join
-        - name: Domande frequenti
-          route: faq
-        - name: Open data
-          route: open-data
-        - name: Dichiarazione di accessibilità
-          url: https://form.agid.gov.it/
+      # primary:
+      #   - name: Come partecipare
+      #     route: how-to-join
+      #   - name: Domande frequenti
+      #     route: faq
+      #   - name: Open data
+      #     route: open-data
+      #   - name: Dichiarazione di accessibilità
+      #     url: https://form.agid.gov.it/
       secondary:
         - name: Privacy policy
           route: privacy
@@ -83,8 +83,8 @@ it:
         url: https://twitter.com/AgidGov
       - name: youtube
         url: https://www.youtube.com/channel/UCxJmOWf__YcLgB19gy5dGQQ
-      - name: medium
-        url: https://medium.com/designers-italia
+      # - name: medium
+      #   url: https://medium.com/designers-italia
 
     trackers:
       matomo: "1"

@@ -55,7 +55,7 @@ required:
           pill: "//str"
           footer_links:
             type: "//rec"
-            required:
+            optional:
               primary:
                 type: "//arr"
                 contents:
@@ -65,7 +65,6 @@ required:
                   optional:
                     route: "//str"
                     url: "//str"
-            optional:
               secondary:
                 type: "//arr"
                 contents:

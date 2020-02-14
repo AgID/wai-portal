@@ -28,6 +28,7 @@
                         </div>
                     </div>
                 </div>
+                @if(config('site.footer_links.primary'))
                 <div class="footer-primary-menu row justify-content-between mb-4">
                     @foreach (config('site.footer_links.primary') as $footerPrimaryMenuItem)
                     <div class="p-2">
@@ -39,6 +40,7 @@
                     </div>
                     @endforeach
                 </div>
+                @endif
                 @include('layouts.includes.footer_band')
             </section>
         </div>
