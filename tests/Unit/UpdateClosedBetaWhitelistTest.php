@@ -2,10 +2,13 @@
 
 namespace Tests\Unit;
 
+use App\Events\Jobs\ClosedBetaWhitelistUpdateFailed;
 use App\Jobs\UpdateClosedBetaWhitelist;
 use App\Models\ClosedBetaWhitelist;
+use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Event;
 use Symfony\Component\Yaml\Yaml;
 use Tests\TestCase;
 
@@ -14,28 +17,31 @@ use Tests\TestCase;
  */
 class UpdateClosedBetaWhitelistTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        Event::fake();
+    }
+
     /**
      * Test job processing.
      */
     public function testClosedBetaWhitelistUpdateJob(): void
     {
-        $data = ['first item', 'second item'];
-        $payload = Yaml::dump($data);
+        $data = [
+            'ref' => 'develop',
+            'repository' => [
+                'full_name' => 'pdavide/wai-portal',
+            ],
+        ];
+
+        Config::set('webhook-client.configs.0.repository.full_name', 'pdavide/wai-portal');
+        Config::set('webhook-client.configs.0.repository.branch', 'develop');
+        Config::set('webhook-client.configs.0.repository.file_name', 'resources/data/config.yml');
 
         Cache::shouldReceive('forever')
-            ->withArgs(function (...$args) use ($data) {
-                return 2 === count($args)
-                    && UpdateClosedBetaWhitelist::CLOSED_BETA_WHITELIST_KEY === $args[0]
-                    && $data == $args[1]->toArray();
-            })
-            ->once()
-            ->andReturn(true);
-
-        Storage::shouldReceive('put')
-            ->withArgs([
-                UpdateClosedBetaWhitelist::CLOSED_BETA_WHITELIST_FILENAME,
-                $payload,
-            ])
+            ->withSomeOfArgs(UpdateClosedBetaWhitelist::CLOSED_BETA_WHITELIST_KEY)
             ->once()
             ->andReturn(true);
 
@@ -44,5 +50,30 @@ class UpdateClosedBetaWhitelistTest extends TestCase
         ]);
 
         dispatch(new UpdateClosedBetaWhitelist($webookWhitelist));
+
+        Event::assertNotDispatched(ClosedBetaWhitelistUpdateFailed::class);
+    }
+
+    /**
+     * Test job processing failed.
+     */
+    public function testClosedBetaWhitelistUpdateJobFailed(): void
+    {
+        $data = [
+            'ref' => 'fake',
+            'repository' => [
+                'full_name' => 'pdavide/wai-portal',
+            ],
+        ];
+
+        Config::set('webhook-client.configs.0.repository.file_name', 'fake.yml');
+
+        $webookWhitelist = factory(ClosedBetaWhitelist::class)->make([
+            'payload' => $data,
+        ]);
+
+        dispatch(new UpdateClosedBetaWhitelist($webookWhitelist));
+
+        Event::assertDispatched(ClosedBetaWhitelistUpdateFailed::class);
     }
 }

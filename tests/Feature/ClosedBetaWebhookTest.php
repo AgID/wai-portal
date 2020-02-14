@@ -7,7 +7,6 @@ use App\Jobs\UpdateClosedBetaWhitelist;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Config;
 use Spatie\WebhookClient\Exceptions\WebhookFailed;
-use Symfony\Component\Yaml\Yaml;
 use Tests\TestCase;
 
 /**
@@ -36,12 +35,16 @@ class ClosedBetaWebhookTest extends TestCase
     {
         parent::setUp();
 
-        $secret = '256394010059991a71ea05e5d859d2be';
-        $this->content = Yaml::dump(['inps', 'inail']);
-        $this->signature = hash_hmac('sha256', $this->content, $secret);
+        $secret = config('webhook-client.configs.0.signing_secret');
+        $this->content = [
+            'ref' => 'fake',
+            'repository' => [
+                'full_name' => 'owner/repo',
+            ],
+        ];
+        $this->signature = 'sha1=' . hash_hmac('sha1', json_encode($this->content), $secret);
 
         Config::set('wai.closed_beta', false);
-        Config::set('webhook-client.configs.0.signing_secret', $secret);
         Config::set('app.url', 'https://nginx');
     }
 
@@ -60,7 +63,7 @@ class ClosedBetaWebhookTest extends TestCase
 
         $client = (new Client(['base_uri' => config('app.url')]));
         $response = $client->request('POST', route('webhook-client-closed-beta-whitelist', [], false), [
-            'body' => $this->content,
+            'body' => json_encode($this->content),
             'verify' => false,
             'http_errors' => false,
         ]);
@@ -83,8 +86,8 @@ class ClosedBetaWebhookTest extends TestCase
 
         $client = (new Client(['base_uri' => config('app.url')]));
         $response = $client->request('POST', route('webhook-client-closed-beta-whitelist', [], false), [
-            'headers' => ['Signature' => hash_hmac('sha256', '- fake content', 'secret')],
-            'body' => $this->content,
+            'headers' => ['X-Hub-Signature' => 'sha1=' . hash_hmac('sha1', '- fake content', 'secret')],
+            'body' => json_encode($this->content),
             'verify' => false,
             'http_errors' => false,
         ]);
@@ -102,8 +105,8 @@ class ClosedBetaWebhookTest extends TestCase
 
         $client = (new Client(['base_uri' => config('app.url')]));
         $response = $client->request('POST', route('webhook-client-closed-beta-whitelist', [], false), [
-            'headers' => ['Signature' => $this->signature],
-            'body' => $this->content,
+            'headers' => ['X-Hub-Signature' => $this->signature],
+            'body' => json_encode($this->content),
             'verify' => false,
         ]);
 
@@ -124,8 +127,8 @@ class ClosedBetaWebhookTest extends TestCase
 
         $client = (new Client(['base_uri' => config('app.url')]));
         $response = $client->request('POST', route('webhook-client-closed-beta-whitelist', [], false), [
-            'headers' => ['Signature' => $this->signature],
-            'body' => $this->content,
+            'headers' => ['X-Hub-Signature' => $this->signature],
+            'body' => json_encode($this->content),
             'verify' => false,
         ]);
 
