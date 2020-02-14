@@ -469,7 +469,7 @@ class PublicAdministrationEventsSubscriberTest extends TestCase
                 $mail = $notification->toMail($activeSuperAdmin)->build();
                 $this->assertEquals($activeSuperAdmin->uuid, $mail->viewData['user']['uuid']);
                 $this->assertEquals($this->publicAdministration->ipa_code, $mail->viewData['publicAdministration']['ipa_code']);
-                $this->assertEquals($mail->subject, __('Pubblica amministrazione non trovata in iPA'));
+                $this->assertEquals($mail->subject, __('Pubblica amministrazione non trovata in IPA'));
 
                 return $mail->hasTo($activeSuperAdmin->email, $activeSuperAdmin->full_name);
             }
