@@ -11,9 +11,11 @@ use App\Events\PublicAdministration\PublicAdministrationPurged;
 use App\Events\PublicAdministration\PublicAdministrationRegistered;
 use App\Events\PublicAdministration\PublicAdministrationUpdated;
 use App\Models\PublicAdministration;
+use App\Traits\SendsNotificationsToSuperAdmin;
 use Exception;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Events\Dispatcher;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cache;
 
 /**
@@ -21,6 +23,8 @@ use Illuminate\Support\Facades\Cache;
  */
 class PublicAdministrationEventsSubscriber implements ShouldQueue
 {
+    use SendsNotificationsToSuperAdmin;
+
     /**
      * Public Administration registered callback.
      *
@@ -105,6 +109,12 @@ class PublicAdministrationEventsSubscriber implements ShouldQueue
     public function onUpdated(PublicAdministrationUpdated $event): void
     {
         $publicAdministration = $event->getPublicAdministration();
+
+        if (Arr::has($event->getUpdates(), 'rtd_mail')) {
+            //Notify new RTD
+            $publicAdministration->sendPublicAdministrationUpdatedRTD();
+        }
+
         logger()->notice(
             'Public Administration ' . $publicAdministration->info . ' updated',
             [
@@ -121,8 +131,10 @@ class PublicAdministrationEventsSubscriber implements ShouldQueue
      */
     public function onNotFoundInIpa(PublicAdministrationNotFoundInIpa $event): void
     {
-        // TODO: send notification to super-admins
         $publicAdministration = $event->getPublicAdministration();
+
+        $this->sendPublicAdministrationNotFoundInIpa($publicAdministration);
+
         logger()->warning(
             'Public Administration ' . $publicAdministration->info . ' not found',
             [
