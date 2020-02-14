@@ -12,8 +12,8 @@ it:
     pill: alpha
     highlight:
       production: |
-        **Web Analytics Italia** è in una fase di beta chiusa. [Maggiori
-        informazioni](https://designers.italia.it/progetti/web-analytics-italia/).
+        **Web Analytics Italia** è in una fase di beta chiusa.
+        [Cosa significa?](/faq#beta-chiusa).
       public-playground: |
         Questo è l'ambiente **public playground**. Ogni settimana il sistema
         viene automaticamente resettato. [Maggiori
