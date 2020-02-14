@@ -53,13 +53,18 @@ a.external-link {
   color: $neutral-1-a10;
   margin-bottom: 2rem;
 
-  &.long-dash::before {
-    content: '';
-    display: inline-block;
-    border-top: 1px solid $primary;
-    width: 36px;
-    margin-right: 18px;
-    padding-top: 5px;
+  &.long-dash {
+    text-indent: -54px;
+    padding-left: 54px;
+
+    &::before {
+      content: '';
+      display: inline-block;
+      border-top: 1px solid $primary;
+      width: 36px;
+      margin-right: 18px;
+      padding-top: 5px;
+    }
   }
 }
 

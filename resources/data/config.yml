@@ -5,6 +5,7 @@ it:
       name_short: AGID
       link: https://www.agid.gov.it
       logo: /images/agid-logo.svg
+      mail: wai@agid.gov.it
     privacy_policy: /privacy
     logo: /images/wai-logo.svg
     logo_raster: /images/wai-logo.png

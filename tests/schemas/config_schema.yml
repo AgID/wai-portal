@@ -13,6 +13,7 @@ required:
               name_short: "//str"
               link: "//str"
               logo: "//str"
+              mail: "//str"
           privacy_policy: "//str"
           logo: "//str"
           logo_raster: "//str"
