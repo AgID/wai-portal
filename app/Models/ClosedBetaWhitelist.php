@@ -6,7 +6,6 @@ use Exception;
 use Illuminate\Http\Request;
 use Spatie\WebhookClient\Models\WebhookCall;
 use Spatie\WebhookClient\WebhookConfig;
-use Symfony\Component\Yaml\Yaml;
 
 /**
  * Closed beta whitelist web hook call model.
@@ -26,7 +25,7 @@ class ClosedBetaWhitelist extends WebhookCall
     {
         return self::make([
             'name' => $config->name,
-            'payload' => Yaml::parse($request->getContent()),
+            'payload' => json_decode($request->getContent()),
         ]);
     }
 

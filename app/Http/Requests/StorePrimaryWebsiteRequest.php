@@ -4,11 +4,10 @@ namespace App\Http\Requests;
 
 use App\Jobs\UpdateClosedBetaWhitelist;
 use App\Traits\InteractsWithRedisIndex;
+use App\Traits\ManageClosedBetaWhitelist;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Validator;
-use Symfony\Component\Yaml\Yaml;
 
 /**
  * Store primary website request.
@@ -16,6 +15,7 @@ use Symfony\Component\Yaml\Yaml;
 class StorePrimaryWebsiteRequest extends FormRequest
 {
     use InteractsWithRedisIndex;
+    use ManageClosedBetaWhitelist;
 
     /**
      * The validated public administration array in this request.
@@ -70,7 +70,7 @@ class StorePrimaryWebsiteRequest extends FormRequest
 
                 if (config('wai.closed_beta')) {
                     $whitelist = Cache::rememberForever(UpdateClosedBetaWhitelist::CLOSED_BETA_WHITELIST_KEY, function () {
-                        return collect(Yaml::parse(Storage::get(UpdateClosedBetaWhitelist::CLOSED_BETA_WHITELIST_FILENAME)));
+                        return $this->download();
                     });
 
                     if (!$whitelist->contains($this->publicAdministration['ipa_code'])) {

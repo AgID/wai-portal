@@ -2,26 +2,24 @@
 
 namespace App\Jobs;
 
+use App\Events\Jobs\ClosedBetaWhitelistUpdateFailed;
+use App\Traits\ManageClosedBetaWhitelist;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Storage;
 use Spatie\WebhookClient\Models\WebhookCall;
 use Spatie\WebhookClient\ProcessWebhookJob;
-use Symfony\Component\Yaml\Yaml;
+use Throwable;
 
 /**
  * Received closed beta whitelist web hook calls job.
  */
 class UpdateClosedBetaWhitelist extends ProcessWebhookJob
 {
+    use ManageClosedBetaWhitelist;
+
     /**
      * Ipa codes of whitelisted public administrations cache key.
      */
     public const CLOSED_BETA_WHITELIST_KEY = 'closed-beta-whitelist';
-
-    /**
-     * Ipa codes of whitelisted public administrations file name.
-     */
-    public const CLOSED_BETA_WHITELIST_FILENAME = 'closed_beta_whitelist.yml';
 
     //NOTE: DON'T USE $webhookCall field because it's not initialized!
 
@@ -38,13 +36,15 @@ class UpdateClosedBetaWhitelist extends ProcessWebhookJob
      *
      * @noinspection MagicMethodsValidityInspection
      * @noinspection PhpMissingParentConstructorInspection
+     *
+     * @param WebhookCall|null $webhookCall
      */
-    public function __construct(WebhookCall $webhookCall)
+    public function __construct(?WebhookCall $webhookCall = null)
     {
         //NOTE: no parent constructor call since
         //      database persistence is not wanted
         //      and no migration has been scheduled
-        $this->payload = $webhookCall->payload;
+        $this->payload = $webhookCall->payload ?? null;
     }
 
     /**
@@ -52,7 +52,10 @@ class UpdateClosedBetaWhitelist extends ProcessWebhookJob
      */
     public function handle(): void
     {
-        Cache::forever(self::CLOSED_BETA_WHITELIST_KEY, collect($this->payload));
-        Storage::put(self::CLOSED_BETA_WHITELIST_FILENAME, Yaml::dump($this->payload));
+        try {
+            Cache::forever(self::CLOSED_BETA_WHITELIST_KEY, $this->download($this->payload));
+        } catch (Throwable $exception) {
+            event(new ClosedBetaWhitelistUpdateFailed($exception->getCode(), $exception->getMessage()));
+        }
     }
 }

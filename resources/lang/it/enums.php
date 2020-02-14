@@ -153,6 +153,7 @@ return [
         EventType::USER_PASSWORD_RESET_COMPLETED => 'Utente modifica password completata',
         EventType::USER_UPDATED => 'Utente aggiornato',
         EventType::WEBSITE_UPDATED => 'Sito web aggiornato',
+        EventType::CLOSED_BETA_WHITELIST_UPDATE_FAILED => 'Aggiornamento closed beta whitelist fallito',
         EventType::MAIL_SENT => 'Email inviata',
     ],
 
