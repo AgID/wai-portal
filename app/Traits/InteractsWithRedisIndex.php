@@ -32,6 +32,7 @@ trait InteractsWithRedisIndex
     {
         return $this->searchRedisIndex('ipa', $query, [
             'inFields' => ['ipa_code', 'name', 'city'],
+            'sortBy' => 'name',
         ]);
     }
 
