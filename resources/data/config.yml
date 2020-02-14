@@ -85,7 +85,3 @@ it:
         url: https://www.youtube.com/channel/UCxJmOWf__YcLgB19gy5dGQQ
       # - name: medium
       #   url: https://medium.com/designers-italia
-
-    trackers:
-      matomo: "1"
-      ga: UA-140404450-1

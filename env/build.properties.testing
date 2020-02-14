@@ -30,6 +30,12 @@ LOG_STACK_CHANNELS=testing
 LOG_SLACK_WEBHOOK_URL=
 LOG_SLACK_USERNAME=
 
+# Tackers
+# -------
+TRACKING_MATOMO_ID=
+TRACKING_GA_ID=
+TRACKING_HOTJAR_ID=
+
 # SPID Service Provider
 # ---------------------
 

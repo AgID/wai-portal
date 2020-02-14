@@ -81,9 +81,6 @@ required:
               required:
                 name: "//str"
                 url: "//str"
-          trackers:
-            type: "//map"
-            values: "//str"
           highlight:
             type: "//rec"
             required:
@@ -173,9 +170,6 @@ optional:
               required:
                 name: "//str"
                 url: "//str"
-          trackers:
-            type: "//map"
-            values: "//str"
           highlight:
             type: "//rec"
             required:

@@ -42,6 +42,9 @@
                     <token key="APP_SUPER_ADMIN_EMAIL" value="${APP_SUPER_ADMIN_EMAIL}" />
                     <token key="APP_SUPER_ADMIN_PASSWORD" value="${APP_SUPER_ADMIN_PASSWORD}" />
                     <token key="CRON_TOKEN" value="${CRON_TOKEN}" />
+                    <token key="TRACKING_MATOMO_ID" value="${TRACKING_MATOMO_ID}" />
+                    <token key="TRACKING_GA_ID" value="${TRACKING_GA_ID}" />
+                    <token key="TRACKING_HOTJAR_ID" value="${TRACKING_HOTJAR_ID}" />
                     <token key="PENDING_WEBSITE_WARNING" value="${PENDING_WEBSITE_WARNING}" />
                     <token key="PENDING_WEBSITE_REMOVE" value="${PENDING_WEBSITE_REMOVE}" />
                     <token key="ARCHIVING_WEBSITE_WARNING" value="${ARCHIVING_WEBSITE_WARNING}" />
