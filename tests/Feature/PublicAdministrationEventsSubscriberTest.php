@@ -3,6 +3,9 @@
 namespace Tests\Feature;
 
 use App\Enums\Logs\EventType;
+use App\Enums\PublicAdministrationStatus;
+use App\Enums\UserRole;
+use App\Enums\UserStatus;
 use App\Enums\WebsiteType;
 use App\Events\PublicAdministration\PublicAdministrationActivated;
 use App\Events\PublicAdministration\PublicAdministrationActivationFailed;
@@ -17,13 +20,16 @@ use App\Models\Website;
 use App\Notifications\PublicAdministrationActivatedEmail;
 use App\Notifications\PublicAdministrationPurgedEmail;
 use App\Notifications\PublicAdministrationRegisteredEmail;
+use App\Notifications\RTDEmailAddressChangedEmail;
 use App\Notifications\RTDPublicAdministrationRegisteredEmail;
+use App\Notifications\SuperAdminPublicAdministrationNotFoundInIpaEmail;
 use App\Services\MatomoService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
+use Silber\Bouncer\BouncerFacade as Bouncer;
 use Tests\TestCase;
 
 /**
@@ -40,8 +46,18 @@ class PublicAdministrationEventsSubscriberTest extends TestCase
      */
     public $publicAdministration;
 
+    /**
+     * The website.
+     *
+     * @var Website the website
+     */
     public $website;
 
+    /**
+     * The user.
+     *
+     * @var User the user
+     */
     public $user;
 
     /**
@@ -146,6 +162,9 @@ class PublicAdministrationEventsSubscriberTest extends TestCase
         );
     }
 
+    /**
+     * Test public administration registered with email sent to RTD.
+     */
     public function testPublicAdministrationRegisteredWithRTD(): void
     {
         Cache::shouldReceive('forget')->once()->withArgs([
@@ -204,6 +223,9 @@ class PublicAdministrationEventsSubscriberTest extends TestCase
         );
     }
 
+    /**
+     * Test public administration registered without email to RTD.
+     */
     public function testPublicAdministrationRegisteredWithoutRTD(): void
     {
         Event::fakeFor(function () {
@@ -259,6 +281,9 @@ class PublicAdministrationEventsSubscriberTest extends TestCase
         );
     }
 
+    /**
+     * Test public administration purged.
+     */
     public function testPublicAdministrationPurged(): void
     {
         Cache::shouldReceive('forget')->once()->withArgs([PublicAdministration::PUBLIC_ADMINISTRATION_COUNT_KEY]);
@@ -288,6 +313,9 @@ class PublicAdministrationEventsSubscriberTest extends TestCase
         );
     }
 
+    /**
+     * Test public administration primary website updated.
+     */
     public function testPublicAdministrationPrimaryWebsiteUpdated(): void
     {
         $this->expectLogMessage('warning', [
@@ -301,6 +329,9 @@ class PublicAdministrationEventsSubscriberTest extends TestCase
         event(new PublicAdministrationPrimaryWebsiteUpdated($this->publicAdministration, $this->website, 'https://newurl.local'));
     }
 
+    /**
+     * Test public administration updated.
+     */
     public function testPublicAdministrationUpdated(): void
     {
         $this->expectLogMessage('notice', [
@@ -312,10 +343,115 @@ class PublicAdministrationEventsSubscriberTest extends TestCase
         ]);
 
         event(new PublicAdministrationUpdated($this->publicAdministration, []));
+
+        Notification::assertNotSentTo(
+            [$this->publicAdministration],
+            RTDEmailAddressChangedEmail::class,
+        );
     }
 
+    /**
+     * Test public administration updated with RTD email update.
+     */
+    public function testPendingPublicAdministrationUpdatedWithRTDChange(): void
+    {
+        Event::fakeFor(function () {
+            $this->user->status = UserStatus::PENDING;
+            $this->user->setCreatedAt(now());
+            $this->user->save();
+        });
+
+        $this->expectLogMessage('notice', [
+            'Public Administration ' . $this->publicAdministration->info . ' updated',
+            [
+                'event' => EventType::PUBLIC_ADMINISTRATION_UPDATED,
+                'pa' => $this->publicAdministration->ipa_code,
+            ],
+        ]);
+
+        event(new PublicAdministrationUpdated($this->publicAdministration, ['rtd_mail' => ['old' => 'old@example.local', 'new' => 'new@example.local']]));
+
+        Notification::assertSentTo(
+            [$this->publicAdministration],
+            RTDEmailAddressChangedEmail::class,
+            function ($notification, $channels) {
+                $this->assertEquals($channels, ['mail']);
+                $mail = $notification->toMail($this->publicAdministration)->build();
+                $this->assertEquals($this->publicAdministration->ipa_code, $mail->viewData['publicAdministration']['ipa_code']);
+                $this->assertEquals($this->user->uuid, $mail->viewData['earliestRegisteredAdministrator']['uuid']);
+                $this->assertEquals($mail->subject, __('Nuovo indirizzo email RTD'));
+
+                return $mail->hasTo($this->publicAdministration->rtd_mail, $this->publicAdministration->rtd_name);
+            }
+        );
+    }
+
+    /**
+     * Test public administration updated with RTD email update.
+     */
+    public function testActivePublicAdministrationUpdatedWithRTDChange(): void
+    {
+        $invitedAdmin = factory(User::class)->state('invited')->create();
+        $secondAdmin = factory(User::class)->state('active')->create();
+
+        Bouncer::dontCache();
+        Bouncer::scope()->onceTo($this->publicAdministration->id, function () use ($invitedAdmin, $secondAdmin) {
+            $this->user->assign(UserRole::ADMIN);
+            $invitedAdmin->assign(UserRole::ADMIN);
+            $secondAdmin->assign(UserRole::ADMIN);
+        });
+
+        Event::fakeFor(function () use ($invitedAdmin, $secondAdmin) {
+            $this->user->status = UserStatus::ACTIVE;
+            $this->user->setCreatedAt(now()->subDay());
+            $this->user->save();
+
+            $secondAdmin->setCreatedAt(now());
+            $secondAdmin->save();
+
+            $this->publicAdministration->status = PublicAdministrationStatus::ACTIVE;
+            $this->publicAdministration->users()->sync([$secondAdmin->id, $invitedAdmin->id], false);
+            $this->publicAdministration->save();
+        });
+
+        $this->expectLogMessage('notice', [
+            'Public Administration ' . $this->publicAdministration->info . ' updated',
+            [
+                'event' => EventType::PUBLIC_ADMINISTRATION_UPDATED,
+                'pa' => $this->publicAdministration->ipa_code,
+            ],
+        ]);
+
+        event(new PublicAdministrationUpdated($this->publicAdministration, ['rtd_mail' => ['old' => 'old@example.local', 'new' => 'new@example.local']]));
+
+        Notification::assertSentTo(
+            [$this->publicAdministration],
+            RTDEmailAddressChangedEmail::class,
+            function ($notification, $channels) {
+                $this->assertEquals($channels, ['mail']);
+                $mail = $notification->toMail($this->publicAdministration)->build();
+                $this->assertEquals($this->publicAdministration->ipa_code, $mail->viewData['publicAdministration']['ipa_code']);
+                $this->assertEquals($this->user->uuid, $mail->viewData['earliestRegisteredAdministrator']['uuid']);
+                $this->assertEquals($mail->subject, __('Nuovo indirizzo email RTD'));
+
+                return $mail->hasTo($this->publicAdministration->rtd_mail, $this->publicAdministration->rtd_name);
+            }
+        );
+    }
+
+    /**
+     * Test public administration not found in iPA.
+     */
     public function testPublicAdministrationNotFoundInIpa(): void
     {
+        Bouncer::dontCache();
+        $activeSuperAdmin = factory(User::class)->state('active')->create();
+        $invitedSuperAdmin = factory(User::class)->state('invited')->create();
+        Bouncer::scope()->onceTo(0, function () use ($activeSuperAdmin, $invitedSuperAdmin) {
+            $activeSuperAdmin->assign(UserRole::SUPER_ADMIN);
+            $invitedSuperAdmin->assign(UserRole::SUPER_ADMIN);
+        });
+
         $this->expectLogMessage('warning', [
             'Public Administration ' . $this->publicAdministration->info . ' not found',
             [
@@ -325,8 +461,30 @@ class PublicAdministrationEventsSubscriberTest extends TestCase
         ]);
 
         event(new PublicAdministrationNotFoundInIpa($this->publicAdministration));
+
+        Notification::assertSentTo(
+            [$activeSuperAdmin],
+            SuperAdminPublicAdministrationNotFoundInIpaEmail::class,
+            function ($notification, $channels) use ($activeSuperAdmin) {
+                $this->assertEquals($channels, ['mail']);
+                $mail = $notification->toMail($activeSuperAdmin)->build();
+                $this->assertEquals($activeSuperAdmin->uuid, $mail->viewData['user']['uuid']);
+                $this->assertEquals($this->publicAdministration->ipa_code, $mail->viewData['publicAdministration']['ipa_code']);
+                $this->assertEquals($mail->subject, __('Pubblica amministrazione non trovata in IPA'));
+
+                return $mail->hasTo($activeSuperAdmin->email, $activeSuperAdmin->full_name);
+            }
+        );
+
+        Notification::assertNotSentTo(
+            [$invitedSuperAdmin],
+            SuperAdminPublicAdministrationNotFoundInIpaEmail::class
+        );
     }
 
+    /**
+     * Test public administration activation fail.
+     */
     public function testPublicAdministrationActivationFailed(): void
     {
         $this->expectLogMessage('error', [
