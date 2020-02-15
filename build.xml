@@ -35,7 +35,6 @@
                     <token key="LOG_STACK_CHANNELS" value="${LOG_STACK_CHANNELS}" />
                     <token key="LOG_SLACK_WEBHOOK_URL" value="${LOG_SLACK_WEBHOOK_URL}" />
                     <token key="LOG_SLACK_USERNAME" value="${LOG_SLACK_USERNAME}" />
-                    <token key="APP_VERSION" value="${APP_VERSION}" />
                     <token key="APP_SUPER_ADMIN_NAME" value="${APP_SUPER_ADMIN_NAME}" />
                     <token key="APP_SUPER_ADMIN_FAMILY_NAME" value="${APP_SUPER_ADMIN_FAMILY_NAME}" />
                     <token key="APP_SUPER_ADMIN_FISCAL_NUMBER" value="${APP_SUPER_ADMIN_FISCAL_NUMBER}" />

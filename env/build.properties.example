@@ -14,7 +14,6 @@ APP_CODE_PATH_CONTAINER=/var/www/html
 
 # Application
 # -----------
-APP_VERSION=0.1
 APP_DEBUG=true
 
 # Hostname

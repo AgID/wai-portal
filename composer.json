@@ -1,6 +1,7 @@
 {
     "name": "italia/analytics",
     "description": "Web Analytics Italia",
+    "version": "1.0-beta",
     "keywords": ["analytics", "italia"],
     "license": "AGPLv3+",
     "type": "project",
