@@ -2,8 +2,11 @@
 
 namespace App\Http\Requests;
 
+use App\Jobs\UpdateClosedBetaWhitelist;
 use App\Traits\InteractsWithRedisIndex;
+use App\Traits\ManageClosedBetaWhitelist;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Validation\Validator;
 
 /**
@@ -12,6 +15,7 @@ use Illuminate\Validation\Validator;
 class StorePrimaryWebsiteRequest extends FormRequest
 {
     use InteractsWithRedisIndex;
+    use ManageClosedBetaWhitelist;
 
     /**
      * The validated public administration array in this request.
@@ -62,7 +66,33 @@ class StorePrimaryWebsiteRequest extends FormRequest
 
                 if (empty($publicAdministration)) {
                     $validator->errors()->add('public_administration_name', __('Il codice IPA della PA selezionata non è corretto.'));
-                } elseif (!($this->input('skip_rtd_validation') && app()->environment('testing'))) {
+
+                    return;
+                }
+
+                if (config('wai.closed_beta')) {
+                    $whitelist = Cache::rememberForever(UpdateClosedBetaWhitelist::CLOSED_BETA_WHITELIST_KEY, function () {
+                        return $this->download();
+                    });
+
+                    if (!$whitelist->contains($this->publicAdministration['ipa_code'])) {
+                        $validator->errors()->add('public_administration_name', __('PA non inclusa in fase di beta chiusa'));
+                        $this->redirector->to($this->redirect)->withModal([
+                            'title' => __('Accesso limitato'),
+                            'icon' => 'it-close-circle',
+                            'message' => implode("\n", [
+                                __(':app è in una fase di beta chiusa (:closed-beta-faq).', [
+                                    'app' => '<strong>' . config('app.name') . '</strong>',
+                                    'closed-beta-faq' => '<a href="' . route('faq') . '#beta-chiusa">' . __('cosa significa?') . '</a>',
+                                ]),
+                                __("Durante questa fase sperimentale, l'accesso è limitato ad un numero chiuso di pubbliche amministrazioni pilota."),
+                            ]),
+                            'image' => asset('images/closed.svg'),
+                        ]);
+                    }
+                }
+
+                if (!($this->input('skip_rtd_validation') && app()->environment('testing'))) {
                     if (($publicAdministration['rtd_name'] ?? null) !== $this->input('rtd_name')) {
                         $validator->errors()->add('rtd_name', __('Il nominativo RTD immesso non corrisponde a quello presente su IndicePA.'));
                     }

@@ -12,10 +12,15 @@ use App\Events\PublicAdministration\PublicAdministrationRegistered;
 use App\Events\User\UserWebsiteAccessChanged;
 use App\Events\Website\WebsiteAdded;
 use App\Events\Website\WebsiteUpdated;
+use App\Http\Requests\StorePrimaryWebsiteRequest;
+use App\Jobs\UpdateClosedBetaWhitelist;
 use App\Models\PublicAdministration;
 use App\Models\User;
 use App\Models\Website;
+use App\Services\MatomoService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
@@ -68,6 +73,7 @@ class CRUDWebsiteTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+        Config::set('wai.closed_beta', false);
         Event::fake();
         $this->user = factory(User::class)->create([
             'status' => UserStatus::ACTIVE,
@@ -92,11 +98,12 @@ class CRUDWebsiteTest extends TestCase
         $this->user->registerAnalyticsServiceAccount();
 
         Bouncer::dontCache();
-        Bouncer::scope()->to($this->publicAdministration->id);
-        $this->user->assign(UserRole::ADMIN);
-        $this->user->allow(UserPermission::MANAGE_ANALYTICS, $this->website);
-        $this->user->allow(UserPermission::READ_ANALYTICS, $this->website);
-        $this->user->allow(UserPermission::MANAGE_WEBSITES);
+        Bouncer::scope()->onceTo($this->publicAdministration->id, function () {
+            $this->user->assign(UserRole::ADMIN);
+            $this->user->allow(UserPermission::MANAGE_ANALYTICS, $this->website);
+            $this->user->allow(UserPermission::READ_ANALYTICS, $this->website);
+            $this->user->allow(UserPermission::MANAGE_WEBSITES);
+        });
     }
 
     /**
@@ -230,8 +237,10 @@ class CRUDWebsiteTest extends TestCase
         $secondUser->registerAnalyticsServiceAccount();
         $thirdUser->registerAnalyticsServiceAccount();
 
-        $secondUser->assign(UserRole::DELEGATED);
-        $thirdUser->assign(UserRole::DELEGATED);
+        Bouncer::scope()->onceTo($this->publicAdministration->id, function () use ($secondUser, $thirdUser) {
+            $secondUser->assign(UserRole::DELEGATED);
+            $thirdUser->assign(UserRole::DELEGATED);
+        });
 
         $this->actingAs($this->user)
             ->withSession([
@@ -567,5 +576,162 @@ class CRUDWebsiteTest extends TestCase
 
         Event::assertNotDispatched(WebsiteUpdated::class);
         Event::assertNotDispatched(UserWebsiteAccessChanged::class);
+    }
+
+    /**
+     * Test primary website successfully registered with closed beta.
+     */
+    public function testStorePrimaryWebsiteSuccessfulClosedBeta(): void
+    {
+        Config::set('wai.closed_beta', true);
+        Cache::shouldReceive('rememberForever')
+            ->withSomeOfArgs(UpdateClosedBetaWhitelist::CLOSED_BETA_WHITELIST_KEY)
+            ->andReturn(collect(['fake']));
+
+        $this->app->bind(StorePrimaryWebsiteRequest::class, function () {
+            return $this->partialMock(StorePrimaryWebsiteRequest::class, function ($mock) {
+                $mock->shouldReceive('getPublicAdministrationEntryByIpaCode')
+                    ->withArgs(['fake'])
+                    ->once()
+                    ->andReturn([
+                        'ipa_code' => 'fake',
+                        'name' => 'Fake name',
+                        'pec' => 'pec@example.local',
+                        'site' => 'www.example.local',
+                        'rtd_name' => null,
+                        'rtd_mail' => null,
+                        'rtd_pec' => null,
+                        'city' => 'Roma',
+                        'county' => 'RM',
+                        'region' => 'Lazio',
+                        'type' => 'Fake type',
+                    ]);
+            });
+        });
+
+        $user = factory(User::class)->create([
+            'status' => UserStatus::PENDING,
+            'email_verified_at' => Date::now(),
+        ]);
+
+        $this->app->bind('analytics-service', function () use ($user) {
+            return $this->partialMock(MatomoService::class, function ($mock) use ($user) {
+                $mock->shouldReceive('registerSite')
+                    ->withArgs([
+                        __('Sito istituzionale'),
+                        'www.example.local',
+                        'Fake name',
+                    ])
+                    ->andReturn(1);
+                $mock->shouldReceive('registerUser')
+                    ->withArgs([
+                        $user->uuid,
+                        $user->analytics_password,
+                        $user->email,
+                    ])
+                    ->andReturn();
+                $mock->shouldReceive('setWebsiteAccess')
+                    ->withArgs([
+                        $user->uuid,
+                        WebsiteAccessType::VIEW,
+                        1,
+                    ])
+                    ->andReturn();
+            });
+        });
+
+        $this->actingAs($user)
+            ->withSession([
+                'spid_sessionIndex' => 'fake-session-index',
+                'spid_user' => $this->spidUser,
+            ])
+            ->from(route('websites.index'))
+            ->post(route('websites.store.primary'), [
+                'public_administration_name' => 'PA Test',
+                'url' => 'www.example.local',
+                'ipa_code' => 'fake',
+                'correct_confirmation' => 'on',
+            ])
+            ->assertSessionHasNoErrors()
+            ->assertRedirect(route('websites.index'))
+            ->assertSessionHas([
+                'modal' => [
+                    'title' => __('Il sito è stato inserito, adesso procedi ad attivarlo!'),
+                    'icon' => 'it-check-circle',
+                    'message' => __('Abbiamo inviato al tuo indirizzo email le istruzioni per attivare il sito e iniziare a monitorare il traffico.'),
+                    'image' => asset('images/primary-website-added.svg'),
+                ],
+            ]);
+
+        Event::assertDispatched(PublicAdministrationRegistered::class, function ($event) use ($user) {
+            return 'fake' === $event->getPublicAdministration()->ipa_code && $user->is($event->getUser());
+        });
+        Event::assertDispatched(WebsiteAdded::class, function ($event) {
+            return $event->getWebsite()->slug === Str::slug('www.example.local');
+        });
+
+        //NOTE: rebind real analytics service.
+        //      To be removed when full tests refactoring is completed
+        $this->app->bind('analytics-service', function () {
+            return new MatomoService();
+        });
+    }
+
+    /**
+     * Test primary website fail registration with closed beta due to ipa code not whitelisted.
+     */
+    public function testStorePrimaryWebsiteFailValidationClosedBeta(): void
+    {
+        Config::set('wai.closed_beta', true);
+        Cache::shouldReceive('rememberForever')
+            ->withSomeOfArgs(UpdateClosedBetaWhitelist::CLOSED_BETA_WHITELIST_KEY)
+            ->andReturn(collect(['another-pa']));
+
+        $this->app->bind(StorePrimaryWebsiteRequest::class, function () {
+            return $this->partialMock(StorePrimaryWebsiteRequest::class, function ($mock) {
+                $mock->shouldReceive('getPublicAdministrationEntryByIpaCode')
+                    ->withArgs(['fake'])
+                    ->once()
+                    ->andReturn(['ipa_code' => 'fake']);
+            });
+        });
+
+        $user = factory(User::class)->create([
+            'status' => UserStatus::PENDING,
+            'email_verified_at' => Date::now(),
+        ]);
+        $this->actingAs($user)
+            ->withSession([
+                'spid_sessionIndex' => 'fake-session-index',
+                'spid_user' => $this->spidUser,
+            ])
+            ->from(route('websites.index'))
+            ->post(route('websites.store.primary'), [
+                'public_administration_name' => 'PA Test',
+                'url' => 'www.example.local',
+                'ipa_code' => 'fake',
+                'correct_confirmation' => 'on',
+            ])
+            ->assertSessionHasErrors([
+                'public_administration_name' => __('PA non inclusa in fase di beta chiusa'),
+            ])
+            ->assertRedirect(route('websites.index'))
+            ->assertSessionHas([
+                'modal' => [
+                    'title' => __('Accesso limitato'),
+                    'icon' => 'it-close-circle',
+                    'message' => implode("\n", [
+                        __(':app è in una fase di beta chiusa (:closed-beta-faq).', [
+                            'app' => '<strong>' . config('app.name') . '</strong>',
+                            'closed-beta-faq' => '<a href="' . route('faq') . '#beta-chiusa">' . __('cosa significa?') . '</a>',
+                        ]),
+                        __("Durante questa fase sperimentale, l'accesso è limitato ad un numero chiuso di pubbliche amministrazioni pilota."),
+                    ]),
+                    'image' => asset('images/closed.svg'),
+                ],
+            ]);
+
+        Event::assertNotDispatched(PublicAdministrationRegistered::class);
+        Event::assertNotDispatched(WebsiteAdded::class);
     }
 }

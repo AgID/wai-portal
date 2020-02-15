@@ -15,6 +15,13 @@ APP_CODE_PATH_CONTAINER=/var/www/html
 # Application
 # -----------
 APP_DEBUG=true
+APP_CLOSED_BETA_ENABLED=false
+
+# Closed beta repository
+# ----------------------
+CLOSED_BETA_WHITELIST_REPOSITORY_FULL_NAME=
+CLOSED_BETA_WHITELIST_REPOSITORY_BRANCH=
+CLOSED_BETA_WHITELIST_REPOSITORY_FILE_NAME=
 
 # Hostname
 # --------
@@ -34,6 +41,10 @@ LOG_SLACK_USERNAME=
 TRACKING_MATOMO_ID=
 TRACKING_GA_ID=
 TRACKING_HOTJAR_ID=
+
+# Webhooks
+# --------
+CLOSED_BETA_WHITELIST_WEBHOOK_CLIENT_SECRET=
 
 # SPID Service Provider
 # ---------------------
