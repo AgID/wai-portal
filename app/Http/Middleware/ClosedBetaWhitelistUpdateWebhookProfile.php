@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Spatie\WebhookClient\WebhookProfile\WebhookProfile;
 
 /**
@@ -19,6 +20,6 @@ class ClosedBetaWhitelistUpdateWebhookProfile implements WebhookProfile
      */
     public function shouldProcess(Request $request): bool
     {
-        return config('wai.closed_beta');
+        return config('wai.closed_beta') && config('webhook-client.configs.0.repository.branch') === Str::afterLast(json_decode($request->getContent())->ref, '/');
     }
 }
