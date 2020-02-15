@@ -36,11 +36,16 @@
                     <token key="LOG_SLACK_WEBHOOK_URL" value="${LOG_SLACK_WEBHOOK_URL}" />
                     <token key="LOG_SLACK_USERNAME" value="${LOG_SLACK_USERNAME}" />
                     <token key="APP_VERSION" value="${APP_VERSION}" />
+                    <token key="APP_CLOSED_BETA_ENABLED" value="${APP_CLOSED_BETA_ENABLED}" />
                     <token key="APP_SUPER_ADMIN_NAME" value="${APP_SUPER_ADMIN_NAME}" />
                     <token key="APP_SUPER_ADMIN_FAMILY_NAME" value="${APP_SUPER_ADMIN_FAMILY_NAME}" />
                     <token key="APP_SUPER_ADMIN_FISCAL_NUMBER" value="${APP_SUPER_ADMIN_FISCAL_NUMBER}" />
                     <token key="APP_SUPER_ADMIN_EMAIL" value="${APP_SUPER_ADMIN_EMAIL}" />
                     <token key="APP_SUPER_ADMIN_PASSWORD" value="${APP_SUPER_ADMIN_PASSWORD}" />
+                    <token key="CLOSED_BETA_WHITELIST_WEBHOOK_CLIENT_SECRET" value="${CLOSED_BETA_WHITELIST_WEBHOOK_CLIENT_SECRET}" />
+                    <token key="CLOSED_BETA_WHITELIST_REPOSITORY_FULL_NAME" value="${CLOSED_BETA_WHITELIST_REPOSITORY_FULL_NAME}" />
+                    <token key="CLOSED_BETA_WHITELIST_REPOSITORY_BRANCH" value="${CLOSED_BETA_WHITELIST_REPOSITORY_BRANCH}" />
+                    <token key="CLOSED_BETA_WHITELIST_REPOSITORY_FILE_NAME" value="${CLOSED_BETA_WHITELIST_REPOSITORY_FILE_NAME}" />
                     <token key="CRON_TOKEN" value="${CRON_TOKEN}" />
                     <token key="PENDING_WEBSITE_WARNING" value="${PENDING_WEBSITE_WARNING}" />
                     <token key="PENDING_WEBSITE_REMOVE" value="${PENDING_WEBSITE_REMOVE}" />

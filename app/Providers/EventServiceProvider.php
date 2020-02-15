@@ -10,6 +10,7 @@ use App\Listeners\LogSentMessage;
 use App\Listeners\PublicAdministrationEventsSubscriber;
 use App\Listeners\SendInvitationNotification;
 use App\Listeners\SPIDEventSubscriber;
+use App\Listeners\UpdateClosedBetaWhitelistJobSubscriber;
 use App\Listeners\UpdatePublicAdministrationsFromIpaJobEventsSubscriber;
 use App\Listeners\UserEventsSubscriber;
 use App\Listeners\UserExpiredInvitationListener;
@@ -65,6 +66,7 @@ class EventServiceProvider extends ServiceProvider
         WebsitesJobEventSubscriber::class,
         UserUpdatesSubscriber::class,
         WebsiteUpdatesSubscriber::class,
+        UpdateClosedBetaWhitelistJobSubscriber::class,
     ];
 
     /**

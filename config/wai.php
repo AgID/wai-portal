@@ -93,4 +93,16 @@ return [
 
     'archive_expire' => env('ARCHIVING_WEBSITE_ARCHIVE', 20),
 
+    /*
+     |--------------------------------------------------------------------------
+     | Enable closed beta
+     |--------------------------------------------------------------------------
+     |
+     | This value is used to enable closed beta; when active, only public
+     | administrations included in the closed beta whitelist can be
+     | registered in the system.
+     |
+     */
+
+    'closed_beta' => env('APP_CLOSED_BETA_ENABLED', false),
 ];
