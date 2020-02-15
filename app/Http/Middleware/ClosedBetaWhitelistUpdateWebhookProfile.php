@@ -20,6 +20,8 @@ class ClosedBetaWhitelistUpdateWebhookProfile implements WebhookProfile
      */
     public function shouldProcess(Request $request): bool
     {
-        return config('wai.closed_beta') && config('webhook-client.configs.0.repository.branch') === Str::afterLast(json_decode($request->getContent())->ref, '/');
+        return config('wai.closed_beta')
+            && 'push' === $request->header('X-GitHub-Event', '')
+            && config('webhook-client.configs.0.repository.branch') === Str::afterLast(json_decode($request->getContent())->ref, '/');
     }
 }

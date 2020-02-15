@@ -87,7 +87,10 @@ class ClosedBetaWebhookTest extends TestCase
 
         $client = (new Client(['base_uri' => config('app.url')]));
         $response = $client->request('POST', route('webhook-client-closed-beta-whitelist', [], false), [
-            'headers' => ['X-Hub-Signature' => 'sha1=' . hash_hmac('sha1', '- fake content', 'secret')],
+            'headers' => [
+                'X-Hub-Signature' => 'sha1=' . hash_hmac('sha1', '- fake content', 'secret'),
+                'X-GitHub-Event' => 'push',
+            ],
             'body' => json_encode($this->content),
             'verify' => false,
             'http_errors' => false,
@@ -107,7 +110,10 @@ class ClosedBetaWebhookTest extends TestCase
 
         $client = (new Client(['base_uri' => config('app.url')]));
         $response = $client->request('POST', route('webhook-client-closed-beta-whitelist', [], false), [
-            'headers' => ['X-Hub-Signature' => $this->signature],
+            'headers' => [
+                'X-Hub-Signature' => $this->signature,
+                'X-GitHub-Event' => 'push',
+            ],
             'body' => json_encode($this->content),
             'verify' => false,
         ]);
@@ -129,7 +135,35 @@ class ClosedBetaWebhookTest extends TestCase
 
         $client = (new Client(['base_uri' => config('app.url')]));
         $response = $client->request('POST', route('webhook-client-closed-beta-whitelist', [], false), [
-            'headers' => ['X-Hub-Signature' => $this->signature],
+            'headers' => [
+                'X-Hub-Signature' => $this->signature,
+                'X-GitHub-Event' => 'push',
+            ],
+            'body' => json_encode($this->content),
+            'verify' => false,
+        ]);
+
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertJson($response->getBody(), json_encode(['message' => 'ok']));
+    }
+
+    /**
+     * Test web hook request successful but processing blocked
+     * by profile due to invalid event.
+     */
+    public function testWebhookWihoutProcessingInvalidEvent(): void
+    {
+        Config::set('webhook-client.configs.0.repository.branch', 'fake-invalid');
+
+        $this->partialMock(UpdateClosedBetaWhitelist::class)
+            ->shouldNotReceive('handle');
+
+        $client = (new Client(['base_uri' => config('app.url')]));
+        $response = $client->request('POST', route('webhook-client-closed-beta-whitelist', [], false), [
+            'headers' => [
+                'X-Hub-Signature' => $this->signature,
+                'X-GitHub-Event' => 'invalid-event',
+            ],
             'body' => json_encode($this->content),
             'verify' => false,
         ]);
@@ -151,7 +185,10 @@ class ClosedBetaWebhookTest extends TestCase
 
         $client = (new Client(['base_uri' => config('app.url')]));
         $response = $client->request('POST', route('webhook-client-closed-beta-whitelist', [], false), [
-            'headers' => ['X-Hub-Signature' => $this->signature],
+            'headers' => [
+                'X-Hub-Signature' => $this->signature,
+                'X-GitHub-Event' => 'push',
+            ],
             'body' => json_encode($this->content),
             'verify' => false,
         ]);
