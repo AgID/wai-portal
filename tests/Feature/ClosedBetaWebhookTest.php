@@ -46,6 +46,7 @@ class ClosedBetaWebhookTest extends TestCase
 
         Config::set('wai.closed_beta', false);
         Config::set('app.url', 'https://nginx');
+        Config::set('webhook-client.configs.0.repository.branch', 'fake');
     }
 
     /**
@@ -96,10 +97,33 @@ class ClosedBetaWebhookTest extends TestCase
     }
 
     /**
-     * Test web hook request successful but processing blocked by profile.
+     * Test web hook request successful but processing blocked
+     * by profile due to not in closed beta.
      */
-    public function testWebhookWihoutProcessing(): void
+    public function testWebhookWihoutProcessingNoClosedBeta(): void
     {
+        $this->partialMock(UpdateClosedBetaWhitelist::class)
+            ->shouldNotReceive('handle');
+
+        $client = (new Client(['base_uri' => config('app.url')]));
+        $response = $client->request('POST', route('webhook-client-closed-beta-whitelist', [], false), [
+            'headers' => ['X-Hub-Signature' => $this->signature],
+            'body' => json_encode($this->content),
+            'verify' => false,
+        ]);
+
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertJson($response->getBody(), json_encode(['message' => 'ok']));
+    }
+
+    /**
+     * Test web hook request successful but processing blocked
+     * by profile due to invalid branch.
+     */
+    public function testWebhookWihoutProcessingInvalidBranch(): void
+    {
+        Config::set('webhook-client.configs.0.repository.branch', 'fake-invalid');
+
         $this->partialMock(UpdateClosedBetaWhitelist::class)
             ->shouldNotReceive('handle');
 
