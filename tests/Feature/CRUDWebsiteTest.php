@@ -713,18 +713,21 @@ class CRUDWebsiteTest extends TestCase
                 'correct_confirmation' => 'on',
             ])
             ->assertSessionHasErrors([
-                'public_administration_name' => __('PA non iscritta alla closed-beta'),
+                'public_administration_name' => __('PA non inclusa in fase di beta chiusa'),
             ])
             ->assertRedirect(route('websites.index'))
             ->assertSessionHas([
                 'modal' => [
-                    'title' => __('Progetto in closed-beta!'),
+                    'title' => __('Accesso limitato'),
                     'icon' => 'it-close-circle',
                     'message' => implode("\n", [
-                        __('Il portale ' . config('app.name') . ' si trova attualmente in fase closed-beta.'),
-                        __('Durante questa fase sperimentale, l\'accesso è limitato ad un numero chiuso di pubbliche amministrazioni pilota.'),
+                        __(':app è in una fase di beta chiusa (:closed-beta-faq).', [
+                            'app' => '<strong>' . config('app.name') . '</strong>',
+                            'closed-beta-faq' => '<a href="' . route('faq') . '#beta-chiusa">' . __('cosa significa?') . '</a>',
+                        ]),
+                        __("Durante questa fase sperimentale, l'accesso è limitato ad un numero chiuso di pubbliche amministrazioni pilota."),
                     ]),
-                    'image' => asset('images/website-archive.svg'),
+                    'image' => asset('images/closed.svg'),
                 ],
             ]);
 
