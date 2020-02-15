@@ -22,7 +22,7 @@
         <div class="container text-center text-white mt-3">
             <p class="m-0 text-sans-serif">
                 {!! __('Ti abbiamo inviato questa mail perché sei registrato a :app oppure sei RTD.', [
-                    'app' => '<a class="text-white" href="{{ url('/') }}">' . config('app.name') . '</a>'
+                    'app' => '<a class="text-white" href="' . url('/') .'">' . config('app.name') . '</a>'
                 ]) !!}
             </p>
             <p class="m-0 text-sans-serif">
