@@ -5,15 +5,15 @@ it:
       name_short: AGID
       link: https://www.agid.gov.it
       logo: /images/agid-logo.svg
+      mail: wai@agid.gov.it
     privacy_policy: /privacy
     logo: /images/wai-logo.svg
     logo_raster: /images/wai-logo.png
     pill: alpha
     highlight:
       production: |
-        Il servizio **Web Analytics Italia** non è stato ancora rilasciato al
-        pubblico. [Maggiori
-        informazioni](https://designers.italia.it/progetti/web-analytics-italia/).
+        **Web Analytics Italia** è in una fase di beta chiusa.
+        [Cosa significa?](/faq#beta-chiusa).
       public-playground: |
         Questo è l'ambiente **public playground**. Ogni settimana il sistema
         viene automaticamente resettato. [Maggiori
@@ -25,7 +25,7 @@ it:
         Questo è l'ambiente di sviluppo locale di **Web Analytics Italia**.
     kb:
       name: Guida utente Web Analytics Italia
-      link: https://docs.italia.it/AgID/wai/wai-user-guide-docs/it/stabile/
+      link: https://docs.italia.it/agid/wai/wai-user-guide-docs/it/stabile/
 
     menu_items:
       primary:
@@ -38,8 +38,8 @@ it:
       secondary:
         - name: Come partecipare
           route: how-to-join
-        - name: Open data
-          route: open-data
+        # - name: Open data
+        #   route: open-data
         - name: FAQ
           route: faq
 
@@ -60,15 +60,15 @@ it:
         url: https://github.com/italia/
 
     footer_links:
-      primary:
-        - name: Come partecipare
-          route: how-to-join
-        - name: Domande frequenti
-          route: faq
-        - name: Open data
-          route: open-data
-        - name: Dichiarazione di accessibilità
-          url: https://form.agid.gov.it/
+      # primary:
+      #   - name: Come partecipare
+      #     route: how-to-join
+      #   - name: Domande frequenti
+      #     route: faq
+      #   - name: Open data
+      #     route: open-data
+      #   - name: Dichiarazione di accessibilità
+      #     url: https://form.agid.gov.it/
       secondary:
         - name: Privacy policy
           route: privacy
@@ -84,9 +84,5 @@ it:
         url: https://twitter.com/AgidGov
       - name: youtube
         url: https://www.youtube.com/channel/UCxJmOWf__YcLgB19gy5dGQQ
-      - name: medium
-        url: https://medium.com/designers-italia
-
-    trackers:
-      matomo: "1"
-      ga: UA-140404450-1
+      # - name: medium
+      #   url: https://medium.com/designers-italia

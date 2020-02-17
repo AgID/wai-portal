@@ -14,7 +14,6 @@ APP_CODE_PATH_CONTAINER=/var/www/html
 
 # Application
 # -----------
-APP_VERSION=0.1
 APP_DEBUG=true
 APP_CLOSED_BETA_ENABLED=false
 
@@ -36,6 +35,12 @@ LOG_STACK_CHANNELS=
 # -------------------
 LOG_SLACK_WEBHOOK_URL=
 LOG_SLACK_USERNAME=
+
+# Tackers
+# -------
+TRACKING_MATOMO_ID=
+TRACKING_GA_ID=
+TRACKING_HOTJAR_ID=
 
 # Webhooks
 # --------

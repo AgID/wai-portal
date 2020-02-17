@@ -20,6 +20,7 @@ import PublicAdministrationSelector from './publicAdministrationSelector';
 import FaqSelector from './faqSelector';
 import WidgetResizer from './widgets';
 import HighlightBar from './highlightBar';
+import Trackers from './trackers';
 
 $(document).ready(() => {
     Forms.init();
@@ -33,6 +34,7 @@ $(document).ready(() => {
     FaqSelector.init();
     WidgetResizer.init();
     HighlightBar.init();
+    Trackers.init();
     Datatables.init([
         datatableApi => LogsDatatables.preDatatableInit(datatableApi),
     ], [

@@ -18,12 +18,16 @@ export default (() => {
         urlInput.value = selectedResult.site;
         rtdNameInput.value = selectedResult.rtd_name || '';
         rtdMailInput.value = selectedResult.rtd_mail || '';
-        selectedResult.rtd_mail && rtdMailPresentMessage.classList.remove('d-none');
-        selectedResult.rtd_mail || rtdMailMissingMessage.classList.remove('d-none');
         urlInputLabel.classList.add('active');
         rtdNameInputLabel.classList.add('active');
         rtdMailInputLabel.classList.add('active');
+        toggleRtdMessage();
     };
+
+    const toggleRtdMessage = () => {
+        ipaCodeInput.value && (rtdMailInput.value && rtdMailPresentMessage.classList.remove('d-none'));
+        ipaCodeInput.value && (rtdMailInput.value || rtdMailMissingMessage.classList.remove('d-none'));
+    }
 
     const onIpaSearch = () => {
         ipaCodeInput.value = '';
@@ -50,6 +54,7 @@ export default (() => {
             handleSelectedResult: handleSelectedIpa,
             onSearch: onIpaSearch,
         });
+        rtdMailInput && toggleRtdMessage();
     };
 
     return { init };

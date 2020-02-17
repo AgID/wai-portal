@@ -31,7 +31,7 @@ it:
     description_small: |
       Se hai bisogno di aiuto per portare a termine questo passo oppure stai
       usando già *Matomo*, puoi consultare la
-      [guida di WAI](https://docs.italia.it/agid/wai/wai-user-guide-docs/it/stabile/index.html).
+      [guida di WAI](https://docs.italia.it/agid/wai/wai-user-guide-docs/it/stabile/).
     image: tracking-code-website
   - name: Il sistema verifica il tracciamento
     description: |

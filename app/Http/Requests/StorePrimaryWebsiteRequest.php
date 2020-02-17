@@ -66,6 +66,8 @@ class StorePrimaryWebsiteRequest extends FormRequest
 
                 if (empty($publicAdministration)) {
                     $validator->errors()->add('public_administration_name', __('Il codice IPA della PA selezionata non è corretto.'));
+
+                    return;
                 }
 
                 if (config('wai.closed_beta')) {
@@ -90,15 +92,14 @@ class StorePrimaryWebsiteRequest extends FormRequest
                     }
                 }
 
-                // NOTE: uncomment and add "required" rule to rtd_name and rtd_mail to enforce rtd validation
-                // elseif (!($this->input('skip_rtd_validation') && app()->environment('testing'))) {
-                //     if ($this->input('rtd_name') !== ($publicAdministration['rtd_name'] ?? '')) {
-                //         $validator->errors()->add('rtd_name', __('Il nominativo RTD immesso non corrisponde a quello presente su IndicePA.'));
-                //     }
-                //     if ($this->input('rtd_mail') !== ($publicAdministration['rtd_mail'] ?? '')) {
-                //         $validator->errors()->add('rtd_mail', __("L'indirizzo email RTD immesso non corrisponde a quello presente su IndicePA."));
-                //     }
-                // }
+                if (!($this->input('skip_rtd_validation') && app()->environment('testing'))) {
+                    if (($publicAdministration['rtd_name'] ?? null) !== $this->input('rtd_name')) {
+                        $validator->errors()->add('rtd_name', __('Il nominativo RTD immesso non corrisponde a quello presente su IndicePA.'));
+                    }
+                    if (($publicAdministration['rtd_mail'] ?? null) !== $this->input('rtd_mail')) {
+                        $validator->errors()->add('rtd_mail', __("L'indirizzo email RTD immesso non corrisponde a quello presente su IndicePA."));
+                    }
+                }
             }
         });
     }
