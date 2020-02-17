@@ -79,7 +79,30 @@
             </div>
         </div>
         <div class="col-md-5 text-serif d-flex align-items-center">
-            <div id="rtd_mail_present" class="d-none">
+            <div id="primary_website_missing" class="callout callout-highlight danger d-none">
+                <div class="callout-title">
+                    <svg class="icon icon-sm"><use xlink:href="{{ asset('svg/sprite.svg#it-close-circle') }}"></use></svg>
+                    {{ __('errore') }}
+                </div>
+                <p>
+                    {!! __("Sembra che la tua pubblica amministrazione non abbia indicato su :ipa l'indirizzo web del :primary_website. 🙁", [
+                        'ipa' => '<a href="https://www.indicepa.gov.it/" class="external-link" target="_blank" rel="noopener noreferrer">' . __('IndicePA') . '</a>',
+                        'primary_website' => '<strong>' . __('sito web istituzionale') . '</strong>',
+                    ]) !!}
+                </p>
+                <p>
+                    {!! __("Purtroppo questo :prevents di andare avanti con la richiesta di :onboarding su :app per la tua PA. Quando l'indirizzo web del sito istituzionale sarà stato inserito, torna per completare la procedura.", [
+                        'prevents' => '<strong>ti impedisce</strong>',
+                        'onboarding' => '<i>onboarding</i>',
+                        'app' => config('app.name'),
+                    ]) !!}
+                </p>
+            </div>
+            <div id="rtd_mail_present" class="callout callout-highlight success d-none">
+                <div class="callout-title">
+                    <svg class="icon icon-sm"><use xlink:href="{{ asset('svg/sprite.svg#it-check-circle') }}"></use></svg>
+                    {{ __('tutto ok') }}
+                </div>
                 <p>
                     {!! __('Bene, la tua pubblica amministrazione ha indicato su :ipa il recapito del :rtd. 👍🏼', [
                         'ipa' => '<a href="https://www.indicepa.gov.it/" class="external-link" target="_blank" rel="noopener noreferrer">' . __('IndicePA') . '</a>',
@@ -94,7 +117,11 @@
                     ]) !!}
                 </p>
             </div>
-            <div id="rtd_mail_missing" class="d-none">
+            <div id="rtd_mail_missing" class="callout callout-highlight warning d-none">
+                <div class="callout-title">
+                    <svg class="icon icon-sm"><use xlink:href="{{ asset('svg/sprite.svg#it-warning-circle') }}"></use></svg>
+                    {{ __('attenzione') }}
+                </div>
                 <p>
                     {!! __('Sembra che la tua pubblica amministrazione non abbia indicato su :ipa il recapito del/la :rtd. 🙁', [
                         'ipa' => '<a href="https://www.indicepa.gov.it/" class="external-link" target="_blank" rel="noopener noreferrer">' . __('IndicePA') . '</a>',
