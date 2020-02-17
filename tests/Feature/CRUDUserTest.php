@@ -268,7 +268,7 @@ class CRUDUserTest extends TestCase
             ])
             ->put(route('users.update', ['user' => $this->user]), [
                 '_token' => 'test',
-                'email' => 'new@email.local',
+                'email' => 'new@example.com',
                 'is_admin' => '1',
                 'permissions' => [
                     $this->website->id => [
@@ -285,7 +285,7 @@ class CRUDUserTest extends TestCase
 
         $this->user->refresh();
         Event::assertDispatched(UserUpdated::class, function ($event) {
-            return 'new@email.local' === $event->getUser()->email;
+            return 'new@example.com' === $event->getUser()->email;
         });
 
         $this->user->deleteAnalyticsServiceAccount();

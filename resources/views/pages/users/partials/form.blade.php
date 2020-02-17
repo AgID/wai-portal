@@ -36,7 +36,7 @@
                     <div class="input-group-text"><svg class="icon icon-sm"><use xlink:href="{{ asset('svg/sprite.svg#it-mail') }}"></use></svg></div>
                 </div>
                 <label for="email">{{ __('Indirizzo email di lavoro') }}</label>
-                <input type="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" id="email" name="email" value="{{ old('email', $user->email ?? '') }}" maxlength="255" aria-describedby="email-input-help" aria-required="true" required>
+                <input type="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" id="email" name="email" value="{{ old('email', $user->email ?? '') }}" maxlength="75" aria-describedby="email-input-help" aria-required="true" required>
                 @error('email')
                 <div class="invalid-feedback">{{ $errors->first('email') }}</div>
                 @else
@@ -53,7 +53,7 @@
                     <div class="input-group-text"><svg class="icon icon-sm"><use xlink:href="{{ asset('svg/sprite.svg#it-card') }}"></use></svg></div>
                 </div>
                 <label for="fiscal_number">{{ __('Codice fiscale') }}</label>
-                <input type="text" class="form-control{{ $errors->has('fiscal_number') ? ' is-invalid' : '' }}" id="fiscal_number" name="fiscal_number" value="{{ old('fiscal_number', $user->fiscal_number ?? '') }}" maxlength="255" aria-required="true" required {{ (optional($user->status ?? null)->is(UserStatus::INVITED) ?? true) ? '' : 'readonly' }}>
+                <input type="text" class="form-control{{ $errors->has('fiscal_number') ? ' is-invalid' : '' }}" id="fiscal_number" name="fiscal_number" value="{{ old('fiscal_number', $user->fiscal_number ?? '') }}" maxlength="16" aria-required="true" required {{ (optional($user->status ?? null)->is(UserStatus::INVITED) ?? true) ? '' : 'readonly' }}>
                 @error('fiscal_number')
                 <div class="invalid-feedback">{{ $errors->first('fiscal_number') }}</div>
                 @else

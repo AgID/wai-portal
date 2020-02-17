@@ -48,7 +48,7 @@ class RegisterController extends Controller
     {
         $input = $request->all();
         $validatedData = validator($input, [
-            'email' => 'required|email',
+            'email' => 'required|email:rfc,dns|max:75',
             'accept_terms' => 'required',
         ])->after(function ($validator) use ($input) {
             if (array_key_exists('email', $input) && User::where('email', $input['email'])->whereDoesntHave('roles', function ($query) {

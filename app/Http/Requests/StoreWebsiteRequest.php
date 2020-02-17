@@ -35,7 +35,7 @@ class StoreWebsiteRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'website_name' => 'required|max:255',
+            'website_name' => 'required|alpha_site|min:3|max:255',
             'url' => 'required|url|unique:websites|max:255',
             'type' => [
                 'required',

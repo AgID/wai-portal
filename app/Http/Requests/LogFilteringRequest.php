@@ -48,12 +48,12 @@ class LogFilteringRequest extends FormRequest
             //NOTE: can't force public administration existence
             //      since Public Administration purge force delete it
             //      See: ProcessPendingWebsites:handle()
-            'ipa_code' => 'sometimes|required',
+            'ipa_code' => 'sometimes|required|max:25',
             //NOTE: can't force website existence
             //      since Website purge force delete it
             //      See: ProcessPendingWebsites:handle()
-            'website_id' => 'sometimes|required',
-            'user_uuid' => 'sometimes|required',
+            'website_id' => 'sometimes|required|max:50',
+            'user_uuid' => 'sometimes|required|max:50',
             'event' => [
                 'sometimes',
                 'required',

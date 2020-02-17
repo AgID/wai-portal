@@ -17,7 +17,7 @@
                     <div class="input-group-text"><svg class="icon icon-sm"><use xlink:href="{{ asset('svg/sprite.svg#it-user') }}"></use></svg></div>
                 </div>
                 <label for="name">{{ __('Nome') }}</label>
-                <input type="text" class="form-control" id="name" name="name" value="{{ old('name', $user->name ?? '') }}" maxlength="255" aria-required="true" required>
+                <input type="text" class="form-control" id="name" name="name" value="{{ old('name', $user->name ?? '') }}" maxlength="50" aria-required="true" required>
                 @error('name')
                 <div class="invalid-feedback">{{ $errors->first('name') }}</div>
                 @else
@@ -33,7 +33,7 @@
                     <div class="input-group-text"><svg class="icon icon-sm"><use xlink:href="{{ asset('svg/sprite.svg#it-user') }}"></use></svg></div>
                 </div>
                 <label for="family_name">{{ __('Cognome') }}</label>
-                <input type="text" class="form-control" id="family_name" name="family_name" value="{{ old('family_name', $user->family_name ?? '') }}" maxlength="255" aria-required="true" required>
+                <input type="text" class="form-control" id="family_name" name="family_name" value="{{ old('family_name', $user->family_name ?? '') }}" maxlength="50" aria-required="true" required>
                 @error('family_name')
                 <div class="invalid-feedback">{{ $errors->first('family_name') }}</div>
                 @else
@@ -49,7 +49,7 @@
                     <div class="input-group-text"><svg class="icon icon-sm"><use xlink:href="{{ asset('svg/sprite.svg#it-mail') }}"></use></svg></div>
                 </div>
                 <label for="email">{{ __('Indirizzo email di lavoro') }}</label>
-                <input type="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" id="email" name="email" value="{{ old('email', $user->email ?? '') }}" maxlength="255" aria-describedby="email-input-help" aria-required="true" required>
+                <input type="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" id="email" name="email" value="{{ old('email', $user->email ?? '') }}" maxlength="75" aria-describedby="email-input-help" aria-required="true" required>
                 @error('email')
                 <div class="invalid-feedback">{{ $errors->first('email') }}</div>
                 @else
