@@ -16,8 +16,9 @@
     nuovi siti web."))
 
     @markdown(__("L'adesione e l'uso delle funzionalità statistiche di :app sono
-    gratuite e compatibili con qualunque altra modalità di raccolta di dati
-    analytics..", ['app' => config('app.name_short')]))
+    gratuite e [compatibili con qualunque altra modalità di raccolta di dati
+    analytics](/faq#compatibilita-altri-script-tracciamento).",
+    ['app' => config('app.name_short')]))
 </div>
 <div class="thick-border callout callout-highlight note">
     <div class="callout-title">
@@ -59,11 +60,11 @@
         </li>
         @endforeach
     </ol>
-    {{-- <h4 class="section-header text-center my-5">
+    <h4 id="video" class="section-header text-center my-5">
         {{ __('guarda la procedura in questo breve video') }}
     </h4>
     <div class="embed-responsive embed-responsive-16by9 mb-5">
-        <iframe class="embed-responsive-item" width="560" height="315" src="https://www.youtube.com/embed/<VIDEO_ID>?rel=0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-    </div> --}}
+        <iframe title="{{ __('WAI - Registrazione sito istituzionale') }}" class="embed-responsive-item" width="560" height="315" src="https://www.youtube.com/embed/jq7ycSLQE2k?rel=0&modestbranding=1" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
 </div>
 @endsection
