@@ -61,7 +61,7 @@ export default (() => {
             handleSelectedResult: handleSelectedIpa,
             onSearch: onIpaSearch,
         });
-        toggleMissingPrimaryWebsiteMessage() && toggleRtdMessage();
+        searchIpaInput && toggleMissingPrimaryWebsiteMessage() && toggleRtdMessage();
     };
 
     return { init };
