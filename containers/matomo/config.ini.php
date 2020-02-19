@@ -28,6 +28,8 @@ proxy_uri_header = 1
 enable_general_settings_admin = 0
 browser_archiving_disabled_enforce = 1
 enable_browser_archiving_triggering = 0
+default_day = "previous30"
+default_period = "range"
 default_language = "it"
 
 [Plugins]
