@@ -141,7 +141,7 @@
     <div class="form-row">
         <div class="form-group col-md-6 border-bottom border-md-bottom-0 border-md-right pb-5 pb-md-0 pr-md-5 d-flex flex-column justify-content-between">
             <div class="form-check mb-4">
-                <input class="form-control form-check-input" class="{{ $errors->has('correct') ? ' is-invalid' : '' }}" type="checkbox" id="correct_confirmation" name="correct_confirmation" aria-required="true" required>
+                <input class="form-control form-check-input{{ $errors->has('correct') ? ' is-invalid' : '' }}" type="checkbox" id="correct_confirmation" name="correct_confirmation" aria-required="true" required>
                 <label class="form-check-label" for="correct_confirmation">{{ __("Confermo che i dati sono corretti") }}</label>
                 <div class="invalid-feedback">{{ __('validation.accepted', ['attribute' => __('validation.attributes.correct_confirmation')]) }}</div>
             </div>
@@ -150,7 +150,7 @@
         <div class="form-group col-md-6 pl-md-5 d-flex flex-column justify-content-between">
             <p>{{ __('Se riscontri delle inesattezze nei dati visualizzati potresti non riuscire a completare la procedura. Interrompi adesso e riprendi dopo che saranno stati corretti.') }}</p>
             <div>
-                <a href="https://www.indicepa.gov.it/" role="button" class="btn btn-icon btn-outline-primary" target="_blank" srel="noopener noreferrer">
+                <a href="https://www.indicepa.gov.it/" role="button" class="btn btn-icon btn-outline-primary" target="_blank" rel="noopener noreferrer">
                     <span class="mr-1">{{ __('I dati NON sono corretti') }}</span>
                     <svg class="icon icon-primary">
                         <use xlink:href="{{ asset('svg/sprite.svg#it-external-link') }}"></use>

@@ -48,7 +48,7 @@
         </div>
         <div class="form-row">
             <div class="form-check">
-                <input class="form-control form-check-input" class="{{ $errors->has('accept_terms') ? ' is-invalid' : '' }}" type="checkbox" id="accept_terms" name="accept_terms" aria-required="true" required>
+                <input class="form-control form-check-input{{ $errors->has('accept_terms') ? ' is-invalid' : '' }}" type="checkbox" id="accept_terms" name="accept_terms" aria-required="true" required>
                 <label class="form-check-label" for="accept_terms">{{ __('Accetto le condizioni del servizio') }}</label>
                 <div class="invalid-feedback">{{ __('validation.accepted', ['attribute' => __('validation.attributes.accept_terms')]) }}</div>
             </div>
