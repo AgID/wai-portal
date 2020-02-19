@@ -141,7 +141,7 @@
     <div class="form-row">
         <div class="form-group col-md-6 border-bottom border-md-bottom-0 border-md-right pb-5 pb-md-0 pr-md-5 d-flex flex-column justify-content-between">
             <div class="form-check mb-4">
-                <input class="form-control form-check-input{{ $errors->has('correct') ? ' is-invalid' : '' }}" type="checkbox" id="correct_confirmation" name="correct_confirmation" aria-required="true" required>
+                <input class="form-control form-check-input{{ $errors->has('correct_confirmation') ? ' is-invalid' : '' }}" type="checkbox" id="correct_confirmation" name="correct_confirmation" aria-required="true" required>
                 <label class="form-check-label" for="correct_confirmation">{{ __("Confermo che i dati sono corretti") }}</label>
                 <div class="invalid-feedback">{{ __('validation.accepted', ['attribute' => __('validation.attributes.correct_confirmation')]) }}</div>
             </div>
