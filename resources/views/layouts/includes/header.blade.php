@@ -29,7 +29,7 @@
                                         <li class="ml-3">
                                             <a href="{{ $socialLink['url'] }}" aria-label="{{ $socialLink['name'] }}">
                                                 <svg class="icon">
-                                                    <use xlink:href="{{ asset('svg/sprite.svg') }}#it-{{ $socialLink['name'] }}"></use>
+                                                    <use xlink:href="{{ asset('svg/sprite.svg#it') }}-{{ $socialLink['name'] }}"></use>
                                                 </svg>
                                             </a>
                                         </li>

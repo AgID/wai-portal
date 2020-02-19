@@ -22,7 +22,7 @@ export default (() => {
             return Promise.reject(new Error('composing'));
         }
 
-        if (searchInput.dataset.lastQuery === query || searchInput.dataset.selectedPa === query) {
+        if (searchInput.dataset.lastQuery === query) {
             return Promise.reject(new Error('same query'));
         }
 
@@ -47,7 +47,7 @@ export default (() => {
             cancelToken: new axios.CancelToken(cancel => cancelRequest = cancel)
         }).then(response => response).catch(error => {
             if (axios.isCancel(error)) {
-                // request deduped
+                return Promise.reject(new Error('request deduped'));
             } else {
                 console.error(error); // eslint-disable-line no-console
             }
@@ -55,6 +55,10 @@ export default (() => {
     };
 
     const handleResult = (response, searchInput, autocompleteList, resultSchema, options) => {
+        if (!response) {
+            return;
+        }
+
         while (autocompleteList.firstChild) {
             autocompleteList.firstChild.remove();
         }

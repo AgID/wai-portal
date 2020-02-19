@@ -21,11 +21,11 @@
                 </p>
                 <a href="{{ route('analytics.service.login') }}" class="text-uppercase font-weight-bold text-decoration-none">
                     <svg class="icon icon-primary mr-2 align-middle">
-                        <use xlink:href="{{ asset('svg/sprite.svg') }}#it-chart-line"></use>
+                        <use xlink:href="{{ asset('svg/sprite.svg#it-chart-line') }}"></use>
                     </svg>
                     {{ __('Vai alla dashboard') }}
                     <svg class="icon icon-primary ml-2 align-middle">
-                        <use xlink:href="{{ asset('svg/sprite.svg') }}#it-arrow-right"></use>
+                        <use xlink:href="{{ asset('svg/sprite.svg#it-arrow-right') }}"></use>
                     </svg>
                 </a>
             </div>

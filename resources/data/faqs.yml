@@ -3,12 +3,23 @@ it:
     id: cos-e-wai
     question: Che cos'è Web analytics Italia?
     answer: |
-      **Web analytics Italia (WAI)** è una piattaforma nazionale di raccolta dei
-      dati sul traffico dei servizi digitali della Pubblica Amministrazione
-      italiana.
+      **Web analytics Italia (WAI)** è una piattaforma nazionale di raccolta e
+      analisi dei dati statistici relativi al traffico dei siti e servizi
+      digitali della Pubblica Amministrazione italiana.
 
-      WAI espone pubblicamente alcuni dati aggregati rispetto alla fruizione
-      dei servizi digitali della PA da parte dei cittadini.
+      WAI consente di:
+
+        - uniformare la raccolta di tali dati;
+        - semplificare l'accesso alle statistiche sul traffico e sul
+        comportamento degli utenti che usano siti e servizi digitali
+        istituzionali;
+        - fornire agli operatori della PA strumenti ad hoc per agevolare la
+        comprensione di tali informazioni, con l'obiettivo finale di ottimizzare
+        in maniera continua l'esperienza utente.
+
+      La piattaforma espone inoltre pubblicamente, e in maniera aggregata,
+      alcuni dei dati che riguardano la fruizione dei servizi digitali della PA
+      da parte dei cittadini.
 
   - themes: generale
     id: beta-chiusa
@@ -19,17 +30,31 @@ it:
       o aggiustamenti in base ai feedback degli utenti.
 
       In questa prima fase (denominata *beta*) l'accesso è limitato ad una lista
-      di amministrazioni che avranno il compito di sperimentare tutte le
+      di amministrazioni che avranno l'opportunità di sperimentare tutte le
       funzionalità, individuare eventuali difetti e inviare feedback.
 
       Se la tua amministrazione non è stata selezionata per entrare nella fase
       *beta* potrà iniziare a usare **WAI** solo in una seconda fase.
 
-      Se ritieni che la tua amministrazione abbia voglia di scommettersi e
+      Se ritieni che la tua amministrazione abbia voglia di mettersi in gioco e
       sperimentare **WAI** durante la *beta*, puoi fare una richiesta usando i
       nostri [canali di contatto](/contacts).
 
+  - themes: adesione
+    id: come-funziona-adesione
+    question: Come funziona il processo di adesione a Web Analytics Italia?
+    answer: |
+      Per aderire a WAI è necessario che il referente di una PA presente su IPA
+      avvii la procedura di registrazione del sito istituzionale, accedendo al
+      portale tramite una identità SPID. La verifica  di attribuzione del sito
+      registrato alla PA aderente sarà di tipo "implicito" (ossia subordinata
+      all'effettivo inserimento del codice di tracciamento nel sito).
+
+      [Guarda il video](/how-to-join#video) nella pagina
+      "[come partecipare](/how-to-join#video)".
+
   - themes: generale
+    id: specifiche-tecniche
     question: Quali sono le specifiche tecniche di Web analytics Italia?
     answer: |
       **Web analytics Italia (WAI)** si basa su tre componenti principali:
@@ -45,6 +70,7 @@ it:
       ridondata costruita sulla base dei servizi forniti da SPC Cloud - Lotto 1.
 
   - themes: generale
+    id: cos-e-matomo
     question: Cos'è Matomo?
     answer: |
       Matomo è la piattaforma di web analytics leader mondiale nel settore dei
@@ -54,6 +80,32 @@ it:
       pubblico](https://github.com/matomo-org/matomo).
 
   - themes: generale
+    id: fase-sperimentazione
+    question: |
+      Quando verrà avviata e quanto durerà la fase di sperimentazione iniziale
+      del progetto? Che impegno è richiesto alle istituzioni che verranno
+      coinvolte?
+    answer: |
+      La fase di sperimentazione sarà avviata entro la prima metà del 2020. Alle
+      PA coinvolte nella fase beta sarà richiesto di fornire feedback e
+      suggerimenti per il miglioramento della piattaforma.
+
+      L'effort per l'abilitazione del tracciamento sui propri siti web è
+      paragonabile a quello per l'aggiunta di qualunque altro strumento simile
+      (ad esempio Google Analytics).
+
+  - themes: generale
+    id: gratuita-piattaforma
+    question: |
+      Dopo i mesi di sperimentazione iniziale e dopo il biennio/triennio di
+      apertura del progetto a tutte le PA, la piattaforma resterà totalmente
+      gratuita o alcune features saranno a pagamento?
+    answer: |
+      L'uso della piattaforma e delle features supportate resteranno sempre
+      gratuite per tutte le PA aderenti.
+
+  - themes: adesione
+    id: requisiti-tecnici
     question: |
       Quali sono i requisiti tecnici richiesti alla PA per l'adesione alla
       piattaforma?
@@ -69,41 +121,7 @@ it:
       del sito.
 
   - themes: generale
-    question: |
-      Quando verrà avviata e quanto durerà la fase di sperimentazione iniziale
-      del progetto? Che impegno è richiesto alle istituzioni che verranno
-      coinvolte?
-    answer: |
-      La fase di sperimentazione sarà avviata entro la prima metà del 2020. Alle
-      PA coinvolte nella fase beta sarà richiesto di fornire feedback e
-      suggerimenti per il miglioramento della piattaforma.
-
-      L'effort per l'abilitazione del tracciamento sui propri siti web è
-      paragonabile a quello per l'aggiunta di qualunque altro strumento simile
-      (ad esempio Google Analytics).
-
-  - themes: generale
-    question: |
-      Dopo i mesi di sperimentazione iniziale e dopo il biennio/triennio di
-      apertura del progetto a tutte le PA, la piattaforma resterà totalmente
-      gratuita o alcune features saranno a pagamento?
-    answer: |
-      L'uso della piattaforma e delle features supportate resteranno sempre
-      gratuite per tutte le PA aderenti.
-
-  - themes: generale analytics
-    question: |
-      Quali sono le principali differenze fra Matomo e altre piattaforme di web
-      analytics proprietarie?
-    answer: |
-      Matomo offre una suite completa di web analytics in modalità "free open
-      source": nella sua versione base fornisce un set ampio e articolato di
-      funzionalità, ulteriormente ampliabile e personalizzabile.
-
-      A differenza di altre piattaforme di tipo proprietario, offre il totale
-      controllo (e la proprietà) del dato raccolto.
-
-  - themes: generale analytics
+    id: vantaggi-matomo
     question: |
       Quali sono i vantaggi dell'utilizzo di Matomo rispetto a Google Analytics
       per una pubblica amministrazione?
@@ -117,72 +135,20 @@ it:
       - l'assenza di sampling (campionamento).
 
   - themes: generale
-    question: Come funziona il processo di adesione a Web Analytics Italia?
+    id: differenze-matomo
+    question: |
+      Quali sono le principali differenze fra Matomo e altre piattaforme di web
+      analytics proprietarie?
     answer: |
-      Per aderire a WAI è necessario che il referente di una PA presente su IPA
-      avvii la procedura di registrazione del sito istituzionale, accedendo al
-      portale tramite una identità SPID. La verifica  di attribuzione del sito
-      registrato alla PA aderente sarà di tipo "implicito" (ossia subordinata
-      all'effettivo inserimento del codice di tracciamento nel sito).
+      Matomo offre una suite completa di web analytics in modalità "free open
+      source": nella sua versione base fornisce un set ampio e articolato di
+      funzionalità, ulteriormente ampliabile e personalizzabile.
+
+      A differenza di altre piattaforme di tipo proprietario, offre il totale
+      controllo (e la proprietà) del dato raccolto.
 
   - themes: generale
-    question: La piattaforma Web Analytics Italia è sicura?
-    answer: |
-      L'infrastruttura e il portale di front-end di WAI sono entrambi sviluppati
-      secondo i più  recenti standard di sicurezza informatica nonché secondo le
-      linee guida per la sicurezza ICT nelle pubbliche amministrazioni.
-
-  - themes: generale
-    question: |
-      Qual è il numero massimo di siti web che è possibile tracciare per singola
-      amministrazione?
-    answer: |
-      Non esiste al momento un numero limite al numero di siti web tracciabili
-      con Web Analytics Italia.
-
-  - themes: analytics
-    question: Posso tracciare le visite di una app mobile?
-    answer: |
-      Si, in WAI è possibile tracciare anche le visite di e il comportamento
-      degli utenti di una app mobile.
-
-  - themes: analytics
-    question: Posso effettuare un tracciamento interdominio?
-    answer: |
-      Si, in WAI è possibile richiedere il tracciamento interdominio di due o
-      più siti dell'amministrazione. Questa funzionalità non sarà disponibile
-      durante la fase beta.
-
-  - themes: analytics privacy
-    question: Posso anonimizzare le visite dei miei utenti?
-    answer: |
-      Si, WAI utilizza utilizza di default il sistema di anonimizzazione
-      dell'indirizzo IP degli utenti, quindi non sarà necessario intraprendere
-      altre azioni per rendere anonime le visite.
-
-  - themes: privacy
-    question: Il progetto è aderente alla normativa GDPR?
-    answer: |
-      Si, il progetto WAI è pienamente aderente alla normativa GDPR (General
-      Data Protection Regulation). Maggiori informazioni sono disponibili nella
-      pagina dedicata alla [privacy](/privacy).
-
-  - themes: privacy generale
-    question: Dove vengono memorizzati i dati raccolti?
-    answer: |
-      I dati statistici raccolti da WAI vengono memorizzati su server dedicati e
-      ad uso esclusivo della pubblica amministrazione, localizzati in Italia.
-
-  - themes: privacy generale
-    question: |
-      Se aderisco al progetto devo modificare la cookie policy del mio sito?
-    answer: |
-      È possibile che sia necessario un adattamento della cookie policy.
-
-      Potrai trovare un esempio di cookie policy personalizzabile nella
-      knowledge base dedicata del portale di accesso a WAI.
-
-  - themes: generale analytics
+    id: compatibilita-altri-script-tracciamento
     question: |
       Lo script di tracciamento di WAI è compatibile con altri script già
       presenti sul sito?
@@ -195,7 +161,8 @@ it:
       L'amministrazione aderente a WAI può quindi continuare ad usare altre
       piattaforme di analisi dei dati contemporaneamente.
 
-  - themes: privacy generale
+  - themes: adesione
+    id: plugin-cms
     question: |
       Devo utilizzare dei plugin per inserire lo script di Matomo nei principali
       CMS?
@@ -207,7 +174,15 @@ it:
       Matomo offre alcuni [plugin di
       integrazione](https://matomo.org/integrate/).
 
-  - themes: privacy generale
+  - themes: generale
+    id: dove-sono-memorizzati-i-dati
+    question: Dove vengono memorizzati i dati raccolti?
+    answer: |
+      I dati statistici raccolti da WAI vengono memorizzati su server dedicati e
+      ad uso esclusivo della pubblica amministrazione, localizzati in Italia.
+
+  - themes: personalizzazione
+    id: migrazione-dati-da-matomo
     question: |
       Se già utilizzo Matomo in modalità self hosted posso migrare i dati del
       miei siti dalla mia infrastruttura a Web analytics Italia?
@@ -219,39 +194,46 @@ it:
       caratteristiche dei dati (struttura e quantità) in termini di
       compatibilità con la piattaforma WAI.
 
-  - themes: generale
-    id: public-playground
-    question: |
-      Cos'è l'ambiente "public playground"?
+  - themes: privacy
+    id: gdpr
+    question: Il progetto è aderente alla normativa GDPR?
     answer: |
-      Si tratta di un'istanza parallela di Web Analytics Italia con la quale è
-      possibile effettuare in tutta sicurezza qualunque prova senza paura di
-      sbagliare.
+      Si, il progetto WAI è pienamente aderente alla normativa GDPR (General
+      Data Protection Regulation). Maggiori informazioni sono disponibili nella
+      pagina dedicata alla [privacy](/privacy).
 
-      Tutti i dati memorizzati in questa istanza sono automaticamente resettati
-      ogni fine settimana.
-
-      [Vai all'ambiente public playground](https://play.webanalytics.italia.it/).
-
-  - themes: generale
-    id: verifica-tracciamento
-    question: |
-      In cosa consiste la verifica del tracciamento di un sito?
+  - themes: privacy
+    id: anonimizzazione
+    question: Posso anonimizzare le visite dei miei utenti?
     answer: |
-      Subito dopo l'inserimento, un sito web si trova nello stato "in attesa".
-      Da questo momento in poi la piattaforma WAI sarà pronta a ricevere
-      dati di tracciamento dal sito. I dati possono essere ricevuti solo dopo
-      che il codice con lo script di tracciamento sarà stato incluso nel sito.
+      Si, WAI utilizza utilizza di default il sistema di anonimizzazione
+      dell'indirizzo IP degli utenti, quindi non sarà necessario intraprendere
+      altre azioni per rendere anonime le visite.
 
-      La piattaforma WAI effettua dei controlli a intervalli di tempo regolari
-      per rilevare attività di tracciamento ed eventualmente cambiare lo stato
-      del sito in "attivo".
+  - themes: personalizzazione privacy
+    id: informativa-dati-personali
+    question: |
+      Se aderisco al progetto devo modificare l'informativa sul trattamento dei
+      dati personali del mio sito?
+    answer: |
+      È possibile che sia necessario un adattamento dell'informativa.
 
-      Nel caso del sito istituzionale, il passaggio del sito allo stato "attivo"
-      rende attivi a cascata anche la pubblica amministrazione e l'utente
-      amministratore che erano "in attesa".
+      Potrai trovare un
+      [esempio di informativa personalizzabile](https://docs.italia.it/agid/wai/wai-user-guide-docs/it/stabile/informativa-trattamento-dati-personali)
+      nella guida di Web Analytics Italia.
 
   - themes: generale
+    id: sicurezza-piattaforma
+    question: La piattaforma Web Analytics Italia è sicura?
+    answer: |
+      L'infrastruttura e il portale di front-end di WAI sono entrambi sviluppati
+      secondo i più  recenti standard di sicurezza informatica nonché secondo le
+      linee guida per la sicurezza ICT nelle pubbliche amministrazioni.
+
+      I collegamenti al codice sorgente sono disponibili nella pagina dei
+      [contatti](/contacts).
+
+  - themes: adesione
     id: tipologie-siti
     question: |
       Come faccio a scegliere la tipologia di sito da inserire?
@@ -276,3 +258,63 @@ it:
 
       Per le applicazioni destinate ai dispositivi mobili, scegli la terza
       opzione.
+
+  - themes: adesione
+    id: verifica-tracciamento
+    question: |
+      In cosa consiste la verifica del tracciamento di un sito?
+    answer: |
+      Subito dopo l'inserimento, un sito web si trova nello stato "in attesa".
+      Da questo momento in poi la piattaforma WAI sarà pronta a ricevere
+      dati di tracciamento dal sito. I dati possono essere ricevuti solo dopo
+      che il codice con lo script di tracciamento sarà stato incluso nel sito.
+
+      La piattaforma WAI effettua dei controlli a intervalli di tempo regolari
+      per rilevare attività di tracciamento ed eventualmente cambiare lo stato
+      del sito in "attivo".
+
+      Nel caso del sito istituzionale, il passaggio del sito allo stato "attivo"
+      rende attivi a cascata anche la pubblica amministrazione e l'utente
+      amministratore che erano "in attesa".
+
+  - themes: adesione
+    id: numero-massimo-siti
+    question: |
+      Qual è il numero massimo di siti web che è possibile tracciare per singola
+      amministrazione?
+    answer: |
+      Non esiste al momento un numero limite al numero di siti web tracciabili
+      con Web Analytics Italia.
+
+  - themes: personalizzazione
+    id: tracciamento-interdominio
+    question: Posso effettuare un tracciamento interdominio?
+    answer: |
+      Si, in WAI è possibile richiedere il tracciamento interdominio di due o
+      più siti dell'amministrazione.
+
+      *Questa funzionalità non sarà disponibile durante la fase beta*.
+
+  - themes: adesione
+    id: analytics-mobile
+    question: Posso tracciare le visite di una app mobile?
+    answer: |
+      Si, in WAI è possibile tracciare anche le visite di e il comportamento
+      degli utenti di una app mobile.
+
+  # - themes: generale
+  #   id: public-playground
+  #   question: |
+  #     Cos'è l'ambiente "public playground"?
+  #   answer: |
+  #     Si tratta di un'istanza parallela di Web Analytics Italia con la quale è
+  #     possibile effettuare in tutta sicurezza qualunque prova senza paura di
+  #     sbagliare.
+
+  #     Tutti i dati memorizzati in questa istanza sono automaticamente resettati
+  #     ogni fine settimana.
+
+  #     [Vai all'ambiente public playground](https://play.webanalytics.italia.it/).
+
+
+
