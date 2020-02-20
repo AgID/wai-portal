@@ -15,7 +15,17 @@
                         </svg>
                     </div>
                     <p class="card-text text-serif">
-                        {{ __('Se devi darci un feedback oppure inoltrare una richiesta puoi usare il componente di feedback che appare sulla destra in ogni pagina.') }}
+                        {{ __('Se devi darci un feedback oppure inoltrare una richiesta puoi usare il componente che appare sulla destra in ogni pagina.') }}
+                    </p>
+                    <p class="card-text text-serif">
+                        {!! __('Ricorda che è anche disponibile la :user-guide di :app su Docs Italia.', [
+                            'user-guide' => implode([
+                                '<a class="external-link" rel="noopener noreferrer" href="https://docs.italia.it/agid/wai/wai-user-guide-docs/it/stabile/">',
+                                __('guida utente'),
+                                '</a>',
+                            ]),
+                            'app' => config('app.name_short'),
+                        ]) !!}
                     </p>
                 </div>
             </div>
