@@ -60,15 +60,17 @@ it:
         url: https://github.com/italia/
 
     footer_links:
-      # primary:
-      #   - name: Come partecipare
-      #     route: how-to-join
-      #   - name: Domande frequenti
-      #     route: faq
-      #   - name: Open data
-      #     route: open-data
-      #   - name: Dichiarazione di accessibilità
-      #     url: https://form.agid.gov.it/
+      primary:
+        - name: Come partecipare
+          route: how-to-join
+        - name: Domande frequenti
+          route: faq
+        # - name: Open data
+        #   route: open-data
+        - name: Guida utente
+          url: https://docs.italia.it/agid/wai/wai-user-guide-docs/it/stabile/
+        # - name: Dichiarazione di accessibilità
+        #   url: https://form.agid.gov.it/
       secondary:
         - name: Privacy policy
           route: privacy
