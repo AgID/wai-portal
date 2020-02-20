@@ -33,7 +33,7 @@
                     </div>
                     <p class="card-text text-serif">
                         {!! __('Mettiamoci in contatto usando :rete-digitale, lo strumento di collaborazione riservato agli RTD.', [
-                            'rete-digitale' => '<a class="external-link" rel="noopener noreferrer" href="#">' . __('ReTe Digitale') . '</a>'
+                            'rete-digitale' => '<a class="external-link" rel="noopener noreferrer" href="https://agid.eu.brightidea.com/">' . __('ReTe Digitale') . '</a>'
                         ]) !!}
                     </p>
                 </div>
