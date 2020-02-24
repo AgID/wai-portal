@@ -89,28 +89,18 @@ class LogsVisualizationTest extends TestCase
         ]);
 
         $this->secondPublicAdministration = factory(PublicAdministration::class)->create();
+
+        $client = new Client(['base_uri' => 'http://' . config('elastic-search.host') . ':' . config('elastic-search.port')]);
+        $client->request('PUT', config('elastic-search.index_name'), []);
     }
 
     /**
      * Post-test tear down.
-     *
-     * @throws \GuzzleHttp\Exception\GuzzleException if unable to clear logs
      */
     protected function tearDown(): void
     {
         $client = new Client(['base_uri' => 'http://' . config('elastic-search.host') . ':' . config('elastic-search.port')]);
-        $client->request('POST', config('elastic-search.index_name') . '/_delete_by_query', [
-            'headers' => [
-                'Content-Type' => 'application/json',
-            ],
-            'json' => [
-                'query' => [
-                    'match' => [
-                        'channel' => config('app.env'),
-                    ],
-                ],
-            ],
-        ]);
+        $client->request('DELETE', config('elastic-search.index_name'), []);
         parent::tearDown();
     }
 
