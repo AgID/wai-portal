@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2e4ebc9399c74035b6142f717f1dfc17",
+    "content-hash": "7223dc51bd48a5d68a3f98ee1d7dc147",
     "packages": [
         {
             "name": "bensampo/laravel-enum",
@@ -182,16 +182,16 @@
         },
         {
             "name": "davidepastore/codice-fiscale",
-            "version": "v0.5.1",
+            "version": "v0.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/DavidePastore/codice-fiscale.git",
-                "reference": "2f8ddc2aa8fae067bb1939fe2d5cc9b93c291460"
+                "reference": "443bbe01a9a18c4435df477ee505e29072809d98"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/DavidePastore/codice-fiscale/zipball/2f8ddc2aa8fae067bb1939fe2d5cc9b93c291460",
-                "reference": "2f8ddc2aa8fae067bb1939fe2d5cc9b93c291460",
+                "url": "https://api.github.com/repos/DavidePastore/codice-fiscale/zipball/443bbe01a9a18c4435df477ee505e29072809d98",
+                "reference": "443bbe01a9a18c4435df477ee505e29072809d98",
                 "shasum": ""
             },
             "require": {
@@ -225,7 +225,7 @@
                 "tax code",
                 "validator"
             ],
-            "time": "2019-06-22T16:04:36+00:00"
+            "time": "2020-02-22T15:13:19+00:00"
         },
         {
             "name": "dnoegel/php-xdg-base-dir",
