@@ -5,4 +5,4 @@ il suo invito al portale [{{ config('app.name') }}]({{ url('/') }}),
 ma il link è scaduto.
 
 Se lo desideri, puoi inviare uno nuovo link di attivazione dal suo
-[profilo]({{ url(route('users.show', ['user' => $this->invitedUser])) }}).
+[profilo]({{ url(route('users.show', ['user' => $invitedUser])) }}).

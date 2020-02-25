@@ -4,4 +4,4 @@ please note that the user permissions **{{ $modifiedUser->full_name }}** have be
 modified.
 
 You can check the new permissions from his/her
-[profile]({{ url(route('users.show', ['user' => $this->invitedUser]) }}).
+[profile]({{ url(route('users.show', ['user' => $modifiedUser]) }}).

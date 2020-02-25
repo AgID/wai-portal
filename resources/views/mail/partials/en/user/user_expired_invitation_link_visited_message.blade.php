@@ -5,4 +5,4 @@ to the portal [{{ config('app.name') }}]({{ url('/') }}), but his/her
 link is expired.
 
 If you wish, you can send him/her a new invitation link from his/her
-[profile]({{ url(route('users.show', ['user' => $this->invitedUser])) }}).
+[profile]({{ url(route('users.show', ['user' => $invitedUser])) }}).
