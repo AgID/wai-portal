@@ -72,7 +72,7 @@ it:
         # - name: Dichiarazione di accessibilità
         #   url: https://form.agid.gov.it/
       secondary:
-        - name: Privacy policy
+        - name: Privacy
           route: privacy
         - name: Note legali
           route: legal-notes

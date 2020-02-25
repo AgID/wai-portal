@@ -91,7 +91,12 @@ class HomeController extends Controller
      */
     public function privacy(): View
     {
-        return view('pages.privacy');
+        $privacy = Yaml::parseFile(resource_path('data/privacy.yml'));
+        $currentLocale = app()->getLocale();
+        $privacyLocale = array_key_exists($currentLocale, $privacy) ? $currentLocale : config('app.fallback_locale');
+        $privacy = $privacy[$privacyLocale];
+
+        return view('pages.privacy')->with(compact('privacy'));
     }
 
     /**
@@ -101,6 +106,11 @@ class HomeController extends Controller
      */
     public function legalNotes(): View
     {
-        return view('pages.legal_notes');
+        $legal = Yaml::parseFile(resource_path('data/legal.yml'));
+        $currentLocale = app()->getLocale();
+        $legalLocale = array_key_exists($currentLocale, $legal) ? $currentLocale : config('app.fallback_locale');
+        $legal = $legal[$legalLocale];
+
+        return view('pages.legal_notes')->with(compact('legal'));
     }
 }

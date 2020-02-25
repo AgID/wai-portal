@@ -48,6 +48,8 @@ commands:
             bin/rx resources/data/config.yml tests/schemas/config_schema.yml
             bin/rx resources/data/faqs.yml tests/schemas/faqs_schema.yml
             bin/rx resources/data/tos.yml tests/schemas/tos_schema.yml
+            bin/rx resources/data/legal.yml tests/schemas/legal_schema.yml
+            bin/rx resources/data/privacy.yml tests/schemas/privacy_schema.yml
             bin/rx resources/data/widgets.yml tests/schemas/widgets_schema.yml tests/schemas/widget.yml
             bin/rx resources/data/how-to-join-steps.yml tests/schemas/how-to-join-steps_schema.yml
 

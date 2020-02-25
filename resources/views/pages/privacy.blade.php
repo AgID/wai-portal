@@ -1,7 +1,9 @@
 @extends('layouts.page')
 
-@section('title', __('Privacy policy'))
+@section('title', __('Informativa sul trattamento dei dati personali'))
 
 @section('content')
-    Privacy
+<div class="mb-5">
+    @markdown($privacy)
+</div>
 @endsection
