@@ -33,7 +33,7 @@ class PurgePendingInvitationsTest extends TestCase
      */
     public function testPurgePendingInvitationsCompleted(): void
     {
-        $job = new PurgePendingInvitations(true);
+        $job = new PurgePendingInvitations();
         $job->handle();
 
         Event::assertDispatched(PurgePendingInvitationsCompleted::class);
@@ -49,7 +49,7 @@ class PurgePendingInvitationsTest extends TestCase
         ]);
         $user->registerAnalyticsServiceAccount();
 
-        $job = new PurgePendingInvitations(true);
+        $job = new PurgePendingInvitations();
         $job->handle();
 
         Event::assertDispatched(PurgePendingInvitationsCompleted::class, function ($event) use ($user) {
@@ -79,7 +79,7 @@ class PurgePendingInvitationsTest extends TestCase
         $user = factory(User::class)->state('invited')->create();
         $user->registerAnalyticsServiceAccount();
 
-        $job = new PurgePendingInvitations(true);
+        $job = new PurgePendingInvitations();
         $job->handle();
 
         Event::assertDispatched(PurgePendingInvitationsCompleted::class, function ($event) use ($user) {
