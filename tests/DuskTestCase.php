@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\URL;
 use Laravel\Dusk\Browser;
 use Laravel\Dusk\TestCase as BaseTestCase;
-use Tests\Browser\Pages\Home;
 
 abstract class DuskTestCase extends BaseTestCase
 {
@@ -27,9 +26,6 @@ abstract class DuskTestCase extends BaseTestCase
     {
         parent::setUp();
         $this->artisan('app:init-permissions');
-        $this->browse(function (Browser $browser) {
-            $browser->visit(new Home())->press('ACCETTO'); // Cookie bar
-        });
     }
 
     /**

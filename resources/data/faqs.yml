@@ -216,11 +216,11 @@ it:
       Se aderisco al progetto devo modificare l'informativa sul trattamento dei
       dati personali del mio sito?
     answer: |
-      È possibile che sia necessario un adattamento dell'informativa.
-
-      Potrai trovare un
-      [esempio di informativa personalizzabile](https://docs.italia.it/agid/wai/wai-user-guide-docs/it/stabile/informativa-trattamento-dati-personali)
-      nella guida di Web Analytics Italia.
+      Nel rispetto della normativa in tema di protezione dei dati personali, è
+      opportuno dare evidenza dell'utilizzo di WAI nell'informativa privacy
+      predisposta per il proprio sito web, con eventuale rimando diretto
+      all'[informativa specifica di WAI](/privacy) pubblicata in questo sito
+      web.
 
   - themes: generale
     id: sicurezza-piattaforma

@@ -226,6 +226,11 @@ class EventType extends Enum implements LocalizedEnum
     public const CLOSED_BETA_WHITELIST_UPDATE_FAILED = 42;
 
     /**
+     * Closed beta whitelist update failed event.
+     */
+    public const PURGE_PENDING_INVITATIONS_COMPLETED = 43;
+
+    /**
      * Mail sent event.
      */
     public const MAIL_SENT = 99;

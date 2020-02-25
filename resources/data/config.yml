@@ -9,7 +9,7 @@ it:
     privacy_policy: /privacy
     logo: /images/wai-logo.svg
     logo_raster: /images/wai-logo.png
-    pill: alpha
+    pill: beta
     highlight:
       production: |
         **Web Analytics Italia** è in una fase di beta chiusa.
@@ -72,7 +72,7 @@ it:
         # - name: Dichiarazione di accessibilità
         #   url: https://form.agid.gov.it/
       secondary:
-        - name: Privacy policy
+        - name: Privacy
           route: privacy
         - name: Note legali
           route: legal-notes

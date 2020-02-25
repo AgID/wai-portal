@@ -31,6 +31,9 @@
                     <svg class="icon icon-primary"><use xlink:href="{{ asset('svg/sprite.svg#it-clip') }}"></use></svg>
                     <span>{{ __('condizioni del servizio') }}</span>
                 </div>
+                @markdown($tos)
+                {{--
+                Use this snippet for longer texts
                 @excerpt($tos)
                 <div class="collapse-div">
                     <div class="collapse-header" id="show-more">
@@ -44,6 +47,7 @@
                         </div>
                     </div>
                 </div>
+                --}}
             </div>
         </div>
         <div class="form-row">

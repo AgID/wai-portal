@@ -3,5 +3,7 @@
 @section('title', __('Note legali'))
 
 @section('content')
-    Legal notes
+<div class="my-5">
+    @markdown($legal)
+</div>
 @endsection

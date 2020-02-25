@@ -5,6 +5,7 @@ namespace App\Console;
 use App\Jobs\MonitorWebsitesTracking;
 use App\Jobs\ProcessPendingWebsites;
 use App\Jobs\ProcessPublicAdministrationsUpdateFromIpa;
+use App\Jobs\PurgePendingInvitations;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -24,6 +25,7 @@ class Kernel extends ConsoleKernel
         $schedule->job(new ProcessPendingWebsites())->hourly()->onOneServer();
         $schedule->job(new ProcessPendingWebsites(true))->dailyAt('04:30')->onOneServer();
         $schedule->job(new MonitorWebsitesTracking())->daily()->onOneServer();
+        $schedule->job(new PurgePendingInvitations())->dailyAt('03:30')->onOneServer();
     }
 
     /**

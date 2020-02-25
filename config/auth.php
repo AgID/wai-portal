@@ -78,14 +78,18 @@ return [
     | Email verification
     |--------------------------------------------------------------------------
     |
-    | The expire time is the number of days that the verification token should
+    | The expire time is the number of days that the verification link should
     | be considered valid. This security feature keeps tokens life limited so
-    | they have less time to be guessed. You may change this as needed.
+    | they have less time to be guessed.
+    | The purge time is the number of days after which unverified users will
+    | be purged.
+    | You may change this as needed.
     |
     */
 
     'verification' => [
         'expire' => 7,
+        'purge' => 30,
     ],
 
     /*

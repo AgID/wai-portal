@@ -8,6 +8,7 @@ use App\Listeners\CheckPendingWebsiteJobsEventsSubscriber;
 use App\Listeners\CheckWebsitesMonitoringJobEventsSubscriber;
 use App\Listeners\LogSentMessage;
 use App\Listeners\PublicAdministrationEventsSubscriber;
+use App\Listeners\PurgePendingInvitationsJobSubcriber;
 use App\Listeners\SendInvitationNotification;
 use App\Listeners\SPIDEventSubscriber;
 use App\Listeners\UpdateClosedBetaWhitelistJobSubscriber;
@@ -67,6 +68,7 @@ class EventServiceProvider extends ServiceProvider
         UserUpdatesSubscriber::class,
         WebsiteUpdatesSubscriber::class,
         UpdateClosedBetaWhitelistJobSubscriber::class,
+        PurgePendingInvitationsJobSubcriber::class,
     ];
 
     /**

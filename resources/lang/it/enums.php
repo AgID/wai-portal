@@ -154,6 +154,7 @@ return [
         EventType::USER_UPDATED => 'Utente aggiornato',
         EventType::WEBSITE_UPDATED => 'Sito web aggiornato',
         EventType::CLOSED_BETA_WHITELIST_UPDATE_FAILED => 'Aggiornamento closed beta whitelist fallito',
+        EventType::PURGE_PENDING_INVITATIONS_COMPLETED => 'Cancellazione vecchi inviti in attesa completata',
         EventType::MAIL_SENT => 'Email inviata',
     ],
 
@@ -183,6 +184,7 @@ return [
         JobType::PROCESS_USERS_INDEX => 'Aggiornamento indice utenti',
         JobType::PROCESS_WEBSITES_INDEX => 'Aggiornamento indice siti web',
         JobType::MONITOR_WEBSITES_TRACKING => 'Monitoraggio del tracciamento dei siti web',
+        JobType::PURGE_PENDING_INVITATIONS => 'Cancellazione vecchi inviti in attesa',
     ],
 
 ];

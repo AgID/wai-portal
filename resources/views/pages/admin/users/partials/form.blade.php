@@ -9,7 +9,7 @@
     </div>
     @endisset
     @component('layouts.components.box', ['classes' => 'rounded'])
-    <h5 class="section-header">{{ __('anagrafica') }}</h5>
+    <h5 class="section-header">{{ __('Anagrafica') }}</h5>
     <div class="form-row">
         <div class="form-group col-md-6">
             <div class="input-group">

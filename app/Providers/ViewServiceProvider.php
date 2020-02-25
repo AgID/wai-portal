@@ -8,14 +8,16 @@ use App\Http\View\Composers\ModalComposer;
 use App\Http\View\Composers\NotificationComposer;
 use App\Http\View\Composers\PrimaryMenuComposer;
 use App\Http\View\Composers\PublicAdministrationSelectorComposer;
+use App\Traits\GetsLocalizedYamlContent;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Symfony\Component\Yaml\Exception\ParseException;
-use Symfony\Component\Yaml\Yaml;
 
 class ViewServiceProvider extends ServiceProvider
 {
+    use GetsLocalizedYamlContent;
+
     /**
      * Bootstrap any application services.
      *
@@ -63,10 +65,8 @@ class ViewServiceProvider extends ServiceProvider
     protected function mergeViewConfig()
     {
         try {
-            $viewConfig = Yaml::parseFile(resource_path('data/config.yml'));
-            $currentLocale = app()->getLocale();
-            $configLocale = array_key_exists($currentLocale, $viewConfig) ? $currentLocale : config('app.fallback_locale');
-            $localizedViewConfig = $viewConfig[$configLocale];
+            $localizedViewConfig = $this->getLocalizedYamlContent('config');
+
             config($localizedViewConfig);
         } catch (ParseException $exception) {
             abort(500, $exception->getMessage());

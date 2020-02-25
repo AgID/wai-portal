@@ -42,9 +42,10 @@
                         </svg>
                     </div>
                     <p class="card-text text-serif">
-                        {!! __('Mettiamoci in contatto usando :rete-digitale, lo strumento di collaborazione riservato agli RTD.', [
+                        {{-- {!! __('Mettiamoci in contatto usando :rete-digitale, lo strumento di collaborazione riservato agli RTD.', [
                             'rete-digitale' => '<a class="external-link" rel="noopener noreferrer" href="https://agid.eu.brightidea.com/">' . __('ReTe Digitale') . '</a>'
-                        ]) !!}
+                        ]) !!} --}}
+                        {{ __('A breve sarà reso disponibile uno strumento dedicato esclusivamente agli RTD.') }}
                     </p>
                 </div>
             </div>
