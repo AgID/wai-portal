@@ -805,7 +805,7 @@ class WebsiteEventsSubscriberTest extends TestCase
             'Website ' . $this->website->info . ' updated',
             [
                 'event' => EventType::WEBSITE_UPDATED,
-                'website' => $this->website->slug,
+                'website' => $this->website->id,
                 'pa' => $this->publicAdministration->ipa_code,
             ],
         ]);

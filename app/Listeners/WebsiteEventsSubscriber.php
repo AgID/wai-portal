@@ -133,7 +133,7 @@ class WebsiteEventsSubscriber implements ShouldQueue
         logger()->notice('Website ' . $website->info . ' updated',
             [
                 'event' => EventType::WEBSITE_UPDATED,
-                'website' => $website->slug,
+                'website' => $website->id,
                 'pa' => $website->publicAdministration->ipa_code,
             ]
         );
