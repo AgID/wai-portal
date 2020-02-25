@@ -6,7 +6,7 @@
     <div class="row">
         <div class="col-lg-8 d-flex">
             @component('layouts.components.box')
-            <h4 class="text-uppercase m-0">{{ __('anagrafica') }}</h4>
+            <h4 class="text-uppercase m-0">{{ __('Anagrafica') }}</h4>
             <div class="mt-5 pt-5">
                 <div class="form-row">
                     <div class="form-group col-md-6">

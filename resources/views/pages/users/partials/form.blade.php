@@ -4,7 +4,7 @@
     @method('put')
     @endisset
     @component('layouts.components.box', ['classes' => 'rounded'])
-    <h3 class="section-header">{{ __('anagrafica') }}</h3>
+    <h3 class="section-header">{{ __('Anagrafica') }}</h3>
     @isset($user)
     <div class="form-row">
         <div class="form-group col-md-6">
