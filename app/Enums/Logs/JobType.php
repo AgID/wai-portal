@@ -49,4 +49,9 @@ class JobType extends Enum implements LocalizedEnum
      * Process websites monitoring.
      */
     public const MONITOR_WEBSITES_TRACKING = 7;
+
+    /**
+     * Purge pending invitations.
+     */
+    public const PURGE_PENDING_INVITATIONS = 8;
 }

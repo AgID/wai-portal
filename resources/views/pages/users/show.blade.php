@@ -82,6 +82,14 @@
                     aria-disabled="true">
                     {{ __('Rispedisci invito') }}
                 </a>
+                <p class="mt-3 font-weight-semibold">
+                    {{ __("Se non accetta l'invito, l'utente sarà rimosso fra :purgeDays.",[
+                        'purgeDays' => trans_choice(
+                                "{1} :count giorno|[2,*] :count giorni",
+                                (int) config('auth.verification.purge') - $user->created_at->diffInDays(now())
+                            )
+                    ]) }}
+                </p>
                 @endif
                 @if ($user->status->is(UserStatus::ACTIVE) && !$user->is($authUser))
                 <h5 class="section-header">{{ __('sospensione') }}</h5>

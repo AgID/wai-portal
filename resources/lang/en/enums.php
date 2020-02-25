@@ -154,6 +154,7 @@ return [
         EventType::USER_UPDATED => 'User updated',
         EventType::WEBSITE_UPDATED => 'Website updated',
         EventType::CLOSED_BETA_WHITELIST_UPDATE_FAILED => 'Closed beta whitelist update failed',
+        EventType::PURGE_PENDING_INVITATIONS_COMPLETED => 'Purge old pending invitations completed',
         EventType::MAIL_SENT => 'Mail sent',
     ],
 
@@ -183,5 +184,6 @@ return [
         JobType::PROCESS_USERS_INDEX => 'Update users index',
         JobType::PROCESS_WEBSITES_INDEX => 'Update websites index',
         JobType::MONITOR_WEBSITES_TRACKING => 'Monitor websites tracking status',
+        JobType::PURGE_PENDING_INVITATIONS => 'Purge old pending invitations',
     ],
 ];

@@ -140,7 +140,11 @@ class UserController extends Controller
         return redirect()->to($redirectUrl)->withModal([
             'title' => __('Invito inoltrato'),
             'icon' => 'it-clock',
-            'message' => __("Abbiamo inviato un invito all'indirizzo email :email.", ['email' => '<strong>' . e($user->email) . '</strong>']),
+            'message' => implode("\n", [
+                __("Abbiamo inviato un invito all'indirizzo email :email.", ['email' => '<strong>' . e($user->email) . '</strong>']),
+                "\n" . __("L'invito scade dopo :expire giorni e può essere rinnovato.", ['expire' => config('auth.verification.expire')]),
+                "\n<strong>" . __("Attenzione! Se dopo :purge giorni l'utente non avrà ancora accettato l'invito, sarà rimosso.", ['purge' => config('auth.verification.purge')]) . '</strong>',
+            ]),
             'image' => asset('images/invitation-email-sent.svg'),
         ]);
     }
