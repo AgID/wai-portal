@@ -5,8 +5,6 @@
 
     <body>
 
-        @include('layouts.includes.cookiebar')
-
         @yield('page-content')
 
         @include('layouts.includes.scrolltop')

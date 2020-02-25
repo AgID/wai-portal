@@ -27,9 +27,6 @@ abstract class DuskTestCase extends BaseTestCase
     {
         parent::setUp();
         $this->artisan('app:init-permissions');
-        $this->browse(function (Browser $browser) {
-            $browser->visit(new Home())->press('ACCETTO'); // Cookie bar
-        });
     }
 
     /**
