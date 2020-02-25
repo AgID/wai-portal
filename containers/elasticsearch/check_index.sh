@@ -7,7 +7,7 @@ do
 done
 
 # Check if index already exists
-RESPONSE=$(curl -w %{http_code} -so /dev/null -X GET -H 'Content-Type: application/json' http://elasticsearch:9200/@ELASTICSEARCH_INDEX_NAME@)
+RESPONSE=$(curl -w %{http_code} -so /dev/null -X GET -H 'Content-Type: application/json' http://elasticsearch:9200/_template/@ELASTICSEARCH_INDEX_TEMPLATE_NAME@)
 if [[ ${RESPONSE} -ne 200 ]]
 then
     exit 1

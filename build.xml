@@ -60,7 +60,8 @@
                     <token key="ELASTICSEARCH_USER" value="${ELASTICSEARCH_USER}" />
                     <token key="ELASTICSEARCH_PASSWORD" value="${ELASTICSEARCH_PASSWORD}" />
                     <token key="ELASTICSEARCH_INDEX_PREFIX" value="${ELASTICSEARCH_INDEX_PREFIX}" />
-                    <token key="ELASTICSEARCH_INDEX_NAME" value="${ELASTICSEARCH_INDEX_PREFIX}-${ELASTICSEARCH_INDEX_NAME}" />
+                    <token key="ELASTICSEARCH_INDEX_TEMPLATE_NAME" value="${ELASTICSEARCH_INDEX_PREFIX}-${ELASTICSEARCH_INDEX_NAME}" />
+                    <token key="ELASTICSEARCH_INDEX_NAME" value="${ELASTICSEARCH_INDEX_PREFIX}-${ELASTICSEARCH_INDEX_NAME}-${env.APP_ENV}" />
                     <token key="ELASTICSEARCH_IGNORE_EXCEPTIONS" value="${ELASTICSEARCH_IGNORE_EXCEPTIONS}" />
                     <token key="ELASTICSEARCH_SEARCH_TEMPLATE_NAME" value="${ELASTICSEARCH_SEARCH_TEMPLATE_NAME}" />
                     <token key="KIBANA_VERSION" value="${KIBANA_VERSION}" />

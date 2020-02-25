@@ -1,4 +1,5 @@
 {
+    "index_patterns": ["@ELASTICSEARCH_INDEX_TEMPLATE_NAME@*"],
     "settings": {
         "analysis": {
             "analyzer": {
