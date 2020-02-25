@@ -299,8 +299,8 @@ it:
     id: analytics-mobile
     question: Posso tracciare le visite di una app mobile?
     answer: |
-      Si, in WAI è possibile tracciare anche le visite di e il comportamento
-      degli utenti di una app mobile.
+      Si, in WAI è possibile tracciare anche le visite e il comportamento degli
+      utenti di una app mobile.
 
   # - themes: generale
   #   id: public-playground
