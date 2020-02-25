@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\URL;
 use Laravel\Dusk\Browser;
 use Laravel\Dusk\TestCase as BaseTestCase;
-use Tests\Browser\Pages\Home;
 
 abstract class DuskTestCase extends BaseTestCase
 {
