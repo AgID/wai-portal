@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Enums\UserRole;
 use App\Events\User\UserLogin;
 use App\Events\User\UserLogout;
 use App\Models\User;
@@ -23,7 +24,7 @@ class SPIDEventSubscriber
         auth()->logout();
         $SPIDUser = $event->getSPIDUser();
         $user = User::findByFiscalNumber($SPIDUser->fiscalNumber);
-        if (isset($user)) {
+        if (isset($user) && $user->isNotAn(UserRole::SUPER_ADMIN)) {
             auth()->login($user);
 
             event(new UserLogin($user));
