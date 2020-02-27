@@ -189,8 +189,8 @@ class UserEventsSubscriber implements ShouldQueue
         $website = $event->getWebsite();
         $accessType = $event->getAccessType();
 
-        //Notify public administration administrators
-        $website->publicAdministration->sendWebsiteAccessChangedNotificationToAdministrators($user);
+        //Notify public administration administrators (currently disabled - TODO: verify if really needed)
+        // $website->publicAdministration->sendWebsiteAccessChangedNotificationToAdministrators($user);
 
         logger()->notice(
             'Granted "' . $accessType->description . '" access for website ' . $website->info . ' to user ' . $user->uuid,

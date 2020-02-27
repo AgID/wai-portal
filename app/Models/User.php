@@ -97,27 +97,39 @@ class User extends Authenticatable implements MustVerifyEmail
     ];
 
     /**
-     * Find a User instance by fiscal number.
+     * Find a User instance by fiscal number with UserRole::SUPER_ADMIN role.
      *
      * @param string $fiscalNumber fiscal number
      *
      * @return User|null the User or null if not found
      */
-    public static function findByFiscalNumber(string $fiscalNumber): ?User
+    public static function findSuperAdminByFiscalNumber(string $fiscalNumber): ?User
     {
-        return User::where('fiscal_number', $fiscalNumber)->first();
+        return static::where('fiscal_number', $fiscalNumber)->whereIs(UserRole::SUPER_ADMIN)->first();
     }
 
     /**
-     * Find a deleted User instance by fiscal number.
+     * Find a User instance by fiscal number without UserRole::SUPER_ADMIN role.
      *
      * @param string $fiscalNumber fiscal number
      *
      * @return User|null the User or null if not found
      */
-    public static function findTrashedByFiscalNumber(string $fiscalNumber): ?User
+    public static function findNotSuperAdminByFiscalNumber(string $fiscalNumber): ?User
     {
-        return User::onlyTrashed()->where('fiscal_number', $fiscalNumber)->first();
+        return static::where('fiscal_number', $fiscalNumber)->whereIsNot(UserRole::SUPER_ADMIN)->first();
+    }
+
+    /**
+     * Find a deleted User instance by fiscal number without UserRole::SUPER_ADMIN role.
+     *
+     * @param string $fiscalNumber fiscal number
+     *
+     * @return User|null the User or null if not found
+     */
+    public static function findTrashedNotSuperAdminByFiscalNumber(string $fiscalNumber): ?User
+    {
+        return User::onlyTrashed()->where('fiscal_number', $fiscalNumber)->whereIsNot(UserRole::SUPER_ADMIN)->first();
     }
 
     /**

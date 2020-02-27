@@ -691,19 +691,20 @@ class UserEventsSubscriberTest extends TestCase
 
         event(new UserWebsiteAccessChanged($secondUser, $website, $accessType));
 
-        Notification::assertSentTo(
-            [$this->user],
-            UserWebsiteAccessChangedEmail::class,
-            function ($notification, $channels) use ($secondUser) {
-                $this->assertEquals($channels, ['mail']);
-                $mail = $notification->toMail($this->user)->build();
-                $this->assertEquals($this->user->uuid, $mail->viewData['user']['uuid']);
-                $this->assertEquals($secondUser->uuid, $mail->viewData['modifiedUser']['uuid']);
-                $this->assertEquals($mail->subject, __('Permessi utente modificati'));
+        // Notification disabled
+        // Notification::assertSentTo(
+        //     [$this->user],
+        //     UserWebsiteAccessChangedEmail::class,
+        //     function ($notification, $channels) use ($secondUser) {
+        //         $this->assertEquals($channels, ['mail']);
+        //         $mail = $notification->toMail($this->user)->build();
+        //         $this->assertEquals($this->user->uuid, $mail->viewData['user']['uuid']);
+        //         $this->assertEquals($secondUser->uuid, $mail->viewData['modifiedUser']['uuid']);
+        //         $this->assertEquals($mail->subject, __('Permessi utente modificati'));
 
-                return $mail->hasTo($this->user->email, $this->user->full_name);
-            }
-        );
+        //         return $mail->hasTo($this->user->email, $this->user->full_name);
+        //     }
+        // );
     }
 
     public function testUserStatusChanged(): void

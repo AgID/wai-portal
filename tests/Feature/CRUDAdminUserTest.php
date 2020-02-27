@@ -356,7 +356,7 @@ class CRUDAdminUserTest extends TestCase
                 && $this->user->is($event->getInvitedBy());
         });
 
-        User::findByFiscalNumber($fiscalNumber)->deleteAnalyticsServiceAccount();
+        User::findNotSuperAdminByFiscalNumber($fiscalNumber)->deleteAnalyticsServiceAccount();
     }
 
     /**
@@ -403,7 +403,7 @@ class CRUDAdminUserTest extends TestCase
                 && $this->user->is($event->getInvitedBy());
         });
 
-        User::findByFiscalNumber($fiscalNumber)->deleteAnalyticsServiceAccount();
+        User::findNotSuperAdminByFiscalNumber($fiscalNumber)->deleteAnalyticsServiceAccount();
     }
 
     /**

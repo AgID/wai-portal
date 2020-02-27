@@ -22,7 +22,7 @@ class SPIDEventSubscriber
     {
         auth()->logout();
         $SPIDUser = $event->getSPIDUser();
-        $user = User::findByFiscalNumber($SPIDUser->fiscalNumber);
+        $user = User::findNotSuperAdminByFiscalNumber($SPIDUser->fiscalNumber);
         if (isset($user)) {
             auth()->login($user);
 

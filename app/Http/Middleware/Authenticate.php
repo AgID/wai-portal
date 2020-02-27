@@ -26,7 +26,7 @@ class Authenticate extends Middleware
     protected function authenticate($request, array $guards)
     {
         $SPIDUser = session()->get('spid_user');
-        if ($SPIDUser && User::findTrashedByFiscalNumber($SPIDUser->fiscalNumber)) {
+        if ($SPIDUser && User::findTrashedNotSuperAdminByFiscalNumber($SPIDUser->fiscalNumber)) {
             throw new AuthenticationException('User deleted.', $guards, $this->redirectTrashedTo($request));
         }
 

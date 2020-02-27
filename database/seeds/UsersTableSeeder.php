@@ -20,7 +20,7 @@ class UsersTableSeeder extends Seeder
     public function run(): void
     {
         $fiscalNumber = env('APP_SUPER_ADMIN_FISCAL_NUMBER');
-        if (null === User::findByFiscalNumber($fiscalNumber)) {
+        if (null === User::findSuperAdminByFiscalNumber($fiscalNumber)) {
             DB::table('users')->insert([
                 'name' => env('APP_SUPER_ADMIN_NAME'),
                 'family_name' => env('APP_SUPER_ADMIN_FAMILY_NAME'),
@@ -35,7 +35,7 @@ class UsersTableSeeder extends Seeder
                 'updated_at' => Carbon::now()->format('Y-m-d H:i:s'),
             ]);
             Bouncer::scope()->to(0);
-            User::findByFiscalNumber($fiscalNumber)->assign(UserRole::SUPER_ADMIN);
+            User::findNotSuperAdminByFiscalNumber($fiscalNumber)->assign(UserRole::SUPER_ADMIN);
         }
     }
 }

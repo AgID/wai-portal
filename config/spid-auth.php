@@ -43,6 +43,7 @@ return [
     'hide_real_idps' => 'production' !== env('APP_ENV'),
     'expose_sp_metadata' => true,
     'expose_idps_json' => false,
+    'only_sp_logout' => true,
     'test_idp' => env('SPID_TESTENV_ENABLED', false) ? [
         'entityId' => env('SPID_TESTENV_ENTITY_ID'),
         'sso_endpoint' => env('SPID_TESTENV_SSO'),
