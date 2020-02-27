@@ -34,7 +34,7 @@ class UserTest extends TestCase
 
         $this->assertDatabaseHas('users', ['email' => $user->email]);
 
-        $searchedUser = User::findByFiscalNumber($user->fiscal_number);
+        $searchedUser = User::findNotSuperAdminByFiscalNumber($user->fiscal_number);
 
         $this->assertNotNull($searchedUser);
 
@@ -54,23 +54,23 @@ class UserTest extends TestCase
     {
         $user = factory(User::class)->create();
 
-        $searchedUser = User::findByFiscalNumber($user->fiscal_number);
+        $searchedUser = User::findNotSuperAdminByFiscalNumber($user->fiscal_number);
 
         $searchedUser->delete();
 
         $this->assertSoftDeleted('users', ['id' => $searchedUser->id]);
 
-        $searchedUser = User::findByFiscalNumber($user->fiscal_number);
+        $searchedUser = User::findNotSuperAdminByFiscalNumber($user->fiscal_number);
 
         $this->assertNull($searchedUser);
 
-        $searchedUser = User::findTrashedByFiscalNumber($user->fiscal_number);
+        $searchedUser = User::findTrashedNotSuperAdminByFiscalNumber($user->fiscal_number);
 
         $this->assertNotNull($searchedUser);
 
         $searchedUser->restore();
 
-        $searchedUser = User::findByFiscalNumber($user->fiscal_number);
+        $searchedUser = User::findNotSuperAdminByFiscalNumber($user->fiscal_number);
 
         $this->assertNotNull($searchedUser);
     }
@@ -112,9 +112,9 @@ class UserTest extends TestCase
             'user_id' => $thirdPublicAdministration->id,
         ]);
 
-        $searchedFirstUser = User::findByFiscalNumber($firstUser->fiscal_number);
-        $searchedSecondUser = User::findByFiscalNumber($secondUser->fiscal_number);
-        $searchedThirdUser = User::findByFiscalNumber($thirdUser->fiscal_number);
+        $searchedFirstUser = User::findNotSuperAdminByFiscalNumber($firstUser->fiscal_number);
+        $searchedSecondUser = User::findNotSuperAdminByFiscalNumber($secondUser->fiscal_number);
+        $searchedThirdUser = User::findNotSuperAdminByFiscalNumber($thirdUser->fiscal_number);
 
         $this->assertCount(2, $searchedFirstUser->publicAdministrations()->get());
         $this->assertCount(1, $searchedSecondUser->publicAdministrations()->get());
@@ -151,7 +151,7 @@ class UserTest extends TestCase
             'token' => $token->token,
         ]);
 
-        $searchedUser = User::findByFiscalNumber($user->fiscal_number);
+        $searchedUser = User::findNotSuperAdminByFiscalNumber($user->fiscal_number);
 
         $this->assertTrue($searchedUser->passwordResetToken()->exists());
 

@@ -83,7 +83,7 @@ class ProcessPendingWebsitesTest extends TestCase
             return json_decode($event->getWebsiteJson())->slug === $website->slug;
         });
 
-        $purgedUser = User::findByFiscalNumber($user->fiscal_number);
+        $purgedUser = User::findNotSuperAdminByFiscalNumber($user->fiscal_number);
         $this->assertFalse($purgedUser->hasAnalyticsServiceAccount());
 
         $this->expectException(CommandErrorException::class);
