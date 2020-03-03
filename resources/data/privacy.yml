@@ -61,20 +61,22 @@ it: |
 
   L'accesso alla piattaforma con tecnologia SPID comporta l'acquisizione di
   tutti i dati esplicitamente autorizzati dall'utente durante la procedura di
-  autenticazione:nome,congnome,codice fiscale,SPID code.
+  autenticazione: nome, cognome, codice fiscale, SPID code.
 
-  Oltre a tali dati, la registrazione richiede anche l’indicazione di un indirizzo 
-  e-mail di contatto, inserito direttamente dall’utente. 
+  Oltre a tali dati, la registrazione richiede anche l'indicazione di un indirizzo 
+  e-mail di contatto, inserito direttamente dall’utente.
+   
   Tali dati, la cui mancata indicazione non consente la registrazione a WAI, sono trattati al solo scopo 
-  di supportare le funzionalità di autenticazione e autorizzazione dell’aderente.
+  di supportare le funzionalità di autenticazione e autorizzazione dell'aderente.
+  
   L'invio di messaggi agli indirizzi di contatto e ai profili istituzionali dell’Agenzia sui social media 
   comporta l'acquisizione di tutti i dati personali inclusi volontariamente dal mittente nel testo della propria 
   comunicazione, trattati all'unico fine del riscontro richiesto.
 
   La base giuridica del trattamento è individuata nell'esecuzione dei compiti di
   interesse pubblico o connessi all'esercizio dei pubblici poteri istituzionali
-  posti in capo ad AGID,con specifico riferimento alle attività previste
-  agli artt. 7 e 14-bis del D. Lgs. 82/2005 recante il Codice dell’amministrazione digitale.
+  posti in capo ad AGID, con specifico riferimento alle attività previste
+  agli articoli 7 e 14-bis del D. Lgs. 82/2005 recante il Codice dell’amministrazione digitale.
 
   ### Categorie di destinatari dei dati personali
 
@@ -91,7 +93,7 @@ it: |
   oltre 30 giorni dal momento della raccolta, fatte salve eventuali necessità di
   accertamento di reati da parte dell'Autorità giudiziaria.
 
-  I dati personali forniti dagli utenti sono conservati per un i 30 giorni successivi all'avvenuta
+  I dati personali forniti dagli utenti sono conservati per i 30 giorni successivi all'avvenuta
   cancellazione dell'utenza. 
 
   ### Diritti degli utenti
@@ -100,7 +102,7 @@ it: |
   personali, la rettifica o la cancellazione degli stessi, la limitazione del
   relativo trattamento, il diritto di opporvisi e il diritto alla portabilità
   dei dati, laddove ne ricorrano i presupposti. Le richieste vanno rivolte ad AGID, 
-  contattando il RPD all’indirizzo sopra indicato.
+  contattando il RPD all'indirizzo sopra indicato.
 
 
   Fatto salvo ogni altro ricorso amministrativo o giurisdizionale, è diritto
