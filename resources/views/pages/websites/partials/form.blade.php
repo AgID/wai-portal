@@ -69,7 +69,7 @@
         </div>
     </div>
     @endunless
-    <h3 class="section-header{{ $errors->has('permissions') ? ' is-invalid' : '' }}">{{ __('permessi degli utenti') }}</h3>
+    <h3 class="section-header{{ $errors->has('permissions') ? ' is-invalid' : '' }}">{{ __('Permessi degli utenti') }}</h3>
     @error('permissions')
     <div class="invalid-feedback">{{ $errors->first('permissions') }}</div>
     @enderror
