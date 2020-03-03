@@ -1,0 +1,5 @@
+type: "//rec"
+required:
+  it: "//str"
+optional:
+  en: "//str"

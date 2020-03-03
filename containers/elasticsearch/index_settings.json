@@ -1,0 +1,72 @@
+{
+    "index_patterns": ["@ELASTICSEARCH_INDEX_TEMPLATE_NAME@*"],
+    "settings": {
+        "analysis": {
+            "analyzer": {
+                "autocomplete": {
+                    "tokenizer": "autocomplete",
+                    "filter": [
+                        "lowercase"
+                    ]
+                },
+                "autocomplete_search": {
+                    "tokenizer": "lowercase"
+                }
+            },
+            "tokenizer": {
+                "autocomplete": {
+                    "type": "edge_ngram",
+                    "min_gram": 3,
+                    "max_gram": 10,
+                    "token_chars": [
+                        "letter",
+                        "digit"
+                    ]
+                }
+            }
+        }
+    },
+    "mappings": {
+        "properties": {
+            "channel": {
+                "type": "keyword"
+            },
+            "context": {
+                "properties": {
+                    "event": {
+                        "type": "integer"
+                    },
+                    "job": {
+                        "type": "integer"
+                    },
+                    "exception_type": {
+                        "type": "integer"
+                    },
+                    "pa": {
+                        "type": "keyword"
+                    },
+                    "website": {
+                        "type": "integer"
+                    },
+                    "user": {
+                        "type": "keyword"
+                    }
+                }
+            },
+            "datetime": {
+                "type": "date"
+            },
+            "level": {
+                "type": "integer"
+            },
+            "level_name": {
+                "type": "keyword"
+            },
+            "message": {
+                "type": "text",
+                "analyzer": "autocomplete",
+                "search_analyzer": "autocomplete_search"
+            }
+        }
+    }
+}

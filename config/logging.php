@@ -1,7 +1,13 @@
 <?php
 
-return [
+use App\Services\ElasticSearchService;
+use Monolog\Formatter\ElasticsearchFormatter;
+use Monolog\Handler\ElasticsearchHandler;
+use Monolog\Handler\NullHandler;
+use Monolog\Handler\StreamHandler;
+use Monolog\Handler\SyslogUdpHandler;
 
+return [
     /*
     |--------------------------------------------------------------------------
     | Default Log Channel
@@ -25,35 +31,103 @@ return [
     | you a variety of powerful log handlers / formatters to utilize.
     |
     | Available Drivers: "single", "daily", "slack", "syslog",
-    |                    "errorlog", "custom", "stack"
+    |                    "errorlog", "monolog",
+    |                    "custom", "stack"
     |
     */
 
     'channels' => [
         'stack' => [
             'driver' => 'stack',
-            'channels' => ['single'],
+            'channels' => explode(',', env('LOG_STACK_CHANNELS', 'single')),
+            'ignore_exceptions' => false,
         ],
 
         'single' => [
             'driver' => 'single',
-            'path' => storage_path('logs/laravel.log'),
+            'path' => storage_path('logs/application.log'),
+            'level' => 'debug',
+        ],
+
+        'testing' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/testing.log'),
             'level' => 'debug',
         ],
 
         'daily' => [
             'driver' => 'daily',
-            'path' => storage_path('logs/laravel.log'),
+            'path' => storage_path('logs/application.log'),
             'level' => 'debug',
-            'days' => 7,
+            'days' => 14,
+        ],
+
+        'elasticsearch' => [
+            'driver' => 'monolog',
+            'level' => 'debug',
+            'handler' => ElasticsearchHandler::class,
+            'handler_with' => [
+                'client' => app(ElasticSearchService::class)->getClient(),
+                'options' => [
+                    'index' => config('elastic-search.index_name'),
+                    /*
+                     * Index type deprecated from ElasticSearch 6.x and default to _doc in 7.x
+                     * It will be removed in ElasticSearch 8.x
+                     * https://www.elastic.co/guide/en/elasticsearch/reference/current/removal-of-types.html
+                     */
+                    'type' => '_doc',
+                    'ignore_error' => config('elastic-search.ignore_exceptions'),
+                ],
+            ],
+            'formatter' => ElasticsearchFormatter::class,
+            'formatter_with' => [
+                'index' => config('elastic-search.index_name'),
+                /*
+                 * Index type deprecated from ElasticSearch 6.x and default to _doc in 7.x
+                 * It will be removed in ElasticSearch 8.x
+                 * https://www.elastic.co/guide/en/elasticsearch/reference/current/removal-of-types.html
+                 */
+                'type' => '_doc',
+            ],
         ],
 
         'slack' => [
             'driver' => 'slack',
-            'url' => env('LOG_SLACK_WEBHOOK_URL'),
-            'username' => 'Laravel Log',
-            'emoji' => ':boom:',
-            'level' => 'critical',
+            'url' => env('LOG_SLACK_WEBHOOK_URL', ''),
+            'username' => env('LOG_SLACK_USERNAME', config('app.name')),
+            'emoji' => ':robot_face:',
+            'tap' => [App\Logging\SlackLogger::class],
+            'level' => 'notice',
+            'exclude_fields' => [
+                'context.exception',
+            ],
+        ],
+
+        'papertrail' => [
+            'driver' => 'monolog',
+            'level' => 'debug',
+            'handler' => SyslogUdpHandler::class,
+            'handler_with' => [
+                'host' => env('PAPERTRAIL_URL'),
+                'port' => env('PAPERTRAIL_PORT'),
+            ],
+        ],
+
+        'stdout' => [
+            'driver' => 'monolog',
+            'handler' => StreamHandler::class,
+            'handler_with' => [
+                'stream' => 'php://stdout',
+            ],
+        ],
+
+        'stderr' => [
+            'driver' => 'monolog',
+            'handler' => StreamHandler::class,
+            'formatter' => env('LOG_STDERR_FORMATTER'),
+            'with' => [
+                'stream' => 'php://stderr',
+            ],
         ],
 
         'syslog' => [
@@ -64,6 +138,11 @@ return [
         'errorlog' => [
             'driver' => 'errorlog',
             'level' => 'debug',
+        ],
+
+        'null' => [
+            'driver' => 'monolog',
+            'handler' => NullHandler::class,
         ],
     ],
 

@@ -1,5 +1,6 @@
-let mix = require('laravel-mix');
-let StyleLintPlugin = require('stylelint-webpack-plugin');
+const mix = require('laravel-mix');
+require('laravel-mix-eslint-config');
+require('laravel-mix-stylelint');
 
 /*
  |--------------------------------------------------------------------------
@@ -12,22 +13,44 @@ let StyleLintPlugin = require('stylelint-webpack-plugin');
  |
  */
 
-mix.js('resources/assets/js/app.js', 'public/js')
-   .sass('resources/assets/sass/app.scss', 'public/css');
-
 mix.webpackConfig({
-    module: {
-        rules: [
-            {
-                test: /\.js$/,
-                exclude: [/node_modules/, /containers/],
-                loader: 'eslint-loader',
-            }
-        ]
-    },
-    plugins: [
-        new StyleLintPlugin({
-            files: ['resources/**/*.s?(a|c)ss']
-        }),
-    ]
+    output: {
+        chunkFilename: 'js/chunks/[name].js',
+    }
 });
+
+mix.autoload({
+    jquery: ['$', 'jQuery']
+});
+
+mix.js('resources/js/app.js', 'public/js')
+    .stylelint({ files: ['**/*.s?(a|c)ss']})
+    .eslint({
+        enforce: 'pre',
+        test: /\.js$/,
+        exclude: ['node_modules', 'containers'],
+        loader: 'eslint-loader',
+        options: {
+            fix: false,
+            cache: false,
+        }
+    })
+    .sass('resources/sass/app.scss', 'public/css')
+    .sass('resources/sass/datatables.scss', 'public/css');
+    // Do not use automatic vendor extraction in this version.
+    // See https://github.com/JeffreyWay/laravel-mix/issues/1914
+    // .extract();
+
+mix.copyDirectory('resources/images', 'public/images');
+mix.copyDirectory('node_modules/bootstrap-italia/dist/fonts', 'public/fonts');
+mix.copyDirectory('node_modules/bootstrap-italia/dist/svg', 'public/svg');
+
+if (!mix.inProduction()) {
+    mix.webpackConfig({
+        devtool: 'source-map'
+    })
+    .sourceMaps();
+} else {
+    mix.version();
+    mix.disableNotifications();
+}

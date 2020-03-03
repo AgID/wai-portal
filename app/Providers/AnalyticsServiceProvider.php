@@ -3,33 +3,18 @@
 namespace App\Providers;
 
 use App\Services\MatomoService;
+use Illuminate\Contracts\Support\DeferrableProvider;
 use Illuminate\Support\ServiceProvider;
 
-class AnalyticsServiceProvider extends ServiceProvider
+/**
+ * Analytics service provider.
+ */
+class AnalyticsServiceProvider extends ServiceProvider implements DeferrableProvider
 {
     /**
-     * Indicates if loading of the provider is deferred.
-     *
-     * @var bool
-     */
-    protected $defer = true;
-
-    /**
-     * Bootstrap any application services.
-     *
-     * @return void
-     */
-    public function boot()
-    {
-
-    }
-
-    /**
      * Register any application services.
-     *
-     * @return void
      */
-    public function register()
+    public function register(): void
     {
         $this->app->singleton('analytics-service', function ($app) {
             return new MatomoService();
@@ -39,9 +24,9 @@ class AnalyticsServiceProvider extends ServiceProvider
     /**
      * Get the services provided by the provider.
      *
-     * @return array
+     * @return array the provided services array
      */
-    public function provides()
+    public function provides(): array
     {
         return ['analytics-service'];
     }

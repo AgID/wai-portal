@@ -2,54 +2,123 @@
 
 namespace App\Exceptions;
 
-use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-
+use App\Enums\Logs\EventType;
+use App\Enums\Logs\ExceptionType;
 use Exception;
+use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\Request;
+use Illuminate\Routing\Exceptions\InvalidSignatureException;
+use Illuminate\Session\TokenMismatchException;
+use Italia\SPIDAuth\Exceptions\SPIDLoginAnomalyException;
+use Italia\SPIDAuth\Exceptions\SPIDLoginException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Throwable;
 
+/**
+ * Base exceptions handler.
+ */
 class Handler extends ExceptionHandler
 {
     /**
-     * A list of the exception types that are not reported.
-     *
-     * @var array
-     */
-    protected $dontReport = [
-        //
-    ];
-
-    /**
-     * A list of the inputs that are never flashed for validation exceptions.
-     *
-     * @var array
-     */
-    protected $dontFlash = [
-        'password',
-        'password_confirmation',
-    ];
-
-    /**
      * Report or log an exception.
      *
-     * This is a great spot to send exceptions to Sentry, Bugsnag, etc.
+     * @param Exception $exception the raised exception
      *
-     * @param  Exception $exception
-     * @return void
-     * @throws Exception
+     * @throws Exception if an error occurred during reporting
      */
     public function report(Exception $exception)
     {
+        if ($exception instanceof HttpException) {
+            $user = auth()->check() ? 'User ' . auth()->user()->uuid : 'Anonymous user';
+            $statusCode = $exception->getStatusCode();
+
+            if ($statusCode < 500) {
+                logger()->info(
+                    'A client error (status code: ' . $statusCode . ') occurred [' . request()->url() . ' visited by ' . $user . '].',
+                    [
+                        'event' => EventType::EXCEPTION,
+                        'exception_type' => ExceptionType::HTTP_CLIENT_ERROR,
+                        'exception' => $exception,
+                    ]
+                );
+            } else {
+                logger()->error(
+                    'A server error (status code: ' . $statusCode . ') occurred [' . request()->url() . ' visited by ' . $user . '].',
+                    [
+                        'event' => EventType::EXCEPTION,
+                        'exception_type' => ExceptionType::SERVER_ERROR,
+                        'exception' => $exception,
+                    ]
+                );
+            }
+        }
+
         parent::report($exception);
     }
 
     /**
      * Render an exception into an HTTP response.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  Exception  $exception
-     * @return \Illuminate\Http\Response
+     * @param Request $request the request
+     * @param Exception $exception the raised exception
+     *
+     * @return mixed the response
      */
     public function render($request, Exception $exception)
     {
+        if ($exception instanceof TokenMismatchException) {
+            return redirect()->home()->withNotification([
+                'title' => __('sessione scaduta'),
+                'message' => implode("\n", [
+                    __('La sessione è scaduta a causa di inattività sulla pagina.'),
+                    __('Accedi di nuovo per continuare da dove eri rimasto/a.'),
+                ]),
+                'status' => 'warning',
+                'icon' => 'it-error',
+            ]);
+        }
+
+        if ($exception instanceof InvalidSignatureException) {
+            return response()->view('errors.403', [
+                'userMessage' => __('Il link che hai usato non è valido oppure è scaduto.'),
+                'exception' => $exception,
+            ], $exception->getStatusCode());
+        }
+
+        if ($exception instanceof SPIDLoginException) {
+            $message = $exception instanceof SPIDLoginAnomalyException
+                ? ucfirst($exception->getUserMessage()) . '.'
+                : __('auth.spid_failed');
+
+            return redirect()->home()->withNotification([
+                'title' => __('accesso non effettuato'),
+                'message' => $message,
+                'status' => 'error',
+                'icon' => 'it-close-circle',
+            ]);
+        }
+
         return parent::render($request, $exception);
+    }
+
+    /**
+     * Get the context variables for logging.
+     *
+     * @return array the context variables
+     */
+    protected function context(): array
+    {
+        $context = [
+            'event' => EventType::EXCEPTION,
+            'exception_type' => ExceptionType::GENERIC,
+        ];
+        try {
+            if (auth()->check()) {
+                $context['user'] = auth()->user()->uuid;
+            }
+        } catch (Throwable $t) {
+        }
+
+        return $context;
     }
 }

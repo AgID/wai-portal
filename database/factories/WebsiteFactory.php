@@ -1,21 +1,29 @@
 <?php
 
+/** @var \Illuminate\Database\Eloquent\Factory $factory */
+use App\Enums\WebsiteStatus;
+use App\Enums\WebsiteType;
 use App\Models\Website;
 use Faker\Generator as Faker;
+use Illuminate\Support\Str;
 
 $factory->define(Website::class, function (Faker $faker) {
+    $domain_name = $faker->domainName;
+
     return [
-        'url' => $faker->domainName,
-        'type' => 'primary',
-        'slug' => str_slug($faker->domainName),
-        'status' => 'pending'
+        'name' => $faker->words(5, true),
+        'url' => $domain_name,
+        'type' => WebsiteType::INSTITUTIONAL,
+        'slug' => Str::slug($domain_name),
+        'analytics_id' => rand(),
+        'status' => WebsiteStatus::PENDING,
     ];
 });
 
 $factory->state(Website::class, 'active', [
-    'status' => 'active'
+    'status' => WebsiteStatus::ACTIVE,
 ]);
 
-$factory->state(Website::class, 'suspended', [
-    'status' => 'suspended'
+$factory->state(Website::class, 'archived', [
+    'status' => WebsiteStatus::ARCHIVED,
 ]);

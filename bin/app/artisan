@@ -1,0 +1,2 @@
+#!/bin/bash
+(cd `dirname $0`/../../containers && docker-compose exec php-fpm php artisan $@)

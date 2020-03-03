@@ -1,0 +1,25 @@
+type: "//rec"
+required:
+  it:
+    type: "//arr"
+    length: { min: 1 }
+    contents:
+      type: "//rec"
+      required:
+        name: "//str"
+        description: "//str"
+        image: "//str"
+      optional:
+        description_small: "//str"
+optional:
+  en:
+    type: "//arr"
+    length: { min: 1 }
+    contents:
+      type: "//rec"
+      required:
+        name: "//str"
+        description: "//str"
+        image: "//str"
+      optional:
+        description_small: "//str"

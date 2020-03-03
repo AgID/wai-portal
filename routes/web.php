@@ -1,5 +1,8 @@
 <?php
 
+use App\Enums\UserPermission;
+use Illuminate\Support\Facades\Route;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -7,141 +10,431 @@
 |
 | Here is where you can register web routes for your application. These
 | routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
+| contains the "web" middleware group.
+|
+| Defined routes:
+| - general public routes;
+| - authentication routes;
+| - registration routes;
+| - email verification routes;
+| - application routes;
+| - admin-only application routes.
 |
 */
 
-/**
- * General public routes
+/*
+ * General public routes.
  */
 
-Route::get('/', [
-    'as' => 'home',
-    'uses' => 'HomeController@home'
-]);
+Route::get('/', 'HomeController@home')
+    ->name('home');
 
-Route::get('/privacy', [
-    'as' => 'privacy',
-    'uses' => 'HomeController@home'
-]);
+Route::get('/how-to-join', 'HomeController@howToJoin')
+    ->name('how-to-join');
 
-/**
- * Authentication related routes
+Route::get('/privacy', 'HomeController@privacy')
+    ->name('privacy');
+
+Route::get('/legal-notes', 'HomeController@legalNotes')
+    ->name('legal-notes');
+
+Route::get('/faq', 'HomeController@faq')
+    ->name('faq');
+
+Route::get('/contacts', 'HomeController@contacts')
+    ->name('contacts');
+
+Route::get('/open-data', 'HomeController@openData')
+    ->name('open-data');
+
+/*
+ * Admin authentication routes.
  */
+Route::prefix('/admin/user')->group(function () {
+    Route::get('/login', 'Auth\SuperAdminAuthController@showLogin')
+        ->name('admin.login.show')->middleware('enforce.rules:forbid-spid');
 
-/** Only SPID authentication without application authentication */
-Route::prefix('/register')->middleware(['spid.auth', 'guest'])->group(function() {
-    Route::get('/', [
-        'as' => 'auth-register',
-        'uses' => 'Auth\RegisterController@index'
-    ]);
+    Route::post('/login', 'Auth\SuperAdminAuthController@login')
+        ->name('admin.login')->middleware('enforce.rules:forbid-spid');
 
-    Route::post('/', [
-        'as' => 'auth-do_register',
-        'uses' => 'Auth\RegisterController@register'
-    ]);
+    Route::get('/logout', 'Auth\SuperAdminAuthController@logout')
+        ->name('admin.logout')->middleware('auth.admin');
+
+    Route::get('/password-forgot', 'Auth\SuperAdminAuthController@showPasswordForgot')
+        ->name('admin.password.forgot.show')->middleware('enforce.rules:forbid-spid');
+
+    Route::post('/password-forgot', 'Auth\SuperAdminAuthController@sendPasswordForgot')
+        ->name('admin.password.reset.send')->middleware('enforce.rules:forbid-spid', 'throttle:5,1');
+
+    Route::get('/password-reset/{token?}', 'Auth\SuperAdminAuthController@showPasswordReset')
+        ->name('admin.password.reset.show')->middleware('enforce.rules:forbid-spid');
+
+    Route::post('/password-reset', 'Auth\SuperAdminAuthController@passwordReset')
+        ->name('admin.password.reset')->middleware('enforce.rules:forbid-spid', 'throttle:5,1');
 });
 
-/** Public route to allow token verification from application form or email link */
-//Route::get('/verify/token/{token?}', [
-//    'as' => 'auth-do_verify',
-//    'uses' => 'Auth\VerificationController@verifyToken'
-//]);
+/*
+ * Admin email verification routes.
+ *
+ * Application authentication required.
+ */
+Route::middleware('auth.admin')->group(function () {
+    Route::prefix('/admin/user/verify')->group(function () {
+        Route::get('/', 'Auth\VerificationController@show')
+            ->name('admin.verification.notice');
 
-/** Both SPID and application authentication: this is the default for registered users */
-Route::prefix('/verify')->middleware('spid.auth')->group(function() {
-    Route::get('/', [
-        'as' => 'auth-verify',
-        'uses' => 'Auth\VerificationController@verify'
-    ]);
+        Route::get('/resend', 'Auth\VerificationController@resend')
+            ->name('admin.verification.resend')->middleware('enforce.rules:forbid-invited', 'throttle:5,1');
 
-    Route::get('/token/{token?}', [
-        'as' => 'auth-do_verify',
-        'uses' => 'Auth\VerificationController@verifyToken'
-    ]);
+        Route::get('/{uuid}/{hash}', 'Auth\VerificationController@verify')
+            ->name('admin.verification.verify')->middleware('signed', 'throttle:5,1');
+    });
 
-    Route::get('/resend', [
-        'as' => 'auth-verify_resend',
-        'uses' => 'Auth\VerificationController@resend'
-    ]);
+    Route::middleware('enforce.rules:forbid-invited')->group(function () {
+        Route::prefix('/admin/user/profile')->group(function () {
+            Route::get('/', 'Auth\ProfileController@edit')
+                ->name('admin.user.profile.edit');
+
+            Route::patch('/', 'Auth\ProfileController@update')
+                ->name('admin.user.profile.update');
+        });
+    });
 });
 
-/**
- * Registered-only application routes
+/*
+ * Registration routes.
+ *
+ * Only SPID authentication required.
  */
+Route::middleware('spid.auth', 'guest')->group(function () {
+    Route::prefix('/register')->group(function () {
+        Route::get('/', 'Auth\RegisterController@showRegistrationForm')
+            ->name('auth.register.show');
 
-/** Both SPID and application authentication: this is the default for registered users */
-Route::middleware(['spid.auth', 'auth'])->group(function() {
-    Route::prefix('/dashboard')->group(function() {
-        Route::get('/', [
-            'as' => 'dashboard',
-            'uses' => 'DashboardController@index'
-        ]);
-
-        Route::post('/search-ipa-list', [
-            'as' => 'search-ipa-list',
-            'uses' => 'SearchIPAListController@search'
-        ]);
-
-        Route::post('/public-administrations', [
-            'as' => 'public-administrations-store',
-            'uses' => 'PublicAdministrationController@store'
-        ]);
-
-        Route::get('/add-primary-website', [
-            'as' => 'add-primary-website',
-            'uses' => 'DashboardController@addPrimaryWebsite'
-        ]);
-
-        Route::get('/websites', [
-            'as' => 'websites-index',
-            'uses' => 'WebsiteController@index'
-        ])->middleware('authorize.analytics:read-analytics');
-
-        Route::get('/websites/{website}/javascript-snippet', [
-            'as' => 'website-javascript-snippet',
-            'uses' => 'WebsiteController@showJavascriptSnippet'
-        ])->middleware('authorize.analytics:read-analytics');
-
-        Route::get('/websites/data', [
-            'as' => 'websites-data-json',
-            'uses' => 'WebsiteController@dataJson'
-        ])->middleware('authorize.analytics:read-analytics');
-
-        Route::get('/websites/add-website', [
-            'as' => 'websites-create',
-            'uses' => 'WebsiteController@create'
-        ])->middleware('authorize.analytics:manage-sites');
-
-        Route::post('/websites', [
-            'as' => 'websites-store',
-            'uses' => 'WebsiteController@store'
-        ])->middleware('authorize.analytics:manage-sites');
-
-        Route::get('/users', [
-            'as' => 'users-index',
-            'uses' => 'UserController@index'
-        ])->middleware('authorize.analytics:read-analytics');
-
-        Route::get('/users/data', [
-            'as' => 'users-data-json',
-            'uses' => 'UserController@dataJson'
-        ])->middleware('authorize.analytics:read-analytics');
-
-        Route::get('/users/add-user', [
-            'as' => 'users-create',
-            'uses' => 'UserController@create'
-        ])->middleware('authorize.analytics:manage-users');
-
-        Route::post('/users', [
-            'as' => 'users-store',
-            'uses' => 'UserController@store'
-        ])->middleware('authorize.analytics:manage-users');
+        Route::post('/', 'Auth\RegisterController@register')
+            ->name('auth.register');
     });
-    Route::prefix('/analytics-service')->group(function() {
-        Route::get('/login', [
-            'as' => 'analytics-service-login',
-            'uses' => 'AnalyticsController@login'
-        ]);
+});
+
+/*
+ * Email verification routes.
+ *
+ * SPID authentication required.
+ */
+Route::middleware('spid.auth', 'auth')->group(function () {
+    Route::prefix('/user/verify')->group(function () {
+        Route::get('/', 'Auth\VerificationController@show')
+            ->name('verification.notice');
+
+        Route::get('/resend', 'Auth\VerificationController@resend')
+            ->name('verification.resend')->middleware('enforce.rules:forbid-invited', 'throttle:5,1');
+
+        Route::get('/{uuid}/{hash}', 'Auth\VerificationController@verify')
+            ->name('verification.verify')->middleware('signed', 'throttle:5,1');
     });
+});
+
+/*
+ * User profile routes.
+ *
+ * Both SPID and application authentication required
+ */
+Route::middleware('spid.auth', 'auth', 'enforce.rules:forbid-invited')->group(function () {
+    Route::prefix('/user/profile')->group(function () {
+        Route::get('/', 'Auth\ProfileController@edit')
+            ->name('user.profile.edit');
+
+        Route::patch('/', 'Auth\ProfileController@update')
+            ->name('user.profile.update');
+    });
+});
+
+/*
+ * Application routes.
+ *
+ * Both SPID and application authentication for verified users required.
+ * This is the default for registered users.
+ */
+Route::middleware('spid.auth', 'auth', 'verified:verification.notice')->group(function () {
+    // Route::get('/select-public-administration', [
+    //     'as' => 'publicAdministration.tenant.select',
+    //     'uses' => 'PublicAdministrationController@selectTenant',
+    // ]);
+
+    Route::get('/analytics', 'AnalyticsController@index')
+        ->name('analytics');
+
+    Route::get('/search-ipa-index', 'SearchIpaIndexController@search')
+        ->name('ipa.search')
+        ->middleware('throttle:60,1');
+
+    Route::middleware('authorize.analytics:' . UserPermission::VIEW_LOGS)->group(function () {
+        Route::prefix('/logs')->group(function () {
+            Route::get('/', 'Logs\LogController@show')
+                ->name('logs.show');
+
+            Route::get('/data', 'Logs\LogController@data')
+                ->name('logs.data');
+
+            Route::get('/search-website-index', 'Logs\SearchIndexController@searchWebsite')
+                ->name('logs.websites.search')
+                ->middleware('throttle:60,1');
+
+            Route::get('/search-user-index', 'Logs\SearchIndexController@searchUser')
+                ->name('logs.users.search')
+                ->middleware('throttle:60,1');
+        });
+    });
+
+    Route::prefix('/websites')->group(function () {
+        Route::get('/', 'WebsiteController@index')
+            ->name('websites.index');
+
+        Route::get('/data', 'WebsiteController@dataJson')
+            ->name('websites.data.json');
+
+        Route::get('/{website}/show', 'WebsiteController@show')
+            ->name('websites.show');
+
+        Route::post('/store-primary', 'WebsiteController@storePrimary')
+            ->name('websites.store.primary');
+
+        Route::middleware('authorize.analytics:' . UserPermission::MANAGE_WEBSITES)->group(function () {
+            // Authorization for specific websites is handled in the middleware
+            Route::get('/create', 'WebsiteController@create')
+                ->name('websites.create');
+
+            Route::get('/users-data/{website?}', 'WebsiteController@dataUsersPermissionsJson')
+                ->name('websites.users.permissions.data.json');
+
+            Route::post('/store', 'WebsiteController@store')
+                ->name('websites.store');
+
+            Route::get('/{website}/edit', 'WebsiteController@edit')
+                ->name('websites.edit');
+
+            Route::put('/{website}', 'WebsiteController@update')
+                ->name('websites.update');
+
+            Route::patch('/{website}/archive', 'WebsiteController@archive')
+                ->name('websites.archive');
+
+            Route::patch('/{website}/unarchive', 'WebsiteController@unarchive')
+                ->name('websites.unarchive');
+
+            Route::get('/{website}/check', 'WebsiteController@checkTracking')
+                ->name('websites.tracking.check');
+
+            Route::get('/{website}/javascript-snippet', 'WebsiteController@showJavascriptSnippet')
+                ->name('websites.snippet.javascript');
+        });
+    });
+
+    Route::prefix('/users')->group(function () {
+        Route::get('/', 'UserController@index')
+            ->name('users.index');
+
+        Route::get('/data', 'UserController@dataJson')
+            ->name('users.data.json');
+
+        Route::middleware('authorize.analytics:' . UserPermission::MANAGE_USERS)->group(function () {
+            Route::get('/create', 'UserController@create')
+                ->name('users.create');
+
+            Route::get('/websites-data/{user?}', 'UserController@dataWebsitesPermissionsJson')
+                ->name('users.websites.permissions.data.json');
+
+            Route::post('/', 'UserController@store')
+                ->name('users.store');
+
+            Route::get('/{user}/show', 'UserController@show')
+                ->name('users.show');
+
+            Route::get('/{user}/edit', 'UserController@edit')
+                ->name('users.edit');
+
+            Route::put('/{user}', 'UserController@update')
+                ->name('users.update');
+
+            Route::patch('/{user}/suspend', 'UserController@suspend')
+                ->name('users.suspend');
+
+            Route::patch('/{user}/reactivate', 'UserController@reactivate')
+                ->name('users.reactivate');
+
+            Route::get('/{user}/verification-resend', 'Auth\VerificationController@resend')
+                ->name('users.verification.resend')->middleware('throttle:5,1');
+        });
+    });
+
+    Route::prefix('/analytics-service')->group(function () {
+        Route::get('/login/{websiteAnalyticsId?}', 'AnalyticsServiceController@login')
+            ->name('analytics.service.login');
+    });
+});
+
+/*
+ * Admin-only application routes.
+ *
+ * Admin authentication required.
+ */
+Route::middleware('auth.admin', 'verified:admin.verification.notice')->group(function () {
+    Route::prefix('/admin')->group(function () {
+        Route::middleware('password.not.expired')->group(function () {
+            Route::get('/', function () {
+                return redirect()->route('admin.dashboard');
+            });
+
+            Route::get('/dashboard', 'SuperAdminDashboardController@dashboard')
+                ->name('admin.dashboard');
+
+            Route::prefix('/logs')->group(function () {
+                Route::get('/', 'Logs\LogController@show')
+                    ->name('admin.logs.show');
+
+                Route::get('/data', 'Logs\LogController@data')
+                    ->name('admin.logs.data');
+
+                Route::get('/search-website-index', 'Logs\SearchIndexController@searchWebsite')
+                    ->name('admin.logs.websites.search')
+                    ->middleware('throttle:60,1');
+
+                Route::get('/search-user-index', 'Logs\SearchIndexController@searchUser')
+                    ->name('admin.logs.users.search')
+                    ->middleware('throttle:60,1');
+            });
+
+            Route::prefix('/users')->group(function () {
+                Route::get('/', 'SuperAdminUserController@index')
+                    ->name('admin.users.index');
+
+                Route::get('/data', 'SuperAdminUserController@dataJson')
+                    ->name('admin.users.data.json');
+
+                Route::get('/create', 'SuperAdminUserController@create')
+                    ->name('admin.users.create');
+
+                Route::post('/', 'SuperAdminUserController@store')
+                    ->name('admin.users.store');
+
+                Route::get('/{user}/show', 'SuperAdminUserController@show')
+                    ->name('admin.users.show');
+
+                Route::get('/{user}/edit', 'SuperAdminUserController@edit')
+                    ->name('admin.users.edit');
+
+                Route::put('/{user}/update', 'SuperAdminUserController@update')
+                    ->name('admin.users.update');
+
+                Route::patch('/{user}/suspend', 'SuperAdminUserController@suspend')
+                    ->name('admin.users.suspend');
+
+                Route::patch('/{user}/reactivate', 'SuperAdminUserController@reactivate')
+                    ->name('admin.users.reactivate');
+
+                Route::get('/{user}/verification-resend', 'Auth\VerificationController@resend')
+                    ->name('admin.users.verification.resend')->middleware('throttle:5,1');
+            });
+
+            Route::prefix('/{publicAdministration}')->group(function () {
+                Route::get('/analytics', 'AnalyticsController@index')
+                    ->name('admin.publicAdministration.analytics');
+
+                Route::prefix('/users')->group(function () {
+                    Route::get('/', 'UserController@index')
+                        ->name('admin.publicAdministration.users.index');
+
+                    Route::get('/data', 'UserController@dataJson')
+                        ->name('admin.publicAdministration.users.data.json');
+
+                    Route::get('/create', 'UserController@create')
+                        ->name('admin.publicAdministration.users.create');
+
+                    Route::get('/websites-data/{user?}', 'UserController@dataWebsitesPermissionsJson')
+                        ->name('admin.publicAdministration.users.websites.permissions.data.json');
+
+                    Route::post('/', 'UserController@store')
+                        ->name('admin.publicAdministration.users.store');
+
+                    Route::get('/{user}/show', 'UserController@show')
+                        ->name('admin.publicAdministration.users.show');
+
+                    Route::get('/{user}/edit', 'UserController@edit')
+                        ->name('admin.publicAdministration.users.edit');
+
+                    Route::put('/{user}/update', 'UserController@update')
+                        ->name('admin.publicAdministration.users.update');
+
+                    Route::patch('/{user}/delete', 'UserController@delete')
+                        ->name('admin.publicAdministration.users.delete');
+
+                    Route::patch('/{trashed_user}/restore', 'UserController@restore')
+                        ->name('admin.publicAdministration.users.restore');
+
+                    Route::patch('/{user}/suspend', 'UserController@suspend')
+                        ->name('admin.publicAdministration.users.suspend');
+
+                    Route::patch('/{user}/reactivate', 'UserController@reactivate')
+                        ->name('admin.publicAdministration.users.reactivate');
+
+                    Route::get('/{user}/verification-resend', 'Auth\VerificationController@resend')
+                        ->name('admin.publicAdministration.users.verification.resend')->middleware('throttle:5,1');
+                });
+
+                Route::prefix('/websites')->group(function () {
+                    Route::get('/', 'WebsiteController@index')
+                        ->name('admin.publicAdministration.websites.index');
+
+                    Route::get('/data', 'WebsiteController@dataJson')
+                        ->name('admin.publicAdministration.websites.data.json');
+
+                    Route::get('/create', 'WebsiteController@create')
+                        ->name('admin.publicAdministration.websites.create');
+
+                    Route::get('/users-data/{website?}', 'WebsiteController@dataUsersPermissionsJson')
+                        ->name('admin.publicAdministration.websites.users.permissions.data.json');
+
+                    Route::post('/store', 'WebsiteController@store')
+                        ->name('admin.publicAdministration.websites.store');
+
+                    Route::get('/{website}/show', 'WebsiteController@show')
+                        ->name('admin.publicAdministration.websites.show');
+
+                    Route::get('/{website}/edit', 'WebsiteController@edit')
+                        ->name('admin.publicAdministration.websites.edit');
+
+                    Route::put('/{website}', 'WebsiteController@update')
+                        ->name('admin.publicAdministration.websites.update');
+
+                    Route::patch('/{website}/delete', 'WebsiteController@delete')
+                        ->name('admin.publicAdministration.websites.delete');
+
+                    Route::patch('/{trashed_website}/restore', 'WebsiteController@restore')
+                        ->name('admin.publicAdministration.websites.restore');
+
+                    Route::patch('/{website}/archive', 'WebsiteController@archive')
+                        ->name('admin.publicAdministration.websites.archive');
+
+                    Route::patch('/{website}/unarchive', 'WebsiteController@unarchive')
+                        ->name('admin.publicAdministration.websites.unarchive');
+
+                    Route::get('/{website}/check', 'WebsiteController@checkTracking')
+                        ->name('admin.publicAdministration.websites.tracking.check');
+
+                    Route::get('/{website}/javascript-snippet', 'WebsiteController@showJavascriptSnippet')
+                        ->name('admin.publicAdministration.websites.snippet.javascript');
+                });
+            });
+        });
+
+        Route::get('/user/change-password', 'Auth\SuperAdminAuthController@showPasswordChange')
+            ->name('admin.password.change.show');
+
+        Route::post('/user/change-password', 'Auth\SuperAdminAuthController@passwordChange')
+            ->name('admin.password.change');
+    });
+});
+
+Route::fallback(function () {
+    return response()->view('errors.404');
 });

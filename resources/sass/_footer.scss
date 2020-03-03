@@ -1,0 +1,50 @@
+.it-footer {
+  position: relative;
+  z-index: 1;
+
+  .pon-band {
+    div {
+      text-align: center;
+    }
+
+    img {
+      width: 200px;
+
+      @include media-breakpoint-up(xl) {
+        width: 250px;
+      }
+    }
+  }
+
+  .it-brand-wrapper {
+    a {
+      img {
+        width: 250px;
+
+        @include media-breakpoint-up(sm) {
+          width: 300px;
+        }
+      }
+    }
+  }
+
+  .footer-primary-menu {
+    div {
+      @include media-breakpoint-down(sm) {
+        width: 100%;
+      }
+
+      h4 {
+        line-height: 0.8;
+
+        a {
+          text-decoration: underline;
+
+          &.external-link::after {
+            content: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0Ij48cGF0aCBmaWxsPSIjZmZmIiBkPSJNMjEsM1Y5SDIwVjQuN2wtNy42LDcuNy0uOC0uOEwxOS4zLDRIMTVWM1pNMTcsMTkuNWEuNS41LDAsMCwxLS41LjVINC41YS41LjUsMCwwLDEtLjUtLjVWNy41QS41LjUsMCwwLDEsNC41LDdIMTJWNkg0LjVBMS41LDEuNSwwLDAsMCwzLDcuNXYxMkExLjUsMS41LDAsMCwwLDQuNSwyMWgxMkExLjUsMS41LDAsMCwwLDE4LDE5LjVWMTJIMTdaIi8+PC9zdmc+');
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,6 +1,4 @@
-<ul class="Skiplinks js-fr-bypasslinks u-hiddenPrint">
-  <li><a href="#main">{{ __('ui.skiplink_goto_content') }}</a></li>
-  <li><a class="js-fr-offcanvas-open" href="#menu" aria-controls="menu"
-    aria-label="{{ __('ui.skiplink_goto_navigation') }}" title="{{ __('ui.skiplink_goto_navigation') }}">
-    {{ __('ui.skiplink_goto_navigation') }}</a></li>
-</ul>
+<div class="skiplinks">
+    <a class="sr-only sr-only-focusable" href="#main">{{ __('vai ai contenuti') }}</a>
+    <a class="sr-only sr-only-focusable" href="#menu">{{ __('vai alla navigazione principale del sito') }}</a>
+</div>

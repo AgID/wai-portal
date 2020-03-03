@@ -2,18 +2,44 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\UserPermission;
+use App\Models\PublicAdministration;
+use Illuminate\Http\Request;
+use Symfony\Component\Yaml\Yaml;
+
+/**
+ * Public Administration analytics dashboard controller.
+ */
 class AnalyticsController extends Controller
 {
     /**
-     * Login and redirect the current user to the Analytics Service.
+     * Show the application analytics dashboard or redirect to websites index page.
      *
-     * @return \Illuminate\Http\Response
+     * @param Request $request the incoming request
+     * @param PublicAdministration|null $publicAdministration the public administration the analytics data belong to
+     *
+     * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
      */
-    public function login()
+    public function index(Request $request, PublicAdministration $publicAdministration = null)
     {
-        logger()->info('User '.auth()->user()->getInfo().' logged in the Analytics Service.');
+        $user = $request->user();
+        if ($user->publicAdministrations->isEmpty() && $user->cannot(UserPermission::ACCESS_ADMIN_AREA)) {
+            $request->session()->reflash();
 
-        return app()->make('analytics-service')
-                    ->loginAndRedirectUser(auth()->user()->email, auth()->user()->analytics_password);
+            return redirect()->route('websites.index');
+        }
+
+        if ($user->cannot(UserPermission::ACCESS_ADMIN_AREA)) {
+            $publicAdministration = current_public_administration();
+        }
+
+        $locale = app()->getLocale();
+
+        if ($publicAdministration->hasRollUp()) {
+            $allWidgets = Yaml::parseFile(resource_path('data/widgets.yml'));
+            $widgets = $allWidgets['pa'] ?? [];
+        }
+
+        return view('pages.analytics')->with(['publicAdministration' => $publicAdministration, 'widgets' => $widgets ?? [], 'locale' => $locale]);
     }
 }

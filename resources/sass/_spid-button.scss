@@ -1,0 +1,72 @@
+// Styles applied to the smart button included in spid-laravel
+// .agid-spid-enter-button {
+//   .agid-spid-enter {
+//     .agid-spid-enter-text {
+//       padding: 0.8em 0.85em;
+//     }
+//   }
+
+//   .it-access-top-wrapper &[data-size="s"] {
+//     line-height: 0;
+//     width: 8em;
+//     text-align: right;
+
+//     .agid-spid-enter {
+//       border-radius: 0;
+
+//       @include media-breakpoint-down(md) {
+//         padding-top: 0.9em !important;
+//         padding-bottom: 0.9em !important;
+//       }
+//     }
+//   }
+// }
+
+// #agid-spid-panel-content {
+//   #agid-spid-enter-title-page {
+//     letter-spacing: 0;
+//   }
+// }
+
+// Styles applied to the classic button included in spid-laravel
+.it-access-top-wrapper {
+  .italia-it-button.italia-it-button-size-m {
+    display: block;
+    height: 48px;
+    background: transparent;
+    width: auto;
+
+    &.spid-idp-button-open {
+      background-color: #036;
+    }
+
+    .italia-it-button-icon {
+      padding: 9.5px;
+    }
+
+    .italia-it-button-text {
+      padding: 16.5px;
+    }
+
+    @include media-breakpoint-down(xs) {
+      .italia-it-button-icon {
+        padding-right: 8px;
+        padding-left: 8px;
+      }
+
+      .italia-it-button-text {
+        font-size: 14px;
+        padding-right: 8px;
+        padding-left: 12px;
+      }
+    }
+  }
+
+  .idp-button-idp-logo {
+    background: white !important;
+
+    &:hover {
+      background-color: #f0f0f0 !important;
+    }
+  }
+}

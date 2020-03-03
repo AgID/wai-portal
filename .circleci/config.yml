@@ -1,137 +1,150 @@
-# PHP CircleCI 2.0 configuration file
-#
-# Check https://circleci.com/docs/2.0/language-php/ for more details
-#
-version: 2
-jobs:
-  build_and_test:
-    docker:
-      # specify the version you desire here
-      - image: circleci/php:7.1-cli
+version: 2.1
 
-    environment:
-      - APP_ENV: "testing"
-
+commands:
+  install_system_dependencies:
+    description: Install dependencies needed for the tests to run
     steps:
-      - checkout
+      - run:
+          name: Install pcntl php extension
+          command: sudo docker-php-ext-install pcntl
 
+  restore_all_caches:
+    description: Restore php and javascript dependencies
+    steps:
       - restore_cache:
           keys:
-          - v1-php-{{ checksum "composer.json" }}
+          - v1-php-{{ checksum "composer.lock" }}
           # fallback to using the latest cache if no exact match is found
           - v1-php-
 
       - restore_cache:
           keys:
-          - v1-node-{{ checksum "package.json" }}
+          - v1-node-{{ checksum "package-lock.json" }}
           # fallback to using the latest cache if no exact match is found
           - v1-node-
 
+  composer:
+    description: Ensure all php dependencies are installed
+    steps:
       - run:
-          name: Install php dependencies
-          command: composer install -n --ignore-platform-reqs
+          name: Run composer install
+          command: composer install -n --ignore-platform-reqs --no-progress
 
+  php-cs-fixer:
+    description: Ensure php code follows style rules
+    steps:
+      - run:
+          name: Run php-cs-fixer (future mode)
+          command: |
+            PHP_CS_FIXER_FUTURE_MODE=1
+            bin/php-cs-fixer fix --diff --dry-run --verbose
+
+  yaml-validation:
+    description: Ensure yaml configuration files are valid
+    steps:
+      - run:
+          name: Run rx validator
+          command: |
+            bin/rx resources/data/config.yml tests/schemas/config_schema.yml
+            bin/rx resources/data/faqs.yml tests/schemas/faqs_schema.yml
+            bin/rx resources/data/tos.yml tests/schemas/tos_schema.yml
+            bin/rx resources/data/legal.yml tests/schemas/legal_schema.yml
+            bin/rx resources/data/privacy.yml tests/schemas/privacy_schema.yml
+            bin/rx resources/data/widgets.yml tests/schemas/widgets_schema.yml tests/schemas/widget.yml
+            bin/rx resources/data/how-to-join-steps.yml tests/schemas/how-to-join-steps_schema.yml
+
+  security:
+    description: Check known security issues in php dependencies
+    steps:
+      - run:
+          name: Run security-checker
+          command: bin/security-checker security:check
+
+  install_node_packages:
+    description: Ensure all javascript dependencies are installed
+    steps:
       - run:
           name: Install node version defined in .node-version
           command: |
             git clone https://github.com/nodenv/node-build.git ../node-build
             sudo ../node-build/install.sh
             sudo node-build $(cat .node-version) /usr/local
+            npm install
 
-      - run:
-          name: Install node dependencies
-          command: npm install
-
+  save_all_caches:
+    description: Save php and javascript dependencies
+    steps:
       - save_cache:
           paths:
             - ./vendor
-          key: v1-php-{{ checksum "composer.json" }}
+          key: v1-php-{{ checksum "composer.lock" }}
 
       - save_cache:
           paths:
             - ./node_modules
-          key: v1-node-{{ checksum "package.json" }}
+          key: v1-node-{{ checksum "package-lock.json" }}
 
+  store_test_artifacts:
+    description: Save artifacts from tests for debug purposes
+    steps:
+      - run:
+          name: Copy artifacts from docker container
+          command: |
+            docker cp `docker-compose -f containers/docker-compose.yml --project-directory containers ps -q php-fpm`:/var/www/html/tests/Browser/screenshots/. tests/Browser/screenshots
+            docker cp `docker-compose -f containers/docker-compose.yml --project-directory containers ps -q php-fpm`:/var/www/html/tests/Browser/console/. tests/Browser/console
+          when: on_fail
+
+      - run:
+          name: Copy artifacts from docker container
+          command: |
+            docker cp `docker-compose -f containers/docker-compose.yml --project-directory containers ps -q php-fpm`:/var/www/html/tests/Browser/lighthouse/. tests/Browser/lighthouse
+            docker cp `docker-compose -f containers/docker-compose.yml --project-directory containers ps -q php-fpm`:/var/www/html/clover.xml clover.xml
+
+      - store_artifacts:
+          path: tests/Browser/console
+          destination: browser-tests/console
+
+      - store_artifacts:
+          path: tests/Browser/screenshots
+          destination: browser-tests/screenshots
+
+      - store_artifacts:
+          path: tests/Browser/lighthouse
+          destination: browser-tests/lighthouse
+
+      - store_artifacts:
+          path: clover.xml
+          destination: unit-tests/coverage/clover.xml
+
+jobs:
+  build_and_test:
+    docker:
+      - image: circleci/php:7.3-cli
+    environment:
+      - APP_ENV: "testing"
+    steps:
+      - install_system_dependencies
+      - checkout
+      - restore_all_caches
+      - composer
+      - php-cs-fixer
+      - yaml-validation
+      - security
+      - install_node_packages
+      - save_all_caches
       - setup_remote_docker
-
       # build
-      - run: bin/phing build
-
+      - run:
+          name: Run build task
+          command: bin/phing build
       # test
-      - run: bin/phing test
-
-  deploy-staging:
-    docker:
-      # specify the version you desire here
-      - image: circleci/php:7.1-cli
-
-    environment:
-      - APP_ENV: "staging"
-
-    steps:
-      - checkout
-
-      - restore_cache:
-          keys:
-          - v1-php-{{ checksum "composer.json" }}
-          # fallback to using the latest cache if no exact match is found
-          - v1-php-
-
       - run:
-          name: Install php dependencies
-          command: composer install -n --ignore-platform-reqs
-
-      # build
-      - run: bin/dep -vvv deploy staging
-
-  deploy-production:
-    docker:
-      # specify the version you desire here
-      - image: circleci/php:7.1-cli
-
-    environment:
-      - APP_ENV: "production"
-
-    steps:
-      - checkout
-
-      - restore_cache:
-          keys:
-          - v1-php-{{ checksum "composer.json" }}
-          # fallback to using the latest cache if no exact match is found
-          - v1-php-
-
-      - run:
-          name: Install php dependencies
-          command: composer install -n --ignore-platform-reqs
-
-      # build
-      - run: bin/dep -vvv deploy production
+          name: Run phpunit and dusk tests
+          command: bin/phing test
+      - store_test_artifacts
 
 workflows:
   version: 2
-  build-test-deploy-staging:
+  build_and_test:
     jobs:
-      - build_and_test:
-          filters:
-            branches:
-              only:
-                - develop
-      - deploy-staging:
-          requires:
-            - build_and_test
-
-  build-test-deploy-production:
-    jobs:
-      - build_and_test:
-          filters:
-            branches:
-              only:
-                - master
-      - hold:
-          type: approval
-          requires:
-            - build_and_test
-      - deploy-production:
-          requires:
-            - hold
+      - build_and_test

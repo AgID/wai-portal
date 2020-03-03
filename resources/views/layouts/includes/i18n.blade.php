@@ -1,0 +1,3 @@
+<script>
+    var t = {};
+</script>

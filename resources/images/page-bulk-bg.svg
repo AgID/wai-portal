@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 387">
+    <style type="text/css">
+        .st0{fill-rule:evenodd;clip-rule:evenodd;fill:url(#gradient-1);}
+        .st1{opacity:0.5;fill-rule:evenodd;clip-rule:evenodd;fill:url(#gradient-2);enable-background:new;}
+        .st2{opacity:0.5;fill-rule:evenodd;clip-rule:evenodd;fill:url(#gradient-3);enable-background:new;}
+        .st3{fill-rule:evenodd;clip-rule:evenodd;fill:url(#gradient-4);}
+        .st4{opacity:0.5;fill-rule:evenodd;clip-rule:evenodd;fill:url(#gradient-5);enable-background:new;}
+        .st5{opacity:0.5;fill-rule:evenodd;clip-rule:evenodd;fill:#C8DAEA;}
+        .st6{opacity:0.5;fill:none;stroke:#C3D7E7;stroke-width:0.9;}
+    </style>
+    <linearGradient id="gradient-1" gradientUnits="userSpaceOnUse" x1="402.1257" y1="613.57" x2="402.1257" y2="612.57" gradientTransform="matrix(1074 0 0 -172.0001 -430669 105523.0781)">
+        <stop offset="0" style="stop-color:#F0F7FD"/>
+        <stop offset="1" style="stop-color:#FFFFFF"/>
+    </linearGradient>
+    <path class="st0" d="M677,161C767.4,27,886.2,5.4,1033.4,96.2c220.7,136.2,300.5-173.4,482.9-94C1637.9,55.2,1716.1,108.1,1751,161"/>
+    <linearGradient id="gradient-2" gradientUnits="userSpaceOnUse" x1="402.1257" y1="613.57" x2="402.1257" y2="612.57" gradientTransform="matrix(1074 0 0 -172.0001 -431064 105566.0781)">
+        <stop offset="0" style="stop-color:#A6C7F1;stop-opacity:0"/>
+        <stop offset="1" style="stop-color:#FFFFFF"/>
+    </linearGradient>
+    <path class="st1" d="M282,204c90.4-134,209.2-155.6,356.4-64.8c220.7,136.2,300.5-173.4,482.9-94C1242.9,98.2,1321.1,151.1,1356,204"/>
+    <linearGradient id="gradient-3" gradientUnits="userSpaceOnUse" x1="402.1257" y1="613.57" x2="402.1257" y2="612.57" gradientTransform="matrix(1074 0 0 -172.0001 -430722 105700.0781)">
+        <stop offset="0" style="stop-color:#F0F7FD"/>
+        <stop offset="1" style="stop-color:#FFFFFF"/>
+    </linearGradient>
+    <path class="st2" d="M624,338c90.4-134,209.2-155.6,356.4-64.8c220.7,136.2,300.5-173.4,482.9-94
+        c121.6,52.9,199.9,105.8,234.7,158.8"/>
+    <linearGradient id="gradient-4" gradientUnits="userSpaceOnUse" x1="402.1257" y1="613.57" x2="402.1257" y2="612.57" gradientTransform="matrix(1074 0 0 -172.0001 -431479 105627.0781)">
+        <stop offset="0" style="stop-color:#F0F7FD"/>
+        <stop offset="1" style="stop-color:#FFFFFF"/>
+    </linearGradient>
+    <path class="st3" d="M-133,265c90.4-134,209.2-155.6,356.4-64.8c220.7,136.2,300.5-173.4,482.9-94C827.9,159.2,906.1,212.1,941,265"/>
+    <linearGradient id="gradient-5" gradientUnits="userSpaceOnUse" x1="402.1257" y1="613.57" x2="402.1257" y2="612.57" gradientTransform="matrix(1074 0 0 -172.0001 -431874 105670.0781)">
+        <stop offset="0" style="stop-color:#A6C7F1;stop-opacity:0"/>
+        <stop offset="1" style="stop-color:#FFFFFF"/>
+    </linearGradient>
+    <path class="st4" d="M-528,308c90.4-134,209.2-155.6,356.4-64.8c220.7,136.2,300.5-173.4,482.9-94C432.9,202.2,511.1,255.1,546,308"/>
+    <circle class="st5" cx="1229" cy="324" r="4"/>
+    <circle class="st6" cx="1229" cy="324" r="10"/>
+    <circle class="st5" cx="1318" cy="376" r="4"/>
+    <circle class="st6" cx="1318" cy="376" r="10"/>
+    <circle class="st5" cx="164" cy="64" r="4"/>
+    <circle class="st6" cx="164" cy="64" r="10"/>
+</svg>

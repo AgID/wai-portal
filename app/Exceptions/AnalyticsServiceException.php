@@ -2,27 +2,46 @@
 
 namespace App\Exceptions;
 
+use App\Enums\Logs\EventType;
+use App\Enums\Logs\ExceptionType;
 use Exception;
+use Illuminate\Http\RedirectResponse;
 
+/**
+ * Analytics Service connection exception.
+ */
 class AnalyticsServiceException extends Exception
 {
     /**
      * Report the exception.
-     *
-     * @return void
      */
-    public function report()
+    public function report(): void
     {
-        // TODO: Notify me!!
+        logger()->critical(
+            'Analytics Service exception: ' . $this->getMessage(),
+            [
+                'event' => EventType::EXCEPTION,
+                'exception_type' => ExceptionType::ANALYTICS_SERVICE,
+                'exception' => $this,
+            ]
+        );
     }
 
     /**
      * Render the exception into an HTTP response.
      *
-     * @return \Illuminate\Http\Response
+     * @return RedirectResponse the response
      */
-    public function render()
+    public function render(): RedirectResponse
     {
-        return redirect()->back()->withMessage(['error' => 'Il servizio remoto di Analytics non è disponibile. Riprovare successivamente.']); //TODO: put message in lang file
+        return redirect()->home()->withNotification([
+            'title' => __('errore del server'),
+            'message' => implode("\n", [
+                __('Si è verificato un errore relativamente alla tua richiesta.'),
+                __('Puoi riprovare più tardi o :contact_support.', ['contact_support' => '<a href="' . route('contacts') . '">' . __('contattare il supporto tecnico') . '</a>']),
+            ]),
+            'status' => 'error',
+            'icon' => 'it-close-circle',
+        ]);
     }
 }

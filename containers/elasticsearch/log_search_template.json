@@ -1,0 +1,6 @@
+{
+    "script": {
+        "lang": "mustache",
+        "source": "{ \"from\": {{ from }}, \"size\": {{ size }}, \"_source\": {{#toJson}}fields{{/toJson}}, \"sort\": [ { \"datetime\": { \"order\": {{#order}}\"{{ order }}\"{{/order}}{{^order}}\"desc\"{{/order}} } } ], \"query\": { \"bool\": { \"must\": [ {{#message}} { \"match\": { \"message\": { \"query\": \"{{ message }}\", \"operator\": \"and\" } } } {{/message}} ], \"filter\": [ {{#toJson}}filters{{/toJson}} {{#has_ranges}}, {{#has_time}} { \"range\": { \"datetime\" : { \"gte\": {{#start_time}}\"{{ start_time }}\"{{/start_time}}{{^start_time}}\"{{end_time}}||/d\"{{/start_time}}, \"lte\": {{#end_time}}\"{{ end_time }}\"{{/end_time}}{{^end_time}}\"now\"{{/end_time}} } } }{{#severity}},{{/severity}} {{/has_time}} {{#severity}} { \"range\": { \"level\": { \"gte\": \"{{ severity }}\" } } } {{/severity}} {{/has_ranges}} ] } } }"
+    }
+}

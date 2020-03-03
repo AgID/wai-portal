@@ -1,0 +1,25 @@
+// Variables
+@import "variables";
+
+// Framework
+@import "~bootstrap-italia/src/scss/bootstrap-italia.scss";
+
+// Mixins
+@import "mixins";
+
+// Components
+@import "borders";
+@import "buttons";
+@import "header";
+@import "footer";
+@import "page";
+@import "content";
+@import "form";
+@import "spid-button";
+@import "user-dropdown";
+@import "modal";
+@import "overlay";
+@import "faq";
+@import "box";
+@import "notifications";
+@import "home";

@@ -1,0 +1,260 @@
+# Build properties file
+# ^^^^^^^^^^^^^^^^^^^^^
+#
+# This property file is need for phing to build the project.
+# Adjust your settings and copy this file to env/build.properties.[environment].
+
+# PHP
+# ---
+PHP_VERSION=7.3
+
+# Container
+# ---------
+APP_CODE_PATH_CONTAINER=/var/www/html
+
+# Application
+# -----------
+APP_DEBUG=true
+APP_CLOSED_BETA_ENABLED=false
+
+# Closed beta repository
+# ----------------------
+CLOSED_BETA_WHITELIST_REPOSITORY_FULL_NAME=
+CLOSED_BETA_WHITELIST_REPOSITORY_BRANCH=
+CLOSED_BETA_WHITELIST_REPOSITORY_FILE_NAME=
+
+# Hostname
+# --------
+HOSTNAME=localhost
+
+# Logging stack
+# -------------
+LOG_STACK_CHANNELS=
+
+# Slack notifications
+# -------------------
+LOG_SLACK_WEBHOOK_URL=
+LOG_SLACK_USERNAME=
+
+# Tackers
+# -------
+TRACKING_MATOMO_ID=
+TRACKING_GA_ID=
+TRACKING_HOTJAR_ID=
+
+# Webhooks
+# --------
+CLOSED_BETA_WHITELIST_WEBHOOK_CLIENT_SECRET=
+
+# SPID Service Provider
+# ---------------------
+
+# Leave blank to use default key and certificate from
+# SPID Laravel package (https://github.com/italia/spid-laravel).
+# Refer to https://github.com/italia/spid-metadata-signer for
+# key and certificate generation.
+
+SPID_SP_ENTITY_ID=
+SPID_SP_ACS_INDEX=
+SPID_SP_ATTRIBUTES_INDEX=
+SPID_SP_PRIVATE_KEY=
+SPID_SP_CERTIFICATE=
+
+# SPID test identity providers
+# ----------------------------
+
+SPID_TESTENV_ENABLED=
+SPID_TESTENV_ENTITY_ID=
+SPID_TESTENV_SSO=
+SPID_TESTENV_SLO=
+SPID_TESTENV_CERT=
+SPID_VALIDATOR_IDP_ENABLED=false
+SPID_VALIDATOR_IDP_ENTITY_ID=
+SPID_VALIDATOR_IDP_SSO=
+SPID_VALIDATOR_IDP_SLO=
+SPID_VALIDATOR_IDP_CERT=
+
+# Cron authentication
+# -------------------
+
+CRON_TOKEN=verysecretcrontoken
+
+# Super admin user
+# ----------------
+
+APP_SUPER_ADMIN_NAME=
+APP_SUPER_ADMIN_FAMILY_NAME=
+APP_SUPER_ADMIN_FISCAL_NUMBER=
+APP_SUPER_ADMIN_EMAIL=
+APP_SUPER_ADMIN_PASSWORD=
+
+# Pending websites thresholds
+# ---------------------------
+
+PENDING_WEBSITE_WARNING=10
+PENDING_WEBSITE_REMOVE=15
+
+# Archive websites thresholds
+# ---------------------------
+
+ARCHIVING_WEBSITE_WARNING=10
+ARCHIVING_WEBSITE_ARCHIVE=20
+ARCHIVING_WEBSITE_NOTIFICATION_INTERVAL=5
+# Value must be between 1 = Monday and 7 = Sunday
+PRIMARY_WEBSITE_NOT_TRACKING_NOTIFICATION_WEEK_DAY=1
+ARCHIVING_WEBSITE_DAILY_NOTIFICATION=3
+
+# Database settings
+# -----------------
+
+MARIADB_DATABASE=default
+MARIADB_USER=default
+MARIADB_PASSWORD=secret
+MARIADB_ROOT_PASSWORD=root
+
+# Connections settings
+# --------------------
+
+CACHE_CONNECTION=cache
+SESSION_CONNECTION=sessions
+QUEUE_REDIS_CONNECTION=queue
+
+# Sessions settings
+# -----------------
+
+SESSION_SECURE_COOKIE=true
+SESSION_ENCRYPT=true
+
+# Redis Sentinel settings
+# -----------------------
+
+# Leave blank/defaults if not using Redis Sentinel
+
+# Comma separated list of Redis Sentinels connection strings
+# e.g. tcp://sentinel1:26379,tcp://sentinel2:26379
+REDIS_SENTINELS=
+REDIS_SENTINEL_SET=
+
+# Indexes RediSearch settings
+# ---------------------------
+
+REDIS_INDEXES_USE_SENTINELS=false
+
+# IPA RediSearch Sentinel settings
+# --------------------------------
+
+# Leave blank/defaults if not using Sentinels for IPA RediSearch service
+
+REDIS_IPA_INDEX_USE_SENTINELS=false
+# A comma separated list of Redis Sentinels connection strings
+REDIS_IPA_INDEX_SENTINELS=
+REDIS_IPA_INDEX_SENTINEL_SET=
+
+# Mail settings
+# -------------
+
+MAIL_HOST=mailhog
+MAIL_PORT=1025
+MAIL_USERNAME=null
+MAIL_PASSWORD=null
+MAIL_ENCRYPTION=null
+
+# PEC settings
+# ------------
+
+PEC_HOST=mailhog
+PEC_PORT=1025
+PEC_USERNAME=null
+PEC_PASSWORD=null
+PEC_ENCRYPTION=null
+
+# Matomo
+# ------
+
+# Matomo Reader database host
+# Leave blank if not using a clustered DB
+MATOMO_DB_READER=
+
+# Matomo Database user
+MATOMO_DB_USER=matomo
+MATOMO_DB_PASSWORD=SecretMatomo
+
+# Matomo super user name
+MATOMO_ROOT_USER=admin
+
+# Matomo super user password
+MATOMO_ROOT_PASSWORD=Password
+
+# Matomo super user API Key, put any MD5 hash.
+MATOMO_ROOT_APIKEY=8aa23f3ca5903d451d1ff8eb947c7a8f
+
+# Matomo version
+MATOMO_VERSION=3.13.1
+
+# Matomo WAI theme version
+MATOMO_WAI_THEME_VERSION=0.3.3-alpha
+
+# Matomo plugins versions
+MATOMO_PLUGIN_DISABLESITETRACKING_VERSION=v1.0.5-RC1
+MATOMO_PLUGIN_QUEUEDTRACKING_VERSION=3.3.6
+MATOMO_PLUGIN_PROTECTTRACKID_VERSION=1.0.0
+MATOMO_PLUGIN_CUSTOMDIMENSIONS_VERSION=3.1.9
+MATOMO_PLUGIN_LOGINFILTERIP_VERSION=0.1.0
+MATOMO_PLUGIN_TRACKERHOSTNAME_VERSION=0.1.0
+
+# Matomo phpredis extension version
+MATOMO_PHPREDIS_VERSION=5.1.1
+
+# Matomo public RollUp report ID is the Matomo
+# site ID for widgets in the portal public dashboard (home page);
+# if using the RollUpReporting plugin, this is
+# the site ID of the RollUp site configured to include "all" websites.
+# NOTE: requires "view" accesso for anonymous user.
+# Leave blank if not using matomo widgets in home page.
+MATOMO_PUBLIC_ROLLUP_ID=
+
+# Matomo tracker hostname
+# Leave blank if not using a different hostname
+# for matomo tracking ingestion
+MATOMO_INGESTION_HOSTNAME=
+
+# Analytics Service URLs
+# ----------------------
+
+# Analytics Service API are called from other docker containers,
+# so you want to specify the URL relative to the backend network scope
+# which resolves domain names according to docker-compose defined services.
+ANALYTICS_API_BASE_URL=https://nginx:9443
+
+# Set to false if using self-signed SSL certificates.
+ANALYTICS_API_SSL_VERIFY=false
+
+# The public URL for your Analytics Service.
+ANALYTICS_PUBLIC_URL=https://localhost:9443
+
+# Elastic Search Service URLs
+# ---------------------------
+
+ELASTICSEARCH_VERSION=7.6.0
+ELASTICSEARCH_USER=
+ELASTICSEARCH_PASSWORD=
+ELASTICSEARCH_HOST=elasticsearch
+ELASTICSEARCH_INDEX_PREFIX=wai
+ELASTICSEARCH_INDEX_NAME=log
+ELASTICSEARCH_SEARCH_TEMPLATE_NAME=log_search
+ELASTICSEARCH_IGNORE_EXCEPTIONS=false
+
+KIBANA_VERSION=7.6.0
+KIBANA_PORT=5601
+
+# Debugging
+# ---------
+
+# Set your XDebug IDE key, if needed.
+XDEBUG_IDEKEY=
+
+# Use docker.for.win.localhost if Docker host is Windows OS,
+# use docker.for.mac.localhost if Docker host is Mac OS,
+# check the IP address of docker0 and adjust DOCKER_HOST_IP value
+# in your env-containers-* file to use dockerhost, if Docker host is Linux OS.
+XDEBUG_REMOTE_HOST=docker.for.mac.localhost

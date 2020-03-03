@@ -1,0 +1,90 @@
+it:
+  site:
+    owner:
+      name: Agenzia per l'Italia Digitale
+      name_short: AGID
+      link: https://www.agid.gov.it
+      logo: /images/agid-logo.svg
+      mail: wai@agid.gov.it
+    privacy_policy: /privacy
+    logo: /images/wai-logo.svg
+    logo_raster: /images/wai-logo.png
+    pill: beta
+    highlight:
+      production: |
+        **Web Analytics Italia** è in una fase di beta chiusa.
+        [Cosa significa?](/faq#beta-chiusa).
+      public-playground: |
+        Questo è l'ambiente **public playground**. Ogni settimana il sistema
+        viene automaticamente resettato. [Maggiori
+        informazioni](/faq#public-playground).
+      staging: |
+        Questo è l'ambiente di **staging**. L'istanza potrebbe essere resettata
+        senza preavviso.
+      local: |
+        Questo è l'ambiente di sviluppo locale di **Web Analytics Italia**.
+    kb:
+      name: Guida utente Web Analytics Italia
+      link: https://docs.italia.it/agid/wai/wai-user-guide-docs/it/stabile/
+
+    menu_items:
+      primary:
+        - name: Analytics
+          route: analytics
+        - name: Siti web
+          route: websites.index
+        - name: Utenti
+          route: users.index
+      secondary:
+        - name: Come partecipare
+          route: how-to-join
+        # - name: Open data
+        #   route: open-data
+        - name: FAQ
+          route: faq
+
+    slim_header_links:
+      - name: Piano triennale
+        url: https://pianotriennale-ict.italia.it
+        class: delimiter
+      - name: Developers
+        url: https://developers.italia.it/
+      - name: Designers
+        url: http://designers.italia.it
+        class: delimiter
+      - name: Forum
+        url: https://forum.italia.it/
+      - name: Docs
+        url: https://docs.italia.it/
+      - name: GitHub
+        url: https://github.com/italia/
+
+    footer_links:
+      primary:
+        - name: Come partecipare
+          route: how-to-join
+        - name: Domande frequenti
+          route: faq
+        # - name: Open data
+        #   route: open-data
+        - name: Guida utente
+          url: https://docs.italia.it/agid/wai/wai-user-guide-docs/it/stabile/
+        # - name: Dichiarazione di accessibilità
+        #   url: https://form.agid.gov.it/
+      secondary:
+        - name: Privacy
+          route: privacy
+        - name: Note legali
+          route: legal-notes
+        - name: Contattaci
+          route: contacts
+
+    social:
+      - name: facebook
+        url: https://www.facebook.com/AgIDGovIT/
+      - name: twitter
+        url: https://twitter.com/AgidGov
+      - name: youtube
+        url: https://www.youtube.com/channel/UCxJmOWf__YcLgB19gy5dGQQ
+      # - name: medium
+      #   url: https://medium.com/designers-italia

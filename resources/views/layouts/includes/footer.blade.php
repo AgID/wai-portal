@@ -1,61 +1,83 @@
-<footer class="Footer">
-  <div class="Grid Grid--withGutter">
-    <div class="Footer-logo-container--owner Grid-cell u-md-size1of2 u-lg-size5of12 u-padding-r-bottom">
-      <a href="{{ $site['owner_link'] }}" class="u-linkClean u-text-r-m u-inlineBlock u-color-white" title="{{ __('ui.owner_full') }}">
-        <img class="Footer-logo u-padding-all-none" src="{{ asset($site['owner_logo']) }}" alt="{{ __('ui.owner_full') }}">
-        <span class="Footer-logo-separator"></span>
-        <span class="Owner-name">{{ __('ui.owner_full') }}</span>
-      </a>
-    </div>
-
-    <div class="Grid-cell u-md-size1of2 u-lg-size1of3 u-padding-r-bottom">
-      <p class="u-padding-bottom-l" style="opacity: 0.5">{{ __('ui.in_collaboration_with') }}</p>
-      <a href="{{ $site['partner_link'] }}" class="u-linkClean u-text-r-m u-inlineBlock u-color-white" title="{{ __('ui.partner_full') }}">
-        <img class="Footer-logo u-padding-all-none u-margin-right-s" src="{{ asset($site['gov_logo']) }}" alt="{{ __('ui.partner_full') }}">
-        <img class="Footer-logo u-padding-all-none" src="{{ asset($site['partner_logo']) }}" alt="{{ __('ui.partner_full') }}">
-        <span class="Footer-logo-separator--partner"></span>
-        <span class="Partner-name">{{ __('ui.partner_full') }}</span>
-      </a>
-      {{--<p class="u-padding-bottom-l" style="opacity: 0.5">{{ __('ui.in_collaboration_with') }}</p>
-      <div class="Grid">
-        <div class="u-inlineBlock">
-          <a href="{{ $site['partner_link'] }}" class="u-linkClean">
-            <img class="u-padding-top-xxs u-padding-right-xs" src="{{ asset($site['gov_logo']) }}" alt="" style="height: 4em; max-width: 100%">
-            <img class="u-padding-top-xxs u-padding-right-xxs" src="{{ asset($site['partner_logo']) }}" alt="" style="height: 4em; max-width: 100%">
-          </a>
+<!-- Footer -->
+<footer class="it-footer">
+    <div class="it-footer-main">
+        <div class="container">
+            <section aria-label="{{ __('informazioni nel footer') }}" role="contentinfo">
+                <div class="row clearfix align-items-center">
+                    <div class="col-12 col-md-6">
+                        <div class="it-brand-wrapper">
+                            <a class="d-inline-flex" href="{{ config('site.owner.link') }}">
+                                <img alt="{{ config('site.owner.name') }} - logo" src="{{ asset(config('site.owner.logo')) }}">
+                            </a>
+                        </div>
+                    </div>
+                    <div class="pb-5 py-md-0 ml-md-auto">
+                        <div class="d-flex">
+                            <span class="mr-2">{{ __('Seguici su') }}</span>
+                            <ul class="list-inline text-left m-0">
+                                @foreach (config('site.social') as $socialLink)
+                                    <li class="list-inline-item ml-1">
+                                        <a class="text-white" href="{{ $socialLink['url'] }}" aria-label="{{ $socialLink['name'] }}">
+                                            <svg class="icon icon-sm icon-white align-top">
+                                                <use xlink:href="{{ asset('svg/sprite.svg#it') }}-{{ $socialLink['name'] }}"></use>
+                                            </svg>
+                                        </a>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                @if(config('site.footer_links.primary'))
+                <div class="footer-primary-menu row justify-content-between mb-4">
+                    @foreach (config('site.footer_links.primary') as $footerPrimaryMenuItem)
+                    <div class="p-2">
+                        <h4>
+                            <a href="{{ isset($footerPrimaryMenuItem['route']) ? route($footerPrimaryMenuItem['route']) : $footerPrimaryMenuItem['url'] }}"
+                                {!! isset($footerPrimaryMenuItem['url']) ? 'class="external-link" target="_blank" rel="noopener noreferrer"' : '' !!}>
+                                {{ __($footerPrimaryMenuItem['name']) }}</a>
+                        </h4>
+                    </div>
+                    @endforeach
+                </div>
+                @endif
+                @include('layouts.includes.footer_band')
+            </section>
         </div>
-        <div class="Grid-cell u-size1of12 u-padding-left-none team-bar"></div>
-        <p class="Grid-cell u-size5of12 Footer-siteName u-padding-left-xs u-text-r-xs">
-          <a href="{{ $site['partner_link'] }}" class="u-color-white u-linkClean">
-            {{ strtoupper(__('ui.partner_full')) }}
-          </a>
-        </p>
-      </div>--}}
     </div>
-
-    <div class="Social Grid-cell u-lg-sizeFull u-flex u-flexJustifyEnd u-textRight u-padding-r-bottom u-flexAlignSelfEnd">
-      <h2 class="u-md-flexInline u-lg-flexInline u-text-p u-color-white u-textWeight-400 u-hidden u-margin-r-right u-flexAlignSelfCenter">{{ ucfirst(__('ui.follow_us')) }}</h2>
-      <ul class="Footer-socialIcons">
-        @foreach ($site['social'] as $social)
-        <li>
-          <a href="{{ $social['link'] }}" title="{{ $social['name'] }}">
-            <span class="Icon-{{ $social['name'] }}"></span>
-            <span class="u-hiddenVisually">{{ ucfirst($social['name']) }}</span>
-          </a>
-        </li>
-        @endforeach
-      </ul>
+    <div class="it-footer-small-prints clearfix">
+        <div class="container d-flex align-items-end align-items-md-center">
+            <nav aria-label="{{ __('navigazione secondaria') }}">
+                <ul class="it-footer-small-prints-list list-inline mb-0 d-flex flex-column flex-md-row pl-0">
+                    @foreach (config('site.footer_links.secondary') as $footerSecondaryMenuItem)
+                    <li class="list-inline-item px-0">
+                        <a class="nav-link" href="{{ route($footerSecondaryMenuItem['route']) }}">
+                            <span class="font-weight-semibold analogue-2-color">{{ __($footerSecondaryMenuItem['name']) }}</span>
+                        </a>
+                    </li>
+                    @endforeach
+                    @can(UserPermission::ACCESS_ADMIN_AREA)
+                    <li class="list-inline-item px-0">
+                        <a class="nav-link" href="{{ route('admin.dashboard') }}">
+                            <span class="font-weight-semibold analogue-2-color">{{ __('Dashboard amministrativa') }}</span>
+                        </a>
+                    </li>
+                    <li class="list-inline-item px-0">
+                        <a class="nav-link" href="{{ route('admin.logs.show') }}">
+                            <span class="font-weight-semibold analogue-2-color">{{ __('Logs') }}</span>
+                        </a>
+                    </li>
+                    @elsecan(UserPermission::VIEW_LOGS)
+                    <li class="list-inline-item px-0">
+                        <a class="nav-link" href="{{ route('logs.show') }}">
+                            <span class="font-weight-semibold analogue-2-color">{{ __('Logs') }}</span>
+                        </a>
+                    </li>
+                    @endcan
+                </ul>
+            </nav>
+            <span class="ml-auto pb-4 pb-md-0"><small class="primary-color-a4">{{ __('versione') }}: {{ config('app.version') }}</small></span>
+        </div>
     </div>
-  </div>
-
-  <div class="Footer-links u-cf u-color-80">
-    <ul class="u-floatLeft">
-      @foreach ($site['footer_links'] as $link)
-      <li><a href="{{ url($link['url']) }}">{{ ucfirst(__('ui.'.$link['title'])) }}</a></li>
-      @endforeach
-    </ul>
-    <ul class="Footer-notes u-floatRight">
-      <li class="u-color-grey-50">{{ __('ui.version') }}: {{ config('app.version') }}</li>
-    </ul>
-  </div>
 </footer>
+<!-- End Footer -->

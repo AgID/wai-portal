@@ -35,10 +35,22 @@ class Kernel extends HttpKernel
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            \App\Http\Middleware\SelectTenant::class,
             \App\Http\Middleware\ScopeBouncer::class,
         ],
 
         'api' => [
+            'throttle:60,1',
+            'bindings',
+        ],
+
+        'cron' => [
+            \App\Http\Middleware\CronAuthenticate::class,
+            'throttle:60,1',
+            'bindings',
+        ],
+
+        'hooks' => [
             'throttle:60,1',
             'bindings',
         ],
@@ -52,6 +64,7 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $routeMiddleware = [
+        'auth.admin' => \App\Http\Middleware\AuthenticateAdmin::class,
         'auth' => \App\Http\Middleware\Authenticate::class,
         'authorize.analytics' => \App\Http\Middleware\AuthorizeAnalytics::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
@@ -59,7 +72,12 @@ class Kernel extends HttpKernel
         'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
+        'password.not.expired' => \App\Http\Middleware\EnsurePasswordIsNotExpired::class,
+        'signed' => \App\Http\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+        'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        'cron.auth' => \App\Http\Middleware\CronAuthenticate::class,
+        'enforce.rules' => \App\Http\Middleware\EnforceRule::class,
     ];
 
     /**
@@ -72,11 +90,16 @@ class Kernel extends HttpKernel
     protected $middlewarePriority = [
         \Illuminate\Session\Middleware\StartSession::class,
         \Illuminate\View\Middleware\ShareErrorsFromSession::class,
-        \Illuminate\Auth\Middleware\Authenticate::class,
+        \App\Http\Middleware\ScopeBouncer::class,
+        \Italia\SPIDAuth\Middleware::class,
+        \App\Http\Middleware\Authenticate::class,
+        \App\Http\Middleware\AuthenticateAdmin::class,
         \Illuminate\Session\Middleware\AuthenticateSession::class,
         \Illuminate\Routing\Middleware\SubstituteBindings::class,
         \Illuminate\Auth\Middleware\Authorize::class,
-        \App\Http\Middleware\ScopeBouncer::class,
+        \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        \App\Http\Middleware\EnsurePasswordIsNotExpired::class,
+        \App\Http\Middleware\SelectTenant::class,
         \App\Http\Middleware\AuthorizeAnalytics::class,
     ];
 }

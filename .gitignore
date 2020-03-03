@@ -1,21 +1,48 @@
+# dependencies
 /node_modules
-/public/storage
 /vendor
-/bin
+/bin/*
+!/bin/app
+
+# docker data
 /containers/data
-/containers/application/data
-/containers/logs/**/*log
-/containers/logs/**/messages
+/containers/logs
 /containers/.env
+/containers/docker-compose.override.yml
 /containers/**/xdebug.ini
-/packages
+/containers/spid-testenv/conf/config.yaml
+/containers/spid-testenv/conf/sp_metadata.xml
+/containers/matomo/premium_plugins
+
+# testing
 /coverage
+clover.xml
 /database/testing.sqlite
+/storage/debugbar
+.lighthouseci/
+
+# related to local development
+TODO
 .php_cs.cache
+.idea
+.DS_Store
+.phpunit.result.cache
+
+# generated files
 .env
 .env.dusk.*
-.idea
-build.properties
+/public/storage
+/public/css
+/public/js
+/public/images
+/public/fonts
+/public/svg
+/public/mix-manifest.json
+
+# ignored for security reasons
+/env/build.properties.*
+!/env/build.properties.example
+!/env/build.properties.testing
 /hosts.yml
 /ssh_keys
-TODO
+/spid_cert

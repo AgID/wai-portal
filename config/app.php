@@ -13,7 +13,9 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Laravel'),
+    'name' => env('APP_NAME'),
+
+    'name_short' => env('APP_NAME_SHORT'),
 
     /*
     |--------------------------------------------------------------------------
@@ -26,7 +28,7 @@ return [
     |
     */
 
-    'version' => env('APP_VERSION', ''),
+    'version' => json_decode(file_get_contents(base_path('composer.json')))->version ?? '',
 
     /*
     |--------------------------------------------------------------------------
@@ -35,7 +37,7 @@ return [
     |
     | This value determines the "environment" your application is currently
     | running in. This may determine how you prefer to configure various
-    | services your application utilizes. Set this in your ".env" file.
+    | services the application utilizes. Set this in your ".env" file.
     |
     */
 
@@ -67,6 +69,8 @@ return [
 
     'url' => env('APP_URL', 'http://localhost'),
 
+    'asset_url' => env('ASSET_URL', null),
+
     /*
     |--------------------------------------------------------------------------
     | Application Timezone
@@ -92,7 +96,6 @@ return [
     */
 
     'locale' => 'it',
-    'faker_locale' => 'it_IT',
 
     /*
     |--------------------------------------------------------------------------
@@ -105,7 +108,20 @@ return [
     |
     */
 
-    'fallback_locale' => 'en',
+    'fallback_locale' => 'it',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Faker Locale
+    |--------------------------------------------------------------------------
+    |
+    | This locale will be used by the Faker PHP library when generating fake
+    | data for your database seeds. For example, this will be used to get
+    | localized telephone numbers, street address information and more.
+    |
+    */
+
+    'faker_locale' => 'it_IT',
 
     /*
     |--------------------------------------------------------------------------
@@ -121,6 +137,17 @@ return [
     'key' => env('APP_KEY'),
 
     'cipher' => 'AES-256-CBC',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Secret salt
+    |--------------------------------------------------------------------------
+    |
+    | This salt is used to generate hashed in the application
+    |
+    */
+
+    'salt' => env('APP_SALT'),
 
     /*
     |--------------------------------------------------------------------------
@@ -174,6 +201,7 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        App\Providers\ViewServiceProvider::class,
 
     ],
 
@@ -191,6 +219,7 @@ return [
     'aliases' => [
 
         'App' => Illuminate\Support\Facades\App::class,
+        'Arr' => Illuminate\Support\Arr::class,
         'Artisan' => Illuminate\Support\Facades\Artisan::class,
         'Auth' => Illuminate\Support\Facades\Auth::class,
         'Blade' => Illuminate\Support\Facades\Blade::class,
@@ -220,10 +249,22 @@ return [
         'Schema' => Illuminate\Support\Facades\Schema::class,
         'Session' => Illuminate\Support\Facades\Session::class,
         'Storage' => Illuminate\Support\Facades\Storage::class,
+        'Str' => Illuminate\Support\Str::class,
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
-
+        'PublicAdministrationStatus' => App\Enums\PublicAdministrationStatus::class,
+        'UserPermission' => App\Enums\UserPermission::class,
+        'UserRole' => App\Enums\UserRole::class,
+        'UserStatus' => App\Enums\UserStatus::class,
+        'WebsiteStatus' => App\Enums\WebsiteStatus::class,
+        'WebsiteType' => App\Enums\WebsiteType::class,
+        'WebsiteAccessType' => App\Enums\WebsiteAccessType::class,
+        'Logger' => Monolog\Logger::class,
+        'EventType' => App\Enums\Logs\EventType::class,
+        'JobType' => App\Enums\Logs\JobType::class,
+        'ExceptionType' => App\Enums\Logs\ExceptionType::class,
+        'Markdown' => App\Support\Markdown::class,
     ],
 
 ];

@@ -1,78 +1,230 @@
 <?php
 
-// Analytics Italia
-Breadcrumbs::register('home', function ($breadcrumbs) {
-    $breadcrumbs->push(__('ui.site_title'), route('home', [], false));
+use Illuminate\Support\Facades\Route;
+
+// Web Analytics Italia
+Breadcrumbs::for('home', function ($trail) {
+    $trail->push(config('app.name'), route('home'));
 });
 
-// Analytics Italia > Dashboard
-Breadcrumbs::register('dashboard', function ($breadcrumbs) {
-    $breadcrumbs->parent('home');
-    $breadcrumbs->push(__('ui.pages.dashboard.title'), route('dashboard', [], false));
+// Web Analytics Italia > How to join
+Breadcrumbs::for('how-to-join', function ($trail) {
+    $trail->parent('home');
+    $trail->push(__('Come partecipare'), route('how-to-join'));
 });
 
-// Analytics Italia > Dashboard > Websites
-Breadcrumbs::register('websites-index', function ($breadcrumbs) {
-    $breadcrumbs->parent('dashboard');
-    $breadcrumbs->push(__('ui.pages.websites.title'), route('websites-index', [], false));
+// Web Analytics Italia > FAQ
+Breadcrumbs::for('faq', function ($trail) {
+    $trail->parent('home');
+    $trail->push(__('FAQ - Domande frequenti'), route('faq'));
 });
 
-// Analytics Italia > Dashboard > Add primary website
-Breadcrumbs::register('add-primary-website', function ($breadcrumbs) {
-    $breadcrumbs->parent('dashboard');
-    $breadcrumbs->push(__('ui.pages.add-primary-website.title'), route('add-primary-website', [], false));
+// Web Analytics Italia > Open data
+Breadcrumbs::for('open-data', function ($trail) {
+    $trail->parent('home');
+    $trail->push(__('Open data'), route('open-data'));
 });
 
-// Analytics Italia > Dashboard > Add website
-Breadcrumbs::register('websites-create', function ($breadcrumbs) {
-    $breadcrumbs->parent('websites-index');
-    $breadcrumbs->push(__('ui.pages.add-website.title'), route('websites-create', [], false));
+// Web Analytics Italia > Contacts
+Breadcrumbs::for('contacts', function ($trail) {
+    $trail->parent('home');
+    $trail->push(__('Contattaci'), route('contacts'));
 });
 
-// Analytics Italia > Dashboard > Websites > Javascript snippet
-Breadcrumbs::register('website-javascript-snippet', function ($breadcrumbs, $website) {
-    $breadcrumbs->parent('websites-index');
-    $breadcrumbs->push(__('ui.pages.website-javascript-snippet.title'), route('website-javascript-snippet', $website, false));
+// Web Analytics Italia > Privacy
+Breadcrumbs::for('privacy', function ($trail) {
+    $trail->parent('home');
+    $trail->push(__('Privacy'), route('privacy'));
 });
 
-// Analytics Italia > Dashboard > Users
-Breadcrumbs::register('users-index', function ($breadcrumbs) {
-    $breadcrumbs->parent('dashboard');
-    $breadcrumbs->push(__('ui.pages.users.title'), route('users-index', [], false));
+// Web Analytics Italia > Legal Notes
+Breadcrumbs::for('legal-notes', function ($trail) {
+    $trail->parent('home');
+    $trail->push(__('Note legali'), route('legal-notes'));
 });
 
-// Analytics Italia > Dashboard > Add user
-Breadcrumbs::register('users-create', function ($breadcrumbs) {
-    $breadcrumbs->parent('users-index');
-    $breadcrumbs->push(__('ui.pages.add-user.title'), route('users-create', [], false));
+// Web Analytics Italia > Analytics
+Breadcrumbs::for('analytics', function ($trail) {
+    $trail->parent('home');
+    $trail->push(__('Analytics'), route('analytics'));
 });
 
-// Analytics Italia > Privacy
-Breadcrumbs::register('privacy', function ($breadcrumbs) {
-    $breadcrumbs->parent('home');
-    $breadcrumbs->push(__('ui.pages.privacy.title'), route('privacy', [], false));
+// Web Analytics Italia > Analytics > Logs view
+Breadcrumbs::for('logs.show', function ($trail) {
+    $trail->parent('analytics');
+    $trail->push(__('Visualizzazione log'), route('logs.show'));
 });
 
-// Analytics Italia > Register
-Breadcrumbs::register('register', function ($breadcrumbs) {
-    $breadcrumbs->parent('home');
-    $breadcrumbs->push(__('ui.pages.register.title'), route('register', [], false));
+// Web Analytics Italia > Websites
+Breadcrumbs::for('websites.index', function ($trail) {
+    $trail->parent('home');
+    $trail->push(__('Siti web'), route('websites.index'));
 });
 
-// Analytics Italia > SPID Login
-Breadcrumbs::register('spid-auth_login', function ($breadcrumbs) {
-    $breadcrumbs->parent('home');
-    $breadcrumbs->push(__('ui.pages.spid-auth_login.title'), route('spid-auth_login', [], false));
+// Web Analytics Italia > Websites > Add website
+Breadcrumbs::for('websites.create', function ($trail) {
+    $trail->parent('websites.index');
+    $trail->push(__('Aggiungi un sito web'), route('websites.create'));
 });
 
-// Analytics Italia > SPID Login
-Breadcrumbs::register('auth-verify', function ($breadcrumbs) {
-    $breadcrumbs->parent('home');
-    $breadcrumbs->push(__('ui.pages.auth-verify.title'), route('auth-verify', [], false));
+// Web Analytics Italia > Websites > [website->name]
+Breadcrumbs::for('websites.show', function ($trail, $website) {
+    $trail->parent('websites.index');
+    $trail->push($website->name ?? '', route('websites.show', ['website' => $website]));
 });
 
-// Analytics Italia > SPID Login
-Breadcrumbs::register('auth-register', function ($breadcrumbs) {
-    $breadcrumbs->parent('home');
-    $breadcrumbs->push(__('ui.pages.auth-register.title'), route('auth-register', [], false));
+// Web Analytics Italia > Websites > [website->name] (edit)
+Breadcrumbs::for('websites.edit', function ($trail, $website) {
+    $trail->parent('websites.index');
+    $trail->push(implode(' ', [$website->name ?? '', __('(modifica)')]), route('websites.edit', ['website' => $website]));
+});
+
+// Web Analytics Italia > Users
+Breadcrumbs::for('users.index', function ($trail) {
+    $trail->parent('home');
+    $trail->push(__('Utenti'), route('users.index'));
+});
+
+// Web Analytics Italia > Users > Invite a new user
+Breadcrumbs::for('users.create', function ($trail) {
+    $trail->parent('users.index');
+    $trail->push(__('Invita un utente'), route('users.create'));
+});
+
+// Web Analytics Italia > Users > [user->full_name]
+Breadcrumbs::for('users.show', function ($trail, $user) {
+    $trail->parent('users.index');
+    $trail->push($user->full_name ?? '', route('users.show', ['user' => $user]));
+});
+
+// Web Analytics Italia > Users > [user->full_name] (edit)
+Breadcrumbs::for('users.edit', function ($trail, $user) {
+    $trail->parent('users.index');
+    $trail->push(implode(' ', [$user->full_name ?? '', __('(modifica)')]), route('users.edit', ['user' => $user]));
+});
+
+// Web Analytics Italia > User profile
+Breadcrumbs::for('user.profile.edit', function ($trail) {
+    $trail->parent('home');
+    $trail->push(__('Profilo utente'), route('user.profile.edit'));
+});
+
+// Web Analytics Italia > Super admin login
+Breadcrumbs::for('admin.login.show', function ($trail) {
+    $trail->parent('home');
+    $trail->push(__('Accesso super amministratori'), route('admin.login.show'));
+});
+
+// Web Analytics Italia > Super admin user profile
+Breadcrumbs::for('admin.user.profile.edit', function ($trail) {
+    $trail->parent('home');
+    $trail->push(__('Profilo utente'), route('admin.user.profile.edit'));
+});
+
+// Web Analytics Italia > Super admin dashboard
+Breadcrumbs::for('admin.dashboard', function ($trail) {
+    $trail->parent('home');
+    $trail->push(__('Dashboard amministrativa'), route('admin.dashboard'));
+});
+
+// Web Analytics Italia > Super admin dashboard > Logs view
+Breadcrumbs::for('admin.logs.show', function ($trail) {
+    $trail->parent('admin.dashboard');
+    $trail->push(__('Visualizzazione log'), route('admin.logs.show'));
+});
+
+// Web Analytics Italia > Super admin dashboard > Super admin Users
+Breadcrumbs::for('admin.users.index', function ($trail) {
+    $trail->parent('admin.dashboard');
+    $trail->push(__('Utenti super amministratori'), route('admin.users.index'));
+});
+
+// Web Analytics Italia > Super admin dashboard > Super admin Users > [user->full_name]
+Breadcrumbs::for('admin.users.show', function ($trail, $user) {
+    $trail->parent('admin.users.index');
+    $trail->push($user->full_name ?? '', route('admin.users.show', ['user' => $user]));
+});
+
+// Web Analytics Italia > Super admin dashboard > Super admin Users > Add super admin user
+Breadcrumbs::for('admin.users.create', function ($trail) {
+    $trail->parent('admin.users.index');
+    $trail->push(__('Aggiungi un utente super amministratore'), route('admin.users.create'));
+});
+
+// Web Analytics Italia > Super admin dashboard > Super admin Users > [user->full_name] (edit)
+Breadcrumbs::for('admin.users.edit', function ($trail, $user) {
+    $trail->parent('admin.users.index');
+    $trail->push(implode(' ', [$user->full_name ?? '', __('(modifica)')]), route('admin.users.edit', ['user' => $user]));
+});
+
+// Web Analytics Italia > Forgot password?
+Breadcrumbs::for('admin.password.forgot.show', function ($trail) {
+    $trail->parent('home');
+    $trail->push(__('Password dimenticata?'), route('admin.password.forgot.show'));
+});
+
+// Web Analytics Italia > Password change
+Breadcrumbs::for('admin.password.change.show', function ($trail) {
+    $trail->parent('home');
+    $trail->push(__('Cambio password'), route('admin.password.change.show'));
+});
+
+// Web Analytics Italia > Password reset
+Breadcrumbs::for('admin.password.reset.show', function ($trail) {
+    $trail->parent('home');
+    $trail->push(__('Reset della password'), route('admin.password.reset.show'));
+});
+
+// Web Analytics Italia > Analytics
+Breadcrumbs::for('admin.publicAdministration.analytics', function ($trail, $publicAdministrationIpaCode) {
+    $trail->parent('home');
+    $trail->push(__('Analytics web'), route('admin.publicAdministration.analytics', ['publicAdministration' => $publicAdministrationIpaCode]));
+});
+
+// Web Analytics Italia > Websites
+Breadcrumbs::for('admin.publicAdministration.websites.index', function ($trail, $publicAdministrationIpaCode) {
+    $trail->parent('home');
+    $trail->push(__('Siti web'), route('admin.publicAdministration.websites.index', ['publicAdministration' => $publicAdministrationIpaCode]));
+});
+
+// Web Analytics Italia > Websites > Add website
+Breadcrumbs::for('admin.publicAdministration.websites.create', function ($trail, $publicAdministrationIpaCode) {
+    $trail->parent('admin.publicAdministration.websites.index', $publicAdministrationIpaCode);
+    $trail->push(__('Aggiungi un sito web'), route('admin.publicAdministration.websites.create', ['publicAdministration' => $publicAdministrationIpaCode]));
+});
+
+// Web Analytics Italia > Websites > [website->name]
+Breadcrumbs::for('admin.publicAdministration.websites.show', function ($trail, $publicAdministrationIpaCode, $website) {
+    $trail->parent('admin.publicAdministration.websites.index', $publicAdministrationIpaCode);
+    $trail->push($website->name ?? '', route('admin.publicAdministration.websites.show', ['publicAdministration' => $publicAdministrationIpaCode, 'website' => $website]));
+});
+
+// Web Analytics Italia > Websites > [website->name] (edit)
+Breadcrumbs::for('admin.publicAdministration.websites.edit', function ($trail, $publicAdministrationIpaCode, $website) {
+    $trail->parent('admin.publicAdministration.websites.index', $publicAdministrationIpaCode);
+    $trail->push(implode(' ', [$website->name ?? '', __('(modifica)')]), route('admin.publicAdministration.websites.edit', ['publicAdministration' => $publicAdministrationIpaCode, 'website' => $website]));
+});
+
+// Web Analytics Italia > Users
+Breadcrumbs::for('admin.publicAdministration.users.index', function ($trail, $publicAdministrationIpaCode) {
+    $trail->parent('home');
+    $trail->push(__('Utenti'), route('admin.publicAdministration.users.index', ['publicAdministration' => $publicAdministrationIpaCode]));
+});
+
+// Web Analytics Italia > Users > Invite a new user
+Breadcrumbs::for('admin.publicAdministration.users.create', function ($trail, $publicAdministrationIpaCode) {
+    $trail->parent('admin.publicAdministration.users.index', $publicAdministrationIpaCode);
+    $trail->push(__('Invita un utente'), route('admin.publicAdministration.users.create', ['publicAdministration' => $publicAdministrationIpaCode]));
+});
+
+// Web Analytics Italia > Users > [user->full_name]
+Breadcrumbs::for('admin.publicAdministration.users.show', function ($trail, $publicAdministrationIpaCode, $user) {
+    $trail->parent('admin.publicAdministration.users.index', $publicAdministrationIpaCode);
+    $trail->push($user->full_name ?? '', route('admin.publicAdministration.users.show', ['publicAdministration' => $publicAdministrationIpaCode, 'user' => $user]));
+});
+
+// Web Analytics Italia > Users > [user->full_name] (edit)
+Breadcrumbs::for('admin.publicAdministration.users.edit', function ($trail, $publicAdministrationIpaCode, $user) {
+    $trail->parent('admin.publicAdministration.users.index', $publicAdministrationIpaCode);
+    $trail->push(implode(' ', [$user->full_name ?? '', __('(modifica)')]), route('admin.publicAdministration.users.edit', ['publicAdministration' => $publicAdministrationIpaCode, 'user' => $user]));
 });

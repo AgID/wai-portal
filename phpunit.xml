@@ -23,11 +23,31 @@
         </whitelist>
     </filter>
     <php>
-        <env name="APP_ENV" value="testing"/>
-        <env name="DB_CONNECTION" value="sqlite_testing"/>
-        <env name="DB_DATABASE" value=":memory:"/>
-        <env name="CACHE_DRIVER" value="array"/>
-        <env name="SESSION_DRIVER" value="array"/>
-        <env name="QUEUE_DRIVER" value="sync"/>
+        <server name="APP_ENV" value="testing"/>
+        <server name="BCRYPT_ROUNDS" value="4"/>
+        <server name="DB_CONNECTION" value="sqlite_testing"/>
+        <server name="DB_DATABASE" value=":memory:"/>
+        <server name="CACHE_DRIVER" value="array"/>
+        <server name="SESSION_DRIVER" value="array"/>
+        <server name="QUEUE_CONNECTION" value="sync"/>
+        <server name="LOG_CHANNEL" value="testing"/>
     </php>
+    <listeners>
+        <listener class="JohnKary\PHPUnit\Listener\SpeedTrapListener">
+            <arguments>
+                <array>
+                    <element key="slowThreshold">
+                        <integer>2000</integer>
+                    </element>
+                    <element key="reportLength">
+                        <integer>15</integer>
+                    </element>
+                </array>
+            </arguments>
+        </listener>
+    </listeners>
+    <logging>
+        <log type="coverage-clover" target="clover.xml"/>
+        <log type="coverage-html" target="coverage"/>
+    </logging>
 </phpunit>

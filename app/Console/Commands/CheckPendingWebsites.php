@@ -5,29 +5,18 @@ namespace App\Console\Commands;
 use App\Jobs\ProcessPendingWebsites;
 use Illuminate\Console\Command;
 
+/**
+ * Check pending websites command.
+ */
 class CheckPendingWebsites extends Command
 {
     /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'app:check-websites';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Check for pending Websites registered in Analytics Italia';
-
-    /**
-     * Create a new command instance.
-     *
-     * @return void
+     * Command constructor.
      */
     public function __construct()
     {
+        $this->signature = 'app:check-websites {--D|execute-purge-check : Whether the websites purge check should be executed}';
+        $this->description = 'Check for pending Websites registered in ' . config('app.name');
         parent::__construct();
     }
 
@@ -38,7 +27,8 @@ class CheckPendingWebsites extends Command
      */
     public function handle()
     {
-        ProcessPendingWebsites::dispatch();
+        $this->info('Checking pending websites...' . ($this->option('execute-purge-check') ? ' [executing purge check]' : ''));
+        dispatch(new ProcessPendingWebsites($this->option('execute-purge-check')))->onConnection('sync');
         $this->info('Pending websites checked');
     }
 }

@@ -2,8 +2,8 @@
 
 namespace App\Http\Middleware;
 
-use Silber\Bouncer\Bouncer;
 use Closure;
+use Silber\Bouncer\Bouncer;
 
 class ScopeBouncer
 {
@@ -17,7 +17,7 @@ class ScopeBouncer
     /**
      * Constructor.
      *
-     * @param \Silber\Bouncer\Bouncer  $bouncer
+     * @param \Silber\Bouncer\Bouncer $bouncer
      */
     public function __construct(Bouncer $bouncer)
     {
@@ -27,18 +27,18 @@ class ScopeBouncer
     /**
      * Set the proper Bouncer scope for the incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
+     * @param \Illuminate\Http\Request $request
+     * @param \Closure $next
+     *
      * @return mixed
      */
     public function handle($request, Closure $next)
     {
-        // Here you may use whatever mechanism you use in your app
-        // to determine the current tenant. To demonstrate, the
-        // $tenantId is set here from the user's account_id.
         $tenantId = 0;
-        if ($request->user() && $request->user()->publicAdministration) {
-            $tenantId = $request->user()->publicAdministration->id;
+        $authUser = $request->user();
+
+        if ($authUser && $authUser->publicAdministrations->isNotEmpty()) {
+            $tenantId = session('tenant_id');
         }
 
         $this->bouncer->scope()->to($tenantId);

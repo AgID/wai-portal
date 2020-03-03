@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="Analytics Italia" default="build">
+<project name="Web Analytics Italia" default="build">
 
     <!-- Loads properties from the environment with the 'env' as prefix -->
     <property environment="env"/>
@@ -12,56 +12,184 @@
     </if>
     <!-- Load properties from file -->
     <if>
-        <available file="env/build.properties" type="file" property="ignored"/>
+        <available file="env/build.properties.${env.APP_ENV}" type="file" property="ignored"/>
         <then>
-            <property file="env/build.properties"/>
+            <property file="env/build.properties.${env.APP_ENV}"/>
         </then>
+        <else>
+            <fail message="Build properties file 'env/build.properties.${env.APP_ENV}' not found."/>
+        </else>
     </if>
 
-    <!-- Target: clear -->
+    <!-- Target: compile-template -->
+    <target name="compile-template">
+        <copy file="${templateSrc}" tofile="${templateDest}" overwrite="true">
+            <filterchain>
+                <replacetokens>
+                    <token key="ENV" value="${env.APP_ENV}"/>
+                    <token key="PHP_VERSION" value="${PHP_VERSION}"/>
+                    <token key="APP_CODE_PATH_CONTAINER" value="${APP_CODE_PATH_CONTAINER}"/>
+                    <token key="APP_DEBUG" value="${APP_DEBUG}" />
+                    <token key="APP_SALT" value="${APP_SALT}" />
+                    <token key="HOSTNAME" value="${HOSTNAME}" />
+                    <token key="LOG_STACK_CHANNELS" value="${LOG_STACK_CHANNELS}" />
+                    <token key="LOG_SLACK_WEBHOOK_URL" value="${LOG_SLACK_WEBHOOK_URL}" />
+                    <token key="LOG_SLACK_USERNAME" value="${LOG_SLACK_USERNAME}" />
+                    <token key="APP_CLOSED_BETA_ENABLED" value="${APP_CLOSED_BETA_ENABLED}" />
+                    <token key="APP_SUPER_ADMIN_NAME" value="${APP_SUPER_ADMIN_NAME}" />
+                    <token key="APP_SUPER_ADMIN_FAMILY_NAME" value="${APP_SUPER_ADMIN_FAMILY_NAME}" />
+                    <token key="APP_SUPER_ADMIN_FISCAL_NUMBER" value="${APP_SUPER_ADMIN_FISCAL_NUMBER}" />
+                    <token key="APP_SUPER_ADMIN_EMAIL" value="${APP_SUPER_ADMIN_EMAIL}" />
+                    <token key="APP_SUPER_ADMIN_PASSWORD" value="${APP_SUPER_ADMIN_PASSWORD}" />
+                    <token key="CLOSED_BETA_WHITELIST_WEBHOOK_CLIENT_SECRET" value="${CLOSED_BETA_WHITELIST_WEBHOOK_CLIENT_SECRET}" />
+                    <token key="CLOSED_BETA_WHITELIST_REPOSITORY_FULL_NAME" value="${CLOSED_BETA_WHITELIST_REPOSITORY_FULL_NAME}" />
+                    <token key="CLOSED_BETA_WHITELIST_REPOSITORY_BRANCH" value="${CLOSED_BETA_WHITELIST_REPOSITORY_BRANCH}" />
+                    <token key="CLOSED_BETA_WHITELIST_REPOSITORY_FILE_NAME" value="${CLOSED_BETA_WHITELIST_REPOSITORY_FILE_NAME}" />
+                    <token key="CRON_TOKEN" value="${CRON_TOKEN}" />
+                    <token key="TRACKING_MATOMO_ID" value="${TRACKING_MATOMO_ID}" />
+                    <token key="TRACKING_GA_ID" value="${TRACKING_GA_ID}" />
+                    <token key="TRACKING_HOTJAR_ID" value="${TRACKING_HOTJAR_ID}" />
+                    <token key="PENDING_WEBSITE_WARNING" value="${PENDING_WEBSITE_WARNING}" />
+                    <token key="PENDING_WEBSITE_REMOVE" value="${PENDING_WEBSITE_REMOVE}" />
+                    <token key="ARCHIVING_WEBSITE_WARNING" value="${ARCHIVING_WEBSITE_WARNING}" />
+                    <token key="ARCHIVING_WEBSITE_ARCHIVE" value="${ARCHIVING_WEBSITE_ARCHIVE}" />
+                    <token key="ARCHIVING_WEBSITE_NOTIFICATION_INTERVAL" value="${ARCHIVING_WEBSITE_NOTIFICATION_INTERVAL}" />
+                    <token key="PRIMARY_WEBSITE_NOT_TRACKING_NOTIFICATION_WEEK_DAY" value="${PRIMARY_WEBSITE_NOT_TRACKING_NOTIFICATION_WEEK_DAY}" />
+                    <token key="ARCHIVING_WEBSITE_DAILY_NOTIFICATION" value="${ARCHIVING_WEBSITE_DAILY_NOTIFICATION}" />
+                    <token key="ELASTICSEARCH_VERSION" value="${ELASTICSEARCH_VERSION}" />
+                    <token key="ELASTICSEARCH_USER" value="${ELASTICSEARCH_USER}" />
+                    <token key="ELASTICSEARCH_PASSWORD" value="${ELASTICSEARCH_PASSWORD}" />
+                    <token key="ELASTICSEARCH_INDEX_PREFIX" value="${ELASTICSEARCH_INDEX_PREFIX}" />
+                    <token key="ELASTICSEARCH_INDEX_TEMPLATE_NAME" value="${ELASTICSEARCH_INDEX_PREFIX}-${ELASTICSEARCH_INDEX_NAME}" />
+                    <token key="ELASTICSEARCH_INDEX_NAME" value="${ELASTICSEARCH_INDEX_PREFIX}-${ELASTICSEARCH_INDEX_NAME}-${env.APP_ENV}" />
+                    <token key="ELASTICSEARCH_IGNORE_EXCEPTIONS" value="${ELASTICSEARCH_IGNORE_EXCEPTIONS}" />
+                    <token key="ELASTICSEARCH_SEARCH_TEMPLATE_NAME" value="${ELASTICSEARCH_SEARCH_TEMPLATE_NAME}" />
+                    <token key="KIBANA_VERSION" value="${KIBANA_VERSION}" />
+                    <token key="MARIADB_DATABASE" value="${MARIADB_DATABASE}" />
+                    <token key="MARIADB_USER" value="${MARIADB_USER}" />
+                    <token key="MARIADB_PASSWORD" value="${MARIADB_PASSWORD}" />
+                    <token key="MARIADB_ROOT_PASSWORD" value="${MARIADB_ROOT_PASSWORD}" />
+                    <token key="CACHE_CONNECTION" value="${CACHE_CONNECTION}" />
+                    <token key="SESSION_CONNECTION" value="${SESSION_CONNECTION}" />
+                    <token key="SESSION_SECURE_COOKIE" value="${SESSION_SECURE_COOKIE}" />
+                    <token key="SESSION_ENCRYPT" value="${SESSION_ENCRYPT}" />
+                    <token key="QUEUE_REDIS_CONNECTION" value="${QUEUE_REDIS_CONNECTION}" />
+                    <token key="REDIS_SENTINELS" value="${REDIS_SENTINELS}" />
+                    <token key="REDIS_SENTINEL_SET" value="${REDIS_SENTINEL_SET}" />
+                    <token key="REDIS_INDEXES_USE_SENTINELS" value="${REDIS_INDEXES_USE_SENTINELS}" />
+                    <token key="REDIS_IPA_INDEX_USE_SENTINELS" value="${REDIS_IPA_INDEX_USE_SENTINELS}" />
+                    <token key="REDIS_IPA_INDEX_SENTINELS" value="${REDIS_IPA_INDEX_SENTINELS}" />
+                    <token key="REDIS_IPA_INDEX_SENTINEL_SET" value="${REDIS_IPA_INDEX_SENTINEL_SET}" />
+                    <token key="MAIL_HOST" value="${MAIL_HOST}" />
+                    <token key="MAIL_PORT" value="${MAIL_PORT}" />
+                    <token key="MAIL_USERNAME" value="${MAIL_USERNAME}" />
+                    <token key="MAIL_PASSWORD" value="${MAIL_PASSWORD}" />
+                    <token key="MAIL_ENCRYPTION" value="${MAIL_ENCRYPTION}" />
+                    <token key="PEC_HOST" value="${PEC_HOST}" />
+                    <token key="PEC_PORT" value="${PEC_PORT}" />
+                    <token key="PEC_USERNAME" value="${PEC_USERNAME}" />
+                    <token key="PEC_PASSWORD" value="${PEC_PASSWORD}" />
+                    <token key="PEC_ENCRYPTION" value="${PEC_ENCRYPTION}" />
+                    <token key="SPID_SP_ENTITY_ID" value="${SPID_SP_ENTITY_ID}" />
+                    <token key="SPID_SP_ACS_INDEX" value="${SPID_SP_ACS_INDEX}" />
+                    <token key="SPID_SP_ATTRIBUTES_INDEX" value="${SPID_SP_ATTRIBUTES_INDEX}" />
+                    <token key="SPID_SP_PRIVATE_KEY" value="${SPID_SP_PRIVATE_KEY}" />
+                    <token key="SPID_SP_CERTIFICATE" value="${SPID_SP_CERTIFICATE}" />
+                    <token key="SPID_TESTENV_ENABLED" value="${SPID_TESTENV_ENABLED}" />
+                    <token key="SPID_TESTENV_ENTITY_ID" value="${SPID_TESTENV_ENTITY_ID}" />
+                    <token key="SPID_TESTENV_SSO" value="${SPID_TESTENV_SSO}" />
+                    <token key="SPID_TESTENV_SLO" value="${SPID_TESTENV_SLO}" />
+                    <token key="SPID_TESTENV_CERT" value="${SPID_TESTENV_CERT}" />
+                    <token key="SPID_VALIDATOR_IDP_ENABLED" value="${SPID_VALIDATOR_IDP_ENABLED}" />
+                    <token key="SPID_VALIDATOR_IDP_ENTITY_ID" value="${SPID_VALIDATOR_IDP_ENTITY_ID}" />
+                    <token key="SPID_VALIDATOR_IDP_SSO" value="${SPID_VALIDATOR_IDP_SSO}" />
+                    <token key="SPID_VALIDATOR_IDP_SLO" value="${SPID_VALIDATOR_IDP_SLO}" />
+                    <token key="SPID_VALIDATOR_IDP_CERT" value="${SPID_VALIDATOR_IDP_CERT}" />
+                    <token key="ANALYTICS_ADMIN_TOKEN" value="${MATOMO_ROOT_APIKEY}" />
+                    <token key="ANALYTICS_API_BASE_URL" value="${ANALYTICS_API_BASE_URL}" />
+                    <token key="ANALYTICS_API_SSL_VERIFY" value="${ANALYTICS_API_SSL_VERIFY}" />
+                    <token key="ANALYTICS_PUBLIC_URL" value="${ANALYTICS_PUBLIC_URL}" />
+                    <token key="ANALYTICS_PUBLIC_DASHBOARD_ID" value="${MATOMO_PUBLIC_ROLLUP_ID}" />
+                    <token key="MATOMO_DB_READER" value="${MATOMO_DB_READER}" />
+                    <token key="MATOMO_DB_USER" value="${MATOMO_DB_USER}" />
+                    <token key="MATOMO_DB_PASSWORD" value="${MATOMO_DB_PASSWORD}" />
+                    <token key="MATOMO_ROOT_USER" value="${MATOMO_ROOT_USER}" />
+                    <token key="MATOMO_ROOT_PASSWORD" value="${HASHED_MATOMO_ROOT_PASSWORD}" />
+                    <token key="MATOMO_ROOT_APIKEY" value="${MATOMO_ROOT_APIKEY}" />
+                    <token key="MATOMO_VERSION" value="${MATOMO_VERSION}" />
+                    <token key="MATOMO_WAI_THEME_VERSION" value="${MATOMO_WAI_THEME_VERSION}" />
+                    <token key="MATOMO_PLUGIN_DISABLESITETRACKING_VERSION" value="${MATOMO_PLUGIN_DISABLESITETRACKING_VERSION}" />
+                    <token key="MATOMO_PLUGIN_QUEUEDTRACKING_VERSION" value="${MATOMO_PLUGIN_QUEUEDTRACKING_VERSION}" />
+                    <token key="MATOMO_PLUGIN_PROTECTTRACKID_VERSION" value="${MATOMO_PLUGIN_PROTECTTRACKID_VERSION}" />
+                    <token key="MATOMO_PLUGIN_CUSTOMDIMENSIONS_VERSION" value="${MATOMO_PLUGIN_CUSTOMDIMENSIONS_VERSION}" />
+                    <token key="MATOMO_PLUGIN_LOGINFILTERIP_VERSION" value="${MATOMO_PLUGIN_LOGINFILTERIP_VERSION}" />
+                    <token key="MATOMO_PLUGIN_TRACKERHOSTNAME_VERSION" value="${MATOMO_PLUGIN_TRACKERHOSTNAME_VERSION}" />
+                    <token key="MATOMO_INGESTION_HOSTNAME" value="${MATOMO_INGESTION_HOSTNAME}" />
+                </replacetokens>
+            </filterchain>
+        </copy>
+    </target>
+
+    <!-- Target: set-docker-compose-env -->
+    <target name="set-docker-compose-env">
+        <!-- Set docker-compose .env file according to current environment -->
+        <echo message="Setting docker-compose environment..."/>
+        <!-- Calculated properties -->
+        <echo msg="Calculating properties..."/>
+        <php function="random_bytes" returnProperty="APP_SALT">
+            <param value="32"/>
+        </php>
+        <php function="bin2hex" returnProperty="APP_SALT">
+            <param value="${APP_SALT}"/>
+        </php>
+        <php function="md5" returnProperty="HASHED_MATOMO_ROOT_PASSWORD">
+            <param value="${MATOMO_ROOT_PASSWORD}"/>
+        </php>
+        <php function="password_hash" returnProperty="HASHED_MATOMO_ROOT_PASSWORD">
+            <param value="${HASHED_MATOMO_ROOT_PASSWORD}"/>
+            <param value="1"/> <!-- PHP constant PASSWORD_BCRYPT is 1 -->
+        </php>
+        <if>
+            <available file="containers/docker-compose.${env.APP_ENV}.yml" type="file" property="ignored"/>
+            <then>
+                <copy file="containers/docker-compose.${env.APP_ENV}.yml" tofile="containers/docker-compose.override.yml" overwrite="true"/>
+            </then>
+        </if>
+        <phingcall target="compile-template">
+            <property name="templateSrc" value="env/env-containers.template" />
+            <property name="templateDest" value="containers/.env" />
+        </phingcall>
+    </target>
+
+    <!-- Target: clear alias of clean -->
     <target name="clear" depends="clean">
     </target>
 
     <!-- Target: clean -->
-    <target name="clean">
+    <target name="clean" depends="set-docker-compose-env">
         <echo msg="Cleaning environment..."/>
-        <!-- Set Docker .env file according to current environment -->
-        <echo message="Setting containers environment..."/>
-        <copy file="env/env-containers-${env.APP_ENV}" tofile="containers/.env" overwrite="true"/>
-        <echo msg="Deleting containers..."/>
-        <!-- Stopping and deleting running containers -->
+        <!-- Delete containers data directory -->
+        <echo msg="Deleting containers data directory..."/>
+        <delete dir="containers/data" includeemptydirs="true" quiet="true"/>
+        <!-- Delete testing db file -->
+        <echo msg="Deleting testing database file..."/>
+        <delete file="database/testing.sqlite" quiet="true"/>
+        <!-- Delete containers logs directory -->
+        <echo msg="Deleting containers logs directory..."/>
+        <delete dir="containers/logs" includeemptydirs="true" quiet="true"/>
+        <echo msg="Deleting containers and images..."/>
+        <!-- Stopping and deleting running containers and images -->
         <if>
             <available file="containers" type="dir" property="ignored"/>
             <then>
                 <echo msg="Stopping Docker containers currently running..."/>
-                <exec command="docker-compose down -v" dir="containers" passthru="true" checkreturn="true"/>
+                <exec command="docker-compose down --rmi 'local' -v" dir="containers" passthru="true" checkreturn="true"/>
             </then>
         </if>
-        <!-- Delete containers data directory -->
-        <echo msg="Deleting containers data directory...."/>
-        <delete dir="containers/data" includeemptydirs="true" quiet="true"/>
-        <delete dir="containers/application/data" includeemptydirs="true" quiet="true"/>
-        <!-- Delete testing db file -->
-        <echo msg="Deleting testing database file...."/>
-        <delete file="database/testing.sqlite" quiet="true"/>
-        <!-- Delete containers logs directory -->
-        <echo msg="Deleting containers logs directory...."/>
-        <delete quiet="true">
-            <fileset dir="containers/logs">
-                <include name="*"/>
-            </fileset>
-            <fileset dir="containers/logs/nginx">
-                <include name="*"/>
-                <exclude name=".gitkeep"/>
-            </fileset>
-        </delete>
-        <!-- Delete node_modules directory -->
-        <echo msg="Deleting node_modules directory...."/>
-        <delete dir="node_modules" includeemptydirs="true" quiet="true"/>
-        <!-- Delete environment files -->
-        <echo msg="Deleting environment files...."/>
+        <echo msg="Deleting environment files..."/>
         <delete file=".env" quiet="true"/>
         <delete file="containers/.env" quiet="true"/>
+        <delete file="containers/docker-compose.override.yml" quiet="true"/>
         <delete quiet="true">
             <fileset dir=".">
                 <include name=".env.dusk.*"/>
@@ -69,44 +197,28 @@
         </delete>
     </target>
 
-    <!-- Target: clean -->
-    <target name="clean-deep" depends="clean">
-        <echo msg="Cleaning environment..."/>
-        <!-- Set Docker .env file according to current environment -->
-        <echo message="Setting containers environment..."/>
-        <copy file="env/env-containers-${env.APP_ENV}" tofile="containers/.env" overwrite="true"/>
-        <echo msg="Deleting images..."/>
-        <!-- Stopping and deleting running containers and images -->
-        <if>
-            <available file="containers" type="dir" property="ignored"/>
-            <then>
-                <echo msg="Stopping Docker containers currently running..."/>
-                <exec command="docker-compose down --rmi 'all' -v" dir="containers" passthru="true" checkreturn="true"/>
-            </then>
-        </if>
-    </target>
-
     <!-- Target: prepare -->
-    <target name="prepare">
+    <target name="prepare" depends="set-docker-compose-env">
         <echo msg="Preparing ${env.APP_ENV} environment..."/>
-        <!-- Set Docker .env file according to current environment -->
-        <echo message="Setting containers environment..."/>
-        <copy file="env/env-containers-${env.APP_ENV}" tofile="containers/.env" overwrite="true"/>
-        <if>
-            <isset property="hostname"/>
-            <then>
-                <!-- Set hostname -->
-                <echo message="Setting hostname to ${hostname}..."/>
-                <replaceregexp file="env/env-laravel-${env.APP_ENV}" match="{{hostname}}" replace="${hostname}"/>
-            </then>
-        </if>
         <!-- Set Laravel .env file according to current environment -->
         <echo message="Setting Laravel environment..."/>
-        <copy file="env/env-laravel-${env.APP_ENV}" tofile=".env" overwrite="true"/>
+        <phingcall target="compile-template">
+            <property name="templateSrc" value="env/env-laravel.template" />
+            <property name="templateDest" value=".env" />
+        </phingcall>
+        <!-- Set spid-testnev configuration according to current environment -->
+        <echo message="Setting spid-testenv environment..."/>
+        <phingcall target="compile-template">
+            <property name="templateSrc" value="containers/spid-testenv/conf/config.yaml.template" />
+            <property name="templateDest" value="containers/spid-testenv/conf/config.yaml" />
+        </phingcall>
+        <phingcall target="compile-template">
+            <property name="templateSrc" value="containers/spid-testenv/conf/sp_metadata.xml.template" />
+            <property name="templateDest" value="containers/spid-testenv/conf/sp_metadata.xml" />
+        </phingcall>
         <!-- Create a copy of xdebug.ini -->
-        <echo message="Copying xdebug.ini files..."/>
+        <echo message="Setting xdebug.ini files..."/>
         <copy file="containers/php-fpm/xdebug.template.ini" tofile="containers/php-fpm/xdebug.ini" overwrite="true"/>
-        <copy file="containers/workspace/xdebug.template.ini" tofile="containers/workspace/xdebug.ini" overwrite="true"/>
         <if>
             <or>
                 <equals arg1="${env.APP_ENV}" arg2="local"/>
@@ -116,28 +228,31 @@
                 <!-- Set value of xdebug ide key to configured xdebug ide key -->
                 <echo message="Setting XDEBUG IDE KEY to ${XDEBUG_IDEKEY} ..."/>
                 <replaceregexp file="containers/php-fpm/xdebug.ini" match="xdebug.idekey=(\S*)" replace="xdebug.idekey=${XDEBUG_IDEKEY}"/>
-                <replaceregexp file="containers/workspace/xdebug.ini" match="xdebug.idekey=(\S*)" replace="xdebug.idekey=${XDEBUG_IDEKEY}"/>
                 <!-- Set XDEBUG remote host -->
                 <echo message="Setting XDEBUG remote host to ${XDEBUG_REMOTE_HOST} ..."/>
                 <replaceregexp file="containers/php-fpm/xdebug.ini" match="xdebug.remote_host=(\S*)" replace="xdebug.remote_host=${XDEBUG_REMOTE_HOST}"/>
-                <replaceregexp file="containers/workspace/xdebug.ini" match="xdebug.remote_host=(\S*)" replace="xdebug.remote_host=${XDEBUG_REMOTE_HOST}"/>
                 <!-- Set dusk .env file according to current environment -->
                 <echo msg="Setting Laravel Dusk .env file according to current environment..."/>
-                <copy file="env/env-dusk-${env.APP_ENV}" tofile=".env.dusk.${env.APP_ENV}" overwrite="true"/>
+                <phingcall target="compile-template">
+                    <property name="templateSrc" value="env/env-dusk.template" />
+                    <property name="templateDest" value=".env.dusk.${env.APP_ENV}" />
+                </phingcall>
             </then>
         </if>
+        <!-- Install php dependencies -->
+        <echo msg="Installing php dependencies..."/>
+        <exec command="composer install" passthru="true" checkreturn="true"/>
         <!-- Set a new application key -->
         <echo msg="Setting a new application secret key..."/>
-        <exec command="php artisan key:generate" passthru="true" checkreturn="true"/>
-        <!-- Install node modules -->
-        <echo msg="Installing node modules..."/>
+        <exec command="php artisan key:generate" checkreturn="true"/>
+        <!-- Install javascript dependencies -->
+        <echo msg="Installing javascript dependencies..."/>
         <exec command="npm install" passthru="true" checkreturn="true"/>
         <!-- Run laravel mix -->
         <echo msg="Compiling assets with Laravel Mix..."/>
         <if>
             <or>
                 <equals arg1="${env.APP_ENV}" arg2="local"/>
-                <equals arg1="${env.APP_ENV}" arg2="testing"/>
             </or>
             <then>
                 <exec command="npm run dev" passthru="true" checkreturn="true"/>
@@ -149,22 +264,38 @@
         <!--
           If in testing environment copy application files in a location for
           being included in the application container. This is necessary because
-          CircleCI doesn't support volume mount from docker host.
+          CircleCI doesn't support bind mount from running host.
         -->
         <if>
             <equals arg1="${env.APP_ENV}" arg2="testing"/>
             <then>
-                <echo msg="Copying application files..."/>
-                <copy todir="containers/application/data">
-                    <fileset dir=".">
-                        <exclude name="containers/**"/>
-                    </fileset>
-                </copy>
-                <copy todir="containers/application/logs">
-                    <fileset dir="containers/logs">
-                    </fileset>
-                </copy>
+                <echo msg="Copying application files to application-code volume"/>
+                <exec command="docker run -v application-code:${APP_CODE_PATH_CONTAINER} -v application-logs:/var/log/ --name application-container busybox mkdir -p /var/log/nginx" checkreturn="true"/>
+                <exec command="docker cp app application-container:${APP_CODE_PATH_CONTAINER}" checkreturn="true"/>
+                <exec command="docker cp bootstrap application-container:${APP_CODE_PATH_CONTAINER}" checkreturn="true"/>
+                <exec command="docker cp config application-container:${APP_CODE_PATH_CONTAINER}" checkreturn="true"/>
+                <exec command="docker cp database application-container:${APP_CODE_PATH_CONTAINER}" checkreturn="true"/>
+                <exec command="docker cp public application-container:${APP_CODE_PATH_CONTAINER}" checkreturn="true"/>
+                <exec command="docker cp resources application-container:${APP_CODE_PATH_CONTAINER}" checkreturn="true"/>
+                <exec command="docker cp routes application-container:${APP_CODE_PATH_CONTAINER}" checkreturn="true"/>
+                <exec command="docker cp storage application-container:${APP_CODE_PATH_CONTAINER}" checkreturn="true"/>
+                <exec command="docker cp tests application-container:${APP_CODE_PATH_CONTAINER}" checkreturn="true"/>
+                <exec command="docker cp vendor application-container:${APP_CODE_PATH_CONTAINER}" checkreturn="true"/>
+                <exec command="docker cp .env application-container:${APP_CODE_PATH_CONTAINER}" checkreturn="true"/>
+                <exec command="docker cp .env.dusk.testing application-container:${APP_CODE_PATH_CONTAINER}" checkreturn="true"/>
+                <exec command="docker cp artisan application-container:${APP_CODE_PATH_CONTAINER}" checkreturn="true"/>
+                <exec command="docker cp composer.json application-container:${APP_CODE_PATH_CONTAINER}" checkreturn="true"/>
+                <exec command="docker cp composer.lock application-container:${APP_CODE_PATH_CONTAINER}" checkreturn="true"/>
+                <exec command="docker cp phpunit.dusk.xml application-container:${APP_CODE_PATH_CONTAINER}" checkreturn="true"/>
+                <exec command="docker cp phpunit.xml application-container:${APP_CODE_PATH_CONTAINER}" checkreturn="true"/>
+                <exec command="docker cp .node-version application-container:${APP_CODE_PATH_CONTAINER}" checkreturn="true"/>
+                <exec command="docker cp lighthouserc.json application-container:${APP_CODE_PATH_CONTAINER}" checkreturn="true"/>
             </then>
+            <else>
+                <echo msg="Create log directories if needed..."/>
+                <mkdir dir="containers/logs/nginx"/>
+                <mkdir dir="containers/logs/php"/>
+            </else>
         </if>
     </target>
 
@@ -173,53 +304,132 @@
         <echo msg="Building..."/>
         <!-- Start containers -->
         <echo msg="Starting Docker containers..."/>
-        <exec command="docker-compose up -d nginx mariadb redis mailhog workspace matomo" dir="containers" passthru="true" checkreturn="true"/>
+        <if>
+            <equals arg1="${env.APP_ENV}" arg2="testing"/>
+            <then>
+                <exec command="docker-compose up -d --build nginx mariadb redis ipa-redisearch elasticsearch php-fpm matomo" dir="containers" passthru="true" checkreturn="true"/>
+            </then>
+            <else>
+                <if>
+                    <or>
+                        <equals arg1="${REDIS_INDEXES_USE_SENTINELS}" arg2="true"/>
+                        <equals arg1="${REDIS_IPA_INDEX_USE_SENTINELS}" arg2="true"/>
+                        <contains string="${CACHE_CONNECTION}" substring="sentinel"/>
+                        <contains string="${SESSION_CONNECTION}" substring="sentinel"/>
+                        <contains string="${QUEUE_REDIS_CONNECTION}" substring="sentinel"/>
+                    </or>
+                    <then>
+                        <exec command="docker-compose up -d --build nginx mariadb redis ipa-redisearch redis-sentinel mailhog php-fpm matomo queue-worker elasticsearch spid-testenv" dir="containers" passthru="true" checkreturn="true"/>
+                    </then>
+                    <else>
+                        <exec command="docker-compose up -d --build nginx mariadb redis ipa-redisearch mailhog php-fpm matomo queue-worker elasticsearch spid-testenv" dir="containers" passthru="true" checkreturn="true"/>
+                    </else>
+                </if>
+            </else>
+        </if>
+        <!-- Set files ownership -->
+        <echo msg="Setting files ownership..."/>
+        <exec command="docker-compose exec php-fpm chown -R www-data:www-data storage database .env" dir="containers" checkreturn="true"/>
+        <exec command="docker-compose exec php-fpm chown -R www-data:www-data /opt/matomo" dir="containers" checkreturn="true"/>
         <!-- Wait for mariadb container to start gracefully -->
-        <echo msg="Waiting for database container to start gracefully..."/>
+        <echo msg="Waiting for database container to be ready..."/>
         <retry retryDelay="5" retryCount="12">
-            <exec command="docker-compose exec mariadb mysql -u root -proot default -e 'select 1'" dir="containers" checkreturn="true"/>
+            <exec command="docker-compose exec mariadb mysql -u root -p${MARIADB_ROOT_PASSWORD} ${MARIADB_DATABASE} -e 'select 1;'" dir="containers" checkreturn="true"/>
         </retry>
         <!-- Install Matomo database -->
-        <exec command="docker-compose exec mariadb mysql -u root -proot matomo -e 'select 1'" dir="containers" returnProperty="checkMatomo"/>
+        <exec command="docker-compose exec mariadb mysql -u root -p${MARIADB_ROOT_PASSWORD} matomo -e 'select 1;'" dir="containers" returnProperty="checkMatomo"/>
         <if>
             <not><equals arg1="${checkMatomo}" arg2="0"/></not>
             <then>
                 <echo msg="Installing Matomo database..."/>
-                <exec command="docker-compose exec mariadb bash /opt/install_matomo_db.sh" dir="containers" checkreturn="true"/>
+                <exec command="docker-compose exec mariadb bash /opt/matomo-install/install_matomo_db.sh" dir="containers" checkreturn="true"/>
+                <exec command="docker-compose exec mariadb bash /opt/matomo-install/install_plugins_db.sh" dir="containers" checkreturn="true"/>
+                <exec command="docker-compose exec mariadb sh -c 'rm -Rf /opt/matomo-install/*'" dir="containers" checkreturn="true"/>
+            </then>
+        </if>
+        <!-- Initialize ElasticSearch -->
+        <echo msg="Waiting for ElasticSearch to start..." />
+        <exec command="docker-compose exec elasticsearch bash /opt/check_index.sh" dir="containers" returnProperty="checkElasticSearch" />
+        <if>
+            <not><equals arg1="${checkElasticSearch}" arg2="0" /></not>
+            <then>
+                <echo msg="Initializing ElasticSearch cluster..."/>
+                <retry retryDelay="5" retryCount="12">
+                    <exec command="docker-compose exec elasticsearch bash /opt/elasticsearch-init/initialize_index.sh" dir="containers" checkreturn="true"/>
+                </retry>
+                <echo msg="Initializing ElasticSearch search template..."/>
+                <retry retryDelay="5" retryCount="12">
+                    <exec command="docker-compose exec elasticsearch bash /opt/elasticsearch-init/initialize_search_template.sh" dir="containers" checkreturn="true"/>
+                </retry>
             </then>
         </if>
         <!-- Run migrations -->
         <echo msg="Running database migrations..."/>
-        <exec command="docker-compose exec workspace php artisan migrate" dir="containers" passthru="true" checkreturn="true"/>
+        <exec command="docker-compose exec -u www-data php-fpm php artisan migrate" dir="containers" passthru="true" checkreturn="true"/>
         <!-- Create roles -->
-        <exec command="docker-compose exec mariadb mysql -u root -proot default -e 'select * from abilities where id=1'" dir="containers" outputProperty="checkRoles"/>
+        <exec command="docker-compose exec mariadb mysql -u root -p${MARIADB_ROOT_PASSWORD} ${MARIADB_DATABASE} -e 'select * from abilities where id=1'" dir="containers" outputProperty="checkRoles"/>
         <if>
             <equals arg1="${checkRoles}" arg2=""/>
             <then>
                 <echo msg="Creating application roles..."/>
-                <exec command="docker-compose exec workspace php artisan app:create-roles" dir="containers" passthru="true" checkreturn="true"/>
+                <exec command="docker-compose exec -u www-data php-fpm php artisan app:init-permissions" dir="containers" passthru="true" checkreturn="true"/>
             </then>
         </if>
+        <!-- Database seed -->
+        <exec command="docker-compose exec mariadb mysql -u root -p${MARIADB_ROOT_PASSWORD} ${MARIADB_DATABASE} -e 'select * from users where id=1'" dir="containers" outputProperty="checkDBseed"/>
+        <if>
+            <equals arg1="${checkDBseed}" arg2=""/>
+            <then>
+                <echo msg="Seeding database..."/>
+                <exec command="docker-compose exec -u www-data php-fpm php artisan db:seed" dir="containers" passthru="true" checkreturn="true"/>
+            </then>
+        </if>
+        <!-- Install premium plugins -->
+        <echo msg="Updating matomo configuration for premium plugins..." />
+        <exec command="docker cp matomo/premium_plugins $(docker-compose ps -q php-fpm):/tmp"
+              dir="containers" checkreturn="true"/>
+        <exec command="docker-compose exec php-fpm chmod +x /tmp/premium_plugins/install_premium_plugins_config.sh"
+              dir="containers" checkreturn="true"/>
+        <exec command="docker-compose exec php-fpm /tmp/premium_plugins/install_premium_plugins_config.sh"
+              dir="containers" checkreturn="true"/>
+        <exec command="docker-compose exec php-fpm rm -Rf /tmp/premium_plugins"
+              dir="containers" checkreturn="true"/>
+        <echo msg="Updating matomo database for premium plugins..." />
+        <exec command="docker cp matomo/premium_plugins $(docker-compose ps -q mariadb):/tmp"
+              dir="containers" checkreturn="true"/>
+        <exec command="docker-compose exec mariadb chmod +x /tmp/premium_plugins/install_premium_plugins_db.sh"
+              dir="containers" checkreturn="true"/>
+        <exec command="docker-compose exec mariadb /tmp/premium_plugins/install_premium_plugins_db.sh
+              --rollup-id ${MATOMO_PUBLIC_ROLLUP_ID}
+              --db-user root
+              --db-password ${MARIADB_ROOT_PASSWORD}
+              --database matomo"
+              dir="containers" checkreturn="true"/>
+        <exec command="docker-compose exec mariadb rm -Rf /tmp/premium_plugins"
+              dir="containers" checkreturn="true"/>
         <!-- Clear sessions and caches -->
         <echo msg="Clearing sessions and caches..."/>
-        <exec command="docker-compose exec workspace php artisan view:clear" dir="containers" passthru="true" checkreturn="true"/>
-        <exec command="docker-compose exec workspace php artisan route:clear" dir="containers" passthru="true" checkreturn="true"/>
-        <exec command="docker-compose exec workspace php artisan config:clear" dir="containers" passthru="true" checkreturn="true"/>
-        <exec command="docker-compose exec workspace php artisan cache:clear" dir="containers" passthru="true" checkreturn="true"/>
-        <exec command="docker-compose exec workspace php artisan clear-compiled" dir="containers" passthru="true" checkreturn="true"/>
-        <!-- Populate IPA list -->
-        <echo msg="Populating IPA list..."/>
-        <exec command="docker-compose exec workspace php artisan app:update-ipa" dir="containers" passthru="true" checkreturn="true"/>
+        <exec command="docker-compose exec -u www-data php-fpm php artisan view:clear" dir="containers" passthru="true" checkreturn="true"/>
+        <exec command="docker-compose exec -u www-data php-fpm php artisan route:clear" dir="containers" passthru="true" checkreturn="true"/>
+        <exec command="docker-compose exec -u www-data php-fpm php artisan config:clear" dir="containers" passthru="true" checkreturn="true"/>
+        <exec command="docker-compose exec -u www-data php-fpm php artisan cache:clear" dir="containers" passthru="true" checkreturn="true"/>
+        <exec command="docker-compose exec -u www-data php-fpm php artisan clear-compiled" dir="containers" passthru="true" checkreturn="true"/>
+        <!-- Populate Website list -->
+        <echo msg="Populating Websites list..."/>
+        <exec command="docker-compose exec -u www-data php-fpm php artisan app:update-websites" dir="containers" passthru="true" checkreturn="true"/>
+        <!-- Populate User list -->
+        <echo msg="Populating Users list..."/>
+        <exec command="docker-compose exec -u www-data php-fpm php artisan app:update-users" dir="containers" passthru="true" checkreturn="true"/>
         <echo msg="Deleting sessions..."/>
         <delete>
             <fileset dir="storage/framework/sessions">
                 <include name="*"/>
             </fileset>
         </delete>
-        <echo msg="Analytics Italia up and running!"/>
+        <echo msg="Web Analytics Italia up and running!"/>
     </target>
 
-    <!-- Target: build -->
+    <!-- Target: test -->
     <target name="test">
         <echo msg="Testing..."/>
         <!-- Check if we are in the right environment -->
@@ -234,17 +444,42 @@
                 <fail message="Testing not allowed in environments other than local or testing"/>
             </then>
         </if>
-        <!-- Set permissions -->
-        <echo msg="Setting permissions..."/>
-        <exec command="docker-compose exec workspace bash -c 'rm -f /var/www/database/testing.sqlite; touch /var/www/database/testing.sqlite'" dir="containers"/>
-        <exec command="docker-compose exec php-fpm chown -R www-data:1000 storage" dir="containers" passthru="true" checkreturn="true"/>
-        <exec command="docker-compose exec php-fpm chown -R www-data:1000 database" dir="containers" passthru="true" checkreturn="true"/>
+        <!-- Set testing database files and permissions -->
+        <echo msg="Setting testing files and permissions..."/>
+        <exec command="docker-compose exec -u www-data php-fpm bash -c 'rm -f database/testing.sqlite; touch database/testing.sqlite'" dir="containers"/>
+        <exec command="docker-compose exec php-fpm chown -R www-data:www-data tests" dir="containers" checkreturn="true"/>
         <!-- Execute phpunit to run unit tests -->
         <echo msg="Running unit tests [PHPUnit]..."/>
-        <exec command="docker-compose exec workspace bin/phpunit --coverage-html coverage" dir="containers" passthru="true" checkreturn="true"/>
+        <exec command="docker-compose exec -u www-data php-fpm vendor/phpunit/phpunit/phpunit" dir="containers" passthru="true" checkreturn="true"/>
+        <!-- Install lighthouse -->
+        <exec command="docker-compose exec -u www-data php-fpm lhci --version" dir="containers" returnProperty="checkLighthouse"/>
+        <if>
+            <not><equals arg1="${checkLighthouse}" arg2="0"/></not>
+            <then>
+                <echo msg="Installing lighthouse..."/>
+                <exec command="docker-compose exec php-fpm bash -c 'node-build $(cat .node-version) /usr/local'" dir="containers" checkreturn="true"/>
+                <exec command="docker-compose exec php-fpm npm install -g @lhci/cli" dir="containers" checkreturn="true"/>
+            </then>
+        </if>
         <!-- Execute dusk to run browser tests -->
         <echo msg="Running browser tests [Laravel Dusk]..."/>
-        <exec command="docker-compose exec workspace php artisan dusk" dir="containers" passthru="true" checkreturn="true"/>
+        <delete quiet="true">
+            <fileset dir="tests/Browser/lighthouse">
+                <include name="report-*"/>
+            </fileset>
+        </delete>
+        <delete dir="tests/Browser/lighthouse/.lighthouseci" quiet="true"/>
+        <exec command="docker-compose exec -u www-data php-fpm php artisan dusk" dir="containers" passthru="true" checkreturn="true"/>
+        <!-- Restore the Users/Websites indexes after tests -->
+        <if>
+            <equals arg1="${env.APP_ENV}" arg2="local"/>
+            <then>
+                <echo msg="Restoring User list after tests..."/>
+                <exec command="docker-compose exec -u www-data php-fpm php artisan app:update-users" dir="containers" passthru="true" checkreturn="true"/>
+                <echo msg="Restoring Website list after tests..."/>
+                <exec command="docker-compose exec -u www-data php-fpm php artisan app:update-websites" dir="containers" passthru="true" checkreturn="true"/>
+            </then>
+        </if>
     </target>
 
     <!-- Target: stop -->
@@ -256,7 +491,7 @@
             <then>
                 <echo msg="Stopping Docker containers currently running..."/>
                 <exec command="docker-compose stop" dir="containers" passthru="true" checkreturn="true"/>
-                <echo msg="Analytics Italia stopped!"/>
+                <echo msg="Web Analytics Italia stopped!"/>
             </then>
         </if>
     </target>
@@ -269,19 +504,8 @@
             <available file="containers" type="dir" property="ignored"/>
             <then>
                 <echo msg="Starting Docker containers..."/>
-                <exec command="docker-compose up -d nginx mariadb redis mailhog workspace" dir="containers" passthru="true" checkreturn="true"/>
-                <echo msg="Analytics Italia up and running!"/>
-            </then>
-        </if>
-    </target>
-
-    <!-- Target: enter workspace -->
-    <target name="ws">
-        <if>
-            <available file="containers" type="dir" property="ignored"/>
-            <then>
-                <echo msg="Entering into the workspace..."/>
-                <exec command="docker-compose exec workspace bash" dir="containers" passthru="true"/>
+                <exec command="docker-compose up -d nginx mariadb redis ipa-redisearch mailhog php-fpm queue-worker elasticsearch spid-testenv" dir="containers" passthru="true" checkreturn="true"/>
+                <echo msg="Web Analytics Italia up and running!"/>
             </then>
         </if>
     </target>
@@ -295,6 +519,83 @@
                 <exec command="docker-compose up -d phpmyadmin" dir="containers" passthru="true"/>
             </then>
         </if>
+    </target>
+
+    <!-- Target: start Kibana -->
+    <target name="kibana">
+        <if>
+            <available file="containers" type="dir" property="ignored"/>
+            <then>
+                <echo msg="Running Kibana..."/>
+                <exec command="docker-compose up --build -d kibana" dir="containers" passthru="true"/>
+                <echo msg="Waiting for Kibana to start..." />
+                <exec command="docker-compose exec kibana bash /opt/check_index_pattern.sh" dir="containers" returnProperty="checkKibana"/>
+                <if>
+                    <not><equals arg1="${checkKibana}" arg2="0"/></not>
+                    <then>
+                        <echo msg="Initializing Index Pattern..."/>
+                        <retry retryDelay="5" retryCount="12">
+                            <exec command="docker-compose exec kibana bash /opt/kibana-init/initialize_index_pattern.sh" dir="containers" checkreturn="true"/>
+                        </retry>
+                        <exec command="docker-compose exec -u root kibana rm -Rf /opt/kibana-init" dir="containers" checkreturn="true"/>
+                    </then>
+                </if>
+            </then>
+        </if>
+    </target>
+
+    <!-- Target: start RedisSentinel -->
+    <target name="sentinel">
+        <if>
+            <available file="containers" type="dir" property="ignored"/>
+            <then>
+                <echo msg="Running RedisSentinel..."/>
+                <exec command="docker-compose up --build -d redis-sentinel" dir="containers" passthru="true"/>
+            </then>
+        </if>
+    </target>
+
+    <!-- Target: build portal image -->
+    <target name="build-portal-image">
+        <if>
+            <not><isset property="PORTAL_IMAGE_TAG"/></not>
+            <then>
+                <fail message="No image tag specified, run bin/phing build-portal-image -DPORTAL_IMAGE_TAG=tag"/>
+            </then>
+        </if>
+        <exec command="docker build --no-cache --rm -f Dockerfile.portal
+            --build-arg PHP_VERSION=${PHP_VERSION}
+            -t webanalyticsitalia/wai-portal:${PORTAL_IMAGE_TAG} ."
+            passthru="true" checkreturn="true"/>
+    </target>
+
+    <!-- Target: build matomo image -->
+    <target name="build-matomo-image">
+        <if>
+            <not><isset property="MATOMO_IMAGE_TAG"/></not>
+            <then>
+                <fail message="No image tag specified, run bin/phing build-matomo-image -DMATOMO_IMAGE_TAG=tag"/>
+            </then>
+        </if>
+        <exec command="docker build --no-cache --rm
+            --build-arg PHP_VERSION=${PHP_VERSION}
+            --build-arg MATOMO_VERSION=${MATOMO_VERSION}
+            --build-arg MATOMO_WAI_THEME_VERSION=${MATOMO_WAI_THEME_VERSION}
+            --build-arg MATOMO_PLUGIN_DISABLESITETRACKING_VERSION=${MATOMO_PLUGIN_DISABLESITETRACKING_VERSION}
+            --build-arg MATOMO_PLUGIN_QUEUEDTRACKING_VERSION=${MATOMO_PLUGIN_QUEUEDTRACKING_VERSION}
+            --build-arg MATOMO_PLUGIN_PROTECTTRACKID_VERSION=${MATOMO_PLUGIN_PROTECTTRACKID_VERSION}
+            --build-arg MATOMO_PLUGIN_CUSTOMDIMENSIONS_VERSION=${MATOMO_PLUGIN_CUSTOMDIMENSIONS_VERSION}
+            --build-arg MATOMO_PLUGIN_LOGINFILTERIP_VERSION=${MATOMO_PLUGIN_LOGINFILTERIP_VERSION}
+            --build-arg MATOMO_PLUGIN_TRACKERHOSTNAME_VERSION=${MATOMO_PLUGIN_TRACKERHOSTNAME_VERSION}
+            -t matomo-codebase:${MATOMO_IMAGE_TAG} ."
+            dir="containers/matomo" passthru="true" checkreturn="true"/>
+        <exec command="docker build --no-cache --rm -f Dockerfile.matomo
+            --build-arg PHP_VERSION=${PHP_VERSION}
+            --build-arg MATOMO_IMAGE_TAG=${MATOMO_IMAGE_TAG}
+            --build-arg MATOMO_PHPREDIS_VERSION=${MATOMO_PHPREDIS_VERSION}
+            -t webanalyticsitalia/wai-matomo:${MATOMO_IMAGE_TAG} ."
+            passthru="true" checkreturn="true"/>
+        <exec command="docker rmi matomo-codebase:${MATOMO_IMAGE_TAG}" passthru="true" checkreturn="true"/>
     </target>
 
 </project>

@@ -2,45 +2,56 @@
 
 namespace App\Listeners;
 
+use App\Events\User\UserLogin;
+use App\Events\User\UserLogout;
 use App\Models\User;
 use Italia\SPIDAuth\Events\LoginEvent;
 use Italia\SPIDAuth\Events\LogoutEvent;
 
+/**
+ * SPID related events subscriber.
+ */
 class SPIDEventSubscriber
 {
     /**
      * Handle SPID login events.
+     *
+     * @param LoginEvent $event
      */
-    public function onSPIDLogin(LoginEvent $event) {
+    public function onSPIDLogin(LoginEvent $event): void
+    {
+        auth()->logout();
         $SPIDUser = $event->getSPIDUser();
-        $user = User::findByFiscalNumber($SPIDUser->fiscalNumber);
-        if (isset($user) && $user->status != 'invited') {
+        $user = User::findNotSuperAdminByFiscalNumber($SPIDUser->fiscalNumber);
+        if (isset($user)) {
             auth()->login($user);
 
-            logger()->info('User '.$user->getInfo().' logged in.');
+            event(new UserLogin($user));
         }
     }
 
     /**
      * Handle SPID logout events.
+     *
+     * @param LogoutEvent $event
      */
-    public function onSPIDLogout(LogoutEvent $event) {
+    public function onSPIDLogout(LogoutEvent $event): void
+    {
         if (auth()->check()) {
             $user = auth()->user();
 
-            logger()->info('User '.$user->getInfo().' logged out.');
+            session()->invalidate();
 
-            auth()->logout();
-            session()->save();
+            event(new UserLogout($user));
         }
     }
 
     /**
      * Register the listeners for the subscriber.
      *
-     * @param  Illuminate\Events\Dispatcher $events
+     * @param \Illuminate\Events\Dispatcher $events
      */
-    public function subscribe($events)
+    public function subscribe($events): void
     {
         $events->listen(
             'Italia\SPIDAuth\Events\LoginEvent',
@@ -52,5 +63,4 @@ class SPIDEventSubscriber
             'App\Listeners\SPIDEventSubscriber@onSPIDLogout'
         );
     }
-
 }

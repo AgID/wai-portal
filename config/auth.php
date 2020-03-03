@@ -44,6 +44,7 @@ return [
         'api' => [
             'driver' => 'token',
             'provider' => 'users',
+            'hash' => false,
         ],
     ],
 
@@ -61,19 +62,34 @@ return [
     | be assigned to any extra authentication guards you have defined.
     |
     | Supported: "database", "eloquent"
+    | Custom provider: "app"
     |
     */
 
     'providers' => [
         'users' => [
-            'driver' => 'eloquent',
+            'driver' => 'app',
             'model' => App\Models\User::class,
         ],
+    ],
 
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
+    /*
+    |--------------------------------------------------------------------------
+    | Email verification
+    |--------------------------------------------------------------------------
+    |
+    | The expire time is the number of days that the verification link should
+    | be considered valid. This security feature keeps tokens life limited so
+    | they have less time to be guessed.
+    | The purge time is the number of days after which unverified users will
+    | be purged.
+    | You may change this as needed.
+    |
+    */
+
+    'verification' => [
+        'expire' => 7,
+        'purge' => 30,
     ],
 
     /*
@@ -94,9 +110,21 @@ return [
     'passwords' => [
         'users' => [
             'provider' => 'users',
-            'table' => 'password_resets',
+            'table' => 'password_reset_tokens',
             'expire' => 60,
         ],
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Passwords expiration
+    |--------------------------------------------------------------------------
+    |
+    | Passwords will expiry and forced to be reset after the number of days
+    | specified with this parameter.
+    |
+    */
+
+    'password_expiry' => env('APP_PASSWORD_EXPIRY', 30),
 
 ];

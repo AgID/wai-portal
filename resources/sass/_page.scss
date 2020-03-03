@@ -1,0 +1,146 @@
+.page-bulk-container {
+  @extend .container;
+
+  position: relative;
+  z-index: 3;
+  background: $white;
+  padding: 1em 2em;
+  margin: calc(#{$header-center-max-height-mob} / 2 * -1) auto calc(#{$header-center-max-height-mob} / 2);
+
+  @include media-breakpoint-down(sm) {
+    max-width: none;
+  }
+
+  @include media-breakpoint-up(md) {
+    border-radius: 1em;
+    box-shadow: $default-shadow;
+    padding: 2em 3em;
+  }
+
+  @include media-breakpoint-up(lg) {
+    margin: calc(#{$header-center-max-height} / 2 * -1) auto calc(#{$header-center-max-height} / 2);
+    padding: 3em 4em;
+  }
+
+  @include media-breakpoint-up(xl) {
+    max-width: 960px;
+    padding: 4em 5em;
+  }
+}
+
+.graphic-container {
+  .home-content & {
+    width: 15em;
+  }
+
+  &.h-flip {
+    transform: scaleX(-1);
+  }
+
+  &.v-flip {
+    transform: scaleY(-1);
+  }
+
+  svg {
+    height: 100%;
+    width: 100%;
+  }
+}
+
+.page-background-graphic {
+  position: relative;
+  z-index: 0;
+  background-color: $lightgrey-a1;
+  overflow: hidden;
+
+  .h-bars {
+    position: absolute;
+    top: 48px;
+    left: 0;
+
+    .graphic-container {
+      @include graphic-widths();
+    }
+  }
+
+  .target {
+    position: absolute;
+    top: 96px;
+    right: 0;
+
+    .graphic-container {
+      @include graphic-widths();
+    }
+  }
+
+  .v-bars {
+    position: absolute;
+    top: 96px;
+    right: 140px;
+
+    @include v-bars-right-position();
+
+    .graphic-container {
+      @include graphic-widths();
+    }
+  }
+}
+
+#main {
+  .container {
+    position: relative;
+    z-index: 2;
+  }
+}
+
+.page-background-image {
+  position: absolute;
+  z-index: -1;
+  overflow: hidden;
+  width: 100%;
+  bottom: calc(#{$header-center-max-height-mob} / 2 * -1) !important;
+
+  .page-background-graphic & {
+    bottom: 0 !important;
+  }
+
+  @include media-breakpoint-up(lg) {
+    bottom: calc(#{$header-center-max-height} / 2 * -1) !important;
+  }
+
+  img {
+    width: 100%;
+  }
+}
+
+.absolute-bottom-right {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+
+.absolute-top {
+  position: absolute;
+  top: 0;
+}
+
+.absolute-top-left {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.absolute-top-right {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.absolute-bottom {
+  position: absolute;
+  bottom: 0;
+}
+
+.back-to-top {
+  z-index: 10;
+}

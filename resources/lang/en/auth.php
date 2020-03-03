@@ -14,6 +14,7 @@ return [
     */
 
     'failed' => 'These credentials do not match our records.',
+    'spid_failed' => 'SPID authentication failed.',
     'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
 
 ];

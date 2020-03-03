@@ -1,4 +1,3 @@
-<a href="#" title="{{ __('ui.scrolltop_label') }}" class="ScrollTop js-scrollTop js-scrollTo">
-  <i class="ScrollTop-icon Icon-collapse" aria-hidden="true"></i>
-  <span class="u-hiddenVisually">{{ __('ui.scrolltop_label') }}</span>
+<a href="#" aria-hidden="true" data-attribute="back-to-top" class="back-to-top shadow">
+    <svg class="icon icon-light"><use xlink:href="{{ asset('svg/sprite.svg#it-arrow-up') }}"></use></svg>
 </a>

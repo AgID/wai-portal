@@ -2,55 +2,80 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Models\User;
-use App\Jobs\SendVerificationEmail;
+use App\Enums\UserRole;
+use App\Enums\UserStatus;
+use App\Events\User\UserLogin;
 use App\Http\Controllers\Controller;
+use App\Models\User;
+use App\Traits\GetsLocalizedYamlContent;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Italia\SPIDAuth\SPIDUser;
+use Illuminate\Support\Facades\Date;
+use Illuminate\View\View;
+use Ramsey\Uuid\Uuid;
 
+/**
+ * User registration controller.
+ */
 class RegisterController extends Controller
 {
+    use GetsLocalizedYamlContent;
+
     /**
      * Show the registration form.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View the view
      */
-    public function index()
+    public function showRegistrationForm(): View
     {
-        return view('auth.register');
+        $tos = $this->getLocalizedYamlContent('tos');
+
+        return view('auth.register')->with(compact('tos'));
     }
 
     /**
      * Perform registration and login.
      *
-     * @param  Request  $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request the incoming request
+     *
+     * @throws \Exception if unable to generate user UUID
+     *
+     * @return \Illuminate\Http\RedirectResponse the server redirect response
      */
-    public function register(Request $request)
+    public function register(Request $request): RedirectResponse
     {
-        $request->validate([
-            'email' => 'required|unique:users|email'
-        ]);
+        $input = $request->all();
+        $validatedData = validator($input, [
+            'email' => 'required|email:rfc,dns|max:75',
+            'accept_terms' => 'required',
+        ])->after(function ($validator) use ($input) {
+            if (array_key_exists('email', $input) && User::where('email', $input['email'])->whereDoesntHave('roles', function ($query) {
+                $query->where('name', UserRole::SUPER_ADMIN);
+            })->get()->isNotEmpty()) {
+                $validator->errors()->add('email', __('validation.unique', ['attribute' => __('validation.attributes.email')]));
+            }
+        })->validate();
+
         $SPIDUser = session()->get('spid_user');
-        $user =  User::create([
-            'spidCode' => $SPIDUser->spidCode,
+        $user = User::create([
+            'spid_code' => $SPIDUser->spidCode,
             'name' => $SPIDUser->name,
-            'familyName' => $SPIDUser->familyName,
-            'fiscalNumber' => $SPIDUser->fiscalNumber,
-            'email' => $request->email,
-            'status' => 'inactive'
+            'family_name' => $SPIDUser->familyName,
+            'fiscal_number' => $SPIDUser->fiscalNumber,
+            'uuid' => Uuid::uuid4()->toString(),
+            'email' => $validatedData['email'],
+            'status' => UserStatus::INACTIVE,
+            'last_access_at' => Date::now(),
         ]);
-        $user->verificationToken()->create([
-            'token' => bin2hex(random_bytes(32))
-        ]);
-        $user->assign('registered');
+
+        event(new Registered($user));
+
+        $user->assign(UserRole::REGISTERED);
         auth()->login($user);
 
-        logger()->info('New user registered: '.$user->getInfo()); //TODO: notify me!
+        event(new UserLogin($user));
 
-        dispatch(new SendVerificationEmail($user));
-
-        return redirect(route('home'))
-               ->withMessage(['info' => "Una email di verifica è stata inviata all'indirizzo ".$user->email]); //TODO: put message in lang file
+        return redirect()->route('verification.notice');
     }
 }

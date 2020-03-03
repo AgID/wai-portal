@@ -2,63 +2,164 @@
 
 namespace App\Jobs;
 
+use App\Enums\Logs\JobType;
+use App\Enums\PublicAdministrationStatus;
+use App\Enums\UserStatus;
+use App\Enums\WebsiteStatus;
+use App\Events\Jobs\PendingWebsitesCheckCompleted;
+use App\Events\PublicAdministration\PublicAdministrationPurged;
+use App\Events\Website\WebsiteActivated;
+use App\Events\Website\WebsitePurged;
+use App\Events\Website\WebsitePurging;
+use App\Exceptions\AnalyticsServiceException;
+use App\Exceptions\CommandErrorException;
 use App\Models\Website;
+use App\Traits\ActivatesWebsite;
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 
+/**
+ * Check pending websites state job.
+ */
 class ProcessPendingWebsites implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
+    use ActivatesWebsite;
 
+    /**
+     * Purge check flag.
+     *
+     * @var bool the flag
+     */
+    public $executePurgeCheck;
+
+    /**
+     * Job constructor.
+     *
+     * @param bool $executePurgeCheck true to execute purge check, false otherwise
+     */
+    public function __construct(bool $executePurgeCheck = false)
+    {
+        $this->executePurgeCheck = $executePurgeCheck;
+    }
 
     /**
      * Execute the job.
-     *
-     * @return void
      */
-    public function handle()
+    public function handle(): void
     {
-        $pendingWebsites = Website::where('status', 'pending')->get();
-        $pendingWebsites->map(function ($website) {
-            if ($website->getTotalVisits() > 0) {
+        logger()->info(
+            'Processing pending websites',
+            [
+                'job' => JobType::PROCESS_PENDING_WEBSITES,
+            ]
+        );
+
+        $pendingWebsites = Website::where('status', WebsiteStatus::PENDING)->get();
+
+        $websites = $pendingWebsites->mapToGroups(function ($website) {
+            try {
                 $analyticsService = app()->make('analytics-service');
+                if ($this->hasActivated($website)) {
+                    $this->activate($website);
 
-                logger()->info('New website activated ['.$website->url.']'); //TODO: notify me!
+                    event(new WebsiteActivated($website));
 
-                $website->status = 'active';
-                $website->save();
+                    return [
+                        'activated' => [
+                            'website' => $website->slug,
+                        ],
+                    ];
+                }
 
-                if ($website->publicAdministration->status == 'pending') {
-                    $website->publicAdministration->status = 'active';
-                    $website->publicAdministration->save();
+                // NOTE: job is dispatched hourly but purge check must be executed
+                //       only once a day to avoid 'purging' notification spam
+                if ($this->executePurgeCheck) {
+                    if ((int) config('wai.purge_warning') === $website->created_at->diffInDays(Carbon::now())) {
+                        event(new WebsitePurging($website));
 
-                    logger()->info('New public administration activated ['.$website->publicAdministration->name.']'); //TODO: notify me!
+                        return [
+                            'purging' => [
+                                'website' => $website->slug,
+                            ],
+                        ];
+                    }
 
-                    $pendingUser = $website->publicAdministration->users()->where('status', 'pending')->first();
+                    if ($website->created_at->diffInDays(Carbon::now()) > (int) config('wai.purge_expiry')) {
+                        $publicAdministration = $website->publicAdministration;
 
-                    if ($pendingUser) {
-                        $pendingUser->analytics_password = str_random(20);
-                        $pendingUser->status = 'active';
-                        $pendingUser->save();
-                        $pendingUser->roles()->detach();
-                        $pendingUser->assign('admin');
-                        $analyticsService->registerUser($pendingUser->email, $pendingUser->analytics_password, $pendingUser->email);
+                        if ($publicAdministration->status->is(PublicAdministrationStatus::PENDING)) {
+                            $pendingUser = $publicAdministration->users()->where('status', UserStatus::PENDING)->first();
+                            if (null !== $pendingUser) {
+                                $pendingUser->publicAdministrations()->detach($publicAdministration->id);
+                                $pendingUser->deleteAnalyticsServiceAccount();
+                                $publicAdministration->forceDelete();
+                            }
+                            event(new PublicAdministrationPurged($publicAdministration->toJson(), $pendingUser));
+                        } else {
+                            $website->forceDelete();
+                        }
 
-                        logger()->info('User '.$pendingUser->getInfo().' was activated and registered in the Analytics Service.'); //TODO: notify me!
+                        $analyticsService->deleteSite($website->analytics_id);
+
+                        event(new WebsitePurged($website->toJson(), $publicAdministration->toJson()));
+
+                        return [
+                            'purged' => [
+                                'website' => $website->slug,
+                            ],
+                        ];
                     }
                 }
+            } catch (BindingResolutionException $exception) {
+                report($exception);
 
-                foreach ($website->publicAdministration->users as $user) {
-                    $access = $user->can('manage-analytics') ? 'admin' : 'view';
-                    $analyticsService->setWebsitesAccess($user->email, $access, $website->analytics_id);
+                return [
+                    'failed' => [
+                        'website' => $website->slug,
+                        'reason' => 'Unable to bind to Analytics Service',
+                    ],
+                ];
+            } catch (AnalyticsServiceException $exception) {
+                report($exception);
 
-                    logger()->info('User '.$user->getInfo().' was granted with "'.$access.'" access in the Analytics Service.'); //TODO: notify me!
-                }
+                return [
+                    'failed' => [
+                        'website' => $website->slug,
+                        'reason' => 'Unable to contact the Analytics Service',
+                    ],
+                ];
+            } catch (CommandErrorException $exception) {
+                report($exception);
+
+                return [
+                    'failed' => [
+                        'website' => $website->slug,
+                        'reason' => 'Invalid command for Analytics Service',
+                    ],
+                ];
             }
+
+            return [
+                'ignored' => [
+                    'website' => $website->slug,
+                ],
+            ];
         });
 
+        event(new PendingWebsitesCheckCompleted(
+            empty($websites->get('activated')) ? [] : $websites->get('activated')->all(),
+            empty($websites->get('purging')) ? [] : $websites->get('purging')->all(),
+            empty($websites->get('purged')) ? [] : $websites->get('purged')->all(),
+            empty($websites->get('failed')) ? [] : $websites->get('failed')->all()
+        ));
     }
 }

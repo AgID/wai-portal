@@ -2,43 +2,38 @@
 
 namespace App\Console;
 
-use App\Jobs\ProcessIPAList;
+use App\Jobs\MonitorWebsitesTracking;
 use App\Jobs\ProcessPendingWebsites;
-
+use App\Jobs\ProcessPublicAdministrationsUpdateFromIpa;
+use App\Jobs\PurgePendingInvitations;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
+/**
+ * Application command scheduler.
+ */
 class Kernel extends ConsoleKernel
 {
     /**
-     * The Artisan commands provided by your application.
-     *
-     * @var array
-     */
-    protected $commands = [
-        //
-    ];
-
-    /**
      * Define the application's command schedule.
      *
-     * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
-     * @return void
+     * @param Schedule $schedule the command scheduler
      */
-    protected function schedule(Schedule $schedule)
+    protected function schedule(Schedule $schedule): void
     {
-        $schedule->job(new ProcessIPAList)->dailyAt('04:00');
-        $schedule->job(new ProcessPendingWebsites())->hourly();
+        $schedule->job(new ProcessPublicAdministrationsUpdateFromIpa())->dailyAt('06:30')->onOneServer();
+        $schedule->job(new ProcessPendingWebsites())->hourly()->onOneServer();
+        $schedule->job(new ProcessPendingWebsites(true))->dailyAt('04:30')->onOneServer();
+        $schedule->job(new MonitorWebsitesTracking())->daily()->onOneServer();
+        $schedule->job(new PurgePendingInvitations())->dailyAt('03:30')->onOneServer();
     }
 
     /**
      * Register the commands for the application.
-     *
-     * @return void
      */
-    protected function commands()
+    protected function commands(): void
     {
-        $this->load(__DIR__.'/Commands');
+        $this->load(__DIR__ . '/Commands');
 
         require base_path('routes/console.php');
     }

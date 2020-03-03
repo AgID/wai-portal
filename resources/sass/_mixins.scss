@@ -1,0 +1,17 @@
+@mixin v-bars-right-position($max-widths: $container-max-widths, $breakpoints: $grid-breakpoints) {
+  @each $breakpoint, $container-max-width in $max-widths {
+    @include media-breakpoint-up($breakpoint, $breakpoints) {
+      right: calc((100% - #{$container-max-width}) / 2 + #{$container-max-width} / 5);
+    }
+  }
+}
+
+@mixin graphic-widths($max-widths: $container-max-widths, $breakpoints: $grid-breakpoints) {
+  width: 100px;
+
+  @each $breakpoint, $container-max-width in $max-widths {
+    @include media-breakpoint-up($breakpoint, $breakpoints) {
+      width: calc(#{$container-max-width} / 5);
+    }
+  }
+}

@@ -1,0 +1,152 @@
+{
+    "davide": {
+        "sp": null,
+        "attrs": {
+            "gender": "M",
+            "dateOfBirth": "1975-01-01",
+            "familyName": "Test",
+            "companyName": "Agenzia per l'Italia Digitale",
+            "spidCode": "00b6d30a-db63-22f5-3208-193d5a955ed5",
+            "registeredOffice": "Via Liszt 21 - 00144 Roma",
+            "name": "Davide",
+            "fiscalNumber": "TINIT-FSCLNB17A01H501X",
+            "email": "davide@example.com"
+        },
+        "pwd": "davide"
+    },
+    "daniela": {
+        "sp": null,
+        "attrs": {
+            "gender": "F",
+            "dateOfBirth": "1975-01-01",
+            "familyName": "Test",
+            "companyName": "Agenzia per l'Italia Digitale",
+            "spidCode": "cb407528-e5c2-566a-1ab2-90110247119a",
+            "registeredOffice": "Via Liszt 21 - 00144 Roma",
+            "name": "Daniela",
+            "fiscalNumber": "TINIT-ZZIDNL80A41H501P",
+            "email": "daniela@example.com"
+        },
+        "pwd": "daniela"
+    },
+    "luca": {
+        "sp": null,
+        "attrs": {
+            "gender": "M",
+            "dateOfBirth": "1975-01-01",
+            "familyName": "Test",
+            "companyName": "Agenzia per l'Italia Digitale",
+            "spidCode": "cb407528-e5c2-566a-1ab2-9011fff7119b",
+            "registeredOffice": "Via Liszt 21 - 00144 Roma",
+            "name": "Luca",
+            "fiscalNumber": "TINIT-LCURGR80A01H501H",
+            "email": "luca@example.com"
+        },
+        "pwd": "luca"
+    },
+    "claudio": {
+        "sp": null,
+        "attrs": {
+            "gender": "M",
+            "dateOfBirth": "1975-01-01",
+            "familyName": "Test",
+            "companyName": "Agenzia per l'Italia Digitale",
+            "spidCode": "cb407528-e5c2-566a-1ab2-9011aaa71190",
+            "registeredOffice": "Via Liszt 21 - 00144 Roma",
+            "name": "Claudio",
+            "fiscalNumber": "TINIT-CLGCLD80A01H501C",
+            "email": "claudio@example.com"
+        },
+        "pwd": "claudio"
+    },
+    "patrizia": {
+        "sp": null,
+        "attrs": {
+            "gender": "F",
+            "dateOfBirth": "1975-01-01",
+            "familyName": "Test",
+            "companyName": "Agenzia per l'Italia Digitale",
+            "spidCode": "cb407528-e5c2-566a-1ab2-90110247119c",
+            "registeredOffice": "Via Liszt 21 - 00144 Roma",
+            "name": "Patrizia",
+            "fiscalNumber": "TINIT-SCHPRZ75A41H501W",
+            "email": "patrizia@example.com"
+        },
+        "pwd": "patrizia"
+    },
+    "laura": {
+        "sp": null,
+        "attrs": {
+            "gender": "F",
+            "dateOfBirth": "1975-01-01",
+            "familyName": "Test",
+            "companyName": "Agenzia per l'Italia Digitale",
+            "spidCode": "cb407528-e5c2-566a-1ab2-90110247119d",
+            "registeredOffice": "Via Liszt 21 - 00144 Roma",
+            "name": "Laura",
+            "fiscalNumber": "TINIT-GLALRA75A41H501P",
+            "email": "laura@example.com"
+        },
+        "pwd": "laura"
+    },
+    "giuseppe": {
+        "sp": null,
+        "attrs": {
+            "gender": "M",
+            "dateOfBirth": "1975-01-01",
+            "familyName": "Test",
+            "companyName": "Agenzia per l'Italia Digitale",
+            "spidCode": "cb407528-e5c2-566a-1ab2-90110247119e",
+            "registeredOffice": "Via Liszt 21 - 00144 Roma",
+            "name": "Giuseppe",
+            "fiscalNumber": "TINIT-GSPMCN75A01H501F",
+            "email": "giuseppe@example.com"
+        },
+        "pwd": "giuseppe"
+    },
+    "maura": {
+        "sp": null,
+        "attrs": {
+            "gender": "F",
+            "dateOfBirth": "1975-01-01",
+            "familyName": "Test",
+            "companyName": "Agenzia per l'Italia Digitale",
+            "spidCode": "cb407528-e5c2-566a-1ab2-90110247119f",
+            "registeredOffice": "Via Liszt 21 - 00144 Roma",
+            "name": "Maura",
+            "fiscalNumber": "TINIT-MRAMTR75A41H501W",
+            "email": "maura@example.com"
+        },
+        "pwd": "maura"
+    },
+    "luisa": {
+        "sp": null,
+        "attrs": {
+            "gender": "F",
+            "dateOfBirth": "1975-01-01",
+            "familyName": "Test",
+            "companyName": "Agenzia per l'Italia Digitale",
+            "spidCode": "cb407528-e5c2-566a-1ab2-90110247119g",
+            "registeredOffice": "Via Liszt 21 - 00144 Roma",
+            "name": "Luisa",
+            "fiscalNumber": "TINIT-LSUPSC75A41H501K",
+            "email": "luisa@example.com"
+        },
+        "pwd": "luisa"
+    },
+    "paola": {
+        "sp": null,
+        "attrs": {
+            "gender": "F",
+            "dateOfBirth": "1975-01-01",
+            "familyName": "Test",
+            "companyName": "Agenzia per l'Italia Digitale",
+            "spidCode": "cb407528-e5c2-566a-1ab2-90110247119h",
+            "registeredOffice": "Via Liszt 21 - 00144 Roma",
+            "name": "Paola",
+            "fiscalNumber": "TINIT-PLARSL75A41H501Y",
+            "email": "paola@example.com"
+        },
+        "pwd": "paola"
+    }
+}
