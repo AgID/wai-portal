@@ -1,5 +1,11 @@
 <h3>{{ __('Aggiungi il sito istituzionale') }}</h3>
+@if (config('wai.custom_public_administrations', false))
+<p>{{ __('Per iniziare scegli la tua pubblica amministrazione e verifica che i dati siano corretti') }}</p>
+<p><strong>{{ __('oppure') }}</strong></p>
+<p><a href="{{ route('websites.create.primary.custom') }}">{{ __('Crea la tua pubblica amministrazione') }}</a></p>
+@else
 <p>{{ __('Per iniziare scegli la tua pubblica amministrazione e verifica che i dati siano corretti.') }}</p>
+@endif
 <form method="post" action="{{ route('websites.store.primary') }}" class="needs-validation" novalidate>
     @csrf
     <div class="row mt-5 justify-content-between">

@@ -14,7 +14,7 @@ trait GetsLocalizedYamlContent
      *
      * @param string $yaml the name of the yaml file to use
      *
-     * @return string the localized content
+     * @return mixed the localized content
      */
     public function getLocalizedYamlContent(string $yaml)
     {

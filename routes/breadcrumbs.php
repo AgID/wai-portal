@@ -228,3 +228,9 @@ Breadcrumbs::for('admin.publicAdministration.users.edit', function ($trail, $pub
     $trail->parent('admin.publicAdministration.users.index', $publicAdministrationIpaCode);
     $trail->push(implode(' ', [$user->full_name ?? '', __('(modifica)')]), route('admin.publicAdministration.users.edit', ['publicAdministration' => $publicAdministrationIpaCode, 'user' => $user]));
 });
+
+// Web Analytics Italia > Websites (Custom Public Administration)
+Breadcrumbs::for('websites.create.primary.custom', function ($trail) {
+    $trail->parent('websites.index');
+    $trail->push(__('Registra Pubblica Amministrazione'), route('websites.create.primary.custom'));
+});
