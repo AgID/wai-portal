@@ -457,7 +457,7 @@
             <not><equals arg1="${checkLighthouse}" arg2="0"/></not>
             <then>
                 <echo msg="Installing lighthouse..."/>
-                <exec command="docker-compose exec php-fpm bash -c 'node-build $(cat .node-version) /usr/local'" dir="containers" checkreturn="true"/>
+                <exec command="docker-compose exec php-fpm bash -c 'node-build $(cat .node-version) /usr/local/node'" dir="containers" checkreturn="true"/>
                 <exec command="docker-compose exec php-fpm npm install -g @lhci/cli" dir="containers" checkreturn="true"/>
             </then>
         </if>
