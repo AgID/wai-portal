@@ -160,7 +160,9 @@
             <div class="col">
                 <p class="mt-5 mb-0 text-serif">
                     {{ __("Vuoi saperne di più su ruoli e permessi?") }}
-                    <a href="{{ route('faq') }}">{{ __('Consulta le FAQ') }}</a>
+                    <a class="external-link" rel="noopener noreferrer" href="{{ config('site.kb.link') }}utenti/inserimento.html">
+                        {{ __('Leggi la guida') }}
+                    </a>
                 </p>
             </div>
             @endforeach

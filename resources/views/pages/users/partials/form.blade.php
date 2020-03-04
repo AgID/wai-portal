@@ -88,10 +88,14 @@
         </div>
     </div>
     <h6>{{ __('Puoi assegnare permessi diversificati per ciascun sito') }}</h6>
-    <p><small>
-        {{ UserPermission::getLongDescription(UserPermission::READ_ANALYTICS) }}<br>
-        {{ UserPermission::getLongDescription(UserPermission::MANAGE_ANALYTICS) }}
-    </small></p>
+    <p>
+        <small>
+            {{ UserPermission::getLongDescription(UserPermission::READ_ANALYTICS) }}<br>
+            {{ UserPermission::getLongDescription(UserPermission::MANAGE_ANALYTICS) }}<br>
+            {{ __("Vuoi saperne di più su ruoli e permessi?") }}
+            <a class="external-link" rel="noopener noreferrer" href="{{ config('site.kb.link') }}utenti/inserimento.html">{{ __('Leggi la guida') }}</a>
+        </small>
+    </p>
     <div class="form-row">
         @include('partials.datatable')
     </div>
