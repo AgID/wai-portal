@@ -68,7 +68,7 @@ commands:
           command: |
             git clone https://github.com/nodenv/node-build.git ../node-build
             sudo ../node-build/install.sh
-            sudo node-build $(cat .node-version) /usr/local
+            sudo node-build $(cat .node-version) ~/.local
             npm install
 
   save_all_caches:

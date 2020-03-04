@@ -24,6 +24,7 @@ RUN if [ ${INSTALL_XDEBUG} = true ]; then \
 COPY ./xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
 
 # dusk deps
+ENV PATH "/usr/local/node/bin:$PATH"
 ARG ENV=local
 ARG CHROME_BROWSER_CHANNEL=stable
 RUN if [ "env-${ENV}" = "env-local" ] || [ "env-${ENV}" = "env-testing" ]; then \
