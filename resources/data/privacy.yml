@@ -1,8 +1,7 @@
 it: |
-  La presente informativa è resa ai sensi degli artt. 13-14 del [Regolamento
-  (UE) 2016/679 del Parlamento europeo e del
-  Consiglio](https://eur-lex.europa.eu/legal-content/IT/TXT/HTML/?uri=CELEX:32016R0679).
-
+ ai sensi degli articoli 13 e 14 del [Regolamento (UE) 2016/679 del Parlamento europeo e del
+ Consiglio](https://eur-lex.europa.eu/legal-content/IT/TXT/HTML/?uri=CELEX:32016R0679).
+  
   Questa pagina descrive le modalità di trattamento dei dati personali degli
   utenti che consultano il presente sito web. Le informazioni rese non
   riguardano altri siti, pagine o servizi online raggiungibili tramite link
@@ -14,7 +13,7 @@ it: |
   Indirizzo: Via Liszt, 21 - 00144 Roma<br/>
   Indirizzo PEC: protocollo@pec.agid.gov.it
 
-  ### Contatti del responsabile della protezione dei dati
+  ### Contatti del responsabile della protezione dei dati (RPD)
 
   Indirizzo: Via Liszt, 21 - 00144 Roma, presso AGID<br/>
   Indirizzo e-mail: responsabileprotezionedati@agid.gov.it
@@ -63,25 +62,23 @@ it: |
 
   L'accesso alla piattaforma con tecnologia SPID comporta l'acquisizione di
   tutti i dati esplicitamente autorizzati dall'utente durante la procedura di
-  autenticazione. I dati forniti sono trattati al solo scopo di supportare le
-  funzionalità di autenticazione e autorizzazione della piattaforma.
+  autenticazione: nome, cognome, codice fiscale, SPID code.
 
-  L'invio di messaggi agli indirizzi di contatto pubblicati sul sito e di
-  messaggi privati indirizzati ai profili istituzionali dell'Agenzia sui social
-  media comporta l'acquisizione di tutti i dati personali inclusi
-  volontariamente dal mittente nel testo della propria comunicazione, trattati
-  all'unico fine del riscontro richiesto.
-
-  Specifiche informative saranno pubblicate nelle pagine del sito eventualmente
-  predisposte per l'erogazione di determinati servizi.
-
-  #### Base giuridica del trattamento
+  Oltre a tali dati, la registrazione richiede anche l'indicazione di un indirizzo 
+  e-mail di contatto, inserito direttamente dall’utente.
+   
+  Tali dati, la cui mancata indicazione non consente la registrazione a WAI, sono trattati al solo scopo 
+  di supportare le funzionalità di autenticazione e autorizzazione dell'aderente.
+  
+  L'invio di messaggi agli indirizzi di contatto e ai profili istituzionali dell’Agenzia sui social media 
+  comporta l'acquisizione di tutti i dati personali inclusi volontariamente dal mittente nel testo della propria 
+  comunicazione, trattati all'unico fine del riscontro richiesto.
 
   La base giuridica del trattamento è individuata nell'esecuzione dei compiti di
   interesse pubblico o connessi all'esercizio dei pubblici poteri istituzionali
-  posti in capo ad AGID anche con specifico riferimento alle attività previste
-  dall'[articolo 7 del Codice dell'amministrazione
-  digitale](https://docs.italia.it/italia/piano-triennale-ict/codice-amministrazione-digitale-docs/it/v2018-09-28/_rst/capo1_sezione2_art7.html).
+  posti in capo ad AGID, con specifico riferimento alle attività previste
+  agli articoli 7 e 14-bis del D. Lgs. 82/2005 recante il [Codice dell’amministrazione
+  digitale](https://docs.italia.it/italia/piano-triennale-ict/codice-amministrazione-digitale-docs/it/).
 
   ### Categorie di destinatari dei dati personali
 
@@ -94,20 +91,21 @@ it: |
 
   ### Periodo di conservazione dei dati personali
 
-  I dati di navigazione (incluso l'indirizzo IP) non vengono conservati per
+  I dati di navigazione non vengono conservati per
   oltre 30 giorni dal momento della raccolta, fatte salve eventuali necessità di
   accertamento di reati da parte dell'Autorità giudiziaria.
 
-  I dati personali forniti dagli utenti sono conservati per garantire il
-  funzionamento delle utenze della piattaforma fino ad eventuale cancellazione
-  dell'utenza, su richiesta dell'interessato.
+  I dati personali forniti dagli utenti sono conservati per i 30 giorni successivi all'avvenuta
+  cancellazione dell'utenza. 
 
   ### Diritti degli utenti
 
   Gli interessati hanno il diritto di ottenere da AGID l'accesso ai propri dati
   personali, la rettifica o la cancellazione degli stessi, la limitazione del
   relativo trattamento, il diritto di opporvisi e il diritto alla portabilità
-  dei dati, laddove ne ricorrano i presupposti.
+  dei dati, laddove ne ricorrano i presupposti. Le richieste vanno rivolte ad AGID, 
+  contattando il RPD all'indirizzo sopra indicato.
+
 
   Fatto salvo ogni altro ricorso amministrativo o giurisdizionale, è diritto
   degli interessati proporre reclamo al Garante per la protezione dei dati
@@ -117,6 +115,6 @@ it: |
   AGID garantisce che non è prevista alcuna forma di processo decisionale
   esclusivamente automatizzato che comporti effetti giuridici sull'interessato.
 
-  **Data ultimo aggiornamento: 25 febbraio 2020**
+  **Data ultimo aggiornamento: 03 marzo 2020**
 en: |
   Information Notice on Data Processing is available in Italian language only.

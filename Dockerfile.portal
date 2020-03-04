@@ -6,10 +6,11 @@ ENV DEBIAN_FRONTEND noninteractive
 
 COPY . /var/www/html
 
+ENV PATH "/usr/local/node/bin:$PATH"
 RUN apt-get update && apt-get install -y git unzip && \
     git clone https://github.com/nodenv/node-build.git && \
     ./node-build/install.sh && \
-    node-build $(cat /var/www/html/.node-version) /usr/local && \
+    node-build $(cat /var/www/html/.node-version) /usr/local/node && \
     rm /var/www/html/.node-version
 
 WORKDIR /var/www/html

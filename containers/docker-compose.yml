@@ -151,7 +151,7 @@ services:
 
 # ipa-redisearch
   ipa-redisearch:
-    image: webanalyticsitalia/wai-ipa-redisearch:stable
+    image: webanalyticsitalia/wai-ipa-redisearch:5.0.7-stable
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
     networks:

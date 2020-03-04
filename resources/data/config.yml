@@ -13,11 +13,11 @@ it:
     highlight:
       production: |
         **Web Analytics Italia** è in una fase di beta chiusa.
-        [Cosa significa?](/faq#beta-chiusa).
+        [Cosa significa?](https://webanalytics.italia.it/faq#beta-chiusa).
       public-playground: |
         Questo è l'ambiente **public playground**. Ogni settimana il sistema
         viene automaticamente resettato. [Maggiori
-        informazioni](/faq#public-playground).
+        informazioni](https://webanalytics.italia.it/faq#public-playground).
       staging: |
         Questo è l'ambiente di **staging**. L'istanza potrebbe essere resettata
         senza preavviso.

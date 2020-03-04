@@ -7,7 +7,7 @@
     <div class="row">
         <div class="col-md-6 pr-5">
             <p class="lead font-weight-bold text-secondary text-serif">
-                {{ __('Questo set di dati mostra la maniera in cui i cittadini interagiscono online con i siti web della tua pubblica amministrazione che hai inserito sulla piattaforma.') }}
+                {{ __('Questo set di dati mostra la maniera in cui i cittadini interagiscono online con i siti web della tua pubblica amministrazione.') }}
             </p>
         </div>
         <div class="col-md-6">
