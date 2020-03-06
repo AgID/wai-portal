@@ -6,7 +6,7 @@ export default (() => {
     const onFrameLoaded = iframe => {
         document.getElementById('spinner-' + iframe.id).remove()
         iframe.classList.remove('invisible');
-        iframeResizer({ heightCalculationMethod: 'lowestElement' }, iframe);
+        iframeResizer({ heightCalculationMethod: 'grow' }, iframe);
     }
 
     const init = () => {

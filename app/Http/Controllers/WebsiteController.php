@@ -183,7 +183,7 @@ class WebsiteController extends Controller
             ? $publicAdministration
             : current_public_administration();
 
-        $analyticsId = app()->make('analytics-service')->registerSite($validatedData['website_name'] . ' [' . $validatedData['type'] . ']', $validatedData['url'], $currentPublicAdministration->name);
+        $analyticsId = app()->make('analytics-service')->registerSite($validatedData['website_name'], $validatedData['url'], $currentPublicAdministration->name);
 
         $website = Website::create([
             'name' => $validatedData['website_name'],
