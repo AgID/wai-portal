@@ -75,7 +75,7 @@ class StorePrimaryWebsiteRequest extends FormRequest
                         return $this->download();
                     });
 
-                    if (!$whitelist->contains($this->publicAdministration['ipa_code'])) {
+                    if (!$whitelist->contains(strtolower($this->publicAdministration['ipa_code']))) {
                         $validator->errors()->add('public_administration_name', __('PA non inclusa in fase di beta chiusa'));
                         $this->redirector->to($this->redirect)->withModal([
                             'title' => __('Accesso limitato'),
