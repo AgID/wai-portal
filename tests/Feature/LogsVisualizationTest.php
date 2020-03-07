@@ -12,7 +12,9 @@ use App\Models\User;
 use App\Models\Website;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Str;
 use Monolog\Logger;
 use Silber\Bouncer\BouncerFacade as Bouncer;
 use Tests\TestCase;
@@ -91,7 +93,13 @@ class LogsVisualizationTest extends TestCase
         $this->secondPublicAdministration = factory(PublicAdministration::class)->create();
 
         $client = new Client(['base_uri' => 'http://' . config('elastic-search.host') . ':' . config('elastic-search.port')]);
-        $client->request('PUT', config('elastic-search.index_name'), []);
+        try {
+            $client->request('PUT', config('elastic-search.index_name'), []);
+        } catch (ClientException $e) {
+            if (!Str::contains($e->getMessage(), 'resource_already_exists_exception')) {
+                throw $e;
+            }
+        }
     }
 
     /**
