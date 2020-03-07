@@ -6,6 +6,10 @@ sei stato invitato/a per la tua pubblica amministrazione
 Per completare la tua iscrizione devi effettuare l'accesso con SPID
 e confermare il tuo indirizzo email.
 
+Cliccando sul bottone (o visitando il link riportato sotto) **dichiari di
+aver letto e accettato i [termini del servizio]({{ route('legal-notes') }}#tos)**
+di {{ config('app.name') }}.
+
 @component('mail::button', ['link' => $signedUrl])
     Accedi e conferma email
 @endcomponent

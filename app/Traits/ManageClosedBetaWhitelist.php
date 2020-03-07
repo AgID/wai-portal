@@ -30,6 +30,8 @@ trait ManageClosedBetaWhitelist
 
         $content = $response->getBody()->getContents();
 
-        return collect(Yaml::parse($content));
+        return collect(Yaml::parse($content))->map(function ($ipacode) {
+            return strtolower($ipacode);
+        });
     }
 }
