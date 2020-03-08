@@ -123,6 +123,7 @@
                     <token key="MATOMO_PLUGIN_PROTECTTRACKID_VERSION" value="${MATOMO_PLUGIN_PROTECTTRACKID_VERSION}" />
                     <token key="MATOMO_PLUGIN_CUSTOMDIMENSIONS_VERSION" value="${MATOMO_PLUGIN_CUSTOMDIMENSIONS_VERSION}" />
                     <token key="MATOMO_PLUGIN_LOGINFILTERIP_VERSION" value="${MATOMO_PLUGIN_LOGINFILTERIP_VERSION}" />
+                    <token key="MATOMO_PLUGIN_VISITORGENERATOR_VERSION" value="${MATOMO_PLUGIN_VISITORGENERATOR_VERSION}" />
                     <token key="MATOMO_PLUGIN_TRACKERHOSTNAME_VERSION" value="${MATOMO_PLUGIN_TRACKERHOSTNAME_VERSION}" />
                     <token key="MATOMO_INGESTION_HOSTNAME" value="${MATOMO_INGESTION_HOSTNAME}" />
                 </replacetokens>
@@ -551,6 +552,35 @@
             <then>
                 <echo msg="Running RedisSentinel..."/>
                 <exec command="docker-compose up --build -d redis-sentinel" dir="containers" passthru="true"/>
+            </then>
+        </if>
+    </target>
+
+    <!-- Target: Visitor Generator -->
+    <target name="visitorgen">
+        <if>
+            <or>
+                <not><isset property="ID_SITE"/></not>
+                <not><isset property="DAYS"/></not>
+            </or>
+            <then>
+                <fail message="No idsite or days specified, run bin/phing visitorgen -DID_SITE=idsite -DDAYS=days"/>
+            </then>
+        </if>
+        <if>
+            <available file="containers" type="dir" property="ignored"/>
+            <then>
+                <echo msg="Copying CA certificate into php-fpm container..."/>
+                <exec command="docker cp nginx/certs/ca/local-root-ca.crt `docker-compose ps -q php-fpm`:/usr/local/share/ca-certificates/" dir="containers" passthru="true"/>
+                <echo msg="Trusting CA certificate..."/>
+                <exec command="docker-compose exec php-fpm /usr/sbin/update-ca-certificates" dir="containers" passthru="true"/>
+                <echo msg="Enabling develpment mode in matomo..."/>
+                <exec command="docker-compose exec -u www-data php-fpm /opt/matomo/console development:enable" dir="containers" passthru="true"/>
+                <echo msg="Generating visits..."/>
+                <echo msg="Be patient, this can take a very long time"/>
+                <exec command="docker-compose exec -u www-data php-fpm /opt/matomo/console visitorgenerator:generate-visits --idsite ${ID_SITE} --days ${DAYS} --custom-piwik-url=https://nginx:9443/ --no-interaction --no-fake --timeout=100000" dir="containers" passthru="true"/>
+                <echo msg="Disabling develpment mode in matomo..."/>
+                <exec command="docker-compose exec -u www-data php-fpm /opt/matomo/console development:disable" dir="containers" passthru="true"/>
             </then>
         </if>
     </target>

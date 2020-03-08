@@ -11,6 +11,7 @@ ARG MATOMO_PLUGIN_DISABLESITETRACKING_VERSION
 ARG MATOMO_PLUGIN_QUEUEDTRACKING_VERSION
 ARG MATOMO_PLUGIN_PROTECTTRACKID_VERSION
 ARG MATOMO_PLUGIN_CUSTOMDIMENSIONS_VERSION
+ARG MATOMO_PLUGIN_VISITORGENERATOR_VERSION
 ARG MATOMO_PLUGIN_LOGINFILTERIP_VERSION
 ARG MATOMO_PLUGIN_TRACKERHOSTNAME_VERSION
 ARG MATOMO_INGESTION_HOSTNAME
@@ -73,6 +74,15 @@ RUN if [ -n "$MATOMO_PLUGIN_CUSTOMDIMENSIONS_VERSION" ]; then \
     && sed -i -E -e 's/(@MATOMO_PLUGINS@)/Plugins[] = "CustomDimensions"\n\1/g' /opt/matomo/config/config.ini.php \
     && sed -i -E -e 's/(@MATOMO_PLUGINS_INSTALLED@)/PluginsInstalled[] = "CustomDimensions"\n\1/g' /opt/matomo/config/config.ini.php \
     && echo "mysql -u root -p@DB_PASSWORD@ < /opt/matomo-install/plugins/custom_dimensions.sql" >> /opt/matomo-install/install_plugins_db.sh \
+;fi
+
+RUN if [ -n "$MATOMO_PLUGIN_VISITORGENERATOR_VERSION" ]; then \
+    curl -fsSL -o VisitorGenerator.zip \
+        "https://plugins.matomo.org/api/2.0/plugins/VisitorGenerator/download/${MATOMO_PLUGIN_VISITORGENERATOR_VERSION}" \
+    && unzip VisitorGenerator.zip -d /opt/matomo/plugins \
+    && rm -rf VisitorGenerator.zip \
+    && sed -i -E -e 's/(@MATOMO_PLUGINS@)/Plugins[] = "VisitorGenerator"\n\1/g' /opt/matomo/config/config.ini.php \
+    && sed -i -E -e 's/(@MATOMO_PLUGINS_INSTALLED@)/PluginsInstalled[] = "VisitorGenerator"\n\1/g' /opt/matomo/config/config.ini.php \
 ;fi
 
 RUN if [ -n "$MATOMO_PLUGIN_LOGINFILTERIP_VERSION" ]; then \
