@@ -7,8 +7,29 @@
     "type": "project",
     "authors": [
         {
-            "name": "Davide Porrovecchio - Agenzia per l'Italia Digitale",
-            "email": "davide.porrovecchio@agid.gov.it"
+            "name": "Davide Porrovecchio",
+            "homepage": "https://github.com/pdavide",
+            "role": "Developer"
+        },
+        {
+            "name": "Andrea Capelli",
+            "homepage": "https://github.com/valair",
+            "role": "Developer"
+        },
+        {
+            "name": "Daniela De Blasis",
+            "homepage": "https://github.com/nikorobins",
+            "role": "UX/UI Designer"
+        },
+        {
+            "name": "Daniela Iozzo",
+            "homepage": "https://github.com/danielaiozzo",
+            "role": "Content Designer & SEO"
+        },
+        {
+            "name": "Michela Calanna",
+            "homepage": "https://github.com/GoldDustWoman",
+            "role": "UX/UI Designer"
         }
     ],
     "require": {
