@@ -29,7 +29,7 @@
             <div id="tos" class="callout callout-more note">
                 <div class="callout-title">
                     <svg class="icon icon-primary"><use xlink:href="{{ asset('svg/sprite.svg#it-clip') }}"></use></svg>
-                    <span>{{ __('condizioni del servizio') }}</span>
+                    <span>{{ __('termini del servizio') }}</span>
                 </div>
                 @markdown($tos)
                 {{--
@@ -53,7 +53,7 @@
         <div class="form-row">
             <div class="form-check">
                 <input class="form-control form-check-input{{ $errors->has('accept_terms') ? ' is-invalid' : '' }}" type="checkbox" id="accept_terms" name="accept_terms" aria-required="true" required>
-                <label class="form-check-label" for="accept_terms">{{ __('Accetto le condizioni del servizio') }}</label>
+                <label class="form-check-label" for="accept_terms">{{ __('Accetto i termini del servizio') }}</label>
                 <div class="invalid-feedback">{{ __('validation.accepted', ['attribute' => __('validation.attributes.accept_terms')]) }}</div>
             </div>
         </div>

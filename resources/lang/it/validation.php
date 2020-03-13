@@ -140,7 +140,7 @@ return [
         'password_confirmation' => 'conferma password',
         'email' => 'indirizzo email',
         'token' => 'codice di reset',
-        'accept_terms' => 'condizioni del servizio',
+        'accept_terms' => 'termini del servizio',
         'correct_confirmation' => 'conferma dati',
         'website_name' => 'nome del sito',
         'permissions' => 'permessi',

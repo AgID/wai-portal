@@ -191,7 +191,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function getFullNameAttribute(): string
     {
-        return $this->name ? implode(' ', [trim($this->name), trim($this->family_name)]) : $this->fiscal_number;
+        return $this->name ? implode(' ', [trim($this->name), trim($this->family_name)]) : $this->email;
     }
 
     /**

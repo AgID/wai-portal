@@ -30,13 +30,13 @@ class UpdateClosedBetaWhitelistTest extends TestCase
         $data = [
             'ref' => 'develop',
             'repository' => [
-                'full_name' => 'pdavide/wai-portal',
+                'full_name' => 'agid/wai-portal',
             ],
         ];
 
-        Config::set('webhook-client.configs.0.repository.full_name', 'pdavide/wai-portal');
+        Config::set('webhook-client.configs.0.repository.full_name', 'agid/wai-portal');
         Config::set('webhook-client.configs.0.repository.branch', 'develop');
-        Config::set('webhook-client.configs.0.repository.file_name', 'resources/data/config.yml');
+        Config::set('webhook-client.configs.0.repository.file_name', 'closed_beta_whitelist.yml');
 
         Cache::shouldReceive('forever')
             ->withSomeOfArgs(UpdateClosedBetaWhitelist::CLOSED_BETA_WHITELIST_KEY)

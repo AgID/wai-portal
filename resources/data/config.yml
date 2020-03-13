@@ -13,7 +13,7 @@ it:
     highlight:
       production: |
         **Web Analytics Italia** è in una fase di beta chiusa.
-        [Cosa significa?](https://webanalytics.italia.it/faq#beta-chiusa).
+        [Cosa significa?](https://webanalytics.italia.it/faq#beta-chiusa)
       public-playground: |
         Questo è l'ambiente **public playground**. Ogni settimana il sistema
         viene automaticamente resettato. [Maggiori
@@ -86,5 +86,5 @@ it:
         url: https://twitter.com/AgidGov
       - name: youtube
         url: https://www.youtube.com/channel/UCxJmOWf__YcLgB19gy5dGQQ
-      # - name: medium
-      #   url: https://medium.com/designers-italia
+      - name: medium
+        url: https://medium.com/@AgidGov

@@ -44,8 +44,8 @@ Route::get('/faq', 'HomeController@faq')
 Route::get('/contacts', 'HomeController@contacts')
     ->name('contacts');
 
-Route::get('/open-data', 'HomeController@openData')
-    ->name('open-data');
+// Route::get('/open-data', 'HomeController@openData')
+//     ->name('open-data');
 
 /*
  * Admin authentication routes.
