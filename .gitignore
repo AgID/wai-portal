@@ -27,6 +27,8 @@ TODO
 .idea
 .DS_Store
 .phpunit.result.cache
+.vscode
+.history
 
 # generated files
 .env
