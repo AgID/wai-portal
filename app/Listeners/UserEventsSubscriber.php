@@ -135,12 +135,14 @@ class UserEventsSubscriber implements ShouldQueue
         //Update Redisearch websites index
         $this->updateUsersIndex($user);
 
-        logger()->notice('User ' . $user->uuid . ' updated',
-            [
-                'event' => EventType::USER_UPDATED,
-                'user' => $user->uuid,
-            ]
-        );
+        if (!$event->isOnlyLastAccessDirty()) {
+            logger()->notice('User ' . $user->uuid . ' updated',
+                [
+                    'event' => EventType::USER_UPDATED,
+                    'user' => $user->uuid,
+                ]
+            );
+        }
     }
 
     /**
