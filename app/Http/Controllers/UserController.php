@@ -117,25 +117,46 @@ class UserController extends Controller
     {
         $authUser = auth()->user();
         $validatedData = $request->validated();
+
         $currentPublicAdministration = $authUser->can(UserPermission::ACCESS_ADMIN_AREA)
             ? $publicAdministration
             : current_public_administration();
 
-        $user = User::create([
-            'uuid' => Uuid::uuid4()->toString(),
-            'fiscal_number' => $validatedData['fiscal_number'],
-            'email' => $validatedData['email'],
-            'status' => UserStatus::INVITED,
-        ]);
+        $redirectUrl = $this->getRoleAwareUrl('users.index', [], $publicAdministration);
 
-        $user->publicAdministrations()->attach($currentPublicAdministration->id);
-        $user->registerAnalyticsServiceAccount();
+        // If pa_user is filled the user is already in the database
+        if (isset($validatedData['pa_user']) && isset($validatedData['pa_user']->email)) {
+            $user = $validatedData['pa_user'];
+            $in_this_pa = $user->publicAdministrations()->where('id', $currentPublicAdministration->id)->first();
+
+            // Can't send invitation if the user is already in this pa
+            if (!is_null($in_this_pa)) {
+                return redirect()->to($redirectUrl)->withModal([
+                    'title' => __('Non è possibile inoltrare l\'invito'),
+                    'icon' => 'it-clock',
+                    'message' => implode("\n", [
+                        __("L'utente fa già parte di questa pa"),
+                    ]),
+                    'image' => asset('images/closed.svg'),
+                ]);
+            }
+
+            $user->publicAdministrations()->attach($currentPublicAdministration->id);
+        } else {
+            $user = User::create([
+                'uuid' => Uuid::uuid4()->toString(),
+                'fiscal_number' => $validatedData['fiscal_number'],
+                'email' => $validatedData['email'],
+                'status' => UserStatus::INVITED,
+            ]);
+
+            $user->publicAdministrations()->attach($currentPublicAdministration->id);
+            $user->registerAnalyticsServiceAccount();
+        }
 
         $this->manageUserPermissions($validatedData, $currentPublicAdministration, $user);
 
         event(new UserInvited($user, $authUser, $currentPublicAdministration));
-
-        $redirectUrl = $this->getRoleAwareUrl('users.index', [], $publicAdministration);
 
         return redirect()->to($redirectUrl)->withModal([
             'title' => __('Invito inoltrato'),

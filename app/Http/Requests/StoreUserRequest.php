@@ -36,7 +36,7 @@ class StoreUserRequest extends FormRequest
             'email' => 'required|email:rfc,dns|max:75',
             'fiscal_number' => [
                 'required',
-                'unique:users',
+                // 'unique:users',
                 function ($attribute, $value, $fail) {
                     $chk = new FiscalNumberChecker($value);
                     if (!$chk->isFormallyValid()) {
@@ -45,6 +45,7 @@ class StoreUserRequest extends FormRequest
                 },
             ],
             'is_admin' => 'boolean',
+            'pa_user' => 'boolean',
             'permissions' => 'required|array',
             'permissions.*' => 'array',
             'permissions.*.*' => Rule::in([UserPermission::MANAGE_ANALYTICS, UserPermission::READ_ANALYTICS]),
@@ -60,10 +61,26 @@ class StoreUserRequest extends FormRequest
     {
         if (!$this->route()->hasParameter('user')) {
             $validator->after(function (Validator $validator) {
-                if (User::where('email', $this->input('email'))->whereDoesntHave('roles', function ($query) {
-                    $query->where('name', UserRole::SUPER_ADMIN);
-                })->get()->isNotEmpty()) {
-                    $validator->errors()->add('email', __('validation.unique', ['attribute' => __('validation.attributes.email')]));
+                $user = User::with('publicAdministrations')->where('email', $this->input('email'))
+                    ->where('fiscal_number', $this->input('fiscal_number'))->whereDoesntHave('roles', function ($query) {
+                        $query->where('name', UserRole::SUPER_ADMIN);
+                    })->first();
+
+                // If user exists we can use this
+                if (!is_null($user)) {
+                    $data = $validator->getData();
+                    $data['pa_user'] = $user;
+                    $validator->setData($data);
+                } else {
+                    if (User::where('email', $this->input('email'))->whereDoesntHave('roles', function ($query) {
+                        $query->where('name', UserRole::SUPER_ADMIN);
+                    })->get()->isNotEmpty()) {
+                        $validator->errors()->add('email', __('validation.unique', ['attribute' => __('validation.attributes.email')]));
+                    } elseif (User::where('fiscal_number', $this->input('fiscal_number'))->whereDoesntHave('roles', function ($query) {
+                        $query->where('name', UserRole::SUPER_ADMIN);
+                    })->get()->isNotEmpty()) {
+                        $validator->errors()->add('fiscal_number', __('validation.unique', ['attribute' => __('validation.attributes.fiscal_number')]));
+                    }
                 }
             });
         }

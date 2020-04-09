@@ -236,8 +236,8 @@ class CRUDUserTest extends TestCase
             ])
             ->assertRedirect(route('users.create'))
             ->assertSessionHasErrors([
-                'email',
-                'fiscal_number',
+                //'email',
+                //'fiscal_number',
                 'permissions',
             ]);
 
