@@ -45,7 +45,7 @@ class StoreUserRequest extends FormRequest
                 },
             ],
             'is_admin' => 'boolean',
-            'pa_user' => 'boolean',
+            'paUser' => 'boolean',
             'permissions' => 'required|array',
             'permissions.*' => 'array',
             'permissions.*.*' => Rule::in([UserPermission::MANAGE_ANALYTICS, UserPermission::READ_ANALYTICS]),
@@ -69,7 +69,7 @@ class StoreUserRequest extends FormRequest
                 // If user exists we can use this
                 if (!is_null($user)) {
                     $data = $validator->getData();
-                    $data['pa_user'] = $user;
+                    $data['paUser'] = $user;
                     $validator->setData($data);
                 } else {
                     if (User::where('email', $this->input('email'))->whereDoesntHave('roles', function ($query) {
