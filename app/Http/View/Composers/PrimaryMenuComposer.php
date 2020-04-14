@@ -48,7 +48,7 @@ class PrimaryMenuComposer
         $selectedPublicAdministrationIpaCode = $this->session->get('super_admin_tenant_ipa_code');
         $selectedTenantId = $this->session->get('tenant_id');
         $primaryMenuArray = collect(config('site.menu_items.primary'))->map(function ($primaryMenuItem) use ($isSuperAdmin, $selectedPublicAdministrationIpaCode, $selectedTenantId) {
-            if (($isSuperAdmin && !$selectedPublicAdministrationIpaCode) || (!$isSuperAdmin && !$selectedTenantId)) {
+            if (($isSuperAdmin && !$selectedPublicAdministrationIpaCode)) { // || (!$isSuperAdmin && !$selectedTenantId)
                 $primaryMenuItem['url'] = '#';
                 $primaryMenuItem['disabled'] = true;
             } else {
