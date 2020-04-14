@@ -72,7 +72,7 @@ class PublicAdministrationSelectorComposer
                     } else {
                         // var_dump($this->request->query('publicAdministration'));
                         $this->session->put('tenant_id', $this->request->query('publicAdministration'));
-                        Bouncer::scope()->to( $this->request->query('publicAdministration') );
+                        Bouncer::scope()->to($this->request->query('publicAdministration'));
                     }
                 }
                 // no break
