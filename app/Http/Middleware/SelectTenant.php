@@ -19,13 +19,13 @@ class SelectTenant
     {
         $authUser = $request->user();
         if ($authUser) {
-            /*
-                if (empty(session('tenant_id')) && $authUser->publicAdministrations->isNotEmpty() ) {
-                // session()->put('tenant_id', $authUser->publicAdministrations()->first()->id);
-                if (!$request->is('select-public-administration')) {
+            if (empty(session('tenant_id')) && $authUser->publicAdministrations->isNotEmpty()) {
+                if (1 === count($authUser->publicAdministrations)) {
+                    session()->put('tenant_id', $authUser->publicAdministrations()->first()->id);
+                } elseif (!$request->is('select-public-administration')) {
                     return redirect()->route('publicAdministration.tenant.select');
                 }
-            } */
+            }
 
             if ($authUser->isA(UserRole::SUPER_ADMIN)) {
                 $selectedPublicAdministrationIpaCode = $request->route('publicAdministration');

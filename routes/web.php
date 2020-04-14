@@ -156,10 +156,10 @@ Route::middleware('spid.auth', 'auth', 'enforce.rules:forbid-invited')->group(fu
  * This is the default for registered users.
  */
 Route::middleware('spid.auth', 'auth', 'verified:verification.notice')->group(function () {
-    // Route::get('/select-public-administration', [
-    //     'as' => 'publicAdministration.tenant.select',
-    //     'uses' => 'PublicAdministrationController@selectTenant',
-    // ]);
+    Route::get('/select-public-administration', [
+         'as' => 'publicAdministration.tenant.select',
+         'uses' => 'PublicAdministrationController@selectTenant',
+    ]);
 
     Route::get('/analytics', 'AnalyticsController@index')
         ->name('analytics');

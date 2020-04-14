@@ -11,8 +11,8 @@ class PublicAdministrationController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function selectTenant($id)
+    public function selectTenant()
     {
-        // to be implemented
+        return view('pages.select_tenant')->with('hasTenant', session()->has('tenant_id'));
     }
 }
