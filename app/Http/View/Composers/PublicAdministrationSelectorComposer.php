@@ -2,12 +2,14 @@
 
 namespace App\Http\View\Composers;
 
+use App\Enums\UserRole;
 use App\Models\PublicAdministration;
 use Illuminate\Http\Request;
 use Illuminate\Session\Store;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Route;
 use Illuminate\View\View;
+use Silber\Bouncer\BouncerFacade as Bouncer;
 
 class PublicAdministrationSelectorComposer
 {
@@ -47,6 +49,8 @@ class PublicAdministrationSelectorComposer
     public function compose(View $view)
     {
         $lastRoute = $this->request->route();
+        $authUser = $this->request->user();
+
         $lastRouteParameters = $lastRoute->parameters();
 
         if ($lastRoute->isFallback) {
@@ -61,25 +65,56 @@ class PublicAdministrationSelectorComposer
                 $newRoute = 'admin.publicAdministration.websites.index';
                 break;
             case !Arr::has($lastRouteParameters, 'publicAdministration'):
+
                 if ($this->request->has('publicAdministration')) {
-                    $this->session->put('super_admin_tenant_ipa_code', $this->request->input('publicAdministration'));
+                    if ($authUser->isA(UserRole::SUPER_ADMIN)) {
+                        $this->session->put('super_admin_tenant_ipa_code', $this->request->input('publicAdministration'));
+                    } else {
+                        // var_dump($this->request->query('publicAdministration'));
+                        $this->session->put('tenant_id', $this->request->query('publicAdministration'));
+                        Bouncer::scope()->to( $this->request->query('publicAdministration') );
+                    }
                 }
                 // no break
             default:
                 $newRoute = $lastRoute->getName();
         }
 
-        $publicAdministrationSelectorArray = PublicAdministration::all([
-            'ipa_code',
-            'name',
-        ])->sortBy('name')->map(function ($publicAdministration) use ($newRoute, $lastRouteParameters) {
-            $publicAdministration->url = route($newRoute, array_merge($lastRouteParameters, [
-                'publicAdministration' => $publicAdministration->ipa_code,
-            ]));
+        if ($authUser && $authUser->isA(UserRole::SUPER_ADMIN)) {
+            $publicAdministrationSelectorArray = PublicAdministration::all([
+                'ipa_code',
+                'name',
+            ])->sortBy('name')->map(function ($publicAdministration) use ($newRoute, $lastRouteParameters) {
+                $publicAdministration->url = route($newRoute, array_merge($lastRouteParameters, [
+                    'publicAdministration' => $publicAdministration->ipa_code,
+                ]));
 
-            return $publicAdministration;
-        })->toArray();
+                return $publicAdministration;
+            })->toArray();
+        } elseif ($authUser) {
+            $publicAdministrationSelectorArray = [];
+            foreach ($authUser->publicAdministrations as $pa) {
+                $publicAdministrationOption = [];
+                $publicAdministrationOption['ipa_code'] = $pa->ipa_code;
+                $publicAdministrationOption['id'] = $pa->id;
+                $publicAdministrationOption['name'] = $pa->name;
+                $publicAdministrationOption['url'] = route($newRoute, array_merge($lastRouteParameters, [
+                    'publicAdministration' => $pa->id,
+                ]));
+                array_push($publicAdministrationSelectorArray, $publicAdministrationOption);
+            }
+            usort($publicAdministrationSelectorArray, [$this, 'sortByName']);
+        } else {
+            $publicAdministrationSelectorArray = [];
+        }
+
+        // var_dump($publicAdministrationSelectorArray); die();
 
         $view->with('publicAdministrationSelectorArray', $publicAdministrationSelectorArray);
+    }
+
+    private static function sortByName($a, $b)
+    {
+        return strcmp($a['name'], $b['name']);
     }
 }

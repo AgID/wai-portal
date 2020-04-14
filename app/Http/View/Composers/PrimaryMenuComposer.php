@@ -46,8 +46,9 @@ class PrimaryMenuComposer
     {
         $isSuperAdmin = optional($this->request->user())->isA(UserRole::SUPER_ADMIN);
         $selectedPublicAdministrationIpaCode = $this->session->get('super_admin_tenant_ipa_code');
-        $primaryMenuArray = collect(config('site.menu_items.primary'))->map(function ($primaryMenuItem) use ($isSuperAdmin, $selectedPublicAdministrationIpaCode) {
-            if ($isSuperAdmin && !$selectedPublicAdministrationIpaCode) {
+        $selectedTenantId = $this->session->get('tenant_id');
+        $primaryMenuArray = collect(config('site.menu_items.primary'))->map(function ($primaryMenuItem) use ($isSuperAdmin, $selectedPublicAdministrationIpaCode, $selectedTenantId) {
+            if (($isSuperAdmin && !$selectedPublicAdministrationIpaCode) || (!$isSuperAdmin && !$selectedTenantId)) {
                 $primaryMenuItem['url'] = '#';
                 $primaryMenuItem['disabled'] = true;
             } else {
@@ -56,6 +57,7 @@ class PrimaryMenuComposer
                     'publicAdministration' => $selectedPublicAdministrationIpaCode,
                 ], false)
                 : route($primaryMenuItem['route'], [], false);
+
                 $primaryMenuItem['disabled'] = false;
             }
 

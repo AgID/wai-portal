@@ -18,12 +18,14 @@ class SelectTenant
     public function handle($request, Closure $next)
     {
         $authUser = $request->user();
-
         if ($authUser) {
-            if (empty(session('tenant_id')) && $authUser->publicAdministrations->isNotEmpty()) {
-                session()->put('tenant_id', $authUser->publicAdministrations()->first()->id);
-                // return redirect()->route('publicAdministration.tenant.select');
-            }
+            /*
+                if (empty(session('tenant_id')) && $authUser->publicAdministrations->isNotEmpty() ) {
+                // session()->put('tenant_id', $authUser->publicAdministrations()->first()->id);
+                if (!$request->is('select-public-administration')) {
+                    return redirect()->route('publicAdministration.tenant.select');
+                }
+            } */
 
             if ($authUser->isA(UserRole::SUPER_ADMIN)) {
                 $selectedPublicAdministrationIpaCode = $request->route('publicAdministration');
@@ -33,6 +35,15 @@ class SelectTenant
 
                 if (empty(session('super_admin_tenant_ipa_code')) && $selectedPublicAdministrationIpaCode) {
                     session()->put('super_admin_tenant_ipa_code', $selectedPublicAdministrationIpaCode);
+                }
+            } else {
+                $selectedPublicAdministrationId = $request->query('publicAdministration');
+                if (is_object($selectedPublicAdministrationId)) {
+                    $selectedPublicAdministrationId = $selectedPublicAdministrationId->id;
+                }
+
+                if (empty(session('tenant_id')) && $selectedPublicAdministrationId) {
+                    session()->put('tenant_id', $selectedPublicAdministrationId);
                 }
             }
         }

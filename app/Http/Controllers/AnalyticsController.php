@@ -33,6 +33,10 @@ class AnalyticsController extends Controller
             $publicAdministration = current_public_administration();
         }
 
+        if (is_null($publicAdministration)) {
+            return redirect()->route('home');
+        }
+
         $locale = app()->getLocale();
 
         if ($publicAdministration->hasRollUp()) {
