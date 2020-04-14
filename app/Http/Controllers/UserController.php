@@ -140,8 +140,6 @@ class UserController extends Controller
                     'image' => asset('images/closed.svg'),
                 ]);
             }
-
-            $user->publicAdministrations()->attach($currentPublicAdministration->id);
         } else {
             $user = User::create([
                 'uuid' => Uuid::uuid4()->toString(),
@@ -149,10 +147,12 @@ class UserController extends Controller
                 'email' => $validatedData['email'],
                 'status' => UserStatus::INVITED,
             ]);
+        }
 
-            $user->publicAdministrations()->attach($currentPublicAdministration->id);
+        if (!$user->hasAnalyticsServiceAccount()) {
             $user->registerAnalyticsServiceAccount();
         }
+        $user->publicAdministrations()->attach($currentPublicAdministration->id);
 
         $this->manageUserPermissions($validatedData, $currentPublicAdministration, $user);
 
