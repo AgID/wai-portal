@@ -18,9 +18,11 @@
 - p_bz # Provincia Autonoma di Bolzano
 - p_tn # Provincia di Trento
 - csi_piem # CSI Piemonte
+- data # Liguria Digitale
 
 - cmge # Città Metropolitana di Genova
 - cmdrc # Città Metropolitana di Reggio Calabria
+- cmna # Città metropolitana di Napoli
 - c_a944 # Comune di Bologna
 - c_g273 # Comune di Palermo
 - c_a662 # Comune di Bari
@@ -30,4 +32,4 @@
 - unive # Università Ca Foscari
 
 - ingv # Istituto Nazionale di Geofisica e Vulcanologia
-- cmna # Città metropolitana di Napoli
+
