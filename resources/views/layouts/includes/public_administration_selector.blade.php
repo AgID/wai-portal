@@ -1,4 +1,4 @@
-<div class="input-group flex-nowrap selector-pa">
+<div class="input-group flex-nowrap pa-selector">
     <div class="input-group-prepend">
         <div class="input-group-text border-0 rounded-left"><svg class="icon icon-sm"><use xlink:href="{{ asset('svg/sprite.svg#it-pa') }}"></use></svg></div>
     </div>

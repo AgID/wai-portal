@@ -5,10 +5,10 @@ export default (() => {
     };
 
     const init = () => {
-        const publicAdministrationSelector = document.querySelector('.selector-pa select[name="public-administration-nav"]');
+        const publicAdministrationSelector = document.querySelector('.pa-selector select[name="public-administration-nav"]');
 
         publicAdministrationSelector && publicAdministrationSelector.addEventListener('change', () => {
-            const publicAdministrationSelectorButton = document.querySelector('.selector-pa select[name="public-administration-nav"] ~ .btn.dropdown-toggle');
+            const publicAdministrationSelectorButton = document.querySelector('.pa-selector select[name="public-administration-nav"] ~ .btn.dropdown-toggle');
 
             publicAdministrationSelectorButton.disabled = true;
             publicAdministrationSelectorButton.classList.add('loading');

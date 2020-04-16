@@ -1,0 +1,7 @@
+.pa-selector {
+  top: 10px;
+
+  @include media-breakpoint-up(md) {
+    z-index: 2;
+  }
+}

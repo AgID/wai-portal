@@ -228,9 +228,3 @@ Breadcrumbs::for('admin.publicAdministration.users.edit', function ($trail, $pub
     $trail->parent('admin.publicAdministration.users.index', $publicAdministrationIpaCode);
     $trail->push(implode(' ', [$user->full_name ?? '', __('(modifica)')]), route('admin.publicAdministration.users.edit', ['publicAdministration' => $publicAdministrationIpaCode, 'user' => $user]));
 });
-
-// Web Analytics Italia > Select Publlc administrtion
-Breadcrumbs::for('publicAdministration.tenant.select', function ($trail) {
-    $trail->parent('home');
-    $trail->push(__('Seleziona pubblica amministrazione'), route('publicAdministration.tenant.select'));
-});

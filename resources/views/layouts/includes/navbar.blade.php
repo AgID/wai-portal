@@ -26,11 +26,12 @@
                                 </li>
                                 @endforeach
                             </ul>
+                            @endif
+                            @if ($publicAdministrationShowSelector)
                             <div class="col-lg-4 ml-auto">
                                 @include('layouts.includes.public_administration_selector')
                             </div>
-                            @endif
-                            @unless($isSuperAdmin)
+                            @else
                             <ul class="navbar-nav secondary ml-auto">
                                 @foreach (config('site.menu_items.secondary') as $secondaryMenuItem)
                                 <li class="nav-item">
@@ -40,7 +41,7 @@
                                 </li>
                                 @endforeach
                             </ul>
-                            @endunless
+                            @endif
                         </div>
                     </div>
                 </nav>

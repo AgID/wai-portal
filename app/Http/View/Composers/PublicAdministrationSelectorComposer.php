@@ -9,7 +9,6 @@ use Illuminate\Session\Store;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Route;
 use Illuminate\View\View;
-use Silber\Bouncer\BouncerFacade as Bouncer;
 
 class PublicAdministrationSelectorComposer
 {
@@ -65,14 +64,9 @@ class PublicAdministrationSelectorComposer
                 $newRoute = 'admin.publicAdministration.websites.index';
                 break;
             case !Arr::has($lastRouteParameters, 'publicAdministration'):
-
                 if ($this->request->has('publicAdministration')) {
                     if ($authUser->isA(UserRole::SUPER_ADMIN)) {
                         $this->session->put('super_admin_tenant_ipa_code', $this->request->input('publicAdministration'));
-                    } else {
-                        // var_dump($this->request->query('publicAdministration'));
-                        $this->session->put('tenant_id', $this->request->query('publicAdministration'));
-                        Bouncer::scope()->to($this->request->query('publicAdministration'));
                     }
                 }
                 // no break
@@ -91,30 +85,24 @@ class PublicAdministrationSelectorComposer
 
                 return $publicAdministration;
             })->toArray();
+            $publicAdministrationShowSelector = true;
         } elseif ($authUser) {
-            $publicAdministrationSelectorArray = [];
-            foreach ($authUser->publicAdministrations as $pa) {
-                $publicAdministrationOption = [];
-                $publicAdministrationOption['ipa_code'] = $pa->ipa_code;
-                $publicAdministrationOption['id'] = $pa->id;
-                $publicAdministrationOption['name'] = $pa->name;
-                $publicAdministrationOption['url'] = route($newRoute, array_merge($lastRouteParameters, [
-                    'publicAdministration' => $pa->id,
-                ]));
-                array_push($publicAdministrationSelectorArray, $publicAdministrationOption);
-            }
-            usort($publicAdministrationSelectorArray, [$this, 'sortByName']);
+            $publicAdministrationSelectorArray = $authUser->publicAdministrations->sortBy('name')->values()
+                ->map(function ($publicAdministration) use ($newRoute, $lastRouteParameters) {
+                    $publicAdministration->url = route($newRoute, array_merge($lastRouteParameters, [
+                        'publicAdministration' => $publicAdministration->id,
+                    ]));
+
+                    return collect($publicAdministration->toArray())
+                        ->only(['id', 'name', 'url'])
+                        ->all();
+                })->toArray();
+            $publicAdministrationShowSelector = count($publicAdministrationSelectorArray) > 1;
         } else {
             $publicAdministrationSelectorArray = [];
+            $publicAdministrationShowSelector = false;
         }
-
-        // var_dump($publicAdministrationSelectorArray); die();
-
         $view->with('publicAdministrationSelectorArray', $publicAdministrationSelectorArray);
-    }
-
-    private static function sortByName($a, $b)
-    {
-        return strcmp($a['name'], $b['name']);
+        $view->with('publicAdministrationShowSelector', $publicAdministrationShowSelector);
     }
 }

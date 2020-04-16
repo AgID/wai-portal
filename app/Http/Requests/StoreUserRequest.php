@@ -45,7 +45,7 @@ class StoreUserRequest extends FormRequest
                 },
             ],
             'is_admin' => 'boolean',
-            'paUser' => 'boolean',
+            'existingUser' => 'boolean',
             'permissions' => 'required|array',
             'permissions.*' => 'array',
             'permissions.*.*' => Rule::in([UserPermission::MANAGE_ANALYTICS, UserPermission::READ_ANALYTICS]),
@@ -61,20 +61,17 @@ class StoreUserRequest extends FormRequest
     {
         if (!$this->route()->hasParameter('user')) {
             $validator->after(function (Validator $validator) {
-                $user = $this->getPublicAdministrationUser($this->input('email'), $this->input('fiscal_number'));
+                $user = User::with('publicAdministrations')->where('fiscal_number', $this->input('fiscal_number'))->orWhere('email', $this->input('email'))->whereDoesntHave('roles', function ($query) {
+                    $query->where('name', UserRole::SUPER_ADMIN);
+                })->first();
+
                 if (!is_null($user)) {
-                    $data = $validator->getData();
-                    $data['paUser'] = $user;
-                    $validator->setData($data);
-                } else {
-                    if (User::where('email', $this->input('email'))->whereDoesntHave('roles', function ($query) {
-                        $query->where('name', UserRole::SUPER_ADMIN);
-                    })->get()->isNotEmpty()) {
+                    if ($user->fiscal_number === $this->input('fiscal_number')) {
+                        $data = $validator->getData();
+                        $data['existingUser'] = $user;
+                        $validator->setData($data);
+                    } else {
                         $validator->errors()->add('email', __('validation.unique', ['attribute' => __('validation.attributes.email')]));
-                    } elseif (User::where('fiscal_number', $this->input('fiscal_number'))->whereDoesntHave('roles', function ($query) {
-                        $query->where('name', UserRole::SUPER_ADMIN);
-                    })->get()->isNotEmpty()) {
-                        $validator->errors()->add('fiscal_number', __('validation.unique', ['attribute' => __('validation.attributes.fiscal_number')]));
                     }
                 }
             });
@@ -98,20 +95,5 @@ class StoreUserRequest extends FormRequest
     protected function checkWebsitesIds(array $websitesPermissions): bool
     {
         return empty(array_diff(array_keys($websitesPermissions), request()->route('publicAdministration', current_public_administration())->websites->pluck('id')->all()));
-    }
-
-    /**
-     *  Check if user already exists in the database.
-     *
-     *  @param string $email of user
-     *  @param string $fiscal_number of user
-     *
-     *  @return User The user registered
-     */
-    protected function getPublicAdministrationUser(string $email, string $fiscal_number): ?User
-    {
-        return User::with('publicAdministrations')->where('email', $email)->where('fiscal_number', $fiscal_number)->whereDoesntHave('roles', function ($query) {
-            $query->where('name', UserRole::SUPER_ADMIN);
-        })->first();
     }
 }

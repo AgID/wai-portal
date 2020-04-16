@@ -124,9 +124,9 @@ class UserController extends Controller
 
         $redirectUrl = $this->getRoleAwareUrl('users.index', [], $publicAdministration);
 
-        // If paUser is filled the user is already in the database
-        if (isset($validatedData['paUser']) && isset($validatedData['paUser']->email)) {
-            $user = $validatedData['paUser'];
+        // If existingUser is filled the user is already in the database
+        if (isset($validatedData['existingUser']) && isset($validatedData['existingUser']->email)) {
+            $user = $validatedData['existingUser'];
             $in_this_pa = $user->publicAdministrations()->where('id', $currentPublicAdministration->id)->first();
 
             // Can't send invitation if the user is already in this pa

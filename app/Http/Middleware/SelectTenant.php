@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Enums\UserRole;
 use Closure;
+use Silber\Bouncer\BouncerFacade as Bouncer;
 
 class SelectTenant
 {
@@ -36,14 +37,11 @@ class SelectTenant
                 if (empty(session('super_admin_tenant_ipa_code')) && $selectedPublicAdministrationIpaCode) {
                     session()->put('super_admin_tenant_ipa_code', $selectedPublicAdministrationIpaCode);
                 }
-            } else {
-                $selectedPublicAdministrationId = $request->query('publicAdministration');
-                if (is_object($selectedPublicAdministrationId)) {
-                    $selectedPublicAdministrationId = $selectedPublicAdministrationId->id;
-                }
-
-                if (empty(session('tenant_id')) && $selectedPublicAdministrationId) {
-                    session()->put('tenant_id', $selectedPublicAdministrationId);
+            } elseif ($authUser->publicAdministrations->isNotEmpty()) {
+                $publicAdministrationId = $request->query('publicAdministration');
+                if ($authUser->publicAdministrations()->where('id', $publicAdministrationId)->first()) {
+                    session()->put('tenant_id', $publicAdministrationId);
+                    Bouncer::scope()->to($publicAdministrationId);
                 }
             }
         }
