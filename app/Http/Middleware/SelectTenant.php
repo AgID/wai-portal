@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Enums\UserRole;
+use App\Enums\UserStatus;
 use Closure;
 use Silber\Bouncer\BouncerFacade as Bouncer;
 
@@ -19,29 +20,27 @@ class SelectTenant
     public function handle($request, Closure $next)
     {
         $authUser = $request->user();
-        if ($authUser) {
+        if ($authUser && !$authUser->isA(UserRole::SUPER_ADMIN)) {
             if (empty(session('tenant_id')) && $authUser->publicAdministrations->isNotEmpty()) {
-                if (1 === count($authUser->publicAdministrations)) {
-                    session()->put('tenant_id', $authUser->publicAdministrations()->first()->id);
-                } elseif (!$request->is('select-public-administration')) {
-                    return redirect()->route('publicAdministration.tenant.select');
-                }
-            }
+                $selectNoRedirectRoutes = ['public-administrations', 'public-administrations/*', 'spid/logout', 'user/verify/*', 'search-ipa-index', 'websites/store-primary'];
 
-            if ($authUser->isA(UserRole::SUPER_ADMIN)) {
-                $selectedPublicAdministrationIpaCode = $request->route('publicAdministration');
-                if (is_object($selectedPublicAdministrationIpaCode)) {
-                    $selectedPublicAdministrationIpaCode = $selectedPublicAdministrationIpaCode->ipa_code;
-                }
-
-                if (empty(session('super_admin_tenant_ipa_code')) && $selectedPublicAdministrationIpaCode) {
-                    session()->put('super_admin_tenant_ipa_code', $selectedPublicAdministrationIpaCode);
-                }
-            } elseif ($authUser->publicAdministrations->isNotEmpty()) {
-                $publicAdministrationId = $request->query('publicAdministration');
-                if ($authUser->publicAdministrations()->where('id', $publicAdministrationId)->first()) {
-                    session()->put('tenant_id', $publicAdministrationId);
-                    Bouncer::scope()->to($publicAdministrationId);
+                $activePublicAdministrations = $authUser->publicAdministrations()->where('pa_status', UserStatus::ACTIVE)->get()->toArray();
+                switch (count($activePublicAdministrations)) {
+                    case 1:
+                        $publicAdministrationId = $authUser->publicAdministrations()->where('pa_status', UserStatus::ACTIVE)->first()->id;
+                        session()->put('tenant_id', $publicAdministrationId);
+                        Bouncer::scope()->to($publicAdministrationId);
+                        break;
+                    case 0:
+                        if (!$request->is($selectNoRedirectRoutes)) {
+                            return redirect()->route('publicAdministrations.show');
+                        }
+                            // no break
+                    default:
+                        if (!$request->is($selectNoRedirectRoutes)) {
+                            return redirect()->route('publicAdministrations.select');
+                        }
+                        break;
                 }
             }
         }

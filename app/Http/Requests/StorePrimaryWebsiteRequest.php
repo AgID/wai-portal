@@ -33,7 +33,8 @@ class StorePrimaryWebsiteRequest extends FormRequest
     {
         // TODO: this check should be managed otherwise when the support for tenant
         // switch will be enabled
-        return $this->user()->publicAdministrations->isEmpty();
+        // return $this->user()->publicAdministrations->isEmpty();
+        return true;
     }
 
     /**

@@ -7,6 +7,7 @@ use App\Enums\UserStatus;
 use App\Http\View\Composers\ModalComposer;
 use App\Http\View\Composers\NotificationComposer;
 use App\Http\View\Composers\PrimaryMenuComposer;
+use App\Http\View\Composers\PublicAdministrationButtonsComposer;
 use App\Http\View\Composers\PublicAdministrationSelectorComposer;
 use App\Traits\GetsLocalizedYamlContent;
 use Illuminate\Support\Facades\Blade;
@@ -48,6 +49,7 @@ class ViewServiceProvider extends ServiceProvider
             'pages.*',
         ], PublicAdministrationSelectorComposer::class);
         View::composer('*', PrimaryMenuComposer::class);
+        View::composer('pages.pa.partials.buttons', PublicAdministrationButtonsComposer::class);
         View::composer('layouts.includes.modal', ModalComposer::class);
         View::composer('layouts.includes.notification', NotificationComposer::class);
         View::composer('*', function ($view) {

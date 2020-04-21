@@ -26,7 +26,10 @@ class UserTransformer extends TransformerAbstract
         $authUser = auth()->user();
         $authUserCanAccessAdminArea = $authUser->can(UserPermission::ACCESS_ADMIN_AREA);
 
-        return Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user, $publicAdministration, $authUser, $authUserCanAccessAdminArea) {
+        $pa = $authUser->publicAdministrations()->where('public_administration_id', $publicAdministration->id)->first();
+        $statusPA = UserStatus::coerce($pa->pivot->pa_status);
+
+        return Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user, $publicAdministration, $authUser, $authUserCanAccessAdminArea, $statusPA) {
             $data = [
                 'name' => [
                     'display' => implode('', [
@@ -49,8 +52,8 @@ class UserTransformer extends TransformerAbstract
                 'email' => e($user->email),
                 'added_at' => $user->created_at->format('d/m/Y'),
                 'status' => [
-                    'display' => '<span class="badge user-status ' . strtolower($user->status->key) . '">' . strtoupper($user->status->description) . '</span>',
-                    'raw' => $user->status->description,
+                    'display' => '<span class="badge user-status ' . strtolower($statusPA->key) . '">' . strtoupper($statusPA->description) . '</span>',
+                    'raw' => $statusPA->description,
                 ],
                 'buttons' => [],
                 'icons' => [],

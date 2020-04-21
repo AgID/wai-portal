@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Models\PublicAdministration;
 use App\Models\User;
 use App\Models\Website;
 use Illuminate\Http\JsonResponse;
@@ -72,6 +73,34 @@ trait SendsResponse
                         __('Stato del sito web: :status', [
                             'status' => '<span class="badge website-status ' . strtolower($website->status->key) . '">' . strtoupper($website->status->description) . '</span>.',
                         ]),
+                    ]),
+                'status' => 'info',
+                'icon' => 'it-info-circle',
+            ]);
+    }
+
+    /**
+     * Returns a success response for the specified public administration.
+     *
+     * @param PublicAdministration $website the website
+     *
+     * @return JsonResponse|RedirectResponse the response in json or http redirect format
+     */
+    public function publicAdministrationResponse(PublicAdministration $publicAdministration)
+    {
+        return request()->expectsJson()
+            ? response()->json([
+                'result' => 'ok',
+                'id' => $publicAdministration->id,
+                'name' => e($publicAdministration->name),
+                'status' => $publicAdministration->status->key,
+                'status_description' => $publicAdministration->status->description,
+                'ipa_code' => $publicAdministration->ipa_code,
+            ])
+            : back()->withNotification([
+                'title' => __('Pubblica amministrazione modificata'),
+                'message' => implode("\n", [
+                        __('La pubblica amministrazione :pa è stato aggiornata.', ['pa' => '<strong>' . e($publicAdministration->name) . '</strong>']),
                     ]),
                 'status' => 'info',
                 'icon' => 'it-info-circle',

@@ -126,14 +126,20 @@ class WebsiteController extends Controller
             'status' => WebsiteStatus::PENDING,
         ]);
 
-        $publicAdministration->users()->save($authUser);
+        $publicAdministration->users()->save($authUser, ['pa_email' => $authUser->email, 'pa_status' => $authUser->status->value]);
         // This is the first time we know which public administration the
         // current user belongs, so we need to set the tenant id just now.
         session()->put('tenant_id', $publicAdministration->id);
-        $authUser->roles()->detach();
+
+        if ($authUser->publicAdministrations->isEmpty()) {
+            $authUser->roles()->detach();
+        }
+
         Bouncer::scope()->to($publicAdministration->id);
         $authUser->assign(UserRole::REGISTERED);
-        $authUser->registerAnalyticsServiceAccount();
+        if (!$authUser->hasAnalyticsServiceAccount()) {
+            $authUser->registerAnalyticsServiceAccount();
+        }
         $authUser->setViewAccessForWebsite($website);
         $authUser->syncWebsitesPermissionsToAnalyticsService();
 

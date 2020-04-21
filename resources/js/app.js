@@ -7,6 +7,7 @@ import Forms from './forms';
 import Datatables from './datatables';
 import LogsDatatables from './logsDatatables'
 import WebsiteCheckTracking from './buttons/websiteCheckTracking';
+import userPaActivation from './buttons/userPaActivation';
 import PermissionsToggles from './permissionsToggles';
 import WebsiteArchiveUnarchive from './buttons/websiteArchiveUnarchive';
 import UserSuspendReactivate from './buttons/userSuspendReactivate';
@@ -30,6 +31,7 @@ $(document).ready(() => {
     WebsiteCheckTracking.init();
     WebsiteArchiveUnarchive.init();
     UserVerificationResend.init();
+    userPaActivation.init();
     PublicAdministrationSelector.init();
     FaqSelector.init();
     WidgetResizer.init();
@@ -39,6 +41,7 @@ $(document).ready(() => {
         datatableApi => LogsDatatables.preDatatableInit(datatableApi),
     ], [
         () => WebsiteCheckTracking.init(),
+        () => userPaActivation.init(),
         () => PermissionsToggles.init(),
         () => WebsiteArchiveUnarchive.init(),
         () => WebsiteDeleteRestore.init(),

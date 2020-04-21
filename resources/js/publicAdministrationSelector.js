@@ -1,11 +1,12 @@
 export default (() => {
 
-    const selectPublicAdministration = (publicAdministrationSelector) => {
-        window.location = publicAdministrationSelector.value;
+    const selectPublicAdministration = (publicAdministrationFormSelector) => {
+        publicAdministrationFormSelector.submit();
     };
 
     const init = () => {
         const publicAdministrationSelector = document.querySelector('.pa-selector select[name="public-administration-nav"]');
+        const publicAdministrationFormSelector = document.querySelector('form.pa-selector ');
 
         publicAdministrationSelector && publicAdministrationSelector.addEventListener('change', () => {
             const publicAdministrationSelectorButton = document.querySelector('.pa-selector select[name="public-administration-nav"] ~ .btn.dropdown-toggle');
@@ -14,7 +15,7 @@ export default (() => {
             publicAdministrationSelectorButton.classList.add('loading');
             publicAdministrationSelectorButton.setAttribute('aria-disabled', true);
 
-            selectPublicAdministration(publicAdministrationSelector);
+            selectPublicAdministration(publicAdministrationFormSelector);
         })
     };
 

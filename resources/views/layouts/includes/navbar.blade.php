@@ -13,7 +13,7 @@
                         <div class="close-div sr-only">
                             <button class="btn close-menu" type="button"><span class="it-close"></span>{{ __('chiudi') }}</button>
                         </div>
-                        <div class="menu-wrapper">
+                        <div class="menu-wrapper align-items-center">
                             @if ($authUser || $spidAuthUser)
                             <ul class="navbar-nav primary">
                                 @foreach ($primaryMenuArray as $primaryMenuItem)

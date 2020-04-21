@@ -152,8 +152,7 @@ class UserController extends Controller
         if (!$user->hasAnalyticsServiceAccount()) {
             $user->registerAnalyticsServiceAccount();
         }
-        $user->publicAdministrations()->attach($currentPublicAdministration->id);
-
+        $user->publicAdministrations()->attach($currentPublicAdministration->id, ['pa_email' => $validatedData['email'], 'pa_status' => UserStatus::INVITED]);
         $this->manageUserPermissions($validatedData, $currentPublicAdministration, $user);
 
         event(new UserInvited($user, $authUser, $currentPublicAdministration));
