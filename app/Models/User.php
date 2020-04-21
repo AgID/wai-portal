@@ -171,7 +171,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function publicAdministrations(): BelongsToMany
     {
-        return $this->belongsToMany(PublicAdministration::class);
+        return $this->belongsToMany(PublicAdministration::class)->withPivot('pa_status')->withPivot('pa_email');
     }
 
     /**
