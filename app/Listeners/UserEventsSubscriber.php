@@ -57,7 +57,6 @@ class UserEventsSubscriber implements ShouldQueue
      */
     public function onInvited(UserInvited $event): void
     {
-
         $user = $event->getUser();
         $invitedBy = $event->getInvitedBy();
 

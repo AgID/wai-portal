@@ -5,10 +5,7 @@ namespace App\Mail;
 use App\Models\PublicAdministration;
 use App\Models\User;
 use App\Models\Website;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Lang;
-use Illuminate\Support\Facades\URL;
 
 /**
  * Website added email to public administration administrators.
@@ -36,15 +33,13 @@ class UserSimplePublicAdministrationInvite extends UserMailable
      */
     public function build(): UserSimplePublicAdministrationInvite
     {
-
         logger()->notice('UserSimplePublicAdministrationInvite@build');
 
         return $this->subject(__('Invito alla :pa su :app', ['pa' => $this->publicAdministration->name, 'app' => config('app.name')]))
             ->markdown('mail.user_invited_no_link')->with([
                 'locale' => Lang::getLocale(),
                 'user' => $this->recipient,
-                'publicAdministration' => $this->publicAdministration
+                'publicAdministration' => $this->publicAdministration,
             ]);
     }
-
 }

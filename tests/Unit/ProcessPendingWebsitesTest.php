@@ -160,7 +160,7 @@ class ProcessPendingWebsitesTest extends TestCase
     {
         $user = factory(User::class)->state('pending')->create();
         $publicAdministration = factory(PublicAdministration::class)->create();
-        $publicAdministration->users()->sync([$user->id => ['pa_email'=>$user->email, 'pa_status'=>UserStatus::PENDING]]);
+        $publicAdministration->users()->sync([$user->id => ['pa_email' => $user->email, 'pa_status' => UserStatus::PENDING]]);
         $website = factory(Website::class)->make([
             'type' => WebsiteType::INSTITUTIONAL,
             'public_administration_id' => $publicAdministration->id,

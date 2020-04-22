@@ -23,7 +23,6 @@ class WebsiteTransformer extends TransformerAbstract
      */
     public function transform(Website $website): array
     {
-
         $authUser = auth()->user();
         $authUserCanAccessAdminArea = $authUser->can(UserPermission::ACCESS_ADMIN_AREA);
         $publicAdministration = $authUserCanAccessAdminArea
