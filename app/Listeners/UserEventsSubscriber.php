@@ -57,6 +57,7 @@ class UserEventsSubscriber implements ShouldQueue
      */
     public function onInvited(UserInvited $event): void
     {
+
         $user = $event->getUser();
         $invitedBy = $event->getInvitedBy();
 
@@ -72,6 +73,10 @@ class UserEventsSubscriber implements ShouldQueue
         if (null !== $publicAdministration) {
             $context['pa'] = $event->getPublicAdministration()->ipa_code;
 
+            if (!empty($user->email_verified_at)) {
+                // Notify the user only if is already confirmed otherwise is notified by classic invitation
+                $user->sendPublicAdministrationSimpleNotification($publicAdministration);
+            }
             //Notify public administration administrators
             $publicAdministration->sendUserInvitedNotificationToAdministrators($user);
         }

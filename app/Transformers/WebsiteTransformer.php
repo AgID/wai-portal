@@ -23,9 +23,13 @@ class WebsiteTransformer extends TransformerAbstract
      */
     public function transform(Website $website): array
     {
-        $publicAdministration = request()->route('publicAdministration');
+
         $authUser = auth()->user();
         $authUserCanAccessAdminArea = $authUser->can(UserPermission::ACCESS_ADMIN_AREA);
+        $publicAdministration = $authUserCanAccessAdminArea
+            ? request()->route('publicAdministration')
+            : current_public_administration();
+
         $websiteUrlLink = array_key_exists('scheme', parse_url($website->url))
             ? e($website->url)
             : 'http://' . e($website->url);
@@ -64,7 +68,7 @@ class WebsiteTransformer extends TransformerAbstract
             ];
 
             if ($website->status->is(WebsiteStatus::PENDING)) {
-                if ($authUser->can(UserPermission::MANAGE_WEBSITES) || $authUser->publicAdministrations()->where('pa_status', UserStatus::PENDING)->first()) {
+                if ($authUser->can(UserPermission::MANAGE_WEBSITES) || $authUser->publicAdministrations()->where('public_administration_id', $publicAdministration->id)->where('pa_status', UserStatus::PENDING)->first()) {
                     $data['icons'][] = [
                         'icon' => 'it-plug',
                         'link' => $authUserCanAccessAdminArea
