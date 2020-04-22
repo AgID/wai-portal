@@ -300,7 +300,7 @@ class CRUDAdminUserTest extends TestCase
         $publicAdministration = factory(PublicAdministration::class)
             ->state('active')
             ->create();
-        $publicAdministration->users()->sync([$user->id]);
+        $publicAdministration->users()->sync([$user->id => ['pa_email'=>$user->email, 'pa_status' => UserStatus::ACTIVE]]);
 
         $this->actingAs($this->user)
             ->json('GET', route('admin.publicAdministration.users.data.json', ['publicAdministration' => $publicAdministration]))

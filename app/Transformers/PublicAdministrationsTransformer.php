@@ -24,7 +24,7 @@ class PublicAdministrationsTransformer extends TransformerAbstract
     {
         $authUser = auth()->user();
 
-        $status = UserStatus::coerce($publicAdministration->pivot->pa_status);
+        $status = UserStatus::coerce(intval($publicAdministration->pivot->pa_status));
         $data = [
             'name' => [
                 'display' => implode('', [

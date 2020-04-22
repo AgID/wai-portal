@@ -356,7 +356,7 @@ class PublicAdministrationEventsSubscriberTest extends TestCase
     public function testPendingPublicAdministrationUpdatedWithRTDChange(): void
     {
         Event::fakeFor(function () {
-            $this->user->status = UserStatus::PENDING;
+            $this->user->publicAdministrations()->sync([$this->publicAdministration->id => ['pa_status' => UserStatus::PENDING]]);
             $this->user->setCreatedAt(now());
             $this->user->save();
         });
