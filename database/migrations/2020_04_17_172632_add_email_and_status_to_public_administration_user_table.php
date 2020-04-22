@@ -31,8 +31,7 @@ class AddEmailAndStatusToPublicAdministrationUserTable extends Migration
     public function down()
     {
         Schema::table('public_administration_user', function (Blueprint $table) {
-            $table->dropColumn('pa_email');
-            $table->dropColumn('pa_status');
+            $table->dropColumn(['pa_email', 'pa_status']);
         });
     }
 }
