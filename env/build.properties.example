@@ -14,6 +14,7 @@ APP_CODE_PATH_CONTAINER=/var/www/html
 
 # Application
 # -----------
+APP_VERSION=0.1-alpha
 APP_DEBUG=true
 APP_CLOSED_BETA_ENABLED=false
 
