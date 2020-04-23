@@ -51,10 +51,12 @@ trait SendsNotificationsToUser
 
     /**
      * Send user activated notification.
+     *
+     * @param PublicAdministration|null $publicAdministration the public administration the user belongs to or null if user is registering a new Public Administration
      */
-    public function sendActivatedNotification(): void
+    public function sendActivatedNotification(?PublicAdministration $publicAdministration = null): void
     {
-        $this->notify(new ActivatedEmail());
+        $this->notify(new ActivatedEmail($publicAdministration));
     }
 
     /**

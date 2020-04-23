@@ -32,10 +32,10 @@ class AuthorizeAnalytics
                 $authorized = true;
             }
             if ($request->routeIs('websites.tracking.check') || $request->routeIs('websites.snippet.javascript')) {
-                $publicAdministration = $request->user()->publicAdministrations()->where('public_administration_id', $currentPublicAdministration->id)->first();
-                $statusPA = UserStatus::coerce(intval($publicAdministration->pivot->pa_status));
+                $publicAdministrationUser = $request->user()->publicAdministrations()->where('public_administration_id', $currentPublicAdministration->id)->first();
+                $statusPublicAdministrationUser = UserStatus::coerce(intval($publicAdministrationUser->pivot->pa_status));
 
-                if ($statusPA->is(UserStatus::PENDING)) {
+                if ($statusPublicAdministrationUser->is(UserStatus::PENDING)) {
                     $authorized = true;
                 }
             }

@@ -24,28 +24,31 @@ class PublicAdministrationsTransformer extends TransformerAbstract
     {
         $authUser = auth()->user();
 
-        $status = UserStatus::coerce(intval($publicAdministration->pivot->pa_status));
+        $statusPublicAdministrationUser = UserStatus::coerce(intval($publicAdministration->pivot->pa_status));
+        $emailPublicAdministrationUser = $publicAdministration->pivot->pa_email;
+
         $data = [
             'name' => [
                 'display' => implode('', [
                     '<span>',
                     '<strong>' . e($publicAdministration->name) . '</strong>',
-                    '<br>',
-                    '<small>' . e($publicAdministration->type) . '</small>',
+                    /* '<br>',
+                    '<small>' . e($publicAdministration->type) . '</small>', */
                     '</span>',
                 ]),
                 'raw' => e($publicAdministration->name),
             ],
             'city' => $publicAdministration->city,
+            'email' => e($emailPublicAdministrationUser),
             'region' => $publicAdministration->region,
             'status' => [
-                'display' => '<span class="badge website-status ' . strtolower($status->key) . '">' . strtoupper($status->description) . '</span>',
-                'raw' => $status->description,
+                'display' => '<span class="badge website-status ' . strtolower($statusPublicAdministrationUser->key) . '">' . strtoupper($statusPublicAdministrationUser->description) . '</span>',
+                'raw' => $statusPublicAdministrationUser->description,
             ],
             'buttons' => [],
         ];
 
-        if ($status->is(UserStatus::INVITED)) {
+        if ($statusPublicAdministrationUser->is(UserStatus::INVITED)) {
             $data['buttons'][] = [
                 'link' => route('publicAdministration.activation', ['uuid' => $authUser->uuid, 'pa' => base64_encode(Hash::make($publicAdministration->id))]),
                 'color' => 'primary',

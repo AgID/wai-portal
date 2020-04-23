@@ -112,7 +112,7 @@ class UserEventsSubscriber implements ShouldQueue
         $publicAdministration = $event->getPublicAdministration();
 
         //Notify user
-        $user->sendActivatedNotification();
+        $user->sendActivatedNotification($publicAdministration);
 
         //Notify public administration administrators
         $publicAdministration->sendUserActivatedNotificationToAdministrators($user);

@@ -103,6 +103,7 @@ class PublicAdministrationController extends Controller
                 ['data' => 'name', 'name' => __('nome'), 'className' => 'text-wrap'],
                 ['data' => 'city', 'name' => __('città')],
                 ['data' => 'region', 'name' => __('regione')],
+                ['data' => 'email', 'name' => __('email')],
                 ['data' => 'status', 'name' => __('stato')],
                 ['data' => 'buttons', 'name' => '', 'orderable' => false],
             ],
@@ -143,9 +144,10 @@ class PublicAdministrationController extends Controller
         });
 
         if ($publicAdministrationConfirmed->isNotEmpty()) {
-            $publicAdministration = PublicAdministration::find($publicAdministrationConfirmed->first()->id);
-
-            return $this->publicAdministrationResponse($publicAdministration);
+            $publicAdministration = $publicAdministrationConfirmed->first();
+            if ($publicAdministration) {
+                return $this->publicAdministrationResponse(PublicAdministration::find($publicAdministration->id));
+            }
         }
 
         return $this->notModifiedResponse();
