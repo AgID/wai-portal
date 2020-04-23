@@ -332,6 +332,11 @@
         <echo msg="Setting files ownership..."/>
         <exec command="docker-compose exec php-fpm chown -R www-data:www-data storage database .env" dir="containers" checkreturn="true"/>
         <exec command="docker-compose exec php-fpm chown -R www-data:www-data /opt/matomo" dir="containers" checkreturn="true"/>
+        <!-- Set certificates -->
+        <echo msg="Copying CA certificate into php-fpm container..."/>
+        <exec command="docker cp nginx/certs/ca/local-root-ca.crt `docker-compose ps -q php-fpm`:/usr/local/share/ca-certificates/" dir="containers" passthru="true"/>
+        <echo msg="Trusting CA certificate..."/>
+        <exec command="docker-compose exec php-fpm /usr/sbin/update-ca-certificates" dir="containers" passthru="true"/>
         <!-- Wait for mariadb container to start gracefully -->
         <echo msg="Waiting for database container to be ready..."/>
         <retry retryDelay="5" retryCount="12">
@@ -570,10 +575,6 @@
         <if>
             <available file="containers" type="dir" property="ignored"/>
             <then>
-                <echo msg="Copying CA certificate into php-fpm container..."/>
-                <exec command="docker cp nginx/certs/ca/local-root-ca.crt `docker-compose ps -q php-fpm`:/usr/local/share/ca-certificates/" dir="containers" passthru="true"/>
-                <echo msg="Trusting CA certificate..."/>
-                <exec command="docker-compose exec php-fpm /usr/sbin/update-ca-certificates" dir="containers" passthru="true"/>
                 <echo msg="Enabling develpment mode in matomo..."/>
                 <exec command="docker-compose exec -u www-data php-fpm /opt/matomo/console development:enable" dir="containers" passthru="true"/>
                 <echo msg="Generating visits..."/>
