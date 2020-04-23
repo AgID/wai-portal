@@ -417,17 +417,18 @@ class CRUDAdminUserTest extends TestCase
             ->create();
         $publicAdministration->users()->sync([$user->id]);
 
+        $fiscalNumber = 'XNTMDF63C44D878E';
+
         $this->actingAs($this->user)
             ->from(route('admin.publicAdministration.users.create', ['publicAdministration' => $publicAdministration]))
             ->post(route('admin.publicAdministration.users.store', ['publicAdministration' => $publicAdministration]), [
                 '_token' => 'test',
                 'email' => $user->email,
-                'fiscal_number' => $user->fiscal_number,
+                'fiscal_number' => $fiscalNumber,
             ])
             ->assertRedirect(route('admin.publicAdministration.users.create', ['publicAdministration' => $publicAdministration]))
             ->assertSessionHasErrors([
-                // 'email',
-                // 'fiscal_number',
+                'email',
                 'permissions',
             ]);
 

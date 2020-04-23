@@ -36,7 +36,6 @@ class StoreUserRequest extends FormRequest
             'email' => 'required|email:rfc,dns|max:75',
             'fiscal_number' => [
                 'required',
-                // 'unique:users',
                 function ($attribute, $value, $fail) {
                     $chk = new FiscalNumberChecker($value);
                     if (!$chk->isFormallyValid()) {

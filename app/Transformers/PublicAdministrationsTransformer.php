@@ -32,8 +32,6 @@ class PublicAdministrationsTransformer extends TransformerAbstract
                 'display' => implode('', [
                     '<span>',
                     '<strong>' . e($publicAdministration->name) . '</strong>',
-                    /* '<br>',
-                    '<small>' . e($publicAdministration->type) . '</small>', */
                     '</span>',
                 ]),
                 'raw' => e($publicAdministration->name),

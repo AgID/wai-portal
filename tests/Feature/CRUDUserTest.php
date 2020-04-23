@@ -169,7 +169,7 @@ class CRUDUserTest extends TestCase
     }
 
     /**
-     * Test public administration user creation successful.
+     * Test public administration user creation and invitation successful.
      *
      * @throws \App\Exceptions\AnalyticsServiceException if unable to connect the Analytics Service
      * @throws \App\Exceptions\CommandErrorException if command is unsuccessful
@@ -221,6 +221,8 @@ class CRUDUserTest extends TestCase
      */
     public function testCreateUserFailValidation(): void
     {
+        $fiscalNumber = 'XNTMDF63C44D878E';
+
         $this->actingAs($this->user)
             ->withSession([
                 'spid_sessionIndex' => 'fake-session-index',
@@ -232,12 +234,11 @@ class CRUDUserTest extends TestCase
             ->post(route('users.store'), [
                 '_token' => 'test',
                 'email' => $this->user->email,
-                'fiscal_number' => $this->user->fiscal_number,
+                'fiscal_number' => $fiscalNumber,
             ])
             ->assertRedirect(route('users.create'))
             ->assertSessionHasErrors([
-                //'email',
-                //'fiscal_number',
+                'email',
                 'permissions',
             ]);
 

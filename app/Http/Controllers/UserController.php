@@ -145,7 +145,6 @@ class UserController extends Controller
                 __("Abbiamo inviato un invito all'indirizzo email :email.", ['email' => '<strong>' . e($validatedData['email']) . '</strong>']),
                 "\n" . __("L'invito potrà essere confermato dall'utente al prossimo accesso."),
             ]);
-
         } else {
             $user = User::create([
                 'uuid' => Uuid::uuid4()->toString(),
