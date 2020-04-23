@@ -135,17 +135,29 @@ class UserController extends Controller
                     'title' => __('Non è possibile inoltrare l\'invito'),
                     'icon' => 'it-clock',
                     'message' => implode("\n", [
-                        __("L'utente fa già parte di questa pa"),
+                        __("L'utente fa già parte di questa pubblica amministrazione"),
                     ]),
                     'image' => asset('images/closed.svg'),
                 ]);
             }
+
+            $user_message = implode("\n", [
+                __("Abbiamo inviato un invito all'indirizzo email :email.", ['email' => '<strong>' . e($validatedData['email']) . '</strong>']),
+                "\n" . __("L'invito potrà essere confermato dall'utente al prossimo accesso."),
+            ]);
+
         } else {
             $user = User::create([
                 'uuid' => Uuid::uuid4()->toString(),
                 'fiscal_number' => $validatedData['fiscal_number'],
                 'email' => $validatedData['email'],
                 'status' => UserStatus::INVITED,
+            ]);
+
+            $user_message = implode("\n", [
+                __("Abbiamo inviato un invito all'indirizzo email :email.", ['email' => '<strong>' . e($validatedData['email']) . '</strong>']),
+                "\n" . __("L'invito scade dopo :expire giorni e può essere rinnovato.", ['expire' => config('auth.verification.expire')]),
+                "\n<strong>" . __("Attenzione! Se dopo :purge giorni l'utente non avrà ancora accettato l'invito, sarà rimosso.", ['purge' => config('auth.verification.purge')]) . '</strong>',
             ]);
         }
 
@@ -160,11 +172,7 @@ class UserController extends Controller
         return redirect()->to($redirectUrl)->withModal([
             'title' => __('Invito inoltrato'),
             'icon' => 'it-clock',
-            'message' => implode("\n", [
-                __("Abbiamo inviato un invito all'indirizzo email :email.", ['email' => '<strong>' . e($validatedData['email']) . '</strong>']),
-                "\n" . __("L'invito scade dopo :expire giorni e può essere rinnovato.", ['expire' => config('auth.verification.expire')]),
-                "\n<strong>" . __("Attenzione! Se dopo :purge giorni l'utente non avrà ancora accettato l'invito, sarà rimosso.", ['purge' => config('auth.verification.purge')]) . '</strong>',
-            ]),
+            'message' => $user_message,
             'image' => asset('images/invitation-email-sent.svg'),
         ]);
     }
