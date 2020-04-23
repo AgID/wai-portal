@@ -679,17 +679,6 @@ CREATE TABLE `site` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `site`
---
-
-LOCK TABLES `site` WRITE;
-/*!40000 ALTER TABLE `site` DISABLE KEYS */;
-INSERT INTO `site` VALUES
-  (1,'Web Analytics Italia','http://localhost','2019-01-29 00:00:00',0,1,'','','Europe/Rome','EUR',0,'','','','','website',0,'anonymous');
-/*!40000 ALTER TABLE `site` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `site_setting`
 --
 
