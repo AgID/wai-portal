@@ -2,7 +2,7 @@ FROM alpine:latest
 
 LABEL maintainer="Davide Porrovecchio <davide.porrovecchio@agid.gov.it>"
 
-RUN apk --update add curl && rm /var/cache/apk/*
+RUN apk --update add curl patch && rm /var/cache/apk/*
 
 RUN mkdir -p /opt/matomo
 ARG MATOMO_VERSION
@@ -26,6 +26,7 @@ COPY ./matomo.sql /opt/matomo-install/matomo.sql
 COPY ./install_matomo_db.sh /opt/matomo-install/install_matomo_db.sh
 COPY ./install_plugins_db.sh /opt/matomo-install/install_plugins_db.sh
 COPY ./plugins-sql/* /opt/matomo-install/plugins/
+# COPY ./patches/* /opt/matomo-install/patches/
 
 RUN curl -fsSL -o DBIP-City.mmdb.gz \
         "https://download.db-ip.com/free/dbip-city-lite-`date +%Y-%m`.mmdb.gz" \
@@ -135,3 +136,5 @@ RUN sed -i -e s/@MATOMO_ROOT_USER@/${MATOMO_ROOT_USER}/g /opt/matomo-install/ins
     sed -i -e s/@MATOMO_DB_PASSWORD@/${MATOMO_DB_PASSWORD}/g /opt/matomo-install/install_matomo_db.sh && \
     sed -i -e s#@MATOMO_ROOT_PASSWORD@#${MATOMO_ROOT_PASSWORD}#g /opt/matomo-install/install_matomo_db.sh && \
     sed -i -e s/@MATOMO_ROOT_APIKEY@/${MATOMO_ROOT_APIKEY}/g /opt/matomo-install/install_matomo_db.sh
+
+# RUN find -P /opt/matomo-install/patches -name *.diff -exec sh -c 'patch -p1 -d /opt/matomo/ < {}' \;
