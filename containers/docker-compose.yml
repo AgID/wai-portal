@@ -20,6 +20,8 @@ services:
 # php-fpm
   php-fpm:
     image: wai-php-fpm:dev
+    # environment:
+    #   - FAKETIME=+3d
     build:
       context: ./php-fpm
       args:

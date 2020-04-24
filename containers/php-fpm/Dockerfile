@@ -7,7 +7,7 @@ LABEL maintainer="Davide Porrovecchio <davide.porrovecchio@agid.gov.it>"
 ENV DEBIAN_FRONTEND noninteractive
 
 # php required extensions
-RUN apt-get update && apt-get install -y --no-install-recommends procps libicu-dev libpng-dev libfreetype6-dev libjpeg62-turbo-dev libjpeg62-turbo libpng16-16 libfreetype6 libzip-dev unzip && rm -rf /var/lib/apt/lists/* \
+RUN apt-get update && apt-get install -y --no-install-recommends libfaketime procps libicu-dev libpng-dev libfreetype6-dev libjpeg62-turbo-dev libjpeg62-turbo libpng16-16 libfreetype6 libzip-dev unzip && rm -rf /var/lib/apt/lists/* \
     && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
     && docker-php-ext-install pdo_mysql gd opcache zip bcmath pcntl intl \
     && apt-get purge -y --auto-remove libpng-dev libfreetype6-dev libjpeg62-turbo-dev
@@ -56,6 +56,9 @@ RUN apt-get clean && \
 
 ARG APP_CODE_PATH_CONTAINER
 WORKDIR ${APP_CODE_PATH_CONTAINER}
+
+ENV LD_PRELOAD /usr/lib/x86_64-linux-gnu/faketime/libfaketime.so.1
+ENV FAKETIME_NO_CACHE 1
 
 CMD ["php-fpm"]
 
