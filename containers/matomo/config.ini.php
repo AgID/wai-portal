@@ -150,7 +150,6 @@ PluginsInstalled[] = "DevicePlugins"
 PluginsInstalled[] = "Heartbeat"
 PluginsInstalled[] = "UserId"
 PluginsInstalled[] = "CustomPiwikJs"
-PluginsInstalled[] = "Tour"
 PluginsInstalled[] = "WAIMatomoTheme"
 @MATOMO_PLUGINS_INSTALLED@
 
