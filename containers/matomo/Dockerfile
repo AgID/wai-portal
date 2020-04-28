@@ -22,7 +22,7 @@ RUN curl -fsSL -o matomo.tar.gz \
     && rm matomo.tar.gz
 
 COPY ./config.ini.php /opt/matomo/config/config.ini.php
-COPY ./matomo.sql /opt/matomo-install/matomo.sql
+COPY ./database/matomo*.sql /opt/matomo-install/
 COPY ./install_matomo_db.sh /opt/matomo-install/install_matomo_db.sh
 COPY ./install_plugins_db.sh /opt/matomo-install/install_plugins_db.sh
 COPY ./plugins-sql/* /opt/matomo-install/plugins/
@@ -131,7 +131,8 @@ RUN sed -i -e s/@DB_PASSWORD@/${DB_PASSWORD}/g /opt/matomo-install/install_matom
 ARG MATOMO_ROOT_USER
 ARG MATOMO_ROOT_PASSWORD
 ARG MATOMO_ROOT_APIKEY
-RUN sed -i -e s/@MATOMO_ROOT_USER@/${MATOMO_ROOT_USER}/g /opt/matomo-install/install_matomo_db.sh && \
+RUN sed -i -e s/@MATOMO_VERSION@/${MATOMO_VERSION}/g /opt/matomo-install/install_matomo_db.sh && \
+    sed -i -e s/@MATOMO_ROOT_USER@/${MATOMO_ROOT_USER}/g /opt/matomo-install/install_matomo_db.sh && \
     sed -i -e s/@MATOMO_DB_USER@/${MATOMO_DB_USER}/g /opt/matomo-install/install_matomo_db.sh && \
     sed -i -e s/@MATOMO_DB_PASSWORD@/${MATOMO_DB_PASSWORD}/g /opt/matomo-install/install_matomo_db.sh && \
     sed -i -e s#@MATOMO_ROOT_PASSWORD@#${MATOMO_ROOT_PASSWORD}#g /opt/matomo-install/install_matomo_db.sh && \
