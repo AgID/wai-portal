@@ -20,8 +20,6 @@ services:
 # php-fpm
   php-fpm:
     image: wai-php-fpm:dev
-    # environment:
-    #   - FAKETIME=+3d
     build:
       context: ./php-fpm
       args:
@@ -90,15 +88,15 @@ services:
 
 # mariadb
   mariadb:
-    image: mariadb
+    image: bitnami/mariadb
     volumes:
-      - mariadb-data:/var/lib/mysql
+      - mariadb-data:/bitnami/mariadb
       - matomo-install:/opt/matomo-install/
     environment:
-      - MYSQL_DATABASE=${MARIADB_DATABASE}
-      - MYSQL_USER=${MARIADB_USER}
-      - MYSQL_PASSWORD=${MARIADB_PASSWORD}
-      - MYSQL_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
+      - MARIADB_DATABASE=${MARIADB_DATABASE}
+      - MARIADB_USER=${MARIADB_USER}
+      - MARIADB_PASSWORD=${MARIADB_PASSWORD}
+      - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
     networks:
       - backend
 

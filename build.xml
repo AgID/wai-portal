@@ -311,6 +311,7 @@
                 <exec command="docker-compose up -d --build nginx mariadb redis ipa-redisearch elasticsearch php-fpm matomo" dir="containers" passthru="true" checkreturn="true"/>
             </then>
             <else>
+                <exec command="docker-compose up -d --build nginx mariadb redis ipa-redisearch mailhog php-fpm matomo queue-worker elasticsearch spid-testenv" dir="containers" passthru="true" checkreturn="true"/>
                 <if>
                     <or>
                         <equals arg1="${REDIS_INDEXES_USE_SENTINELS}" arg2="true"/>
@@ -320,11 +321,17 @@
                         <contains string="${QUEUE_REDIS_CONNECTION}" substring="sentinel"/>
                     </or>
                     <then>
-                        <exec command="docker-compose up -d --build nginx mariadb redis ipa-redisearch redis-sentinel mailhog php-fpm matomo queue-worker elasticsearch spid-testenv" dir="containers" passthru="true" checkreturn="true"/>
+                        <echo msg="Starting redis-sentinel container..."/>
+                        <exec command="docker-compose up -d --build redis-sentinel" dir="containers" passthru="true" checkreturn="true"/>
                     </then>
-                    <else>
-                        <exec command="docker-compose up -d --build nginx mariadb redis ipa-redisearch mailhog php-fpm matomo queue-worker elasticsearch spid-testenv" dir="containers" passthru="true" checkreturn="true"/>
-                    </else>
+                </if>
+                <if>
+                    <equals arg1="${MARIADB_REPLICA}" arg2="true"/>
+                    <then>
+                        <echo msg="Starting mariadb-slave container..."/>
+                        <exec command="docker-compose up -d --build mariadb-slave" dir="containers" passthru="true" checkreturn="true"/>
+                        <exec command="docker-compose exec -u root mariadb sh -c 'apt update; apt install -y iproute2'" dir="containers" checkreturn="true"/>
+                    </then>
                 </if>
             </else>
         </if>
@@ -350,7 +357,7 @@
                 <echo msg="Installing Matomo database..."/>
                 <exec command="docker-compose exec mariadb bash /opt/matomo-install/install_matomo_db.sh" dir="containers" checkreturn="true"/>
                 <exec command="docker-compose exec mariadb bash /opt/matomo-install/install_plugins_db.sh" dir="containers" checkreturn="true"/>
-                <exec command="docker-compose exec mariadb sh -c 'rm -Rf /opt/matomo-install/*'" dir="containers" checkreturn="true"/>
+                <exec command="docker-compose exec -u root mariadb sh -c 'rm -Rf /opt/matomo-install/*'" dir="containers" checkreturn="true"/>
             </then>
         </if>
         <!-- Initialize ElasticSearch -->
@@ -403,15 +410,15 @@
         <echo msg="Updating matomo database for premium plugins..." />
         <exec command="docker cp matomo/premium_plugins $(docker-compose ps -q mariadb):/tmp"
               dir="containers" checkreturn="true"/>
-        <exec command="docker-compose exec mariadb chmod +x /tmp/premium_plugins/install_premium_plugins_db.sh"
+        <exec command="docker-compose exec -u root mariadb chmod +x /tmp/premium_plugins/install_premium_plugins_db.sh"
               dir="containers" checkreturn="true"/>
-        <exec command="docker-compose exec mariadb /tmp/premium_plugins/install_premium_plugins_db.sh
+        <exec command="docker-compose exec -u root mariadb /tmp/premium_plugins/install_premium_plugins_db.sh
               --rollup-id ${MATOMO_PUBLIC_ROLLUP_ID}
               --db-user root
               --db-password ${MARIADB_ROOT_PASSWORD}
               --database matomo"
               dir="containers" checkreturn="true"/>
-        <exec command="docker-compose exec mariadb rm -Rf /tmp/premium_plugins"
+        <exec command="docker-compose exec -u root mariadb rm -Rf /tmp/premium_plugins"
               dir="containers" checkreturn="true"/>
         <!-- Clear sessions and caches -->
         <echo msg="Clearing sessions and caches..."/>

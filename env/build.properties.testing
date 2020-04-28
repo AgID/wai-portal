@@ -111,6 +111,7 @@ MARIADB_DATABASE=default
 MARIADB_USER=default
 MARIADB_PASSWORD=secret
 MARIADB_ROOT_PASSWORD=root
+MARIADB_REPLICA=false
 
 # Connections settings
 # --------------------
