@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "04067b9229a96e84070366bbca1ba0cc",
+    "content-hash": "bbda3f2ead1cc33715cc8a096e45d909",
     "packages": [
         {
             "name": "bensampo/laravel-enum",
@@ -2815,31 +2815,31 @@
         },
         {
             "name": "silber/bouncer",
-            "version": "v1.0.0-rc.6",
+            "version": "v1.0.0-rc.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/JosephSilber/bouncer.git",
-                "reference": "7a410f2bf7e9878cb5f80b07056e70d9ec5e2df0"
+                "reference": "c716ee07f9568e9774b6934314620bc9d9d1d65a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/JosephSilber/bouncer/zipball/7a410f2bf7e9878cb5f80b07056e70d9ec5e2df0",
-                "reference": "7a410f2bf7e9878cb5f80b07056e70d9ec5e2df0",
+                "url": "https://api.github.com/repos/JosephSilber/bouncer/zipball/c716ee07f9568e9774b6934314620bc9d9d1d65a",
+                "reference": "c716ee07f9568e9774b6934314620bc9d9d1d65a",
                 "shasum": ""
             },
             "require": {
-                "illuminate/auth": "5.1.20 - 5.8|^6.0",
-                "illuminate/cache": "5.1.20 - 5.8|^6.0",
-                "illuminate/container": "5.1.20 - 5.8|^6.0",
-                "illuminate/contracts": "5.1.20 - 5.8|^6.0",
-                "illuminate/database": "5.1.20 - 5.8|^6.0"
+                "illuminate/auth": "^6.0|^7.0",
+                "illuminate/cache": "^6.0|^7.0",
+                "illuminate/container": "^6.0|^7.0",
+                "illuminate/contracts": "^6.0|^7.0",
+                "illuminate/database": "^6.0|^7.0",
+                "php": "^7.2"
             },
             "require-dev": {
-                "illuminate/console": "5.1.20 - 5.8|^6.0",
-                "illuminate/events": "5.1.20 - 5.8|^6.0",
+                "illuminate/console": "^6.0|^7.0",
+                "illuminate/events": "^6.0|^7.0",
                 "larapack/dd": "^1.1",
-                "mockery/mockery": "^0.9.5",
-                "phpunit/phpunit": "^4.8.35"
+                "phpunit/phpunit": "^8.0"
             },
             "suggest": {
                 "illuminate/console": "Allows running the bouncer:clean artisan command",
@@ -2881,7 +2881,7 @@
                 "permissions",
                 "roles"
             ],
-            "time": "2019-09-04T03:29:16+00:00"
+            "time": "2020-03-31T15:14:45+00:00"
         },
         {
             "name": "spatie/laravel-webhook-client",
