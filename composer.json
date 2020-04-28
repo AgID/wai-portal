@@ -36,7 +36,7 @@
         "php": "^7.3",
         "bensampo/laravel-enum": "^1.25",
         "davejamesmiller/laravel-breadcrumbs": "^5.3",
-        "davidepastore/codice-fiscale": "^0.6.0",
+        "davidepastore/codice-fiscale": "^0.7.0",
         "elasticsearch/elasticsearch": "7.6.*",
         "ethanhann/redisearch-php": "^1.0",
         "fideloper/proxy": "^4.2",
