@@ -55,9 +55,10 @@ class VerificationController extends Controller
     public function verify(Request $request, string $uuid, string $hash): RedirectResponse
     {
         $user = User::where('uuid', $uuid)->first();
+        $authUser = $request->user();
 
-        if (!$user || !Hash::check($user->email, base64_decode($hash, true))) {
-            throw new AuthorizationException('Current user does not match invitation.');
+        if (!$authUser->is($user) || !Hash::check($authUser->email, base64_decode($hash, true))) {
+            throw new AuthorizationException("L'utente corrente non corrisponde alla richiesta di verifica.");
         }
 
         if ($user->hasVerifiedEmail()) {
