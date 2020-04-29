@@ -22,7 +22,8 @@ class SelectTenant
         $authUser = $request->user();
         if ($authUser && !$authUser->isA(UserRole::SUPER_ADMIN)) {
             if (empty(session('tenant_id')) && $authUser->publicAdministrations->isNotEmpty()) {
-                $selectNoRedirectRoutes = ['public-administrations', 'public-administrations/*', 'spid/logout', 'user/verify/*', 'search-ipa-index', 'websites/store-primary'];
+                $selectNoRedirectRoutes = ['public-administrations', 'public-administrations/*', 'spid/logout',
+                    'user/verify', 'user/verify/*', 'search-ipa-index', 'websites/store-primary', ];
 
                 $activePublicAdministrations = $authUser->publicAdministrations()->where('pa_status', UserStatus::ACTIVE)->get()->toArray();
                 switch (count($activePublicAdministrations)) {
@@ -35,7 +36,7 @@ class SelectTenant
                         if (!$request->is($selectNoRedirectRoutes)) {
                             return redirect()->route('publicAdministrations.show');
                         }
-                            // no break
+                        break;
                     default:
                         if (!$request->is($selectNoRedirectRoutes)) {
                             return redirect()->route('publicAdministrations.select');

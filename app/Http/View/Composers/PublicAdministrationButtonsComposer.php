@@ -3,6 +3,7 @@
 namespace App\Http\View\Composers;
 
 use App\Enums\UserRole;
+use App\Enums\UserStatus;
 use Illuminate\Http\Request;
 use Illuminate\Session\Store;
 use Illuminate\View\View;
@@ -52,12 +53,12 @@ class PublicAdministrationButtonsComposer
                 break;
             case 'admin.publicAdministrations.show':
             case 'publicAdministrations.show':
-                $showSelectButton = true;
+                $showSelectButton = $this->request->user()->publicAdministrations()->where('pa_status', UserStatus::ACTIVE)->get()->isNotEmpty();
                 $showAddButton = true;
                 break;
             case 'admin.publicAdministrations.add':
             case 'publicAdministrations.add':
-                $showSelectButton = true;
+                $showSelectButton = $this->request->user()->publicAdministrations()->where('pa_status', UserStatus::ACTIVE)->get()->isNotEmpty();
                 $showInvitedButton = true;
                 break;
         }
