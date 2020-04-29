@@ -24,7 +24,7 @@
         "eslint-loader": "^4.0.2",
         "eslint-plugin-vue": "^6.2.2",
         "iframe-resizer": "^4.2.10",
-        "jquery": "^3.4.1",
+        "jquery": "^3.5.0",
         "laravel-mix": "^5.0.4",
         "laravel-mix-eslint-config": "^0.1.7",
         "laravel-mix-stylelint": "^0.2.0",
