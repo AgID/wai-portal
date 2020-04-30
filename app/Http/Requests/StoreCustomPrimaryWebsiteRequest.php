@@ -21,13 +21,13 @@ class StoreCustomPrimaryWebsiteRequest extends FormRequest
     {
         return [
             'public_administration_name' => 'required|max:255',
-            'site' => 'required|url|unique:websites|max:255',
+            'url' => 'required|url|unique:websites|max:255',
             'city' => 'required|alpha_name|min:2|max:40',
             'county' => 'required|alpha_name|min:2|max:10',
             'region' => 'required|alpha_name|min:2|max:40',
             'pec' => 'nullable|email:rfc,dns|max:75',
             'rtd_name' => 'nullable|alpha_name|min:2|max:50',
-            'rtd_mail' => 'nullable|required_if:rtd_name|email:rfc,dns|max:75',
+            'rtd_mail' => 'nullable|required_with:rtd_name|email:rfc,dns|max:75',
             'rtd_pec' => 'nullable|email:rfc,dns|max:75',
         ];
     }
@@ -35,10 +35,10 @@ class StoreCustomPrimaryWebsiteRequest extends FormRequest
     public function withValidator(Validator $validator): void
     {
         $validator->after(function (Validator $validator) {
-            if (filled($this->input('site'))) {
-                $host = parse_url($this->input('site'), PHP_URL_HOST);
+            if (filled($this->input('url'))) {
+                $host = parse_url($this->input('url'), PHP_URL_HOST);
                 if ($host && !$this->checkIsNotPrimary($host)) {
-                    $validator->errors()->add('site', __("L'indirizzo inserito appartiene a un'altra pubblica amministrazione."));
+                    $validator->errors()->add('url', __("L'indirizzo inserito appartiene a un'altra pubblica amministrazione."));
                 }
             }
         });

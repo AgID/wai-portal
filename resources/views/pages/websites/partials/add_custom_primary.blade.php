@@ -5,7 +5,7 @@
 @section('content')
     @component('layouts.components.box', ['classes' => 'rounded'])
     <h3>{{ __('Crea una pubblica amministrazione') }}</h3>
-    <form method="post" action="{{ route('websites.store.primary') }}" class="needs-validation" novalidate>
+    <form method="post" action="{{ route('websites.store.primary.custom') }}" class="needs-validation" novalidate>
         @csrf
         <div class="row mt-5 justify-content-between">
             <div class="col-md-6">
@@ -39,10 +39,10 @@
                             <div class="input-group-prepend">
                                 <div class="input-group-text"><svg class="icon icon-sm"><use xlink:href="{{ asset('svg/sprite.svg#it-code-circle') }}"></use></svg></div>
                             </div>
-                            <label for="site">{{ __('URL sito istituzionale') }}</label>
-                            <input type="text" class="form-control{{ $errors->has('site') ? ' is-invalid' : '' }}" id="site" name="site" value="{{ old('site') }}" aria-required="true" required>
-                            @error('site')
-                            <div class="invalid-feedback">{{ $errors->first('site') }}</div>
+                            <label for="url">{{ __('URL sito istituzionale') }}</label>
+                            <input type="text" class="form-control{{ $errors->has('url') ? ' is-invalid' : '' }}" id="url" name="url" value="{{ old('url') }}" aria-required="true" required>
+                            @error('url')
+                            <div class="invalid-feedback">{{ $errors->first('url') }}</div>
                             @else
                             <div class="invalid-feedback">{{ __('validation.required', ['attribute' => __('validation.attributes.url')]) }}</div>
                             @enderror

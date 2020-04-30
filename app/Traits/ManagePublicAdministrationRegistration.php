@@ -15,7 +15,7 @@ trait ManagePublicAdministrationRegistration
 {
     use InteractsWithRedisIndex;
 
-    protected function registerPublicAdministration(User $user, PublicAdministration $publicAdministration, string $url): Website
+    protected function registerPublicAdministration(User $user, PublicAdministration $publicAdministration, string $url, bool $custom = false): Website
     {
         $analyticsId = app()->make('analytics-service')->registerSite(__('Sito istituzionale'), $url, $publicAdministration->name);
 
@@ -23,7 +23,7 @@ trait ManagePublicAdministrationRegistration
         $website = Website::create([
             'name' => $publicAdministration->name,
             'url' => $url,
-            'type' => WebsiteType::INSTITUTIONAL,
+            'type' => $custom ? WebsiteType::CUSTOM : WebsiteType::INSTITUTIONAL,
             'public_administration_id' => $publicAdministration->id,
             'analytics_id' => $analyticsId,
             'slug' => Str::slug($url),

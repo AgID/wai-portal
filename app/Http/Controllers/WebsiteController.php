@@ -411,6 +411,45 @@ class WebsiteController extends Controller
     }
 
     /**
+     * Force website tracking status to active.
+     *
+     * @param PublicAdministration $publicAdministration the public administration the website belongs to
+     * @param Website $website the website to check
+     *
+     * @return JsonResponse|RedirectResponse the response
+     */
+    public function forceTracking(PublicAdministration $publicAdministration, Website $website)
+    {
+
+        try {
+            if ($website->status->is(WebsiteStatus::PENDING) && $website->type->is(WebsiteType::CUSTOM)) {
+                $this->activate($website);
+                event(new WebsiteActivated($website));
+                return $this->websiteResponse($website);
+            }
+
+            throw new InvalidWebsiteStatusException('Unable to check activation for website ' . $website->info . ' in status ' . $website->status->key . '.');
+        } catch (AnalyticsServiceException | BindingResolutionException $exception) {
+            report($exception);
+            $code = $exception->getCode();
+            $message = 'Internal Server Error';
+            $httpStatusCode = 500;
+        } catch (InvalidWebsiteStatusException $exception) {
+            report($exception);
+            $code = $exception->getCode();
+            $message = 'Invalid operation for current website status';
+            $httpStatusCode = 400;
+        } catch (CommandErrorException $exception) {
+            report($exception);
+            $code = $exception->getCode();
+            $message = 'Bad Request';
+            $httpStatusCode = 400;
+        }
+
+        return $this->errorResponse($message, $code, $httpStatusCode);
+    }
+
+    /**
      * Archive website request.
      * Only active and not primary type websites can be archived.
      *
