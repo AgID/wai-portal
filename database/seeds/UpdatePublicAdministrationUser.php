@@ -15,7 +15,7 @@ class UpdatePublicAdministrationUser extends Seeder
         User::all()->map(function ($user) {
             if ($user->publicAdministrations->isNotEmpty()) {
                 $publicAdministrationsIdWithEmailAndStatus = $user->publicAdministrations->pluck('name', 'id')->map(function () use ($user) {
-                    return ['pa_email' => $user->email, 'pa_status' => $user->status->value];
+                    return ['user_email' => $user->email, 'user_status' => $user->status->value];
                 })->toArray();
                 $user->publicAdministrations()->sync($publicAdministrationsIdWithEmailAndStatus);
             }

@@ -17,7 +17,6 @@ use Faker\Provider\it_IT\Person;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Italia\SPIDAuth\SPIDUser;
 use Silber\Bouncer\BouncerFacade as Bouncer;
@@ -74,14 +73,14 @@ class InviteUserTest extends TestCase
         Event::fake();
 
         $this->publicAdministration = factory(PublicAdministration::class)
-        ->state('active')
-        ->create();
+            ->state('active')
+            ->create();
 
         $this->user = factory(User::class)->create([
             'status' => UserStatus::ACTIVE,
             'email_verified_at' => Date::now(),
         ]);
-        $this->publicAdministration->users()->sync([$this->user->id => ['pa_email' => $this->user->email, 'pa_status' => UserStatus::ACTIVE]]);
+        $this->publicAdministration->users()->sync([$this->user->id => ['user_email' => $this->user->email, 'user_status' => UserStatus::ACTIVE]]);
 
         $this->secondUser = factory(User::class)->create([
             'status' => UserStatus::ACTIVE,
@@ -186,7 +185,7 @@ class InviteUserTest extends TestCase
      */
     public function testInviteRegisteredUserFailValidation(): void
     {
-        $this->publicAdministration->users()->sync([$this->secondUser->id => ['pa_email' => $this->secondUser->email, 'pa_status' => UserStatus::ACTIVE]]);
+        $this->publicAdministration->users()->sync([$this->secondUser->id => ['user_email' => $this->secondUser->email, 'user_status' => UserStatus::ACTIVE]]);
 
         $this->actingAs($this->user)
             ->withSession([
@@ -225,7 +224,7 @@ class InviteUserTest extends TestCase
      */
     public function testStoreWebsiteWhitPendingInviteSuccessful(): void
     {
-        $this->publicAdministration->users()->sync([$this->secondUser->id => ['pa_email' => $this->secondUser->email, 'pa_status' => UserStatus::INVITED]], false);
+        $this->publicAdministration->users()->sync([$this->secondUser->id => ['user_email' => $this->secondUser->email, 'user_status' => UserStatus::INVITED]], false);
 
         $this->actingAs($this->secondUser)
             ->withSession([
@@ -265,13 +264,21 @@ class InviteUserTest extends TestCase
      */
     public function testConfirmInvitationSuccess(): void
     {
-        $this->publicAdministration->users()->sync([$this->secondUser->id => ['pa_email' => $this->secondUser->email, 'pa_status' => UserStatus::INVITED]], false);
-        $this->actingAs($this->user)
+        $this->publicAdministration->users()->sync([
+            $this->secondUser->id => [
+                'user_email' => $this->secondUser->email,
+                'user_status' => UserStatus::INVITED,
+            ],
+        ], false);
+        $this->actingAs($this->secondUser)
             ->withSession([
                 'spid_sessionIndex' => 'fake-session-index',
                 'spid_user' => $this->spidUser,
             ])
-            ->json('GET', route('publicAdministration.activation', ['uuid' => $this->secondUser->uuid, 'pa' => base64_encode(Hash::make($this->publicAdministration->id))]))
+            ->json('POST', route('publicAdministration.activate', [
+                'uuid' => $this->secondUser->uuid,
+                'publicAdministration' => $this->publicAdministration->ipa_code,
+            ]))
             ->assertOk()
             ->assertJsonFragment([
                 'name' => e($this->publicAdministration->name),

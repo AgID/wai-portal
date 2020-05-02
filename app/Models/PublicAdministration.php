@@ -130,7 +130,7 @@ class PublicAdministration extends Model
      */
     public function users(): BelongsToMany
     {
-        return $this->belongsToMany(User::class)->withPivot('pa_status')->withPivot('pa_email');
+        return $this->belongsToMany(User::class)->withPivot('user_status')->withPivot('user_email');
     }
 
     /**
@@ -163,8 +163,7 @@ class PublicAdministration extends Model
     public function getAdministrators(): Collection
     {
         if ($this->status->is(PublicAdministrationStatus::PENDING)) {
-            //return $this->users()->where('status', UserStatus::PENDING)->get();
-            return $this->users()->where('pa_status', UserStatus::PENDING)->get();
+            return $this->users()->where('user_status', UserStatus::PENDING)->get();
         }
 
         return Bouncer::scope()->onceTo($this->id, function () {

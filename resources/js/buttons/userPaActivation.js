@@ -11,10 +11,10 @@ export default (() => {
         userPaActivationButtons.map(userPaActivationButton => {
             const isAjax = 'ajax' in userPaActivationButton.dataset;
             const success = response => {
-
                 const showWhenActiveElements = [...document.querySelectorAll('.show-when-active')];
+
                 Notification.showNotification(I18n.t('pubblica amministrazione confermata'), [
-                    I18n.t('Ora puoi accedere a'),
+                    I18n.t('Adesso puoi accedere a'),
                     '<strong>' + response.data.name + '</strong>'
                 ].join(' '), 'success', 'it-check-circle');
 
@@ -25,7 +25,7 @@ export default (() => {
             }
             const notModified = () => {}
 
-            isAjax && AjaxButton.init(userPaActivationButton, 'get', null, success, notModified);
+            isAjax && AjaxButton.init(userPaActivationButton, 'post', null, success, notModified);
             isAjax || FormButton.init(userPaActivationButton, 'get');
         });
     }

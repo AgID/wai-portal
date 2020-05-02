@@ -33,7 +33,7 @@ abstract class UserMailable extends Mailable
      */
     public function __construct(User $recipient, ?PublicAdministration $publicAdministration = null)
     {
-        $recipient->email = $this->recipientSetSpecificEmailForUserPublicAdministration($recipient, $publicAdministration);
+        $recipient->email = $this->getUserEmailForPublicAdministration($recipient, $publicAdministration);
         $this->recipient = $recipient;
         $this->publicAdministration = $publicAdministration;
     }

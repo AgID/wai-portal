@@ -3,7 +3,6 @@
 namespace App\Transformers;
 
 use App\Enums\UserPermission;
-use App\Enums\UserStatus;
 use App\Enums\WebsiteStatus;
 use App\Enums\WebsiteType;
 use App\Models\Website;
@@ -67,7 +66,7 @@ class WebsiteTransformer extends TransformerAbstract
             ];
 
             if ($website->status->is(WebsiteStatus::PENDING)) {
-                if ($authUser->can(UserPermission::MANAGE_WEBSITES) || $authUser->publicAdministrations()->where('public_administration_id', $publicAdministration->id)->where('pa_status', UserStatus::PENDING)->first()) {
+                if ($authUser->can(UserPermission::MANAGE_WEBSITES) || $authUser->pendingPublicAdministrations()->where('public_administration_id', $publicAdministration->id)->first()) {
                     $data['icons'][] = [
                         'icon' => 'it-plug',
                         'link' => $authUserCanAccessAdminArea

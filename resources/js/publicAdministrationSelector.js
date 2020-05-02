@@ -1,5 +1,4 @@
 export default (() => {
-
     const selectPublicAdministration = (publicAdministrationFormSelector) => {
         publicAdministrationFormSelector.submit();
     };
