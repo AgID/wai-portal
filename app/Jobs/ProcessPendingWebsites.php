@@ -15,6 +15,7 @@ use App\Exceptions\AnalyticsServiceException;
 use App\Exceptions\CommandErrorException;
 use App\Models\Website;
 use App\Traits\ActivatesWebsite;
+use App\Traits\ManageRecipientNotifications;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Container\BindingResolutionException;
@@ -33,6 +34,7 @@ class ProcessPendingWebsites implements ShouldQueue
     use Queueable;
     use SerializesModels;
     use ActivatesWebsite;
+    use ManageRecipientNotifications;
 
     /**
      * Purge check flag.
@@ -103,7 +105,8 @@ class ProcessPendingWebsites implements ShouldQueue
                                 $pendingUser->deleteAnalyticsServiceAccount();
                                 $publicAdministration->forceDelete();
                             }
-                            event(new PublicAdministrationPurged($publicAdministration->toJson(), $pendingUser));
+                            $userEmailForPublicAdministration = $this->getUserEmailForPublicAdministration($pendingUser, $publicAdministration);
+                            event(new PublicAdministrationPurged($publicAdministration->toJson(), $pendingUser, $userEmailForPublicAdministration));
                         } else {
                             $website->forceDelete();
                         }

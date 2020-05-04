@@ -24,6 +24,7 @@ use App\Notifications\RTDEmailAddressChangedEmail;
 use App\Notifications\RTDPublicAdministrationRegisteredEmail;
 use App\Notifications\SuperAdminPublicAdministrationNotFoundInIpaEmail;
 use App\Services\MatomoService;
+use App\Traits\ManageRecipientNotifications;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
@@ -38,6 +39,7 @@ use Tests\TestCase;
 class PublicAdministrationEventsSubscriberTest extends TestCase
 {
     use RefreshDatabase;
+    use ManageRecipientNotifications;
 
     /**
      * The public administration.
@@ -295,8 +297,8 @@ class PublicAdministrationEventsSubscriberTest extends TestCase
                 'pa' => $this->publicAdministration->ipa_code,
             ],
         ]);
-
-        event(new PublicAdministrationPurged($this->publicAdministration->toJson(), $this->user));
+        $userEmailForPublicAdministration = $this->getUserEmailForPublicAdministration($this->user, $this->publicAdministration);
+        event(new PublicAdministrationPurged($this->publicAdministration->toJson(), $this->user,  $userEmailForPublicAdministration));
 
         Notification::assertSentTo(
             [$this->user],

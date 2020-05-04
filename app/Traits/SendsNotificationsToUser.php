@@ -100,9 +100,9 @@ trait SendsNotificationsToUser
      *
      * @param mixed $publicAdministration the purged public administration
      */
-    public function sendPublicAdministrationPurgedNotification($publicAdministration): void
+    public function sendPublicAdministrationPurgedNotification($publicAdministration, $email): void
     {
-        $this->notify(new PublicAdministrationPurgedEmail($publicAdministration));
+        $this->notify(new PublicAdministrationPurgedEmail($publicAdministration, $email));
     }
 
     /**
