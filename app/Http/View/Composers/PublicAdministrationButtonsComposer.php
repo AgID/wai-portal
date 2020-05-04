@@ -45,14 +45,9 @@ class PublicAdministrationButtonsComposer
     public function compose(View $view)
     {
         switch ($this->request->route()->getName()) {
-            case 'admin.publicAdministrations.select':
-            case 'publicAdministrations.select':
-                $showAddButton = true;
-                $showInvitedButton = true;
-                break;
             case 'admin.publicAdministrations.show':
             case 'publicAdministrations.show':
-                $showSelectButton = $this->request->user()->activePublicAdministrations->isNotEmpty();
+                $showSelectButton = false;
                 $showAddButton = true;
                 break;
             case 'admin.publicAdministrations.add':

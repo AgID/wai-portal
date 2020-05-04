@@ -55,16 +55,6 @@ class PublicAdministrationSelectorComposer
         }
 
         switch ($lastRouteName) {
-            case 'admin.publicAdministrations.select':
-                $returnRoute = 'admin.publicAdministration.analytics';
-                $targetRouteHasPublicAdministrationParam = true;
-
-                break;
-            case 'publicAdministrations.select':
-                $returnRoute = 'analytics';
-                $targetRouteHasPublicAdministrationParam = true;
-
-                break;
             case 'home':
                 if ($authUser && $authUser->isA(UserRole::SUPER_ADMIN)) {
                     $returnRoute = 'admin.publicAdministration.analytics';

@@ -39,7 +39,7 @@ class PublicAdministrationsTransformer extends TransformerAbstract
             'email' => e($emailPublicAdministrationUser),
             'region' => $publicAdministration->region,
             'status' => [
-                'display' => '<span class="badge website-status ' . strtolower($statusPublicAdministrationUser->key) . '">' . strtoupper($statusPublicAdministrationUser->description) . '</span>',
+                'display' => '<span class="badge user-public-administration-status ' . strtolower($statusPublicAdministrationUser->key) . '">' . strtoupper($statusPublicAdministrationUser->description) . '</span>',
                 'raw' => $statusPublicAdministrationUser->description,
             ],
             'buttons' => [],
@@ -53,6 +53,18 @@ class PublicAdministrationsTransformer extends TransformerAbstract
                 'dataAttributes' => [
                     'name' => e($publicAdministration->name),
                     'type' => 'paActivation',
+                    'ajax' => true,
+                ],
+            ];
+        }
+        if ($statusPublicAdministrationUser->is(UserStatus::ACTIVE)) {
+            $data['buttons'][] = [
+                'link' => route('publicAdministrations.change.and.redirect', ['public-administration-nav' => $publicAdministration->id]),
+                'color' => 'outline-primary',
+                'label' => __('vai'),
+                'dataAttributes' => [
+                    'name' => e($publicAdministration->name),
+                    'type' => 'paSelectTenant',
                     'ajax' => true,
                 ],
             ];

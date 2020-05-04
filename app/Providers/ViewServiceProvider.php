@@ -3,7 +3,6 @@
 namespace App\Providers;
 
 use App\Enums\UserRole;
-use App\Enums\UserStatus;
 use App\Http\View\Composers\ModalComposer;
 use App\Http\View\Composers\NotificationComposer;
 use App\Http\View\Composers\PrimaryMenuComposer;
@@ -56,7 +55,7 @@ class ViewServiceProvider extends ServiceProvider
             $authUser = auth()->user();
             $view->with('authUser', $authUser);
             $view->with('spidAuthUser', app()->make('SPIDAuth')->getSPIDUser());
-            $view->with('hasActivePublicAdministration', session()->has('tenant_id') && $authUser->status->is(UserStatus::ACTIVE));
+            $view->with('hasActivePublicAdministration', session()->has('tenant_id') && $authUser->activePublicAdministrations->where('id', session('tenant_id')));
             $view->with('isSuperAdmin', isset($authUser) && $authUser->isA(UserRole::SUPER_ADMIN));
         });
     }

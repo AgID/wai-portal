@@ -32,15 +32,9 @@ class SelectTenant
                         Bouncer::scope()->to($publicAdministrationId);
 
                         break;
-                    case 0:
-                        if (!$request->is($selectNoRedirectRoutes)) {
-                            return redirect()->route('publicAdministrations.show');
-                        }
-
-                        break;
                     default:
                         if (!$request->is($selectNoRedirectRoutes)) {
-                            return redirect()->route('publicAdministrations.select');
+                            return redirect()->route('publicAdministrations.show');
                         }
 
                         break;

@@ -1,4 +1,4 @@
-<div class="form-group">
+<div class="form-group-custom">
     <form method="post" action="{{ route('publicAdministrations.change') }}" novalidate class="pa-selector" >
         @csrf
         <div class="input-group flex-nowrap">

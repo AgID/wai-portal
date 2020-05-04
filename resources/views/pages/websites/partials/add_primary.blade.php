@@ -1,4 +1,7 @@
+@unless ($hideTitle ?? false)
 <h3>{{ __('Aggiungi il sito istituzionale') }}</h3>
+@endunless
+
 <p>{{ __('Per iniziare scegli la tua pubblica amministrazione e verifica che i dati siano corretti.') }}</p>
 <form method="post" action="{{ route('websites.store.primary') }}" class="needs-validation" novalidate>
     @csrf

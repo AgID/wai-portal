@@ -172,6 +172,11 @@ Route::middleware('spid.auth', 'auth', 'verified:verification.notice')->group(fu
            'uses' => 'PublicAdministrationController@changeTenant',
         ]);
 
+        Route::post('/change-and-redirect', [
+            'as' => 'publicAdministrations.change.and.redirect',
+            'uses' => 'PublicAdministrationController@changeTenantAndRedirect',
+         ]);
+
         Route::post('/activation/{uuid}/{publicAdministration}', [
             'as' => 'publicAdministration.activate',
             'uses' => 'PublicAdministrationController@activate',

@@ -298,7 +298,7 @@ class PublicAdministrationEventsSubscriberTest extends TestCase
             ],
         ]);
         $userEmailForPublicAdministration = $this->getUserEmailForPublicAdministration($this->user, $this->publicAdministration);
-        event(new PublicAdministrationPurged($this->publicAdministration->toJson(), $this->user,  $userEmailForPublicAdministration));
+        event(new PublicAdministrationPurged($this->publicAdministration->toJson(), $this->user, $userEmailForPublicAdministration));
 
         Notification::assertSentTo(
             [$this->user],

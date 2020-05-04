@@ -25,6 +25,10 @@
   @include media-breakpoint-up(xl) {
     max-width: 960px;
     padding: 4em 5em;
+
+    &.wide-layout {
+      max-width: 1184px;
+    }
   }
 }
 

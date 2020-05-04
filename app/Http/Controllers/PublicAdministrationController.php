@@ -33,7 +33,7 @@ class PublicAdministrationController extends Controller
      */
     public function selectTenant(): View
     {
-        return view('pages.pa.select');
+        return view('pages.pa.show');
     }
 
     /**
@@ -71,6 +71,31 @@ class PublicAdministrationController extends Controller
                 Bouncer::scope()->to($publicAdministrationCode);
 
                 return redirect()->route($redirectTo);
+            }
+        }
+
+        return redirect()->route('home');
+    }
+
+    /**
+     * Change the Public Administration tenant in the session.
+     *
+     * @param Request the incoming request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function changeTenantAndRedirect(Request $request, Website $website)
+    {
+        $publicAdministrationCode = $request->input('public-administration-nav');
+        // publicAdministrationCode is ipa_code for superAdmin, id for other roles
+        $authUser = $request->user();
+
+        if ($authUser->publicAdministrations->isNotEmpty()) {
+            if ($authUser->publicAdministrations()->where('id', $publicAdministrationCode)->first()) {
+                session()->put('tenant_id', $publicAdministrationCode);
+                Bouncer::scope()->to($publicAdministrationCode);
+
+                return redirect()->route('analytics');
             }
         }
 
