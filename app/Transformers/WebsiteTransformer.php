@@ -81,7 +81,7 @@ class WebsiteTransformer extends TransformerAbstract
                             'ajax' => true,
                         ],
                     ];
-                    if(config('wai.custom_public_administrations', false) && $website->type->is(WebsiteType::CUSTOM)){
+                    if (config('wai.custom_public_administrations', false) && $website->type->is(WebsiteType::CUSTOM)) {
                         $data['icons'][] = [
                             'icon' => 'it-plug',
                             'link' => $authUserCanAccessAdminArea

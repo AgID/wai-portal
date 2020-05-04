@@ -420,11 +420,11 @@ class WebsiteController extends Controller
      */
     public function forceTracking(PublicAdministration $publicAdministration, Website $website)
     {
-
         try {
             if ($website->status->is(WebsiteStatus::PENDING) && $website->type->is(WebsiteType::CUSTOM)) {
                 $this->activate($website);
                 event(new WebsiteActivated($website));
+
                 return $this->websiteResponse($website);
             }
 

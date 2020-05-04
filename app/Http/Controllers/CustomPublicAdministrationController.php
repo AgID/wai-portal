@@ -41,7 +41,7 @@ class CustomPublicAdministrationController extends Controller
             'status' => PublicAdministrationStatus::PENDING,
         ]);
 
-        $website = $this->registerPublicAdministration($authUser, $publicAdministration, $validatedData['url'], true );
+        $website = $this->registerPublicAdministration($authUser, $publicAdministration, $validatedData['url'], true);
 
         event(new PublicAdministrationRegistered($publicAdministration, $authUser));
         event(new WebsiteAdded($website, $authUser));

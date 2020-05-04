@@ -225,7 +225,7 @@ Route::middleware('spid.auth', 'auth', 'verified:verification.notice')->group(fu
             Route::get('/{website}/check', 'WebsiteController@checkTracking')
                 ->name('websites.tracking.check');
 
-                Route::get('/{website}/force', 'WebsiteController@forceTracking')
+            Route::get('/{website}/force', 'WebsiteController@forceTracking')
                 ->name('websites.tracking.force');
 
             Route::get('/{website}/javascript-snippet', 'WebsiteController@showJavascriptSnippet')
