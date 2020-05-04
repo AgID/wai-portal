@@ -11,19 +11,19 @@ use App\Models\User;
 trait ManageRecipientNotifications
 {
     /**
-     * Set specific email for the administration.
+     * Get specific email for the administration.
      *
      * @param User $user the recipient of the notification
      * @param PublicAdministration $publicAdministration the public administration that the user belongs to
      *
      * @return string the correct user email
      */
-    public function recipientSetSpecificEmailForUserPublicAdministration(User $user, ?PublicAdministration $publicAdministration = null): string
+    public function getUserEmailForPublicAdministration(User $user, ?PublicAdministration $publicAdministration = null): string
     {
         if ($publicAdministration) {
             $publicAdministrationUser = $user->publicAdministrations()->where('public_administration_id', $publicAdministration->id)->first();
-            if ($publicAdministrationUser && $publicAdministrationUser->pivot->pa_email) {
-                return $publicAdministrationUser->pivot->pa_email;
+            if ($publicAdministrationUser && $publicAdministrationUser->pivot->user_email) {
+                return $publicAdministrationUser->pivot->user_email;
             }
         }
 

@@ -5,7 +5,6 @@ namespace App\Transformers;
 use App\Enums\UserStatus;
 use App\Models\PublicAdministration;
 use App\Models\Website;
-use Illuminate\Support\Facades\Hash;
 use League\Fractal\TransformerAbstract;
 
 /**
@@ -24,8 +23,8 @@ class PublicAdministrationsTransformer extends TransformerAbstract
     {
         $authUser = auth()->user();
 
-        $statusPublicAdministrationUser = UserStatus::coerce(intval($publicAdministration->pivot->pa_status));
-        $emailPublicAdministrationUser = $publicAdministration->pivot->pa_email;
+        $statusPublicAdministrationUser = UserStatus::coerce(intval($publicAdministration->pivot->user_status));
+        $emailPublicAdministrationUser = $publicAdministration->pivot->user_email;
 
         $data = [
             'name' => [
@@ -48,7 +47,7 @@ class PublicAdministrationsTransformer extends TransformerAbstract
 
         if ($statusPublicAdministrationUser->is(UserStatus::INVITED)) {
             $data['buttons'][] = [
-                'link' => route('publicAdministration.activation', ['uuid' => $authUser->uuid, 'pa' => base64_encode(Hash::make($publicAdministration->id))]),
+                'link' => route('publicAdministration.activate', ['uuid' => $authUser->uuid, 'publicAdministration' => $publicAdministration->ipa_code]),
                 'color' => 'primary',
                 'label' => __('conferma'),
                 'dataAttributes' => [

@@ -74,7 +74,7 @@ class UserEventsSubscriber implements ShouldQueue
 
             if (!empty($user->email_verified_at)) {
                 // Notify the user only if is already confirmed otherwise is notified by classic invitation
-                $user->sendPublicAdministrationSimpleNotification($publicAdministration);
+                $user->sendPublicAdministrationInvitedNotification($publicAdministration);
             }
             //Notify public administration administrators
             $publicAdministration->sendUserInvitedNotificationToAdministrators($user);

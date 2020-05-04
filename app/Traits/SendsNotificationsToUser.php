@@ -10,9 +10,9 @@ use App\Notifications\PasswordResetRequestEmail;
 use App\Notifications\PublicAdministrationActivatedEmail;
 use App\Notifications\PublicAdministrationPurgedEmail;
 use App\Notifications\PublicAdministrationRegisteredEmail;
-use App\Notifications\PublicAdministrationSimpleInviteEmail;
 use App\Notifications\ReactivatedEmail;
 use App\Notifications\SuspendedEmail;
+use App\Notifications\UserPublicAdministrationInvitedEmail;
 use App\Notifications\VerifyEmail;
 use App\Notifications\WebsiteAddedEmail;
 
@@ -120,8 +120,8 @@ trait SendsNotificationsToUser
      *
      * @param PublicAdministration $publicAdministration the activated public administration
      */
-    public function sendPublicAdministrationSimpleNotification(PublicAdministration $publicAdministration): void
+    public function sendPublicAdministrationInvitedNotification(PublicAdministration $publicAdministration): void
     {
-        $this->notify(new PublicAdministrationSimpleInviteEmail($publicAdministration));
+        $this->notify(new UserPublicAdministrationInvitedEmail($publicAdministration));
     }
 }

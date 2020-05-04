@@ -256,7 +256,7 @@ class SuperAdminUserController extends Controller
      *
      * @throws \Exception if unable to initialize the datatable
      *
-     * @return mixed the response the JSON format
+     * @return mixed the response in JSON format
      */
     public function dataJson()
     {

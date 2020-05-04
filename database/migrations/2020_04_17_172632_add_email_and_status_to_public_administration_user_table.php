@@ -16,8 +16,8 @@ class AddEmailAndStatusToPublicAdministrationUserTable extends Migration
     public function up()
     {
         Schema::table('public_administration_user', function (Blueprint $table) {
-            $table->string('pa_email')->nullable();
-            $table->tinyInteger('pa_status')->unsigned()->default(UserStatus::INACTIVE);
+            $table->string('user_email')->nullable();
+            $table->tinyInteger('user_status')->unsigned()->default(UserStatus::INACTIVE);
         });
 
         Artisan::call('db:seed', ['--class' => 'UpdatePublicAdministrationUser']);
@@ -31,7 +31,7 @@ class AddEmailAndStatusToPublicAdministrationUserTable extends Migration
     public function down()
     {
         Schema::table('public_administration_user', function (Blueprint $table) {
-            $table->dropColumn(['pa_email', 'pa_status']);
+            $table->dropColumn(['user_email', 'user_status']);
         });
     }
 }

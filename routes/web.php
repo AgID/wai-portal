@@ -172,13 +172,13 @@ Route::middleware('spid.auth', 'auth', 'verified:verification.notice')->group(fu
            'uses' => 'PublicAdministrationController@changeTenant',
         ]);
 
-        Route::get('/activation/{uuid}/{pa}', [
-            'as' => 'publicAdministration.activation',
-            'uses' => 'PublicAdministrationController@activation',
+        Route::post('/activation/{uuid}/{publicAdministration}', [
+            'as' => 'publicAdministration.activate',
+            'uses' => 'PublicAdministrationController@activate',
         ]);
 
         Route::get('/add', 'PublicAdministrationController@add')
-        ->name('publicAdministrations.add');
+            ->name('publicAdministrations.add');
 
         Route::get('/data', 'PublicAdministrationController@dataJson')
             ->name('publicAdministrations.data.json');
@@ -312,11 +312,6 @@ Route::middleware('auth.admin', 'verified:admin.verification.notice')->group(fun
                 Route::get('/select', [
                     'as' => 'admin.publicAdministrations.select',
                     'uses' => 'PublicAdministrationController@selectTenant',
-                ]);
-
-                Route::post('/change', [
-                    'as' => 'admin.publicAdministrations.change',
-                    'uses' => 'PublicAdministrationController@changeTenant',
                 ]);
 
                 Route::get('/add', 'PublicAdministrationController@add')

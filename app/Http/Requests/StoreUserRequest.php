@@ -60,9 +60,12 @@ class StoreUserRequest extends FormRequest
     {
         if (!$this->route()->hasParameter('user')) {
             $validator->after(function (Validator $validator) {
-                $user = User::with('publicAdministrations')->where('fiscal_number', $this->input('fiscal_number'))->orWhere('email', $this->input('email'))->whereDoesntHave('roles', function ($query) {
-                    $query->where('name', UserRole::SUPER_ADMIN);
-                })->first();
+                $user = User::with('publicAdministrations')
+                    ->where('fiscal_number', $this->input('fiscal_number'))
+                    ->orWhere('email', $this->input('email'))
+                    ->whereDoesntHave('roles', function ($query) {
+                        $query->where('name', UserRole::SUPER_ADMIN);
+                    })->first();
 
                 if (!is_null($user)) {
                     if ($user->fiscal_number === $this->input('fiscal_number')) {

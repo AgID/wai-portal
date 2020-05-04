@@ -60,7 +60,7 @@ trait ActivatesWebsite
             $publicAdministration->status = PublicAdministrationStatus::ACTIVE;
             $publicAdministration->save();
 
-            $pendingUser = $publicAdministration->users()->where('pa_status', UserStatus::PENDING)->first();
+            $pendingUser = $publicAdministration->users()->where('user_status', UserStatus::PENDING)->first();
             if ($pendingUser) {
                 if ($pendingUser->publicAdministrations->isEmpty()) {
                     $pendingUser->roles()->detach();
@@ -80,7 +80,7 @@ trait ActivatesWebsite
                 event(new UserWebsiteAccessChanged($pendingUser, $website, WebsiteAccessType::WRITE()));
 
                 $pendingUser->save();
-                $publicAdministration->users()->syncWithoutDetaching([$pendingUser->id => ['pa_status' => UserStatus::ACTIVE]]);
+                $publicAdministration->users()->updateExistingPivot($pendingUser->id, ['user_status' => UserStatus::ACTIVE]);
 
                 event(new UserActivated($pendingUser, $publicAdministration));
             }

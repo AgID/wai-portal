@@ -2,14 +2,14 @@
 
 namespace App\Notifications;
 
-use App\Mail\UserSimplePublicAdministrationInvite;
+use App\Mail\UserPublicAdministrationInvited;
 use App\Models\PublicAdministration;
 use Illuminate\Mail\Mailable;
 
 /**
  * Public administration activated email notification.
  */
-class PublicAdministrationSimpleInviteEmail extends UserEmailNotification
+class UserPublicAdministrationInvitedEmail extends UserEmailNotification
 {
     /**
      * The activated public administration.
@@ -37,6 +37,6 @@ class PublicAdministrationSimpleInviteEmail extends UserEmailNotification
      */
     public function buildEmail($notifiable): Mailable
     {
-        return new UserSimplePublicAdministrationInvite($notifiable, $this->publicAdministration);
+        return new UserPublicAdministrationInvited($notifiable, $this->publicAdministration);
     }
 }

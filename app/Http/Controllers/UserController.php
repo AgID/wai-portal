@@ -132,11 +132,9 @@ class UserController extends Controller
             // Can't send invitation if the user is already in this pa
             if (!is_null($in_this_pa)) {
                 return redirect()->to($redirectUrl)->withModal([
-                    'title' => __('Non è possibile inoltrare l\'invito'),
+                    'title' => __("Non è possibile inoltrare l'invito"),
                     'icon' => 'it-clock',
-                    'message' => implode("\n", [
-                        __("L'utente fa già parte di questa pubblica amministrazione"),
-                    ]),
+                    'message' => __("L'utente fa già parte di questa pubblica amministrazione"),
                     'image' => asset('images/closed.svg'),
                 ]);
             }
@@ -163,7 +161,7 @@ class UserController extends Controller
         if (!$user->hasAnalyticsServiceAccount()) {
             $user->registerAnalyticsServiceAccount();
         }
-        $user->publicAdministrations()->attach($currentPublicAdministration->id, ['pa_email' => $validatedData['email'], 'pa_status' => UserStatus::INVITED]);
+        $user->publicAdministrations()->attach($currentPublicAdministration->id, ['user_email' => $validatedData['email'], 'user_status' => UserStatus::INVITED]);
         $this->manageUserPermissions($validatedData, $currentPublicAdministration, $user);
 
         event(new UserInvited($user, $authUser, $currentPublicAdministration));
@@ -452,7 +450,7 @@ class UserController extends Controller
      *
      * @throws \Exception if unable to initialize the datatable
      *
-     * @return mixed the response the JSON format
+     * @return mixed the response in JSON format
      */
     public function dataJson(Request $request, PublicAdministration $publicAdministration)
     {
@@ -471,7 +469,7 @@ class UserController extends Controller
      *
      * @throws \Exception if unable to initialize the datatable
      *
-     * @return mixed the response the JSON format
+     * @return mixed the response in JSON format
      */
     public function dataWebsitesPermissionsJson(PublicAdministration $publicAdministration, User $user)
     {

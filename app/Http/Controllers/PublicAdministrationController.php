@@ -14,7 +14,7 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Route;
 use Illuminate\View\View;
 use Silber\Bouncer\BouncerFacade as Bouncer;
 use Yajra\DataTables\Facades\DataTables;
@@ -29,15 +29,15 @@ class PublicAdministrationController extends Controller
      *
      * @param int $id
      *
-     * @return \Illuminate\Http\Response
+     * @return View the view
      */
-    public function selectTenant()
+    public function selectTenant(): View
     {
         return view('pages.pa.select');
     }
 
     /**
-     * Change the Public Administration.
+     * Change the Public Administration tenant in the session.
      *
      * @param Request the incoming request
      *
@@ -46,25 +46,31 @@ class PublicAdministrationController extends Controller
     public function changeTenant(Request $request, Website $website)
     {
         $publicAdministrationCode = $request->input('public-administration-nav');
-        $redirect = $request->input('return-route');
-        $hasRouteParampublicAdministration = $request->input('has-route-param-pa');
+        $redirectTo = $request->input('target-route');
+        $targetRouteHasPublicAdministrationParam = $request->input('target-route-pa-param');
+
+        if (!Route::has($redirectTo)) {
+            abort(404);
+        }
+
         // publicAdministrationCode is ipa_code for superAdmin, id for other roles
-        $authUser = auth()->user();
+        $authUser = $request->user();
+
         if ($authUser->isA(UserRole::SUPER_ADMIN)) {
             if (PublicAdministration::where('ipa_code', $publicAdministrationCode)->first()) {
                 session()->put('super_admin_tenant_ipa_code', $publicAdministrationCode);
-                if (!$hasRouteParampublicAdministration) {
-                    return redirect()->route($redirect);
+                if (!$targetRouteHasPublicAdministrationParam) {
+                    return redirect()->route($redirectTo);
                 }
 
-                return redirect()->route($redirect, ['publicAdministration' => $publicAdministrationCode]);
+                return redirect()->route($redirectTo, ['publicAdministration' => $publicAdministrationCode]);
             }
         } elseif ($authUser->publicAdministrations->isNotEmpty()) {
             if ($authUser->publicAdministrations()->where('id', $publicAdministrationCode)->first()) {
                 session()->put('tenant_id', $publicAdministrationCode);
                 Bouncer::scope()->to($publicAdministrationCode);
 
-                return redirect()->route($redirect);
+                return redirect()->route($redirectTo);
             }
         }
 
@@ -74,7 +80,7 @@ class PublicAdministrationController extends Controller
     /**
      * Add new Public Administrations for current user.
      *
-     * @return \Illuminate\Http\Response
+     * @return View the view
      */
     public function add(): View
     {
@@ -84,9 +90,9 @@ class PublicAdministrationController extends Controller
     /**
      * Show all Public Administrations for current user.
      *
-     * @return \Illuminate\Http\Response
+     * @return View the view
      */
-    public function show(PublicAdministration $publicAdministration)
+    public function show(PublicAdministration $publicAdministration): View
     {
         $paDatatable = [
             'datatableOptions' => [
@@ -120,34 +126,25 @@ class PublicAdministrationController extends Controller
      *
      * @param Request $request the incoming request
      * @param string $uuid the uuid of the user to be verified
-     * @param string $hash the hash of the user email address
+     * @param PublicAdministration $publicAdministration the public administration the user belongs to
      *
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException if unable to bind to SPID service
      * @throws \Illuminate\Auth\Access\AuthorizationException if verification link is invalid
      *
-     * @return RedirectResponse the server redirect response
+     * @return JsonResponse|RedirectResponse the server response
      */
-    public function activation(Request $request, string $uuid, string $pa): JsonResponse
+    public function activate(Request $request, string $uuid, PublicAdministration $publicAdministration)
     {
-        $user = User::where('uuid', $uuid)->first();
+        $user = User::where('uuid', $uuid)->with('publicAdministrations')->first();
+        $authUser = $request->user();
 
-        if (!$user) {
-            throw new AuthorizationException('Current user does not match.');
+        if (!$authUser->is($user) || !$user->publicAdministrations->contains($publicAdministration)) {
+            throw new AuthorizationException("L'utente corrente non corrisponde alla richiesta di verifica.");
         }
 
-        $publicAdministrationConfirmed = $user->publicAdministrations()->where('pa_status', UserStatus::INVITED)->get()->map(function ($publicAdministration) use ($pa, $user) {
-            if (Hash::check($publicAdministration->id, base64_decode($pa, true))) {
-                $publicAdministration->users()->syncWithoutDetaching([$user->id => ['pa_status' => UserStatus::ACTIVE]]);
+        if ($user->invitedPublicAdministrations->where('id', $publicAdministration->id)->isNotEmpty()) {
+            $user->publicAdministrations()->updateExistingPivot($publicAdministration->id, ['user_status' => UserStatus::ACTIVE]);
 
-                return $publicAdministration;
-            }
-        });
-
-        if ($publicAdministrationConfirmed->isNotEmpty()) {
-            $publicAdministration = $publicAdministrationConfirmed->first();
-            if ($publicAdministration) {
-                return $this->publicAdministrationResponse(PublicAdministration::find($publicAdministration->id));
-            }
+            return $this->publicAdministrationResponse($publicAdministration);
         }
 
         return $this->notModifiedResponse();
@@ -160,11 +157,11 @@ class PublicAdministrationController extends Controller
      *
      * @throws \Exception if unable to initialize the datatable
      *
-     * @return mixed the response the JSON format
+     * @return mixed the response in JSON format
      */
     public function dataJson()
     {
-        return DataTables::of(auth()->user()->publicAdministrations()->get())
+        return DataTables::of(auth()->user()->publicAdministrations)
             ->setTransformer(new PublicAdministrationsTransformer())
             ->make(true);
     }

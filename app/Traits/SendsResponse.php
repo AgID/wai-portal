@@ -99,9 +99,7 @@ trait SendsResponse
             ])
             : back()->withNotification([
                 'title' => __('Pubblica amministrazione modificata'),
-                'message' => implode("\n", [
-                        __('La pubblica amministrazione :pa è stato aggiornata.', ['pa' => '<strong>' . e($publicAdministration->name) . '</strong>']),
-                    ]),
+                'message' => __("L'invito alla pubblica amministrazione :pa è stato confermato.", ['pa' => '<strong>' . e($publicAdministration->name) . '</strong>']),
                 'status' => 'info',
                 'icon' => 'it-info-circle',
             ]);
