@@ -26,13 +26,12 @@ class AuthorizeAnalytics
         }
 
         $currentPublicAdministration = current_public_administration();
-
         if ($request->route('website')) {
             if ($authUser->can($action, $request->route('website'))) {
                 $authorized = true;
             }
             if ($request->routeIs('websites.tracking.check') || $request->routeIs('websites.snippet.javascript')) {
-                if ($authUser->pendingPublicAdministrations->where('id', $currentPublicAdministration)->isNotEmpty()) {
+                if ($authUser->pendingPublicAdministrations->where('id', $currentPublicAdministration->id)->isNotEmpty()) {
                     $authorized = true;
                 }
             }

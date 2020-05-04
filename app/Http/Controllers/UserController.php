@@ -127,10 +127,9 @@ class UserController extends Controller
         // If existingUser is filled the user is already in the database
         if (isset($validatedData['existingUser']) && isset($validatedData['existingUser']->email)) {
             $user = $validatedData['existingUser'];
-            $in_this_pa = $user->publicAdministrations()->where('id', $currentPublicAdministration->id)->first();
+            $userInCurrentPublicAdministration = $user->publicAdministrations->where('id', $currentPublicAdministration->id)->isNotEmpty();
 
-            // Can't send invitation if the user is already in this pa
-            if (!is_null($in_this_pa)) {
+            if ($userInCurrentPublicAdministration) {
                 return redirect()->to($redirectUrl)->withModal([
                     'title' => __("Non è possibile inoltrare l'invito"),
                     'icon' => 'it-clock',
