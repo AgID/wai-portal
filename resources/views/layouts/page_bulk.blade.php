@@ -7,7 +7,7 @@
     ])
 
     <div class="position-relative">
-        <div class="page-bulk-container {{ Request::is(['public-administrations/*','public-administrations']) ? 'wide-layout' : '' }}">
+        <div class="page-bulk-container {{ ($wideLayout ?? false) ? 'wide-layout' : '' }}">
             <div id="main" role="main">
                 @yield('before-title')
 

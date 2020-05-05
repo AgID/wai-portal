@@ -1,6 +1,6 @@
-@extends('layouts.page_bulk', ['graphicBackground' => true])
+@extends('layouts.page_bulk', ['wideLayout' => true])
 
-@section('title', __("Aggiungi un sito istituzionale"))
+@section('title', __("Aggiungi un'amministrazione'"))
 
 @section('content')
     @include('pages.websites.partials.add_primary', ['hideTitle' => true])

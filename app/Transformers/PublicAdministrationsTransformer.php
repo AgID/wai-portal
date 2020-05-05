@@ -61,6 +61,7 @@ class PublicAdministrationsTransformer extends TransformerAbstract
             $data['buttons'][] = [
                 'link' => route('publicAdministrations.change.and.redirect', ['public-administration-nav' => $publicAdministration->id]),
                 'color' => 'outline-primary',
+                'icon' => 'it-arrow-right',
                 'label' => __('vai'),
                 'dataAttributes' => [
                     'name' => e($publicAdministration->name),
