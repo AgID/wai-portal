@@ -16,11 +16,23 @@ class CustomPublicAdministrationController extends Controller
 {
     use ManagePublicAdministrationRegistration;
 
+    /**
+     * Show the form.
+     *
+     * @return View
+     */
     public function index(): View
     {
         return view('pages.websites.partials.add_custom_primary');
     }
 
+    /**
+     * Create a custom primary website.
+     *
+     * @param Request $request the incoming request
+     *
+     * @return RedirectResponse the server redirect response
+     */
     public function store(StoreCustomPrimaryWebsiteRequest $request): RedirectResponse
     {
         $validatedData = $request->validated();
