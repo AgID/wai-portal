@@ -62,17 +62,17 @@ trait SendsNotificationsToUser
     /**
      * Send user suspended notification.
      */
-    public function sendSuspendedNotification(): void
+    public function sendSuspendedNotification(PublicAdministration $publicAdministration): void
     {
-        $this->notify(new SuspendedEmail());
+        $this->notify(new SuspendedEmail($publicAdministration));
     }
 
     /**
      * Send user reactivated notification.
      */
-    public function sendReactivatedNotification(): void
+    public function sendReactivatedNotification(PublicAdministration $publicAdministration): void
     {
-        $this->notify(new ReactivatedEmail());
+        $this->notify(new ReactivatedEmail($publicAdministration));
     }
 
     /**

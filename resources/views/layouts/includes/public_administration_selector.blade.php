@@ -1,5 +1,5 @@
 <div class="form-group-custom">
-    <form method="post" action="{{ route('publicAdministrations.change') }}" novalidate class="pa-selector" >
+    <form method="post" action="{{ $postRoute }}" novalidate class="pa-selector" >
         @csrf
         <div class="input-group flex-nowrap">
             <div class="input-group-prepend">

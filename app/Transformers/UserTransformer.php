@@ -83,7 +83,7 @@ class UserTransformer extends TransformerAbstract
                     'title' => __('modifica'),
                 ];
 
-                if ($user->status->is(UserStatus::SUSPENDED)) {
+                if ($statusPublicAdministrationUser->is(UserStatus::SUSPENDED)) {
                     $data['icons'][] = [
                         'icon' => 'it-exchange-circle',
                         'link' => $authUserCanAccessAdminArea
@@ -97,12 +97,12 @@ class UserTransformer extends TransformerAbstract
                         'dataAttributes' => [
                             'user-name' => e($user->full_name),
                             'type' => 'userSuspendReactivate',
-                            'current-status-description' => $user->status->description,
-                            'current-status' => $user->status->key,
+                            'current-status-description' => $statusPublicAdministrationUser->description,
+                            'current-status' => $statusPublicAdministrationUser->key,
                             'ajax' => true,
                         ],
                     ];
-                } elseif (!$user->status->is(UserStatus::INVITED) && !$user->isTheLastActiveAdministratorOf($publicAdministration)) {
+                } elseif (!$statusPublicAdministrationUser->is(UserStatus::INVITED) && !$user->isTheLastActiveAdministratorOf($publicAdministration)) {
                     $data['icons'][] = [
                         'icon' => 'it-close-circle',
                         'link' => $authUserCanAccessAdminArea
@@ -116,15 +116,15 @@ class UserTransformer extends TransformerAbstract
                         'dataAttributes' => [
                             'user-name' => e($user->full_name),
                             'type' => 'userSuspendReactivate',
-                            'current-status-description' => $user->status->description,
-                            'current-status' => $user->status->key,
+                            'current-status-description' => $statusPublicAdministrationUser->description,
+                            'current-status' => $statusPublicAdministrationUser->key,
                             'ajax' => true,
                         ],
                     ];
                 }
             }
 
-            if (!$user->status->is(UserStatus::PENDING) && $authUserCanAccessAdminArea) {
+            if (!$statusPublicAdministrationUser->is(UserStatus::PENDING) && $authUserCanAccessAdminArea) {
                 if ($user->trashed()) {
                     $data['status'] = '';
                     $data['trashed'] = true;

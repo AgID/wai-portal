@@ -255,7 +255,7 @@ class UserEventsSubscriber implements ShouldQueue
         $user = $event->getUser();
 
         //Notify user
-        $user->sendSuspendedNotification();
+        $user->sendSuspendedNotification($event->getPublicAdministration());
 
         //Notify public administration administrators
         $user->publicAdministrations()->each(function (PublicAdministration $publicAdministration) use ($user) {
@@ -281,7 +281,7 @@ class UserEventsSubscriber implements ShouldQueue
         $user = $event->getUser();
 
         //Notify user
-        $user->sendReactivatedNotification();
+        $user->sendReactivatedNotification($event->getPublicAdministration());
 
         //Notify public administration administrators
         $user->publicAdministrations()->each(function (PublicAdministration $publicAdministration) use ($user) {

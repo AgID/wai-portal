@@ -2,6 +2,8 @@
 
 namespace App\Mail;
 
+use App\Models\PublicAdministration;
+use App\Models\User;
 use Illuminate\Support\Facades\Lang;
 
 /**
@@ -9,6 +11,17 @@ use Illuminate\Support\Facades\Lang;
  */
 class Reactivated extends UserMailable
 {
+    /**
+     * Create a new mail message instance.
+     *
+     * @param User $recipient the mail recipient
+     * @param PublicAdministration $publicAdministration the public administration the invited user belogns to
+     */
+    public function __construct(User $recipient, PublicAdministration $publicAdministration)
+    {
+        parent::__construct($recipient, $publicAdministration);
+    }
+
     /**
      * Build the message.
      *
@@ -20,6 +33,7 @@ class Reactivated extends UserMailable
             ->markdown('mail.reactivated')->with([
                 'locale' => Lang::getLocale(),
                 'user' => $this->recipient,
+                'publicAdministration' => $this->publicAdministration,
             ]);
     }
 }

@@ -319,6 +319,11 @@ Route::middleware('auth.admin', 'verified:admin.verification.notice')->group(fun
                     'uses' => 'PublicAdministrationController@selectTenant',
                 ]);
 
+                Route::post('/change', [
+                    'as' => 'admin.publicAdministrations.change',
+                    'uses' => 'PublicAdministrationController@changeTenant',
+                ]);
+
                 Route::get('/add', 'PublicAdministrationController@add')
                 ->name('admin.publicAdministrations.add');
             });

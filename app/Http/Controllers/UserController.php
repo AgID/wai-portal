@@ -377,7 +377,16 @@ class UserController extends Controller
      */
     public function suspend(Request $request, PublicAdministration $publicAdministration, User $user)
     {
-        if ($user->status->is(UserStatus::SUSPENDED)) {
+        $publicAdministration = ($publicAdministration && $publicAdministration->id) ? $publicAdministration : current_public_administration();
+
+        if ($user->publicAdministrations->where('id', $publicAdministration->id)->isEmpty()) {
+            abort(403);
+        }
+
+        $publicAdministrationUser = $user->publicAdministrations()->where('public_administration_id', $publicAdministration->id)->first();
+        $userPublicAdministrationStatus = UserStatus::coerce(intval($publicAdministrationUser->pivot->user_status));
+
+        if ($userPublicAdministrationStatus->is(UserStatus::SUSPENDED)) {
             return $this->notModifiedResponse();
         }
 
@@ -386,10 +395,9 @@ class UserController extends Controller
                 throw new OperationNotAllowedException('Cannot suspend the current authenticated user.');
             }
 
-            if ($user->status->is(UserStatus::PENDING)) {
+            if ($userPublicAdministrationStatus->is(UserStatus::PENDING)) {
                 throw new InvalidUserStatusException('Pending users cannot be suspended.');
             }
-
             //NOTE: super admin are allowed to suspend the last active administrator of a Public Administration
             if (auth()->user()->cannot(UserPermission::ACCESS_ADMIN_AREA)) {
                 $validator = validator(request()->all())->after([$this, 'validateNotLastActiveAdministrator']);
@@ -398,12 +406,11 @@ class UserController extends Controller
                 }
             }
 
-            $user->status = UserStatus::SUSPENDED;
-            $user->save();
+            $publicAdministration->users()->updateExistingPivot($user->id, ['user_status' => UserStatus::SUSPENDED]);
 
-            event(new UserSuspended($user));
+            event(new UserSuspended($user, $publicAdministration));
 
-            return $this->userResponse($user);
+            return $this->userResponse($user, $publicAdministration);
         } catch (InvalidUserStatusException $exception) {
             report($exception);
             $code = $exception->getCode();
@@ -429,16 +436,25 @@ class UserController extends Controller
      */
     public function reactivate(PublicAdministration $publicAdministration, User $user)
     {
-        if (!$user->status->is(UserStatus::SUSPENDED)) {
+        $publicAdministration = ($publicAdministration && $publicAdministration->id) ? $publicAdministration : current_public_administration();
+
+        if ($user->publicAdministrations->where('id', $publicAdministration->id)->isEmpty()) {
+            abort(403);
+        }
+
+        $publicAdministrationUser = $user->publicAdministrations()->where('public_administration_id', $publicAdministration->id)->first();
+        $userPublicAdministrationStatus = UserStatus::coerce(intval($publicAdministrationUser->pivot->user_status));
+
+        if (!$userPublicAdministrationStatus->is(UserStatus::SUSPENDED)) {
             return $this->notModifiedResponse();
         }
 
-        $user->status = $user->hasVerifiedEmail() ? UserStatus::ACTIVE : UserStatus::INVITED;
-        $user->save();
+        $updatedStatus = $user->hasVerifiedEmail() ? UserStatus::ACTIVE : UserStatus::INVITED;
+        $publicAdministration->users()->updateExistingPivot($user->id, ['user_status' => $updatedStatus]);
 
-        event(new UserReactivated($user));
+        event(new UserReactivated($user, $publicAdministration));
 
-        return $this->userResponse($user);
+        return $this->userResponse($user, $publicAdministration);
     }
 
     /**

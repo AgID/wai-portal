@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Mail\Reactivated;
+use App\Models\PublicAdministration;
 use Illuminate\Mail\Mailable;
 
 /**
@@ -10,6 +11,23 @@ use Illuminate\Mail\Mailable;
  */
 class ReactivatedEmail extends UserEmailNotification
 {
+    /**
+     * The public administration the invited user belogns to.
+     *
+     * @var PublicAdministration the public administration
+     */
+    protected $publicAdministration;
+
+    /**
+     * Default constructor.
+     *
+     * @param PublicAdministration $publicAdministration the public administration the user belongs to
+     */
+    public function __construct(PublicAdministration $publicAdministration)
+    {
+        $this->publicAdministration = $publicAdministration;
+    }
+
     /**
      * Initialize the mail message.
      *
@@ -19,6 +37,6 @@ class ReactivatedEmail extends UserEmailNotification
      */
     protected function buildEmail($notifiable): Mailable
     {
-        return new Reactivated($notifiable);
+        return new Reactivated($notifiable, $this->publicAdministration);
     }
 }

@@ -54,7 +54,9 @@ class PublicAdministrationSelectorComposer
             return;
         }
 
+        $postRoute = route('publicAdministrations.change');
         switch ($lastRouteName) {
+            case 'admin.dashboard':
             case 'home':
                 if ($authUser && $authUser->isA(UserRole::SUPER_ADMIN)) {
                     $returnRoute = 'admin.publicAdministration.analytics';
@@ -66,7 +68,7 @@ class PublicAdministrationSelectorComposer
                 break;
             default:
                 $returnRoute = $lastRouteName;
-                $targetRouteHasPublicAdministrationParam = $this->request->has('publicAdministration');
+                $targetRouteHasPublicAdministrationParam = true;
         }
 
         if ($authUser && $authUser->isA(UserRole::SUPER_ADMIN)) {
@@ -75,6 +77,7 @@ class PublicAdministrationSelectorComposer
                 'name',
             ])->sortBy('name')->toArray();
             $publicAdministrationShowSelector = true;
+            $postRoute = route('admin.publicAdministrations.change');
         } elseif ($authUser) {
             $publicAdministrationSelectorArray = $authUser->publicAdministrations()->where('user_status', UserStatus::ACTIVE)
             ->orWhere('user_status', UserStatus::PENDING)
@@ -92,6 +95,7 @@ class PublicAdministrationSelectorComposer
         $view->with('publicAdministrationSelectorArray', $publicAdministrationSelectorArray);
         $view->with('publicAdministrationShowSelector', $publicAdministrationShowSelector);
         $view->with('returnRoute', $returnRoute);
+        $view->with('postRoute', $postRoute);
         $view->with('targetRouteHasPublicAdministrationParam', $targetRouteHasPublicAdministrationParam);
     }
 }

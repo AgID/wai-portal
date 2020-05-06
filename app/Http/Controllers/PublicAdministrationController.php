@@ -59,10 +59,10 @@ class PublicAdministrationController extends Controller
         if ($authUser->isA(UserRole::SUPER_ADMIN)) {
             if (PublicAdministration::where('ipa_code', $publicAdministrationCode)->first()) {
                 session()->put('super_admin_tenant_ipa_code', $publicAdministrationCode);
-                if (!$targetRouteHasPublicAdministrationParam) {
-                    return redirect()->route($redirectTo);
-                }
-
+                /*                 if (!$targetRouteHasPublicAdministrationParam) {
+                                    return redirect()->route($redirectTo);
+                                }
+                 */
                 return redirect()->route($redirectTo, ['publicAdministration' => $publicAdministrationCode]);
             }
         } elseif ($authUser->publicAdministrations->isNotEmpty()) {
