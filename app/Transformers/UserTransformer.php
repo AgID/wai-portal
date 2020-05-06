@@ -44,7 +44,7 @@ class UserTransformer extends TransformerAbstract
                         '<span class="user">',
                         '<strong>' . e($user->full_name) . '</strong>',
                         '<br>',
-                        '<small class="text-muted text-uppercase">' . $user->all_role_names . '</small>',
+                        '<small class="text-muted text-uppercase">' . $user->getMainRoleName() . '</small>',
                         '</span>',
                         '</div>',
                     ]),

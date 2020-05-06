@@ -62,10 +62,6 @@ trait ActivatesWebsite
 
             $pendingUser = $publicAdministration->users()->where('user_status', UserStatus::PENDING)->first();
             if ($pendingUser) {
-                if ($pendingUser->publicAdministrations->isEmpty()) {
-                    $pendingUser->roles()->detach();
-                }
-
                 Bouncer::scope()->to($publicAdministration->id);
                 $pendingUser->assign(UserRole::ADMIN);
 

@@ -253,6 +253,16 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * Return main user role in printable format.
+     *
+     * @return string the printable user main role representation
+     */
+    public function getMainRoleName(): string
+    {
+        return UserRole::getDescription($this->roles->sortBy('pivot.role_id')->first()->name);
+    }
+
+    /**
      * Return a collection of all the user roles.
      *
      * @return Collection the collection of all the user roles

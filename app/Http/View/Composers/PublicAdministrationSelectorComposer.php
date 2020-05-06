@@ -79,9 +79,8 @@ class PublicAdministrationSelectorComposer
             $publicAdministrationShowSelector = true;
             $postRoute = route('admin.publicAdministrations.change');
         } elseif ($authUser) {
-            $publicAdministrationSelectorArray = $authUser->publicAdministrations()->where('user_status', UserStatus::ACTIVE)
-            ->orWhere('user_status', UserStatus::PENDING)
-            ->get()->map(function ($publicAdministration) {
+            $publicAdministrationSelectorArray = $authUser->activePublicAdministrations()->get()
+            ->map(function ($publicAdministration) {
                 return collect($publicAdministration->toArray())
                     ->only(['id', 'name', 'url'])
                     ->all();
