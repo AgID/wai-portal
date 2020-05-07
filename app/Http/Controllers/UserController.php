@@ -332,7 +332,7 @@ class UserController extends Controller
 
         event(new UserDeleted($user, $publicAdministration));
 
-        return $this->userResponse($user);
+        return $this->userResponse($user, $publicAdministration);
     }
 
     /**

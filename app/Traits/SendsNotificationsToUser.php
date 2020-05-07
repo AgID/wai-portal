@@ -5,6 +5,7 @@ namespace App\Traits;
 use App\Models\PublicAdministration;
 use App\Models\Website;
 use App\Notifications\ActivatedEmail;
+use App\Notifications\DeletedEmail;
 use App\Notifications\PasswordChangedEmail;
 use App\Notifications\PasswordResetRequestEmail;
 use App\Notifications\PublicAdministrationActivatedEmail;
@@ -65,6 +66,14 @@ trait SendsNotificationsToUser
     public function sendSuspendedNotification(PublicAdministration $publicAdministration): void
     {
         $this->notify(new SuspendedEmail($publicAdministration));
+    }
+
+    /**
+     * Send user deleted notification.
+     */
+    public function sendDeletededNotification(PublicAdministration $publicAdministration): void
+    {
+        $this->notify(new DeletedEmail($publicAdministration));
     }
 
     /**

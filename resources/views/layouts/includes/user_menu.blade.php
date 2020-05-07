@@ -14,7 +14,7 @@
                         <div class="extra-text">
                             <h4>{{ $user->full_name }}</h4>
                             @auth
-                            <p>{{ $user->all_role_names }}</p>
+                            <p>{{ $user->getMainRoleName() }}</p>
                             @endauth
                         </div>
                     </div>

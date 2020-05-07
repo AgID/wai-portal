@@ -35,7 +35,8 @@ export default (() => {
                     ? [
                         I18n.t("L'utente"),
                         '<strong>' + response.data.user_name + '</strong>',
-                        I18n.t('è stato eliminato.')
+                        response.data.administration ? I18n.t('è stato eliminato da') : I18n.t('è stato eliminato.'),
+                        response.data.administration ? '<strong>' + response.data.administration + '</strong>.' : ''
                     ].join(' ')
                     : [
                         I18n.t("L'utente"),

@@ -25,15 +25,47 @@ class PublicAdministrationController extends Controller
     use SendsResponse;
 
     /**
-     * Show the Public Administration selector.
-     *
-     * @param int $id
+     * Show all Public Administrations for current user.
      *
      * @return View the view
      */
-    public function selectTenant(): View
+    public function show(PublicAdministration $publicAdministration): View
     {
-        return view('pages.pa.show');
+        $paDatatable = [
+            'datatableOptions' => [
+                'columnFilters' => [
+                    'name' => [
+                        'filterLabel' => __('nome'),
+                    ],
+                    'status' => [
+                        'filterLabel' => __('stato'),
+                    ],
+                ],
+            ],
+            'columns' => [
+                ['data' => 'name', 'name' => __('nome'), 'className' => 'text-wrap'],
+                ['data' => 'city', 'name' => __('città')],
+                ['data' => 'region', 'name' => __('regione')],
+                ['data' => 'email', 'name' => __('email')],
+                ['data' => 'status', 'name' => __('stato')],
+                ['data' => 'buttons', 'name' => '', 'orderable' => false],
+            ],
+            'source' => $this->getRoleAwareUrl('publicAdministrations.data.json', [], $publicAdministration),
+            'caption' => __('elenco delle tue pubbliche amministrazioni su :app', ['app' => config('app.name')]),
+            'columnsOrder' => [['name', 'asc']],
+        ];
+
+        return view('pages.pa.index')->with($paDatatable)->with('hasPublicAdministrations', auth()->user()->publicAdministrations->isNotEmpty() );
+    }
+
+    /**
+     * Add new Public Administrations for current user.
+     *
+     * @return View the view
+     */
+    public function add(): View
+    {
+        return view('pages.pa.add');
     }
 
     /**
@@ -59,10 +91,9 @@ class PublicAdministrationController extends Controller
         if ($authUser->isA(UserRole::SUPER_ADMIN)) {
             if (PublicAdministration::where('ipa_code', $publicAdministrationCode)->first()) {
                 session()->put('super_admin_tenant_ipa_code', $publicAdministrationCode);
-                /*                 if (!$targetRouteHasPublicAdministrationParam) {
-                                    return redirect()->route($redirectTo);
-                                }
-                 */
+                if (!$targetRouteHasPublicAdministrationParam) {
+                    return redirect()->route($redirectTo);
+                }
                 return redirect()->route($redirectTo, ['publicAdministration' => $publicAdministrationCode]);
             }
         } elseif ($authUser->publicAdministrations->isNotEmpty()) {
@@ -100,50 +131,6 @@ class PublicAdministrationController extends Controller
         }
 
         return redirect()->route('home');
-    }
-
-    /**
-     * Add new Public Administrations for current user.
-     *
-     * @return View the view
-     */
-    public function add(): View
-    {
-        return view('pages.pa.add');
-    }
-
-    /**
-     * Show all Public Administrations for current user.
-     *
-     * @return View the view
-     */
-    public function show(PublicAdministration $publicAdministration): View
-    {
-        $paDatatable = [
-            'datatableOptions' => [
-                'columnFilters' => [
-                    'name' => [
-                        'filterLabel' => __('nome'),
-                    ],
-                    'status' => [
-                        'filterLabel' => __('stato'),
-                    ],
-                ],
-            ],
-            'columns' => [
-                ['data' => 'name', 'name' => __('nome'), 'className' => 'text-wrap'],
-                ['data' => 'city', 'name' => __('città')],
-                ['data' => 'region', 'name' => __('regione')],
-                ['data' => 'email', 'name' => __('email')],
-                ['data' => 'status', 'name' => __('stato')],
-                ['data' => 'buttons', 'name' => '', 'orderable' => false],
-            ],
-            'source' => $this->getRoleAwareUrl('publicAdministrations.data.json', [], $publicAdministration),
-            'caption' => __('elenco delle tue pubbliche amministrazioni su :app', ['app' => config('app.name')]),
-            'columnsOrder' => [['name', 'asc']],
-        ];
-
-        return view('pages.pa.index')->with($paDatatable);
     }
 
     /**

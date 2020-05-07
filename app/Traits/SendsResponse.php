@@ -24,9 +24,15 @@ trait SendsResponse
     public function userResponse(User $user, ?PublicAdministration $publicAdministration = null)
     {
         $userStatus = $user->status;
+        $userTrashed = $user->trashed() ? $user->trashed() : false;
         if ($publicAdministration) {
-            $publicAdministrationUser = $user->publicAdministrations()->where('public_administration_id', $publicAdministration->id)->first();
-            $userStatus = UserStatus::coerce(intval($publicAdministrationUser->pivot->user_status));
+            if($user->publicAdministrations()->where('public_administration_id', $publicAdministration->id)->get()->isNotEmpty()){
+                $publicAdministrationUser = $user->publicAdministrations()->where('public_administration_id', $publicAdministration->id)->first();
+                $userStatus = UserStatus::coerce(intval($publicAdministrationUser->pivot->user_status));
+            }
+            else {
+                $userTrashed = true;
+            }
         }
 
         return request()->expectsJson()
@@ -36,12 +42,16 @@ trait SendsResponse
                 'user_name' => e($user->full_name),
                 'status' => $userStatus->key,
                 'status_description' => $userStatus->description,
-                'trashed' => $user->trashed(),
+                'trashed' => $userTrashed,
+                'administration' => $publicAdministration ? $publicAdministration->name : null
             ])
             : back()->withNotification([
                 'title' => __('utente modificato'),
-                'message' => $user->trashed()
-                    ? __("L'utente :user è stato eliminato.", ['user' => '<strong>' . e($user->full_name) . '</strong>'])
+                'message' => $userTrashed
+                    ? ( $publicAdministration
+                        ? __("L'utente :user è stato eliminato da :pa.", ['user' => '<strong>' . e($user->full_name) . '</strong>', 'pa' => '<strong>' . e($publicAdministration->name) . '</strong>'])
+                        : __("L'utente :user è stato eliminato.", ['user' => '<strong>' . e($user->full_name) . '</strong>'])
+                    )
                     : implode("\n", [
                         __("L'utente :user è stato aggiornato.", ['user' => '<strong>' . e($user->full_name) . '</strong>']),
                         __("Stato dell'utente: :status", [

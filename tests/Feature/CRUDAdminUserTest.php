@@ -674,6 +674,7 @@ class CRUDAdminUserTest extends TestCase
                 'user_name' => e($user->full_name),
                 'status' => UserStatus::getKey(UserStatus::SUSPENDED),
                 'status_description' => UserStatus::getDescription(UserStatus::SUSPENDED),
+                'administration' => $publicAdministration->name,
             ])
             ->assertOk();
 
@@ -736,6 +737,7 @@ class CRUDAdminUserTest extends TestCase
                 'user_name' => e($user->full_name),
                 'status' => UserStatus::getKey(UserStatus::SUSPENDED),
                 'status_description' => UserStatus::getDescription(UserStatus::SUSPENDED),
+                'administration' => $publicAdministration->name,
             ])
             ->assertOk();
 
@@ -794,6 +796,7 @@ class CRUDAdminUserTest extends TestCase
                 'user_name' => e($user->full_name),
                 'status' => UserStatus::getKey(UserStatus::INVITED),
                 'status_description' => UserStatus::getDescription(UserStatus::INVITED),
+                'administration' => $publicAdministration->name,
             ])
             ->assertOk();
 

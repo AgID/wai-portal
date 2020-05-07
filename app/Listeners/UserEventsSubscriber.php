@@ -305,6 +305,8 @@ class UserEventsSubscriber implements ShouldQueue
     public function onDeleted(UserDeleted $event): void
     {
         $user = $event->getUser();
+        $user->sendDeletededNotification($event->getPublicAdministration());
+
         logger()->notice('User ' . $user->uuid . ' deleted.',
             [
                 'event' => EventType::USER_DELETED,
