@@ -42,6 +42,7 @@ class StorePrimaryWebsiteRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'email' => 'required|email|max:75',
             'public_administration_name' => 'required|max:255',
             'url' => 'required|unique:websites|max:255',
             'rtd_mail' => 'nullable|email|max:75',

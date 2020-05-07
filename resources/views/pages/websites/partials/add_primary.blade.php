@@ -7,6 +7,25 @@
     @csrf
     <div class="row mt-5 justify-content-between">
         <div class="col-md-6">
+
+            <div class="form-row">
+                <div class="form-group col has-form-text ">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text"><svg class="icon icon-sm"><use xlink:href="{{ asset('svg/sprite.svg#it-mail') }}"></use></svg></div>
+                        </div>
+                        <label for="email">{{ __('Il tuo indirizzo email di lavoro') }}</label>
+                        <input type="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" id="email" name="email" value="{{ old('email') ? old('email') : auth()->user()->email }}" maxlength="75" aria-describedby="email-input-help" aria-required="true" required>
+                        @error('email')
+                        <div class="invalid-feedback">{{ $errors->first('email') }}</div>
+                        @else
+                        <div class="invalid-feedback">{{ __('validation.email', ['attribute' => __('validation.attributes.email')]) }}</div>
+                        @enderror
+                    </div>
+                    <small id="email-input-help" class="form-text text-muted">{{ __("L'inidirizzo email al quale vuoi ricevere le comunicazioni per questa pubblica amministrazione.") }}</small>
+                </div>
+            </div>
+
             <div class="form-row">
                 <div class="form-group col has-form-text">
                     <div class="input-group">

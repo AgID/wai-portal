@@ -126,7 +126,7 @@ class WebsiteController extends Controller
             'status' => WebsiteStatus::PENDING,
         ]);
 
-        $publicAdministration->users()->save($authUser, ['user_email' => $authUser->email, 'user_status' => UserStatus::PENDING]);
+        $publicAdministration->users()->save($authUser, ['user_email' => $request->input('email'), 'user_status' => UserStatus::PENDING]);
         // This is the first time we know which public administration the
         // current user belongs, so we need to set the tenant id just now.
         session()->put('tenant_id', $publicAdministration->id);
