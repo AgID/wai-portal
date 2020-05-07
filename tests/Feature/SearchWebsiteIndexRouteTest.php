@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Enums\UserPermission;
 use App\Enums\UserRole;
+use App\Enums\UserStatus;
 use App\Jobs\ProcessWebsitesIndex;
 use App\Models\PublicAdministration;
 use App\Models\User;
@@ -99,8 +100,8 @@ class SearchWebsiteIndexRouteTest extends TestCase
             'name' => 'Presidenza del Consiglio dei Ministri',
             'ipa_code' => 'PCM',
         ]);
-        $this->firstUser->publicAdministrations()->sync($this->firstPublicAdministration->id);
-        $this->secondUser->publicAdministrations()->sync($this->secondPublicAdministration->id);
+        $this->firstPublicAdministration->users()->sync([$this->firstUser->id => [ 'user_email' => $this->firstUser->email, 'user_status' => UserStatus::ACTIVE]]);
+        $this->secondPublicAdministration->users()->sync([$this->secondUser->id => [ 'user_email' => $this->secondUser->email, 'user_status' => UserStatus::ACTIVE]]);
 
         Bouncer::scope()->to($this->firstPublicAdministration->id);
         $this->firstUser->assign(UserRole::ADMIN);

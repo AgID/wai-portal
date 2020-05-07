@@ -259,7 +259,17 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function getMainRoleName(): string
     {
-        return UserRole::getDescription($this->roles->sortBy('pivot.role_id')->first()->name);
+        /*
+            Quello che secondo me dovrebbe essere corretto
+            return UserRole::getDescription($this->roles->sortBy('id')->first()->name);
+            produce un errore nei test che non riesco a capire
+        */
+        $mainRole = $this->roles->sortBy('id')->first();
+        if ($mainRole) {
+            return UserRole::getDescription($mainRole->name);
+        }
+
+        return '';
     }
 
     /**

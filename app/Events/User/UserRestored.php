@@ -11,22 +11,14 @@ use App\Models\User;
 class UserRestored extends AbstractUserEvent
 {
     /**
-     * The public administration the user belongs to.
-     *
-     * @var PublicAdministration the public administration
-     */
-    protected $publicAdministration;
-
-    /**
      * Event constructor.
      *
      * @param User $user the user
      * @param PublicAdministration $publicAdministration the public administration
      */
-    public function __construct(User $user, PublicAdministration $publicAdministration)
+    public function __construct(User $user)
     {
         parent::__construct($user);
-        $this->publicAdministration = $publicAdministration;
     }
 
     /**

@@ -296,7 +296,14 @@ class CRUDAdminUserTest extends TestCase
      */
     public function testPublicAdministrationUserDatatableData(): void
     {
-        $user = factory(User::class)->create();
+        $user = factory(User::class)->create([
+            'status' => UserStatus::ACTIVE,
+        ]);
+        Bouncer::scope()->onceTo(0, function () use ($user) {
+            $user->assign(UserRole::ADMIN);
+            $user->allow(UserPermission::MANAGE_ANALYTICS);
+        });
+
         $publicAdministration = factory(PublicAdministration::class)
             ->state('active')
             ->create();
@@ -670,8 +677,11 @@ class CRUDAdminUserTest extends TestCase
             ])
             ->assertOk();
 
-        Event::assertDispatched(UserUpdated::class, function ($event) {
-            return $event->getUser()->status->is(UserStatus::SUSPENDED);
+        Event::assertDispatched(UserUpdated::class, function ($event) use ($publicAdministration) {
+            $publicAdministrationUser = $event->getUser()->publicAdministrations()->where('public_administration_id', $publicAdministration->id)->first();
+            $statusPublicAdministrationUser = UserStatus::coerce(intval($publicAdministrationUser->pivot->user_status));
+
+            return $statusPublicAdministrationUser->is(UserStatus::SUSPENDED);
         });
     }
 
@@ -681,12 +691,12 @@ class CRUDAdminUserTest extends TestCase
     public function testSuspendUserFailAlreadySuspended(): void
     {
         $user = factory(User::class)->create([
-            'status' => UserStatus::SUSPENDED,
+            'status' => UserStatus::ACTIVE,
         ]);
         $publicAdministration = factory(PublicAdministration::class)
             ->state('active')
             ->create();
-        $publicAdministration->users()->sync([$user->id], false);
+        $publicAdministration->users()->sync([$user->id => ['user_status' => UserStatus::SUSPENDED]], false);
 
         $this->actingAs($this->user)
             ->json('patch', route('admin.publicAdministration.users.suspend', [
@@ -709,7 +719,7 @@ class CRUDAdminUserTest extends TestCase
         $publicAdministration = factory(PublicAdministration::class)
             ->state('active')
             ->create();
-        $publicAdministration->users()->sync([$user->id], false);
+        $publicAdministration->users()->sync([$user->id => ['user_status' => UserStatus::ACTIVE]], false);
         Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user) {
             $user->assign(UserRole::ADMIN);
             $user->allow(UserPermission::MANAGE_USERS);
@@ -729,8 +739,11 @@ class CRUDAdminUserTest extends TestCase
             ])
             ->assertOk();
 
-        Event::assertDispatched(UserUpdated::class, function ($event) {
-            return $event->getUser()->status->is(UserStatus::SUSPENDED);
+        Event::assertDispatched(UserUpdated::class, function ($event) use ($publicAdministration) {
+            $publicAdministrationUser = $event->getUser()->publicAdministrations()->where('public_administration_id', $publicAdministration->id)->first();
+            $statusPublicAdministrationUser = UserStatus::coerce(intval($publicAdministrationUser->pivot->user_status));
+
+            return $statusPublicAdministrationUser->is(UserStatus::SUSPENDED);
         });
     }
 
@@ -740,10 +753,10 @@ class CRUDAdminUserTest extends TestCase
     public function testSuspendUserFailPending(): void
     {
         $user = factory(User::class)->create([
-            'status' => UserStatus::PENDING,
+            'status' => UserStatus::ACTIVE,
         ]);
         $publicAdministration = factory(PublicAdministration::class)->create();
-        $publicAdministration->users()->sync([$user->id], false);
+        $publicAdministration->users()->sync([$user->id => ['user_status' => UserStatus::PENDING]], false);
 
         $this->actingAs($this->user)
             ->json('patch', route('admin.publicAdministration.users.suspend', [
@@ -765,10 +778,10 @@ class CRUDAdminUserTest extends TestCase
     public function testReactivateUserSuccessful(): void
     {
         $user = factory(User::class)->create([
-            'status' => UserStatus::SUSPENDED,
+            'status' => UserStatus::ACTIVE,
         ]);
         $publicAdministration = factory(PublicAdministration::class)->create();
-        $publicAdministration->users()->sync([$user->id], false);
+        $publicAdministration->users()->sync([$user->id => ['user_status' => UserStatus::SUSPENDED]], false);
 
         $this->actingAs($this->user)
             ->json('patch', route('admin.publicAdministration.users.reactivate', [
@@ -784,8 +797,11 @@ class CRUDAdminUserTest extends TestCase
             ])
             ->assertOk();
 
-        Event::assertDispatched(UserUpdated::class, function ($event) {
-            return $event->getUser()->status->is(UserStatus::INVITED);
+        Event::assertDispatched(UserUpdated::class, function ($event) use ($publicAdministration) {
+            $publicAdministrationUser = $event->getUser()->publicAdministrations()->where('public_administration_id', $publicAdministration->id)->first();
+            $statusPublicAdministrationUser = UserStatus::coerce(intval($publicAdministrationUser->pivot->user_status));
+
+            return $statusPublicAdministrationUser->is(UserStatus::INVITED);
         });
     }
 
@@ -821,7 +837,7 @@ class CRUDAdminUserTest extends TestCase
         $user = factory(User::class)->create([
             'status' => UserStatus::ACTIVE,
         ]);
-        $publicAdministration->users()->sync([$user->id]);
+        $publicAdministration->users()->sync([$user->id => ['user_status' => UserStatus::ACTIVE]]);
         Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user) {
             $user->assign(UserRole::DELEGATED);
         });
@@ -833,9 +849,7 @@ class CRUDAdminUserTest extends TestCase
             ]))
             ->assertOk();
 
-        Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user) {
-            $this->assertTrue($user->isA(UserRole::DELETED));
-        });
+        $this->assertTrue($user->publicAdministrations->where('id', $publicAdministration->id )->isEmpty());
 
         Event::assertDispatched(UserDeleted::class, function ($event) use ($user) {
             return $user->is($event->getUser());
@@ -853,7 +867,7 @@ class CRUDAdminUserTest extends TestCase
         $user = factory(User::class)->create([
             'status' => UserStatus::ACTIVE,
         ]);
-        $publicAdministration->users()->sync([$user->id]);
+        $publicAdministration->users()->sync([$user->id => ['user_status' => UserStatus::ACTIVE]]);
         Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user) {
             $user->assign(UserRole::ADMIN);
         });
@@ -884,7 +898,7 @@ class CRUDAdminUserTest extends TestCase
         $user = factory(User::class)->create([
             'status' => UserStatus::PENDING,
         ]);
-        $publicAdministration->users()->sync([$user->id]);
+        $publicAdministration->users()->sync([$user->id => ['user_status' => UserStatus::PENDING]]);
         Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user) {
             $user->assign(UserRole::DELEGATED);
         });
@@ -903,48 +917,4 @@ class CRUDAdminUserTest extends TestCase
         Event::assertNotDispatched(UserDeleted::class);
     }
 
-    /**
-     * Test normal user restore successful.
-     */
-    public function testPublicAdministrationRestoreUserSuccessful(): void
-    {
-        $publicAdministration = factory(PublicAdministration::class)
-            ->state('active')
-            ->create();
-        $user = factory(User::class)->create([
-            'status' => UserStatus::PENDING,
-            'deleted_at' => Date::now(),
-        ]);
-        $publicAdministration->users()->sync([$user->id]);
-        Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user) {
-            $user->assign(UserRole::DELEGATED);
-            $user->assign(UserRole::DELETED);
-        });
-
-        $this->actingAs($this->user)
-            ->json('patch', route('admin.publicAdministration.users.restore', [
-                'publicAdministration' => $publicAdministration,
-                'trashed_user' => $user,
-            ]))
-            ->assertOk()
-            ->assertJson([
-                'result' => 'ok',
-                'id' => $user->uuid,
-                'user_name' => e($user->full_name),
-                'status' => UserStatus::getKey(UserStatus::PENDING),
-                'status_description' => UserStatus::getDescription(UserStatus::PENDING),
-            ]);
-
-        $user->refresh();
-
-        $this->assertFalse($user->trashed());
-
-        Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user) {
-            $this->assertFalse($user->isA(UserRole::DELETED));
-        });
-
-        Event::assertDispatched(UserRestored::class, function ($event) use ($user) {
-            return $user->is($event->getUser());
-        });
-    }
 }

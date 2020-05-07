@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Enums\PublicAdministrationStatus;
 use App\Enums\UserPermission;
 use App\Enums\UserRole;
+use App\Enums\UserStatus;
 use App\Enums\WebsiteStatus;
 use App\Enums\WebsiteType;
 use App\Events\Website\WebsiteArchived;
@@ -64,7 +65,7 @@ class ArchiveWebsiteJsonRoutesTest extends TestCase
         $this->publicAdministration = factory(PublicAdministration::class)->create([
             'status' => PublicAdministrationStatus::ACTIVE,
         ]);
-        $this->publicAdministration->users()->sync($this->user->id);
+        $this->publicAdministration->users()->sync([$this->user->id => [ 'user_email' => $this->user->email, 'user_status' => UserStatus::ACTIVE]]);
         $this->website = factory(Website::class)->create([
             'status' => WebsiteStatus::ACTIVE,
             'type' => WebsiteType::INFORMATIONAL,

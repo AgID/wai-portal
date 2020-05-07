@@ -9,6 +9,7 @@ use App\Events\User\UserDeleted;
 use App\Events\User\UserInvited;
 use App\Events\User\UserReactivated;
 use App\Events\User\UserSuspended;
+use App\Events\User\UserUpdated;
 use App\Exceptions\CommandErrorException;
 use App\Exceptions\InvalidUserStatusException;
 use App\Exceptions\OperationNotAllowedException;
@@ -305,11 +306,15 @@ class UserController extends Controller
     public function delete(PublicAdministration $publicAdministration, User $user)
     {
         try {
-            if ($user->trashed()) {
-                return $this->notModifiedResponse();
+            $publicAdministration = ($publicAdministration && $publicAdministration->id) ? $publicAdministration : current_public_administration();
+            if ($user->publicAdministrations->where('id', $publicAdministration->id)->isEmpty()) {
+                abort(403);
             }
 
-            if ($user->status->is(UserStatus::PENDING)) {
+            $publicAdministrationUser = $user->publicAdministrations()->where('public_administration_id', $publicAdministration->id)->first();
+            $userPublicAdministrationStatus = UserStatus::coerce(intval($publicAdministrationUser->pivot->user_status));
+
+            if ($userPublicAdministrationStatus->is(UserStatus::PENDING)) {
                 throw new OperationNotAllowedException('Pending users cannot be deleted.');
             }
 
@@ -318,50 +323,14 @@ class UserController extends Controller
                 throw new OperationNotAllowedException($validator->errors()->first('is_admin'));
             }
 
-            $user->publicAdministrations()->get()->map(function ($publicAdministration) use ($user) {
-                Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user) {
-                    $user->assign(UserRole::DELETED);
-                });
-            });
-
-            // NOTE: don't use 'user->delete()' directly since
-            //       it cascades delete to roles and permissions
-            // See: https://github.com/JosephSilber/bouncer/issues/439
-            $user->deleted_at = $user->freshTimestamp();
-            $user->save();
+            $publicAdministration->users()->detach([$user->id]);
         } catch (OperationNotAllowedException $exception) {
             report($exception);
 
             return $this->errorResponse($exception->getMessage(), $exception->getCode(), 400);
         }
 
-        event(new UserDeleted($user));
-
-        return $this->userResponse($user);
-    }
-
-    /**
-     * Restore a soft-deleted user.
-     * NOTE: Super admin only.
-     *
-     * @param PublicAdministration $publicAdministration the public administration the user belongs to
-     * @param User $user the user to restore
-     *
-     * @return JsonResponse|RedirectResponse the response in json or http redirect format
-     */
-    public function restore(PublicAdministration $publicAdministration, User $user)
-    {
-        if (!$user->trashed()) {
-            return $this->notModifiedResponse();
-        }
-
-        $user->publicAdministrations()->get()->map(function ($publicAdministration) use ($user) {
-            Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user) {
-                $user->retract(UserRole::DELETED);
-            });
-        });
-
-        $user->restore();
+        event(new UserDeleted($user, $publicAdministration));
 
         return $this->userResponse($user);
     }
@@ -409,6 +378,7 @@ class UserController extends Controller
             $publicAdministration->users()->updateExistingPivot($user->id, ['user_status' => UserStatus::SUSPENDED]);
 
             event(new UserSuspended($user, $publicAdministration));
+            event(new UserUpdated($user));
 
             return $this->userResponse($user, $publicAdministration);
         } catch (InvalidUserStatusException $exception) {
@@ -453,6 +423,7 @@ class UserController extends Controller
         $publicAdministration->users()->updateExistingPivot($user->id, ['user_status' => $updatedStatus]);
 
         event(new UserReactivated($user, $publicAdministration));
+        event(new UserUpdated($user));
 
         return $this->userResponse($user, $publicAdministration);
     }

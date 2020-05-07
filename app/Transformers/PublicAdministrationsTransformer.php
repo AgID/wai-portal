@@ -57,7 +57,7 @@ class PublicAdministrationsTransformer extends TransformerAbstract
                 ],
             ];
         }
-        if ($statusPublicAdministrationUser->is(UserStatus::ACTIVE)) {
+        if ($statusPublicAdministrationUser->is(UserStatus::ACTIVE) || $statusPublicAdministrationUser->is(UserStatus::PENDING)) {
             $data['buttons'][] = [
                 'link' => route('publicAdministrations.change.and.redirect', ['public-administration-nav' => $publicAdministration->id]),
                 'color' => 'outline-primary',

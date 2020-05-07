@@ -125,6 +125,8 @@ class UserTransformer extends TransformerAbstract
             }
 
             if (!$statusPublicAdministrationUser->is(UserStatus::PENDING) && $authUserCanAccessAdminArea) {
+                /*
+                * TODO: Remove this block if not used
                 if ($user->trashed()) {
                     $data['status'] = '';
                     $data['trashed'] = true;
@@ -142,7 +144,9 @@ class UserTransformer extends TransformerAbstract
                             'ajax' => true,
                         ],
                     ];
-                } elseif ($user->uuid !== $authUser->uuid && !$user->isTheLastActiveAdministratorOf($publicAdministration)) {
+                } else
+                */
+                if ($user->uuid !== $authUser->uuid && !$user->isTheLastActiveAdministratorOf($publicAdministration)) {
                     $data['buttons'][] = [
                         'link' => route('admin.publicAdministration.users.delete', [
                             'publicAdministration' => $publicAdministration,

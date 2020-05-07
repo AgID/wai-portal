@@ -22,10 +22,11 @@ export default (() => {
                 ].join(' ')),
                 body: [
                     '<p>',
-                    isTrashed ? I18n.t("Stai ripristinando l'utente") : I18n.t("Stai eliminando l'utente"),
-                    '<strong>' + userDeleteRestoreButton.dataset.userName + '</strong>',
+                    I18n.t("Stai eliminando l'utente "),
+                    '<strong>' + userDeleteRestoreButton.dataset.userName + '</strong>.<br>',
+                    ("L'operazione non è reversibile. In caso si voglia sospendere temporaneamente l'utente usare il tasto sospendi."),
                     '</p>',
-                    '<p>' + I18n.t('Sei sicuro?') +'<p>',
+                    '<p>' + I18n.t('Sei sicuro di volere procedere comunque?') +'<p>',
                 ].join(' '),
                 image: '/images/user-suspend.svg',
             };

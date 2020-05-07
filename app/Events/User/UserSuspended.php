@@ -23,7 +23,7 @@ class UserSuspended extends AbstractUserEvent
      * @param User $user the user
      * @param PublicAdministration $publicAdministration the public administration
      */
-    public function __construct(User $user, PublicAdministration $publicAdministration)
+    public function __construct(User $user, ?PublicAdministration $publicAdministration = null)
     {
         parent::__construct($user);
         $this->publicAdministration = $publicAdministration;

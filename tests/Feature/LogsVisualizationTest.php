@@ -7,6 +7,7 @@ use App\Enums\Logs\ExceptionType;
 use App\Enums\Logs\JobType;
 use App\Enums\UserPermission;
 use App\Enums\UserRole;
+use App\Enums\UserStatus;
 use App\Models\PublicAdministration;
 use App\Models\User;
 use App\Models\Website;
@@ -80,7 +81,7 @@ class LogsVisualizationTest extends TestCase
             'email_verified_at' => Carbon::now(),
         ]);
         $this->firstPublicAdministration = factory(PublicAdministration::class)->create();
-        $this->user->publicAdministrations()->sync($this->firstPublicAdministration->id);
+        $this->firstPublicAdministration->users()->sync([$this->user->id => [ 'user_email' => $this->user->email, 'user_status' => UserStatus::ACTIVE]]);
 
         Bouncer::scope()->to($this->firstPublicAdministration->id);
         $this->user->assign(UserRole::ADMIN);

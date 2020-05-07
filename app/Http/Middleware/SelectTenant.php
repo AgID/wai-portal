@@ -40,6 +40,10 @@ class SelectTenant
                         break;
                 }
             }
+            else if(!empty(session('tenant_id')) && $authUser->publicAdministrations->where('id', session('tenant_id') )->isEmpty() ){
+                $request->session()->forget('tenant_id');
+                return redirect()->route('publicAdministrations.show');
+            }
         }
 
         return $next($request);

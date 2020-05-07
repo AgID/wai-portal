@@ -3,7 +3,6 @@
 namespace App\Http\View\Composers;
 
 use App\Enums\UserRole;
-use App\Enums\UserStatus;
 use App\Models\PublicAdministration;
 use Illuminate\Http\Request;
 use Illuminate\Session\Store;
