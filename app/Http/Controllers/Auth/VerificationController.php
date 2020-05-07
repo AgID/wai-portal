@@ -35,9 +35,39 @@ class VerificationController extends Controller
             return $this->alreadyVerifiedUser($request, $user);
         }
 
-        $view = $user->status->is(UserStatus::INVITED) ? 'auth.invitation_notice' : 'auth.verify';
+        if ($user->status->is(UserStatus::INVITED)) {
+            return redirect(route('home'))->withModal([
+                'title' => __('In attesa di conferma'),
+                'icon' => 'it-clock',
+                'message' => implode("\n", [
+                    __('Uno degli amministratori ti ha inviato un invito al tuo indirizzo :email.', ['email' => '<strong>' . e($user->email) . '</strong>']),
+                    __('Per procedere clicca sul link che trovi nel messaggio email.'),
+                    '<p class="font-italic mt-4 mb-0"><small>',
+                    __('Se non hai ricevuto il link al tuo indirizzo, controlla che la casella non sia piena e verifica che il messaggio non sia stato erroneamente classificato come spam.'),
+                    '</small></p>',
+                    '<p class="font-italic mb-0"><small>',
+                    __('Se necessario, contatta un amministratore per riceverne un altro'),
+                    '</small></p>',
+                ]),
+            ]);
+        }
 
-        return view($view)->with('user', $user);
+        $resendLinkRoute = route($user->isA(UserRole::SUPER_ADMIN) ? 'admin.verification.resend' : 'verification.resend', [], false);
+        $editProfileRoute = route($user->isA(UserRole::SUPER_ADMIN) ? 'admin.user.profile.edit' : 'user.profile.edit', [], false);
+
+        return redirect(route('home'))->withModal([
+            'title' => __('In attesa di conferma'),
+            'icon' => 'it-clock',
+            'message' => implode("\n", [
+                __('Abbiamo inviato un link di conferma al tuo indirizzo :email.', ['email' => '<strong>' . e($user->email) . '</strong>']),
+                __('Per procedere clicca sul link che trovi nel messaggio email.'),
+                '<p class="font-italic mt-4 mb-0"><small>' .
+                __('Se non hai ricevuto il link al tuo indirizzo, controlla che la casella non sia piena e verifica che il messaggio non sia stato erroneamente classificato come spam.'),
+                __('Se necessario, ') . '<a href="' . $resendLinkRoute . '">' . __('invia una nuova mail di verifica') . '</a></small></p>',
+                '<p class="font-italic mb-0"><small>' . __('Se hai ha inserito un indirizzo email errato, ') .
+                '<a href="' . $editProfileRoute . '">' . __('puoi modificarlo') . '</a></small></p>',
+            ]),
+        ]);
     }
 
     /**
