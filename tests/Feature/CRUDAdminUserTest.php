@@ -9,7 +9,6 @@ use App\Enums\WebsiteAccessType;
 use App\Events\User\UserDeleted;
 use App\Events\User\UserInvited;
 use App\Events\User\UserReactivated;
-use App\Events\User\UserRestored;
 use App\Events\User\UserSuspended;
 use App\Events\User\UserUpdated;
 use App\Events\User\UserWebsiteAccessChanged;
@@ -852,7 +851,7 @@ class CRUDAdminUserTest extends TestCase
             ]))
             ->assertOk();
 
-        $this->assertTrue($user->publicAdministrations->where('id', $publicAdministration->id )->isEmpty());
+        $this->assertTrue($user->publicAdministrations->where('id', $publicAdministration->id)->isEmpty());
 
         Event::assertDispatched(UserDeleted::class, function ($event) use ($user) {
             return $user->is($event->getUser());
@@ -919,5 +918,4 @@ class CRUDAdminUserTest extends TestCase
 
         Event::assertNotDispatched(UserDeleted::class);
     }
-
 }

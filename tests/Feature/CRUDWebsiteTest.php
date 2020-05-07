@@ -87,7 +87,7 @@ class CRUDWebsiteTest extends TestCase
             'status' => WebsiteStatus::ACTIVE,
             'type' => WebsiteType::INSTITUTIONAL,
         ]);
-        $this->publicAdministration->users()->sync([$this->user->id => [ 'user_email' => $this->user->email, 'user_status' => UserStatus::ACTIVE]]);
+        $this->publicAdministration->users()->sync([$this->user->id => ['user_email' => $this->user->email, 'user_status' => UserStatus::ACTIVE]]);
 
         $this->spidUser = new SPIDUser([
             'fiscalNumber' => $this->user->fiscal_number,

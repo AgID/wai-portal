@@ -80,7 +80,7 @@ class CRUDUserTest extends TestCase
         $this->publicAdministration = factory(PublicAdministration::class)
             ->state('active')
             ->create();
-        $this->publicAdministration->users()->sync([$this->user->id => [ 'user_email' => $this->user->email, 'user_status' => UserStatus::ACTIVE]]);
+        $this->publicAdministration->users()->sync([$this->user->id => ['user_email' => $this->user->email, 'user_status' => UserStatus::ACTIVE]]);
 
         $this->website = factory(Website::class)->create([
             'public_administration_id' => $this->publicAdministration->id,
@@ -609,6 +609,7 @@ class CRUDUserTest extends TestCase
         Event::assertDispatched(UserUpdated::class, function ($event) {
             $publicAdministrationUser = $event->getUser()->publicAdministrations()->where('public_administration_id', $this->publicAdministration->id)->first();
             $statusPublicAdministrationUser = UserStatus::coerce(intval($publicAdministrationUser->pivot->user_status));
+
             return $statusPublicAdministrationUser->is(UserStatus::INVITED);
         });
     }

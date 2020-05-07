@@ -55,7 +55,7 @@ class PublicAdministrationController extends Controller
             'columnsOrder' => [['name', 'asc']],
         ];
 
-        return view('pages.pa.index')->with($paDatatable)->with('hasPublicAdministrations', auth()->user()->publicAdministrations->isNotEmpty() );
+        return view('pages.pa.index')->with($paDatatable)->with('hasPublicAdministrations', auth()->user()->publicAdministrations->isNotEmpty());
     }
 
     /**
@@ -94,6 +94,7 @@ class PublicAdministrationController extends Controller
                 if (!$targetRouteHasPublicAdministrationParam) {
                     return redirect()->route($redirectTo);
                 }
+
                 return redirect()->route($redirectTo, ['publicAdministration' => $publicAdministrationCode]);
             }
         } elseif ($authUser->publicAdministrations->isNotEmpty()) {

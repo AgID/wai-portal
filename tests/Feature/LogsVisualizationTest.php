@@ -81,7 +81,7 @@ class LogsVisualizationTest extends TestCase
             'email_verified_at' => Carbon::now(),
         ]);
         $this->firstPublicAdministration = factory(PublicAdministration::class)->create();
-        $this->firstPublicAdministration->users()->sync([$this->user->id => [ 'user_email' => $this->user->email, 'user_status' => UserStatus::ACTIVE]]);
+        $this->firstPublicAdministration->users()->sync([$this->user->id => ['user_email' => $this->user->email, 'user_status' => UserStatus::ACTIVE]]);
 
         Bouncer::scope()->to($this->firstPublicAdministration->id);
         $this->user->assign(UserRole::ADMIN);

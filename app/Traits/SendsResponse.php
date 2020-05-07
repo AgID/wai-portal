@@ -26,11 +26,10 @@ trait SendsResponse
         $userStatus = $user->status;
         $userTrashed = $user->trashed() ? $user->trashed() : false;
         if ($publicAdministration) {
-            if($user->publicAdministrations()->where('public_administration_id', $publicAdministration->id)->get()->isNotEmpty()){
+            if ($user->publicAdministrations()->where('public_administration_id', $publicAdministration->id)->get()->isNotEmpty()) {
                 $publicAdministrationUser = $user->publicAdministrations()->where('public_administration_id', $publicAdministration->id)->first();
                 $userStatus = UserStatus::coerce(intval($publicAdministrationUser->pivot->user_status));
-            }
-            else {
+            } else {
                 $userTrashed = true;
             }
         }
@@ -43,12 +42,12 @@ trait SendsResponse
                 'status' => $userStatus->key,
                 'status_description' => $userStatus->description,
                 'trashed' => $userTrashed,
-                'administration' => $publicAdministration ? $publicAdministration->name : null
+                'administration' => $publicAdministration ? $publicAdministration->name : null,
             ])
             : back()->withNotification([
                 'title' => __('utente modificato'),
                 'message' => $userTrashed
-                    ? ( $publicAdministration
+                    ? ($publicAdministration
                         ? __("L'utente :user è stato eliminato da :pa.", ['user' => '<strong>' . e($user->full_name) . '</strong>', 'pa' => '<strong>' . e($publicAdministration->name) . '</strong>'])
                         : __("L'utente :user è stato eliminato.", ['user' => '<strong>' . e($user->full_name) . '</strong>'])
                     )

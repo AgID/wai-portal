@@ -14,7 +14,6 @@ use App\Events\User\UserInvited;
 use App\Events\User\UserLogin;
 use App\Events\User\UserLogout;
 use App\Events\User\UserReactivated;
-use App\Events\User\UserRestored;
 use App\Events\User\UserStatusChanged;
 use App\Events\User\UserSuspended;
 use App\Events\User\UserUpdated;
@@ -408,7 +407,7 @@ class UserEventsSubscriberTest extends TestCase
     public function testUserDeleted(): void
     {
         $publicAdministration = factory(PublicAdministration::class)->state('active')->create();
-        $publicAdministration->users()->sync([$this->user->id => [ 'user_email' => $this->user->email, 'user_status' => UserStatus::ACTIVE]]);
+        $publicAdministration->users()->sync([$this->user->id => ['user_email' => $this->user->email, 'user_status' => UserStatus::ACTIVE]]);
         $this->expectLogMessage(
             'notice',
             [
@@ -431,7 +430,6 @@ class UserEventsSubscriberTest extends TestCase
         $publicAdministration->users()->sync([$secondUser->id => ['user_status' => UserStatus::SUSPENDED]], false);
 
         $publicAdministration->users()->sync([$this->user->id => ['user_status' => UserStatus::ACTIVE]], false);
-
 
         Bouncer::scope()->onceTo($publicAdministration->id, function () use ($secondUser) {
             $this->user->assign(UserRole::ADMIN);

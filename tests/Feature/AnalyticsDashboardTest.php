@@ -46,7 +46,7 @@ class AnalyticsDashboardTest extends TestCase
             'email_verified_at' => Date::now(),
         ]);
         $this->publicAdministration = factory(PublicAdministration::class)->create();
-        $this->publicAdministration->users()->sync([$this->user->id => [ 'user_email' => $this->user->email, 'user_status' => UserStatus::ACTIVE]]);
+        $this->publicAdministration->users()->sync([$this->user->id => ['user_email' => $this->user->email, 'user_status' => UserStatus::ACTIVE]]);
 
         Bouncer::dontCache();
     }

@@ -100,8 +100,8 @@ class SearchWebsiteIndexRouteTest extends TestCase
             'name' => 'Presidenza del Consiglio dei Ministri',
             'ipa_code' => 'PCM',
         ]);
-        $this->firstPublicAdministration->users()->sync([$this->firstUser->id => [ 'user_email' => $this->firstUser->email, 'user_status' => UserStatus::ACTIVE]]);
-        $this->secondPublicAdministration->users()->sync([$this->secondUser->id => [ 'user_email' => $this->secondUser->email, 'user_status' => UserStatus::ACTIVE]]);
+        $this->firstPublicAdministration->users()->sync([$this->firstUser->id => ['user_email' => $this->firstUser->email, 'user_status' => UserStatus::ACTIVE]]);
+        $this->secondPublicAdministration->users()->sync([$this->secondUser->id => ['user_email' => $this->secondUser->email, 'user_status' => UserStatus::ACTIVE]]);
 
         Bouncer::scope()->to($this->firstPublicAdministration->id);
         $this->firstUser->assign(UserRole::ADMIN);

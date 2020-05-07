@@ -81,8 +81,8 @@ class SearchUserIndexRouteTest extends TestCase
         $this->firstPublicAdministration = factory(PublicAdministration::class)->create();
         $this->secondPublicAdministration = factory(PublicAdministration::class)->create();
 
-        $this->firstPublicAdministration->users()->sync([$this->firstUser->id => [ 'user_email' => $this->firstUser->email, 'user_status' => UserStatus::ACTIVE]]);
-        $this->secondPublicAdministration->users()->sync([$this->secondUser->id => [ 'user_email' => $this->secondUser->email, 'user_status' => UserStatus::ACTIVE]]);
+        $this->firstPublicAdministration->users()->sync([$this->firstUser->id => ['user_email' => $this->firstUser->email, 'user_status' => UserStatus::ACTIVE]]);
+        $this->secondPublicAdministration->users()->sync([$this->secondUser->id => ['user_email' => $this->secondUser->email, 'user_status' => UserStatus::ACTIVE]]);
 
         Bouncer::scope()->to($this->firstPublicAdministration->id);
         $this->firstUser->assign(UserRole::ADMIN);

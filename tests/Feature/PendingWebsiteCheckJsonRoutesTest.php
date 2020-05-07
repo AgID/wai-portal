@@ -57,8 +57,7 @@ class PendingWebsiteCheckJsonRoutesTest extends TestCase
 
         $this->user = factory(User::class)->state('active')->create();
         $this->publicAdministration = factory(PublicAdministration::class)->create();
-        $this->publicAdministration->users()->sync([$this->user->id => [ 'user_email' => $this->user->email, 'user_status' => UserStatus::ACTIVE]]);
-
+        $this->publicAdministration->users()->sync([$this->user->id => ['user_email' => $this->user->email, 'user_status' => UserStatus::ACTIVE]]);
 
         $this->website = factory(Website::class)->create([
             'status' => WebsiteStatus::PENDING,
