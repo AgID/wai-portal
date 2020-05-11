@@ -88,7 +88,7 @@ class WebsiteTransformerTest extends TestCase
         ]);
 
         $this->websiteSecondaryActive = factory(Website::class)->state('active')->create([
-            'type' => WebsiteType::SECONDARY,
+            'type' => WebsiteType::INFORMATIONAL,
             'url' => 'https://seconday-active.local',
             'slug' => Str::slug('https://seconday-active.local'),
             'public_administration_id' => $this->publicAdministration->id,
@@ -96,7 +96,7 @@ class WebsiteTransformerTest extends TestCase
         ]);
 
         $this->websiteSecondaryArchived = factory(Website::class)->state('archived')->create([
-            'type' => WebsiteType::SECONDARY,
+            'type' => WebsiteType::INFORMATIONAL,
             'url' => 'https://seconday-archived.local',
             'slug' => Str::slug('https://seconday-archived.local'),
             'public_administration_id' => $this->publicAdministration->id,
@@ -104,7 +104,7 @@ class WebsiteTransformerTest extends TestCase
         ]);
 
         $this->websiteSecondaryPending = factory(Website::class)->create([
-            'type' => WebsiteType::SECONDARY,
+            'type' => WebsiteType::INFORMATIONAL,
             'status' => WebsiteStatus::PENDING,
             'url' => 'https://seconday-pending.local',
             'slug' => Str::slug('https://seconday-pending.local'),
@@ -113,7 +113,7 @@ class WebsiteTransformerTest extends TestCase
         ]);
 
         $this->websiteSecondaryTrashed = factory(Website::class)->state('active')->create([
-            'type' => WebsiteType::SECONDARY,
+            'type' => WebsiteType::INFORMATIONAL,
             'url' => 'https://seconday-trashed.local',
             'slug' => Str::slug('https://seconday-trashed.local'),
             'public_administration_id' => $this->publicAdministration->id,

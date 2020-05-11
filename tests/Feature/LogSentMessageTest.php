@@ -18,9 +18,13 @@ class LogSentMessageTest extends TestCase
     {
         $message = (new \Swift_Message('Test subject'))->setTo('fake@example.local', 'Fake receiver');
 
+        $anonymizedMailAddresses = collect($message->getTo())->keys()->map(function ($address) {
+            return preg_replace('/(?<=.).(?=.*.@)/', '*', $address);
+        })->toArray();
+
         $this->expectLogMessage('debug', [
-            'Mail message with subject "' . $message->getSubject() . '" sent to ' . implode(', ', array_keys($message->getTo())),
-            ['event' => EventType::MAIL_SENT],
+            'Mail message with subject "' . $message->getSubject() . '" sent to ' . implode(', ', $anonymizedMailAddresses),
+           ['event' => EventType::MAIL_SENT],
         ]);
 
         event(new MessageSent($message));
