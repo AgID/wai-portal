@@ -183,16 +183,16 @@
         },
         {
             "name": "davidepastore/codice-fiscale",
-            "version": "v0.7.0",
+            "version": "v0.7.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/DavidePastore/codice-fiscale.git",
-                "reference": "34f69b34b3db22f9b1864d456d66b31b9478a748"
+                "reference": "17cb3aa4f370097b1e2547fab54ebc9d449cc71a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/DavidePastore/codice-fiscale/zipball/34f69b34b3db22f9b1864d456d66b31b9478a748",
-                "reference": "34f69b34b3db22f9b1864d456d66b31b9478a748",
+                "url": "https://api.github.com/repos/DavidePastore/codice-fiscale/zipball/17cb3aa4f370097b1e2547fab54ebc9d449cc71a",
+                "reference": "17cb3aa4f370097b1e2547fab54ebc9d449cc71a",
                 "shasum": ""
             },
             "require": {
@@ -206,7 +206,7 @@
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "": "src/"
+                    "CodiceFiscale\\": "src/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -227,7 +227,7 @@
                 "tax code",
                 "validator"
             ],
-            "time": "2020-03-06T08:20:20+00:00"
+            "time": "2020-05-05T13:16:30+00:00"
         },
         {
             "name": "dnoegel/php-xdg-base-dir",
