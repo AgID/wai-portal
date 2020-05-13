@@ -150,7 +150,7 @@ class PublicAdministration extends Model
      *
      * @return string the printable public administration representation
      */
-    public function getInfo(): string
+    public function getInfoAttribute(): string
     {
         return '"' . $this->name . '" [' . $this->ipa_code . ']';
     }

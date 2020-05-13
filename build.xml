@@ -123,6 +123,7 @@
                     <token key="MATOMO_PLUGIN_PROTECTTRACKID_VERSION" value="${MATOMO_PLUGIN_PROTECTTRACKID_VERSION}" />
                     <token key="MATOMO_PLUGIN_CUSTOMDIMENSIONS_VERSION" value="${MATOMO_PLUGIN_CUSTOMDIMENSIONS_VERSION}" />
                     <token key="MATOMO_PLUGIN_LOGINFILTERIP_VERSION" value="${MATOMO_PLUGIN_LOGINFILTERIP_VERSION}" />
+                    <token key="MATOMO_PLUGIN_VISITORGENERATOR_VERSION" value="${MATOMO_PLUGIN_VISITORGENERATOR_VERSION}" />
                     <token key="MATOMO_PLUGIN_TRACKERHOSTNAME_VERSION" value="${MATOMO_PLUGIN_TRACKERHOSTNAME_VERSION}" />
                     <token key="MATOMO_INGESTION_HOSTNAME" value="${MATOMO_INGESTION_HOSTNAME}" />
                 </replacetokens>
@@ -310,6 +311,7 @@
                 <exec command="docker-compose up -d --build nginx mariadb redis ipa-redisearch elasticsearch php-fpm matomo" dir="containers" passthru="true" checkreturn="true"/>
             </then>
             <else>
+                <exec command="docker-compose up -d --build nginx mariadb redis ipa-redisearch mailhog php-fpm matomo queue-worker elasticsearch spid-testenv" dir="containers" passthru="true" checkreturn="true"/>
                 <if>
                     <or>
                         <equals arg1="${REDIS_INDEXES_USE_SENTINELS}" arg2="true"/>
@@ -319,11 +321,17 @@
                         <contains string="${QUEUE_REDIS_CONNECTION}" substring="sentinel"/>
                     </or>
                     <then>
-                        <exec command="docker-compose up -d --build nginx mariadb redis ipa-redisearch redis-sentinel mailhog php-fpm matomo queue-worker elasticsearch spid-testenv" dir="containers" passthru="true" checkreturn="true"/>
+                        <echo msg="Starting redis-sentinel container..."/>
+                        <exec command="docker-compose up -d --build redis-sentinel" dir="containers" passthru="true" checkreturn="true"/>
                     </then>
-                    <else>
-                        <exec command="docker-compose up -d --build nginx mariadb redis ipa-redisearch mailhog php-fpm matomo queue-worker elasticsearch spid-testenv" dir="containers" passthru="true" checkreturn="true"/>
-                    </else>
+                </if>
+                <if>
+                    <equals arg1="${MARIADB_REPLICA}" arg2="true"/>
+                    <then>
+                        <echo msg="Starting mariadb-slave container..."/>
+                        <exec command="docker-compose up -d --build mariadb-slave" dir="containers" passthru="true" checkreturn="true"/>
+                        <exec command="docker-compose exec -u root mariadb sh -c 'apt update; apt install -y iproute2'" dir="containers" checkreturn="true"/>
+                    </then>
                 </if>
             </else>
         </if>
@@ -331,6 +339,11 @@
         <echo msg="Setting files ownership..."/>
         <exec command="docker-compose exec php-fpm chown -R www-data:www-data storage database .env" dir="containers" checkreturn="true"/>
         <exec command="docker-compose exec php-fpm chown -R www-data:www-data /opt/matomo" dir="containers" checkreturn="true"/>
+        <!-- Set certificates -->
+        <echo msg="Copying CA certificate into php-fpm container..."/>
+        <exec command="docker cp nginx/certs/ca/local-root-ca.crt `docker-compose ps -q php-fpm`:/usr/local/share/ca-certificates/" dir="containers" passthru="true"/>
+        <echo msg="Trusting CA certificate..."/>
+        <exec command="docker-compose exec php-fpm /usr/sbin/update-ca-certificates" dir="containers" passthru="true"/>
         <!-- Wait for mariadb container to start gracefully -->
         <echo msg="Waiting for database container to be ready..."/>
         <retry retryDelay="5" retryCount="12">
@@ -344,7 +357,7 @@
                 <echo msg="Installing Matomo database..."/>
                 <exec command="docker-compose exec mariadb bash /opt/matomo-install/install_matomo_db.sh" dir="containers" checkreturn="true"/>
                 <exec command="docker-compose exec mariadb bash /opt/matomo-install/install_plugins_db.sh" dir="containers" checkreturn="true"/>
-                <exec command="docker-compose exec mariadb sh -c 'rm -Rf /opt/matomo-install/*'" dir="containers" checkreturn="true"/>
+                <exec command="docker-compose exec -u root mariadb sh -c 'rm -Rf /opt/matomo-install/*'" dir="containers" checkreturn="true"/>
             </then>
         </if>
         <!-- Initialize ElasticSearch -->
@@ -397,15 +410,15 @@
         <echo msg="Updating matomo database for premium plugins..." />
         <exec command="docker cp matomo/premium_plugins $(docker-compose ps -q mariadb):/tmp"
               dir="containers" checkreturn="true"/>
-        <exec command="docker-compose exec mariadb chmod +x /tmp/premium_plugins/install_premium_plugins_db.sh"
+        <exec command="docker-compose exec -u root mariadb chmod +x /tmp/premium_plugins/install_premium_plugins_db.sh"
               dir="containers" checkreturn="true"/>
-        <exec command="docker-compose exec mariadb /tmp/premium_plugins/install_premium_plugins_db.sh
+        <exec command="docker-compose exec -u root mariadb /tmp/premium_plugins/install_premium_plugins_db.sh
               --rollup-id ${MATOMO_PUBLIC_ROLLUP_ID}
               --db-user root
               --db-password ${MARIADB_ROOT_PASSWORD}
               --database matomo"
               dir="containers" checkreturn="true"/>
-        <exec command="docker-compose exec mariadb rm -Rf /tmp/premium_plugins"
+        <exec command="docker-compose exec -u root mariadb rm -Rf /tmp/premium_plugins"
               dir="containers" checkreturn="true"/>
         <!-- Clear sessions and caches -->
         <echo msg="Clearing sessions and caches..."/>
@@ -551,6 +564,31 @@
             <then>
                 <echo msg="Running RedisSentinel..."/>
                 <exec command="docker-compose up --build -d redis-sentinel" dir="containers" passthru="true"/>
+            </then>
+        </if>
+    </target>
+
+    <!-- Target: Visitor Generator -->
+    <target name="visitorgen">
+        <if>
+            <or>
+                <not><isset property="ID_SITE"/></not>
+                <not><isset property="DAYS"/></not>
+            </or>
+            <then>
+                <fail message="No idsite or days specified, run bin/phing visitorgen -DID_SITE=idsite -DDAYS=days"/>
+            </then>
+        </if>
+        <if>
+            <available file="containers" type="dir" property="ignored"/>
+            <then>
+                <echo msg="Enabling develpment mode in matomo..."/>
+                <exec command="docker-compose exec -u www-data php-fpm /opt/matomo/console development:enable" dir="containers" passthru="true"/>
+                <echo msg="Generating visits..."/>
+                <echo msg="Be patient, this can take a very long time"/>
+                <exec command="docker-compose exec -u www-data php-fpm /opt/matomo/console visitorgenerator:generate-visits --idsite ${ID_SITE} --days ${DAYS} --custom-piwik-url=https://nginx:9443/ --no-interaction --no-fake --timeout=100000" dir="containers" passthru="true"/>
+                <echo msg="Disabling develpment mode in matomo..."/>
+                <exec command="docker-compose exec -u www-data php-fpm /opt/matomo/console development:disable" dir="containers" passthru="true"/>
             </then>
         </if>
     </target>

@@ -1,0 +1,43 @@
+version: '3.7'
+
+# networks:
+#   dbreplica:
+#     driver: bridge
+
+# services:
+# # php-fpm
+#   php-fpm:
+#     environment:
+#       - FAKETIME=+3d
+
+# # mariadb
+#   mariadb:
+#     environment:
+#       - MARIADB_REPLICATION_MODE=master
+#       - MARIADB_REPLICATION_USER=replica_user
+#       - MARIADB_REPLICATION_PASSWORD=replica_pwd
+#     networks:
+#       - dbreplica
+
+#   mariadb-slave:
+#     image: bitnami/mariadb
+#     depends_on:
+#       - mariadb
+#     environment:
+#       - MARIADB_REPLICATION_MODE=slave
+#       - MARIADB_REPLICATION_USER=replica_user
+#       - MARIADB_REPLICATION_PASSWORD=replica_pwd
+#       - MARIADB_USER=${MARIADB_USER}
+#       - MARIADB_DATABASE=${MARIADB_DATABASE}
+#       - MARIADB_MASTER_HOST=mariadb
+#       - MARIADB_MASTER_PORT_NUMBER=3306
+#       - MARIADB_MASTER_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
+#     networks:
+#       - dbreplica
+#       - backend
+
+#   # phpmyadmin
+#   phpmyadmin:
+#     environment:
+#       - PMA_HOST=
+#       - PMA_HOSTS=mariadb,mariadb-slave
