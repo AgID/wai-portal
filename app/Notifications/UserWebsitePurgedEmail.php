@@ -24,6 +24,7 @@ class UserWebsitePurgedEmail extends UserEmailNotification
      */
     public function __construct($website)
     {
+        parent::__construct();
         $this->website = $website;
     }
 

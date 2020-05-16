@@ -25,6 +25,7 @@ class UserReactivatedEmail extends UserEmailNotification
      */
     public function __construct(User $reactivatedUser)
     {
+        parent::__construct();
         $this->reactivatedUser = $reactivatedUser;
     }
 

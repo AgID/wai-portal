@@ -113,10 +113,13 @@ class AnalyticsDashboardTest extends TestCase
      */
     public function testSuperAdminEmptyPublicAdministrationDashboard(): void
     {
-        $this->user->assign(UserRole::SUPER_ADMIN);
-        $this->user->allow(UserPermission::ACCESS_ADMIN_AREA);
+        $superAdmin = factory(User::class)->state('active')->create();
+        Bouncer::scope()->onceTo(0, function () use ($superAdmin) {
+            $superAdmin->assign(UserRole::SUPER_ADMIN);
+            $superAdmin->allow(UserPermission::ACCESS_ADMIN_AREA);
+        });
 
-        $this->actingAs($this->user)
+        $this->actingAs($superAdmin)
             ->get(route('admin.publicAdministration.analytics', ['publicAdministration' => $this->publicAdministration->ipa_code]))
             ->assertViewIs('pages.analytics')
             ->assertViewHasAll([
@@ -130,13 +133,16 @@ class AnalyticsDashboardTest extends TestCase
      */
     public function testSuperAdminPublicAdministrationDashboard(): void
     {
+        $superAdmin = factory(User::class)->state('active')->create();
+        Bouncer::scope()->onceTo(0, function () use ($superAdmin) {
+            $superAdmin->assign(UserRole::SUPER_ADMIN);
+            $superAdmin->allow(UserPermission::ACCESS_ADMIN_AREA);
+        });
         $this->publicAdministration->rollup_id = 1;
         $this->publicAdministration->save();
-        $this->user->assign(UserRole::SUPER_ADMIN);
-        $this->user->allow(UserPermission::ACCESS_ADMIN_AREA);
         $widgets = Yaml::parseFile(resource_path('data/widgets.yml'))['pa'];
 
-        $this->actingAs($this->user)
+        $this->actingAs($superAdmin)
             ->get(route('admin.publicAdministration.analytics', ['publicAdministration' => $this->publicAdministration->ipa_code]))
             ->assertViewIs('pages.analytics')
             ->assertViewHasAll([

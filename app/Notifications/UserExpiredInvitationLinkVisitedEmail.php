@@ -25,6 +25,8 @@ class UserExpiredInvitationLinkVisitedEmail extends UserEmailNotification
      */
     public function __construct(User $invitedUser)
     {
+        parent::__construct();
+
         $this->invitedUser = $invitedUser;
     }
 

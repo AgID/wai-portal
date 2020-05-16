@@ -62,7 +62,7 @@ class ProcessPendingWebsitesTest extends TestCase
     {
         $user = factory(User::class)->state('pending')->create();
         $publicAdministration = factory(PublicAdministration::class)->create();
-        $publicAdministration->users()->sync($user->id);
+        $publicAdministration->users()->sync([$user->id => ['user_email' => $user->email, 'user_status' => UserStatus::PENDING]]);
         $website = factory(Website::class)->create([
             'public_administration_id' => $publicAdministration->id,
             'created_at' => now()->subDays((int) config('wai.purge_expiry') + 1),

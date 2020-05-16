@@ -35,48 +35,7 @@ class VerificationController extends Controller
             return $this->alreadyVerifiedUser($request, $user);
         }
 
-        $assetImage = asset('images/verification-email-sent.svg');
-
-        if ($user->status->is(UserStatus::INVITED)) {
-            return redirect(route('home'))->withModal([
-                'title' => __('In attesa di conferma'),
-                'icon' => 'it-clock',
-                'message' => implode("\n", [
-                    '<div class="row"><div class="col-sm-8"><p>' . __('Uno degli amministratori ti ha inviato un invito al tuo indirizzo :email.', ['email' => '<strong>' . e($user->email) . '</strong>']) . '</p>',
-                    '<p>' . __('Per procedere clicca sul link che trovi nel messaggio email.') . '</p></div>',
-                    '<div class="col-sm-4 d-flex align-items-center justify-content-center"><img src="' . $assetImage . '" alt=""></div>',
-                    '<div class="col">',
-                    '<p class="font-italic mt-4 mb-0"><small>',
-                    __('Se non hai ricevuto il link al tuo indirizzo, controlla che la casella non sia piena e verifica che il messaggio non sia stato erroneamente classificato come spam.'),
-                    '</small></p>',
-                    '<p class="font-italic mb-0"><small>',
-                    __('Se necessario, contatta un amministratore per riceverne un altro'),
-                    '</small></p>',
-                    '</div></div>',
-                ]),
-            ]);
-        }
-
-        $resendLinkRoute = route($user->isA(UserRole::SUPER_ADMIN) ? 'admin.verification.resend' : 'verification.resend', [], false);
-        $editProfileRoute = route($user->isA(UserRole::SUPER_ADMIN) ? 'admin.user.profile.edit' : 'user.profile.edit', [], false);
-        $asset = asset('images/verification-email-sent.svg');
-
-        return redirect(route('home'))->withModal([
-            'title' => __('In attesa di conferma'),
-            'icon' => 'it-clock',
-            'message' => implode("\n", [
-                '<div class="row"><div class="col-sm-8"><p>' . __('Abbiamo inviato un link di conferma al tuo indirizzo :email.', ['email' => '<strong>' . e($user->email) . '</strong>']) . '</p>',
-                '<p>' . __('Per procedere clicca sul link che trovi nel messaggio email.') . '</p></div>',
-                '<div class="col-sm-4 d-flex align-items-center justify-content-center"><img src="' . $assetImage . '" alt=""></div>',
-                '<div class="col">',
-                '<p class="font-italic mt-4 mb-0"><small>' .
-                __('Se non hai ricevuto il link al tuo indirizzo, controlla che la casella non sia piena e verifica che il messaggio non sia stato erroneamente classificato come spam.'),
-                __('Se necessario, ') . '<a href="' . $resendLinkRoute . '">' . __('invia una nuova mail di verifica') . '</a></small></p>',
-                '<p class="font-italic mb-0"><small>' . __('Se hai ha inserito un indirizzo email errato, ') .
-                '<a href="' . $editProfileRoute . '">' . __('puoi modificarlo') . '</a></small></p>',
-                '</div></div>',
-            ]),
-        ]);
+        return view('auth.verify')->with('user', $user);
     }
 
     /**

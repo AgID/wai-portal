@@ -25,6 +25,7 @@ class UserWebsiteAccessChangedEmail extends UserEmailNotification
      */
     public function __construct(User $modifiedUser)
     {
+        parent::__construct();
         $this->modifiedUser = $modifiedUser;
     }
 

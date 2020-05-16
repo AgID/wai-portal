@@ -53,7 +53,7 @@ trait SendsNotificationsToUser
     /**
      * Send user activated notification.
      *
-     * @param PublicAdministration|null $publicAdministration the public administration the user belongs to or null if user is registering a new Public Administration
+     * @param PublicAdministration|null $publicAdministration the public administration the user belongs to or null if user is registering a new public administration
      */
     public function sendActivatedNotification(?PublicAdministration $publicAdministration = null): void
     {
@@ -62,6 +62,8 @@ trait SendsNotificationsToUser
 
     /**
      * Send user suspended notification.
+     *
+     * @param PublicAdministration $publicAdministration the public administration the suspended user belongs to
      */
     public function sendSuspendedNotification(PublicAdministration $publicAdministration): void
     {
@@ -70,6 +72,8 @@ trait SendsNotificationsToUser
 
     /**
      * Send user deleted notification.
+     *
+     * @param PublicAdministration $publicAdministration the public administration the deleted user belongs to
      */
     public function sendDeletededNotification(PublicAdministration $publicAdministration): void
     {
@@ -78,6 +82,8 @@ trait SendsNotificationsToUser
 
     /**
      * Send user reactivated notification.
+     *
+     * @param PublicAdministration $publicAdministration the public administration the reactivated user belongs to
      */
     public function sendReactivatedNotification(PublicAdministration $publicAdministration): void
     {
@@ -109,9 +115,9 @@ trait SendsNotificationsToUser
      *
      * @param mixed $publicAdministration the purged public administration
      */
-    public function sendPublicAdministrationPurgedNotification($publicAdministration, $email): void
+    public function sendPublicAdministrationPurgedNotification($publicAdministration): void
     {
-        $this->notify(new PublicAdministrationPurgedEmail($publicAdministration, $email));
+        $this->notify(new PublicAdministrationPurgedEmail($publicAdministration));
     }
 
     /**
@@ -125,9 +131,9 @@ trait SendsNotificationsToUser
     }
 
     /**
-     * Send accept public administration invited notification.
+     * Send public administration invited notification.
      *
-     * @param PublicAdministration $publicAdministration the activated public administration
+     * @param PublicAdministration $publicAdministration the public administration the user is invited to
      */
     public function sendPublicAdministrationInvitedNotification(PublicAdministration $publicAdministration): void
     {

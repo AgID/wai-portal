@@ -87,7 +87,7 @@ export default (() => {
         const ipaCodeFilterResetLink = document.getElementById('reset-ipa_code-filter');
         const publicAdministrationSelectedMessage = document.getElementById('public-administration-selected');
         const publicAdministrationNotSelectedMessage = document.getElementById('public-administration-not-selected');
-        const publicAdministrationSelector = document.querySelector('.pa-selector select[name="public-administration-nav"]');
+        const publicAdministrationSelector = document.querySelector('.pa-selector select[name="public-administration"]');
 
         ipaCodeFilterResetLink && ipaCodeFilterResetLink.addEventListener('click', event => {
             event.preventDefault();

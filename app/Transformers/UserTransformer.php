@@ -44,7 +44,7 @@ class UserTransformer extends TransformerAbstract
                         '<span class="user">',
                         '<strong>' . e($user->full_name) . '</strong>',
                         '<br>',
-                        '<small class="text-muted text-uppercase">' . $user->getMainRoleName() . '</small>',
+                        '<small class="text-muted text-uppercase">' . $user->all_role_names . '</small>',
                         '</span>',
                         '</div>',
                     ]),
@@ -125,27 +125,6 @@ class UserTransformer extends TransformerAbstract
             }
 
             if (!$statusPublicAdministrationUser->is(UserStatus::PENDING) && $authUserCanAccessAdminArea) {
-                /*
-                * TODO: Remove this block if not used
-                if ($user->trashed()) {
-                    $data['status'] = '';
-                    $data['trashed'] = true;
-                    $data['buttons'][] = [
-                        'link' => route('admin.publicAdministration.users.restore', [
-                            'publicAdministration' => $publicAdministration,
-                            'trashed_user' => $user,
-                        ]),
-                        'label' => __('ripristina'),
-                        'color' => 'warning',
-                        'dataAttributes' => [
-                            'user-name' => e($user->full_name),
-                            'type' => 'userDeleteRestore',
-                            'trashed' => true,
-                            'ajax' => true,
-                        ],
-                    ];
-                } else
-                */
                 if ($user->uuid !== $authUser->uuid && !$user->isTheLastActiveAdministratorOf($publicAdministration)) {
                     $data['buttons'][] = [
                         'link' => route('admin.publicAdministration.users.delete', [
@@ -156,7 +135,7 @@ class UserTransformer extends TransformerAbstract
                         'color' => 'danger',
                         'dataAttributes' => [
                             'user-name' => e($user->full_name),
-                            'type' => 'userDeleteRestore',
+                            'type' => 'userDelete',
                             'ajax' => true,
                         ],
                     ];

@@ -305,15 +305,15 @@ class UserController extends Controller
      */
     public function delete(PublicAdministration $publicAdministration, User $user)
     {
+        $publicAdministrationUser = $user->publicAdministrations()->where('public_administration_id', $publicAdministration->id)->first();
+
+        if (empty($publicAdministrationUser)) {
+            return $this->notModifiedResponse();
+        }
+
+        $userPublicAdministrationStatus = UserStatus::coerce(intval($publicAdministrationUser->pivot->user_status));
+
         try {
-            $publicAdministration = ($publicAdministration && $publicAdministration->id) ? $publicAdministration : current_public_administration();
-            if ($user->publicAdministrations->where('id', $publicAdministration->id)->isEmpty()) {
-                abort(403);
-            }
-
-            $publicAdministrationUser = $user->publicAdministrations()->where('public_administration_id', $publicAdministration->id)->first();
-            $userPublicAdministrationStatus = UserStatus::coerce(intval($publicAdministrationUser->pivot->user_status));
-
             if ($userPublicAdministrationStatus->is(UserStatus::PENDING)) {
                 throw new OperationNotAllowedException('Pending users cannot be deleted.');
             }
@@ -322,6 +322,11 @@ class UserController extends Controller
             if ($validator->fails()) {
                 throw new OperationNotAllowedException($validator->errors()->first('is_admin'));
             }
+
+            Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user) {
+                $user->abilities()->detach();
+                $user->roles()->detach();
+            });
 
             $publicAdministration->users()->detach([$user->id]);
         } catch (OperationNotAllowedException $exception) {
@@ -346,13 +351,9 @@ class UserController extends Controller
      */
     public function suspend(Request $request, PublicAdministration $publicAdministration, User $user)
     {
-        $publicAdministration = ($publicAdministration && $publicAdministration->id) ? $publicAdministration : current_public_administration();
-
-        if ($user->publicAdministrations->where('id', $publicAdministration->id)->isEmpty()) {
-            abort(403);
-        }
-
+        $publicAdministration = ($publicAdministration->id ?? false) ? $publicAdministration : current_public_administration();
         $publicAdministrationUser = $user->publicAdministrations()->where('public_administration_id', $publicAdministration->id)->first();
+
         $userPublicAdministrationStatus = UserStatus::coerce(intval($publicAdministrationUser->pivot->user_status));
 
         if ($userPublicAdministrationStatus->is(UserStatus::SUSPENDED)) {
@@ -367,7 +368,8 @@ class UserController extends Controller
             if ($userPublicAdministrationStatus->is(UserStatus::PENDING)) {
                 throw new InvalidUserStatusException('Pending users cannot be suspended.');
             }
-            //NOTE: super admin are allowed to suspend the last active administrator of a Public Administration
+
+            //NOTE: super admin are allowed to suspend the last active administrator of a public administration
             if (auth()->user()->cannot(UserPermission::ACCESS_ADMIN_AREA)) {
                 $validator = validator(request()->all())->after([$this, 'validateNotLastActiveAdministrator']);
                 if ($validator->fails()) {
@@ -378,7 +380,7 @@ class UserController extends Controller
             $publicAdministration->users()->updateExistingPivot($user->id, ['user_status' => UserStatus::SUSPENDED]);
 
             event(new UserSuspended($user, $publicAdministration));
-            event(new UserUpdated($user));
+            event(new UserUpdated($user, $publicAdministration));
 
             return $this->userResponse($user, $publicAdministration);
         } catch (InvalidUserStatusException $exception) {
@@ -406,12 +408,7 @@ class UserController extends Controller
      */
     public function reactivate(PublicAdministration $publicAdministration, User $user)
     {
-        $publicAdministration = ($publicAdministration && $publicAdministration->id) ? $publicAdministration : current_public_administration();
-
-        if ($user->publicAdministrations->where('id', $publicAdministration->id)->isEmpty()) {
-            abort(403);
-        }
-
+        $publicAdministration = ($publicAdministration->id ?? false) ? $publicAdministration : current_public_administration();
         $publicAdministrationUser = $user->publicAdministrations()->where('public_administration_id', $publicAdministration->id)->first();
         $userPublicAdministrationStatus = UserStatus::coerce(intval($publicAdministrationUser->pivot->user_status));
 
@@ -423,7 +420,7 @@ class UserController extends Controller
         $publicAdministration->users()->updateExistingPivot($user->id, ['user_status' => $updatedStatus]);
 
         event(new UserReactivated($user, $publicAdministration));
-        event(new UserUpdated($user));
+        event(new UserUpdated($user, $publicAdministration));
 
         return $this->userResponse($user, $publicAdministration);
     }

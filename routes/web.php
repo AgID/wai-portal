@@ -127,7 +127,7 @@ Route::middleware('spid.auth', 'auth')->group(function () {
             ->name('verification.notice');
 
         Route::get('/resend', 'Auth\VerificationController@resend')
-            ->name('verification.resend')->middleware('enforce.rules:forbid-invited', 'throttle:5,1');
+            ->name('verification.resend')->middleware('throttle:5,1');
 
         Route::get('/{uuid}/{hash}', 'Auth\VerificationController@verify')
             ->name('verification.verify')->middleware('signed', 'throttle:5,1');
@@ -139,7 +139,7 @@ Route::middleware('spid.auth', 'auth')->group(function () {
  *
  * Both SPID and application authentication required
  */
-Route::middleware('spid.auth', 'auth', 'enforce.rules:forbid-invited')->group(function () {
+Route::middleware('spid.auth', 'auth')->group(function () {
     Route::prefix('/user/profile')->group(function () {
         Route::get('/', 'Auth\ProfileController@edit')
             ->name('user.profile.edit');
@@ -162,24 +162,14 @@ Route::middleware('spid.auth', 'auth', 'verified:verification.notice')->group(fu
             'uses' => 'PublicAdministrationController@show',
          ]);
 
-        Route::get('/select', [
+        Route::post('/select', [
             'as' => 'publicAdministrations.select',
             'uses' => 'PublicAdministrationController@selectTenant',
         ]);
 
-        Route::post('/change', [
-           'as' => 'publicAdministrations.change',
-           'uses' => 'PublicAdministrationController@changeTenant',
-        ]);
-
-        Route::post('/change-and-redirect', [
-            'as' => 'publicAdministrations.change.and.redirect',
-            'uses' => 'PublicAdministrationController@changeTenantAndRedirect',
-         ]);
-
-        Route::post('/activation/{uuid}/{publicAdministration}', [
-            'as' => 'publicAdministration.activate',
-            'uses' => 'PublicAdministrationController@activate',
+        Route::post('/accept/{publicAdministration}', [
+            'as' => 'publicAdministration.acceptInvitation',
+            'uses' => 'PublicAdministrationController@acceptInvitation',
         ]);
 
         Route::get('/add', 'PublicAdministrationController@add')
@@ -316,14 +306,9 @@ Route::middleware('auth.admin', 'verified:admin.verification.notice')->group(fun
             });
 
             Route::prefix('/public-administrations')->group(function () {
-                Route::get('/select', [
+                Route::post('/select', [
                     'as' => 'admin.publicAdministrations.select',
                     'uses' => 'PublicAdministrationController@selectTenant',
-                ]);
-
-                Route::post('/change', [
-                    'as' => 'admin.publicAdministrations.change',
-                    'uses' => 'PublicAdministrationController@changeTenant',
                 ]);
 
                 Route::get('/add', 'PublicAdministrationController@add')

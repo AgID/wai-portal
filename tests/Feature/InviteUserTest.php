@@ -277,8 +277,7 @@ class InviteUserTest extends TestCase
                 'spid_sessionIndex' => 'fake-session-index',
                 'spid_user' => $this->spidUser,
             ])
-            ->json('POST', route('publicAdministration.activate', [
-                'uuid' => $this->secondUser->uuid,
+            ->json('POST', route('publicAdministration.acceptInvitation', [
                 'publicAdministration' => $this->publicAdministration->ipa_code,
             ]))
             ->assertOk()

@@ -53,20 +53,20 @@ class PublicAdministrationSelectorComposer
             return;
         }
 
-        $postRoute = route('publicAdministrations.change');
+        $selectTenantRoute = route('publicAdministrations.select');
         switch ($lastRouteName) {
             case 'admin.dashboard':
             case 'home':
                 if ($authUser && $authUser->isA(UserRole::SUPER_ADMIN)) {
-                    $returnRoute = 'admin.publicAdministration.analytics';
+                    $targetRoute = 'admin.publicAdministration.analytics';
                 } else {
-                    $returnRoute = 'analytics';
+                    $targetRoute = 'analytics';
                 }
                 $targetRouteHasPublicAdministrationParam = true;
 
                 break;
             default:
-                $returnRoute = $lastRouteName;
+                $targetRoute = $lastRouteName;
                 $targetRouteHasPublicAdministrationParam = true;
         }
 
@@ -76,12 +76,12 @@ class PublicAdministrationSelectorComposer
                 'name',
             ])->sortBy('name')->toArray();
             $publicAdministrationShowSelector = true;
-            $postRoute = route('admin.publicAdministrations.change');
+            $selectTenantRoute = route('admin.publicAdministrations.select');
         } elseif ($authUser) {
-            $publicAdministrationSelectorArray = $authUser->activePublicAdministrations()->get()
+            $publicAdministrationSelectorArray = $authUser->publicAdministrations()->get()
             ->map(function ($publicAdministration) {
                 return collect($publicAdministration->toArray())
-                    ->only(['id', 'name', 'url'])
+                    ->only(['id', 'ipa_code', 'name', 'url'])
                     ->all();
             })->sortBy('name')->values()->toArray();
             $publicAdministrationShowSelector = count($publicAdministrationSelectorArray) > 1;
@@ -92,8 +92,8 @@ class PublicAdministrationSelectorComposer
 
         $view->with('publicAdministrationSelectorArray', $publicAdministrationSelectorArray);
         $view->with('publicAdministrationShowSelector', $publicAdministrationShowSelector);
-        $view->with('returnRoute', $returnRoute);
-        $view->with('postRoute', $postRoute);
+        $view->with('selectTenantRoute', $selectTenantRoute);
+        $view->with('targetRoute', $targetRoute);
         $view->with('targetRouteHasPublicAdministrationParam', $targetRouteHasPublicAdministrationParam);
     }
 }

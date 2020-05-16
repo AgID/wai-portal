@@ -22,9 +22,9 @@ class SelectTenant
 
         if ($authUser && !$authUser->isA(UserRole::SUPER_ADMIN)) {
             if (empty(session('tenant_id')) && $authUser->publicAdministrations->isNotEmpty()) {
-                switch ($authUser->activePublicAdministrations->count()) {
+                switch ($authUser->publicAdministrations->count()) {
                     case 1:
-                        $publicAdministrationId = $authUser->activePublicAdministrations()->first()->id;
+                        $publicAdministrationId = $authUser->publicAdministrations()->first()->id;
                         session()->put('tenant_id', $publicAdministrationId);
                         Bouncer::scope()->to($publicAdministrationId);
                         break;

@@ -4,7 +4,6 @@ namespace App\Mail;
 
 use App\Models\PublicAdministration;
 use App\Models\User;
-use App\Traits\ManageRecipientNotifications;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
@@ -16,7 +15,6 @@ abstract class UserMailable extends Mailable
 {
     use Queueable;
     use SerializesModels;
-    use ManageRecipientNotifications;
 
     /**
      * The mail recipient.
@@ -24,16 +22,22 @@ abstract class UserMailable extends Mailable
      * @var User the user
      */
     protected $recipient;
+
+    /**
+     * The public administration.
+     *
+     * @var PublicAdministration|null the public administration
+     */
     protected $publicAdministration;
 
     /**
      * Default constructor.
      *
      * @param User $recipient the mail recipient
+     * @param PublicAdministration $publicAdministration the public administration
      */
     public function __construct(User $recipient, ?PublicAdministration $publicAdministration = null)
     {
-        $recipient->email = $this->getUserEmailForPublicAdministration($recipient, $publicAdministration);
         $this->recipient = $recipient;
         $this->publicAdministration = $publicAdministration;
     }

@@ -253,26 +253,6 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
-     * Return main user role in printable format.
-     *
-     * @return string the printable user main role representation
-     */
-    public function getMainRoleName(): string
-    {
-        /*
-            Quello che secondo me dovrebbe essere corretto
-            return UserRole::getDescription($this->roles->sortBy('id')->first()->name);
-            produce un errore nei test che non riesco a capire
-        */
-        $mainRole = $this->roles->sortBy('id')->first();
-        if ($mainRole) {
-            return UserRole::getDescription($mainRole->name);
-        }
-
-        return '';
-    }
-
-    /**
      * Return a collection of all the user roles.
      *
      * @return Collection the collection of all the user roles

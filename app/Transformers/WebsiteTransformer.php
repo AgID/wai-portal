@@ -66,7 +66,7 @@ class WebsiteTransformer extends TransformerAbstract
             ];
 
             if ($website->status->is(WebsiteStatus::PENDING)) {
-                if ($authUser->can(UserPermission::MANAGE_WEBSITES) || $authUser->pendingPublicAdministrations()->where('public_administration_id', $publicAdministration->id)->first()) {
+                if ($authUser->can(UserPermission::MANAGE_WEBSITES) || $website->type->is(WebsiteType::INSTITUTIONAL)) {
                     $data['icons'][] = [
                         'icon' => 'it-plug',
                         'link' => $authUserCanAccessAdminArea
