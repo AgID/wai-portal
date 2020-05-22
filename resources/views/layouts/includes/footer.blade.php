@@ -29,17 +29,17 @@
                     </div>
                 </div>
                 @if(config('site.footer_links.primary'))
-                <div class="footer-primary-menu row justify-content-between mb-4">
+                <nav class="footer-primary-menu row justify-content-between mb-4">
                     @foreach (config('site.footer_links.primary') as $footerPrimaryMenuItem)
                     <div class="p-2">
-                        <h4>
+                        <span class="nav-item">
                             <a href="{{ isset($footerPrimaryMenuItem['route']) ? route($footerPrimaryMenuItem['route']) : $footerPrimaryMenuItem['url'] }}"
                                 {!! isset($footerPrimaryMenuItem['url']) ? 'class="external-link" target="_blank" rel="noopener noreferrer"' : '' !!}>
                                 {{ __($footerPrimaryMenuItem['name']) }}</a>
-                        </h4>
+                        </span>
                     </div>
                     @endforeach
-                </div>
+                </nav>
                 @endif
                 @include('layouts.includes.footer_band')
             </section>
