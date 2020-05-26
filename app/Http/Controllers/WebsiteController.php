@@ -88,6 +88,16 @@ class WebsiteController extends Controller
     }
 
     /**
+     * Show the form for creating a new custom website.
+     *
+     * @return View the view
+     */
+    public function custom()
+    {
+        return view('pages.websites.add_custom');
+    }
+
+    /**
      * Create a new primary website.
      *
      * @param StorePrimaryWebsiteRequest $request the request
@@ -99,20 +109,21 @@ class WebsiteController extends Controller
         $authUser = $request->user();
 
         $publicAdministration = PublicAdministration::make([
-            'ipa_code' => $request->publicAdministration['ipa_code'],
+            'ipa_code' => $request->isCustomPublicAdministration ? Str::slug($request->publicAdministration['url']) : $request->publicAdministration['ipa_code'],
             'name' => $request->publicAdministration['name'],
-            'pec' => $request->publicAdministration['pec'],
+            'pec' => $request->publicAdministration['pec'] ?? null,
             'rtd_name' => $request->publicAdministration['rtd_name'] ?? null,
             'rtd_mail' => $request->publicAdministration['rtd_mail'] ?? null,
             'rtd_pec' => $request->publicAdministration['rtd_pec'] ?? null,
             'city' => $request->publicAdministration['city'],
             'county' => $request->publicAdministration['county'],
             'region' => $request->publicAdministration['region'],
-            'type' => $request->publicAdministration['type'],
+            'type' => $request->isCustomPublicAdministration ? 'custom' : $request->publicAdministration['type'],
             'status' => PublicAdministrationStatus::PENDING,
         ]);
 
-        $website = $this->registerPublicAdministration($authUser, $publicAdministration, $request->publicAdministration['site']);
+        $site = $request->isCustomPublicAdministration ? $request->publicAdministration['url'] : $request->publicAdministration['site'];
+        $website = $this->registerPublicAdministration($authUser, $publicAdministration, $site, $request->isCustomPublicAdministration);
 
         event(new PublicAdministrationRegistered($publicAdministration, $authUser));
         event(new WebsiteAdded($website, $authUser));
@@ -374,58 +385,17 @@ class WebsiteController extends Controller
      *
      * @return JsonResponse|RedirectResponse the response
      */
-    public function checkTracking(PublicAdministration $publicAdministration, Website $website)
+    public function checkTracking(PublicAdministration $publicAdministration, Website $website, bool $force = false )
     {
         try {
             if ($website->status->is(WebsiteStatus::PENDING)) {
-                if ($this->hasActivated($website)) {
+                if ( ($website->type->is(WebsiteType::CUSTOM) && $force === true) || $this->hasActivated($website) ) {
                     $this->activate($website);
-
                     event(new WebsiteActivated($website));
-
                     return $this->websiteResponse($website);
                 }
 
                 return $this->notModifiedResponse();
-            }
-
-            throw new InvalidWebsiteStatusException('Unable to check activation for website ' . $website->info . ' in status ' . $website->status->key . '.');
-        } catch (AnalyticsServiceException | BindingResolutionException $exception) {
-            report($exception);
-            $code = $exception->getCode();
-            $message = 'Internal Server Error';
-            $httpStatusCode = 500;
-        } catch (InvalidWebsiteStatusException $exception) {
-            report($exception);
-            $code = $exception->getCode();
-            $message = 'Invalid operation for current website status';
-            $httpStatusCode = 400;
-        } catch (CommandErrorException $exception) {
-            report($exception);
-            $code = $exception->getCode();
-            $message = 'Bad Request';
-            $httpStatusCode = 400;
-        }
-
-        return $this->errorResponse($message, $code, $httpStatusCode);
-    }
-
-    /**
-     * Force website tracking status to active.
-     *
-     * @param PublicAdministration $publicAdministration the public administration the website belongs to
-     * @param Website $website the website to check
-     *
-     * @return JsonResponse|RedirectResponse the response
-     */
-    public function forceTracking(PublicAdministration $publicAdministration, Website $website)
-    {
-        try {
-            if ($website->status->is(WebsiteStatus::PENDING) && $website->type->is(WebsiteType::CUSTOM)) {
-                $this->activate($website);
-                event(new WebsiteActivated($website));
-
-                return $this->websiteResponse($website);
             }
 
             throw new InvalidWebsiteStatusException('Unable to check activation for website ' . $website->info . ' in status ' . $website->status->key . '.');

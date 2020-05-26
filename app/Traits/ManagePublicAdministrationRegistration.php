@@ -37,7 +37,9 @@ trait ManagePublicAdministrationRegistration
         $user->roles()->detach();
         Bouncer::scope()->to($publicAdministration->id);
         $user->assign(UserRole::REGISTERED);
-        $user->registerAnalyticsServiceAccount();
+        if (!$user->hasAnalyticsServiceAccount()) {
+            $user->registerAnalyticsServiceAccount();
+        }
         $user->setViewAccessForWebsite($website);
         $user->syncWebsitesPermissionsToAnalyticsService();
 

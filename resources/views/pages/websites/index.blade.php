@@ -18,7 +18,7 @@
     </div>
     @endif
     @else
-    @include('pages.websites.partials.add_primary')
+    @include('pages.websites.partials.add_primary', ['customForm' => false])
     @endif
     @endcomponent
 @endsection

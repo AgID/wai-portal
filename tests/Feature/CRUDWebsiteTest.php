@@ -261,7 +261,7 @@ class CRUDWebsiteTest extends TestCase
                 'spid_user' => $this->spidUser,
             ])
             ->from(route('websites.create.primary.custom'))
-            ->post(route('websites.store.primary.custom'), [
+            ->post(route('websites.store.primary'), [
                 'public_administration_name' => 'Pubblica amministrazione personalizzata',
                 'url' => 'https://www.pubblica-amministrazione.personalizzata.it',
                 'city' => 'Roma',
@@ -270,6 +270,8 @@ class CRUDWebsiteTest extends TestCase
                 'rtd_name' => 'Utente Utenti',
                 'rtd_mail' => 'utente@personalizzata.it',
                 'skip_rtd_validation' => true,
+                'correct_confirmation' => 'on',
+                'website_type' => 'custom',
             ])
             ->assertSessionHasNoErrors()
             ->assertRedirect(route('websites.index'));
@@ -304,10 +306,11 @@ class CRUDWebsiteTest extends TestCase
                 'spid_user' => $this->spidUser,
             ])
             ->from(route('websites.create.primary.custom'))
-            ->post(route('websites.store.primary.custom'), [
+            ->post(route('websites.store.primary'), [
                 'public_administration_name' => 'Pubblica amministrazione personalizzata',
                 'url' => $this->website->url,
                 'city' => 'Roma',
+                'website_type' => 'custom',
             ])
             ->assertSessionHasErrors([
                 'url',
@@ -356,7 +359,7 @@ class CRUDWebsiteTest extends TestCase
                 'tenant_id' => $this->customPublicAdministration->id,
             ])
             ->from(route('websites.index'))
-            ->json('GET', route('websites.tracking.force', ['website' => $this->customWebsite->slug]))
+            ->json('GET', route('websites.tracking.check', ['website' => $this->customWebsite->slug, 'force' => true ]))
             ->assertOk()
             ->assertJsonFragment([
                 'website_name' => e($this->customWebsite->name),
