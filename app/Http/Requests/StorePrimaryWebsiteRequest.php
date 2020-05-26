@@ -68,7 +68,7 @@ class StorePrimaryWebsiteRequest extends FormRequest
     public function withValidator(Validator $validator): void
     {
         $validator->after(function (Validator $validator) {
-            if (filled($this->input('url')) && ($this->input('website_type')==='custom')) {
+            if (filled($this->input('url')) && ('custom' === $this->input('website_type'))) {
                 if (!filter_var($this->input('url'), FILTER_VALIDATE_URL)) {
                     $validator->errors()->add('url', __("L'indirizzo inserito non è corretto."));
                 }

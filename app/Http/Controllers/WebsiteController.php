@@ -385,13 +385,14 @@ class WebsiteController extends Controller
      *
      * @return JsonResponse|RedirectResponse the response
      */
-    public function checkTracking(PublicAdministration $publicAdministration, Website $website, bool $force = false )
+    public function checkTracking(PublicAdministration $publicAdministration, Website $website, bool $force = false)
     {
         try {
             if ($website->status->is(WebsiteStatus::PENDING)) {
-                if ( ($website->type->is(WebsiteType::CUSTOM) && $force === true) || $this->hasActivated($website) ) {
+                if (($website->type->is(WebsiteType::CUSTOM) && true === $force) || $this->hasActivated($website)) {
                     $this->activate($website);
                     event(new WebsiteActivated($website));
+
                     return $this->websiteResponse($website);
                 }
 
