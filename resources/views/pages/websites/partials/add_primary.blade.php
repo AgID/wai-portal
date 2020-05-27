@@ -2,7 +2,7 @@
 
 @if($customForm)
 <p>{{ __('Crea la tua pubblica amministrazione personalizzata.') }}</p>
-@elseif (config('wai.custom_public_administrations', false))
+@elseif (!app()->environment('production') && config('wai.custom_public_administrations', false))
 <p>{{ __('Per iniziare scegli la tua pubblica amministrazione e verifica che i dati siano corretti') }}</p>
 <p><strong>{{ __('oppure') }}</strong></p>
 <p><a class="btn btn-icon btn-outline-primary" role="button" href="{{ route('websites.create.primary.custom') }}">{{ __('Crea la tua pubblica amministrazione') }}</a></p>
@@ -133,7 +133,7 @@
                         @error('city')
                         <div class="invalid-feedback">{{ $errors->first('city') }}</div>
                         @else
-                        <div class="invalid-feedback">{{ __('validation.attributes.city', ['attribute' => __('validation.attributes.city')]) }}</div>
+                        <div class="invalid-feedback">{{ __('validation.required', ['attribute' => __('validation.attributes.city')]) }}</div>
                         @enderror
                     </div>
                 </div>
@@ -149,7 +149,7 @@
                         @error('county')
                         <div class="invalid-feedback">{{ $errors->first('county') }}</div>
                         @else
-                        <div class="invalid-feedback">{{ __('validation.attributes.county', ['attribute' => __('validation.attributes.county')]) }}</div>
+                        <div class="invalid-feedback">{{ __('validation.required', ['attribute' => __('validation.attributes.county')]) }}</div>
                         @enderror
                     </div>
                 </div>
@@ -165,7 +165,7 @@
                         @error('region')
                         <div class="invalid-feedback">{{ $errors->first('region') }}</div>
                         @else
-                        <div class="invalid-feedback">{{ __('validation.attributes.region', ['attribute' => __('validation.attributes.region')]) }}</div>
+                        <div class="invalid-feedback">{{ __('validation.required', ['attribute' => __('validation.attributes.region')]) }}</div>
                         @enderror
                     </div>
                 </div>
