@@ -1,0 +1,41 @@
+// Do not use semantic heading levels to style text in cards
+.card {
+  .card-body {
+    .card-title {
+      font-size: $card-h5-size;
+      line-height: $card-h5-line-height;
+      font-weight: $card-h5-fw;
+      color: $card-h5-color;
+      margin-bottom: $v-gap * 2;
+      transition: all 0.3s;
+
+      &.big-heading {
+        font-size: $card-big-head-size;
+        line-height: $card-big-head-l-h;
+      }
+
+      &.card-title-icon {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: center;
+
+        .icon {
+          margin-right: 0.5em;
+        }
+      }
+    }
+
+    .card-subtitle {
+      font-weight: normal;
+      margin-bottom: $v-gap * 2;
+      margin-top: -$v-gap * 2;
+    }
+
+    a {
+      .card-title {
+        color: $card-link-color;
+      }
+    }
+  }
+}

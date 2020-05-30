@@ -43,7 +43,7 @@
                     <div class="card-wrapper">
                         <div class="card">
                             <div class="card-body">
-                            <h5 class="card-title big-heading">{{ __("Cos'è") }}</h5>
+                            <h2 class="card-title big-heading">{{ __("Cos'è") }}</h2>
                             <p class="card-text">
                                 {{ __(':app è una piattaforma che offre le statistiche in tempo reale dei visitatori di un sito della pubblica aministrazione, fornendo agli operatori dei report dettagliati.', ['app' => config('app.name')]) }}
                             </p>
@@ -55,7 +55,7 @@
                     <div class="card-wrapper">
                         <div class="card">
                             <div class="card-body">
-                            <h5 class="card-title big-heading">{{ __("Come funziona") }}</h5>
+                            <h2 class="card-title big-heading">{{ __("Come funziona") }}</h2>
                             <p class="card-text">
                                 {{ __('I dati sono raccolti ed elaborati dalla piattaforma centralizzata :app (:app_short). :app_short ospita i dati statistici dei siti web delle PA italiane aderenti al progetto.', ['app' => config('app.name'), 'app_short' => config('app.name_short')]) }}
                             </p>
@@ -67,7 +67,7 @@
                     <div class="card-wrapper">
                         <div class="card">
                             <div class="card-body">
-                            <h5 class="card-title big-heading">{{ __("A cosa serve") }}</h5>
+                            <h2 class="card-title big-heading">{{ __("A cosa serve") }}</h2>
                             <p class="card-text">
                                 {{ __(":app_short aiuta le amministrazioni a comprendere il comportamento degli utenti online, con l'obiettivo di fornire ai cittadini siti e servizi via via più efficaci e inclusivi.", ['app_short' => config('app.name_short')]) }}
                             </p>
@@ -117,7 +117,7 @@
                     <div class="card-wrapper card-space">
                         <div class="card card-bg">
                             <div class="card-body">
-                                <h5 class="card-title big-heading">{{ __('Riepilogo portale') }}</h5>
+                                <h2 class="card-title big-heading">{{ __('Riepilogo portale') }}</h2>
                                 @include('layouts.includes.portal_widget', ['publicAdministrationsCounter' => $publicAdministrationsCount, 'websitesCounter' => $websitesCount])
                             </div>
                         </div>
@@ -128,7 +128,7 @@
                     <div class="card-wrapper card-space">
                         <div class="card card-bg">
                             <div class="card-body">
-                                <h5 class="card-title big-heading">{{ $widget['title'][$locale] ?? $widget['title'][config('app.fallback_locale')] }}</h5>
+                                <h2 class="card-title big-heading">{{ $widget['title'][$locale] ?? $widget['title'][config('app.fallback_locale')] }}</h2>
                                 <img id="spinner-widget-{{ $loop->index }}" class="icon mx-auto d-block" alt="Widget loading spinner" src="{{ asset('images/loading.svg') }}">
                                 <iframe
                                     id="widget-{{ $loop->index }}"
