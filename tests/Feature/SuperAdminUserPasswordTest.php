@@ -4,7 +4,6 @@ namespace Tests\Feature;
 
 use App\Enums\UserPermission;
 use App\Enums\UserRole;
-use App\Enums\UserStatus;
 use App\Events\User\UserUpdated;
 use App\Jobs\ClearPasswordResetToken;
 use App\Models\User;
@@ -40,11 +39,13 @@ class SuperAdminUserPasswordTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->user = factory(User::class)->create(
-            [
-                'status' => UserStatus::ACTIVE,
-            ]
-        );
+
+        // Simulate another non super-admin user with same email address
+        $nonSuperAdminUser = factory(User::class)->state('active')->create();
+
+        $this->user = factory(User::class)->state('active')->create([
+            'email' => $nonSuperAdminUser->email,
+        ]);
 
         Bouncer::dontCache();
         Bouncer::scope()->to(0);

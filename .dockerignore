@@ -13,6 +13,7 @@ bootstrap/cache/*
 database/testing.sqlite
 
 !public
+public/**/*.map
 !resources
 !routes
 

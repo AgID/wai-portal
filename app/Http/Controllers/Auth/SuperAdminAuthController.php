@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Enums\UserPermission;
+use App\Enums\UserRole;
 use App\Enums\UserStatus;
 use App\Events\User\UserLogin;
 use App\Events\User\UserLogout;
@@ -48,7 +48,7 @@ class SuperAdminAuthController extends Controller
      */
     public function showLogin()
     {
-        if (auth()->check() && auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)) {
+        if (auth()->check() && auth()->user()->isA(UserRole::SUPER_ADMIN)) {
             return redirect()->intended(route('admin.dashboard'));
         }
 
@@ -105,7 +105,7 @@ class SuperAdminAuthController extends Controller
     public function logout(): RedirectResponse
     {
         $user = auth()->user();
-        if ($user && $user->can(UserPermission::ACCESS_ADMIN_AREA)) {
+        if ($user && $user->isA(UserRole::SUPER_ADMIN)) {
             auth()->logout();
             session()->invalidate();
 
@@ -136,12 +136,13 @@ class SuperAdminAuthController extends Controller
     {
         $request->validate(['email' => 'required|email:rfc,dns|max:75']);
         $email = $request->input('email');
+        $resetMessage = __("Se l'indirizzo email inserito corrisponde ad un'utenza amministrativa registrata e attiva, riceverai a breve un messaggio con le istruzioni per il reset della password.");
 
-        $user = User::where('email', $email)->first();
-        if (empty($user) || $user->cant(UserPermission::ACCESS_ADMIN_AREA) || !$user->status->is(UserStatus::ACTIVE)) {
+        $user = User::where('email', $email)->whereIs(UserRole::SUPER_ADMIN)->first();
+        if (empty($user) || !$user->status->is(UserStatus::ACTIVE)) {
             return redirect()->home()->withNotification([
                 'title' => __('Reset della password'),
-                'message' => __("Se l'indirizzo email inserito corrisponde ad un'utenza amministrativa registrata e attiva, riceverai e breve un messaggio con le istruzioni per il reset della password."),
+                'message' => $resetMessage,
                 'status' => 'info',
                 'icon' => 'it-info-circle',
             ]);
@@ -163,7 +164,7 @@ class SuperAdminAuthController extends Controller
 
         return redirect()->home()->withNotification([
             'title' => __('Reset della password'),
-            'message' => __("Se l'indirizzo email inserito corrisponde ad un'utenza amministrativa registrata e attiva, riceverai e breve un messaggio con le istruzioni per il reset della password."),
+            'message' => $resetMessage,
             'status' => 'info',
             'icon' => 'it-info-circle',
         ]);
@@ -205,12 +206,13 @@ class SuperAdminAuthController extends Controller
             ],
         ]);
 
-        $user = User::where('email', $validatedData['email'])->first();
+        $user = User::where('email', $validatedData['email'])->whereIs(UserRole::SUPER_ADMIN)->first();
+        $invalidMessage = __("L'indirizzo email inserito non corrisponde ad un'utenza oppure il codice è scaduto o errato.");
 
         if (empty($user)) {
             return redirect()->route('admin.password.reset.show')->withNotification([
                 'title' => __('errore nella richiesta'),
-                'message' => __("L'indirizzo email inserito non corrisponde ad un'utenza oppure il codice è scaduto o errato."),
+                'message' => $invalidMessage,
                 'status' => 'warning',
                 'icon' => 'it-error',
             ])->withInput();
@@ -219,7 +221,7 @@ class SuperAdminAuthController extends Controller
         if (empty($user->passwordResetToken) || !Hash::check($validatedData['token'], $user->passwordResetToken->token)) {
             return redirect()->route('admin.password.reset.show')->withNotification([
                 'title' => __('errore nella richiesta'),
-                'message' => __("L'indirizzo email inserito non corrisponde ad un'utenza oppure il codice è scaduto o errato."),
+                'message' => $invalidMessage,
                 'status' => 'warning',
                 'icon' => 'it-error',
             ])->withInput();

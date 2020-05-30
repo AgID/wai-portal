@@ -28,7 +28,7 @@ RUN apt-get update && apt-get install -y ${BUILD_PACKAGES} && \
     apt-get autoremove --purge -y ${BUILD_PACKAGES} && \
     rm -rf /var/lib/apt/lists/*
 
-RUN echo "memory_limit = 256M" >> /opt/bitnami/php/etc/conf.d/wai.ini && \
+RUN echo "memory_limit = 512M" >> /opt/bitnami/php/etc/conf.d/wai.ini && \
     echo "expose_php = Off" >> /opt/bitnami/php/etc/conf.d/wai.ini && \
     echo "html_errors = Off" >> /opt/bitnami/php/etc/conf.d/wai.ini && \
     echo "error_log = /dev/stderr" >> /opt/bitnami/php/etc/conf.d/wai.ini && \
