@@ -4683,16 +4683,16 @@
         },
         {
             "name": "yajra/laravel-datatables-oracle",
-            "version": "v9.10.0",
+            "version": "v9.10.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/yajra/laravel-datatables.git",
-                "reference": "b0b9e2c37b5a17ca35bb2c6d3927bf6176393229"
+                "reference": "01b4a4fdbd13e4d77fa2d27916cdafac789d2d1a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yajra/laravel-datatables/zipball/b0b9e2c37b5a17ca35bb2c6d3927bf6176393229",
-                "reference": "b0b9e2c37b5a17ca35bb2c6d3927bf6176393229",
+                "url": "https://api.github.com/repos/yajra/laravel-datatables/zipball/01b4a4fdbd13e4d77fa2d27916cdafac789d2d1a",
+                "reference": "01b4a4fdbd13e4d77fa2d27916cdafac789d2d1a",
                 "shasum": ""
             },
             "require": {
@@ -4744,13 +4744,13 @@
                     "email": "aqangeles@gmail.com"
                 }
             ],
-            "description": "jQuery DataTables API for Laravel 4|5",
+            "description": "jQuery DataTables API for Laravel 4|5|6|7",
             "keywords": [
                 "datatables",
                 "jquery",
                 "laravel"
             ],
-            "time": "2020-04-23T01:21:11+00:00"
+            "time": "2020-05-30T04:43:39+00:00"
         }
     ],
     "packages-dev": [
