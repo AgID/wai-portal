@@ -2,7 +2,6 @@
 
 namespace App\Mail;
 
-use App\Models\PublicAdministration;
 use App\Models\User;
 use Illuminate\Support\Facades\Lang;
 

@@ -11,7 +11,6 @@ use App\Events\PublicAdministration\PublicAdministrationPurged;
 use App\Events\PublicAdministration\PublicAdministrationRegistered;
 use App\Events\PublicAdministration\PublicAdministrationUpdated;
 use App\Models\PublicAdministration;
-use App\Traits\ManageRecipientNotifications;
 use App\Traits\SendsNotificationsToSuperAdmin;
 use Exception;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -25,7 +24,6 @@ use Illuminate\Support\Facades\Cache;
 class PublicAdministrationEventsSubscriber implements ShouldQueue
 {
     use SendsNotificationsToSuperAdmin;
-    use ManageRecipientNotifications;
 
     /**
      * Public Administration registered callback.
