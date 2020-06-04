@@ -119,26 +119,6 @@ h3.section-header {
   }
 }
 
-// User public administration status
-.badge.user-public-administration-status {
-  &.invited {
-    background-color: #0bd9d2;
-  }
-
-  &.pending {
-    background-color: #0bd9d2;
-  }
-
-  &.active {
-    background-color: #004080;
-    color: #fff;
-  }
-
-  &.archived {
-    background-color: #f5f6f7;
-  }
-}
-
 // Log levels
 .badge.log-level {
   text-transform: uppercase;

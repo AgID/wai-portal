@@ -80,7 +80,7 @@ class CRUDUserTest extends TestCase
         $this->publicAdministration = factory(PublicAdministration::class)
             ->state('active')
             ->create();
-        $this->publicAdministration->users()->sync([$this->user->id]);
+        $this->publicAdministration->users()->sync([$this->user->id => ['user_email' => $this->user->email, 'user_status' => UserStatus::ACTIVE]]);
 
         $this->website = factory(Website::class)->create([
             'public_administration_id' => $this->publicAdministration->id,
@@ -476,7 +476,7 @@ class CRUDUserTest extends TestCase
         $user = factory(User::class)->create([
             'status' => UserStatus::ACTIVE,
         ]);
-        $this->publicAdministration->users()->sync([$user->id], false);
+        $this->publicAdministration->users()->sync([$user->id => ['user_status' => UserStatus::ACTIVE]], false);
 
         $this->actingAs($this->user)
             ->withSession([
@@ -490,6 +490,7 @@ class CRUDUserTest extends TestCase
                 'id' => $user->uuid,
                 'status' => UserStatus::getKey(UserStatus::SUSPENDED),
                 'status_description' => UserStatus::getDescription(UserStatus::SUSPENDED),
+                'administration' => $this->publicAdministration->name,
             ])
             ->assertOk();
 
@@ -498,7 +499,10 @@ class CRUDUserTest extends TestCase
         });
 
         Event::assertDispatched(UserUpdated::class, function ($event) {
-            return $event->getUser()->status->is(UserStatus::SUSPENDED);
+            $publicAdministrationUser = $event->getUser()->publicAdministrationsWithSuspended()->where('public_administration_id', $this->publicAdministration->id)->first();
+            $statusPublicAdministrationUser = UserStatus::coerce(intval($publicAdministrationUser->pivot->user_status));
+
+            return $statusPublicAdministrationUser->is(UserStatus::SUSPENDED);
         });
     }
 
@@ -508,9 +512,9 @@ class CRUDUserTest extends TestCase
     public function testSuspendUserFailAlreadySuspended(): void
     {
         $user = factory(User::class)->create([
-            'status' => UserStatus::SUSPENDED,
+            'status' => UserStatus::ACTIVE,
         ]);
-        $this->publicAdministration->users()->sync([$user->id], false);
+        $this->publicAdministration->users()->sync([$user->id => ['user_status' => UserStatus::SUSPENDED]], false);
 
         $this->actingAs($this->user)
             ->withSession([
@@ -551,20 +555,21 @@ class CRUDUserTest extends TestCase
      */
     public function testSuspendUserFailPending(): void
     {
-        Event::fakeFor(function () {
-            $this->user->status = UserStatus::PENDING;
-            $this->user->save();
-        });
+        $user = factory(User::class)->create([
+            'status' => UserStatus::ACTIVE,
+        ]);
+        $this->publicAdministration->users()->sync([$user->id => ['user_status' => UserStatus::PENDING]], false);
+
         $this->actingAs($this->user)
             ->withSession([
                 'spid_sessionIndex' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
             ])
-            ->json('patch', route('users.suspend', ['user' => $this->user]))
-            ->assertStatus(403)
+            ->json('patch', route('users.suspend', ['user' => $user]))
+            ->assertStatus(400)
             ->assertJson([
                 'result' => 'error',
-                'message' => 'invalid operation for current user',
+                'message' => 'invalid operation for current user status',
             ]);
 
         Event::assertNotDispatched(UserSuspended::class);
@@ -577,9 +582,9 @@ class CRUDUserTest extends TestCase
     public function testReactivateUserSuccessful(): void
     {
         $user = factory(User::class)->create([
-            'status' => UserStatus::SUSPENDED,
+            'status' => UserStatus::ACTIVE,
         ]);
-        $this->publicAdministration->users()->sync([$user->id], false);
+        $this->publicAdministration->users()->sync([$user->id => ['user_status' => UserStatus::SUSPENDED]], false);
 
         $this->actingAs($this->user)
             ->withSession([
@@ -593,6 +598,7 @@ class CRUDUserTest extends TestCase
                 'user_name' => e($user->full_name),
                 'status' => UserStatus::getKey(UserStatus::INVITED),
                 'status_description' => UserStatus::getDescription(UserStatus::INVITED),
+                'administration' => $this->publicAdministration->name,
             ])
             ->assertOk();
 
@@ -601,7 +607,10 @@ class CRUDUserTest extends TestCase
         });
 
         Event::assertDispatched(UserUpdated::class, function ($event) {
-            return $event->getUser()->status->is(UserStatus::INVITED);
+            $publicAdministrationUser = $event->getUser()->publicAdministrations()->where('public_administration_id', $this->publicAdministration->id)->first();
+            $statusPublicAdministrationUser = UserStatus::coerce(intval($publicAdministrationUser->pivot->user_status));
+
+            return $statusPublicAdministrationUser->is(UserStatus::INVITED);
         });
     }
 
@@ -613,7 +622,7 @@ class CRUDUserTest extends TestCase
         $user = factory(User::class)->create([
             'status' => UserStatus::ACTIVE,
         ]);
-        $this->publicAdministration->users()->sync([$user->id], false);
+        $this->publicAdministration->users()->sync([$user->id => ['user_status' => UserStatus::ACTIVE]], false);
 
         $this->actingAs($this->user)
             ->withSession([

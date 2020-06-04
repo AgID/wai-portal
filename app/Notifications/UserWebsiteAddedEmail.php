@@ -25,6 +25,7 @@ class UserWebsiteAddedEmail extends UserEmailNotification
      */
     public function __construct(Website $website)
     {
+        parent::__construct();
         $this->website = $website;
     }
 

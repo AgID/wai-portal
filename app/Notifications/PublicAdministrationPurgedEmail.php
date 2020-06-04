@@ -13,26 +13,19 @@ class PublicAdministrationPurgedEmail extends UserEmailNotification
     /**
      * The purged public administration.
      *
-     * @var mixed the public administration
+     * @var stdClass the purged public administration
      */
-    protected $publicAdministration;
-
-    /**
-     * string email for the user in the public administration.
-     *
-     * @var string the JSON string
-     */
-    protected $userEmailForPublicAdministration;
+    protected $purgedPublicAdministration;
 
     /**
      * Default constructor.
      *
-     * @param mixed $publicAdministration the purged public administration
+     * @param stdClass $publicAdministration the purged public administration
      */
-    public function __construct($publicAdministration, $email)
+    public function __construct($purgedPublicAdministration)
     {
-        $this->publicAdministration = $publicAdministration;
-        $this->userEmailForPublicAdministration = $email;
+        parent::__construct();
+        $this->purgedPublicAdministration = $purgedPublicAdministration;
     }
 
     /**
@@ -44,6 +37,6 @@ class PublicAdministrationPurgedEmail extends UserEmailNotification
      */
     protected function buildEmail($notifiable): Mailable
     {
-        return new PublicAdministrationPurged($notifiable, $this->publicAdministration, $this->userEmailForPublicAdministration);
+        return new PublicAdministrationPurged($notifiable, $this->purgedPublicAdministration);
     }
 }

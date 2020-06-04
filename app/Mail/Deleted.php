@@ -6,19 +6,19 @@ use App\Models\User;
 use Illuminate\Support\Facades\Lang;
 
 /**
- * User reactivated email.
+ * User suspended email.
  */
-class Reactivated extends UserMailable
+class Deleted extends UserMailable
 {
     /**
      * Build the message.
      *
-     * @return Reactivated the email
+     * @return Deleted the email
      */
-    public function build(): Reactivated
+    public function build(): Deleted
     {
-        return $this->subject(__('Utente riattivato'))
-            ->markdown('mail.reactivated')->with([
+        return $this->subject(__('Utente cancellato'))
+            ->markdown('mail.deleted')->with([
                 'locale' => Lang::getLocale(),
                 'user' => $this->recipient,
                 'publicAdministration' => $this->publicAdministration,

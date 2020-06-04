@@ -9,6 +9,7 @@ use App\Events\User\UserDeleted;
 use App\Events\User\UserInvited;
 use App\Events\User\UserReactivated;
 use App\Events\User\UserSuspended;
+use App\Events\User\UserUpdated;
 use App\Exceptions\CommandErrorException;
 use App\Exceptions\InvalidUserStatusException;
 use App\Exceptions\OperationNotAllowedException;
@@ -127,7 +128,7 @@ class UserController extends Controller
         // If existingUser is filled the user is already in the database
         if (isset($validatedData['existingUser']) && isset($validatedData['existingUser']->email)) {
             $user = $validatedData['existingUser'];
-            $userInCurrentPublicAdministration = $user->publicAdministrations->where('id', $currentPublicAdministration->id)->isNotEmpty();
+            $userInCurrentPublicAdministration = $user->publicAdministrationsWithSuspended->where('id', $currentPublicAdministration->id)->isNotEmpty();
 
             if ($userInCurrentPublicAdministration) {
                 return redirect()->to($redirectUrl)->withModal([
@@ -304,12 +305,16 @@ class UserController extends Controller
      */
     public function delete(PublicAdministration $publicAdministration, User $user)
     {
-        try {
-            if ($user->trashed()) {
-                return $this->notModifiedResponse();
-            }
+        $publicAdministrationUser = $user->publicAdministrations()->where('public_administration_id', $publicAdministration->id)->first();
 
-            if ($user->status->is(UserStatus::PENDING)) {
+        if (empty($publicAdministrationUser)) {
+            return $this->notModifiedResponse();
+        }
+
+        $userPublicAdministrationStatus = UserStatus::coerce(intval($publicAdministrationUser->pivot->user_status));
+
+        try {
+            if ($userPublicAdministrationStatus->is(UserStatus::PENDING)) {
                 throw new OperationNotAllowedException('Pending users cannot be deleted.');
             }
 
@@ -318,52 +323,21 @@ class UserController extends Controller
                 throw new OperationNotAllowedException($validator->errors()->first('is_admin'));
             }
 
-            $user->publicAdministrations()->get()->map(function ($publicAdministration) use ($user) {
-                Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user) {
-                    $user->assign(UserRole::DELETED);
-                });
+            Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user) {
+                $user->abilities()->detach();
+                $user->roles()->detach();
             });
 
-            // NOTE: don't use 'user->delete()' directly since
-            //       it cascades delete to roles and permissions
-            // See: https://github.com/JosephSilber/bouncer/issues/439
-            $user->deleted_at = $user->freshTimestamp();
-            $user->save();
+            $publicAdministration->users()->detach([$user->id]);
         } catch (OperationNotAllowedException $exception) {
             report($exception);
 
             return $this->errorResponse($exception->getMessage(), $exception->getCode(), 400);
         }
 
-        event(new UserDeleted($user));
+        event(new UserDeleted($user, $publicAdministration));
 
-        return $this->userResponse($user);
-    }
-
-    /**
-     * Restore a soft-deleted user.
-     * NOTE: Super admin only.
-     *
-     * @param PublicAdministration $publicAdministration the public administration the user belongs to
-     * @param User $user the user to restore
-     *
-     * @return JsonResponse|RedirectResponse the response in json or http redirect format
-     */
-    public function restore(PublicAdministration $publicAdministration, User $user)
-    {
-        if (!$user->trashed()) {
-            return $this->notModifiedResponse();
-        }
-
-        $user->publicAdministrations()->get()->map(function ($publicAdministration) use ($user) {
-            Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user) {
-                $user->retract(UserRole::DELETED);
-            });
-        });
-
-        $user->restore();
-
-        return $this->userResponse($user);
+        return $this->userResponse($user, $publicAdministration);
     }
 
     /**
@@ -377,7 +351,12 @@ class UserController extends Controller
      */
     public function suspend(Request $request, PublicAdministration $publicAdministration, User $user)
     {
-        if ($user->status->is(UserStatus::SUSPENDED)) {
+        $publicAdministration = ($publicAdministration->id ?? false) ? $publicAdministration : current_public_administration();
+        $publicAdministrationUser = $user->publicAdministrationsWithSuspended()->where('public_administration_id', $publicAdministration->id)->first();
+
+        $userPublicAdministrationStatus = UserStatus::coerce(intval($publicAdministrationUser->pivot->user_status));
+
+        if ($userPublicAdministrationStatus->is(UserStatus::SUSPENDED)) {
             return $this->notModifiedResponse();
         }
 
@@ -386,11 +365,11 @@ class UserController extends Controller
                 throw new OperationNotAllowedException('Cannot suspend the current authenticated user.');
             }
 
-            if ($user->status->is(UserStatus::PENDING)) {
+            if ($userPublicAdministrationStatus->is(UserStatus::PENDING)) {
                 throw new InvalidUserStatusException('Pending users cannot be suspended.');
             }
 
-            //NOTE: super admin are allowed to suspend the last active administrator of a Public Administration
+            //NOTE: super admin are allowed to suspend the last active administrator of a public administration
             if (auth()->user()->cannot(UserPermission::ACCESS_ADMIN_AREA)) {
                 $validator = validator(request()->all())->after([$this, 'validateNotLastActiveAdministrator']);
                 if ($validator->fails()) {
@@ -398,12 +377,12 @@ class UserController extends Controller
                 }
             }
 
-            $user->status = UserStatus::SUSPENDED;
-            $user->save();
+            $publicAdministration->users()->updateExistingPivot($user->id, ['user_status' => UserStatus::SUSPENDED]);
 
-            event(new UserSuspended($user));
+            event(new UserSuspended($user, $publicAdministration));
+            event(new UserUpdated($user, $publicAdministration));
 
-            return $this->userResponse($user);
+            return $this->userResponse($user, $publicAdministration);
         } catch (InvalidUserStatusException $exception) {
             report($exception);
             $code = $exception->getCode();
@@ -429,16 +408,21 @@ class UserController extends Controller
      */
     public function reactivate(PublicAdministration $publicAdministration, User $user)
     {
-        if (!$user->status->is(UserStatus::SUSPENDED)) {
+        $publicAdministration = ($publicAdministration->id ?? false) ? $publicAdministration : current_public_administration();
+        $publicAdministrationUser = $user->publicAdministrationsWithSuspended()->where('public_administration_id', $publicAdministration->id)->first();
+        $userPublicAdministrationStatus = UserStatus::coerce(intval($publicAdministrationUser->pivot->user_status));
+
+        if (!$userPublicAdministrationStatus->is(UserStatus::SUSPENDED)) {
             return $this->notModifiedResponse();
         }
 
-        $user->status = $user->hasVerifiedEmail() ? UserStatus::ACTIVE : UserStatus::INVITED;
-        $user->save();
+        $updatedStatus = $user->hasVerifiedEmail() ? UserStatus::ACTIVE : UserStatus::INVITED;
+        $publicAdministration->users()->updateExistingPivot($user->id, ['user_status' => $updatedStatus]);
 
-        event(new UserReactivated($user));
+        event(new UserReactivated($user, $publicAdministration));
+        event(new UserUpdated($user, $publicAdministration));
 
-        return $this->userResponse($user);
+        return $this->userResponse($user, $publicAdministration);
     }
 
     /**

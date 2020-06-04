@@ -40,15 +40,11 @@ class AccountVerification extends UserMailable
      */
     public function build(): AccountVerification
     {
-        if ($this->recipient->status->is(UserStatus::INVITED)) {
+        if ($this->recipient->status->is(UserStatus::INVITED) && $this->recipient->isA(UserRole::SUPER_ADMIN)) {
             $this->subject(__('Invito su :app', ['app' => config('app.name')]));
-            if ($this->recipient->isA(UserRole::SUPER_ADMIN)) {
-                $mailTemplate = 'mail.admin_invited_verification';
-            } else {
-                $mailTemplate = 'mail.invited_verification';
-            }
+            $mailTemplate = 'mail.admin_invited_verification';
         } else {
-            $this->subject(__('Registrazione su :app', ['app' => config('app.name')]));
+            $this->subject(__('Account su :app', ['app' => config('app.name')]));
             $mailTemplate = 'mail.verification';
         }
 

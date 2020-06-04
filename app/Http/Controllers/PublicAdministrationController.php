@@ -6,7 +6,6 @@ use App\Enums\UserRole;
 use App\Enums\UserStatus;
 use App\Models\PublicAdministration;
 use App\Models\User;
-use App\Models\Website;
 use App\Traits\HasRoleAwareUrls;
 use App\Traits\SendsResponse;
 use App\Transformers\PublicAdministrationsTransformer;
@@ -25,81 +24,37 @@ class PublicAdministrationController extends Controller
     use SendsResponse;
 
     /**
-     * Show the Public Administration selector.
-     *
-     * @param int $id
+     * Show all Public Administrations for current user.
      *
      * @return View the view
      */
-    public function selectTenant(): View
+    public function show(PublicAdministration $publicAdministration): View
     {
-        return view('pages.pa.show');
-    }
+        $paDatatable = [
+            'datatableOptions' => [
+                'columnFilters' => [
+                    'name' => [
+                        'filterLabel' => __('nome'),
+                    ],
+                    'userStatus' => [
+                        'filterLabel' => __('stato utente'),
+                    ],
+                ],
+            ],
+            'columns' => [
+                ['data' => 'name', 'name' => __('nome'), 'className' => 'text-wrap'],
+                ['data' => 'city', 'name' => __('città')],
+                ['data' => 'region', 'name' => __('regione')],
+                ['data' => 'email', 'name' => __('email')],
+                ['data' => 'userStatus', 'name' => __('stato utente')],
+                ['data' => 'buttons', 'name' => '', 'orderable' => false],
+            ],
+            'source' => $this->getRoleAwareUrl('publicAdministrations.data.json', [], $publicAdministration),
+            'caption' => __('elenco delle tue pubbliche amministrazioni su :app', ['app' => config('app.name')]),
+            'columnsOrder' => [['name', 'asc']],
+        ];
 
-    /**
-     * Change the Public Administration tenant in the session.
-     *
-     * @param Request the incoming request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function changeTenant(Request $request, Website $website)
-    {
-        $publicAdministrationCode = $request->input('public-administration-nav');
-        $redirectTo = $request->input('target-route');
-        $targetRouteHasPublicAdministrationParam = $request->input('target-route-pa-param');
-
-        if (!Route::has($redirectTo)) {
-            abort(404);
-        }
-
-        // publicAdministrationCode is ipa_code for superAdmin, id for other roles
-        $authUser = $request->user();
-
-        if ($authUser->isA(UserRole::SUPER_ADMIN)) {
-            if (PublicAdministration::where('ipa_code', $publicAdministrationCode)->first()) {
-                session()->put('super_admin_tenant_ipa_code', $publicAdministrationCode);
-                if (!$targetRouteHasPublicAdministrationParam) {
-                    return redirect()->route($redirectTo);
-                }
-
-                return redirect()->route($redirectTo, ['publicAdministration' => $publicAdministrationCode]);
-            }
-        } elseif ($authUser->publicAdministrations->isNotEmpty()) {
-            if ($authUser->publicAdministrations()->where('id', $publicAdministrationCode)->first()) {
-                session()->put('tenant_id', $publicAdministrationCode);
-                Bouncer::scope()->to($publicAdministrationCode);
-
-                return redirect()->route($redirectTo);
-            }
-        }
-
-        return redirect()->route('home');
-    }
-
-    /**
-     * Change the Public Administration tenant in the session.
-     *
-     * @param Request the incoming request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function changeTenantAndRedirect(Request $request, Website $website)
-    {
-        $publicAdministrationCode = $request->input('public-administration-nav');
-        // publicAdministrationCode is ipa_code for superAdmin, id for other roles
-        $authUser = $request->user();
-
-        if ($authUser->publicAdministrations->isNotEmpty()) {
-            if ($authUser->publicAdministrations()->where('id', $publicAdministrationCode)->first()) {
-                session()->put('tenant_id', $publicAdministrationCode);
-                Bouncer::scope()->to($publicAdministrationCode);
-
-                return redirect()->route('analytics');
-            }
-        }
-
-        return redirect()->route('home');
+        return view('pages.pa.index')->with($paDatatable)->with('hasPublicAdministrations', auth()->user()->publicAdministrationsWithSuspended->isNotEmpty());
     }
 
     /**
@@ -113,61 +68,65 @@ class PublicAdministrationController extends Controller
     }
 
     /**
-     * Show all Public Administrations for current user.
+     * Change the Public Administration tenant in the session.
      *
-     * @return View the view
+     * @param Request the incoming request
+     *
+     * @return \Illuminate\Http\Response
      */
-    public function show(PublicAdministration $publicAdministration): View
+    public function selectTenant(Request $request)
     {
-        $paDatatable = [
-            'datatableOptions' => [
-                'columnFilters' => [
-                    'name' => [
-                        'filterLabel' => __('nome'),
-                    ],
-                    'status' => [
-                        'filterLabel' => __('stato'),
-                    ],
-                ],
-            ],
-            'columns' => [
-                ['data' => 'name', 'name' => __('nome'), 'className' => 'text-wrap'],
-                ['data' => 'city', 'name' => __('città')],
-                ['data' => 'region', 'name' => __('regione')],
-                ['data' => 'email', 'name' => __('email')],
-                ['data' => 'status', 'name' => __('stato')],
-                ['data' => 'buttons', 'name' => '', 'orderable' => false],
-            ],
-            'source' => $this->getRoleAwareUrl('publicAdministrations.data.json', [], $publicAdministration),
-            'caption' => __('elenco delle tue pubbliche amministrazioni su :app', ['app' => config('app.name')]),
-            'columnsOrder' => [['name', 'asc']],
-        ];
+        $publicAdministration = PublicAdministration::where('ipa_code', $request->input('public-administration'))->firstOrFail();
+        $redirectTo = $request->input('target-route') ?? 'analytics';
+        $targetRouteHasPublicAdministrationParam = $request->input('target-route-pa-param') ?? false;
 
-        return view('pages.pa.index')->with($paDatatable);
+        if (!Route::has($redirectTo)) {
+            abort(404);
+        }
+
+        $authUser = $request->user();
+
+        if ($authUser->isA(UserRole::SUPER_ADMIN)) {
+            if ($publicAdministration->ipa_code) {
+                session()->put('super_admin_tenant_ipa_code', $publicAdministration->ipa_code);
+                if (!$targetRouteHasPublicAdministrationParam) {
+                    return redirect()->route($redirectTo);
+                }
+
+                return redirect()->route($redirectTo, ['publicAdministration' => $publicAdministration]);
+            }
+        } elseif ($authUser->publicAdministrations->isNotEmpty()) {
+            if ($authUser->publicAdministrations->contains($publicAdministration)) {
+                session()->put('tenant_id', $publicAdministration->id);
+                Bouncer::scope()->to($publicAdministration->id);
+
+                return redirect()->route($redirectTo);
+            }
+        }
+
+        return redirect()->route('home');
     }
 
     /**
-     * Mark the authenticated user's email address as verified.
+     * Accept an invitation a user has got for a public administration.
      *
      * @param Request $request the incoming request
-     * @param string $uuid the uuid of the user to be verified
-     * @param PublicAdministration $publicAdministration the public administration the user belongs to
+     * @param PublicAdministration $publicAdministration the public administration the user is invited to
      *
      * @throws \Illuminate\Auth\Access\AuthorizationException if verification link is invalid
      *
      * @return JsonResponse|RedirectResponse the server response
      */
-    public function activate(Request $request, string $uuid, PublicAdministration $publicAdministration)
+    public function acceptInvitation(Request $request, PublicAdministration $publicAdministration)
     {
-        $user = User::where('uuid', $uuid)->with('publicAdministrations')->first();
         $authUser = $request->user();
 
-        if (!$authUser->is($user) || !$user->publicAdministrations->contains($publicAdministration)) {
-            throw new AuthorizationException("L'utente corrente non corrisponde alla richiesta di verifica.");
+        if (!$authUser->publicAdministrations->contains($publicAdministration)) {
+            throw new AuthorizationException("L'utente corrente non corrisponde all'invito.");
         }
 
-        if ($user->invitedPublicAdministrations->where('id', $publicAdministration->id)->isNotEmpty()) {
-            $user->publicAdministrations()->updateExistingPivot($publicAdministration->id, ['user_status' => UserStatus::ACTIVE]);
+        if ($authUser->invitedPublicAdministrations->where('id', $publicAdministration->id)->isNotEmpty()) {
+            $authUser->publicAdministrations()->updateExistingPivot($publicAdministration->id, ['user_status' => UserStatus::ACTIVE]);
 
             return $this->publicAdministrationResponse($publicAdministration);
         }
@@ -186,7 +145,7 @@ class PublicAdministrationController extends Controller
      */
     public function dataJson()
     {
-        return DataTables::of(auth()->user()->publicAdministrations)
+        return DataTables::of(auth()->user()->publicAdministrationsWithSuspended)
             ->setTransformer(new PublicAdministrationsTransformer())
             ->make(true);
     }

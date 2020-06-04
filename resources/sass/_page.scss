@@ -1,3 +1,5 @@
+@use 'sass:map';
+
 .page-bulk-container {
   @extend .container;
 
@@ -23,11 +25,11 @@
   }
 
   @include media-breakpoint-up(xl) {
-    max-width: 960px;
+    max-width: map.get($container-max-widths, 'lg');
     padding: 4em 5em;
 
     &.wide-layout {
-      max-width: 1184px;
+      max-width: map.get($container-max-widths, 'xl');
     }
   }
 }

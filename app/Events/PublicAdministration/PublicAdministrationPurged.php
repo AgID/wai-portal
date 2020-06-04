@@ -36,11 +36,10 @@ class PublicAdministrationPurged
      * @param string $publicAdministrationJson the JSON string of the public administration
      * @param User $user the user who registered the public administration
      */
-    public function __construct(string $publicAdministrationJson, User $user, ?string $userEmailForPublicAdministration = null)
+    public function __construct(string $publicAdministrationJson, User $user)
     {
         $this->publicAdministrationJson = $publicAdministrationJson;
         $this->user = $user;
-        $this->userEmailForPublicAdministration = $userEmailForPublicAdministration;
     }
 
     /**
@@ -61,15 +60,5 @@ class PublicAdministrationPurged
     public function getUser(): User
     {
         return $this->user;
-    }
-
-    /**
-     * Get the email for the user in the public administration.
-     *
-     * @return string the email
-     */
-    public function getUserEmailForPublicAdministration(): ?string
-    {
-        return $this->userEmailForPublicAdministration;
     }
 }

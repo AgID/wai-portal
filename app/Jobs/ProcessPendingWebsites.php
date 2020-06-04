@@ -99,14 +99,16 @@ class ProcessPendingWebsites implements ShouldQueue
                         $publicAdministration = $website->publicAdministration;
 
                         if ($publicAdministration->status->is(PublicAdministrationStatus::PENDING)) {
-                            $pendingUser = $publicAdministration->users()->where('status', UserStatus::PENDING)->first();
-                            if (null !== $pendingUser) {
-                                $pendingUser->publicAdministrations()->detach($publicAdministration->id);
+                            $pendingUser = $publicAdministration->users()->where('user_status', UserStatus::PENDING)->first();
+                            $pendingUser->publicAdministrations()->detach($publicAdministration->id);
+
+                            if ($pendingUser->publicAdministrations->isEmpty()) {
                                 $pendingUser->deleteAnalyticsServiceAccount();
-                                $publicAdministration->forceDelete();
                             }
-                            $userEmailForPublicAdministration = $this->getUserEmailForPublicAdministration($pendingUser, $publicAdministration);
-                            event(new PublicAdministrationPurged($publicAdministration->toJson(), $pendingUser, $userEmailForPublicAdministration));
+
+                            $publicAdministration->forceDelete();
+
+                            event(new PublicAdministrationPurged($publicAdministration->toJson(), $pendingUser));
                         } else {
                             $website->forceDelete();
                         }

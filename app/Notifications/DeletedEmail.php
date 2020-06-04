@@ -2,13 +2,13 @@
 
 namespace App\Notifications;
 
-use App\Mail\Suspended;
+use App\Mail\Deleted;
 use Illuminate\Mail\Mailable;
 
 /**
  * User suspended email notification.
  */
-class SuspendedEmail extends UserEmailNotification
+class DeletedEmail extends UserEmailNotification
 {
     /**
      * Initialize the mail message.
@@ -19,6 +19,6 @@ class SuspendedEmail extends UserEmailNotification
      */
     protected function buildEmail($notifiable): Mailable
     {
-        return new Suspended($notifiable, $this->publicAdministration);
+        return new Deleted($notifiable, $this->publicAdministration);
     }
 }

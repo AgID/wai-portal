@@ -55,7 +55,7 @@ class ViewServiceProvider extends ServiceProvider
             $authUser = auth()->user();
             $view->with('authUser', $authUser);
             $view->with('spidAuthUser', app()->make('SPIDAuth')->getSPIDUser());
-            $view->with('hasActivePublicAdministration', session()->has('tenant_id') && $authUser->activePublicAdministrations->where('id', session('tenant_id')));
+            $view->with('showPublicAdministration', session()->has('tenant_id') && (1 === $authUser->publicAdministrations->count()));
             $view->with('isSuperAdmin', isset($authUser) && $authUser->isA(UserRole::SUPER_ADMIN));
         });
     }

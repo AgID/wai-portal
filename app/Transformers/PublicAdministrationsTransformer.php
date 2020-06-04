@@ -35,11 +35,11 @@ class PublicAdministrationsTransformer extends TransformerAbstract
                 ]),
                 'raw' => e($publicAdministration->name),
             ],
-            'city' => $publicAdministration->city,
+            'city' => e($publicAdministration->city),
             'email' => e($emailPublicAdministrationUser),
-            'region' => $publicAdministration->region,
-            'status' => [
-                'display' => '<span class="badge user-public-administration-status ' . strtolower($statusPublicAdministrationUser->key) . '">' . strtoupper($statusPublicAdministrationUser->description) . '</span>',
+            'region' => e($publicAdministration->region),
+            'userStatus' => [
+                'display' => '<span class="badge user-status ' . strtolower($statusPublicAdministrationUser->key) . '">' . strtoupper($statusPublicAdministrationUser->description) . '</span>',
                 'raw' => $statusPublicAdministrationUser->description,
             ],
             'buttons' => [],
@@ -47,26 +47,26 @@ class PublicAdministrationsTransformer extends TransformerAbstract
 
         if ($statusPublicAdministrationUser->is(UserStatus::INVITED)) {
             $data['buttons'][] = [
-                'link' => route('publicAdministration.activate', ['uuid' => $authUser->uuid, 'publicAdministration' => $publicAdministration->ipa_code]),
+                'link' => route('publicAdministration.acceptInvitation', ['publicAdministration' => $publicAdministration]),
                 'color' => 'primary',
-                'label' => __('conferma'),
+                'label' => __('accetta invito'),
                 'dataAttributes' => [
                     'name' => e($publicAdministration->name),
-                    'type' => 'paActivation',
+                    'type' => 'acceptInvitation',
                     'ajax' => true,
                 ],
             ];
         }
-        if ($statusPublicAdministrationUser->is(UserStatus::ACTIVE)) {
+
+        if ($statusPublicAdministrationUser->is(UserStatus::ACTIVE) || $statusPublicAdministrationUser->is(UserStatus::PENDING)) {
             $data['buttons'][] = [
-                'link' => route('publicAdministrations.change.and.redirect', ['public-administration-nav' => $publicAdministration->id]),
+                'link' => route('publicAdministrations.select', ['public-administration' => $publicAdministration]),
                 'color' => 'outline-primary',
                 'icon' => 'it-arrow-right',
                 'label' => __('vai'),
                 'dataAttributes' => [
                     'name' => e($publicAdministration->name),
-                    'type' => 'paSelectTenant',
-                    'ajax' => true,
+                    'type' => 'selectTenant',
                 ],
             ];
         }

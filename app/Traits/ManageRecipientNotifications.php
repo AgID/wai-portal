@@ -20,11 +20,9 @@ trait ManageRecipientNotifications
      */
     public function getUserEmailForPublicAdministration(User $user, ?PublicAdministration $publicAdministration = null): string
     {
-        if ($publicAdministration) {
-            $publicAdministrationUser = $user->publicAdministrations()->where('public_administration_id', $publicAdministration->id)->first();
-            if ($publicAdministrationUser && $publicAdministrationUser->pivot->user_email) {
-                return $publicAdministrationUser->pivot->user_email;
-            }
+        $publicAdministrationUser = $user->publicAdministrations()->where('public_administration_id', $publicAdministration->id ?? null)->first();
+        if ($publicAdministrationUser && $publicAdministrationUser->pivot->user_email) {
+            return $publicAdministrationUser->pivot->user_email;
         }
 
         return $user->email;

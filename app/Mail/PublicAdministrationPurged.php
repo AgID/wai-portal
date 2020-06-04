@@ -12,30 +12,22 @@ use Illuminate\Support\Facades\Lang;
 class PublicAdministrationPurged extends UserMailable
 {
     /**
-     * The mail recipient.
-     *
-     * @var User the user
-     */
-    protected $recipient;
-
-    /**
      * The purged public administration.
      *
-     * @var mixed the public administration
+     * @var stdClass the purged public administration
      */
-    protected $publicAdministration;
+    protected $purgedPublicAdministration;
 
     /**
      * Default constructor.
      *
      * @param User $recipient the mail recipient
-     * @param mixed $publicAdministration the purged public administration
+     * @param stdClass $publicAdministration the purged public administration
      */
-    public function __construct(User $recipient, $publicAdministration, $userEmailForPublicAdministration)
+    public function __construct(User $recipient, $purgedPublicAdministration)
     {
-        $recipient->email = !is_null($userEmailForPublicAdministration) ? $userEmailForPublicAdministration : $recipient->email;
-        $this->recipient = $recipient;
-        $this->publicAdministration = $publicAdministration;
+        parent::__construct($recipient);
+        $this->purgedPublicAdministration = $purgedPublicAdministration;
     }
 
     /**
@@ -49,7 +41,7 @@ class PublicAdministrationPurged extends UserMailable
             ->markdown('mail.purged_public_administration')->with([
                 'locale' => Lang::getLocale(),
                 'user' => $this->recipient,
-                'publicAdministration' => $this->publicAdministration,
+                'publicAdministration' => $this->purgedPublicAdministration,
             ]);
     }
 }

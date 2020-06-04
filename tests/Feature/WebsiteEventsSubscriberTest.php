@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Enums\Logs\EventType;
 use App\Enums\UserRole;
+use App\Enums\UserStatus;
 use App\Enums\WebsiteAccessType;
 use App\Enums\WebsiteStatus;
 use App\Enums\WebsiteType;
@@ -36,6 +37,8 @@ use App\Notifications\UserWebsiteUrlChangedEmail;
 use App\Notifications\WebsiteAddedEmail;
 use App\Services\MatomoService;
 use App\Traits\InteractsWithRedisIndex;
+use Faker\Factory;
+use Faker\Generator;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
@@ -65,7 +68,19 @@ class WebsiteEventsSubscriberTest extends TestCase
      */
     private $website;
 
+    /**
+     * The user.
+     *
+     * @var User the user
+     */
     private $user;
+
+    /**
+     * Fake data generator.
+     *
+     * @var Generator the generator
+     */
+    private $faker;
 
     /**
      * Pre-tests setup.
@@ -73,6 +88,7 @@ class WebsiteEventsSubscriberTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+        $this->faker = Factory::create();
         $this->publicAdministration = factory(PublicAdministration::class)->state('active')->create([
             'rollup_id' => 1,
             'token_auth' => 'faketoken',
@@ -82,7 +98,10 @@ class WebsiteEventsSubscriberTest extends TestCase
             'analytics_id' => 1,
         ]);
         $this->user = factory(User::class)->state('active')->create();
-        $this->publicAdministration->users()->sync([$this->user->id]);
+        $this->publicAdministration->users()->sync([$this->user->id => [
+            'user_status' => UserStatus::ACTIVE,
+            'user_email' => $this->faker->unique()->safeEmail,
+        ]]);
 
         Bouncer::dontCache();
         Notification::fake();
@@ -738,11 +757,13 @@ class WebsiteEventsSubscriberTest extends TestCase
             function ($notification, $channels) {
                 $this->assertEquals($channels, ['mail']);
                 $mail = $notification->toMail($this->user)->build();
+                $userEmailAddress = $this->user->publicAdministrations
+                    ->where('id', $this->publicAdministration->id)->first()->pivot->user_email;
                 $this->assertEquals($this->user->uuid, $mail->viewData['user']['uuid']);
                 $this->assertEquals($this->website->slug, $mail->viewData['website']->slug);
                 $this->assertEquals($mail->subject, __('[Attenzione] - Sito web eliminato'));
 
-                return $mail->hasTo($this->user->email, $this->user->full_name);
+                return $mail->hasTo($userEmailAddress, $this->user->full_name);
             }
         );
     }

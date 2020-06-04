@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Mail\UserWebsitePurged;
+use App\Models\PublicAdministration;
 use Illuminate\Mail\Mailable;
 
 /**
@@ -21,9 +22,11 @@ class UserWebsitePurgedEmail extends UserEmailNotification
      * Default constructor.
      *
      * @param mixed $website the purged website
+     * @param PublicAdministration $publicAdministration the public administration
      */
-    public function __construct($website)
+    public function __construct($website, PublicAdministration $publicAdministration)
     {
+        parent::__construct($publicAdministration);
         $this->website = $website;
     }
 

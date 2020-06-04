@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Enums\UserPermission;
 use App\Enums\UserRole;
 use App\Exceptions\CommandErrorException;
 use App\Http\Controllers\Controller;
@@ -40,6 +39,7 @@ class ProfileController extends Controller
     public function update(Request $request): RedirectResponse
     {
         $user = $request->user();
+        $isUserSuperAdmin = $user->isA(UserRole::SUPER_ADMIN);
         $validator = validator($request->all(), [
             'email' => [
                 'required',
@@ -47,22 +47,26 @@ class ProfileController extends Controller
                 Rule::unique('users')->ignore($user->id),
                 'max:75',
             ],
-            'name' => [
-                'required',
-                'alpha_name',
-                'min:2',
-                'max:50',
-            ],
-            'family_name' => [
-                'required',
-                'alpha_name',
-                'min:2',
-                'max:50',
-            ],
+            'name' => array_merge(
+                $isUserSuperAdmin ? ['required'] : ['nullable'],
+                [
+                    'alpha_name',
+                    'min:2',
+                    'max:50',
+                ]
+            ),
+            'family_name' => array_merge(
+                $isUserSuperAdmin ? ['required'] : ['nullable'],
+                [
+                    'alpha_name',
+                    'min:2',
+                    'max:50',
+                ]
+            ),
         ]);
 
-        $validator->after(function ($validator) use ($user, $request) {
-            if (!$user->can(UserPermission::ACCESS_ADMIN_AREA) && $user->email === $request->input('email')) {
+        $validator->after(function ($validator) use ($user, $request, $isUserSuperAdmin) {
+            if (!$isUserSuperAdmin && $user->email === $request->input('email')) {
                 $validator->errors()->add('email', __('Il nuovo indirizzo email non può essere uguale a quello attuale.'));
             }
         });
@@ -79,7 +83,7 @@ class ProfileController extends Controller
         //       sends a new email verification request and
         //       reset the email verification status
         $user->email = $validatedData['email'];
-        if ($user->isA(UserRole::SUPER_ADMIN)) {
+        if ($isUserSuperAdmin) {
             $user->name = $validatedData['name'];
             $user->family_name = $validatedData['family_name'];
         }
@@ -90,7 +94,7 @@ class ProfileController extends Controller
 
         $user->save();
 
-        $redirectTo = $user->can(UserPermission::ACCESS_ADMIN_AREA) ? 'admin.dashboard' : 'home';
+        $redirectTo = $isUserSuperAdmin ? 'admin.dashboard' : 'home';
 
         return redirect()->to(route($redirectTo))
             ->withNotification([

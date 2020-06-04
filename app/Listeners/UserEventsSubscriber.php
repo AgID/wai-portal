@@ -255,10 +255,10 @@ class UserEventsSubscriber implements ShouldQueue
         $user = $event->getUser();
 
         //Notify user
-        $user->sendSuspendedNotification();
+        $user->sendSuspendedNotification($event->getPublicAdministration());
 
         //Notify public administration administrators
-        $user->publicAdministrations()->each(function (PublicAdministration $publicAdministration) use ($user) {
+        $user->publicAdministrationsWithSuspended()->each(function (PublicAdministration $publicAdministration) use ($user) {
             $publicAdministration->sendUserSuspendedNotificationToAdministrators($user);
         });
 
@@ -281,7 +281,7 @@ class UserEventsSubscriber implements ShouldQueue
         $user = $event->getUser();
 
         //Notify user
-        $user->sendReactivatedNotification();
+        $user->sendReactivatedNotification($event->getPublicAdministration());
 
         //Notify public administration administrators
         $user->publicAdministrations()->each(function (PublicAdministration $publicAdministration) use ($user) {
@@ -305,6 +305,8 @@ class UserEventsSubscriber implements ShouldQueue
     public function onDeleted(UserDeleted $event): void
     {
         $user = $event->getUser();
+        $user->sendDeletededNotification($event->getPublicAdministration());
+
         logger()->notice('User ' . $user->uuid . ' deleted.',
             [
                 'event' => EventType::USER_DELETED,

@@ -41,7 +41,7 @@ class AuthorizeAnalytics
         }
 
         if ($request->route('user')) {
-            if (!$request->route('user')->publicAdministrations->contains($currentPublicAdministration)) {
+            if (!$request->route('user')->publicAdministrationsWithSuspended->contains($currentPublicAdministration)) {
                 $authorized = false;
             }
         }

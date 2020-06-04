@@ -1,9 +1,8 @@
 Ciao {{ $user->full_name }},
 
-grazie per esserti registrato su [{{ config('app.name') }}]({{ url('/') }})!
+ti sei registrato oppure sei stato invitato su [{{ config('app.name') }}]({{ url('/') }}).
 
-Per completare l'iscrizione
-conferma il tuo indirizzo email.
+Per completare la procedura conferma il tuo indirizzo email.
 
 @component('mail::button', ['link' => $signedUrl])
     Conferma email
@@ -16,3 +15,6 @@ browser: `{!! $signedUrl !!}`
 **Puoi confermare l'indirizzo email
 entro {{ config('auth.verification.expire', 7) }} giorni dalla ricezione di questo
 messaggio.**
+
+*Se pensi di aver ricevuto questo messaggio per errore puoi scrivere a
+{{ config('site.owner.mail') }}.*

@@ -225,6 +225,7 @@ class InviteUserTest extends TestCase
     public function testStoreWebsiteWhitPendingInviteSuccessful(): void
     {
         $this->publicAdministration->users()->sync([$this->secondUser->id => ['user_email' => $this->secondUser->email, 'user_status' => UserStatus::INVITED]], false);
+        $alternativeEmail = $this->faker->unique()->safeEmail;
 
         $this->actingAs($this->secondUser)
             ->withSession([
@@ -233,6 +234,7 @@ class InviteUserTest extends TestCase
             ])
             ->from(route('websites.index'))
             ->post(route('websites.store.primary'), [
+                'email' => $alternativeEmail,
                 'public_administration_name' => 'Camera dei Deputati',
                 'url' => 'www.camera.it',
                 'ipa_code' => 'camera',
@@ -275,8 +277,7 @@ class InviteUserTest extends TestCase
                 'spid_sessionIndex' => 'fake-session-index',
                 'spid_user' => $this->spidUser,
             ])
-            ->json('POST', route('publicAdministration.activate', [
-                'uuid' => $this->secondUser->uuid,
+            ->json('POST', route('publicAdministration.acceptInvitation', [
                 'publicAdministration' => $this->publicAdministration->ipa_code,
             ]))
             ->assertOk()
