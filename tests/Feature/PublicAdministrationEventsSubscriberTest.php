@@ -25,6 +25,8 @@ use App\Notifications\RTDPublicAdministrationRegisteredEmail;
 use App\Notifications\SuperAdminPublicAdministrationNotFoundInIpaEmail;
 use App\Services\MatomoService;
 use App\Traits\ManageRecipientNotifications;
+use Faker\Factory;
+use Faker\Generator;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
@@ -63,15 +65,25 @@ class PublicAdministrationEventsSubscriberTest extends TestCase
     public $user;
 
     /**
+     * Fake data generator.
+     *
+     * @var Generator the generator
+     */
+    private $faker;
+
+    /**
      * Pre-tests setup.
      */
     protected function setUp(): void
     {
         parent::setUp();
-
+        $this->faker = Factory::create();
         $this->publicAdministration = factory(PublicAdministration::class)->create();
         $this->user = factory(User::class)->create();
-        $this->publicAdministration->users()->sync([$this->user->id]);
+        $this->publicAdministration->users()->sync([$this->user->id => [
+            'user_status' => UserStatus::ACTIVE,
+            'user_email' => $this->faker->unique()->safeEmail,
+        ]]);
         $this->publicAdministration->save();
         $this->website = factory(Website::class)->create([
             'type' => WebsiteType::INSTITUTIONAL,
@@ -124,11 +136,13 @@ class PublicAdministrationEventsSubscriberTest extends TestCase
             function ($notification, $channels) {
                 $this->assertEquals($channels, ['mail']);
                 $mail = $notification->toMail($this->user)->build();
+                $userEmailAddress = $this->user->publicAdministrations
+                    ->where('id', $this->publicAdministration->id)->first()->pivot->user_email;
                 $this->assertEquals($this->user->uuid, $mail->viewData['user']['uuid']);
                 $this->assertEquals($this->publicAdministration->ipa_code, $mail->viewData['publicAdministration']['ipa_code']);
                 $this->assertEquals($mail->subject, __('Pubblica amministrazione attivata'));
 
-                return $mail->hasTo($this->user->email, $this->user->full_name);
+                return $mail->hasTo($userEmailAddress, $this->user->full_name);
             }
         );
     }
@@ -201,12 +215,14 @@ class PublicAdministrationEventsSubscriberTest extends TestCase
             function ($notification, $channels) {
                 $this->assertEquals($channels, ['mail']);
                 $mail = $notification->toMail($this->user)->build();
+                $userEmailAddress = $this->user->publicAdministrations
+                    ->where('id', $this->publicAdministration->id)->first()->pivot->user_email;
                 $this->assertEquals($this->user->uuid, $mail->viewData['user']['uuid']);
                 $this->assertEquals($this->publicAdministration->ipa_code, $mail->viewData['publicAdministration']['ipa_code']);
                 $this->assertEquals('fakesnippet', $mail->viewData['javascriptSnippet']);
                 $this->assertEquals($mail->subject, __('Pubblica amministrazione registrata'));
 
-                return $mail->hasTo($this->user->email, $this->user->full_name);
+                return $mail->hasTo($userEmailAddress, $this->user->full_name);
             }
         );
 
@@ -268,12 +284,14 @@ class PublicAdministrationEventsSubscriberTest extends TestCase
             function ($notification, $channels) {
                 $this->assertEquals($channels, ['mail']);
                 $mail = $notification->toMail($this->user)->build();
+                $userEmailAddress = $this->user->publicAdministrations
+                    ->where('id', $this->publicAdministration->id)->first()->pivot->user_email;
                 $this->assertEquals($this->user->uuid, $mail->viewData['user']['uuid']);
                 $this->assertEquals($this->publicAdministration->ipa_code, $mail->viewData['publicAdministration']['ipa_code']);
                 $this->assertEquals('fakesnippet', $mail->viewData['javascriptSnippet']);
                 $this->assertEquals($mail->subject, __('Pubblica amministrazione registrata'));
 
-                return $mail->hasTo($this->user->email, $this->user->full_name);
+                return $mail->hasTo($userEmailAddress, $this->user->full_name);
             }
         );
 
@@ -306,11 +324,13 @@ class PublicAdministrationEventsSubscriberTest extends TestCase
             function ($notification, $channels) {
                 $this->assertEquals($channels, ['mail']);
                 $mail = $notification->toMail($this->user)->build();
+                $userEmailAddress = $this->user->publicAdministrations
+                    ->where('id', $this->publicAdministration->id)->first()->pivot->user_email;
                 $this->assertEquals($this->user->uuid, $mail->viewData['user']['uuid']);
                 $this->assertEquals($this->publicAdministration->ipa_code, $mail->viewData['publicAdministration']->ipa_code);
                 $this->assertEquals($mail->subject, __('Pubblica amministrazione eliminata'));
 
-                return $mail->hasTo($this->user->email, $this->user->full_name);
+                return $mail->hasTo($userEmailAddress, $this->user->full_name);
             }
         );
     }

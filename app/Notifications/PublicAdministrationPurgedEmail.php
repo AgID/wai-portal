@@ -22,9 +22,9 @@ class PublicAdministrationPurgedEmail extends UserEmailNotification
      *
      * @param stdClass $publicAdministration the purged public administration
      */
-    public function __construct($purgedPublicAdministration)
+    public function __construct($purgedPublicAdministration, ?string $userEmailForPurgedPublicAdministration = null)
     {
-        parent::__construct();
+        parent::__construct(null, $userEmailForPurgedPublicAdministration);
         $this->purgedPublicAdministration = $purgedPublicAdministration;
     }
 

@@ -24,21 +24,19 @@ class SelectTenant
         if ($authUser && !$authUser->isA(UserRole::SUPER_ADMIN)) {
             if (empty(session('tenant_id')) && $authUser->publicAdministrationsWithSuspended->isNotEmpty()) {
                 switch ($authUser->publicAdministrationsWithSuspended->count()) {
-                    case (1):
+                    case 1:
                         $publicAdministration = $authUser->publicAdministrationsWithSuspended()->first();
                         $userStatus = UserStatus::coerce(intval($publicAdministration->pivot->user_status));
-                        if( $userStatus->is(UserStatus::ACTIVE) ){
+                        if ($userStatus->is(UserStatus::ACTIVE)) {
                             session()->put('tenant_id', $publicAdministration->id);
                             Bouncer::scope()->to($publicAdministration->id);
                             break;
                         }
+                        // no break
                     default:
                         return redirect()->route('publicAdministrations.show');
                         break;
                 }
-
-
-
             } elseif (!empty(session('tenant_id')) && $authUser->publicAdministrations->where('id', session('tenant_id'))->isEmpty()) {
                 $request->session()->forget('tenant_id');
 

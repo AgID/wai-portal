@@ -253,9 +253,9 @@ class UserEventsSubscriber implements ShouldQueue
     public function onSuspended(UserSuspended $event): void
     {
         $user = $event->getUser();
-
+        $publicAdministration = $event->getPublicAdministration();
         //Notify user
-        $user->sendSuspendedNotification($event->getPublicAdministration());
+        $user->sendSuspendedNotification($publicAdministration);
 
         //Notify public administration administrators
         $user->publicAdministrationsWithSuspended()->each(function (PublicAdministration $publicAdministration) use ($user) {
@@ -267,6 +267,7 @@ class UserEventsSubscriber implements ShouldQueue
             [
                 'user' => $user->uuid,
                 'event' => EventType::USER_SUSPENDED,
+                'pa' => $publicAdministration->ipa_code,
             ]
         );
     }
@@ -279,9 +280,10 @@ class UserEventsSubscriber implements ShouldQueue
     public function onReactivated(UserReactivated $event): void
     {
         $user = $event->getUser();
+        $publicAdministration = $event->getPublicAdministration();
 
         //Notify user
-        $user->sendReactivatedNotification($event->getPublicAdministration());
+        $user->sendReactivatedNotification($publicAdministration);
 
         //Notify public administration administrators
         $user->publicAdministrations()->each(function (PublicAdministration $publicAdministration) use ($user) {
@@ -293,6 +295,7 @@ class UserEventsSubscriber implements ShouldQueue
             [
                 'user' => $user->uuid,
                 'event' => EventType::USER_REACTIVATED,
+                'pa' => $publicAdministration->ipa_code,
             ]
         );
     }
@@ -305,12 +308,15 @@ class UserEventsSubscriber implements ShouldQueue
     public function onDeleted(UserDeleted $event): void
     {
         $user = $event->getUser();
-        $user->sendDeletededNotification($event->getPublicAdministration());
+        $publicAdministration = $event->getPublicAdministration();
+
+        $user->sendDeletededNotification($publicAdministration);
 
         logger()->notice('User ' . $user->uuid . ' deleted.',
             [
                 'event' => EventType::USER_DELETED,
                 'user' => $user->uuid,
+                'pa' => $publicAdministration->ipa_code,
             ]
         );
     }

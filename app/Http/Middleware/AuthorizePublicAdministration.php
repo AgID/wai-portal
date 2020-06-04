@@ -2,8 +2,6 @@
 
 namespace App\Http\Middleware;
 
-use App\Enums\UserRole;
-use App\Enums\UserStatus;
 use Closure;
 use Illuminate\Auth\AuthenticationException;
 
@@ -24,9 +22,9 @@ class AuthorizePublicAdministration
     {
         $authUser = $request->user();
 
-        if ( !empty(session('tenant_id')) && $authUser->suspendedPublicAdministrations->where('id', session('tenant_id'))->isNotEmpty()) {
+        if (!empty(session('tenant_id')) && $authUser->suspendedPublicAdministrations->where('id', session('tenant_id'))->isNotEmpty()) {
             $publicAdministrationUser = $authUser->suspendedPublicAdministrations->where('id', session('tenant_id'))->first();
-            throw new AuthenticationException('User suspended.', [], $this->redirectSuspendedTo($request,  $publicAdministrationUser));
+            throw new AuthenticationException('User suspended.', [], $this->redirectSuspendedTo($request, $publicAdministrationUser));
         }
 
         return $next($request);
@@ -43,7 +41,7 @@ class AuthorizePublicAdministration
     {
         $request->session()->flash('notification', [
             'title' => __('accesso negato'),
-            'message' => __("L'utenza su <b>:name</b> è stata sospesa.", ['name' => $publicAdministration->name] ),
+            'message' => __("L'utenza su <b>:name</b> è stata sospesa.", ['name' => $publicAdministration->name]),
             'status' => 'error',
             'icon' => 'it-close-circle',
         ]);

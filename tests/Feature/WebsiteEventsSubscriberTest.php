@@ -239,7 +239,11 @@ class WebsiteEventsSubscriberTest extends TestCase
             $this->website->save();
         });
         $secondUser = factory(User::class)->state('active')->create();
-        $this->publicAdministration->users()->sync([$secondUser->id], false);
+        $this->publicAdministration->users()->sync([$secondUser->id => [
+            'user_status' => UserStatus::ACTIVE,
+            'user_email' => $this->faker->unique()->safeEmail,
+        ]], false);
+
         Bouncer::scope()->onceTo($this->publicAdministration->id, function () use ($secondUser) {
             $secondUser->assign(UserRole::ADMIN);
         });
@@ -281,12 +285,14 @@ class WebsiteEventsSubscriberTest extends TestCase
             function ($notification, $channels) {
                 $this->assertEquals($channels, ['mail']);
                 $mail = $notification->toMail($this->user)->build();
+                $userEmailAddress = $this->user->publicAdministrations
+                    ->where('id', $this->publicAdministration->id)->first()->pivot->user_email;
                 $this->assertEquals($this->user->uuid, $mail->viewData['user']['uuid']);
                 $this->assertEquals($this->website->slug, $mail->viewData['website']['slug']);
                 $this->assertEquals('fakesnippet', $mail->viewData['javascriptSnippet']);
                 $this->assertEquals($mail->subject, __('Nuovo sito web aggiunto'));
 
-                return $mail->hasTo($this->user->email, $this->user->full_name);
+                return $mail->hasTo($userEmailAddress, $this->user->full_name);
             }
         );
 
@@ -296,11 +302,13 @@ class WebsiteEventsSubscriberTest extends TestCase
             function ($notification, $channels) use ($secondUser) {
                 $this->assertEquals($channels, ['mail']);
                 $mail = $notification->toMail($secondUser)->build();
+                $userEmailAddress = $secondUser->publicAdministrations
+                    ->where('id', $this->publicAdministration->id)->first()->pivot->user_email;
                 $this->assertEquals($secondUser->uuid, $mail->viewData['user']['uuid']);
                 $this->assertEquals($this->website->slug, $mail->viewData['website']['slug']);
                 $this->assertEquals($mail->subject, __('Nuovo sito web aggiunto'));
 
-                return $mail->hasTo($secondUser->email, $secondUser->full_name);
+                return $mail->hasTo($userEmailAddress, $secondUser->full_name);
             }
         );
 
@@ -362,12 +370,14 @@ class WebsiteEventsSubscriberTest extends TestCase
             function ($notification, $channels) {
                 $this->assertEquals($channels, ['mail']);
                 $mail = $notification->toMail($this->user)->build();
+                $userEmailAddress = $this->user->publicAdministrations
+                    ->where('id', $this->publicAdministration->id)->first()->pivot->user_email;
                 $this->assertEquals($this->user->uuid, $mail->viewData['user']['uuid']);
                 $this->assertEquals($this->website->slug, $mail->viewData['website']['slug']);
                 $this->assertEquals('fakesnippet', $mail->viewData['javascriptSnippet']);
                 $this->assertEquals($mail->subject, __('Nuovo sito web aggiunto'));
 
-                return $mail->hasTo($this->user->email, $this->user->full_name);
+                return $mail->hasTo($userEmailAddress, $this->user->full_name);
             }
         );
 
@@ -787,20 +797,6 @@ class WebsiteEventsSubscriberTest extends TestCase
         );
     }
 
-    public function testWebsiteDeleted(): void
-    {
-        $this->expectLogMessage('notice', [
-            'Website ' . $this->website->info . ' deleted.',
-            [
-                'event' => EventType::WEBSITE_DELETED,
-                'website' => $this->website->id,
-                'pa' => $this->publicAdministration->ipa_code,
-            ],
-        ]);
-
-        event(new WebsiteDeleted($this->website));
-    }
-
     public function testWebsiteRestored(): void
     {
         $this->expectLogMessage('notice', [
@@ -876,5 +872,111 @@ class WebsiteEventsSubscriberTest extends TestCase
         ]);
 
         event(new WebsiteStatusChanged($this->website, WebsiteStatus::ARCHIVED));
+    }
+
+    /**
+     * Test website added event handler.
+     */
+    public function testWebsiteAdded(): void
+    {
+        $this->partialMock(InteractsWithRedisIndex::class)
+            ->shouldAllowMockingProtectedMethods()
+            ->shouldReceive('updateWebsitesIndex')
+            ->with($this->website);
+
+        $this->expectLogMessage(
+            'notice',
+            [
+                'Website ' . $this->website->info . ' added of type ' . $this->website->type->description,
+                [
+                    'event' => EventType::WEBSITE_ADDED,
+                    'website' => $this->website->id,
+                    'pa' => $this->website->publicAdministration->ipa_code,
+                    'user' => $this->user->uuid,
+                ],
+            ]
+        );
+
+        event(new WebsiteAdded($this->website, $this->user));
+    }
+
+    /**
+     * Test website activated event handler.
+     */
+    public function testWebsiteActivated(): void
+    {
+        $this->expectLogMessage(
+            'notice',
+            [
+                'Website ' . $this->website->info . ' activated',
+                [
+                    'event' => EventType::WEBSITE_ACTIVATED,
+                    'website' => $this->website->id,
+                    'pa' => $this->website->publicAdministration->ipa_code,
+                ],
+            ]
+        );
+
+        event(new WebsiteActivated($this->website));
+    }
+
+    /**
+     * Test website archived event handler.
+     */
+    public function testWebsiteArchivedForInactivity(): void
+    {
+        $this->expectLogMessage(
+            'notice',
+            [
+                'Website ' . $this->website->info . ' archived due to inactivity',
+                [
+                    'event' => EventType::WEBSITE_ARCHIVED,
+                    'website' => $this->website->id,
+                    'pa' => $this->website->publicAdministration->ipa_code,
+                ],
+            ]
+        );
+
+        event(new WebsiteArchived($this->website, false));
+    }
+
+    /**
+     * Test website manually deleted event handler.
+     */
+    public function testWebsiteDeleted(): void
+    {
+        $this->expectLogMessage(
+            'notice',
+            [
+                'Website ' . $this->website->info . ' deleted.',
+                [
+                    'event' => EventType::WEBSITE_DELETED,
+                    'website' => $this->website->id,
+                    'pa' => $this->website->publicAdministration->ipa_code,
+                ],
+            ]
+        );
+
+        event(new WebsiteDeleted($this->website));
+    }
+
+    /**
+     * Test primary website inactive event handler.
+     */
+    public function testPrimaryWebsiteInactive(): void
+    {
+        $this->expectLogMessage(
+            'notice',
+            [
+                'Primary website ' . $this->website->info . ' tracking inactive.',
+                [
+                    'event' => EventType::PRIMARY_WEBSITE_NOT_TRACKING,
+                    'website' => $this->website->id,
+                    'pa' => $this->website->publicAdministration->ipa_code,
+                ],
+            ]
+        );
+
+        event(new PrimaryWebsiteNotTracking($this->website));
     }
 }

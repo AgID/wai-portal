@@ -77,6 +77,7 @@ class UserEventsSubscriberTest extends TestCase
             [
                 'user' => $this->user->uuid,
                 'event' => EventType::USER_SUSPENDED,
+                'pa' => $publicAdministration->ipa_code,
             ],
         ]);
 
@@ -415,6 +416,7 @@ class UserEventsSubscriberTest extends TestCase
                 [
                     'event' => EventType::USER_DELETED,
                     'user' => $this->user->uuid,
+                    'pa' => $publicAdministration->ipa_code,
                 ],
             ]
         );
@@ -441,6 +443,7 @@ class UserEventsSubscriberTest extends TestCase
             [
                 'user' => $this->user->uuid,
                 'event' => EventType::USER_REACTIVATED,
+                'pa' => $publicAdministration->ipa_code,
             ],
         ]);
 

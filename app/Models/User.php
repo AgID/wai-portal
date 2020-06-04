@@ -162,7 +162,6 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasOne(PasswordResetToken::class);
     }
 
-
     /**
      * The Public Administration this User belongs to, as Eloquent relation.
      *
@@ -234,7 +233,6 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->publicAdministrations()->wherePivot('user_status', UserStatus::SUSPENDED);
     }
-
 
     /**
      * Return calculated password for this User's Analytics Service account.

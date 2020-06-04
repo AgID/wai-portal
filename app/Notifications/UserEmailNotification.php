@@ -22,13 +22,21 @@ abstract class UserEmailNotification extends EmailNotification
     protected $publicAdministration;
 
     /**
+     * The email used by the user for the public administration.
+     *
+     * @var string the email used by the user for the public administration
+     */
+    protected $recipientEmail;
+
+    /**
      * Default constructor.
      *
      * @param PublicAdministration $publicAdministration the public administration
      */
-    public function __construct(?PublicAdministration $publicAdministration = null)
+    public function __construct(PublicAdministration $publicAdministration = null, string $userEmailForPublicAdministration = null)
     {
         $this->publicAdministration = $publicAdministration;
+        $this->recipientEmail = $userEmailForPublicAdministration;
     }
 
     /**
@@ -40,8 +48,10 @@ abstract class UserEmailNotification extends EmailNotification
      */
     public function toMail($notifiable): Mailable
     {
-        $recipientEmail = $this->getUserEmailForPublicAdministration($notifiable, $this->publicAdministration);
+        if (!$this->recipientEmail) {
+            $this->recipientEmail = $this->getUserEmailForPublicAdministration($notifiable, $this->publicAdministration);
+        }
 
-        return $this->buildEmail($notifiable)->to($recipientEmail, ($notifiable->full_name !== $notifiable->email ? $notifiable->full_name : null));
+        return $this->buildEmail($notifiable)->to($this->recipientEmail, ($notifiable->full_name !== $notifiable->email ? $notifiable->full_name : null));
     }
 }

@@ -31,7 +31,6 @@ class UserTransformer extends TransformerAbstract
         $emailPublicAdministrationUser = $publicAdministrationUser->pivot->user_email;
 
         return Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user, $publicAdministration, $authUser, $authUserCanAccessAdminArea, $statusPublicAdministrationUser, $emailPublicAdministrationUser) {
-
             $data = [
                 'name' => [
                     'display' => implode('', [
