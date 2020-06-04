@@ -60,11 +60,12 @@ trait ActivatesWebsite
             $publicAdministration->status = PublicAdministrationStatus::ACTIVE;
             $publicAdministration->save();
 
-            $pendingUser = $publicAdministration->users()->where('status', UserStatus::PENDING)->first();
+            $pendingUser = $publicAdministration->users()->where('user_status', UserStatus::PENDING)->first();
             if ($pendingUser) {
-                $pendingUser->status = UserStatus::ACTIVE;
+                if ($pendingUser->publicAdministrations->isEmpty()) {
+                    $pendingUser->roles()->detach();
+                }
 
-                $pendingUser->roles()->detach();
                 Bouncer::scope()->to($publicAdministration->id);
                 $pendingUser->assign(UserRole::ADMIN);
 
@@ -79,6 +80,7 @@ trait ActivatesWebsite
                 event(new UserWebsiteAccessChanged($pendingUser, $website, WebsiteAccessType::WRITE()));
 
                 $pendingUser->save();
+                $publicAdministration->users()->updateExistingPivot($pendingUser->id, ['user_status' => UserStatus::ACTIVE]);
 
                 event(new UserActivated($pendingUser, $publicAdministration));
             }

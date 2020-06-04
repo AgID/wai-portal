@@ -1,0 +1,42 @@
+.pa-selector {
+  @include media-breakpoint-up(md) {
+    z-index: 2;
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    height: 2.5rem;
+    width: 100%;
+    border-radius: 4px;
+    box-shadow: 0 10px 25px 0 rgba(0, 0, 0, 0.25);
+
+    @include media-breakpoint-down(sm) {
+      box-shadow: none;
+    }
+  }
+
+  .bootstrap-select-wrapper {
+    button {
+      .filter-option {
+        &::after {
+          background: none;
+        }
+      }
+    }
+  }
+}
+
+.pa-select-full {
+  .pa-selector {
+    &::after {
+      content: none;
+    }
+
+    .input-group {
+      border-bottom: 1px solid;
+    }
+  }
+}

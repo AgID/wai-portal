@@ -12,13 +12,6 @@ use Illuminate\Support\Facades\Lang;
 class SuperAdminPublicAdministrationNotFoundInIpa extends UserMailable
 {
     /**
-     * The public administration missing in iPA.
-     *
-     * @var PublicAdministration the public administration
-     */
-    protected $publicAdministration;
-
-    /**
      * Default constructor.
      *
      * @param User $recipient the recipient
@@ -26,8 +19,7 @@ class SuperAdminPublicAdministrationNotFoundInIpa extends UserMailable
      */
     public function __construct(User $recipient, PublicAdministration $publicAdministration)
     {
-        parent::__construct($recipient);
-        $this->publicAdministration = $publicAdministration;
+        parent::__construct($recipient, $publicAdministration);
     }
 
     /**

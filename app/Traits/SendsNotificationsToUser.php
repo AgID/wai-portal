@@ -12,6 +12,7 @@ use App\Notifications\PublicAdministrationPurgedEmail;
 use App\Notifications\PublicAdministrationRegisteredEmail;
 use App\Notifications\ReactivatedEmail;
 use App\Notifications\SuspendedEmail;
+use App\Notifications\UserPublicAdministrationInvitedEmail;
 use App\Notifications\VerifyEmail;
 use App\Notifications\WebsiteAddedEmail;
 
@@ -50,10 +51,12 @@ trait SendsNotificationsToUser
 
     /**
      * Send user activated notification.
+     *
+     * @param PublicAdministration|null $publicAdministration the public administration the user belongs to or null if user is registering a new Public Administration
      */
-    public function sendActivatedNotification(): void
+    public function sendActivatedNotification(?PublicAdministration $publicAdministration = null): void
     {
-        $this->notify(new ActivatedEmail());
+        $this->notify(new ActivatedEmail($publicAdministration));
     }
 
     /**
@@ -97,9 +100,9 @@ trait SendsNotificationsToUser
      *
      * @param mixed $publicAdministration the purged public administration
      */
-    public function sendPublicAdministrationPurgedNotification($publicAdministration): void
+    public function sendPublicAdministrationPurgedNotification($publicAdministration, $email): void
     {
-        $this->notify(new PublicAdministrationPurgedEmail($publicAdministration));
+        $this->notify(new PublicAdministrationPurgedEmail($publicAdministration, $email));
     }
 
     /**
@@ -110,5 +113,15 @@ trait SendsNotificationsToUser
     public function sendPublicAdministrationActivatedNotification(PublicAdministration $publicAdministration): void
     {
         $this->notify(new PublicAdministrationActivatedEmail($publicAdministration));
+    }
+
+    /**
+     * Send accept public administration invited notification.
+     *
+     * @param PublicAdministration $publicAdministration the activated public administration
+     */
+    public function sendPublicAdministrationInvitedNotification(PublicAdministration $publicAdministration): void
+    {
+        $this->notify(new UserPublicAdministrationInvitedEmail($publicAdministration));
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Models\PublicAdministration;
 use App\Models\User;
 use Illuminate\Support\Facades\Lang;
 
@@ -10,6 +11,13 @@ use Illuminate\Support\Facades\Lang;
  */
 class PublicAdministrationPurged extends UserMailable
 {
+    /**
+     * The mail recipient.
+     *
+     * @var User the user
+     */
+    protected $recipient;
+
     /**
      * The purged public administration.
      *
@@ -23,9 +31,10 @@ class PublicAdministrationPurged extends UserMailable
      * @param User $recipient the mail recipient
      * @param mixed $publicAdministration the purged public administration
      */
-    public function __construct(User $recipient, $publicAdministration)
+    public function __construct(User $recipient, $publicAdministration, $userEmailForPublicAdministration)
     {
-        parent::__construct($recipient);
+        $recipient->email = !is_null($userEmailForPublicAdministration) ? $userEmailForPublicAdministration : $recipient->email;
+        $this->recipient = $recipient;
         $this->publicAdministration = $publicAdministration;
     }
 

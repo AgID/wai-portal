@@ -32,7 +32,6 @@ class AnalyticsController extends Controller
         if ($user->cannot(UserPermission::ACCESS_ADMIN_AREA)) {
             $publicAdministration = current_public_administration();
         }
-
         $locale = app()->getLocale();
 
         if ($publicAdministration->hasRollUp()) {

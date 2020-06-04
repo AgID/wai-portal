@@ -117,34 +117,58 @@ class UserController extends Controller
     {
         $authUser = auth()->user();
         $validatedData = $request->validated();
+
         $currentPublicAdministration = $authUser->can(UserPermission::ACCESS_ADMIN_AREA)
             ? $publicAdministration
             : current_public_administration();
 
-        $user = User::create([
-            'uuid' => Uuid::uuid4()->toString(),
-            'fiscal_number' => $validatedData['fiscal_number'],
-            'email' => $validatedData['email'],
-            'status' => UserStatus::INVITED,
-        ]);
+        $redirectUrl = $this->getRoleAwareUrl('users.index', [], $publicAdministration);
 
-        $user->publicAdministrations()->attach($currentPublicAdministration->id);
-        $user->registerAnalyticsServiceAccount();
+        // If existingUser is filled the user is already in the database
+        if (isset($validatedData['existingUser']) && isset($validatedData['existingUser']->email)) {
+            $user = $validatedData['existingUser'];
+            $userInCurrentPublicAdministration = $user->publicAdministrations->where('id', $currentPublicAdministration->id)->isNotEmpty();
 
+            if ($userInCurrentPublicAdministration) {
+                return redirect()->to($redirectUrl)->withModal([
+                    'title' => __("Non è possibile inoltrare l'invito"),
+                    'icon' => 'it-clock',
+                    'message' => __("L'utente fa già parte di questa pubblica amministrazione"),
+                    'image' => asset('images/closed.svg'),
+                ]);
+            }
+
+            $user_message = implode("\n", [
+                __("Abbiamo inviato un invito all'indirizzo email :email.", ['email' => '<strong>' . e($validatedData['email']) . '</strong>']),
+                "\n" . __("L'invito potrà essere confermato dall'utente al prossimo accesso."),
+            ]);
+        } else {
+            $user = User::create([
+                'uuid' => Uuid::uuid4()->toString(),
+                'fiscal_number' => $validatedData['fiscal_number'],
+                'email' => $validatedData['email'],
+                'status' => UserStatus::INVITED,
+            ]);
+
+            $user_message = implode("\n", [
+                __("Abbiamo inviato un invito all'indirizzo email :email.", ['email' => '<strong>' . e($validatedData['email']) . '</strong>']),
+                "\n" . __("L'invito scade dopo :expire giorni e può essere rinnovato.", ['expire' => config('auth.verification.expire')]),
+                "\n<strong>" . __("Attenzione! Se dopo :purge giorni l'utente non avrà ancora accettato l'invito, sarà rimosso.", ['purge' => config('auth.verification.purge')]) . '</strong>',
+            ]);
+        }
+
+        if (!$user->hasAnalyticsServiceAccount()) {
+            $user->registerAnalyticsServiceAccount();
+        }
+        $user->publicAdministrations()->attach($currentPublicAdministration->id, ['user_email' => $validatedData['email'], 'user_status' => UserStatus::INVITED]);
         $this->manageUserPermissions($validatedData, $currentPublicAdministration, $user);
 
         event(new UserInvited($user, $authUser, $currentPublicAdministration));
 
-        $redirectUrl = $this->getRoleAwareUrl('users.index', [], $publicAdministration);
-
         return redirect()->to($redirectUrl)->withModal([
             'title' => __('Invito inoltrato'),
             'icon' => 'it-clock',
-            'message' => implode("\n", [
-                __("Abbiamo inviato un invito all'indirizzo email :email.", ['email' => '<strong>' . e($user->email) . '</strong>']),
-                "\n" . __("L'invito scade dopo :expire giorni e può essere rinnovato.", ['expire' => config('auth.verification.expire')]),
-                "\n<strong>" . __("Attenzione! Se dopo :purge giorni l'utente non avrà ancora accettato l'invito, sarà rimosso.", ['purge' => config('auth.verification.purge')]) . '</strong>',
-            ]),
+            'message' => $user_message,
             'image' => asset('images/invitation-email-sent.svg'),
         ]);
     }
@@ -425,7 +449,7 @@ class UserController extends Controller
      *
      * @throws \Exception if unable to initialize the datatable
      *
-     * @return mixed the response the JSON format
+     * @return mixed the response in JSON format
      */
     public function dataJson(Request $request, PublicAdministration $publicAdministration)
     {
@@ -444,7 +468,7 @@ class UserController extends Controller
      *
      * @throws \Exception if unable to initialize the datatable
      *
-     * @return mixed the response the JSON format
+     * @return mixed the response in JSON format
      */
     public function dataWebsitesPermissionsJson(PublicAdministration $publicAdministration, User $user)
     {

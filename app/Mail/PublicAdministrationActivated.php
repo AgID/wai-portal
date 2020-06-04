@@ -12,13 +12,6 @@ use Illuminate\Support\Facades\Lang;
 class PublicAdministrationActivated extends UserMailable
 {
     /**
-     * The activated public administration.
-     *
-     * @var PublicAdministration the public administration
-     */
-    protected $publicAdministration;
-
-    /**
      * Default constructor.
      *
      * @param User $recipient the mail recipient
@@ -26,8 +19,7 @@ class PublicAdministrationActivated extends UserMailable
      */
     public function __construct(User $recipient, PublicAdministration $publicAdministration)
     {
-        parent::__construct($recipient);
-        $this->publicAdministration = $publicAdministration;
+        parent::__construct($recipient, $publicAdministration);
     }
 
     /**

@@ -156,10 +156,38 @@ Route::middleware('spid.auth', 'auth', 'enforce.rules:forbid-invited')->group(fu
  * This is the default for registered users.
  */
 Route::middleware('spid.auth', 'auth', 'verified:verification.notice')->group(function () {
-    // Route::get('/select-public-administration', [
-    //     'as' => 'publicAdministration.tenant.select',
-    //     'uses' => 'PublicAdministrationController@selectTenant',
-    // ]);
+    Route::prefix('/public-administrations')->group(function () {
+        Route::get('/', [
+            'as' => 'publicAdministrations.show',
+            'uses' => 'PublicAdministrationController@show',
+         ]);
+
+        Route::get('/select', [
+            'as' => 'publicAdministrations.select',
+            'uses' => 'PublicAdministrationController@selectTenant',
+        ]);
+
+        Route::post('/change', [
+           'as' => 'publicAdministrations.change',
+           'uses' => 'PublicAdministrationController@changeTenant',
+        ]);
+
+        Route::post('/change-and-redirect', [
+            'as' => 'publicAdministrations.change.and.redirect',
+            'uses' => 'PublicAdministrationController@changeTenantAndRedirect',
+         ]);
+
+        Route::post('/activation/{uuid}/{publicAdministration}', [
+            'as' => 'publicAdministration.activate',
+            'uses' => 'PublicAdministrationController@activate',
+        ]);
+
+        Route::get('/add', 'PublicAdministrationController@add')
+            ->name('publicAdministrations.add');
+
+        Route::get('/data', 'PublicAdministrationController@dataJson')
+            ->name('publicAdministrations.data.json');
+    });
 
     Route::get('/analytics', 'AnalyticsController@index')
         ->name('analytics');
@@ -283,6 +311,16 @@ Route::middleware('auth.admin', 'verified:admin.verification.notice')->group(fun
         Route::middleware('password.not.expired')->group(function () {
             Route::get('/', function () {
                 return redirect()->route('admin.dashboard');
+            });
+
+            Route::prefix('/public-administrations')->group(function () {
+                Route::get('/select', [
+                    'as' => 'admin.publicAdministrations.select',
+                    'uses' => 'PublicAdministrationController@selectTenant',
+                ]);
+
+                Route::get('/add', 'PublicAdministrationController@add')
+                ->name('admin.publicAdministrations.add');
             });
 
             Route::get('/dashboard', 'SuperAdminDashboardController@dashboard')

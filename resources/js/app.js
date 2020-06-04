@@ -7,6 +7,8 @@ import Forms from './forms';
 import Datatables from './datatables';
 import LogsDatatables from './logsDatatables'
 import WebsiteCheckTracking from './buttons/websiteCheckTracking';
+import UserPaActivation from './buttons/userPaActivation';
+import UserPaSelectTenant from './buttons/userPaSelectTenant';
 import PermissionsToggles from './permissionsToggles';
 import WebsiteArchiveUnarchive from './buttons/websiteArchiveUnarchive';
 import UserSuspendReactivate from './buttons/userSuspendReactivate';
@@ -22,6 +24,7 @@ import WidgetResizer from './widgets';
 import HighlightBar from './highlightBar';
 import Trackers from './trackers';
 
+
 $(document).ready(() => {
     Forms.init();
     SearchIpa.init();
@@ -30,6 +33,8 @@ $(document).ready(() => {
     WebsiteCheckTracking.init();
     WebsiteArchiveUnarchive.init();
     UserVerificationResend.init();
+    UserPaActivation.init();
+    UserPaSelectTenant.init();
     PublicAdministrationSelector.init();
     FaqSelector.init();
     WidgetResizer.init();
@@ -39,6 +44,8 @@ $(document).ready(() => {
         datatableApi => LogsDatatables.preDatatableInit(datatableApi),
     ], [
         () => WebsiteCheckTracking.init(),
+        () => UserPaActivation.init(),
+        () => UserPaSelectTenant.init(),
         () => PermissionsToggles.init(),
         () => WebsiteArchiveUnarchive.init(),
         () => WebsiteDeleteRestore.init(),

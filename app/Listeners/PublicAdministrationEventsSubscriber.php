@@ -173,8 +173,9 @@ class PublicAdministrationEventsSubscriber implements ShouldQueue
         $user = $event->getUser();
         $publicAdministration = json_decode($event->getPublicAdministrationJson());
         $publicAdministrationInfo = '"' . $publicAdministration->name . '" [' . $publicAdministration->ipa_code . ']';
+        $userEmailForPublicAdministration = $event->getUserEmailForPublicAdministration();
 
-        $user->sendPublicAdministrationPurgedNotification($publicAdministration);
+        $user->sendPublicAdministrationPurgedNotification($publicAdministration, $userEmailForPublicAdministration);
 
         logger()->notice(
             'Public Administration ' . $publicAdministrationInfo . ' purged',

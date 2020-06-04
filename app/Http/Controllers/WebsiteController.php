@@ -126,14 +126,20 @@ class WebsiteController extends Controller
             'status' => WebsiteStatus::PENDING,
         ]);
 
-        $publicAdministration->users()->save($authUser);
+        $publicAdministration->users()->save($authUser, ['user_email' => $authUser->email, 'user_status' => UserStatus::PENDING]);
         // This is the first time we know which public administration the
         // current user belongs, so we need to set the tenant id just now.
         session()->put('tenant_id', $publicAdministration->id);
-        $authUser->roles()->detach();
+
+        if ($authUser->publicAdministrations->isEmpty()) {
+            $authUser->roles()->detach();
+        }
+
         Bouncer::scope()->to($publicAdministration->id);
         $authUser->assign(UserRole::REGISTERED);
-        $authUser->registerAnalyticsServiceAccount();
+        if (!$authUser->hasAnalyticsServiceAccount()) {
+            $authUser->registerAnalyticsServiceAccount();
+        }
         $authUser->setViewAccessForWebsite($website);
         $authUser->syncWebsitesPermissionsToAnalyticsService();
 
@@ -589,7 +595,7 @@ class WebsiteController extends Controller
      *
      * @throws \Exception if unable to initialize the datatable
      *
-     * @return mixed the response the JSON format
+     * @return mixed the response in JSON format
      */
     public function dataJson(PublicAdministration $publicAdministration)
     {
@@ -608,7 +614,7 @@ class WebsiteController extends Controller
      *
      * @throws \Exception if unable to initialize the datatable
      *
-     * @return mixed the response the JSON format
+     * @return mixed the response in JSON format
      */
     public function dataUsersPermissionsJson(PublicAdministration $publicAdministration, Website $website)
     {

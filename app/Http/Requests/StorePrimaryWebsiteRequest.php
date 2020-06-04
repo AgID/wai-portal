@@ -31,9 +31,7 @@ class StorePrimaryWebsiteRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        // TODO: this check should be managed otherwise when the support for tenant
-        // switch will be enabled
-        return $this->user()->publicAdministrations->isEmpty();
+        return true;
     }
 
     /**

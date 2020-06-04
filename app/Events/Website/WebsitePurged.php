@@ -27,10 +27,11 @@ class WebsitePurged
      * @param string $websiteJson the JSON string of the website
      * @param string $publicAdministrationJson the JSON string of the public administration
      */
-    public function __construct(string $websiteJson, string $publicAdministrationJson)
+    public function __construct(string $websiteJson, string $publicAdministrationJson, ?string $userEmailForPublicAdministration = null)
     {
         $this->websiteJson = $websiteJson;
         $this->publicAdministrationJson = $publicAdministrationJson;
+        $this->userEmailForPublicAdministration = $userEmailForPublicAdministration;
     }
 
     /**

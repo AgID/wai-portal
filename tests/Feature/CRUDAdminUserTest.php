@@ -300,7 +300,7 @@ class CRUDAdminUserTest extends TestCase
         $publicAdministration = factory(PublicAdministration::class)
             ->state('active')
             ->create();
-        $publicAdministration->users()->sync([$user->id]);
+        $publicAdministration->users()->sync([$user->id => ['user_email' => $user->email, 'user_status' => UserStatus::ACTIVE]]);
 
         $this->actingAs($this->user)
             ->json('GET', route('admin.publicAdministration.users.data.json', ['publicAdministration' => $publicAdministration]))
@@ -417,17 +417,18 @@ class CRUDAdminUserTest extends TestCase
             ->create();
         $publicAdministration->users()->sync([$user->id]);
 
+        $fiscalNumber = 'XNTMDF63C44D878E';
+
         $this->actingAs($this->user)
             ->from(route('admin.publicAdministration.users.create', ['publicAdministration' => $publicAdministration]))
             ->post(route('admin.publicAdministration.users.store', ['publicAdministration' => $publicAdministration]), [
                 '_token' => 'test',
                 'email' => $user->email,
-                'fiscal_number' => $user->fiscal_number,
+                'fiscal_number' => $fiscalNumber,
             ])
             ->assertRedirect(route('admin.publicAdministration.users.create', ['publicAdministration' => $publicAdministration]))
             ->assertSessionHasErrors([
                 'email',
-                'fiscal_number',
                 'permissions',
             ]);
 

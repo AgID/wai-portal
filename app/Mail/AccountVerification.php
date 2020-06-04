@@ -14,13 +14,6 @@ use Illuminate\Support\Facades\Lang;
 class AccountVerification extends UserMailable
 {
     /**
-     * The public administration selected for the invitation.
-     *
-     * @var \App\Models\PublicAdministration
-     */
-    public $publicAdministration;
-
-    /**
      * The signed url user for account verification.
      *
      * @var string
@@ -36,8 +29,7 @@ class AccountVerification extends UserMailable
      */
     public function __construct(User $recipient, string $signedUrl, ?PublicAdministration $publicAdministration = null)
     {
-        parent::__construct($recipient);
-        $this->publicAdministration = $publicAdministration;
+        parent::__construct($recipient, $publicAdministration);
         $this->signedUrl = $signedUrl;
     }
 

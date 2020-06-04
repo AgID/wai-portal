@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Enums\UserRole;
 use Closure;
+use Silber\Bouncer\BouncerFacade as Bouncer;
 
 class SelectTenant
 {
@@ -19,20 +20,24 @@ class SelectTenant
     {
         $authUser = $request->user();
 
-        if ($authUser) {
+        if ($authUser && !$authUser->isA(UserRole::SUPER_ADMIN)) {
             if (empty(session('tenant_id')) && $authUser->publicAdministrations->isNotEmpty()) {
-                session()->put('tenant_id', $authUser->publicAdministrations()->first()->id);
-                // return redirect()->route('publicAdministration.tenant.select');
-            }
+                $selectNoRedirectRoutes = ['public-administrations', 'public-administrations/*', 'spid/logout',
+                    'user/verify', 'user/verify/*', 'search-ipa-index', 'websites/store-primary', ];
 
-            if ($authUser->isA(UserRole::SUPER_ADMIN)) {
-                $selectedPublicAdministrationIpaCode = $request->route('publicAdministration');
-                if (is_object($selectedPublicAdministrationIpaCode)) {
-                    $selectedPublicAdministrationIpaCode = $selectedPublicAdministrationIpaCode->ipa_code;
-                }
+                switch ($authUser->activePublicAdministrations->count()) {
+                    case 1:
+                        $publicAdministrationId = $authUser->activePublicAdministrations()->first()->id;
+                        session()->put('tenant_id', $publicAdministrationId);
+                        Bouncer::scope()->to($publicAdministrationId);
 
-                if (empty(session('super_admin_tenant_ipa_code')) && $selectedPublicAdministrationIpaCode) {
-                    session()->put('super_admin_tenant_ipa_code', $selectedPublicAdministrationIpaCode);
+                        break;
+                    default:
+                        if (!$request->is($selectNoRedirectRoutes)) {
+                            return redirect()->route('publicAdministrations.show');
+                        }
+
+                        break;
                 }
             }
         }

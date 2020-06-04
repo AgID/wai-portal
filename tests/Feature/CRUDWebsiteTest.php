@@ -232,7 +232,7 @@ class CRUDWebsiteTest extends TestCase
         $thirdUser = factory(User::class)->create([
             'status' => UserStatus::INVITED,
         ]);
-        $this->publicAdministration->users()->sync([$secondUser->id, $thirdUser->id], false);
+        $this->publicAdministration->users()->sync([$secondUser->id => ['user_email' => $secondUser->email, 'user_status' => UserStatus::INVITED], $thirdUser->id => ['user_email' => $thirdUser->email, 'user_status' => UserStatus::INVITED]], false);
 
         $secondUser->registerAnalyticsServiceAccount();
         $thirdUser->registerAnalyticsServiceAccount();

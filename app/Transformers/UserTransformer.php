@@ -26,14 +26,18 @@ class UserTransformer extends TransformerAbstract
         $authUser = auth()->user();
         $authUserCanAccessAdminArea = $authUser->can(UserPermission::ACCESS_ADMIN_AREA);
 
-        return Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user, $publicAdministration, $authUser, $authUserCanAccessAdminArea) {
+        $publicAdministrationUser = $user->publicAdministrations()->where('public_administration_id', $publicAdministration->id)->first();
+        $statusPublicAdministrationUser = UserStatus::coerce(intval($publicAdministrationUser->pivot->user_status));
+        $emailPublicAdministrationUser = $publicAdministrationUser->pivot->user_email;
+
+        return Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user, $publicAdministration, $authUser, $authUserCanAccessAdminArea, $statusPublicAdministrationUser, $emailPublicAdministrationUser) {
             $data = [
                 'name' => [
                     'display' => implode('', [
                         '<div class="d-flex align-items-center">',
                         '<div class="avatar size-lg mr-2">',
                         implode('', [
-                            '<img src="https://www.gravatar.com/avatar/' . md5(strtolower(trim(e($user->email)))) . '?d=' . (e($user->email) ? 'identicon' : 'mp') . '"',
+                            '<img src="https://www.gravatar.com/avatar/' . md5(strtolower(trim(e($emailPublicAdministrationUser)))) . '?d=' . (e($emailPublicAdministrationUser) ? 'identicon' : 'mp') . '"',
                             'alt="' . e($user->full_name) . '">',
                         ]),
                         '</div>',
@@ -46,11 +50,11 @@ class UserTransformer extends TransformerAbstract
                     ]),
                     'raw' => e($user->full_name),
                 ],
-                'email' => e($user->email),
+                'email' => e($emailPublicAdministrationUser),
                 'added_at' => $user->created_at->format('d/m/Y'),
                 'status' => [
-                    'display' => '<span class="badge user-status ' . strtolower($user->status->key) . '">' . strtoupper($user->status->description) . '</span>',
-                    'raw' => $user->status->description,
+                    'display' => '<span class="badge user-status ' . strtolower($statusPublicAdministrationUser->key) . '">' . strtoupper($statusPublicAdministrationUser->description) . '</span>',
+                    'raw' => $statusPublicAdministrationUser->description,
                 ],
                 'buttons' => [],
                 'icons' => [],
