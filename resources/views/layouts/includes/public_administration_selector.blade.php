@@ -1,5 +1,5 @@
 <div class="form-group m-0">
-    <form method="post" action="{{ $selectTenantRoute }}" novalidate class="pa-selector" >
+    <form method="post" action="{{ $selectTenantUrl }}" novalidate class="pa-selector" >
         @csrf
         <div class="input-group flex-nowrap">
             <div class="input-group-prepend">
