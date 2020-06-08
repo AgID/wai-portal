@@ -47,43 +47,54 @@ class PublicAdministrationSelectorComposer
     {
         $lastRoute = $this->request->route();
         $lastRouteName = $lastRoute->getName();
+        $lastRouteParameters = $lastRoute->parameters();
         $authUser = $this->request->user();
+        $targetRouteHasPublicAdministrationParam = array_key_exists('publicAdministration', $lastRouteParameters);
+        $selectTenantUrl = route('publicAdministrations.select');
 
         if ($lastRoute->isFallback) {
             return;
         }
 
-        $selectTenantRoute = route('publicAdministrations.select');
-        switch ($lastRouteName) {
-            case 'admin.dashboard':
-            case 'home':
-                if ($authUser && $authUser->isA(UserRole::SUPER_ADMIN)) {
-                    $targetRoute = 'admin.publicAdministration.analytics';
-                } else {
-                    $targetRoute = 'analytics';
-                }
+        switch (true) {
+            case 'admin.dashboard' === $lastRouteName:
+            case 'home' === $lastRouteName:
+                $targetRoute = 'analytics';
                 $targetRouteHasPublicAdministrationParam = true;
+
+                break;
+            case array_key_exists('website', $lastRouteParameters):
+                $targetRoute = 'websites.index';
+
+                break;
+            case array_key_exists('user', $lastRouteParameters):
+                $targetRoute = 'users.index';
 
                 break;
             default:
                 $targetRoute = $lastRouteName;
-                $targetRouteHasPublicAdministrationParam = true;
         }
 
         if ($authUser && $authUser->isA(UserRole::SUPER_ADMIN)) {
+            if ($targetRouteHasPublicAdministrationParam && 'admin.' !== substr($targetRoute, 0, 6)) {
+                $targetRoute = 'admin.publicAdministration.' . $targetRoute;
+            }
+
             $publicAdministrationSelectorArray = PublicAdministration::all([
                 'ipa_code',
                 'name',
             ])->sortBy('name')->toArray();
+
             $publicAdministrationShowSelector = true;
-            $selectTenantRoute = route('admin.publicAdministrations.select');
+            $selectTenantUrl = route('admin.publicAdministrations.select');
         } elseif ($authUser) {
             $publicAdministrationSelectorArray = $authUser->publicAdministrations()->get()
-            ->map(function ($publicAdministration) {
-                return collect($publicAdministration->toArray())
-                    ->only(['id', 'ipa_code', 'name', 'url'])
-                    ->all();
-            })->sortBy('name')->values()->toArray();
+                ->map(function ($publicAdministration) {
+                    return collect($publicAdministration->toArray())
+                        ->only(['id', 'ipa_code', 'name', 'url'])
+                        ->all();
+                })->sortBy('name')->values()->toArray();
+
             $publicAdministrationShowSelector = count($publicAdministrationSelectorArray) > 1;
         } else {
             $publicAdministrationSelectorArray = [];
@@ -92,7 +103,7 @@ class PublicAdministrationSelectorComposer
 
         $view->with('publicAdministrationSelectorArray', $publicAdministrationSelectorArray);
         $view->with('publicAdministrationShowSelector', $publicAdministrationShowSelector);
-        $view->with('selectTenantRoute', $selectTenantRoute);
+        $view->with('selectTenantUrl', $selectTenantUrl);
         $view->with('targetRoute', $targetRoute);
         $view->with('targetRouteHasPublicAdministrationParam', $targetRouteHasPublicAdministrationParam);
     }
