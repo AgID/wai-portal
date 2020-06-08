@@ -4,7 +4,7 @@ namespace App\Support;
 
 use League\CommonMark\CommonMarkConverter;
 use League\CommonMark\Environment;
-use League\CommonMark\Ext\ExternalLink\ExternalLinkExtension;
+use League\CommonMark\Extension\ExternalLink\ExternalLinkExtension;
 
 /**
  * Markdown support class.
