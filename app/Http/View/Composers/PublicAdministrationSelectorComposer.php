@@ -49,7 +49,7 @@ class PublicAdministrationSelectorComposer
         $lastRouteName = $lastRoute->getName();
         $lastRouteParameters = $lastRoute->parameters();
         $authUser = $this->request->user();
-        $targetRouteHasPublicAdministrationParam = $this->request->has('publicAdministration');
+        $targetRouteHasPublicAdministrationParam = array_key_exists('publicAdministration', $lastRouteParameters);
         $selectTenantUrl = route('publicAdministrations.select');
 
         if ($lastRoute->isFallback) {
@@ -76,7 +76,7 @@ class PublicAdministrationSelectorComposer
         }
 
         if ($authUser && $authUser->isA(UserRole::SUPER_ADMIN)) {
-            if ($targetRouteHasPublicAdministrationParam) {
+            if ($targetRouteHasPublicAdministrationParam && 'admin.' !== substr($targetRoute, 0, 6)) {
                 $targetRoute = 'admin.publicAdministration.' . $targetRoute;
             }
 
