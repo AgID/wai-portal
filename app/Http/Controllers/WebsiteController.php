@@ -385,18 +385,58 @@ class WebsiteController extends Controller
      *
      * @return JsonResponse|RedirectResponse the response
      */
-    public function checkTracking(PublicAdministration $publicAdministration, Website $website, bool $force = false)
+    public function checkTracking(PublicAdministration $publicAdministration, Website $website)
     {
         try {
             if ($website->status->is(WebsiteStatus::PENDING)) {
-                if (($website->type->is(WebsiteType::CUSTOM) && true === $force) || $this->hasActivated($website)) {
+                if ($this->hasActivated($website)) {
                     $this->activate($website);
+
                     event(new WebsiteActivated($website));
 
                     return $this->websiteResponse($website);
                 }
 
                 return $this->notModifiedResponse();
+            }
+
+            throw new InvalidWebsiteStatusException('Unable to check activation for website ' . $website->info . ' in status ' . $website->status->key . '.');
+        } catch (AnalyticsServiceException | BindingResolutionException $exception) {
+            report($exception);
+            $code = $exception->getCode();
+            $message = 'Internal Server Error';
+            $httpStatusCode = 500;
+        } catch (InvalidWebsiteStatusException $exception) {
+            report($exception);
+            $code = $exception->getCode();
+            $message = 'Invalid operation for current website status';
+            $httpStatusCode = 400;
+        } catch (CommandErrorException $exception) {
+            report($exception);
+            $code = $exception->getCode();
+            $message = 'Bad Request';
+            $httpStatusCode = 400;
+        }
+
+        return $this->errorResponse($message, $code, $httpStatusCode);
+    }
+
+    /**
+     * Force website tracking status to active.
+     *
+     * @param PublicAdministration $publicAdministration the public administration the website belongs to
+     * @param Website $website the website to check
+     *
+     * @return JsonResponse|RedirectResponse the response
+     */
+    public function forceTracking(PublicAdministration $publicAdministration, Website $website)
+    {
+        try {
+            if ($website->status->is(WebsiteStatus::PENDING) && $website->type->is(WebsiteType::CUSTOM)) {
+                $this->activate($website);
+                event(new WebsiteActivated($website));
+
+                return $this->websiteResponse($website);
             }
 
             throw new InvalidWebsiteStatusException('Unable to check activation for website ' . $website->info . ' in status ' . $website->status->key . '.');

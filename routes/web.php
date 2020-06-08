@@ -222,8 +222,11 @@ Route::middleware('spid.auth', 'auth', 'verified:verification.notice')->group(fu
             Route::patch('/{website}/unarchive', 'WebsiteController@unarchive')
                 ->name('websites.unarchive');
 
-            Route::get('/{website}/check/{force?}', 'WebsiteController@checkTracking')
+            Route::get('/{website}/check', 'WebsiteController@checkTracking')
                 ->name('websites.tracking.check');
+
+            Route::get('/{website}/force', 'WebsiteController@forceTracking')
+                ->name('websites.tracking.force');
 
             Route::get('/{website}/javascript-snippet', 'WebsiteController@showJavascriptSnippet')
                 ->name('websites.snippet.javascript');
@@ -418,8 +421,11 @@ Route::middleware('auth.admin', 'verified:admin.verification.notice')->group(fun
                     Route::patch('/{website}/unarchive', 'WebsiteController@unarchive')
                         ->name('admin.publicAdministration.websites.unarchive');
 
-                    Route::get('/{website}/check/{force?}', 'WebsiteController@checkTracking')
+                    Route::get('/{website}/check', 'WebsiteController@checkTracking')
                         ->name('admin.publicAdministration.websites.tracking.check');
+
+                    Route::get('/{website}/force', 'WebsiteController@forceTracking')
+                        ->name('admin.publicAdministration.websites.tracking.force');
 
                     Route::get('/{website}/javascript-snippet', 'WebsiteController@showJavascriptSnippet')
                         ->name('admin.publicAdministration.websites.snippet.javascript');
