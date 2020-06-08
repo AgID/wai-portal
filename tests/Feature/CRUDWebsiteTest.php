@@ -359,7 +359,7 @@ class CRUDWebsiteTest extends TestCase
                 'tenant_id' => $this->customPublicAdministration->id,
             ])
             ->from(route('websites.index'))
-            ->json('GET', route('websites.tracking.check', ['website' => $this->customWebsite->slug, 'force' => true]))
+            ->json('GET', route('websites.tracking.force', ['website' => $this->customWebsite->slug]))
             ->assertOk()
             ->assertJsonFragment([
                 'website_name' => e($this->customWebsite->name),

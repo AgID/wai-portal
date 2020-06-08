@@ -107,7 +107,7 @@ class PublicAdministrationEventsSubscriberTest extends TestCase
         });
 
         $this->expectLogMessage('notice', [
-            'Public Administration ' . $this->publicAdministration->name . ' activated',
+            'Public Administration ' . $this->publicAdministration->info . ' activated',
             [
                 'event' => EventType::PUBLIC_ADMINISTRATION_ACTIVATED,
                 'pa' => $this->publicAdministration->ipa_code,
@@ -147,7 +147,7 @@ class PublicAdministrationEventsSubscriberTest extends TestCase
             ->withSomeOfArgs('Public administration roll-up exception testing');
 
         $this->expectLogMessage('notice', [
-            'Public Administration ' . $this->publicAdministration->name . ' activated',
+            'Public Administration ' . $this->publicAdministration->info . ' activated',
             [
                 'event' => EventType::PUBLIC_ADMINISTRATION_ACTIVATED,
                 'pa' => $this->publicAdministration->ipa_code,

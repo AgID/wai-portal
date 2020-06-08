@@ -76,7 +76,7 @@ class PublicAdministrationEventsSubscriber implements ShouldQueue
         $user->sendPublicAdministrationActivatedNotification($publicAdministration);
 
         logger()->notice(
-            'Public Administration ' . $publicAdministration->name . ' activated',
+            'Public Administration ' . $publicAdministration->info . ' activated',
             [
                 'event' => EventType::PUBLIC_ADMINISTRATION_ACTIVATED,
                 'pa' => $publicAdministration->ipa_code,
