@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\WebsiteType;
 use App\Jobs\UpdateClosedBetaWhitelist;
 use App\Traits\InteractsWithRedisIndex;
 use App\Traits\ManageClosedBetaWhitelist;
@@ -79,6 +80,8 @@ class StorePrimaryWebsiteRequest extends FormRequest
 
                 $publicAdministration = $this->input();
                 $publicAdministration['name'] = $publicAdministration['public_administration_name'];
+                $websiteStatus = WebsiteType::coerce(WebsiteType::INSTITUTIONAL_PLAY);
+                $publicAdministration['type'] = ucfirst($websiteStatus->description);
                 $this->publicAdministration = $publicAdministration;
                 $this->isCustomPublicAdministration = true;
             }

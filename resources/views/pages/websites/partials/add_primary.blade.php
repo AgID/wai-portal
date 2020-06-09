@@ -234,7 +234,7 @@
         </div>
     </div>
     <div class="form-row">
-        <div class="form-group col-md-6 border-bottom border-md-bottom-0 border-md-right pb-5 pb-md-0 pr-md-5 d-flex flex-column justify-content-between">
+        <div class="form-group col-md-6 border-bottom border-md-bottom-0 @unless($customForm) border-md-right @endunless pb-5 pb-md-0 pr-md-5 d-flex flex-column justify-content-between">
             @if($customForm)
             <input type="hidden" id="correct_confirmation" name="correct_confirmation" value="true"/>
             @else
@@ -246,6 +246,7 @@
             @endif
             <div><button type="submit" class="btn btn-primary">{{ __('Aggiungi il sito') }}</button></div>
         </div>
+        @unless($customForm)
         <div class="form-group col-md-6 pl-md-5 d-flex flex-column justify-content-between">
             <p>{{ __('Se riscontri delle inesattezze nei dati visualizzati potresti non riuscire a completare la procedura. Interrompi adesso e riprendi dopo che saranno stati corretti.') }}</p>
             <div>
@@ -257,6 +258,7 @@
                 </a>
             </div>
         </div>
+        @endunless
     </div>
     @unless($customForm)
     <input type="hidden" id="ipa_code" name="ipa_code" value="{{ old('ipa_code') }}"/>

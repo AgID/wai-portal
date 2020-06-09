@@ -117,7 +117,7 @@ class WebsiteController extends Controller
             'city' => $request->publicAdministration['city'],
             'county' => $request->publicAdministration['county'],
             'region' => $request->publicAdministration['region'],
-            'type' => $request->isCustomPublicAdministration ? 'custom' : $request->publicAdministration['type'],
+            'type' => $request->publicAdministration['type'],
             'status' => PublicAdministrationStatus::PENDING,
         ]);
 
