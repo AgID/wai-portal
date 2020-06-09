@@ -118,7 +118,7 @@ class CRUDWebsiteTest extends TestCase
         $this->customWebsite = factory(Website::class)->create([
             'public_administration_id' => $this->customPublicAdministration->id,
             'status' => WebsiteStatus::PENDING,
-            'type' => WebsiteType::CUSTOM,
+            'type' => WebsiteType::INSTITUTIONAL_PLAY,
         ]);
         $this->customPublicAdministration->users()->sync([$this->user->id]);
 

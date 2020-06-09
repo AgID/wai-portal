@@ -43,7 +43,7 @@ trait HasAnalyticsDashboard
         //NOTE: RollUp reporting expects user has at least "view" access on every website included in the report
         $analyticsService->setWebsiteAccess($this->ipa_code, WebsiteAccessType::VIEW, $this->websites()
             ->where('type', WebsiteType::INSTITUTIONAL)
-            ->orWhere('type', WebsiteType::CUSTOM)
+            ->orWhere('type', WebsiteType::INSTITUTIONAL_PLAY)
             ->first()->analytics_id);
         $this->rollup_id = $rollUpId;
         $this->save();

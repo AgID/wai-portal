@@ -33,5 +33,5 @@ final class WebsiteType extends Enum implements LocalizedEnum
     /**
      * Custom Public Administration site.
      */
-    public const CUSTOM = 4;
+    public const INSTITUTIONAL_PLAY = 4;
 }

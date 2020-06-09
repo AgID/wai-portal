@@ -5,6 +5,7 @@ namespace App\Traits;
 use App\Enums\UserRole;
 use App\Enums\WebsiteStatus;
 use App\Enums\WebsiteType;
+use App\Events\PublicAdministration\PublicAdministrationRegistered;
 use App\Models\PublicAdministration;
 use App\Models\User;
 use App\Models\Website;
@@ -23,7 +24,7 @@ trait ManagePublicAdministrationRegistration
         $website = Website::create([
             'name' => $publicAdministration->name,
             'url' => $url,
-            'type' => $custom ? WebsiteType::CUSTOM : WebsiteType::INSTITUTIONAL,
+            'type' => $custom ? WebsiteType::INSTITUTIONAL_PLAY : WebsiteType::INSTITUTIONAL,
             'public_administration_id' => $publicAdministration->id,
             'analytics_id' => $analyticsId,
             'slug' => Str::slug($url),
@@ -42,6 +43,8 @@ trait ManagePublicAdministrationRegistration
         }
         $user->setViewAccessForWebsite($website);
         $user->syncWebsitesPermissionsToAnalyticsService();
+
+        event(new PublicAdministrationRegistered($publicAdministration, $user));
 
         return $website;
     }

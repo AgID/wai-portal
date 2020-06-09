@@ -7,7 +7,6 @@ use App\Enums\UserPermission;
 use App\Enums\UserStatus;
 use App\Enums\WebsiteStatus;
 use App\Enums\WebsiteType;
-use App\Events\PublicAdministration\PublicAdministrationRegistered;
 use App\Events\Website\WebsiteActivated;
 use App\Events\Website\WebsiteAdded;
 use App\Events\Website\WebsiteArchived;
@@ -125,7 +124,6 @@ class WebsiteController extends Controller
         $site = $request->isCustomPublicAdministration ? $request->publicAdministration['url'] : $request->publicAdministration['site'];
         $website = $this->registerPublicAdministration($authUser, $publicAdministration, $site, $request->isCustomPublicAdministration);
 
-        event(new PublicAdministrationRegistered($publicAdministration, $authUser));
         event(new WebsiteAdded($website, $authUser));
 
         return redirect()->route('websites.index')->withModal([
@@ -432,7 +430,7 @@ class WebsiteController extends Controller
     public function forceTracking(PublicAdministration $publicAdministration, Website $website)
     {
         try {
-            if ($website->status->is(WebsiteStatus::PENDING) && $website->type->is(WebsiteType::CUSTOM)) {
+            if ($website->status->is(WebsiteStatus::PENDING) && $website->type->is(WebsiteType::INSTITUTIONAL_PLAY)) {
                 $this->activate($website);
                 event(new WebsiteActivated($website));
 
