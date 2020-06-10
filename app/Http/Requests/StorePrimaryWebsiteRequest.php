@@ -80,8 +80,8 @@ class StorePrimaryWebsiteRequest extends FormRequest
 
                 $publicAdministration = $this->input();
                 $publicAdministration['name'] = $publicAdministration['public_administration_name'];
-                $websiteStatus = WebsiteType::coerce(WebsiteType::INSTITUTIONAL_PLAY);
-                $publicAdministration['type'] = ucfirst($websiteStatus->description);
+                $websiteType = WebsiteType::coerce(WebsiteType::INSTITUTIONAL_PLAY);
+                $publicAdministration['type'] = ucfirst($websiteType->description);
                 $this->publicAdministration = $publicAdministration;
                 $this->isCustomPublicAdministration = true;
             }

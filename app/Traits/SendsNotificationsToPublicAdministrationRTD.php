@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Enums\WebsiteType;
 use App\Models\Website;
 use App\Notifications\RTDEmailAddressChangedEmail;
 use App\Notifications\RTDPublicAdministrationRegisteredEmail;
@@ -21,7 +22,7 @@ trait SendsNotificationsToPublicAdministrationRTD
 
         //NOTE: don't send notification to RTD
         //      if he/she is the PA registering user
-        if ($registeringUser->email !== $this->rtd_mail) {
+        if (($registeringUser->email !== $this->rtd_mail) && $this->sendNotificationOnCurrentEnvironment()) {
             $this->notify(new RTDPublicAdministrationRegisteredEmail($registeringUser));
         }
     }
@@ -33,7 +34,9 @@ trait SendsNotificationsToPublicAdministrationRTD
      */
     public function sendWebsiteActivatedNotificationToRTD(Website $website): void
     {
-        $this->notify(new RTDWebsiteActivatedEmail($website));
+        if ($this->sendNotificationOnCurrentEnvironment()) {
+            $this->notify(new RTDWebsiteActivatedEmail($website));
+        }
     }
 
     /**
@@ -41,6 +44,31 @@ trait SendsNotificationsToPublicAdministrationRTD
      */
     public function sendPublicAdministrationUpdatedRTD(): void
     {
-        $this->notify(new RTDEmailAddressChangedEmail());
+        if ($this->sendNotificationOnCurrentEnvironment()) {
+            $this->notify(new RTDEmailAddressChangedEmail());
+        }
+    }
+
+    /**
+     * Check the current environment.
+     * On public-playground don't send notification in public adminitration is from IPA.
+     */
+    private function sendNotificationOnCurrentEnvironment()
+    {
+        if (!app()->environment('public-playground')) {
+            return true;
+        }
+
+        if (!config('wai.custom_public_administrations', false)) {
+            return true;
+        }
+
+        $websiteType = WebsiteType::coerce(WebsiteType::INSTITUTIONAL_PLAY);
+        $websiteTypeDescription = ucfirst($websiteType->description);
+        if ($this->type === $websiteTypeDescription) {
+            return true;
+        }
+
+        return false;
     }
 }
