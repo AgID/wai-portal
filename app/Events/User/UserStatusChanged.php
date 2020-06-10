@@ -36,6 +36,6 @@ class UserStatusChanged extends AbstractUserEvent
      */
     public function getOldStatus(): UserStatus
     {
-        return UserStatus::getInstance($this->oldStatus);
+        return UserStatus::fromValue($this->oldStatus);
     }
 }

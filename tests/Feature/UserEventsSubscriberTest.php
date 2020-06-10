@@ -659,7 +659,7 @@ class UserEventsSubscriberTest extends TestCase
         $website = factory(Website::class)->create([
             'public_administration_id' => $publicAdministration->id,
         ]);
-        $accessType = WebsiteAccessType::getInstance(WebsiteAccessType::VIEW);
+        $accessType = WebsiteAccessType::fromValue(WebsiteAccessType::VIEW);
         $publicAdministration->users()->sync([$this->user->id, $secondUser->id]);
         Bouncer::scope()->onceTo($publicAdministration->id, function () use ($secondUser) {
             $this->user->assign(UserRole::ADMIN);
