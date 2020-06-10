@@ -26,7 +26,7 @@ class SelectTenant
                 switch ($authUser->publicAdministrationsWithSuspended->count()) {
                     case 1:
                         $publicAdministration = $authUser->publicAdministrationsWithSuspended()->first();
-                        $userStatus = UserStatus::coerce(intval($publicAdministration->pivot->user_status));
+                        $userStatus = UserStatus::fromValue(intval($publicAdministration->pivot->user_status));
                         if ($userStatus->is(UserStatus::ACTIVE)) {
                             session()->put('tenant_id', $publicAdministration->id);
                             Bouncer::scope()->to($publicAdministration->id);

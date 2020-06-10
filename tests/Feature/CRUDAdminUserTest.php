@@ -679,7 +679,7 @@ class CRUDAdminUserTest extends TestCase
 
         Event::assertDispatched(UserUpdated::class, function ($event) use ($publicAdministration) {
             $publicAdministrationUser = $event->getUser()->publicAdministrationsWithSuspended()->where('public_administration_id', $publicAdministration->id)->first();
-            $statusPublicAdministrationUser = UserStatus::coerce(intval($publicAdministrationUser->pivot->user_status));
+            $statusPublicAdministrationUser = UserStatus::fromValue(intval($publicAdministrationUser->pivot->user_status));
 
             return $statusPublicAdministrationUser->is(UserStatus::SUSPENDED);
         });
@@ -742,7 +742,7 @@ class CRUDAdminUserTest extends TestCase
 
         Event::assertDispatched(UserUpdated::class, function ($event) use ($publicAdministration) {
             $publicAdministrationUser = $event->getUser()->publicAdministrationsWithSuspended()->where('public_administration_id', $publicAdministration->id)->first();
-            $statusPublicAdministrationUser = UserStatus::coerce(intval($publicAdministrationUser->pivot->user_status));
+            $statusPublicAdministrationUser = UserStatus::fromValue(intval($publicAdministrationUser->pivot->user_status));
 
             return $statusPublicAdministrationUser->is(UserStatus::SUSPENDED);
         });
@@ -801,7 +801,7 @@ class CRUDAdminUserTest extends TestCase
 
         Event::assertDispatched(UserUpdated::class, function ($event) use ($publicAdministration) {
             $publicAdministrationUser = $event->getUser()->publicAdministrations()->where('public_administration_id', $publicAdministration->id)->first();
-            $statusPublicAdministrationUser = UserStatus::coerce(intval($publicAdministrationUser->pivot->user_status));
+            $statusPublicAdministrationUser = UserStatus::fromValue(intval($publicAdministrationUser->pivot->user_status));
 
             return $statusPublicAdministrationUser->is(UserStatus::INVITED);
         });
