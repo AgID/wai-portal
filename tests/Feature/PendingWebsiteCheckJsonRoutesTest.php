@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Enums\UserPermission;
+use App\Enums\UserStatus;
 use App\Enums\WebsiteStatus;
 use App\Models\PublicAdministration;
 use App\Models\User;
@@ -56,7 +57,8 @@ class PendingWebsiteCheckJsonRoutesTest extends TestCase
 
         $this->user = factory(User::class)->state('active')->create();
         $this->publicAdministration = factory(PublicAdministration::class)->create();
-        $this->publicAdministration->users()->sync($this->user->id);
+        $this->publicAdministration->users()->sync([$this->user->id => ['user_email' => $this->user->email, 'user_status' => UserStatus::ACTIVE]]);
+
         $this->website = factory(Website::class)->create([
             'status' => WebsiteStatus::PENDING,
             'public_administration_id' => $this->publicAdministration->id,

@@ -5,6 +5,7 @@ namespace App\Traits;
 use App\Models\PublicAdministration;
 use App\Models\Website;
 use App\Notifications\ActivatedEmail;
+use App\Notifications\DeletedEmail;
 use App\Notifications\PasswordChangedEmail;
 use App\Notifications\PasswordResetRequestEmail;
 use App\Notifications\PublicAdministrationActivatedEmail;
@@ -12,6 +13,7 @@ use App\Notifications\PublicAdministrationPurgedEmail;
 use App\Notifications\PublicAdministrationRegisteredEmail;
 use App\Notifications\ReactivatedEmail;
 use App\Notifications\SuspendedEmail;
+use App\Notifications\UserPublicAdministrationInvitedEmail;
 use App\Notifications\VerifyEmail;
 use App\Notifications\WebsiteAddedEmail;
 
@@ -50,26 +52,42 @@ trait SendsNotificationsToUser
 
     /**
      * Send user activated notification.
+     *
+     * @param PublicAdministration|null $publicAdministration the public administration the user belongs to or null if user is registering a new public administration
      */
-    public function sendActivatedNotification(): void
+    public function sendActivatedNotification(?PublicAdministration $publicAdministration = null): void
     {
-        $this->notify(new ActivatedEmail());
+        $this->notify(new ActivatedEmail($publicAdministration));
     }
 
     /**
      * Send user suspended notification.
+     *
+     * @param PublicAdministration $publicAdministration the public administration the suspended user belongs to
      */
-    public function sendSuspendedNotification(): void
+    public function sendSuspendedNotification(PublicAdministration $publicAdministration): void
     {
-        $this->notify(new SuspendedEmail());
+        $this->notify(new SuspendedEmail($publicAdministration));
+    }
+
+    /**
+     * Send user deleted notification.
+     *
+     * @param PublicAdministration $publicAdministration the public administration the deleted user belongs to
+     */
+    public function sendDeletededNotification(PublicAdministration $publicAdministration): void
+    {
+        $this->notify(new DeletedEmail($publicAdministration));
     }
 
     /**
      * Send user reactivated notification.
+     *
+     * @param PublicAdministration $publicAdministration the public administration the reactivated user belongs to
      */
-    public function sendReactivatedNotification(): void
+    public function sendReactivatedNotification(PublicAdministration $publicAdministration): void
     {
-        $this->notify(new ReactivatedEmail());
+        $this->notify(new ReactivatedEmail($publicAdministration));
     }
 
     /**
@@ -97,9 +115,9 @@ trait SendsNotificationsToUser
      *
      * @param mixed $publicAdministration the purged public administration
      */
-    public function sendPublicAdministrationPurgedNotification($publicAdministration): void
+    public function sendPublicAdministrationPurgedNotification($publicAdministration, $userEmailForPurgedPublicAdministration): void
     {
-        $this->notify(new PublicAdministrationPurgedEmail($publicAdministration));
+        $this->notify(new PublicAdministrationPurgedEmail($publicAdministration, $userEmailForPurgedPublicAdministration));
     }
 
     /**
@@ -110,5 +128,15 @@ trait SendsNotificationsToUser
     public function sendPublicAdministrationActivatedNotification(PublicAdministration $publicAdministration): void
     {
         $this->notify(new PublicAdministrationActivatedEmail($publicAdministration));
+    }
+
+    /**
+     * Send public administration invited notification.
+     *
+     * @param PublicAdministration $publicAdministration the public administration the user is invited to
+     */
+    public function sendPublicAdministrationInvitedNotification(PublicAdministration $publicAdministration): void
+    {
+        $this->notify(new UserPublicAdministrationInvitedEmail($publicAdministration));
     }
 }

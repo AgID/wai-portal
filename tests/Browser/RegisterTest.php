@@ -36,7 +36,8 @@ class RegisterTest extends DuskTestCase
                 ->type('email', 'nome.cognome@example.com')
                 ->click('label[for="accept_terms"]')
                 ->press(__('Registrati'))
-                ->assertSee(__('Abbiamo inviato un link di conferma al tuo indirizzo'));
+                ->waitForText('In attesa di conferma')
+                ->assertSee(__('Per andare avanti è necessaria la verifica del tuo indirizzo'));
         });
         $signedUrl = $this->getSignedUrl(1);
         $this->browse(function (Browser $browser) use ($signedUrl) {

@@ -72,6 +72,10 @@ class UserEventsSubscriber implements ShouldQueue
         if (null !== $publicAdministration) {
             $context['pa'] = $event->getPublicAdministration()->ipa_code;
 
+            if (!empty($user->email_verified_at)) {
+                // Notify the user only if is already confirmed otherwise is notified by classic invitation
+                $user->sendPublicAdministrationInvitedNotification($publicAdministration);
+            }
             //Notify public administration administrators
             $publicAdministration->sendUserInvitedNotificationToAdministrators($user);
         }
@@ -108,7 +112,7 @@ class UserEventsSubscriber implements ShouldQueue
         $publicAdministration = $event->getPublicAdministration();
 
         //Notify user
-        $user->sendActivatedNotification();
+        $user->sendActivatedNotification($publicAdministration);
 
         //Notify public administration administrators
         $publicAdministration->sendUserActivatedNotificationToAdministrators($user);
@@ -249,12 +253,12 @@ class UserEventsSubscriber implements ShouldQueue
     public function onSuspended(UserSuspended $event): void
     {
         $user = $event->getUser();
-
+        $publicAdministration = $event->getPublicAdministration();
         //Notify user
-        $user->sendSuspendedNotification();
+        $user->sendSuspendedNotification($publicAdministration);
 
         //Notify public administration administrators
-        $user->publicAdministrations()->each(function (PublicAdministration $publicAdministration) use ($user) {
+        $user->publicAdministrationsWithSuspended()->each(function (PublicAdministration $publicAdministration) use ($user) {
             $publicAdministration->sendUserSuspendedNotificationToAdministrators($user);
         });
 
@@ -263,6 +267,7 @@ class UserEventsSubscriber implements ShouldQueue
             [
                 'user' => $user->uuid,
                 'event' => EventType::USER_SUSPENDED,
+                'pa' => $publicAdministration->ipa_code,
             ]
         );
     }
@@ -275,9 +280,10 @@ class UserEventsSubscriber implements ShouldQueue
     public function onReactivated(UserReactivated $event): void
     {
         $user = $event->getUser();
+        $publicAdministration = $event->getPublicAdministration();
 
         //Notify user
-        $user->sendReactivatedNotification();
+        $user->sendReactivatedNotification($publicAdministration);
 
         //Notify public administration administrators
         $user->publicAdministrations()->each(function (PublicAdministration $publicAdministration) use ($user) {
@@ -289,6 +295,7 @@ class UserEventsSubscriber implements ShouldQueue
             [
                 'user' => $user->uuid,
                 'event' => EventType::USER_REACTIVATED,
+                'pa' => $publicAdministration->ipa_code,
             ]
         );
     }
@@ -301,10 +308,15 @@ class UserEventsSubscriber implements ShouldQueue
     public function onDeleted(UserDeleted $event): void
     {
         $user = $event->getUser();
+        $publicAdministration = $event->getPublicAdministration();
+
+        $user->sendDeletededNotification($publicAdministration);
+
         logger()->notice('User ' . $user->uuid . ' deleted.',
             [
                 'event' => EventType::USER_DELETED,
                 'user' => $user->uuid,
+                'pa' => $publicAdministration->ipa_code,
             ]
         );
     }

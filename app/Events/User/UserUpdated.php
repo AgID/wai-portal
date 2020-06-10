@@ -2,6 +2,7 @@
 
 namespace App\Events\User;
 
+use App\Models\PublicAdministration;
 use App\Models\User;
 
 /**
@@ -21,13 +22,11 @@ class UserUpdated extends AbstractUserEvent
      *
      * @param User $user the user
      */
-    public function __construct(User $user)
+    public function __construct(User $user, ?PublicAdministration $publicAdministration = null)
     {
-        parent::__construct($user);
+        parent::__construct($user, $publicAdministration);
 
-        /*
-        * getDirty must be equal to 2 because in addition to 'last_access_at' it also includes 'updated_at' field
-        */
+        // getDirty must be equal to 2 because in addition to 'last_access_at' it also includes 'updated_at' field
         $this->onlyLastAccessDirty = ($user->isDirty('last_access_at') && 2 === count($user->getDirty()));
     }
 

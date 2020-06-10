@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Models\User;
 use Illuminate\Support\Facades\Lang;
 
 /**
@@ -20,6 +21,7 @@ class Suspended extends UserMailable
             ->markdown('mail.suspended')->with([
                 'locale' => Lang::getLocale(),
                 'user' => $this->recipient,
+                'publicAdministration' => $this->publicAdministration,
             ]);
     }
 }

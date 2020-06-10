@@ -2,6 +2,8 @@
 
 namespace App\Traits;
 
+use App\Enums\UserStatus;
+use App\Models\PublicAdministration;
 use App\Models\User;
 use App\Models\Website;
 use Illuminate\Http\JsonResponse;
@@ -19,25 +21,40 @@ trait SendsResponse
      *
      * @return JsonResponse|RedirectResponse the response in json or http redirect format
      */
-    public function userResponse(User $user)
+    public function userResponse(User $user, ?PublicAdministration $publicAdministration = null)
     {
+        $userStatus = $user->status;
+        $userTrashed = $user->trashed() ? $user->trashed() : false;
+        if ($publicAdministration) {
+            if ($user->publicAdministrationsWithSuspended()->where('public_administration_id', $publicAdministration->id)->get()->isNotEmpty()) {
+                $publicAdministrationUser = $user->publicAdministrationsWithSuspended()->where('public_administration_id', $publicAdministration->id)->first();
+                $userStatus = UserStatus::coerce(intval($publicAdministrationUser->pivot->user_status));
+            } else {
+                $userTrashed = true;
+            }
+        }
+
         return request()->expectsJson()
             ? response()->json([
                 'result' => 'ok',
                 'id' => $user->uuid,
                 'user_name' => e($user->full_name),
-                'status' => $user->status->key,
-                'status_description' => $user->status->description,
-                'trashed' => $user->trashed(),
+                'status' => $userStatus->key,
+                'status_description' => $userStatus->description,
+                'trashed' => $userTrashed,
+                'administration' => $publicAdministration ? $publicAdministration->name : null,
             ])
             : back()->withNotification([
                 'title' => __('utente modificato'),
-                'message' => $user->trashed()
-                    ? __("L'utente :user è stato eliminato.", ['user' => '<strong>' . e($user->full_name) . '</strong>'])
+                'message' => $userTrashed
+                    ? ($publicAdministration
+                        ? __("L'utente :user è stato eliminato da :pa.", ['user' => '<strong>' . e($user->full_name) . '</strong>', 'pa' => '<strong>' . e($publicAdministration->name) . '</strong>'])
+                        : __("L'utente :user è stato eliminato.", ['user' => '<strong>' . e($user->full_name) . '</strong>'])
+                    )
                     : implode("\n", [
                         __("L'utente :user è stato aggiornato.", ['user' => '<strong>' . e($user->full_name) . '</strong>']),
                         __("Stato dell'utente: :status", [
-                            'status' => '<span class="badge user-status ' . strtolower($user->status->key) . '">' . strtoupper($user->status->description) . '</span>.',
+                            'status' => '<span class="badge user-status ' . strtolower($userStatus->key) . '">' . strtoupper($userStatus->description) . '</span>.',
                         ]),
                     ]),
                 'status' => 'info',
@@ -73,6 +90,32 @@ trait SendsResponse
                             'status' => '<span class="badge website-status ' . strtolower($website->status->key) . '">' . strtoupper($website->status->description) . '</span>.',
                         ]),
                     ]),
+                'status' => 'info',
+                'icon' => 'it-info-circle',
+            ]);
+    }
+
+    /**
+     * Returns a success response for the specified public administration.
+     *
+     * @param PublicAdministration $website the website
+     *
+     * @return JsonResponse|RedirectResponse the response in json or http redirect format
+     */
+    public function publicAdministrationResponse(PublicAdministration $publicAdministration)
+    {
+        return request()->expectsJson()
+            ? response()->json([
+                'result' => 'ok',
+                'id' => $publicAdministration->id,
+                'name' => e($publicAdministration->name),
+                'status' => $publicAdministration->status->key,
+                'status_description' => $publicAdministration->status->description,
+                'ipa_code' => $publicAdministration->ipa_code,
+            ])
+            : back()->withNotification([
+                'title' => __('Pubblica amministrazione modificata'),
+                'message' => __("L'invito alla pubblica amministrazione :pa è stato confermato.", ['pa' => '<strong>' . e($publicAdministration->name) . '</strong>']),
                 'status' => 'info',
                 'icon' => 'it-info-circle',
             ]);
