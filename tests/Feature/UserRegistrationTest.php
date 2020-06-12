@@ -55,7 +55,7 @@ class UserRegistrationTest extends TestCase
                 $this->assertEquals($user->uuid, $mail->viewData['user']['uuid']);
                 $this->assertEquals('fakeverificationurl.local', $mail->viewData['signedUrl']);
                 $this->assertNull($mail->viewData['publicAdministration']);
-                $this->assertEquals($mail->subject, __('Registrazione su :app', ['app' => config('app.name')]));
+                $this->assertEquals($mail->subject, __('Account su :app', ['app' => config('app.name')]));
 
                 return $mail->hasTo($user->email);
             }

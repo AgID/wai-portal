@@ -3,7 +3,7 @@
 namespace Tests\Feature;
 
 use App\Enums\UserRole;
-use App\Http\Middleware\SelectTenant;
+use App\Enums\UserStatus;
 use App\Models\PublicAdministration;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -36,7 +36,7 @@ class SelectTenantMiddlewareTest extends TestCase
         $this->user = factory(User::class)->create();
         Bouncer::dontCache();
 
-        Route::middleware([SelectTenant::class, 'web'])->get('_test/tenant-select/{publicAdministration?}', function (?PublicAdministration $publicAdministration) {
+        Route::middleware(['web', 'select.tenant', 'authorize.public.administrations'])->get('_test/tenant-select/{publicAdministration?}', function (?PublicAdministration $publicAdministration) {
             return Response::HTTP_OK;
         });
     }
@@ -57,7 +57,7 @@ class SelectTenantMiddlewareTest extends TestCase
     public function testUserTenantEnforced(): void
     {
         $publicAdministration = factory(PublicAdministration::class)->create();
-        $publicAdministration->users()->sync([$this->user->id]);
+        $publicAdministration->users()->sync([$this->user->id => ['user_status' => UserStatus::ACTIVE]]);
 
         $this->actingAs($this->user)
             ->get('_test/tenant-select')
@@ -86,7 +86,6 @@ class SelectTenantMiddlewareTest extends TestCase
 
         $this->actingAs($this->user)
             ->get('_test/tenant-select/' . $publicAdministration->ipa_code)
-            ->assertSessionHas('super_admin_tenant_ipa_code', $publicAdministration->ipa_code)
-            ->assertSessionMissing('tenant_id');
+            ->assertSessionMissing('tenant_id', 'super_admin_tenant_ipa_code');
     }
 }

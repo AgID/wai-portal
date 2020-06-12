@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Enums\UserStatus;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Response;
@@ -83,26 +82,6 @@ class AuthenticationMiddlewareTest extends TestCase
             ->assertSessionHas('notification', [
                 'title' => __('accesso negato'),
                 'message' => __("L'utenza è stata rimossa."),
-                'status' => 'error',
-                'icon' => 'it-close-circle',
-            ])
-            ->assertRedirect(route('home'));
-    }
-
-    /**
-     * Test suspended user redirect to home.
-     */
-    public function testSuspendedUserAuthentication(): void
-    {
-        $this->user->status = UserStatus::SUSPENDED;
-        $this->user->save();
-
-        $this->actingAs($this->user)
-            ->withSession(['spid_user' => $this->spidUser])
-            ->get('_test/authentication')
-            ->assertSessionHas('notification', [
-                'title' => __('accesso negato'),
-                'message' => __("L'utenza è stata sospesa."),
                 'status' => 'error',
                 'icon' => 'it-close-circle',
             ])

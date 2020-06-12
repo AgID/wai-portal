@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Enums\UserPermission;
 use App\Enums\UserRole;
+use App\Enums\UserStatus;
 use App\Models\PublicAdministration;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -107,18 +108,20 @@ class UserTransformerTest extends TestCase
      */
     public function testUserTransformTestAsAdmin(): void
     {
-        $userInvited = factory(User::class)->state('invited')->create();
+        $userInvited = factory(User::class)->state('active')->create();
         $userActive = factory(User::class)->state('active')->create();
-        $userSuspended = factory(User::class)->state('suspended')->create();
-        $userTrashed = factory(User::class)->state('active')->create([
-            'deleted_at' => now(),
+        $userSuspended = factory(User::class)->state('active')->create();
+
+        $this->publicAdministration->users()->syncWithoutDetaching([
+            $userInvited->id => ['user_status' => UserStatus::INVITED],
+            $userActive->id => ['user_status' => UserStatus::ACTIVE],
+            $userSuspended->id => ['user_status' => UserStatus::SUSPENDED],
         ]);
-        $this->publicAdministration->users()->syncWithoutDetaching([$userInvited->id, $userActive->id, $userSuspended->id, $userTrashed->id]);
-        Bouncer::scope()->onceTo($this->publicAdministration->id, function () use ($userInvited, $userActive, $userSuspended, $userTrashed) {
+
+        Bouncer::scope()->onceTo($this->publicAdministration->id, function () use ($userInvited, $userActive, $userSuspended) {
             $userInvited->assign(UserRole::DELEGATED);
             $userActive->assign(UserRole::DELEGATED);
             $userSuspended->assign(UserRole::DELEGATED);
-            $userTrashed->assign(UserRole::DELETED);
         });
 
         $expected = [
@@ -151,54 +154,28 @@ class UserTransformerTest extends TestCase
             ->get(route('users.data.json'))
             ->assertJsonStructure($expected)
             ->assertJsonMissing(['link' => route('users.suspend', ['user' => $userInvited])])
+            ->assertJsonFragment(['link' => route('users.suspend', ['user' => $userActive])])
+            ->assertJsonMissing(['link' => route('users.suspend', ['user' => $userSuspended])])
             ->assertJsonMissing(['link' => route('users.reactivate', ['user' => $userInvited])])
+            ->assertJsonMissing(['link' => route('users.reactivate', ['user' => $userActive])])
+            ->assertJsonFragment(['link' => route('users.reactivate', ['user' => $userSuspended])])
             ->assertJsonFragment(['link' => route('users.show', ['user' => $userInvited])])
             ->assertJsonFragment(['link' => route('users.show', ['user' => $userActive])])
             ->assertJsonFragment(['link' => route('users.show', ['user' => $userSuspended])])
-            ->assertJsonMissing(['link' => route('users.show', ['user' => $userTrashed])])
             ->assertJsonFragment(['link' => route('users.edit', ['user' => $userInvited])])
             ->assertJsonFragment(['link' => route('users.edit', ['user' => $userActive])])
             ->assertJsonFragment(['link' => route('users.edit', ['user' => $userSuspended])])
-            ->assertJsonMissing(['link' => route('users.edit', ['user' => $userTrashed])])
-            ->assertJsonMissing(['link' => route('users.suspend', ['user' => $userInvited])])
-            ->assertJsonMissing(['link' => route('users.reactivate', ['user' => $userInvited])])
-            ->assertJsonFragment(['link' => route('users.suspend', ['user' => $userActive])])
-            ->assertJsonMissing(['link' => route('users.reactivate', ['user' => $userActive])])
-            ->assertJsonMissing(['link' => route('users.suspend', ['user' => $userSuspended])])
-            ->assertJsonFragment(['link' => route('users.reactivate', ['user' => $userSuspended])])
-            ->assertJsonMissing(['link' => route('users.suspend', ['user' => $userTrashed])])
-            ->assertJsonMissing(['link' => route('users.reactivate', ['user' => $userTrashed])])
-            ->assertJsonMissing(['link' => route('admin.publicAdministration.users.restore', [
-                'publicAdministration' => $this->publicAdministration,
-                'trashed_user' => $userInvited,
-            ])])
             ->assertJsonMissing(['link' => route('admin.publicAdministration.users.delete', [
                 'publicAdministration' => $this->publicAdministration,
                 'user' => $userInvited,
-            ])])
-            ->assertJsonMissing(['link' => route('admin.publicAdministration.users.restore', [
-                'publicAdministration' => $this->publicAdministration,
-                'trashed_user' => $userActive,
             ])])
             ->assertJsonMissing(['link' => route('admin.publicAdministration.users.delete', [
                 'publicAdministration' => $this->publicAdministration,
                 'user' => $userActive,
             ])])
-            ->assertJsonMissing(['link' => route('admin.publicAdministration.users.restore', [
-                'publicAdministration' => $this->publicAdministration,
-                'trashed_user' => $userSuspended,
-            ])])
             ->assertJsonMissing(['link' => route('admin.publicAdministration.users.delete', [
                 'publicAdministration' => $this->publicAdministration,
                 'user' => $userSuspended,
-            ])])
-            ->assertJsonMissing(['link' => route('admin.publicAdministration.users.restore', [
-                'publicAdministration' => $this->publicAdministration,
-                'trashed_user' => $userTrashed,
-            ])])
-            ->assertJsonMissing(['link' => route('admin.publicAdministration.users.delete', [
-                'publicAdministration' => $this->publicAdministration,
-                'user' => $userTrashed,
             ])]);
     }
 
@@ -217,18 +194,19 @@ class UserTransformerTest extends TestCase
         $userPending = factory(User::class)->state('pending')->create();
         $userInvited = factory(User::class)->state('invited')->create();
         $userActive = factory(User::class)->state('active')->create();
-        $userSuspended = factory(User::class)->state('suspended')->create();
-        $userTrashed = factory(User::class)->state('active')->create([
-                'deleted_at' => now(),
-            ]
-        );
-        $this->publicAdministration->users()->syncWithoutDetaching([$userPending->id, $userInvited->id, $userActive->id, $userSuspended->id, $userTrashed->id]);
-        Bouncer::scope()->onceTo($this->publicAdministration->id, function () use ($userPending, $userInvited, $userActive, $userSuspended, $userTrashed) {
+        $userSuspended = factory(User::class)->state('active')->create();
+
+        $this->publicAdministration->users()->syncWithoutDetaching([
+            $userInvited->id => ['user_status' => UserStatus::INVITED],
+            $userActive->id => ['user_status' => UserStatus::ACTIVE],
+            $userSuspended->id => ['user_status' => UserStatus::SUSPENDED],
+        ]);
+
+        Bouncer::scope()->onceTo($this->publicAdministration->id, function () use ($userPending, $userInvited, $userActive, $userSuspended) {
             $userPending->assign(UserRole::DELEGATED);
             $userInvited->assign(UserRole::DELEGATED);
             $userActive->assign(UserRole::ADMIN);
             $userSuspended->assign(UserRole::DELEGATED);
-            $userTrashed->assign(UserRole::DELETED);
         });
 
         $expected = [
@@ -243,7 +221,7 @@ class UserTransformerTest extends TestCase
                     ],
                     'email',
                     'added_at',
-                    'status', //NOTE: trashed users don't have status
+                    'status',
                     'buttons',
                     'icons',
                 ],
@@ -253,55 +231,38 @@ class UserTransformerTest extends TestCase
         $this->actingAs($superAdmin)
             ->get(route('admin.publicAdministration.users.data.json', ['publicAdministration' => $this->publicAdministration]))
             ->assertJsonStructure($expected)
-            ->assertJsonMissing(['link' => route('admin.publicAdministration.users.suspend', ['publicAdministration' => $this->publicAdministration, 'user' => $userInvited])])
-            ->assertJsonMissing(['link' => route('admin.publicAdministration.users.reactivate', ['publicAdministration' => $this->publicAdministration, 'user' => $userInvited])])
+
             ->assertJsonFragment(['link' => route('admin.publicAdministration.users.show', ['publicAdministration' => $this->publicAdministration, 'user' => $userInvited])])
             ->assertJsonFragment(['link' => route('admin.publicAdministration.users.show', ['publicAdministration' => $this->publicAdministration, 'user' => $userActive])])
             ->assertJsonFragment(['link' => route('admin.publicAdministration.users.show', ['publicAdministration' => $this->publicAdministration, 'user' => $userSuspended])])
-            ->assertJsonMissing(['link' => route('admin.publicAdministration.users.show', ['publicAdministration' => $this->publicAdministration, 'user' => $userTrashed])])
+
             ->assertJsonFragment(['link' => route('admin.publicAdministration.users.edit', ['publicAdministration' => $this->publicAdministration, 'user' => $userInvited])])
             ->assertJsonFragment(['link' => route('admin.publicAdministration.users.edit', ['publicAdministration' => $this->publicAdministration, 'user' => $userActive])])
             ->assertJsonFragment(['link' => route('admin.publicAdministration.users.edit', ['publicAdministration' => $this->publicAdministration, 'user' => $userSuspended])])
-            ->assertJsonMissing(['link' => route('admin.publicAdministration.users.edit', ['publicAdministration' => $this->publicAdministration, 'user' => $userTrashed])])
+
+            ->assertJsonMissing(['link' => route('admin.publicAdministration.users.suspend', ['publicAdministration' => $this->publicAdministration, 'user' => $userPending])])
+            ->assertJsonMissing(['link' => route('admin.publicAdministration.users.reactivate', ['publicAdministration' => $this->publicAdministration, 'user' => $userPending])])
+
             ->assertJsonMissing(['link' => route('admin.publicAdministration.users.suspend', ['publicAdministration' => $this->publicAdministration, 'user' => $userInvited])])
             ->assertJsonMissing(['link' => route('admin.publicAdministration.users.reactivate', ['publicAdministration' => $this->publicAdministration, 'user' => $userInvited])])
+
             ->assertJsonFragment(['link' => route('admin.publicAdministration.users.suspend', ['publicAdministration' => $this->publicAdministration, 'user' => $userActive])])
             ->assertJsonMissing(['link' => route('admin.publicAdministration.users.reactivate', ['publicAdministration' => $this->publicAdministration, 'user' => $userActive])])
+
             ->assertJsonMissing(['link' => route('admin.publicAdministration.users.suspend', ['publicAdministration' => $this->publicAdministration, 'user' => $userSuspended])])
             ->assertJsonFragment(['link' => route('admin.publicAdministration.users.reactivate', ['publicAdministration' => $this->publicAdministration, 'user' => $userSuspended])])
-            ->assertJsonMissing(['link' => route('admin.publicAdministration.users.suspend', ['publicAdministration' => $this->publicAdministration, 'user' => $userTrashed])])
-            ->assertJsonMissing(['link' => route('admin.publicAdministration.users.reactivate', ['publicAdministration' => $this->publicAdministration, 'user' => $userTrashed])])
-            ->assertJsonMissing(['link' => route('admin.publicAdministration.users.restore', [
-                'publicAdministration' => $this->publicAdministration,
-                'trashed_user' => $userInvited,
-            ])])
+
             ->assertJsonFragment(['link' => route('admin.publicAdministration.users.delete', [
                 'publicAdministration' => $this->publicAdministration,
                 'user' => $userInvited,
-            ])])
-            ->assertJsonMissing(['link' => route('admin.publicAdministration.users.restore', [
-                'publicAdministration' => $this->publicAdministration,
-                'trashed_user' => $userActive,
             ])])
             ->assertJsonFragment(['link' => route('admin.publicAdministration.users.delete', [
                 'publicAdministration' => $this->publicAdministration,
                 'user' => $userActive,
             ])])
-            ->assertJsonMissing(['link' => route('admin.publicAdministration.users.restore', [
-                'publicAdministration' => $this->publicAdministration,
-                'trashed_user' => $userSuspended,
-            ])])
             ->assertJsonFragment(['link' => route('admin.publicAdministration.users.delete', [
                 'publicAdministration' => $this->publicAdministration,
                 'user' => $userSuspended,
-            ])])
-            ->assertJsonFragment(['link' => route('admin.publicAdministration.users.restore', [
-                'publicAdministration' => $this->publicAdministration,
-                'trashed_user' => $userTrashed,
-            ])])
-            ->assertJsonMissing(['link' => route('admin.publicAdministration.users.delete', [
-                'publicAdministration' => $this->publicAdministration,
-                'user' => $userTrashed,
             ])]);
     }
 }

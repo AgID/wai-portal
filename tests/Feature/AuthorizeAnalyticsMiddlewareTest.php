@@ -171,9 +171,9 @@ class AuthorizeAnalyticsMiddlewareTest extends TestCase
      */
     public function testPendingUserWebsitesRouteAuthorizationGranted(): void
     {
-        $this->user->status = UserStatus::PENDING;
         $this->user->email_verified_at = Date::now();
         $this->user->save();
+        $this->publicAdministration->users()->sync([$this->user->id => ['user_status' => UserStatus::PENDING]]);
 
         do {
             $secondWebsite = factory(Website::class)->make([

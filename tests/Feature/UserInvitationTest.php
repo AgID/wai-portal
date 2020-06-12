@@ -93,7 +93,7 @@ class UserInvitationTest extends TestCase
                 $this->assertEquals($this->userInvited->uuid, $mail->viewData['user']['uuid']);
                 $this->assertEquals('fakeverificationurl.local', $mail->viewData['signedUrl']);
                 $this->assertEquals($publicAdministration->ipa_code, $mail->viewData['publicAdministration']['ipa_code']);
-                $this->assertEquals($mail->subject, __('Invito su :app', ['app' => config('app.name')]));
+                $this->assertEquals($mail->subject, __('Account su :app', ['app' => config('app.name')]));
 
                 return $mail->hasTo($this->userInvited->email);
             }

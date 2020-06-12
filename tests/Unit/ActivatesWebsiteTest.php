@@ -161,7 +161,7 @@ class ActivatesWebsiteTest extends TestCase
         Bouncer::dontCache();
 
         $user = factory(User::class)->state('pending')->create();
-        $this->publicAdministration->users()->sync($user->id);
+        $this->publicAdministration->users()->sync([$user->id => ['user_status' => UserStatus::PENDING]]);
 
         $this->app->bind('analytics-service', function () use ($user) {
             return $this->partialMock(MatomoService::class, function ($mock) use ($user) {
