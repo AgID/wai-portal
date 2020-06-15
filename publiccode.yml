@@ -47,7 +47,7 @@ description:
       da parte dei cittadini.
     screenshots:
       - >-
-        https://raw.githubusercontent.com/agid/wai-portal/master/resources/images/wai-screenshot.png
+        resources/images/wai-screenshot.png
     shortDescription: >-
       Web analytics Italia è una piattaforma nazionale di raccolta e analisi dei
       dati statistici relativi al traffico dei siti web della PA italiana.
@@ -79,7 +79,7 @@ localisation:
     - it
   localisationReady: true
 logo: >-
-  https://raw.githubusercontent.com/agid/wai-portal/master/resources/images/wai-logo.svg
+  resources/images/wai-logo.svg
 maintenance:
   type: contract
   contacts:
