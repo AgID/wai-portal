@@ -51,7 +51,7 @@ trait SendsNotificationsToPublicAdministrationRTD
 
     /**
      * Check the current environment.
-     * On public-playground don't send notification in public adminitration is from IPA.
+     * On public-playground don't send notification if public adminitration is from IPA.
      */
     private function sendNotificationOnCurrentEnvironment()
     {
