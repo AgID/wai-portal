@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\PublicAdministrationStatus;
 use App\Enums\UserPermission;
+use App\Enums\UserRole;
 use App\Enums\UserStatus;
 use App\Enums\WebsiteStatus;
 use App\Enums\WebsiteType;
@@ -34,6 +35,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Yajra\DataTables\DataTables;
+use Silber\Bouncer\BouncerFacade as Bouncer;
 
 /**
  * Website management controller.
@@ -124,6 +126,23 @@ class WebsiteController extends Controller
         $site = $request->isCustomPublicAdministration ? $request->publicAdministration['url'] : $request->publicAdministration['site'];
         $website = $this->registerPublicAdministration($authUser, $publicAdministration, $site, $request->isCustomPublicAdministration);
 
+        $publicAdministration->users()->save($authUser, ['user_email' => $request->input('email'), 'user_status' => UserStatus::PENDING]);
+        // This is the first time we know which public administration the
+        // current user belongs, so we need to set the tenant id just now.
+        session()->put('tenant_id', $publicAdministration->id);
+
+        if ($authUser->publicAdministrations->isEmpty()) {
+            $authUser->roles()->detach();
+        }
+
+        Bouncer::scope()->to($publicAdministration->id);
+        $authUser->assign(UserRole::REGISTERED);
+        if (!$authUser->hasAnalyticsServiceAccount()) {
+            $authUser->registerAnalyticsServiceAccount();
+        }
+        $authUser->setViewAccessForWebsite($website);
+        $authUser->syncWebsitesPermissionsToAnalyticsService();
+
         event(new WebsiteAdded($website, $authUser));
 
         return redirect()->route('websites.index')->withModal([
@@ -183,9 +202,9 @@ class WebsiteController extends Controller
 
         event(new WebsiteAdded($website, auth()->user()));
 
-        $currentPublicAdministration->getAdministrators()->map(function ($administrator) use ($website) {
+        $currentPublicAdministration->getAdministrators()->map(function ($administrator) use ($website, $currentPublicAdministration) {
             $administrator->setWriteAccessForWebsite($website);
-            $administrator->syncWebsitesPermissionsToAnalyticsService();
+            $administrator->syncWebsitesPermissionsToAnalyticsService($currentPublicAdministration);
         });
 
         $this->manageWebsitePermissionsOnNonAdministrators($validatedData, $currentPublicAdministration, $website);
@@ -614,7 +633,7 @@ class WebsiteController extends Controller
      *
      * @throws \Exception if unable to initialize the datatable
      *
-     * @return mixed the response the JSON format
+     * @return mixed the response in JSON format
      */
     public function dataJson(PublicAdministration $publicAdministration)
     {
@@ -633,7 +652,7 @@ class WebsiteController extends Controller
      *
      * @throws \Exception if unable to initialize the datatable
      *
-     * @return mixed the response the JSON format
+     * @return mixed the response in JSON format
      */
     public function dataUsersPermissionsJson(PublicAdministration $publicAdministration, Website $website)
     {

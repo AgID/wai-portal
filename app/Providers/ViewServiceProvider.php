@@ -3,10 +3,10 @@
 namespace App\Providers;
 
 use App\Enums\UserRole;
-use App\Enums\UserStatus;
 use App\Http\View\Composers\ModalComposer;
 use App\Http\View\Composers\NotificationComposer;
 use App\Http\View\Composers\PrimaryMenuComposer;
+use App\Http\View\Composers\PublicAdministrationButtonsComposer;
 use App\Http\View\Composers\PublicAdministrationSelectorComposer;
 use App\Traits\GetsLocalizedYamlContent;
 use Carbon\CarbonInterface;
@@ -50,6 +50,7 @@ class ViewServiceProvider extends ServiceProvider
             'pages.*',
         ], PublicAdministrationSelectorComposer::class);
         View::composer('*', PrimaryMenuComposer::class);
+        View::composer('pages.pa.partials.buttons', PublicAdministrationButtonsComposer::class);
         View::composer('layouts.includes.modal', ModalComposer::class);
         View::composer('layouts.includes.notification', NotificationComposer::class);
         View::composer('layouts.includes.highlight_bar', function ($view) {
@@ -70,7 +71,7 @@ class ViewServiceProvider extends ServiceProvider
             $authUser = auth()->user();
             $view->with('authUser', $authUser);
             $view->with('spidAuthUser', app()->make('SPIDAuth')->getSPIDUser());
-            $view->with('hasActivePublicAdministration', session()->has('tenant_id') && $authUser->status->is(UserStatus::ACTIVE));
+            $view->with('showPublicAdministration', session()->has('tenant_id') && (1 === $authUser->publicAdministrations->count()));
             $view->with('isSuperAdmin', isset($authUser) && $authUser->isA(UserRole::SUPER_ADMIN));
         });
     }

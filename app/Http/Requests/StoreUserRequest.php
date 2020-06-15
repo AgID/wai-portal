@@ -36,7 +36,6 @@ class StoreUserRequest extends FormRequest
             'email' => 'required|email:rfc,dns|max:75',
             'fiscal_number' => [
                 'required',
-                'unique:users',
                 function ($attribute, $value, $fail) {
                     $chk = new FiscalNumberChecker($value);
                     if (!$chk->isFormallyValid()) {
@@ -45,6 +44,7 @@ class StoreUserRequest extends FormRequest
                 },
             ],
             'is_admin' => 'boolean',
+            'existingUser' => 'boolean',
             'permissions' => 'required|array',
             'permissions.*' => 'array',
             'permissions.*.*' => Rule::in([UserPermission::MANAGE_ANALYTICS, UserPermission::READ_ANALYTICS]),
@@ -60,10 +60,21 @@ class StoreUserRequest extends FormRequest
     {
         if (!$this->route()->hasParameter('user')) {
             $validator->after(function (Validator $validator) {
-                if (User::where('email', $this->input('email'))->whereDoesntHave('roles', function ($query) {
-                    $query->where('name', UserRole::SUPER_ADMIN);
-                })->get()->isNotEmpty()) {
-                    $validator->errors()->add('email', __('validation.unique', ['attribute' => __('validation.attributes.email')]));
+                $user = User::with('publicAdministrations')
+                    ->where('fiscal_number', $this->input('fiscal_number'))
+                    ->orWhere('email', $this->input('email'))
+                    ->whereDoesntHave('roles', function ($query) {
+                        $query->where('name', UserRole::SUPER_ADMIN);
+                    })->first();
+
+                if (!is_null($user)) {
+                    if ($user->fiscal_number === $this->input('fiscal_number')) {
+                        $data = $validator->getData();
+                        $data['existingUser'] = $user;
+                        $validator->setData($data);
+                    } else {
+                        $validator->errors()->add('email', __('validation.unique', ['attribute' => __('validation.attributes.email')]));
+                    }
                 }
             });
         }

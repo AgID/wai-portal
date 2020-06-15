@@ -34,7 +34,7 @@ class UserWebsiteAccessChanged extends AbstractUserEvent
      */
     public function __construct(User $user, Website $website, WebsiteAccessType $accessType)
     {
-        parent::__construct($user);
+        parent::__construct($user, $website->publicAdministration);
         $this->website = $website;
         $this->accessType = $accessType;
     }

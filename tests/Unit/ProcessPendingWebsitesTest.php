@@ -3,6 +3,7 @@
 namespace Tests\Unit;
 
 use App\Enums\UserRole;
+use App\Enums\UserStatus;
 use App\Enums\WebsiteAccessType;
 use App\Enums\WebsiteType;
 use App\Events\Jobs\PendingWebsitesCheckCompleted;
@@ -61,7 +62,7 @@ class ProcessPendingWebsitesTest extends TestCase
     {
         $user = factory(User::class)->state('pending')->create();
         $publicAdministration = factory(PublicAdministration::class)->create();
-        $publicAdministration->users()->sync($user->id);
+        $publicAdministration->users()->sync([$user->id => ['user_email' => $user->email, 'user_status' => UserStatus::PENDING]]);
         $website = factory(Website::class)->create([
             'public_administration_id' => $publicAdministration->id,
             'created_at' => now()->subDays((int) config('wai.purge_expiry') + 1),
@@ -159,7 +160,7 @@ class ProcessPendingWebsitesTest extends TestCase
     {
         $user = factory(User::class)->state('pending')->create();
         $publicAdministration = factory(PublicAdministration::class)->create();
-        $publicAdministration->users()->sync($user->id);
+        $publicAdministration->users()->sync([$user->id => ['user_email' => $user->email, 'user_status' => UserStatus::PENDING]]);
         $website = factory(Website::class)->make([
             'type' => WebsiteType::INSTITUTIONAL,
             'public_administration_id' => $publicAdministration->id,

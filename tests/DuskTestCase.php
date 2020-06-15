@@ -18,6 +18,13 @@ abstract class DuskTestCase extends BaseTestCase
 {
     use CreatesApplication;
     use DatabaseMigrations;
+    use SqliteForeignKeyHotfix;
+
+    public function __construct(?string $name = null, array $data = [], string $dataName = '')
+    {
+        parent::__construct($name, $data, $dataName);
+        $this->hotfixSqlite();
+    }
 
     /**
      * Setup the browser test environment.

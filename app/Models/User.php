@@ -169,9 +169,69 @@ class User extends Authenticatable implements MustVerifyEmail
      *
      * @see \App\Models\PublicAdministration
      */
+    public function publicAdministrationsWithSuspended(): BelongsToMany
+    {
+        return $this->belongsToMany(PublicAdministration::class)->withPivot('user_status')->withPivot('user_email');
+    }
+
+    /**
+     * The Public Administration this User belongs to, as Eloquent relation.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany the relation with public administrations
+     *
+     * @see \App\Models\PublicAdministration
+     */
     public function publicAdministrations(): BelongsToMany
     {
-        return $this->belongsToMany(PublicAdministration::class);
+        return $this->publicAdministrationsWithSuspended()->wherePivot('user_status', '!=', UserStatus::SUSPENDED);
+    }
+
+    /**
+     * The Public Administration this User belongs to (active), as Eloquent relation.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany the relation with public administrations
+     *
+     * @see \App\Models\PublicAdministration
+     */
+    public function activePublicAdministrations(): BelongsToMany
+    {
+        return $this->publicAdministrations()->wherePivot('user_status', UserStatus::ACTIVE);
+    }
+
+    /**
+     * The Public Administration this User belongs to (invited), as Eloquent relation.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany the relation with public administrations
+     *
+     * @see \App\Models\PublicAdministration
+     */
+    public function invitedPublicAdministrations(): BelongsToMany
+    {
+        return $this->publicAdministrations()->wherePivot('user_status', UserStatus::INVITED);
+    }
+
+    /**
+     * The Public Administration this User belongs to (pending), as Eloquent relation.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany the relation with public administrations
+     *
+     * @see \App\Models\PublicAdministration
+     */
+    public function pendingPublicAdministrations(): BelongsToMany
+    {
+        return $this->publicAdministrations()->wherePivot('user_status', UserStatus::PENDING);
+    }
+
+    /**
+     * The Public Administration this User belongs to (suspended), as Eloquent relation.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany the relation with public administrations
+     *
+     * @see \App\Models\PublicAdministration
+     */
+    public function suspendedPublicAdministrations(): BelongsToMany
+    {
+        return $this->publicAdministrations()->wherePivot('user_status', UserStatus::SUSPENDED);
     }
 
     /**

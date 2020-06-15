@@ -15,6 +15,7 @@ use App\Exceptions\AnalyticsServiceException;
 use App\Exceptions\CommandErrorException;
 use App\Models\Website;
 use App\Traits\ActivatesWebsite;
+use App\Traits\ManageRecipientNotifications;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Container\BindingResolutionException;
@@ -33,6 +34,7 @@ class ProcessPendingWebsites implements ShouldQueue
     use Queueable;
     use SerializesModels;
     use ActivatesWebsite;
+    use ManageRecipientNotifications;
 
     /**
      * Purge check flag.
@@ -97,13 +99,16 @@ class ProcessPendingWebsites implements ShouldQueue
                         $publicAdministration = $website->publicAdministration;
 
                         if ($publicAdministration->status->is(PublicAdministrationStatus::PENDING)) {
-                            $pendingUser = $publicAdministration->users()->where('status', UserStatus::PENDING)->first();
-                            if (null !== $pendingUser) {
-                                $pendingUser->publicAdministrations()->detach($publicAdministration->id);
+                            $pendingUser = $publicAdministration->users()->where('user_status', UserStatus::PENDING)->first();
+                            $pendingUser->publicAdministrations()->detach($publicAdministration->id);
+                            $userEmailForPurgedPublicAdministration = $this->getUserEmailForPublicAdministration($pendingUser, $publicAdministration);
+
+                            if ($pendingUser->publicAdministrations->isEmpty()) {
                                 $pendingUser->deleteAnalyticsServiceAccount();
-                                $publicAdministration->forceDelete();
                             }
-                            event(new PublicAdministrationPurged($publicAdministration->toJson(), $pendingUser));
+
+                            $publicAdministration->forceDelete();
+                            event(new PublicAdministrationPurged($publicAdministration->toJson(), $pendingUser, $userEmailForPurgedPublicAdministration));
                         } else {
                             $website->forceDelete();
                         }

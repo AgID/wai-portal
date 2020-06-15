@@ -19,6 +19,8 @@ use App\Models\PublicAdministration;
 use App\Models\User;
 use App\Models\Website;
 use App\Services\MatomoService;
+use Faker\Factory;
+use Faker\Generator;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
@@ -79,6 +81,13 @@ class CRUDWebsiteTest extends TestCase
     private $customWebsite;
 
     /**
+     * Fake data generator.
+     *
+     * @var Generator the generator
+     */
+    private $faker;
+
+    /**
      * Pre-test setup.
      *
      * @throws \Illuminate\Contracts\Container\BindingResolutionException if unable to bind to the service
@@ -102,7 +111,7 @@ class CRUDWebsiteTest extends TestCase
             'status' => WebsiteStatus::ACTIVE,
             'type' => WebsiteType::INSTITUTIONAL,
         ]);
-        $this->publicAdministration->users()->sync([$this->user->id]);
+        $this->publicAdministration->users()->sync([$this->user->id => ['user_email' => $this->user->email, 'user_status' => UserStatus::ACTIVE]]);
 
         $this->spidUser = new SPIDUser([
             'fiscalNumber' => $this->user->fiscal_number,
@@ -129,6 +138,8 @@ class CRUDWebsiteTest extends TestCase
             $this->user->allow(UserPermission::READ_ANALYTICS, $this->website);
             $this->user->allow(UserPermission::MANAGE_WEBSITES);
         });
+
+        $this->faker = Factory::create();
     }
 
     /**
@@ -174,6 +185,7 @@ class CRUDWebsiteTest extends TestCase
             'status' => UserStatus::PENDING,
             'email_verified_at' => Date::now(),
         ]);
+        $alternativeEmail = $this->faker->unique()->safeEmail;
         $this->actingAs($user)
             ->withSession([
                 'spid_sessionIndex' => 'fake-session-index',
@@ -181,6 +193,7 @@ class CRUDWebsiteTest extends TestCase
             ])
             ->from(route('websites.index'))
             ->post(route('websites.store.primary'), [
+                'email' => $alternativeEmail,
                 'public_administration_name' => 'Camera dei Deputati',
                 'url' => 'www.camera.it',
                 'ipa_code' => 'camera',
@@ -386,7 +399,7 @@ class CRUDWebsiteTest extends TestCase
         $thirdUser = factory(User::class)->create([
             'status' => UserStatus::INVITED,
         ]);
-        $this->publicAdministration->users()->sync([$secondUser->id, $thirdUser->id], false);
+        $this->publicAdministration->users()->sync([$secondUser->id => ['user_email' => $secondUser->email, 'user_status' => UserStatus::INVITED], $thirdUser->id => ['user_email' => $thirdUser->email, 'user_status' => UserStatus::INVITED]], false);
 
         $secondUser->registerAnalyticsServiceAccount();
         $thirdUser->registerAnalyticsServiceAccount();
@@ -767,6 +780,7 @@ class CRUDWebsiteTest extends TestCase
             'status' => UserStatus::PENDING,
             'email_verified_at' => Date::now(),
         ]);
+        $alternativeEmail = $this->faker->unique()->safeEmail;
 
         $this->app->bind('analytics-service', function () use ($user) {
             return $this->partialMock(MatomoService::class, function ($mock) use ($user) {
@@ -801,6 +815,7 @@ class CRUDWebsiteTest extends TestCase
             ])
             ->from(route('websites.index'))
             ->post(route('websites.store.primary'), [
+                'email' => $alternativeEmail,
                 'public_administration_name' => 'PA Test',
                 'url' => 'www.example.local',
                 'ipa_code' => 'fake',

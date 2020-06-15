@@ -12,13 +12,6 @@ use Illuminate\Support\Facades\Lang;
 class PublicAdministrationRegistered extends UserMailable
 {
     /**
-     * The registered public administration.
-     *
-     * @var PublicAdministration the public administration
-     */
-    protected $publicAdministration;
-
-    /**
      * The Javascript tracking code.
      *
      * @var string the tracking code
@@ -34,8 +27,7 @@ class PublicAdministrationRegistered extends UserMailable
      */
     public function __construct(User $recipient, PublicAdministration $publicAdministration, string $javascriptSnippet)
     {
-        parent::__construct($recipient);
-        $this->publicAdministration = $publicAdministration;
+        parent::__construct($recipient, $publicAdministration);
         $this->javascriptSnippet = $javascriptSnippet;
     }
 

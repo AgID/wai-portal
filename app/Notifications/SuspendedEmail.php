@@ -19,6 +19,6 @@ class SuspendedEmail extends UserEmailNotification
      */
     protected function buildEmail($notifiable): Mailable
     {
-        return new Suspended($notifiable);
+        return new Suspended($notifiable, $this->publicAdministration);
     }
 }

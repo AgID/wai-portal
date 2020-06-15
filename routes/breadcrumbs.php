@@ -61,6 +61,12 @@ Breadcrumbs::for('websites.index', function ($trail) {
     $trail->push(__('Siti web'), route('websites.index'));
 });
 
+// Web Analytics Italia > Add public administration
+Breadcrumbs::for('publicAdministrations.add', function ($trail) {
+    $trail->parent('home');
+    $trail->push(__('Aggiungi pubblica amministrazione'), route('publicAdministrations.add'));
+});
+
 // Web Analytics Italia > Websites > Add website
 Breadcrumbs::for('websites.create', function ($trail) {
     $trail->parent('websites.index');

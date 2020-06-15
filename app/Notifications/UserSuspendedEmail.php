@@ -25,6 +25,7 @@ class UserSuspendedEmail extends UserEmailNotification
      */
     public function __construct(User $suspendedUser)
     {
+        parent::__construct();
         $this->suspendedUser = $suspendedUser;
     }
 

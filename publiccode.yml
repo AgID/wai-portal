@@ -1,0 +1,101 @@
+# This repository adheres to the publiccode.yml standard by including this
+# metadata file that makes public software easily discoverable.
+# More info at https://github.com/italia/publiccode.yml
+
+publiccodeYmlVersion: '0.2'
+applicationSuite: Web Analytics Italia
+categories:
+  - data-analytics
+  - data-collection
+  - data-visualization
+  - seo
+  - marketing
+description:
+  it:
+    documentation: 'https://docs.italia.it/agid/wai/wai-user-guide-docs/it/stabile/'
+    features:
+      - monitoraggio delle statistiche dei siti della Pubblica Amministrazione
+      - >-
+        disponibilità di report per capire come migliorare la fruizione delle
+        pagine web
+      - proprietà e controllo completo dei dati e piena aderenza al GDPR
+      - >-
+        disponibilità di strumenti per pubblicare le statistiche dei siti
+        monitorati (ex art. 7 CAD)
+    genericName: Piattaforma di web analytics
+    longDescription: >
+      **Web analytics Italia (WAI)** è una piattaforma nazionale di raccolta e
+      analisi dei dati statistici relativi al traffico dei siti e servizi
+      digitali della Pubblica Amministrazione italiana.
+
+
+      WAI consente di:
+
+
+      - uniformare la raccolta di tali dati;
+
+      - semplificare l'accesso alle statistiche sul traffico e sul comportamento
+      degli utenti che usano siti e servizi digitali istituzionali;
+
+      - fornire agli operatori della PA strumenti ad hoc per agevolare la
+      comprensione di tali informazioni, con l'obiettivo finale di ottimizzare
+      in maniera continua l'esperienza utente.
+
+
+      La piattaforma espone inoltre pubblicamente, e in maniera aggregata,
+      alcuni dei dati che riguardano la fruizione dei servizi digitali della PA
+      da parte dei cittadini.
+    screenshots:
+      - >-
+        https://raw.githubusercontent.com/agid/wai-portal/master/resources/images/wai-screenshot.png
+    shortDescription: >-
+      Web analytics Italia è una piattaforma nazionale di raccolta e analisi dei
+      dati statistici relativi al traffico dei siti web della PA italiana.
+    videos:
+      - 'https://youtu.be/jq7ycSLQE2k'
+developmentStatus: beta
+intendedAudience:
+  countries:
+    - it
+it:
+  conforme:
+    gdpr: true
+    lineeGuidaDesign: true
+    misureMinimeSicurezza: true
+    modelloInteroperabilita: false
+  countryExtensionVersion: '0.2'
+  piattaforme:
+    anpr: false
+    cie: false
+    pagopa: false
+    spid: true
+landingURL: 'https://webanalytics.italia.it/'
+legal:
+  license: AGPL-3.0-or-later
+  mainCopyrightOwner: Agenzia per l'Italia Digitale
+  repoOwner: Agenzia per l'Italia Digitale
+localisation:
+  availableLanguages:
+    - it
+  localisationReady: true
+logo: >-
+  https://raw.githubusercontent.com/agid/wai-portal/master/resources/images/wai-logo.svg
+maintenance:
+  type: contract
+  contacts:
+    - affiliation: Agenzia per l'Italia Digitale
+      email: davide.porrovecchio@agid.gov.it
+      name: Davide Porrovecchio
+  contractors:
+    - name: Indra Italia
+      until: '2021-10-18'
+      website: https://www.indracompany.com/en
+name: Web Analytics Italia - Portale
+platforms:
+  - web
+releaseDate: '2020-05-30'
+softwareType: standalone/web
+softwareVersion: 1.4.1-beta
+url: 'https://github.com/agid/wai-portal'
+usedBy:
+  - Agenzia per l'Italia Digitale

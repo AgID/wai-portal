@@ -35,7 +35,6 @@ class Kernel extends HttpKernel
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
-            \App\Http\Middleware\SelectTenant::class,
             \App\Http\Middleware\ScopeBouncer::class,
         ],
 
@@ -66,8 +65,10 @@ class Kernel extends HttpKernel
     protected $routeMiddleware = [
         'auth.admin' => \App\Http\Middleware\AuthenticateAdmin::class,
         'auth' => \App\Http\Middleware\Authenticate::class,
+        'authorize.public.administrations' => \App\Http\Middleware\AuthorizePublicAdministration::class,
         'authorize.analytics' => \App\Http\Middleware\AuthorizeAnalytics::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
+        'select.tenant' => \App\Http\Middleware\SelectTenant::class,
         'bindings' => \Illuminate\Routing\Middleware\SubstituteBindings::class,
         'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
