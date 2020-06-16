@@ -2,7 +2,7 @@ FROM alpine:latest
 
 LABEL maintainer="Davide Porrovecchio <davide.porrovecchio@agid.gov.it>"
 
-RUN apk --update add curl && rm /var/cache/apk/*
+RUN apk --update add curl patch && rm /var/cache/apk/*
 
 RUN mkdir -p /opt/matomo
 ARG MATOMO_VERSION
@@ -11,6 +11,7 @@ ARG MATOMO_PLUGIN_DISABLESITETRACKING_VERSION
 ARG MATOMO_PLUGIN_QUEUEDTRACKING_VERSION
 ARG MATOMO_PLUGIN_PROTECTTRACKID_VERSION
 ARG MATOMO_PLUGIN_CUSTOMDIMENSIONS_VERSION
+ARG MATOMO_PLUGIN_VISITORGENERATOR_VERSION
 ARG MATOMO_PLUGIN_LOGINFILTERIP_VERSION
 ARG MATOMO_PLUGIN_TRACKERHOSTNAME_VERSION
 ARG MATOMO_INGESTION_HOSTNAME
@@ -21,10 +22,11 @@ RUN curl -fsSL -o matomo.tar.gz \
     && rm matomo.tar.gz
 
 COPY ./config.ini.php /opt/matomo/config/config.ini.php
-COPY ./matomo.sql /opt/matomo-install/matomo.sql
+COPY ./database/matomo*.sql /opt/matomo-install/
 COPY ./install_matomo_db.sh /opt/matomo-install/install_matomo_db.sh
 COPY ./install_plugins_db.sh /opt/matomo-install/install_plugins_db.sh
 COPY ./plugins-sql/* /opt/matomo-install/plugins/
+# COPY ./patches/* /opt/matomo-install/patches/
 
 RUN curl -fsSL -o DBIP-City.mmdb.gz \
         "https://download.db-ip.com/free/dbip-city-lite-`date +%Y-%m`.mmdb.gz" \
@@ -75,6 +77,15 @@ RUN if [ -n "$MATOMO_PLUGIN_CUSTOMDIMENSIONS_VERSION" ]; then \
     && echo "mysql -u root -p@DB_PASSWORD@ < /opt/matomo-install/plugins/custom_dimensions.sql" >> /opt/matomo-install/install_plugins_db.sh \
 ;fi
 
+RUN if [ -n "$MATOMO_PLUGIN_VISITORGENERATOR_VERSION" ]; then \
+    curl -fsSL -o VisitorGenerator.zip \
+        "https://plugins.matomo.org/api/2.0/plugins/VisitorGenerator/download/${MATOMO_PLUGIN_VISITORGENERATOR_VERSION}" \
+    && unzip VisitorGenerator.zip -d /opt/matomo/plugins \
+    && rm -rf VisitorGenerator.zip \
+    && sed -i -E -e 's/(@MATOMO_PLUGINS@)/Plugins[] = "VisitorGenerator"\n\1/g' /opt/matomo/config/config.ini.php \
+    && sed -i -E -e 's/(@MATOMO_PLUGINS_INSTALLED@)/PluginsInstalled[] = "VisitorGenerator"\n\1/g' /opt/matomo/config/config.ini.php \
+;fi
+
 RUN if [ -n "$MATOMO_PLUGIN_LOGINFILTERIP_VERSION" ]; then \
     curl -fsSL -o LoginFilterIp.zip \
         "https://github.com/AgID/wai-matomo-plugin-LoginFilterIp/archive/${MATOMO_PLUGIN_LOGINFILTERIP_VERSION}.zip" \
@@ -120,8 +131,11 @@ RUN sed -i -e s/@DB_PASSWORD@/${DB_PASSWORD}/g /opt/matomo-install/install_matom
 ARG MATOMO_ROOT_USER
 ARG MATOMO_ROOT_PASSWORD
 ARG MATOMO_ROOT_APIKEY
-RUN sed -i -e s/@MATOMO_ROOT_USER@/${MATOMO_ROOT_USER}/g /opt/matomo-install/install_matomo_db.sh && \
+RUN sed -i -e s/@MATOMO_VERSION@/${MATOMO_VERSION}/g /opt/matomo-install/install_matomo_db.sh && \
+    sed -i -e s/@MATOMO_ROOT_USER@/${MATOMO_ROOT_USER}/g /opt/matomo-install/install_matomo_db.sh && \
     sed -i -e s/@MATOMO_DB_USER@/${MATOMO_DB_USER}/g /opt/matomo-install/install_matomo_db.sh && \
     sed -i -e s/@MATOMO_DB_PASSWORD@/${MATOMO_DB_PASSWORD}/g /opt/matomo-install/install_matomo_db.sh && \
     sed -i -e s#@MATOMO_ROOT_PASSWORD@#${MATOMO_ROOT_PASSWORD}#g /opt/matomo-install/install_matomo_db.sh && \
     sed -i -e s/@MATOMO_ROOT_APIKEY@/${MATOMO_ROOT_APIKEY}/g /opt/matomo-install/install_matomo_db.sh
+
+# RUN find -P /opt/matomo-install/patches -name *.diff -exec sh -c 'patch -p1 -d /opt/matomo/ < {}' \;

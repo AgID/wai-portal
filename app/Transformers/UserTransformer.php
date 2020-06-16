@@ -26,14 +26,18 @@ class UserTransformer extends TransformerAbstract
         $authUser = auth()->user();
         $authUserCanAccessAdminArea = $authUser->can(UserPermission::ACCESS_ADMIN_AREA);
 
-        return Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user, $publicAdministration, $authUser, $authUserCanAccessAdminArea) {
+        $publicAdministrationUser = $user->publicAdministrationsWithSuspended()->where('public_administration_id', $publicAdministration->id)->first();
+        $statusPublicAdministrationUser = UserStatus::coerce(intval($publicAdministrationUser->pivot->user_status));
+        $emailPublicAdministrationUser = $publicAdministrationUser->pivot->user_email;
+
+        return Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user, $publicAdministration, $authUser, $authUserCanAccessAdminArea, $statusPublicAdministrationUser, $emailPublicAdministrationUser) {
             $data = [
                 'name' => [
                     'display' => implode('', [
                         '<div class="d-flex align-items-center">',
                         '<div class="avatar size-lg mr-2">',
                         implode('', [
-                            '<img src="https://www.gravatar.com/avatar/' . md5(strtolower(trim(e($user->email)))) . '?d=' . (e($user->email) ? 'identicon' : 'mp') . '"',
+                            '<img src="https://www.gravatar.com/avatar/' . md5(strtolower(trim(e($emailPublicAdministrationUser)))) . '?d=' . (e($emailPublicAdministrationUser) ? 'identicon' : 'mp') . '"',
                             'alt="' . e($user->full_name) . '">',
                         ]),
                         '</div>',
@@ -46,11 +50,11 @@ class UserTransformer extends TransformerAbstract
                     ]),
                     'raw' => e($user->full_name),
                 ],
-                'email' => e($user->email),
+                'email' => e($emailPublicAdministrationUser),
                 'added_at' => $user->created_at->format('d/m/Y'),
                 'status' => [
-                    'display' => '<span class="badge user-status ' . strtolower($user->status->key) . '">' . strtoupper($user->status->description) . '</span>',
-                    'raw' => $user->status->description,
+                    'display' => '<span class="badge user-status ' . strtolower($statusPublicAdministrationUser->key) . '">' . strtoupper($statusPublicAdministrationUser->description) . '</span>',
+                    'raw' => $statusPublicAdministrationUser->description,
                 ],
                 'buttons' => [],
                 'icons' => [],
@@ -79,7 +83,7 @@ class UserTransformer extends TransformerAbstract
                     'title' => __('modifica'),
                 ];
 
-                if ($user->status->is(UserStatus::SUSPENDED)) {
+                if ($statusPublicAdministrationUser->is(UserStatus::SUSPENDED)) {
                     $data['icons'][] = [
                         'icon' => 'it-exchange-circle',
                         'link' => $authUserCanAccessAdminArea
@@ -93,12 +97,12 @@ class UserTransformer extends TransformerAbstract
                         'dataAttributes' => [
                             'user-name' => e($user->full_name),
                             'type' => 'userSuspendReactivate',
-                            'current-status-description' => $user->status->description,
-                            'current-status' => $user->status->key,
+                            'current-status-description' => $statusPublicAdministrationUser->description,
+                            'current-status' => $statusPublicAdministrationUser->key,
                             'ajax' => true,
                         ],
                     ];
-                } elseif (!$user->status->is(UserStatus::INVITED) && !$user->isTheLastActiveAdministratorOf($publicAdministration)) {
+                } elseif (!$statusPublicAdministrationUser->is(UserStatus::INVITED) && !$user->isTheLastActiveAdministratorOf($publicAdministration)) {
                     $data['icons'][] = [
                         'icon' => 'it-close-circle',
                         'link' => $authUserCanAccessAdminArea
@@ -112,33 +116,16 @@ class UserTransformer extends TransformerAbstract
                         'dataAttributes' => [
                             'user-name' => e($user->full_name),
                             'type' => 'userSuspendReactivate',
-                            'current-status-description' => $user->status->description,
-                            'current-status' => $user->status->key,
+                            'current-status-description' => $statusPublicAdministrationUser->description,
+                            'current-status' => $statusPublicAdministrationUser->key,
                             'ajax' => true,
                         ],
                     ];
                 }
             }
 
-            if (!$user->status->is(UserStatus::PENDING) && $authUserCanAccessAdminArea) {
-                if ($user->trashed()) {
-                    $data['status'] = '';
-                    $data['trashed'] = true;
-                    $data['buttons'][] = [
-                        'link' => route('admin.publicAdministration.users.restore', [
-                            'publicAdministration' => $publicAdministration,
-                            'trashed_user' => $user,
-                        ]),
-                        'label' => __('ripristina'),
-                        'color' => 'warning',
-                        'dataAttributes' => [
-                            'user-name' => e($user->full_name),
-                            'type' => 'userDeleteRestore',
-                            'trashed' => true,
-                            'ajax' => true,
-                        ],
-                    ];
-                } elseif ($user->uuid !== $authUser->uuid && !$user->isTheLastActiveAdministratorOf($publicAdministration)) {
+            if (!$statusPublicAdministrationUser->is(UserStatus::PENDING) && $authUserCanAccessAdminArea) {
+                if ($user->uuid !== $authUser->uuid && !$user->isTheLastActiveAdministratorOf($publicAdministration)) {
                     $data['buttons'][] = [
                         'link' => route('admin.publicAdministration.users.delete', [
                             'publicAdministration' => $publicAdministration,
@@ -148,7 +135,7 @@ class UserTransformer extends TransformerAbstract
                         'color' => 'danger',
                         'dataAttributes' => [
                             'user-name' => e($user->full_name),
-                            'type' => 'userDeleteRestore',
+                            'type' => 'userDelete',
                             'ajax' => true,
                         ],
                     ];

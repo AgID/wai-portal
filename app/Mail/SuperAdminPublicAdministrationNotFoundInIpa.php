@@ -2,8 +2,6 @@
 
 namespace App\Mail;
 
-use App\Models\PublicAdministration;
-use App\Models\User;
 use Illuminate\Support\Facades\Lang;
 
 /**
@@ -11,25 +9,6 @@ use Illuminate\Support\Facades\Lang;
  */
 class SuperAdminPublicAdministrationNotFoundInIpa extends UserMailable
 {
-    /**
-     * The public administration missing in iPA.
-     *
-     * @var PublicAdministration the public administration
-     */
-    protected $publicAdministration;
-
-    /**
-     * Default constructor.
-     *
-     * @param User $recipient the recipient
-     * @param PublicAdministration $publicAdministration the missing public administration
-     */
-    public function __construct(User $recipient, PublicAdministration $publicAdministration)
-    {
-        parent::__construct($recipient);
-        $this->publicAdministration = $publicAdministration;
-    }
-
     /**
      * Build the message.
      *

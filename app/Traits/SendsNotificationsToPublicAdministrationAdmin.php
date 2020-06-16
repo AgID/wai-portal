@@ -168,7 +168,7 @@ trait SendsNotificationsToPublicAdministrationAdmin
     public function sendWebsitePurgedNotificationToAdministrators($website): void
     {
         $this->getActiveAdministrators()->each(function (User $administrator) use ($website) {
-            $administrator->notify(new UserWebsitePurgedEmail($website));
+            $administrator->notify(new UserWebsitePurgedEmail($website, $this));
         });
     }
 

@@ -1,5 +1,5 @@
 Hello {{ $user->name }},
 
-your account on [{{ config('app.name') }}]({{ url('/') }}) has been reactivated.
+your account for {{ $publicAdministration->name }} on [{{ config('app.name') }}]({{ url('/') }}) has been reactivated.
 
 You can access the platform again.

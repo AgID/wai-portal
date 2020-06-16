@@ -19,13 +19,6 @@ class UserInvited extends UserMailable
     private $invitedUser;
 
     /**
-     * The public administration the invited user belongs to.
-     *
-     * @var \App\Models\PublicAdministration
-     */
-    private $publicAdministration;
-
-    /**
      * Create a new mail message instance.
      *
      * @param User $recipient the mail recipient
@@ -34,9 +27,8 @@ class UserInvited extends UserMailable
      */
     public function __construct(User $recipient, User $invitedUser, PublicAdministration $publicAdministration)
     {
-        parent::__construct($recipient);
+        parent::__construct($recipient, $publicAdministration);
         $this->invitedUser = $invitedUser;
-        $this->publicAdministration = $publicAdministration;
     }
 
     /**

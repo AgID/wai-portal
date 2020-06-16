@@ -7,7 +7,7 @@
     ])
 
     <div class="position-relative">
-        <div class="page-bulk-container">
+        <div class="page-bulk-container {{ ($wideLayout ?? false) ? 'wide-layout' : '' }}">
             <div id="main" role="main">
                 @yield('before-title')
 

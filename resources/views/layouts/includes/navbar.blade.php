@@ -13,7 +13,7 @@
                         <div class="close-div sr-only">
                             <button class="btn close-menu" type="button"><span class="it-close"></span>{{ __('chiudi') }}</button>
                         </div>
-                        <div class="menu-wrapper">
+                        <div class="menu-wrapper align-items-center">
                             @if ($authUser || $spidAuthUser)
                             <ul class="navbar-nav primary">
                                 @foreach ($primaryMenuArray as $primaryMenuItem)
@@ -27,7 +27,11 @@
                                 @endforeach
                             </ul>
                             @endif
-                            @unless($isSuperAdmin)
+                            @if ($publicAdministrationShowSelector)
+                            <div class="col-lg-4 ml-auto">
+                                @include('layouts.includes.public_administration_selector')
+                            </div>
+                            @else
                             <ul class="navbar-nav secondary ml-auto">
                                 @foreach (config('site.menu_items.secondary') as $secondaryMenuItem)
                                 <li class="nav-item">
@@ -37,24 +41,7 @@
                                 </li>
                                 @endforeach
                             </ul>
-                            @else
-                            <div class="col-lg-4 ml-auto">
-                                <div class="input-group flex-nowrap">
-                                    <div class="input-group-prepend">
-                                        <div class="input-group-text border-0 rounded-left"><svg class="icon icon-sm"><use xlink:href="{{ asset('svg/sprite.svg#it-pa') }}"></use></svg></div>
-                                    </div>
-                                    <div class="bootstrap-select-wrapper rounded-right w-100">
-                                        <select title="Scegli un'amministrazione" id="public-administration-nav" name="public-administration-nav" data-live-search="true" data-live-search-placeholder="Cerca...">
-                                            @foreach($publicAdministrationSelectorArray as $publicAdministrationsSelectorOption)
-                                            <option value="{{ $publicAdministrationsSelectorOption['url'] }}" {{ $publicAdministrationsSelectorOption['ipa_code'] === session('super_admin_tenant_ipa_code') ? "selected" : "" }}>
-                                                {{ $publicAdministrationsSelectorOption['name'] }}
-                                            </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            @endunless
+                            @endif
                         </div>
                     </div>
                 </nav>

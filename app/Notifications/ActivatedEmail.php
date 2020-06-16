@@ -19,6 +19,6 @@ class ActivatedEmail extends UserEmailNotification
      */
     protected function buildEmail($notifiable): Mailable
     {
-        return new Activated($notifiable);
+        return new Activated($notifiable, $this->publicAdministration);
     }
 }

@@ -4,6 +4,9 @@ find -P /tmp/premium_plugins/* -prune -type d -printf "%f\n" | while IFS= read -
     # Extract plugin code
     unzip -u "/tmp/premium_plugins/$directory/*.zip" -d /opt/matomo/plugins
 
+    # Apply patches
+    #find -P /tmp/premium_plugins/"$directory"/patches/*.diff -exec sh -c "patch -p1 -d /opt/matomo/plugins/$directory < {}" \;
+
     if ! grep -q "$directory" /opt/matomo/config/config.ini.php; then
         # Add plugin into "installed" list
         sed -i -E -e "/^PluginsInstalled\[\] = .*$/!b;:a;n;//ba;i\PluginsInstalled\[\] = \"$directory\"" /opt/matomo/config/config.ini.php

@@ -35,6 +35,7 @@ class UserWebsiteArchivedEmail extends UserEmailNotification
      */
     public function __construct(Website $website, bool $manually)
     {
+        parent::__construct();
         $this->website = $website;
         $this->manually = $manually;
     }

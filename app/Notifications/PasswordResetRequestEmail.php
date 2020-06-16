@@ -24,6 +24,8 @@ class PasswordResetRequestEmail extends UserEmailNotification
      */
     public function __construct(string $token)
     {
+        parent::__construct();
+
         $this->token = $token;
     }
 

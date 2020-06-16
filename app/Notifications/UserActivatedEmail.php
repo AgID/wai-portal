@@ -25,6 +25,7 @@ class UserActivatedEmail extends UserEmailNotification
      */
     public function __construct(User $activatedUser)
     {
+        parent::__construct();
         $this->activatedUser = $activatedUser;
     }
 

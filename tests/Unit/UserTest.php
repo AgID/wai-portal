@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Unit;
 
 use App\Models\PasswordResetToken;
 use App\Models\PublicAdministration;
@@ -47,6 +47,7 @@ class UserTest extends TestCase
 
     /**
      * Test user soft delete and restore routine.
+     * Not used anymore.
      *
      * @throws \Exception
      */
