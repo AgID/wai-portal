@@ -268,6 +268,7 @@ class CRUDWebsiteTest extends TestCase
             'status' => UserStatus::PENDING,
             'email_verified_at' => Date::now(),
         ]);
+        $alternativeEmail = $this->faker->unique()->safeEmail;
         $this->actingAs($user)
             ->withSession([
                 'spid_sessionIndex' => 'fake-session-index',
@@ -275,6 +276,7 @@ class CRUDWebsiteTest extends TestCase
             ])
             ->from(route('websites.create.primary.custom'))
             ->post(route('websites.store.primary'), [
+                'email' => $alternativeEmail,
                 'public_administration_name' => 'Pubblica amministrazione personalizzata',
                 'url' => 'https://www.pubblica-amministrazione.personalizzata.it',
                 'city' => 'Roma',
@@ -361,7 +363,7 @@ class CRUDWebsiteTest extends TestCase
         ]);
 
         $user->registerAnalyticsServiceAccount();
-        $this->customPublicAdministration->users()->sync([$user->id]);
+        $this->customPublicAdministration->users()->sync([$user->id => ['user_status' => UserStatus::PENDING]]);
 
         $this->assertTrue($this->customWebsite->status->is(WebsiteStatus::PENDING));
 

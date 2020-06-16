@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use App\Enums\UserRole;
+use App\Enums\UserStatus;
 use App\Enums\WebsiteStatus;
 use App\Enums\WebsiteType;
 use App\Events\PublicAdministration\PublicAdministrationRegistered;
@@ -16,7 +17,7 @@ trait ManagePublicAdministrationRegistration
 {
     use InteractsWithRedisIndex;
 
-    protected function registerPublicAdministration(User $user, PublicAdministration $publicAdministration, string $url, bool $custom = false): Website
+    protected function registerPublicAdministration(User $user, PublicAdministration $publicAdministration, string $url, bool $custom = false, $userEmail): Website
     {
         $analyticsId = app()->make('analytics-service')->registerSite(__('Sito istituzionale'), $url, $publicAdministration->name);
 
@@ -31,7 +32,7 @@ trait ManagePublicAdministrationRegistration
             'status' => WebsiteStatus::PENDING,
         ]);
 
-        $publicAdministration->users()->save($user);
+        $publicAdministration->users()->save($user, ['user_email' => $userEmail, 'user_status' => UserStatus::PENDING]);
         // This is the first time we know which public administration the
         // current user belongs, so we need to set the tenant id just now.
         session()->put('tenant_id', $publicAdministration->id);

@@ -192,6 +192,9 @@
             </div>
         </div>
         <div class="col-md-5 text-serif d-flex align-items-center">
+
+            @unless($customForm)
+
             <div id="primary_website_missing" class="callout callout-highlight danger d-none">
                 <div class="callout-title">
                     <svg class="icon icon-sm"><use xlink:href="{{ asset('svg/sprite.svg#it-close-circle') }}"></use></svg>
@@ -249,6 +252,21 @@
                     ]) !!}
                 </p>
             </div>
+
+            @else
+
+            <div class="callout callout-highlight success ">
+                <div class="callout-title">
+                     <svg class="icon icon-sm"><use xlink:href="{{ asset('svg/sprite.svg#it-warning-circle') }}"></use></svg>
+                    {{ __('attenzione') }}
+                </div>
+                <p>
+                    {!! __("Utilizzeremo le informazioni da te fornite per la creazione di una pubblica amministrazione personalizzata.") !!}
+                </p>
+            </div>
+
+            @endunless
+
         </div>
     </div>
     <div class="form-row">

@@ -280,12 +280,14 @@ class PublicAdministrationEventsSubscriberTest extends TestCase
             function ($notification, $channels) {
                 $this->assertEquals($channels, ['mail']);
                 $mail = $notification->toMail($this->user)->build();
+                $userEmailAddress = $this->user->publicAdministrations
+                    ->where('id', $this->publicAdministration->id)->first()->pivot->user_email;
                 $this->assertEquals($this->user->uuid, $mail->viewData['user']['uuid']);
                 $this->assertEquals($this->publicAdministration->ipa_code, $mail->viewData['publicAdministration']['ipa_code']);
                 $this->assertEquals('fakesnippet', $mail->viewData['javascriptSnippet']);
                 $this->assertEquals($mail->subject, __('Pubblica amministrazione registrata'));
 
-                return $mail->hasTo($this->user->email, $this->user->full_name);
+                return $mail->hasTo($userEmailAddress, $this->user->full_name);
             }
         );
 
