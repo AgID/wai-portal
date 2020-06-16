@@ -58,6 +58,8 @@ intendedAudience:
   countries:
     - it
 it:
+  riuso:
+    codiceIPA: agid
   conforme:
     gdpr: true
     lineeGuidaDesign: true
