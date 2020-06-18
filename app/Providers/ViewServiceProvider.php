@@ -61,7 +61,8 @@ class ViewServiceProvider extends ServiceProvider
                     [
                         'syntax' => CarbonInterface::DIFF_ABSOLUTE,
                         'options' => Carbon::JUST_NOW | Carbon::ONE_DAY_WORDS | Carbon::TWO_DAY_WORDS,
-                        'part' => 2,
+                        'parts' => 2,
+                        'join' => true,
                         'aUnit' => true,
                     ]
                 )
