@@ -23,7 +23,7 @@ class PublicAdministrationsTransformer extends TransformerAbstract
     {
         $authUser = auth()->user();
 
-        $statusPublicAdministrationUser = UserStatus::coerce(intval($publicAdministration->pivot->user_status));
+        $statusPublicAdministrationUser = UserStatus::fromValue(intval($publicAdministration->pivot->user_status));
         $emailPublicAdministrationUser = $publicAdministration->pivot->user_email;
 
         $data = [

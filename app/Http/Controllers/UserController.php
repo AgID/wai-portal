@@ -311,7 +311,7 @@ class UserController extends Controller
             return $this->notModifiedResponse();
         }
 
-        $userPublicAdministrationStatus = UserStatus::coerce(intval($publicAdministrationUser->pivot->user_status));
+        $userPublicAdministrationStatus = UserStatus::fromValue(intval($publicAdministrationUser->pivot->user_status));
 
         try {
             if ($userPublicAdministrationStatus->is(UserStatus::PENDING)) {
@@ -354,7 +354,7 @@ class UserController extends Controller
         $publicAdministration = ($publicAdministration->id ?? false) ? $publicAdministration : current_public_administration();
         $publicAdministrationUser = $user->publicAdministrationsWithSuspended()->where('public_administration_id', $publicAdministration->id)->first();
 
-        $userPublicAdministrationStatus = UserStatus::coerce(intval($publicAdministrationUser->pivot->user_status));
+        $userPublicAdministrationStatus = UserStatus::fromValue(intval($publicAdministrationUser->pivot->user_status));
 
         if ($userPublicAdministrationStatus->is(UserStatus::SUSPENDED)) {
             return $this->notModifiedResponse();
@@ -410,7 +410,7 @@ class UserController extends Controller
     {
         $publicAdministration = ($publicAdministration->id ?? false) ? $publicAdministration : current_public_administration();
         $publicAdministrationUser = $user->publicAdministrationsWithSuspended()->where('public_administration_id', $publicAdministration->id)->first();
-        $userPublicAdministrationStatus = UserStatus::coerce(intval($publicAdministrationUser->pivot->user_status));
+        $userPublicAdministrationStatus = UserStatus::fromValue(intval($publicAdministrationUser->pivot->user_status));
 
         if (!$userPublicAdministrationStatus->is(UserStatus::SUSPENDED)) {
             return $this->notModifiedResponse();

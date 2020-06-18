@@ -140,40 +140,6 @@
                 </div>
             </div>
             <div class="form-row">
-                <div class="form-group col">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <div class="input-group-text"><svg class="icon icon-sm"><use xlink:href="{{ asset('svg/sprite.svg#it-map-marker') }}"></use></svg></div>
-                        </div>
-                        <label for="county">{{ __('Provincia') }}</label>
-                        <input type="text" class="form-control{{ $errors->has('county') ? ' is-invalid' : '' }}" id="county" name="county" value="{{ old('county') }}" required>
-                        @error('county')
-                        <div class="invalid-feedback">{{ $errors->first('county') }}</div>
-                        @else
-                        <div class="invalid-feedback">{{ __('validation.required', ['attribute' => __('validation.attributes.county')]) }}</div>
-                        @enderror
-                    </div>
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group col">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <div class="input-group-text"><svg class="icon icon-sm"><use xlink:href="{{ asset('svg/sprite.svg#it-map-marker') }}"></use></svg></div>
-                        </div>
-                        <label for="region">{{ __('Regione') }}</label>
-                        <input type="text" class="form-control{{ $errors->has('region') ? ' is-invalid' : '' }}" id="region" name="region" value="{{ old('region') }}" required>
-                        @error('region')
-                        <div class="invalid-feedback">{{ $errors->first('region') }}</div>
-                        @else
-                        <div class="invalid-feedback">{{ __('validation.required', ['attribute' => __('validation.attributes.region')]) }}</div>
-                        @enderror
-                    </div>
-                </div>
-            </div>
-
-            @endif
-            <div class="form-row">
                 <div class="form-group col has-form-text ">
                     <div class="input-group">
                         <div class="input-group-prepend">
