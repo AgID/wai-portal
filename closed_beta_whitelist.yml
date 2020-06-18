@@ -1,5 +1,15 @@
 - pcm # Presidenza del Consiglio dei Ministri
-- agid # Agenzia per l'Italia Digitale
+- m_ae # Ministero degli Affari Esteri e della Cooperazione Internazionale
+- m_lps # Ministero del Lavoro e delle Politiche Sociali
+- m_amte # Ministero dell'Ambiente e della Tutela del Territorio e del Mare
+- m_ef # Ministero dell'Economia e delle Finanze
+- m_it # Ministero dell'Interno
+- m_d # Ministero della Difesa
+- m_dg # Ministero della Giustizia
+- m_inf # Ministero delle Infrastrutture e dei Trasporti
+- m_paf # Ministero delle politiche agricole, alimentari e forestali
+- m_svec # Ministero dello Sviluppo Economico
+- m_bac # Ministero per i beni e le attivita' culturali e per il turismo
 - m_pi # MIUR
 - m_lps # Ministero del Lavoro
 - m_sa # Ministero della Salute
@@ -7,6 +17,14 @@
 - istat # ISTAT
 - ice_rm # ICE
 - alct # Agenzia Coesione Territoriale
+- agid # Agenzia per l'Italia Digitale
+- agdogane # Agenzia delle Dogane e dei Monopoli
+- AEEG # Autorita' di Regolazione per Energia Reti e Ambiente
+- agcom #Autorita' per le Garanzie nelle Comunicazioni - AGCOM
+- inps # Istituto Nazionale di Previdenza Sociale - INPS
+- IVsAPIC # IVASS - Istituto per la Vigilanza sulle Assicurazioni
+- UICCIAA # Unione Italiana delle Camere di Commercio Industria, Artigianato e Agricoltura
+- cvtiap # Autorita' Nazionale Anticorruzione - A.N.AC.
 
 - r_emiro # Regione Emilia Romagna
 - regcal # Regione Calabria
@@ -17,17 +35,53 @@
 - r_vda # Regione Valle d'Aosta
 - p_bz # Provincia Autonoma di Bolzano
 - p_tn # Provincia di Trento
+- r_abruzz # Regione Abruzzo
+- r_sardeg # Regione Autonoma della Sardegna
+- r_friuve # Regione Friuli Venezia Giulia
+- r_trenti # Regione Autonoma Trentino-Alto Adige/Suedtirol
+- r_basili # Regione Basilicata
+- r_lazio # Regione Lazio
+- r_liguri # Regione Liguria
+- r_marche # Regione Marche
+- r_molise # Regione Molise
+- r_piemon # Regione Piemonte
+- r_sicili # Regione Siciliana
+- r_toscan # Regione Toscana
+- r_umbria # Regione Umbria
+
 - csi_piem # CSI Piemonte
 - data # Liguria Digitale
 
 - cmge # Città Metropolitana di Genova
 - cmdrc # Città Metropolitana di Reggio Calabria
 - cmna # Città metropolitana di Napoli
+- cmdca # Città metropolitana di Cagliari
+- cmct # Città metropolitana di Catania 
+- cmfi # Città metropolitana di Firenze
+- cm_me # Città metropolitana di Messina
+- cmmi # Città metropolitana di Milano
+- cmrc # Città metropolitana di Roma Capitale
+- cmto # Città metropolitana di Torino
+- p_ve # Città metropolitana di Venezia
+- cmba # Città metropolitana di Bari 
+- cmbo # Città metropolitana di Bologna
+- p_pa # Città metropolitana di Palermo 
+
 - c_a944 # Comune di Bologna
 - c_g273 # Comune di Palermo
 - c_a662 # Comune di Bari
 - c_f839 # Comune di Napoli
 - c_d612 # Comune Firenze
+- c_d969 # Comune di Genova 
+- c_h224 # Comune di Reggio Calabria
+- c_c351 # Comune di Catania
+- c_f158 # Comune di Messina
+- c_f205 # Comune di Milano
+- c_h501 # Comune di Roma
+- c_l219 # Comune di Torino
+- c_l736 # Comune di Venezia
+- c_b354 # Comune di Cagliari
+
 - c_d467 # Comune di Fagnano Olona
 
 - unive # Università Ca Foscari
@@ -35,3 +89,6 @@
 - ingv # Istituto Nazionale di Geofisica e Vulcanologia
 
 - ifo_058 # IFO Regina Elena San Gallicano
+
+- inail # Istituto Nazionale per l'Assicurazione contro gli Infortuni sul Lavoro - INAIL
+- aci # Automobil Club Italia - ACI 
