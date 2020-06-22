@@ -93,7 +93,7 @@ class WebsiteController extends Controller
      */
     public function custom()
     {
-        return view('pages.websites.add_custom');
+        return view('pages.pa.add')->with('customForm', true);
     }
 
     /**
