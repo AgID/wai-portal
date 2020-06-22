@@ -210,7 +210,6 @@ class WebsiteController extends Controller
      */
     public function show(PublicAdministration $publicAdministration, Website $website): View
     {
-
         $currentPublicAdministration = auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)
         ? $publicAdministration
         : current_public_administration();
@@ -232,14 +231,15 @@ class WebsiteController extends Controller
 
         $authUser = auth()->user();
         $publicAdministrationUser = $authUser->publicAdministrations()->where('public_administration_id', $currentPublicAdministration->id)->first();
-        if($publicAdministrationUser){
+        if ($publicAdministrationUser) {
             $userPublicAdministrationStatus = UserStatus::fromValue(intval($publicAdministrationUser->pivot->user_status));
         }
         $forceButtonVisible = !app()->environment('production') && config('wai.custom_public_administrations', false) && $website->type->is(WebsiteType::INSTITUTIONAL_PLAY);
+
         return view('pages.websites.show')->with(compact('website'))->with($roleAwareUrls)
             ->with($usersPermissionsDatatable)
-            ->with('forceButtonVisible', $forceButtonVisible )
-            ->with('userPublicAdministrationStatus',$userPublicAdministrationStatus ?? null);
+            ->with('forceButtonVisible', $forceButtonVisible)
+            ->with('userPublicAdministrationStatus', $userPublicAdministrationStatus ?? null);
     }
 
     /**
