@@ -1,4 +1,4 @@
-@extends('layouts.page', ['graphicBackground' => true])
+@extends('layouts.page_bulk', ['wideLayout' => true])
 
 @section('title', __('Siti web'))
 @section('title-description')
@@ -6,7 +6,6 @@
 @endsection
 
 @section('content')
-    @component('layouts.components.box', ['classes' => 'rounded'])
     @include('pages.websites.partials.add_primary', ['customForm' => true])
-    @endcomponent
+    @include('pages.pa.partials.buttons')
 @endsection
