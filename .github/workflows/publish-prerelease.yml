@@ -12,9 +12,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Pre
-        run: |
-          echo ${{ secrets.DOCKER_USERNAME }} - ${{ secrets.DOCKER_TOKEN }}
+      #- name: Pre
+      #  run: |
+      #    echo ${{ secrets.DOCKER_USERNAME }} - ${{ secrets.DOCKER_TOKEN }}
       - name: Checkout code
         uses: actions/checkout@v1
       - name: Build image
