@@ -81,3 +81,4 @@
     </div>
 </footer>
 <!-- End Footer -->
+@include('layouts.includes.feedback')

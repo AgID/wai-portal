@@ -10,6 +10,12 @@
     }
   }
 
+  &.bd-feedback-modal-lg {
+    .rating > legend {
+      float: left;
+    }
+  }
+
   @include media-breakpoint-down(xs) {
     .modal-content {
       height: 100%;
