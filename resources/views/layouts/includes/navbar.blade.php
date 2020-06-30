@@ -33,6 +33,9 @@
                             </div>
                             @else
                             <ul class="navbar-nav secondary ml-auto">
+                                <li class="nav-item">
+                                    <a class="nav-link" data-toggle="modal" data-target=".bd-feedback-modal-lg" ><span>Aiutaci a migliorare questa pagina</span></a>
+                                </li>
                                 @foreach (config('site.menu_items.secondary') as $secondaryMenuItem)
                                 <li class="nav-item">
                                     <a class="nav-link{{ request()->route()->named($secondaryMenuItem['route']) ? ' active' : '' }}" href="{{ route($secondaryMenuItem['route']) }}">
