@@ -1,13 +1,12 @@
 name: Publish release Docker image
-
 on:
   release:
     types: [published]
 env:
   PHP_VERSION: 7.3
   IMAGE_TAG: stable
-  ORGANIZATION: AgID
-  REGISTRY: https://index.docker.io/v1/
+  IMAGE_NAME: wai-portal
+  ORGANIZATION: webanalyticsitalia
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -15,19 +14,19 @@ jobs:
       - name: Set release image tag
         run: echo ::set-env name=RELEASE_TAG::$(echo ${{ github.ref }} | cut -c11-)
       - name: Checkout code
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
       - name: Build image
         if: success()
-        run: docker build --no-cache --rm -f ${{ github.workspace }}/Dockerfile.portal --build-arg PHP_VERSION=$PHP_VERSION -t $ORGANIZATION/wai-portal:$IMAGE_TAG ${{ github.workspace }}
+        run: docker build --no-cache --rm -f ${{ github.workspace }}/Dockerfile.portal --build-arg PHP_VERSION=$PHP_VERSION -t $ORGANIZATION/$IMAGE_NAME:$IMAGE_TAG ${{ github.workspace }}
       - name: Apply release tag
         if: success()
-        run: docker tag $ORGANIZATION/wai-portal:$IMAGE_TAG $ORGANIZATION/wai-portal:$RELEASE_TAG
+        run: docker tag $ORGANIZATION/$IMAGE_NAME:$IMAGE_TAG $ORGANIZATION/$IMAGE_NAME:$RELEASE_TAG
       - name: Push image
         if: success()
         run: |
-          docker login --username ${{ secrets.DOCKER_USERNAME }} --password ${{ secrets.DOCKER_TOKEN }} $REGISTRY
-          docker push $ORGANIZATION/wai-portal:$RELEASE_TAG
-          docker push $ORGANIZATION/wai-portal:$IMAGE_TAG
+          docker login --username ${{ secrets.DOCKER_USERNAME }} --password ${{ secrets.DOCKER_TOKEN }}
+          docker push $ORGANIZATION/$IMAGE_NAME:$RELEASE_TAG
+          docker push $ORGANIZATION/$IMAGE_NAME:$IMAGE_TAG
       - name: Docker logout
         if: always()
         run: docker logout
