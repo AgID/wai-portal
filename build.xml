@@ -126,6 +126,7 @@
                     <token key="MATOMO_PLUGIN_LOGINFILTERIP_VERSION" value="${MATOMO_PLUGIN_LOGINFILTERIP_VERSION}" />
                     <token key="MATOMO_PLUGIN_VISITORGENERATOR_VERSION" value="${MATOMO_PLUGIN_VISITORGENERATOR_VERSION}" />
                     <token key="MATOMO_PLUGIN_TRACKERHOSTNAME_VERSION" value="${MATOMO_PLUGIN_TRACKERHOSTNAME_VERSION}" />
+                    <token key="MATOMO_PLUGIN_RESETDATABASE_VERSION" value="${MATOMO_PLUGIN_RESETDATABASE_VERSION}" />
                     <token key="MATOMO_INGESTION_HOSTNAME" value="${MATOMO_INGESTION_HOSTNAME}" />
                 </replacetokens>
             </filterchain>
@@ -626,6 +627,7 @@
             --build-arg MATOMO_PLUGIN_CUSTOMDIMENSIONS_VERSION=${MATOMO_PLUGIN_CUSTOMDIMENSIONS_VERSION}
             --build-arg MATOMO_PLUGIN_LOGINFILTERIP_VERSION=${MATOMO_PLUGIN_LOGINFILTERIP_VERSION}
             --build-arg MATOMO_PLUGIN_TRACKERHOSTNAME_VERSION=${MATOMO_PLUGIN_TRACKERHOSTNAME_VERSION}
+            --build-arg MATOMO_PLUGIN_RESETDATABASE_VERSION=${MATOMO_PLUGIN_RESETDATABASE_VERSION}
             -t matomo-codebase:${MATOMO_IMAGE_TAG} ."
             dir="containers/matomo" passthru="true" checkreturn="true"/>
         <exec command="docker build --no-cache --rm -f Dockerfile.matomo

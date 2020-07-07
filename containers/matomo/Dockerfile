@@ -14,6 +14,7 @@ ARG MATOMO_PLUGIN_CUSTOMDIMENSIONS_VERSION
 ARG MATOMO_PLUGIN_VISITORGENERATOR_VERSION
 ARG MATOMO_PLUGIN_LOGINFILTERIP_VERSION
 ARG MATOMO_PLUGIN_TRACKERHOSTNAME_VERSION
+ARG MATOMO_PLUGIN_RESETDATABASE_VERSION
 ARG MATOMO_INGESTION_HOSTNAME
 
 RUN curl -fsSL -o matomo.tar.gz \
@@ -84,6 +85,16 @@ RUN if [ -n "$MATOMO_PLUGIN_VISITORGENERATOR_VERSION" ]; then \
     && rm -rf VisitorGenerator.zip \
     && sed -i -E -e 's/(@MATOMO_PLUGINS@)/Plugins[] = "VisitorGenerator"\n\1/g' /opt/matomo/config/config.ini.php \
     && sed -i -E -e 's/(@MATOMO_PLUGINS_INSTALLED@)/PluginsInstalled[] = "VisitorGenerator"\n\1/g' /opt/matomo/config/config.ini.php \
+;fi
+
+RUN if [ -n "$MATOMO_PLUGIN_RESETDATABASE_VERSION" ]; then \
+    curl -fsSL -o ResetDatabase.zip \
+        "https://github.com/AgID/wai-matomo-plugin-ResetDatabase/archive/${MATOMO_PLUGIN_RESETDATABASE_VERSION}.zip" \
+    && unzip ResetDatabase.zip -d /opt/matomo/plugins \
+    && mv /opt/matomo/plugins/wai-matomo-plugin-ResetDatabase-${MATOMO_PLUGIN_RESETDATABASE_VERSION} /opt/matomo/plugins/ResetDatabase \
+    && rm -rf ResetDatabase.zip \
+    && sed -i -E -e 's/(@MATOMO_PLUGINS@)/Plugins[] = "ResetDatabase"\n\1/g' /opt/matomo/config/config.ini.php \
+    && sed -i -E -e 's/(@MATOMO_PLUGINS_INSTALLED@)/PluginsInstalled[] = "ResetDatabase"\n\1/g' /opt/matomo/config/config.ini.php \
 ;fi
 
 RUN if [ -n "$MATOMO_PLUGIN_LOGINFILTERIP_VERSION" ]; then \
