@@ -1,0 +1,26 @@
+name: Publish pre-release image
+on:
+  push:
+    branches: [master]
+env:
+  PHP_VERSION: 7.3
+  IMAGE_TAG: latest
+  IMAGE_NAME: wai-portal
+  ORGANIZATION: webanalyticsitalia
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Build image
+        if: success()
+        run: docker build --no-cache --rm -f ${{ github.workspace }}/Dockerfile.portal --build-arg PHP_VERSION=$PHP_VERSION -t $ORGANIZATION/$IMAGE_NAME:$IMAGE_TAG ${{ github.workspace }}
+      - name: Push image
+        if: success()
+        run: |
+          docker login --username ${{ secrets.DOCKER_USERNAME }} --password ${{ secrets.DOCKER_TOKEN }}
+          docker push $ORGANIZATION/$IMAGE_NAME:$IMAGE_TAG
+      - name: Docker logout
+        if: always()
+        run: docker logout

@@ -29,6 +29,7 @@ TODO
 .phpunit.result.cache
 .vscode
 .history
+.actrc
 
 # generated files
 .env
