@@ -57,6 +57,14 @@ class ViewServiceProvider extends ServiceProvider
             $view->with('spidAuthUser', app()->make('SPIDAuth')->getSPIDUser());
             $view->with('showPublicAdministration', session()->has('tenant_id') && (1 === $authUser->publicAdministrations->count()));
             $view->with('isSuperAdmin', isset($authUser) && $authUser->isA(UserRole::SUPER_ADMIN));
+
+            $hasHighlightBar = config('site.highlight')[config('app.env')] ?? false;
+            $view->with('hasHighlightBar', $hasHighlightBar);
+
+            $view->with('bodyClasses', implode(' ', [
+                'wai',
+                $hasHighlightBar ? 'hasHighlightBar' : '',
+            ]));
         });
     }
 

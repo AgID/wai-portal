@@ -3,7 +3,7 @@
 
     @include('layouts.includes.head')
 
-    <body>
+    <body class="{{ $bodyClasses }}">
 
         @yield('page-content')
 
