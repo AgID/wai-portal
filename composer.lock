@@ -5387,22 +5387,22 @@
         },
         {
             "name": "vlucas/phpdotenv",
-            "version": "v3.6.6",
+            "version": "v3.6.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/vlucas/phpdotenv.git",
-                "reference": "4669484ccbc38fe7c4e0c50456778f2010566aad"
+                "reference": "2065beda6cbe75e2603686907b2e45f6f3a5ad82"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/vlucas/phpdotenv/zipball/4669484ccbc38fe7c4e0c50456778f2010566aad",
-                "reference": "4669484ccbc38fe7c4e0c50456778f2010566aad",
+                "url": "https://api.github.com/repos/vlucas/phpdotenv/zipball/2065beda6cbe75e2603686907b2e45f6f3a5ad82",
+                "reference": "2065beda6cbe75e2603686907b2e45f6f3a5ad82",
                 "shasum": ""
             },
             "require": {
                 "php": "^5.4 || ^7.0 || ^8.0",
                 "phpoption/phpoption": "^1.5.2",
-                "symfony/polyfill-ctype": "^1.16"
+                "symfony/polyfill-ctype": "^1.17"
             },
             "require-dev": {
                 "ext-filter": "*",
@@ -5456,7 +5456,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-06-02T14:08:54+00:00"
+            "time": "2020-07-14T19:04:52+00:00"
         },
         {
             "name": "yajra/laravel-datatables-fractal",
@@ -6519,16 +6519,16 @@
         },
         {
             "name": "laravel/dusk",
-            "version": "v6.4.0",
+            "version": "v6.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/dusk.git",
-                "reference": "e17ddfb8798f59a054dc2194ce190fa26c0c112e"
+                "reference": "db10ac70d01f332614a54cd7f1fe4757066db7cc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/dusk/zipball/e17ddfb8798f59a054dc2194ce190fa26c0c112e",
-                "reference": "e17ddfb8798f59a054dc2194ce190fa26c0c112e",
+                "url": "https://api.github.com/repos/laravel/dusk/zipball/db10ac70d01f332614a54cd7f1fe4757066db7cc",
+                "reference": "db10ac70d01f332614a54cd7f1fe4757066db7cc",
                 "shasum": ""
             },
             "require": {
@@ -6583,7 +6583,7 @@
                 "testing",
                 "webdriver"
             ],
-            "time": "2020-06-30T20:05:33+00:00"
+            "time": "2020-07-14T18:02:46+00:00"
         },
         {
             "name": "league/commonmark-ext-external-link",
