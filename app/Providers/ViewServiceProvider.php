@@ -55,7 +55,8 @@ class ViewServiceProvider extends ServiceProvider
         View::composer('layouts.includes.notification', NotificationComposer::class);
         View::composer('layouts.includes.highlight_bar', function ($view) {
             $view->with('hasResetCountdown', 'public-playground' === config('app.env'));
-            $view->with('countdown', Carbon::parse('next sunday')->setHour(23)->setMinutes(30)
+            $nextDayResetPublicPlayground = 'next ' . config('wai.reset_public_playground_day_verbose', 'sunday');
+            $view->with('countdown', Carbon::parse($nextDayResetPublicPlayground)->setHour(config('wai.reset_public_playground_hour', 23))->setMinutes(config('wai.reset_public_playground_minute', 30))
                 ->diffForHumans(
                     Carbon::now(),
                     [
