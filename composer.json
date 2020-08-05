@@ -3,7 +3,7 @@
     "description": "Web Analytics Italia",
     "version": "1.4.1-beta",
     "keywords": ["analytics", "italia"],
-    "license": "AGPLv3+",
+    "license": "AGPL-3.0-or-later",
     "type": "project",
     "authors": [
         {
