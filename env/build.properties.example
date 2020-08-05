@@ -64,6 +64,7 @@ SPID_SP_CERTIFICATE=
 # SPID test identity providers
 # ----------------------------
 
+SPID_TESTENV_HOSTNAME=
 SPID_TESTENV_ENABLED=
 SPID_TESTENV_ENTITY_ID=
 SPID_TESTENV_SSO=
@@ -190,6 +191,15 @@ MATOMO_ROOT_PASSWORD=Password
 
 # Matomo super user API Key, put any MD5 hash.
 MATOMO_ROOT_APIKEY=8aa23f3ca5903d451d1ff8eb947c7a8f
+
+# Matomo public dashboard user name
+MATOMO_PUBLIC_USER=viewer
+
+# Matomo public dashboard user password
+MATOMO_PUBLIC_USER_PASSWORD=ViewerPassword
+
+# Matomo public dashboard user API Key, put any MD5 hash.
+MATOMO_PUBLIC_USER_APIKEY=540e13e315b7c8bbf374a0ff227a1ae1
 
 # Matomo version
 MATOMO_VERSION=3.13.5
