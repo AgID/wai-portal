@@ -3,7 +3,9 @@
     <div class="neutral-1-color mx-4 text-center">
         @markdown(config('site.highlight')[config('app.env')])
         @if($hasResetCountdown)
-        {{ __("Reset dell'ambiente in :days", ['days' => $countdown]) }}
+        <span class="font-weight-semibold py-1 px-2 mt-1 rounded d-inline-block analogue-1-bg text-white">
+            {{ __("Prossimo reset tra: :days.", ['days' => $countdown]) }}
+        </span>
         @endif
     </div>
 </div>

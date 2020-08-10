@@ -121,8 +121,8 @@ class WebsiteController extends Controller
             'status' => PublicAdministrationStatus::PENDING,
         ]);
 
-        $site = $request->isCustomPublicAdministration ? $request->publicAdministration['url'] : $request->publicAdministration['site'];
-        $website = $this->registerPublicAdministration($authUser, $publicAdministration, $site, $request->isCustomPublicAdministration, $request->input('email'));
+        $siteUrl = $request->isCustomPublicAdministration ? $request->publicAdministration['url'] : $request->publicAdministration['site'];
+        $website = $this->registerPublicAdministration($authUser, $publicAdministration, $siteUrl, $request->isCustomPublicAdministration, $request->input('email'));
 
         event(new WebsiteAdded($website, $authUser));
 
@@ -220,7 +220,7 @@ class WebsiteController extends Controller
         $roleAwareUrls = $this->getRoleAwareUrlArray([
             'websiteEditUrl' => 'websites.edit',
             'websiteTrackingCheckUrl' => 'websites.tracking.check',
-            'websiteTrackingForceUrl' => 'websites.tracking.force',
+            'websiteTrackingForceUrl' => 'websites.activate.force',
             'websiteArchiveUrl' => 'websites.archive',
             'websiteUnarchiveUrl' => 'websites.unarchive',
             'javascriptSnippetUrl' => 'websites.snippet.javascript',
@@ -234,11 +234,11 @@ class WebsiteController extends Controller
         if ($publicAdministrationUser) {
             $userPublicAdministrationStatus = UserStatus::fromValue(intval($publicAdministrationUser->pivot->user_status));
         }
-        $forceButtonVisible = !app()->environment('production') && config('wai.custom_public_administrations', false) && $website->type->is(WebsiteType::INSTITUTIONAL_PLAY);
+        $forceActivationButtonVisible = !app()->environment('production') && config('wai.custom_public_administrations', false) && $website->type->is(WebsiteType::INSTITUTIONAL_PLAY);
 
         return view('pages.websites.show')->with(compact('website'))->with($roleAwareUrls)
             ->with($usersPermissionsDatatable)
-            ->with('forceButtonVisible', $forceButtonVisible)
+            ->with('forceButtonVisible', $forceActivationButtonVisible)
             ->with('userPublicAdministrationStatus', $userPublicAdministrationStatus ?? null);
     }
 
@@ -441,7 +441,7 @@ class WebsiteController extends Controller
      *
      * @return JsonResponse|RedirectResponse the response
      */
-    public function forceTracking(PublicAdministration $publicAdministration, Website $website)
+    public function forceActivation(PublicAdministration $publicAdministration, Website $website)
     {
         try {
             if ($website->status->is(WebsiteStatus::PENDING) && $website->type->is(WebsiteType::INSTITUTIONAL_PLAY)) {

@@ -468,6 +468,8 @@ class WebsiteEventsSubscriberTest extends TestCase
 
     public function testWebsiteActivatedWithRTD(): void
     {
+        $this->app['env'] = 'production';
+
         $this->expectLogMessage('notice', [
             'Website ' . $this->website->info . ' activated',
             [
@@ -518,6 +520,8 @@ class WebsiteEventsSubscriberTest extends TestCase
                 return $mail->hasTo($this->publicAdministration->rtd_mail, $this->publicAdministration->rtd_name);
             }
         );
+
+        $this->app['env'] = 'testing';
     }
 
     /*

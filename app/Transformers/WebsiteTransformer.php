@@ -87,11 +87,11 @@ class WebsiteTransformer extends TransformerAbstract
                         $data['icons'][] = [
                             'icon' => 'it-plug',
                             'link' => $authUserCanAccessAdminArea
-                                ? route('admin.publicAdministration.websites.tracking.force', [
+                                ? route('admin.publicAdministration.websites.activate.force', [
                                     'publicAdministration' => $publicAdministration,
                                     'website' => $website,
                                 ])
-                                : route('websites.tracking.force', ['website' => $website->slug]),
+                                : route('websites.activate.force', ['website' => $website->slug]),
                             'color' => 'warning',
                             'title' => __('attivazione forzata'),
                             'dataAttributes' => [

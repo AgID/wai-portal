@@ -59,15 +59,11 @@
             <div class="box-section lightgrey-bg-a1 my-4">
                 <p>{{ WebsiteStatus::getLongDescription($website->status) }}</p>
                 @if ($website->status->is(WebsiteStatus::PENDING))
-                @if ($authUser->can(UserPermission::MANAGE_WEBSITES) || ( $userPublicAdministrationStatus && $userPublicAdministrationStatus->is(UserStatus::PENDING)))
+                @if ($authUser->can(UserPermission::MANAGE_WEBSITES) || ($userPublicAdministrationStatus && $userPublicAdministrationStatus->is(UserStatus::PENDING)))
                 <h5 class="section-header">{{ __('attivazione') }}</h5>
                 <p>
                     {{ __('Per impostare il tracciamento, usa il codice che trovi in questa pagina.') }}
                 </p>
-
-
-
-
                 <p class="text-serif">
                     {{ __("Hai bisogno di aiuto con l'attivazione?") }} <a href="{{ route('faq') }}">{{ __('Consulta le FAQ') }}</a>
                 </p>
@@ -145,7 +141,7 @@
     </div>
     @cannot(UserPermission::ACCESS_ADMIN_AREA)
     <div class="row box-section">
-        <div class="@if($forceButtonVisible && $website->status->is(WebsiteStatus::PENDING)) col-md-4 @else col-md-5 @endif">
+        <div class="@if($forceActivationButtonVisible && $website->status->is(WebsiteStatus::PENDING)) col-md-4 @else col-md-5 @endif">
             @if ($website->status->is(WebsiteStatus::PENDING))
             <h5 class="section-header">{{ __('verifica tracciamento') }}</h5>
             <p>
@@ -163,7 +159,7 @@
                 </a>
             </p>
 
-            @if ($forceButtonVisible)
+            @if ($forceActivationButtonVisible)
             </div>
             <div class="col-md-4" >
             <h5 class="section-header">{{ __('forza attivazione') }}</h5>
@@ -172,7 +168,7 @@
             </p>
             <p class="text-center">
                 <a role="button" class="btn btn-sm btn-outline-secondary text-center disabled"
-                    href="{{ $websiteTrackingForceUrl }}"
+                    href="{{ $websiteActivateForceUrl }}"
                     data-type="checkTracking"
                     data-website-name="{{ $website->name }}"
                     aria-disabled="true">
@@ -202,7 +198,7 @@
             @else
             @endif
         </div>
-        <div class="@if($forceButtonVisible && $website->status->is(WebsiteStatus::PENDING)) col-md-4 @else col-md-5 offset-md-2 @endif">
+        <div class="@if($forceActivationButtonVisible && $website->status->is(WebsiteStatus::PENDING)) col-md-4 @else col-md-5 offset-md-2 @endif">
             <h5 class="section-header">{{ __('opzioni avanzate') }}</h5>
             <p class="text-serif">
                 {{ __('Se vuoi personalizzare il codice di tracciamento per attivare opzioni avanzate') }},

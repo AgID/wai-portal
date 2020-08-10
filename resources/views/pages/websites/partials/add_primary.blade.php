@@ -28,7 +28,7 @@
                                     <svg class="icon icon-sm"><use xlink:href="{{ $customForm ? asset('svg/sprite.svg#it-pa') : asset('svg/sprite.svg#it-search') }}"></use></svg>
                                 </div>
                             </div>
-                            <label for="public_administration_name">{{ __('Pubblica amministrazione') }}</label>
+                            <label for="public_administration_name">{{ $customForm ? __('Nome della pubblica amministrazione') : __('Pubblica amministrazione') }}</label>
 
                             <input type="search" autocomplete="off"
                                 class="form-control autocomplete{{ $errors->has('public_administration_name') ? ' is-invalid' : '' }}"
@@ -78,10 +78,9 @@
                         @if($customForm)
                         <small id="url-input-help" class="form-text text-muted">{{ __('Inserisci una URL completa di http:// o https://') }}</small>
                         @endif
-
-
                     </div>
                 </div>
+                @unless($customForm)
                 <div class="form-row">
                     <div class="form-group col">
                         <div class="input-group">
@@ -116,6 +115,7 @@
                         </div>
                     </div>
                 </div>
+                @endunless
                 <div class="form-row">
                     <div class="form-group col has-form-text ">
                         <div class="input-group">

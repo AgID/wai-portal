@@ -69,7 +69,7 @@ class StorePrimaryWebsiteRequest extends FormRequest
     {
         $validator->after(function (Validator $validator) {
             if (!app()->environment('production') && config('wai.custom_public_administrations', false) && filled($this->input('url')) && ('custom' === $this->input('website_type'))) {
-                if (!filter_var($this->input('url'), FILTER_VALIDATE_URL)) {
+                if ((0 !== strpos($this->input('url'), 'http')) || !filter_var($this->input('url'), FILTER_VALIDATE_URL)) {
                     $validator->errors()->add('url', __("L'indirizzo inserito non è corretto."));
                 }
                 $host = parse_url($this->input('url'), PHP_URL_HOST);

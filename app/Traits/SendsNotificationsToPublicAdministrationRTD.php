@@ -2,7 +2,6 @@
 
 namespace App\Traits;
 
-use App\Enums\WebsiteType;
 use App\Models\Website;
 use App\Notifications\RTDEmailAddressChangedEmail;
 use App\Notifications\RTDPublicAdministrationRegisteredEmail;
@@ -51,21 +50,11 @@ trait SendsNotificationsToPublicAdministrationRTD
 
     /**
      * Check the current environment.
-     * On public-playground don't send notification if public adminitration is from IPA.
+     * Send notification only in production environment.
      */
     private function sendNotificationOnCurrentEnvironment()
     {
-        if (!app()->environment('public-playground')) {
-            return true;
-        }
-
-        if (!config('wai.custom_public_administrations', false)) {
-            return true;
-        }
-
-        $websiteType = WebsiteType::coerce(WebsiteType::INSTITUTIONAL_PLAY);
-        $websiteTypeDescription = ucfirst($websiteType->description);
-        if ($this->type === $websiteTypeDescription) {
+        if (app()->environment('production')) {
             return true;
         }
 

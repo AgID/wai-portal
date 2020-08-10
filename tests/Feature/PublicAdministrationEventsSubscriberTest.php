@@ -183,6 +183,8 @@ class PublicAdministrationEventsSubscriberTest extends TestCase
      */
     public function testPublicAdministrationRegisteredWithRTD(): void
     {
+        $this->app['env'] = 'production';
+
         Cache::shouldReceive('forget')->once()->withArgs([
             PublicAdministration::PUBLIC_ADMINISTRATION_COUNT_KEY,
         ]);
@@ -239,6 +241,8 @@ class PublicAdministrationEventsSubscriberTest extends TestCase
                 return $mail->hasTo($this->publicAdministration->rtd_mail, $this->publicAdministration->rtd_name);
             }
         );
+
+        $this->app['env'] = 'testing';
     }
 
     /**
@@ -435,6 +439,8 @@ class PublicAdministrationEventsSubscriberTest extends TestCase
      */
     public function testPendingPublicAdministrationUpdatedWithRTDChange(): void
     {
+        $this->app['env'] = 'production';
+
         Event::fakeFor(function () {
             $this->user->publicAdministrations()->sync([$this->publicAdministration->id => ['user_status' => UserStatus::PENDING]]);
             $this->user->setCreatedAt(now());
@@ -464,6 +470,8 @@ class PublicAdministrationEventsSubscriberTest extends TestCase
                 return $mail->hasTo($this->publicAdministration->rtd_mail, $this->publicAdministration->rtd_name);
             }
         );
+
+        $this->app['env'] = 'testing';
     }
 
     /**
@@ -502,6 +510,8 @@ class PublicAdministrationEventsSubscriberTest extends TestCase
      */
     public function testActivePublicAdministrationUpdatedWithRTDChange(): void
     {
+        $this->app['env'] = 'production';
+
         $invitedAdmin = factory(User::class)->state('invited')->create();
         $secondAdmin = factory(User::class)->state('active')->create();
 
@@ -548,6 +558,8 @@ class PublicAdministrationEventsSubscriberTest extends TestCase
                 return $mail->hasTo($this->publicAdministration->rtd_mail, $this->publicAdministration->rtd_name);
             }
         );
+
+        $this->app['env'] = 'testing';
     }
 
     /**
