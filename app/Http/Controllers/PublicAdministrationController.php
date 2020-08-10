@@ -43,8 +43,6 @@ class PublicAdministrationController extends Controller
             ],
             'columns' => [
                 ['data' => 'name', 'name' => __('nome'), 'className' => 'text-wrap'],
-                ['data' => 'city', 'name' => __('città')],
-                ['data' => 'region', 'name' => __('regione')],
                 ['data' => 'email', 'name' => __('email')],
                 ['data' => 'userStatus', 'name' => __('stato utente')],
                 ['data' => 'buttons', 'name' => '', 'orderable' => false],

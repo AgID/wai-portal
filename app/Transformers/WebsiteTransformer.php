@@ -93,7 +93,7 @@ class WebsiteTransformer extends TransformerAbstract
                                 ])
                                 : route('websites.tracking.force', ['website' => $website->slug]),
                             'color' => 'warning',
-                            'title' => __('attiva manualmente'),
+                            'title' => __('attivazione forzata'),
                             'dataAttributes' => [
                                 'website-name' => e($website->name),
                                 'type' => 'checkTracking',

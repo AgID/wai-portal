@@ -101,7 +101,7 @@ return [
         WebsiteType::INFORMATIONAL => 'sito informativo',
         WebsiteType::SERVICE => 'sito di servizi',
         WebsiteType::MOBILE => 'applicazione per dispositivi mobili',
-        WebsiteType::INSTITUTIONAL_PLAY => 'sito istituzionale custom',
+        WebsiteType::INSTITUTIONAL_PLAY => 'sito istituzionale',
     ],
 
     WebsiteAccessType::class => [

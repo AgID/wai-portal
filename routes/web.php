@@ -313,9 +313,6 @@ Route::middleware('auth.admin', 'verified:admin.verification.notice')->group(fun
                     'as' => 'admin.publicAdministrations.select',
                     'uses' => 'PublicAdministrationController@selectTenant',
                 ]);
-
-                Route::get('/add', 'PublicAdministrationController@add')
-                ->name('admin.publicAdministrations.add');
             });
 
             Route::get('/dashboard', 'SuperAdminDashboardController@dashboard')

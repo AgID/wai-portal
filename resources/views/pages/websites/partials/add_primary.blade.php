@@ -1,8 +1,8 @@
 
-@if (!app()->environment('production') && config('wai.custom_public_administrations', false))
-<ul class="nav nav-tabs auto">
-    <li class="nav-item"><a class="nav-link @if(Route::is('websites.index') || Route::is('admin.publicAdministrations.add') || Route::is('publicAdministrations.add') ) active @endif" href="{{ route("websites.index") }}">Usa IndicePA</a></li>
-    <li class="nav-item"><a class="nav-link @if(Route::is('websites.create.primary.custom')) active @endif" href="{{ route("websites.create.primary.custom") }}">Crea la tua pubblica amministrazione</a></li>
+@if (!app()->environment('production') && config('wai.custom_public_administrations', false) && !Auth::user()->isA(UserRole::SUPER_ADMIN))
+<ul class="nav nav-tabs auto pt-3">
+    <li class="nav-item"><a class="nav-link @if(Route::is('websites.index') || Route::is('publicAdministrations.add') ) active @endif" href="{{ route('publicAdministrations.add') }}">Usa IndicePA</a></li>
+    <li class="nav-item"><a class="nav-link @if(Route::is('websites.create.primary.custom')) active @endif" href="{{ route('websites.create.primary.custom') }}">Crea la tua pubblica amministrazione</a></li>
 </ul>
 @endif
 
@@ -32,8 +32,9 @@
 
                             <input type="search" autocomplete="off"
                                 class="form-control autocomplete{{ $errors->has('public_administration_name') ? ' is-invalid' : '' }}"
-                                id="public_administration_name" name="public_administration_name" data-search="searchIpa"
-                                data-source="{{ route('ipa.search') }}" value="{{ old('public_administration_name') }}"
+                                id="public_administration_name" name="public_administration_name"
+                                @unless($customForm) data-search="searchIpa" data-source="{{ route('ipa.search') }}" @endunless
+                                value="{{ old('public_administration_name') }}"
                                 maxlength="255" aria-describedby="pa_name-input-help" aria-required="true" required >
 
                             @unless($customForm)

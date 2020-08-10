@@ -93,7 +93,7 @@ class WebsiteController extends Controller
      */
     public function custom()
     {
-        return view('pages.websites.add_custom');
+        return view('pages.pa.add')->with('customForm', true);
     }
 
     /**
@@ -210,22 +210,36 @@ class WebsiteController extends Controller
      */
     public function show(PublicAdministration $publicAdministration, Website $website): View
     {
+        $currentPublicAdministration = auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)
+        ? $publicAdministration
+        : current_public_administration();
+
         $usersPermissionsDatatableSourceUrl = $this->getRoleAwareUrl('websites.users.permissions.data.json', [
             'website' => $website,
-        ], $publicAdministration);
+        ], $currentPublicAdministration);
         $roleAwareUrls = $this->getRoleAwareUrlArray([
             'websiteEditUrl' => 'websites.edit',
             'websiteTrackingCheckUrl' => 'websites.tracking.check',
+            'websiteTrackingForceUrl' => 'websites.tracking.force',
             'websiteArchiveUrl' => 'websites.archive',
             'websiteUnarchiveUrl' => 'websites.unarchive',
             'javascriptSnippetUrl' => 'websites.snippet.javascript',
         ], [
             'website' => $website,
-        ], $publicAdministration);
-
+        ], $currentPublicAdministration);
         $usersPermissionsDatatable = $this->getDatatableUsersPermissionsParams($usersPermissionsDatatableSourceUrl, true);
 
-        return view('pages.websites.show')->with(compact('website'))->with($roleAwareUrls)->with($usersPermissionsDatatable);
+        $authUser = auth()->user();
+        $publicAdministrationUser = $authUser->publicAdministrations()->where('public_administration_id', $currentPublicAdministration->id)->first();
+        if ($publicAdministrationUser) {
+            $userPublicAdministrationStatus = UserStatus::fromValue(intval($publicAdministrationUser->pivot->user_status));
+        }
+        $forceButtonVisible = !app()->environment('production') && config('wai.custom_public_administrations', false) && $website->type->is(WebsiteType::INSTITUTIONAL_PLAY);
+
+        return view('pages.websites.show')->with(compact('website'))->with($roleAwareUrls)
+            ->with($usersPermissionsDatatable)
+            ->with('forceButtonVisible', $forceButtonVisible)
+            ->with('userPublicAdministrationStatus', $userPublicAdministrationStatus ?? null);
     }
 
     /**
