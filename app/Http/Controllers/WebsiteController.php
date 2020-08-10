@@ -122,7 +122,7 @@ class WebsiteController extends Controller
         ]);
 
         $site = $request->isCustomPublicAdministration ? $request->publicAdministration['url'] : $request->publicAdministration['site'];
-        $website = $this->registerPublicAdministration($authUser, $publicAdministration, $site, $request->isCustomPublicAdministration);
+        $website = $this->registerPublicAdministration($authUser, $publicAdministration, $site, $request->isCustomPublicAdministration, $request->input('email'));
 
         event(new WebsiteAdded($website, $authUser));
 
