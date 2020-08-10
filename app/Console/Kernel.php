@@ -27,7 +27,8 @@ class Kernel extends ConsoleKernel
         $schedule->job(new ProcessPendingWebsites(true))->dailyAt('04:30')->onOneServer();
         $schedule->job(new MonitorWebsitesTracking())->daily()->onOneServer();
         $schedule->job(new PurgePendingInvitations())->dailyAt('03:30')->onOneServer();
-        $schedule->job(new ResetEnvironment())->weekly()->sundays()->at('23:30')->onOneServer()->environments(['public-playground']);
+        $publicPlaygroundResetHour = config('wai.reset_public_playground_hour', 23) . ':' . config('wai.reset_public_playground_minute', 30);
+        $schedule->job(new ResetEnvironment())->weekly()->days(config('wai.reset_public_playground_day', 0))->at($publicPlaygroundResetHour)->onOneServer()->environments(['public-playground']);
     }
 
     /**

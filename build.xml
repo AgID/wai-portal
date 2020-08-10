@@ -42,6 +42,10 @@
                     <token key="APP_SUPER_ADMIN_FISCAL_NUMBER" value="${APP_SUPER_ADMIN_FISCAL_NUMBER}" />
                     <token key="APP_SUPER_ADMIN_EMAIL" value="${APP_SUPER_ADMIN_EMAIL}" />
                     <token key="APP_SUPER_ADMIN_PASSWORD" value="${APP_SUPER_ADMIN_PASSWORD}" />
+                    <token key="RESET_PUBLIC_PLAYGROUND_DAY_VERBOSE" value="${RESET_PUBLIC_PLAYGROUND_DAY_VERBOSE}" />
+                    <token key="RESET_PUBLIC_PLAYGROUND_DAY" value="${RESET_PUBLIC_PLAYGROUND_DAY}" />
+                    <token key="RESET_PUBLIC_PLAYGROUND_HOUR" value="${RESET_PUBLIC_PLAYGROUND_HOUR}" />
+                    <token key="RESET_PUBLIC_PLAYGROUND_MINUTE" value="${RESET_PUBLIC_PLAYGROUND_MINUTE}" />
                     <token key="CLOSED_BETA_WHITELIST_WEBHOOK_CLIENT_SECRET" value="${CLOSED_BETA_WHITELIST_WEBHOOK_CLIENT_SECRET}" />
                     <token key="CLOSED_BETA_WHITELIST_REPOSITORY_FULL_NAME" value="${CLOSED_BETA_WHITELIST_REPOSITORY_FULL_NAME}" />
                     <token key="CLOSED_BETA_WHITELIST_REPOSITORY_BRANCH" value="${CLOSED_BETA_WHITELIST_REPOSITORY_BRANCH}" />
