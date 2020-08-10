@@ -101,6 +101,7 @@ return [
         WebsiteType::INFORMATIONAL => 'informational or thematic website',
         WebsiteType::SERVICE => 'services website',
         WebsiteType::MOBILE => 'mobile application',
+        WebsiteType::CUSTOM => 'custom institutional website',
     ],
 
     WebsiteAccessType::class => [

@@ -244,9 +244,12 @@ Route::middleware('spid.auth', 'auth', 'verified:verification.notice')->group(fu
                 Route::get('/{website}/check', 'WebsiteController@checkTracking')
                 ->name('websites.tracking.check');
 
+            Route::get('/{website}/force', 'WebsiteController@forceTracking')
+                ->name('websites.tracking.force');
+
                 Route::get('/{website}/javascript-snippet', 'WebsiteController@showJavascriptSnippet')
-                ->name('websites.snippet.javascript');
-            });
+                    ->name('websites.snippet.javascript');
+                });
         });
 
         Route::prefix('/users')->group(function () {
@@ -450,6 +453,9 @@ Route::middleware('auth.admin', 'verified:admin.verification.notice')->group(fun
 
                     Route::get('/{website}/check', 'WebsiteController@checkTracking')
                         ->name('admin.publicAdministration.websites.tracking.check');
+
+                    Route::get('/{website}/force', 'WebsiteController@forceTracking')
+                        ->name('admin.publicAdministration.websites.tracking.force');
 
                     Route::get('/{website}/javascript-snippet', 'WebsiteController@showJavascriptSnippet')
                         ->name('admin.publicAdministration.websites.snippet.javascript');

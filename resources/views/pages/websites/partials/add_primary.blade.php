@@ -5,7 +5,7 @@
 @if (config('wai.custom_public_administrations', false))
 <p>{{ __('Per iniziare scegli la tua pubblica amministrazione e verifica che i dati siano corretti') }}</p>
 <p><strong>{{ __('oppure') }}</strong></p>
-<p><a href="{{ route('websites.create.primary.custom') }}">{{ __('Crea la tua pubblica amministrazione') }}</a></p>
+<p><a class="btn btn-icon btn-outline-primary" role="button" href="{{ route('websites.create.primary.custom') }}">{{ __('Crea la tua pubblica amministrazione') }}</a></p>
 @else
 <p>{{ __('Per iniziare scegli la tua pubblica amministrazione e verifica che i dati siano corretti.') }}</p>
 @endif

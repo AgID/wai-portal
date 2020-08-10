@@ -83,6 +83,24 @@ class WebsiteTransformer extends TransformerAbstract
                             'ajax' => true,
                         ],
                     ];
+                    if (config('wai.custom_public_administrations', false) && $website->type->is(WebsiteType::CUSTOM)) {
+                        $data['icons'][] = [
+                            'icon' => 'it-plug',
+                            'link' => $authUserCanAccessAdminArea
+                                ? route('admin.publicAdministration.websites.tracking.force', [
+                                    'publicAdministration' => $publicAdministration,
+                                    'website' => $website,
+                                ])
+                                : route('websites.tracking.force', ['website' => $website->slug]),
+                            'color' => 'warning',
+                            'title' => __('attiva manualmente'),
+                            'dataAttributes' => [
+                                'website-name' => e($website->name),
+                                'type' => 'checkTracking',
+                                'ajax' => true,
+                            ],
+                        ];
+                    }
                 }
             }
 

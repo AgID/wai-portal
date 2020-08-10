@@ -16,19 +16,32 @@ class CustomPublicAdministrationController extends Controller
 {
     use ManagePublicAdministrationRegistration;
 
+    /**
+     * Show the form.
+     *
+     * @return View
+     */
     public function index(): View
     {
         return view('pages.websites.partials.add_custom_primary');
     }
 
+    /**
+     * Create a custom primary website.
+     *
+     * @param Request $request the incoming request
+     *
+     * @return RedirectResponse the server redirect response
+     */
     public function store(StoreCustomPrimaryWebsiteRequest $request): RedirectResponse
     {
         $validatedData = $request->validated();
+
         $authUser = $request->user();
 
         $publicAdministration = PublicAdministration::make([
             'ipa_code' => Str::uuid(),
-            'name' => $validatedData['name'],
+            'name' => $validatedData['public_administration_name'],
             'pec' => $validatedData['pec'] ?? null,
             'rtd_name' => $validatedData['rtd_name'] ?? null,
             'rtd_mail' => $validatedData['rtd_mail'] ?? null,
@@ -36,11 +49,11 @@ class CustomPublicAdministrationController extends Controller
             'city' => $validatedData['city'],
             'county' => $validatedData['county'],
             'region' => $validatedData['region'],
-            'type' => $validatedData['type'],
+            'type' => 'Custom',
             'status' => PublicAdministrationStatus::PENDING,
         ]);
 
-        $website = $this->registerPublicAdministration($authUser, $publicAdministration, $validatedData['site']);
+        $website = $this->registerPublicAdministration($authUser, $publicAdministration, $validatedData['url'], true);
 
         event(new PublicAdministrationRegistered($publicAdministration, $authUser));
         event(new WebsiteAdded($website, $authUser));
