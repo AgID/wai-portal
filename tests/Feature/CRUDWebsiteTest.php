@@ -279,9 +279,6 @@ class CRUDWebsiteTest extends TestCase
                 'email' => $alternativeEmail,
                 'public_administration_name' => 'Pubblica amministrazione personalizzata',
                 'url' => 'https://www.pubblica-amministrazione.personalizzata.it',
-                'city' => 'Roma',
-                'county' => 'Roma',
-                'region' => 'Lazio',
                 'rtd_name' => 'Utente Utenti',
                 'rtd_mail' => 'utente@personalizzata.it',
                 'skip_rtd_validation' => true,
@@ -324,13 +321,10 @@ class CRUDWebsiteTest extends TestCase
             ->post(route('websites.store.primary'), [
                 'public_administration_name' => 'Pubblica amministrazione personalizzata',
                 'url' => $this->website->url,
-                'city' => 'Roma',
                 'website_type' => 'custom',
             ])
             ->assertSessionHasErrors([
                 'url',
-                'county',
-                'region',
             ])
             ->assertRedirect(route('websites.create.primary.custom'));
 

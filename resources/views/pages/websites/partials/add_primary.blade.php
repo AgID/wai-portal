@@ -1,7 +1,7 @@
 
 @if (!app()->environment('production') && config('wai.custom_public_administrations', false))
 <ul class="nav nav-tabs auto">
-    <li class="nav-item"><a class="nav-link @if(Route::is('websites.index')) active @endif" href="{{ route("websites.index") }}">Usa IndicePA</a></li>
+    <li class="nav-item"><a class="nav-link @if(Route::is('websites.index') || Route::is('admin.publicAdministrations.add') || Route::is('publicAdministrations.add') ) active @endif" href="{{ route("websites.index") }}">Usa IndicePA</a></li>
     <li class="nav-item"><a class="nav-link @if(Route::is('websites.create.primary.custom')) active @endif" href="{{ route("websites.create.primary.custom") }}">Crea la tua pubblica amministrazione</a></li>
 </ul>
 @endif

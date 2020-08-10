@@ -114,9 +114,9 @@ class WebsiteController extends Controller
             'rtd_name' => $request->publicAdministration['rtd_name'] ?? null,
             'rtd_mail' => $request->publicAdministration['rtd_mail'] ?? null,
             'rtd_pec' => $request->publicAdministration['rtd_pec'] ?? null,
-            'city' => $request->publicAdministration['city'],
-            'county' => $request->publicAdministration['county'],
-            'region' => $request->publicAdministration['region'],
+            'city' => $request->publicAdministration['city'] ?? null,
+            'county' => $request->publicAdministration['county'] ?? null,
+            'region' => $request->publicAdministration['region'] ?? null,
             'type' => $request->publicAdministration['type'],
             'status' => PublicAdministrationStatus::PENDING,
         ]);
