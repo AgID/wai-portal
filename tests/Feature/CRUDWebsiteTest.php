@@ -127,7 +127,7 @@ class CRUDWebsiteTest extends TestCase
         $this->customWebsite = factory(Website::class)->create([
             'public_administration_id' => $this->customPublicAdministration->id,
             'status' => WebsiteStatus::PENDING,
-            'type' => WebsiteType::CUSTOM,
+            'type' => WebsiteType::INSTITUTIONAL_PLAY,
         ]);
         $this->customPublicAdministration->users()->sync([$this->user->id]);
 
@@ -274,7 +274,7 @@ class CRUDWebsiteTest extends TestCase
                 'spid_user' => $this->spidUser,
             ])
             ->from(route('websites.create.primary.custom'))
-            ->post(route('websites.store.primary.custom'), [
+            ->post(route('websites.store.primary'), [
                 'public_administration_name' => 'Pubblica amministrazione personalizzata',
                 'url' => 'https://www.pubblica-amministrazione.personalizzata.it',
                 'city' => 'Roma',
@@ -283,6 +283,8 @@ class CRUDWebsiteTest extends TestCase
                 'rtd_name' => 'Utente Utenti',
                 'rtd_mail' => 'utente@personalizzata.it',
                 'skip_rtd_validation' => true,
+                'correct_confirmation' => 'on',
+                'website_type' => 'custom',
             ])
             ->assertSessionHasNoErrors()
             ->assertRedirect(route('websites.index'));
@@ -317,10 +319,11 @@ class CRUDWebsiteTest extends TestCase
                 'spid_user' => $this->spidUser,
             ])
             ->from(route('websites.create.primary.custom'))
-            ->post(route('websites.store.primary.custom'), [
+            ->post(route('websites.store.primary'), [
                 'public_administration_name' => 'Pubblica amministrazione personalizzata',
                 'url' => $this->website->url,
                 'city' => 'Roma',
+                'website_type' => 'custom',
             ])
             ->assertSessionHasErrors([
                 'url',

@@ -242,14 +242,14 @@ Route::middleware('spid.auth', 'auth', 'verified:verification.notice')->group(fu
                 ->name('websites.unarchive');
 
                 Route::get('/{website}/check', 'WebsiteController@checkTracking')
-                ->name('websites.tracking.check');
+                    ->name('websites.tracking.check');
 
-            Route::get('/{website}/force', 'WebsiteController@forceTracking')
-                ->name('websites.tracking.force');
+                Route::get('/{website}/force', 'WebsiteController@forceTracking')
+                    ->name('websites.tracking.force');
 
                 Route::get('/{website}/javascript-snippet', 'WebsiteController@showJavascriptSnippet')
                     ->name('websites.snippet.javascript');
-                });
+            });
         });
 
         Route::prefix('/users')->group(function () {

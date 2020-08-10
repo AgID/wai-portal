@@ -7,7 +7,6 @@ use App\Enums\UserPermission;
 use App\Enums\UserStatus;
 use App\Enums\WebsiteStatus;
 use App\Enums\WebsiteType;
-use App\Events\PublicAdministration\PublicAdministrationRegistered;
 use App\Events\Website\WebsiteActivated;
 use App\Events\Website\WebsiteAdded;
 use App\Events\Website\WebsiteArchived;
@@ -88,6 +87,16 @@ class WebsiteController extends Controller
     }
 
     /**
+     * Show the form for creating a new custom website.
+     *
+     * @return View the view
+     */
+    public function custom()
+    {
+        return view('pages.websites.add_custom');
+    }
+
+    /**
      * Create a new primary website.
      *
      * @param StorePrimaryWebsiteRequest $request the request
@@ -99,7 +108,7 @@ class WebsiteController extends Controller
         $authUser = $request->user();
 
         $publicAdministration = PublicAdministration::make([
-            'ipa_code' => $request->publicAdministration['ipa_code'],
+            'ipa_code' => $request->isCustomPublicAdministration ? Str::slug($request->publicAdministration['url']) : $request->publicAdministration['ipa_code'],
             'name' => $request->publicAdministration['name'],
             'pec' => $request->publicAdministration['pec'] ?? null,
             'rtd_name' => $request->publicAdministration['rtd_name'] ?? null,
@@ -112,9 +121,9 @@ class WebsiteController extends Controller
             'status' => PublicAdministrationStatus::PENDING,
         ]);
 
-        $website = $this->registerPublicAdministration($authUser, $publicAdministration, $request->publicAdministration['site']);
+        $site = $request->isCustomPublicAdministration ? $request->publicAdministration['url'] : $request->publicAdministration['site'];
+        $website = $this->registerPublicAdministration($authUser, $publicAdministration, $site, $request->isCustomPublicAdministration);
 
-        event(new PublicAdministrationRegistered($publicAdministration, $authUser));
         event(new WebsiteAdded($website, $authUser));
 
         return redirect()->route('websites.index')->withModal([
@@ -421,7 +430,7 @@ class WebsiteController extends Controller
     public function forceTracking(PublicAdministration $publicAdministration, Website $website)
     {
         try {
-            if ($website->status->is(WebsiteStatus::PENDING) && $website->type->is(WebsiteType::CUSTOM)) {
+            if ($website->status->is(WebsiteStatus::PENDING) && $website->type->is(WebsiteType::INSTITUTIONAL_PLAY)) {
                 $this->activate($website);
                 event(new WebsiteActivated($website));
 
