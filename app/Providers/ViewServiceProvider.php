@@ -9,6 +9,8 @@ use App\Http\View\Composers\PrimaryMenuComposer;
 use App\Http\View\Composers\PublicAdministrationButtonsComposer;
 use App\Http\View\Composers\PublicAdministrationSelectorComposer;
 use App\Traits\GetsLocalizedYamlContent;
+use Carbon\CarbonInterface;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -51,6 +53,20 @@ class ViewServiceProvider extends ServiceProvider
         View::composer('pages.pa.partials.buttons', PublicAdministrationButtonsComposer::class);
         View::composer('layouts.includes.modal', ModalComposer::class);
         View::composer('layouts.includes.notification', NotificationComposer::class);
+        View::composer('layouts.includes.highlight_bar', function ($view) {
+            $view->with('hasResetCountdown', 'public-playground' === config('app.env'));
+            $view->with('countdown', Carbon::parse('next sunday')->setHour(23)->setMinutes(30)
+                ->diffForHumans(
+                    Carbon::now(),
+                    [
+                        'syntax' => CarbonInterface::DIFF_ABSOLUTE,
+                        'options' => Carbon::JUST_NOW | Carbon::ONE_DAY_WORDS | Carbon::TWO_DAY_WORDS,
+                        'part' => 2,
+                        'aUnit' => true,
+                    ]
+                )
+            );
+        });
         View::composer('*', function ($view) {
             $authUser = auth()->user();
             $view->with('authUser', $authUser);

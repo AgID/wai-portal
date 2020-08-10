@@ -17,6 +17,7 @@ APP_CODE_PATH_CONTAINER=/var/www/html
 APP_VERSION=0.1-alpha
 APP_DEBUG=true
 APP_CLOSED_BETA_ENABLED=false
+APP_CUSTOM_PUBLIC_ADMINISTRATIONS_ENABLED=false
 
 # Closed beta repository
 # ----------------------

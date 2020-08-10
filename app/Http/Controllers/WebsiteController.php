@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Enums\PublicAdministrationStatus;
 use App\Enums\UserPermission;
-use App\Enums\UserRole;
 use App\Enums\UserStatus;
 use App\Enums\WebsiteStatus;
 use App\Enums\WebsiteType;
@@ -25,6 +24,7 @@ use App\Models\PublicAdministration;
 use App\Models\Website;
 use App\Traits\ActivatesWebsite;
 use App\Traits\HasRoleAwareUrls;
+use App\Traits\ManagePublicAdministrationRegistration;
 use App\Traits\SendsResponse;
 use App\Transformers\UsersPermissionsTransformer;
 use App\Transformers\WebsiteTransformer;
@@ -34,7 +34,6 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
-use Silber\Bouncer\BouncerFacade as Bouncer;
 use Yajra\DataTables\DataTables;
 
 /**
@@ -45,6 +44,7 @@ class WebsiteController extends Controller
     use ActivatesWebsite;
     use SendsResponse;
     use HasRoleAwareUrls;
+    use ManagePublicAdministrationRegistration;
 
     /**
      * Display the websites list.
@@ -112,36 +112,7 @@ class WebsiteController extends Controller
             'status' => PublicAdministrationStatus::PENDING,
         ]);
 
-        $primaryWebsiteURL = $request->publicAdministration['site'];
-        $analyticsId = app()->make('analytics-service')->registerSite(__('Sito istituzionale'), $primaryWebsiteURL, $publicAdministration->name);
-
-        $publicAdministration->save();
-        $website = Website::create([
-            'name' => $publicAdministration->name,
-            'url' => $primaryWebsiteURL,
-            'type' => WebsiteType::INSTITUTIONAL,
-            'public_administration_id' => $publicAdministration->id,
-            'analytics_id' => $analyticsId,
-            'slug' => Str::slug($primaryWebsiteURL),
-            'status' => WebsiteStatus::PENDING,
-        ]);
-
-        $publicAdministration->users()->save($authUser, ['user_email' => $request->input('email'), 'user_status' => UserStatus::PENDING]);
-        // This is the first time we know which public administration the
-        // current user belongs, so we need to set the tenant id just now.
-        session()->put('tenant_id', $publicAdministration->id);
-
-        if ($authUser->publicAdministrations->isEmpty()) {
-            $authUser->roles()->detach();
-        }
-
-        Bouncer::scope()->to($publicAdministration->id);
-        $authUser->assign(UserRole::REGISTERED);
-        if (!$authUser->hasAnalyticsServiceAccount()) {
-            $authUser->registerAnalyticsServiceAccount();
-        }
-        $authUser->setViewAccessForWebsite($website);
-        $authUser->syncWebsitesPermissionsToAnalyticsService();
+        $website = $this->registerPublicAdministration($authUser, $publicAdministration, $request->publicAdministration['site']);
 
         event(new PublicAdministrationRegistered($publicAdministration, $authUser));
         event(new WebsiteAdded($website, $authUser));

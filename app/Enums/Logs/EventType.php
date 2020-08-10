@@ -230,6 +230,8 @@ class EventType extends Enum implements LocalizedEnum
      */
     public const PURGE_PENDING_INVITATIONS_COMPLETED = 43;
 
+    public const ENVIRONMENT_RESET_COMPLETED = 44;
+
     /**
      * Mail sent event.
      */
