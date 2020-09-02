@@ -30,7 +30,7 @@ class AuthorizeAnalytics
             if ($authUser->can($action, $request->route('website'))) {
                 $authorized = true;
             }
-            if ($request->routeIs('websites.tracking.check') || $request->routeIs('websites.snippet.javascript')) {
+            if ($request->routeIs('websites.tracking.check') || $request->routeIs('websites.activate.force') || $request->routeIs('websites.snippet.javascript')) {
                 if ($authUser->pendingPublicAdministrations->where('id', $currentPublicAdministration->id)->isNotEmpty()) {
                     $authorized = true;
                 }

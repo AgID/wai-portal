@@ -2,9 +2,11 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\WebsiteType;
 use App\Jobs\UpdateClosedBetaWhitelist;
 use App\Traits\InteractsWithRedisIndex;
 use App\Traits\ManageClosedBetaWhitelist;
+use App\Traits\ManagePublicAdministrationRegistration;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Validation\Validator;
@@ -16,6 +18,7 @@ class StorePrimaryWebsiteRequest extends FormRequest
 {
     use InteractsWithRedisIndex;
     use ManageClosedBetaWhitelist;
+    use ManagePublicAdministrationRegistration;
 
     /**
      * The validated public administration array in this request.
@@ -46,8 +49,14 @@ class StorePrimaryWebsiteRequest extends FormRequest
             'public_administration_name' => 'required|max:255',
             'url' => 'required|unique:websites|max:255',
             'rtd_mail' => 'nullable|email|max:75',
-            'ipa_code' => 'required|unique:public_administrations|max:25',
+            'ipa_code' => 'nullable|required_without:website_type|unique:public_administrations|max:25',
             'correct_confirmation' => 'accepted',
+            'city' => 'nullable|alpha_name|min:2|max:40',
+            'county' => 'nullable|alpha_name|min:2|max:10',
+            'region' => 'nullable|alpha_name|min:2|max:40',
+            'pec' => 'nullable|email:rfc,dns|max:75',
+            'rtd_name' => 'nullable|alpha_name|min:2|max:50',
+            'rtd_pec' => 'nullable|email:rfc,dns|max:75',
         ];
     }
 
@@ -59,9 +68,27 @@ class StorePrimaryWebsiteRequest extends FormRequest
     public function withValidator(Validator $validator): void
     {
         $validator->after(function (Validator $validator) {
+            if (!app()->environment('production') && config('wai.custom_public_administrations', false) && filled($this->input('url')) && ('custom' === $this->input('website_type'))) {
+                if ((0 !== strpos($this->input('url'), 'http')) || !filter_var($this->input('url'), FILTER_VALIDATE_URL)) {
+                    $validator->errors()->add('url', __("L'indirizzo inserito non è corretto."));
+                }
+                $host = parse_url($this->input('url'), PHP_URL_HOST);
+                if ($host && !$this->checkIsNotPrimary($host)) {
+                    $validator->errors()->add('url', __("L'indirizzo inserito appartiene a un'altra pubblica amministrazione."));
+                }
+
+                $publicAdministration = $this->input();
+                $publicAdministration['name'] = $publicAdministration['public_administration_name'];
+                $websiteType = WebsiteType::coerce(WebsiteType::INSTITUTIONAL_PLAY);
+                $publicAdministration['type'] = ucfirst($websiteType->description);
+                $this->publicAdministration = $publicAdministration;
+                $this->isCustomPublicAdministration = true;
+            }
+
             if (filled($this->input('ipa_code'))) {
                 $publicAdministration = $this->getPublicAdministrationEntryByIpaCode($this->input('ipa_code'));
                 $this->publicAdministration = $publicAdministration;
+                $this->isCustomPublicAdministration = false;
 
                 if (empty($publicAdministration)) {
                     $validator->errors()->add('public_administration_name', __('Il codice IPA della PA selezionata non è corretto.'));

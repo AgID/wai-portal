@@ -105,4 +105,31 @@ return [
      */
 
     'closed_beta' => env('APP_CLOSED_BETA_ENABLED', false),
+
+    /*
+     |--------------------------------------------------------------------------
+     | Enable custom public administrations
+     |--------------------------------------------------------------------------
+     |
+     | This value is used to enable custom public administrations support; when
+     | active, users can create their own public administration and register
+     | it into the portal.
+     |
+     */
+
+    'custom_public_administrations' => env('APP_CUSTOM_PUBLIC_ADMINISTRATIONS_ENABLED', false),
+
+    /*
+     |--------------------------------------------------------------------------
+     | Set day, hour and minute to reset public playground
+     |--------------------------------------------------------------------------
+     |
+     | This values are used to set day, hour and minute to reset public playground;
+     | Day: sundays = 0, mondays = 1, tuesdays = 2, wednesdays = 3, thursdays = 4, fridays = 5, saturdays = 6
+     */
+
+    'reset_public_playground_day_verbose' => env('RESET_PUBLIC_PLAYGROUND_DAY_VERBOSE', 'sunday'),
+    'reset_public_playground_day' => env('RESET_PUBLIC_PLAYGROUND_DAY', 0),
+    'reset_public_playground_hour' => env('RESET_PUBLIC_PLAYGROUND_HOUR', 23),
+    'reset_public_playground_minute' => env('RESET_PUBLIC_PLAYGROUND_MINUTE', 30),
 ];

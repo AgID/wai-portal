@@ -36,11 +36,16 @@
                     <token key="LOG_SLACK_WEBHOOK_URL" value="${LOG_SLACK_WEBHOOK_URL}" />
                     <token key="LOG_SLACK_USERNAME" value="${LOG_SLACK_USERNAME}" />
                     <token key="APP_CLOSED_BETA_ENABLED" value="${APP_CLOSED_BETA_ENABLED}" />
+                    <token key="APP_CUSTOM_PUBLIC_ADMINISTRATIONS_ENABLED" value="${APP_CUSTOM_PUBLIC_ADMINISTRATIONS_ENABLED}" />
                     <token key="APP_SUPER_ADMIN_NAME" value="${APP_SUPER_ADMIN_NAME}" />
                     <token key="APP_SUPER_ADMIN_FAMILY_NAME" value="${APP_SUPER_ADMIN_FAMILY_NAME}" />
                     <token key="APP_SUPER_ADMIN_FISCAL_NUMBER" value="${APP_SUPER_ADMIN_FISCAL_NUMBER}" />
                     <token key="APP_SUPER_ADMIN_EMAIL" value="${APP_SUPER_ADMIN_EMAIL}" />
                     <token key="APP_SUPER_ADMIN_PASSWORD" value="${APP_SUPER_ADMIN_PASSWORD}" />
+                    <token key="RESET_PUBLIC_PLAYGROUND_DAY_VERBOSE" value="${RESET_PUBLIC_PLAYGROUND_DAY_VERBOSE}" />
+                    <token key="RESET_PUBLIC_PLAYGROUND_DAY" value="${RESET_PUBLIC_PLAYGROUND_DAY}" />
+                    <token key="RESET_PUBLIC_PLAYGROUND_HOUR" value="${RESET_PUBLIC_PLAYGROUND_HOUR}" />
+                    <token key="RESET_PUBLIC_PLAYGROUND_MINUTE" value="${RESET_PUBLIC_PLAYGROUND_MINUTE}" />
                     <token key="CLOSED_BETA_WHITELIST_WEBHOOK_CLIENT_SECRET" value="${CLOSED_BETA_WHITELIST_WEBHOOK_CLIENT_SECRET}" />
                     <token key="CLOSED_BETA_WHITELIST_REPOSITORY_FULL_NAME" value="${CLOSED_BETA_WHITELIST_REPOSITORY_FULL_NAME}" />
                     <token key="CLOSED_BETA_WHITELIST_REPOSITORY_BRANCH" value="${CLOSED_BETA_WHITELIST_REPOSITORY_BRANCH}" />
@@ -125,6 +130,7 @@
                     <token key="MATOMO_PLUGIN_LOGINFILTERIP_VERSION" value="${MATOMO_PLUGIN_LOGINFILTERIP_VERSION}" />
                     <token key="MATOMO_PLUGIN_VISITORGENERATOR_VERSION" value="${MATOMO_PLUGIN_VISITORGENERATOR_VERSION}" />
                     <token key="MATOMO_PLUGIN_TRACKERHOSTNAME_VERSION" value="${MATOMO_PLUGIN_TRACKERHOSTNAME_VERSION}" />
+                    <token key="MATOMO_PLUGIN_RESETDATABASE_VERSION" value="${MATOMO_PLUGIN_RESETDATABASE_VERSION}" />
                     <token key="MATOMO_INGESTION_HOSTNAME" value="${MATOMO_INGESTION_HOSTNAME}" />
                 </replacetokens>
             </filterchain>
@@ -625,6 +631,7 @@
             --build-arg MATOMO_PLUGIN_CUSTOMDIMENSIONS_VERSION=${MATOMO_PLUGIN_CUSTOMDIMENSIONS_VERSION}
             --build-arg MATOMO_PLUGIN_LOGINFILTERIP_VERSION=${MATOMO_PLUGIN_LOGINFILTERIP_VERSION}
             --build-arg MATOMO_PLUGIN_TRACKERHOSTNAME_VERSION=${MATOMO_PLUGIN_TRACKERHOSTNAME_VERSION}
+            --build-arg MATOMO_PLUGIN_RESETDATABASE_VERSION=${MATOMO_PLUGIN_RESETDATABASE_VERSION}
             -t matomo-codebase:${MATOMO_IMAGE_TAG} ."
             dir="containers/matomo" passthru="true" checkreturn="true"/>
         <exec command="docker build --no-cache --rm -f Dockerfile.matomo

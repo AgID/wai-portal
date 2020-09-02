@@ -21,7 +21,7 @@ trait SendsNotificationsToPublicAdministrationRTD
 
         //NOTE: don't send notification to RTD
         //      if he/she is the PA registering user
-        if ($registeringUser->email !== $this->rtd_mail) {
+        if (($registeringUser->email !== $this->rtd_mail) && $this->sendNotificationOnCurrentEnvironment()) {
             $this->notify(new RTDPublicAdministrationRegisteredEmail($registeringUser));
         }
     }
@@ -33,7 +33,9 @@ trait SendsNotificationsToPublicAdministrationRTD
      */
     public function sendWebsiteActivatedNotificationToRTD(Website $website): void
     {
-        $this->notify(new RTDWebsiteActivatedEmail($website));
+        if ($this->sendNotificationOnCurrentEnvironment()) {
+            $this->notify(new RTDWebsiteActivatedEmail($website));
+        }
     }
 
     /**
@@ -41,6 +43,21 @@ trait SendsNotificationsToPublicAdministrationRTD
      */
     public function sendPublicAdministrationUpdatedRTD(): void
     {
-        $this->notify(new RTDEmailAddressChangedEmail());
+        if ($this->sendNotificationOnCurrentEnvironment()) {
+            $this->notify(new RTDEmailAddressChangedEmail());
+        }
+    }
+
+    /**
+     * Check the current environment.
+     * Send notification only in production environment.
+     */
+    private function sendNotificationOnCurrentEnvironment()
+    {
+        if (app()->environment('production')) {
+            return true;
+        }
+
+        return false;
     }
 }

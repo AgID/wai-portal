@@ -35,9 +35,7 @@ class PublicAdministrationsTransformer extends TransformerAbstract
                 ]),
                 'raw' => e($publicAdministration->name),
             ],
-            'city' => e($publicAdministration->city),
             'email' => e($emailPublicAdministrationUser),
-            'region' => e($publicAdministration->region),
             'userStatus' => [
                 'display' => '<span class="badge user-status ' . strtolower($statusPublicAdministrationUser->key) . '">' . strtoupper($statusPublicAdministrationUser->description) . '</span>',
                 'raw' => $statusPublicAdministrationUser->description,

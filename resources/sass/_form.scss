@@ -114,6 +114,12 @@
       display: none;
     }
   }
+
+  &.website-custom-form {
+    .form-group.has-custom-form-text {
+      margin-bottom: 3rem;
+    }
+  }
 }
 
 .bootstrap-select-wrapper {
