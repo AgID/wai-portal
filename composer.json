@@ -33,7 +33,7 @@
         }
     ],
     "require": {
-        "php": "^7.3",
+        "php": "^7.4",
         "bensampo/laravel-enum": "^1.25",
         "davejamesmiller/laravel-breadcrumbs": "^5.3",
         "davidepastore/codice-fiscale": "^0.7.0",
@@ -42,8 +42,9 @@
         "ethanhann/redisearch-php": "^1.0",
         "fideloper/proxy": "^4.2",
         "guzzlehttp/guzzle": "^7.0",
-        "italia/spid-laravel": "^1.0@beta",
-        "laravel/framework": "6.18.*",
+        "italia/spid-laravel": "^1.1.0-beta",
+        "laravel/framework": "^7.0",
+        "laravel/ui": "^2.0",
         "laravel/tinker": "^2.0",
         "league/commonmark": "^1.4",
         "predis/predis": "^1.1",
@@ -56,18 +57,19 @@
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.2.7",
         "beyondcode/laravel-dump-server": "^1.3",
-        "facade/ignition": "^1.4",
+        "facade/ignition": "^2.0",
         "friendsofphp/php-cs-fixer": "^2.14",
         "fzaninotto/faker": "^1.4",
         "johnkary/phpunit-speedtrap": "^3.1",
         "laravel/dusk": "^6.1",
         "mockery/mockery": "^1.0",
-        "nunomaduro/collision": "^3.0",
+        "nunomaduro/collision": "^4.1",
         "phing/phing": "2.*",
         "phpunit/phpunit": "^9.0",
         "sensiolabs/security-checker": "^6.0",
         "shaggy8871/php-rx": "^1.0",
-        "symfony/thanks": "^1.0"
+        "symfony/thanks": "^1.0",
+        "psr/event-dispatcher": "^1.0"
     },
     "autoload": {
         "classmap": [

@@ -16,7 +16,7 @@ class PECMailable extends Mailable
      *
      * @return void
      */
-    public function send(MailerContract $mailer)
+    public function send($mailer)
     {
         $host = env('PEC_HOST');
         $port = env('PEC_PORT', 587);
