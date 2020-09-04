@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Enums\PublicAdministrationStatus;
 use App\Enums\UserPermission;
 use App\Enums\UserRole;
 use App\Enums\UserStatus;
@@ -73,6 +74,20 @@ class CRUDWebsiteTest extends TestCase
     private $faker;
 
     /**
+     * The custom public administration.
+     *
+     * @var PublicAdministration the custom public administration
+     */
+    private $customPublicAdministration;
+
+    /**
+     * The custom website.
+     *
+     * @var Website the website for custom public administration
+     */
+    private $customWebsite;
+
+    /**
      * Pre-test setup.
      *
      * @throws \Illuminate\Contracts\Container\BindingResolutionException if unable to bind to the service
@@ -105,6 +120,16 @@ class CRUDWebsiteTest extends TestCase
         ]);
 
         $this->user->registerAnalyticsServiceAccount();
+
+        $this->customPublicAdministration = factory(PublicAdministration::class)->create([
+            'status' => PublicAdministrationStatus::PENDING,
+        ]);
+        $this->customWebsite = factory(Website::class)->create([
+            'public_administration_id' => $this->customPublicAdministration->id,
+            'status' => WebsiteStatus::PENDING,
+            'type' => WebsiteType::INSTITUTIONAL_PLAY,
+        ]);
+        $this->customPublicAdministration->users()->sync([$this->user->id]);
 
         Bouncer::dontCache();
         Bouncer::scope()->onceTo($this->publicAdministration->id, function () {
@@ -228,6 +253,131 @@ class CRUDWebsiteTest extends TestCase
         Event::assertNotDispatched(WebsiteAdded::class);
 
         $this->assertEmpty($user->publicAdministrations()->get());
+    }
+
+    /**
+     * Test primary custom creation successful.
+     *
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException if unable to bind to the service
+     * @throws \App\Exceptions\AnalyticsServiceException if unable to connect the Analytics Service
+     * @throws \App\Exceptions\CommandErrorException if command is unsuccessful
+     */
+    public function testStoreCustomWebsiteSuccessful(): void
+    {
+        $user = factory(User::class)->create([
+            'status' => UserStatus::PENDING,
+            'email_verified_at' => Date::now(),
+        ]);
+        $alternativeEmail = $this->faker->unique()->safeEmail;
+        $this->actingAs($user)
+            ->withSession([
+                'spid_sessionIndex' => 'fake-session-index',
+                'spid_user' => $this->spidUser,
+            ])
+            ->from(route('websites.create.primary.custom'))
+            ->post(route('websites.store.primary'), [
+                'email' => $alternativeEmail,
+                'public_administration_name' => 'Pubblica amministrazione personalizzata',
+                'url' => 'https://www.pubblica-amministrazione.personalizzata.it',
+                'rtd_name' => 'Utente Utenti',
+                'rtd_mail' => 'utente@personalizzata.it',
+                'skip_rtd_validation' => true,
+                'correct_confirmation' => 'on',
+                'website_type' => 'custom',
+            ])
+            ->assertSessionHasNoErrors()
+            ->assertRedirect(route('websites.index'));
+
+        $user->refresh();
+
+        $createdWebsite = Website::where('slug', Str::slug('https://www.pubblica-amministrazione.personalizzata.it'))->first();
+        $this->app->make('analytics-service')->deleteSite($createdWebsite->analytics_id);
+
+        Event::assertDispatched(PublicAdministrationRegistered::class, function ($event) use ($user) {
+            return 'Pubblica amministrazione personalizzata' === $event->getPublicAdministration()->name && $user->is($event->getUser());
+        });
+        Event::assertDispatched(WebsiteAdded::class, function ($event) {
+            return $event->getWebsite()->slug === Str::slug('https://www.pubblica-amministrazione.personalizzata.it');
+        });
+
+        $this->assertEquals('Pubblica amministrazione personalizzata', $user->publicAdministrations()->first()->name);
+    }
+
+    /**
+     * Test custom website creation fail due to fields validation.
+     */
+    public function testStoreCustomWebsiteFailValidation(): void
+    {
+        $user = factory(User::class)->create([
+            'status' => UserStatus::PENDING,
+            'email_verified_at' => Date::now(),
+        ]);
+        $this->actingAs($user)
+            ->withSession([
+                'spid_sessionIndex' => 'fake-session-index',
+                'spid_user' => $this->spidUser,
+            ])
+            ->from(route('websites.create.primary.custom'))
+            ->post(route('websites.store.primary'), [
+                'public_administration_name' => 'Pubblica amministrazione personalizzata',
+                'url' => $this->website->url,
+                'website_type' => 'custom',
+            ])
+            ->assertSessionHasErrors([
+                'url',
+            ])
+            ->assertRedirect(route('websites.create.primary.custom'));
+
+        $user->refresh();
+
+        Event::assertNotDispatched(PublicAdministrationRegistered::class);
+        Event::assertNotDispatched(WebsiteAdded::class);
+
+        $this->assertEmpty($user->publicAdministrations()->get());
+    }
+
+    /**
+     * Test primary custom creation successful.
+     *
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException if unable to bind to the service
+     * @throws \App\Exceptions\AnalyticsServiceException if unable to connect the Analytics Service
+     * @throws \App\Exceptions\CommandErrorException if command is unsuccessful
+     */
+    public function testForceActivationCustomWebsiteSuccessful(): void
+    {
+        $user = factory(User::class)->create([
+            'status' => UserStatus::PENDING,
+            'email_verified_at' => Date::now(),
+        ]);
+
+        $spidUser = new SPIDUser([
+            'fiscalNumber' => $user->fiscal_number,
+            'familyName' => $user->family_name,
+            'name' => $user->name,
+        ]);
+
+        $user->registerAnalyticsServiceAccount();
+        $this->customPublicAdministration->users()->sync([$user->id => ['user_status' => UserStatus::PENDING]]);
+
+        $this->assertTrue($this->customWebsite->status->is(WebsiteStatus::PENDING));
+
+        $this->actingAs($user)
+            ->withSession([
+                'spid_sessionIndex' => 'fake-session-index',
+                'spid_user' => $spidUser,
+                'tenant_id' => $this->customPublicAdministration->id,
+            ])
+            ->from(route('websites.index'))
+            ->json('GET', route('websites.activate.force', ['website' => $this->customWebsite->slug]))
+            ->assertOk()
+            ->assertJsonFragment([
+                'website_name' => e($this->customWebsite->name),
+            ]);
+
+        $user->refresh();
+        $this->customWebsite->refresh();
+
+        $this->assertTrue($this->customWebsite->status->is(WebsiteStatus::ACTIVE));
     }
 
     /**

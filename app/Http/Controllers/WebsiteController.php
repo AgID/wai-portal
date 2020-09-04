@@ -4,11 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Enums\PublicAdministrationStatus;
 use App\Enums\UserPermission;
-use App\Enums\UserRole;
 use App\Enums\UserStatus;
 use App\Enums\WebsiteStatus;
 use App\Enums\WebsiteType;
-use App\Events\PublicAdministration\PublicAdministrationRegistered;
 use App\Events\Website\WebsiteActivated;
 use App\Events\Website\WebsiteAdded;
 use App\Events\Website\WebsiteArchived;
@@ -25,6 +23,7 @@ use App\Models\PublicAdministration;
 use App\Models\Website;
 use App\Traits\ActivatesWebsite;
 use App\Traits\HasRoleAwareUrls;
+use App\Traits\ManagePublicAdministrationRegistration;
 use App\Traits\SendsResponse;
 use App\Transformers\UsersPermissionsTransformer;
 use App\Transformers\WebsiteTransformer;
@@ -34,7 +33,6 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
-use Silber\Bouncer\BouncerFacade as Bouncer;
 use Yajra\DataTables\DataTables;
 
 /**
@@ -45,6 +43,7 @@ class WebsiteController extends Controller
     use ActivatesWebsite;
     use SendsResponse;
     use HasRoleAwareUrls;
+    use ManagePublicAdministrationRegistration;
 
     /**
      * Display the websites list.
@@ -88,6 +87,16 @@ class WebsiteController extends Controller
     }
 
     /**
+     * Show the form for creating a new custom website.
+     *
+     * @return View the view
+     */
+    public function custom()
+    {
+        return view('pages.pa.add')->with('customForm', true);
+    }
+
+    /**
      * Create a new primary website.
      *
      * @param StorePrimaryWebsiteRequest $request the request
@@ -99,51 +108,22 @@ class WebsiteController extends Controller
         $authUser = $request->user();
 
         $publicAdministration = PublicAdministration::make([
-            'ipa_code' => $request->publicAdministration['ipa_code'],
+            'ipa_code' => $request->isCustomPublicAdministration ? Str::slug($request->publicAdministration['url']) : $request->publicAdministration['ipa_code'],
             'name' => $request->publicAdministration['name'],
             'pec' => $request->publicAdministration['pec'] ?? null,
             'rtd_name' => $request->publicAdministration['rtd_name'] ?? null,
             'rtd_mail' => $request->publicAdministration['rtd_mail'] ?? null,
             'rtd_pec' => $request->publicAdministration['rtd_pec'] ?? null,
-            'city' => $request->publicAdministration['city'],
-            'county' => $request->publicAdministration['county'],
-            'region' => $request->publicAdministration['region'],
+            'city' => $request->publicAdministration['city'] ?? null,
+            'county' => $request->publicAdministration['county'] ?? null,
+            'region' => $request->publicAdministration['region'] ?? null,
             'type' => $request->publicAdministration['type'],
             'status' => PublicAdministrationStatus::PENDING,
         ]);
 
-        $primaryWebsiteURL = $request->publicAdministration['site'];
-        $analyticsId = app()->make('analytics-service')->registerSite(__('Sito istituzionale'), $primaryWebsiteURL, $publicAdministration->name);
+        $siteUrl = $request->isCustomPublicAdministration ? $request->publicAdministration['url'] : $request->publicAdministration['site'];
+        $website = $this->registerPublicAdministration($authUser, $publicAdministration, $siteUrl, $request->isCustomPublicAdministration, $request->input('email'));
 
-        $publicAdministration->save();
-        $website = Website::create([
-            'name' => $publicAdministration->name,
-            'url' => $primaryWebsiteURL,
-            'type' => WebsiteType::INSTITUTIONAL,
-            'public_administration_id' => $publicAdministration->id,
-            'analytics_id' => $analyticsId,
-            'slug' => Str::slug($primaryWebsiteURL),
-            'status' => WebsiteStatus::PENDING,
-        ]);
-
-        $publicAdministration->users()->save($authUser, ['user_email' => $request->input('email'), 'user_status' => UserStatus::PENDING]);
-        // This is the first time we know which public administration the
-        // current user belongs, so we need to set the tenant id just now.
-        session()->put('tenant_id', $publicAdministration->id);
-
-        if ($authUser->publicAdministrations->isEmpty()) {
-            $authUser->roles()->detach();
-        }
-
-        Bouncer::scope()->to($publicAdministration->id);
-        $authUser->assign(UserRole::REGISTERED);
-        if (!$authUser->hasAnalyticsServiceAccount()) {
-            $authUser->registerAnalyticsServiceAccount();
-        }
-        $authUser->setViewAccessForWebsite($website);
-        $authUser->syncWebsitesPermissionsToAnalyticsService();
-
-        event(new PublicAdministrationRegistered($publicAdministration, $authUser));
         event(new WebsiteAdded($website, $authUser));
 
         return redirect()->route('websites.index')->withModal([
@@ -230,22 +210,36 @@ class WebsiteController extends Controller
      */
     public function show(PublicAdministration $publicAdministration, Website $website): View
     {
+        $currentPublicAdministration = auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)
+        ? $publicAdministration
+        : current_public_administration();
+
         $usersPermissionsDatatableSourceUrl = $this->getRoleAwareUrl('websites.users.permissions.data.json', [
             'website' => $website,
-        ], $publicAdministration);
+        ], $currentPublicAdministration);
         $roleAwareUrls = $this->getRoleAwareUrlArray([
             'websiteEditUrl' => 'websites.edit',
             'websiteTrackingCheckUrl' => 'websites.tracking.check',
+            'websiteTrackingForceUrl' => 'websites.activate.force',
             'websiteArchiveUrl' => 'websites.archive',
             'websiteUnarchiveUrl' => 'websites.unarchive',
             'javascriptSnippetUrl' => 'websites.snippet.javascript',
         ], [
             'website' => $website,
-        ], $publicAdministration);
-
+        ], $currentPublicAdministration);
         $usersPermissionsDatatable = $this->getDatatableUsersPermissionsParams($usersPermissionsDatatableSourceUrl, true);
 
-        return view('pages.websites.show')->with(compact('website'))->with($roleAwareUrls)->with($usersPermissionsDatatable);
+        $authUser = auth()->user();
+        $publicAdministrationUser = $authUser->publicAdministrations()->where('public_administration_id', $currentPublicAdministration->id)->first();
+        if ($publicAdministrationUser) {
+            $userPublicAdministrationStatus = UserStatus::fromValue(intval($publicAdministrationUser->pivot->user_status));
+        }
+        $forceActivationButtonVisible = !app()->environment('production') && config('wai.custom_public_administrations', false) && $website->type->is(WebsiteType::INSTITUTIONAL_PLAY);
+
+        return view('pages.websites.show')->with(compact('website'))->with($roleAwareUrls)
+            ->with($usersPermissionsDatatable)
+            ->with('forceButtonVisible', $forceActivationButtonVisible)
+            ->with('userPublicAdministrationStatus', $userPublicAdministrationStatus ?? null);
     }
 
     /**
@@ -416,6 +410,45 @@ class WebsiteController extends Controller
                 }
 
                 return $this->notModifiedResponse();
+            }
+
+            throw new InvalidWebsiteStatusException('Unable to check activation for website ' . $website->info . ' in status ' . $website->status->key . '.');
+        } catch (AnalyticsServiceException | BindingResolutionException $exception) {
+            report($exception);
+            $code = $exception->getCode();
+            $message = 'Internal Server Error';
+            $httpStatusCode = 500;
+        } catch (InvalidWebsiteStatusException $exception) {
+            report($exception);
+            $code = $exception->getCode();
+            $message = 'Invalid operation for current website status';
+            $httpStatusCode = 400;
+        } catch (CommandErrorException $exception) {
+            report($exception);
+            $code = $exception->getCode();
+            $message = 'Bad Request';
+            $httpStatusCode = 400;
+        }
+
+        return $this->errorResponse($message, $code, $httpStatusCode);
+    }
+
+    /**
+     * Force website tracking status to active.
+     *
+     * @param PublicAdministration $publicAdministration the public administration the website belongs to
+     * @param Website $website the website to check
+     *
+     * @return JsonResponse|RedirectResponse the response
+     */
+    public function forceActivation(PublicAdministration $publicAdministration, Website $website)
+    {
+        try {
+            if ($website->status->is(WebsiteStatus::PENDING) && $website->type->is(WebsiteType::INSTITUTIONAL_PLAY)) {
+                $this->activate($website);
+                event(new WebsiteActivated($website));
+
+                return $this->websiteResponse($website);
             }
 
             throw new InvalidWebsiteStatusException('Unable to check activation for website ' . $website->info . ' in status ' . $website->status->key . '.');

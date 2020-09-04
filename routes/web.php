@@ -242,10 +242,13 @@ Route::middleware('spid.auth', 'auth', 'verified:verification.notice')->group(fu
                 ->name('websites.unarchive');
 
                 Route::get('/{website}/check', 'WebsiteController@checkTracking')
-                ->name('websites.tracking.check');
+                    ->name('websites.tracking.check');
+
+                Route::get('/{website}/force', 'WebsiteController@forceActivation')
+                    ->name('websites.activate.force');
 
                 Route::get('/{website}/javascript-snippet', 'WebsiteController@showJavascriptSnippet')
-                ->name('websites.snippet.javascript');
+                    ->name('websites.snippet.javascript');
             });
         });
 
@@ -310,9 +313,6 @@ Route::middleware('auth.admin', 'verified:admin.verification.notice')->group(fun
                     'as' => 'admin.publicAdministrations.select',
                     'uses' => 'PublicAdministrationController@selectTenant',
                 ]);
-
-                Route::get('/add', 'PublicAdministrationController@add')
-                ->name('admin.publicAdministrations.add');
             });
 
             Route::get('/dashboard', 'SuperAdminDashboardController@dashboard')
@@ -450,6 +450,9 @@ Route::middleware('auth.admin', 'verified:admin.verification.notice')->group(fun
 
                     Route::get('/{website}/check', 'WebsiteController@checkTracking')
                         ->name('admin.publicAdministration.websites.tracking.check');
+
+                    Route::get('/{website}/force', 'WebsiteController@forceActivation')
+                        ->name('admin.publicAdministration.websites.activate.force');
 
                     Route::get('/{website}/javascript-snippet', 'WebsiteController@showJavascriptSnippet')
                         ->name('admin.publicAdministration.websites.snippet.javascript');

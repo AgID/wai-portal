@@ -13,6 +13,8 @@
 
                 <h1 class="display-2">@yield('title')@yield('title-after')</h1>
 
+                @yield('title-description')
+
                 @yield('content')
             </div>
         </div>

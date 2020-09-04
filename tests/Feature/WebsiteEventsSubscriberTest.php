@@ -468,6 +468,8 @@ class WebsiteEventsSubscriberTest extends TestCase
 
     public function testWebsiteActivatedWithRTD(): void
     {
+        $this->app['env'] = 'production';
+
         $this->expectLogMessage('notice', [
             'Website ' . $this->website->info . ' activated',
             [
@@ -518,6 +520,60 @@ class WebsiteEventsSubscriberTest extends TestCase
                 return $mail->hasTo($this->publicAdministration->rtd_mail, $this->publicAdministration->rtd_name);
             }
         );
+
+        $this->app['env'] = 'testing';
+    }
+
+    /*
+     * Test website activated on public playground with rtd
+     */
+    public function testWebsiteActivatedOnPublicPlaygroundWithRTD(): void
+    {
+        $this->app['env'] = 'public-playground';
+
+        $this->expectLogMessage('notice', [
+            'Website ' . $this->website->info . ' activated',
+            [
+                'event' => EventType::WEBSITE_ACTIVATED,
+                'website' => $this->website->id,
+                'pa' => $this->publicAdministration->ipa_code,
+            ],
+        ]);
+
+        $this->app->bind('analytics-service', function () {
+            return $this->partialMock(MatomoService::class, function ($mock) {
+                $mock->shouldReceive('setWebsiteAccess')
+                    ->once()
+                    ->withArgs([
+                        'anonymous',
+                        WebsiteAccessType::VIEW,
+                        $this->website->analytics_id,
+                    ]);
+            });
+        });
+
+        event(new WebsiteActivated($this->website));
+
+        Notification::assertSentTo(
+            [$this->user],
+            UserWebsiteActivatedEmail::class,
+            function ($notification, $channels) {
+                $this->assertEquals($channels, ['mail']);
+                $mail = $notification->toMail($this->user)->build();
+                $this->assertEquals($this->user->uuid, $mail->viewData['user']['uuid']);
+                $this->assertEquals($this->website->slug, $mail->viewData['website']['slug']);
+                $this->assertEquals($mail->subject, __('Sito web attivato'));
+
+                return $mail->hasTo($this->user->email, $this->user->full_name);
+            }
+        );
+
+        Notification::assertNotSentTo(
+            [$this->publicAdministration],
+            RTDWebsiteActivatedEmail::class
+        );
+
+        $this->app['env'] = 'testing';
     }
 
     public function testWebsiteActivatedWithoutRTD(): void

@@ -44,10 +44,10 @@ trait LighthouseTested
         $lighthouseCollect->run();
         $lighthouseAssert->run();
 
-        file_put_contents($reportPath, $lighthouseCollect->getOutput());
-        file_put_contents($reportPath, $lighthouseCollect->getErrorOutput(), FILE_APPEND);
-        file_put_contents($reportPath, $lighthouseAssert->getOutput(), FILE_APPEND);
-        file_put_contents($reportPath, $lighthouseAssert->getErrorOutput(), FILE_APPEND);
+        file_put_contents($reportPath, preg_replace('#\\x1b[[][^A-Za-z]*[A-Za-z]#', '', $lighthouseCollect->getOutput()));
+        file_put_contents($reportPath, preg_replace('#\\x1b[[][^A-Za-z]*[A-Za-z]#', '', $lighthouseCollect->getErrorOutput()), FILE_APPEND);
+        file_put_contents($reportPath, preg_replace('#\\x1b[[][^A-Za-z]*[A-Za-z]#', '', $lighthouseAssert->getOutput()), FILE_APPEND);
+        file_put_contents($reportPath, preg_replace('#\\x1b[[][^A-Za-z]*[A-Za-z]#', '', $lighthouseAssert->getErrorOutput()), FILE_APPEND);
 
         if (!$lighthouseAssert->isSuccessful()) {
             Assert::fail('lighthouse test failed on ' . $this->url() . ":\n" . $lighthouseAssert->getErrorOutput());

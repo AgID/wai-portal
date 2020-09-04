@@ -17,6 +17,15 @@ APP_CODE_PATH_CONTAINER=/var/www/html
 APP_VERSION=0.1-alpha
 APP_DEBUG=true
 APP_CLOSED_BETA_ENABLED=false
+APP_CUSTOM_PUBLIC_ADMINISTRATIONS_ENABLED=false
+
+# Reset public playground
+# Value must be between 0 = Sunday and 6 = Saturday
+# -----------
+RESET_PUBLIC_PLAYGROUND_DAY_VERBOSE=sunday
+RESET_PUBLIC_PLAYGROUND_DAY=0
+RESET_PUBLIC_PLAYGROUND_HOUR=23
+RESET_PUBLIC_PLAYGROUND_MINUTE=30
 
 # Closed beta repository
 # ----------------------
@@ -64,6 +73,7 @@ SPID_SP_CERTIFICATE=
 # SPID test identity providers
 # ----------------------------
 
+SPID_TESTENV_HOSTNAME=
 SPID_TESTENV_ENABLED=
 SPID_TESTENV_ENTITY_ID=
 SPID_TESTENV_SSO=
@@ -191,6 +201,15 @@ MATOMO_ROOT_PASSWORD=Password
 # Matomo super user API Key, put any MD5 hash.
 MATOMO_ROOT_APIKEY=8aa23f3ca5903d451d1ff8eb947c7a8f
 
+# Matomo public dashboard user name
+MATOMO_PUBLIC_USER=viewer
+
+# Matomo public dashboard user password
+MATOMO_PUBLIC_USER_PASSWORD=ViewerPassword
+
+# Matomo public dashboard user API Key, put any MD5 hash.
+MATOMO_PUBLIC_USER_APIKEY=540e13e315b7c8bbf374a0ff227a1ae1
+
 # Matomo version
 MATOMO_VERSION=3.13.5
 
@@ -205,6 +224,7 @@ MATOMO_PLUGIN_CUSTOMDIMENSIONS_VERSION=3.1.10
 MATOMO_PLUGIN_LOGINFILTERIP_VERSION=0.1.0
 MATOMO_PLUGIN_TRACKERHOSTNAME_VERSION=0.1.0
 MATOMO_PLUGIN_VISITORGENERATOR_VERSION=3.1.2
+MATOMO_PLUGIN_RESETDATABASE_VERSION=0.1.0
 
 # Matomo phpredis extension version
 MATOMO_PHPREDIS_VERSION=5.1.1

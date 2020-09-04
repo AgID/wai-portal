@@ -29,4 +29,9 @@ final class WebsiteType extends Enum implements LocalizedEnum
      * Mobile application.
      */
     public const MOBILE = 3;
+
+    /**
+     * Custom Public Administration site.
+     */
+    public const INSTITUTIONAL_PLAY = 4;
 }

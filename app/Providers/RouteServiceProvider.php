@@ -58,6 +58,10 @@ class RouteServiceProvider extends ServiceProvider
         if ($this->app->environment('staging')) {
             $this->mapStagingRoutes();
         }
+
+        if (!$this->app->environment('production') && config('wai.custom_public_administrations')) {
+            $this->mapCustomPublicAdministration();
+        }
     }
 
     /**
@@ -133,5 +137,18 @@ class RouteServiceProvider extends ServiceProvider
             ->middleware('hooks')
             ->namespace($this->namespace)
             ->group(base_path('routes/webhooks.php'));
+    }
+
+    /**
+     * Define additional "web" routes for the application
+     * to manage custom public administrations creation.
+     *
+     * These routes all receive session state, CSRF protection, etc.
+     */
+    protected function mapCustomPublicAdministration(): void
+    {
+        Route::middleware('web')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/custom-pa.php'));
     }
 }

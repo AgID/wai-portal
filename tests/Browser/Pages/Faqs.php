@@ -16,7 +16,7 @@ class Faqs extends Page
      */
     public function url()
     {
-        return '/faqs';
+        return '/faq';
     }
 
     /**
