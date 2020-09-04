@@ -33,7 +33,7 @@
         }
     ],
     "require": {
-        "php": "^7.3",
+        "php": "^7.4",
         "bensampo/laravel-enum": "^1.25",
         "davejamesmiller/laravel-breadcrumbs": "^5.3",
         "davidepastore/codice-fiscale": "^0.7.0",
