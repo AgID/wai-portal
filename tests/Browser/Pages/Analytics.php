@@ -30,6 +30,8 @@ class Analytics extends Page
     {
         parent::assertBase($browser);
         $browser->assertPathBeginsWith($this->url());
+        $browser->assertSourceHas('"@type": "Organization"');
+        $browser->assertSourceHas('"@type": "BreadcrumbList"');
         $this->lighthouseTest();
     }
 }

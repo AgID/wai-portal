@@ -26,6 +26,9 @@ it:
     kb:
       name: Guida utente Web Analytics Italia
       link: https://docs.italia.it/agid/wai/wai-user-guide-docs/it/stabile/
+    meta:
+      description: Web Analytics Italia è il portale delle statistiche dei siti web della Pubblica Amministrazione italiana.
+      image: resources/images/wai-screenshot.png
 
     menu_items:
       primary:
