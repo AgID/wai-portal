@@ -4344,16 +4344,16 @@
         },
         {
             "name": "symfony/http-foundation",
-            "version": "v5.1.3",
+            "version": "v5.1.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/http-foundation.git",
-                "reference": "1f0d6627e680591c61e9176f04a0dc887b4e6702"
+                "reference": "41a4647f12870e9d41d9a7d72ff0614a27208558"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/http-foundation/zipball/1f0d6627e680591c61e9176f04a0dc887b4e6702",
-                "reference": "1f0d6627e680591c61e9176f04a0dc887b4e6702",
+                "url": "https://api.github.com/repos/symfony/http-foundation/zipball/41a4647f12870e9d41d9a7d72ff0614a27208558",
+                "reference": "41a4647f12870e9d41d9a7d72ff0614a27208558",
                 "shasum": ""
             },
             "require": {
@@ -4415,7 +4415,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-07-23T10:04:31+00:00"
+            "time": "2020-08-17T07:48:54+00:00"
         },
         {
             "name": "symfony/http-kernel",
@@ -6763,21 +6763,21 @@
         },
         {
             "name": "facade/flare-client-php",
-            "version": "1.3.4",
+            "version": "1.3.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/facade/flare-client-php.git",
-                "reference": "0eeb0de4fc1078433f0915010bd8f41e998adcb4"
+                "reference": "25907a113bfc212a38d458ae365bfb902b4e7fb8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/facade/flare-client-php/zipball/0eeb0de4fc1078433f0915010bd8f41e998adcb4",
-                "reference": "0eeb0de4fc1078433f0915010bd8f41e998adcb4",
+                "url": "https://api.github.com/repos/facade/flare-client-php/zipball/25907a113bfc212a38d458ae365bfb902b4e7fb8",
+                "reference": "25907a113bfc212a38d458ae365bfb902b4e7fb8",
                 "shasum": ""
             },
             "require": {
                 "facade/ignition-contracts": "~1.0",
-                "illuminate/pipeline": "^5.5|^6.0|^7.0",
+                "illuminate/pipeline": "^5.5|^6.0|^7.0|^8.0",
                 "php": "^7.1",
                 "symfony/http-foundation": "^3.3|^4.1|^5.0",
                 "symfony/mime": "^3.4|^4.0|^5.1",
@@ -6821,20 +6821,20 @@
                     "type": "github"
                 }
             ],
-            "time": "2020-07-13T23:25:57+00:00"
+            "time": "2020-08-26T18:06:23+00:00"
         },
         {
             "name": "facade/ignition",
-            "version": "2.3.4",
+            "version": "2.3.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/facade/ignition.git",
-                "reference": "87335b120bc9652e4ee2bf285b7322a785211476"
+                "reference": "d7d05dba5a0bdbf018a2cb7be268f22f5d73eb81"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/facade/ignition/zipball/87335b120bc9652e4ee2bf285b7322a785211476",
-                "reference": "87335b120bc9652e4ee2bf285b7322a785211476",
+                "url": "https://api.github.com/repos/facade/ignition/zipball/d7d05dba5a0bdbf018a2cb7be268f22f5d73eb81",
+                "reference": "d7d05dba5a0bdbf018a2cb7be268f22f5d73eb81",
                 "shasum": ""
             },
             "require": {
@@ -6893,7 +6893,7 @@
                 "laravel",
                 "page"
             ],
-            "time": "2020-07-27T15:17:39+00:00"
+            "time": "2020-08-10T13:50:38+00:00"
         },
         {
             "name": "filp/whoops",
@@ -8594,16 +8594,16 @@
         },
         {
             "name": "scrivo/highlight.php",
-            "version": "v9.18.1.1",
+            "version": "v9.18.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/scrivo/highlight.php.git",
-                "reference": "52fc21c99fd888e33aed4879e55a3646f8d40558"
+                "reference": "efb6e445494a9458aa59b0af5edfa4bdcc6809d9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/scrivo/highlight.php/zipball/52fc21c99fd888e33aed4879e55a3646f8d40558",
-                "reference": "52fc21c99fd888e33aed4879e55a3646f8d40558",
+                "url": "https://api.github.com/repos/scrivo/highlight.php/zipball/efb6e445494a9458aa59b0af5edfa4bdcc6809d9",
+                "reference": "efb6e445494a9458aa59b0af5edfa4bdcc6809d9",
                 "shasum": ""
             },
             "require": {
@@ -8665,7 +8665,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2020-03-02T05:59:21+00:00"
+            "time": "2020-08-27T03:24:44+00:00"
         },
         {
             "name": "sebastian/code-unit",
