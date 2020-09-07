@@ -30,6 +30,8 @@ class Home extends Page
     {
         parent::assertBase($browser);
         $browser->assertPathIs($this->url());
+        $browser->assertSourceHas('"@type": "Organization"');
+        $browser->assertSourceHas('"@type": "BreadcrumbList"');
         $this->lighthouseTest();
     }
 }

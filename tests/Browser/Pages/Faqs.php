@@ -30,6 +30,9 @@ class Faqs extends Page
     {
         parent::assertBase($browser);
         $browser->assertPathIs($this->url());
+        $browser->assertSourceHas('"@type": "Organization"');
+        $browser->assertSourceHas('"@type": "BreadcrumbList"');
+        $browser->assertSourceHas('"@type": "FAQPage"');
         $this->lighthouseTest();
     }
 }
