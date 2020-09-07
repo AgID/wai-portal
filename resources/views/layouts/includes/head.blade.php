@@ -2,9 +2,17 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <meta name="description" content="{{ __(':app è il portale delle statistiche dei siti web della Pubblica Amministrazione italiana.', ['app' => config('app.name')]) }}">
+    <meta name="description" content="{{ config('site.meta.description') }}">
 
     <title>{{ config('app.name') }} - @yield('title')</title>
+
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="{{ config('app.name') }} - @yield('title')">
+    <meta property="og:description" content="{{ config('site.meta.description') }}">
+    <meta property="og:image" content="{{ asset(config('site.meta.image')) }}">
+
+    @include('layouts.includes.meta.structured_data', ['metaStructuredData' => $metaStructuredData ])
 
     <link media="all" rel="stylesheet" href="{{ mix('/css/app.css') }}">
 
