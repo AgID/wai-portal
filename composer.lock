@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d61f672f308790dc2d25ca25ca058f32",
+    "content-hash": "9069d9269c77d0747bd28af6a23ee03a",
     "packages": [
         {
             "name": "bensampo/laravel-enum",
@@ -3468,29 +3468,29 @@
         },
         {
             "name": "silber/bouncer",
-            "version": "v1.0.0-rc.8",
+            "version": "v1.0.0-rc.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/JosephSilber/bouncer.git",
-                "reference": "c716ee07f9568e9774b6934314620bc9d9d1d65a"
+                "reference": "05f030bb88d9a26d6cd9c580f883a0dd0d9c767f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/JosephSilber/bouncer/zipball/c716ee07f9568e9774b6934314620bc9d9d1d65a",
-                "reference": "c716ee07f9568e9774b6934314620bc9d9d1d65a",
+                "url": "https://api.github.com/repos/JosephSilber/bouncer/zipball/05f030bb88d9a26d6cd9c580f883a0dd0d9c767f",
+                "reference": "05f030bb88d9a26d6cd9c580f883a0dd0d9c767f",
                 "shasum": ""
             },
             "require": {
-                "illuminate/auth": "^6.0|^7.0",
-                "illuminate/cache": "^6.0|^7.0",
-                "illuminate/container": "^6.0|^7.0",
-                "illuminate/contracts": "^6.0|^7.0",
-                "illuminate/database": "^6.0|^7.0",
+                "illuminate/auth": "^6.0|^7.0|^8.0",
+                "illuminate/cache": "^6.0|^7.0|^8.0",
+                "illuminate/container": "^6.0|^7.0|^8.0",
+                "illuminate/contracts": "^6.0|^7.0|^8.0",
+                "illuminate/database": "^6.0|^7.0|^8.0",
                 "php": "^7.2"
             },
             "require-dev": {
-                "illuminate/console": "^6.0|^7.0",
-                "illuminate/events": "^6.0|^7.0",
+                "illuminate/console": "^6.0|^7.0|^8.0",
+                "illuminate/events": "^6.0|^7.0|^8.0",
                 "larapack/dd": "^1.1",
                 "phpunit/phpunit": "^8.0"
             },
@@ -3534,7 +3534,7 @@
                 "permissions",
                 "roles"
             ],
-            "time": "2020-03-31T15:14:45+00:00"
+            "time": "2020-09-08T15:47:38+00:00"
         },
         {
             "name": "spatie/laravel-webhook-client",
