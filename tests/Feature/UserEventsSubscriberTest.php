@@ -734,6 +734,14 @@ class UserEventsSubscriberTest extends TestCase
 
     public function testUserLogout(): void
     {
-        $this->expectLogMessage('info', []);
+        $this->expectLogMessage('info', [
+            'User ' . $this->user->uuid . ' logged out.',
+            [
+                'user' => $this->user->uuid,
+                'event' => EventType::USER_LOGOUT,
+            ],
+        ]);
+
+        event(new UserLogout($this->user));
     }
 }

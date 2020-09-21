@@ -36,6 +36,7 @@ use App\Notifications\UserWebsiteUnarchivedEmail;
 use App\Notifications\UserWebsiteUrlChangedEmail;
 use App\Notifications\WebsiteAddedEmail;
 use App\Services\MatomoService;
+use App\Traits\HasAnalyticsDashboard;
 use App\Traits\InteractsWithRedisIndex;
 use Faker\Factory;
 use Faker\Generator;
@@ -183,6 +184,11 @@ class WebsiteEventsSubscriberTest extends TestCase
                 $mock->shouldNotReceive('setWebsiteAccess');
             });
         });
+
+        $this->partialMock(HasAnalyticsDashboard::class)
+            ->shouldReceive('addToRollUp')
+            ->withArgs([$this->website])
+            ->andThrow(\Exception::class, 'Public administration rollup exception reporting');
 
         $this->expectLogMessage('notice', [
             'Website ' . $this->website->info . ' activated',
@@ -873,6 +879,9 @@ class WebsiteEventsSubscriberTest extends TestCase
         event(new WebsiteRestored($this->website));
     }
 
+    /**
+     * Test website updated event handler.
+     */
     public function testWebsiteUpdated(): void
     {
         $this->partialMock(InteractsWithRedisIndex::class)

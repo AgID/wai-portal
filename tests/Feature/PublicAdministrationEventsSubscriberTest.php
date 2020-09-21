@@ -653,6 +653,25 @@ class PublicAdministrationEventsSubscriberTest extends TestCase
     }
 
     /**
+     * Test public administration registered event handler.
+     */
+    public function testPublicAdministrationRegistered(): void
+    {
+        $user = factory(User::class)->create();
+
+        $this->expectLogMessage('notice', [
+            'User ' . $user->uuid . ' registered Public Administration ' . $this->publicAdministration->info,
+            [
+                'event' => EventType::PUBLIC_ADMINISTRATION_REGISTERED,
+                'pa' => $this->publicAdministration->ipa_code,
+                'user' => $user->uuid,
+            ],
+        ]);
+
+        event(new PublicAdministrationRegistered($this->publicAdministration, $user));
+    }
+
+    /**
      * Test public administration activation fail.
      */
     public function testPublicAdministrationActivationFailed(): void
