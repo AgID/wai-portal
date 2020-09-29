@@ -238,7 +238,7 @@ class WebsiteController extends Controller
 
         return view('pages.websites.show')->with(compact('website'))->with($roleAwareUrls)
             ->with($usersPermissionsDatatable)
-            ->with('forceButtonVisible', $forceActivationButtonVisible)
+            ->with('forceActivationButtonVisible', $forceActivationButtonVisible)
             ->with('userPublicAdministrationStatus', $userPublicAdministrationStatus ?? null);
     }
 
