@@ -7,7 +7,7 @@ RUN apk --update add curl patch && rm /var/cache/apk/*
 RUN mkdir -p /opt/matomo
 ARG MATOMO_VERSION
 ARG MATOMO_WAI_THEME_VERSION
-ARG MATOMO_PLUGIN_USERSMANAGERONLYADMIN_VERSION
+ARG MATOMO_PLUGIN_USERSMANAGERONLYSUPERUSER_VERSION
 ARG MATOMO_PLUGIN_DISABLESITETRACKING_VERSION
 ARG MATOMO_PLUGIN_QUEUEDTRACKING_VERSION
 ARG MATOMO_PLUGIN_PROTECTTRACKID_VERSION
@@ -40,16 +40,16 @@ RUN curl -fsSL -o WAIMatomoTheme.tar.gz \
     && tar -xf WAIMatomoTheme.tar.gz -C /opt/matomo/plugins \
     && rm -rf WAIMatomoTheme.tar.gz
 
-RUN if [ -n "$MATOMO_PLUGIN_USERSMANAGERONLYADMIN_VERSION" ]; then \
-    curl -fsSL -o UsersManagerOnlyAdmin.zip \
-        "https://github.com/AgID/wai-matomo-plugin-UsersManagerOnlyAdmin/archive/${MATOMO_PLUGIN_USERSMANAGERONLYADMIN_VERSION}.zip" \
-    && unzip UsersManagerOnlyAdmin.zip -d /opt/matomo/plugins \
-    && mv /opt/matomo/plugins/wai-matomo-plugin-UsersManagerOnlyAdmin-${MATOMO_PLUGIN_USERSMANAGERONLYADMIN_VERSION} /opt/matomo/plugins/UsersManagerOnlyAdmin \
-    && rm -rf UsersManagerOnlyAdmin.zip \
-    && sed -i -E -e 's/(@MATOMO_PLUGINS@)/Plugins[] = "UsersManagerOnlyAdmin"\n\1/g' /opt/matomo/config/config.ini.php \
-    && sed -i -E -e 's/(@MATOMO_PLUGINS_INSTALLED@)/PluginsInstalled[] = "UsersManagerOnlyAdmin"\n\1/g' /opt/matomo/config/config.ini.php \
-    && sed -i -E -e 's/(@MATOMO_MORE_CONFIG@)/[UsersManagerOnlyAdmin]\n\1/g' /opt/matomo/config/config.ini.php \
-    && sed -i -E -e 's/(@MATOMO_MORE_CONFIG@)/users_manager_only_admin_enabled = "@MATOMO_PLUGIN_USERSMANAGERONLYADMIN_ENABLED@"\n\1/g' /opt/matomo/config/config.ini.php \
+RUN if [ -n "$MATOMO_PLUGIN_USERSMANAGERONLYSUPERUSER_VERSION" ]; then \
+    curl -fsSL -o UsersManagerOnlySuperUser.zip \
+        "https://github.com/AgID/wai-matomo-plugin-UsersManagerOnlySuperUser/archive/${MATOMO_PLUGIN_USERSMANAGERONLYSUPERUSER_VERSION}.zip" \
+    && unzip UsersManagerOnlySuperUser.zip -d /opt/matomo/plugins \
+    && mv /opt/matomo/plugins/wai-matomo-plugin-UsersManagerOnlySuperUser-${MATOMO_PLUGIN_USERSMANAGERONLYSUPERUSER_VERSION} /opt/matomo/plugins/UsersManagerOnlySuperUser \
+    && rm -rf UsersManagerOnlySuperUser.zip \
+    && sed -i -E -e 's/(@MATOMO_PLUGINS@)/Plugins[] = "UsersManagerOnlySuperUser"\n\1/g' /opt/matomo/config/config.ini.php \
+    && sed -i -E -e 's/(@MATOMO_PLUGINS_INSTALLED@)/PluginsInstalled[] = "UsersManagerOnlySuperUser"\n\1/g' /opt/matomo/config/config.ini.php \
+    && sed -i -E -e 's/(@MATOMO_MORE_CONFIG@)/[UsersManagerOnlySuperUser]\n\1/g' /opt/matomo/config/config.ini.php \
+    && sed -i -E -e 's/(@MATOMO_MORE_CONFIG@)/users_manager_only_super_user_enabled = "@MATOMO_PLUGIN_USERSMANAGERONLYSUPERUSER_ENABLED@"\n\1/g' /opt/matomo/config/config.ini.php \
 ;fi
 
 RUN if [ -n "$MATOMO_PLUGIN_DISABLESITETRACKING_VERSION" ]; then \
@@ -142,8 +142,8 @@ RUN sed -i -e s/@MATOMO_WAI_URL@/${MATOMO_WAI_URL}/g /opt/matomo/config/config.i
     sed -i -e s/@MATOMO_PLUGINS_INSTALLED@//g /opt/matomo/config/config.ini.php && \
     sed -i -e s/@MATOMO_MORE_CONFIG@//g /opt/matomo/config/config.ini.php
 
-ARG MATOMO_PLUGIN_USERSMANAGERONLYADMIN_ENABLED
-RUN sed -i -e s/@MATOMO_PLUGIN_USERSMANAGERONLYADMIN_ENABLED@/${MATOMO_PLUGIN_USERSMANAGERONLYADMIN_ENABLED}/g /opt/matomo/config/config.ini.php
+ARG MATOMO_PLUGIN_USERSMANAGERONLYSUPERUSER_ENABLED
+RUN sed -i -e s/@MATOMO_PLUGIN_USERSMANAGERONLYSUPERUSER_ENABLED@/${MATOMO_PLUGIN_USERSMANAGERONLYSUPERUSER_ENABLED}/g /opt/matomo/config/config.ini.php
 
 ARG DB_PASSWORD
 ARG MATOMO_DB_READER
