@@ -93,7 +93,6 @@ Plugins[] = "Intl"
 Plugins[] = "UserId"
 Plugins[] = "CustomPiwikJs"
 Plugins[] = "WAIMatomoTheme"
-
 @MATOMO_PLUGINS@
 
 [PluginsInstalled]
@@ -153,7 +152,6 @@ PluginsInstalled[] = "Heartbeat"
 PluginsInstalled[] = "UserId"
 PluginsInstalled[] = "CustomPiwikJs"
 PluginsInstalled[] = "WAIMatomoTheme"
-
 @MATOMO_PLUGINS_INSTALLED@
 
 [WAIMatomoTheme]
