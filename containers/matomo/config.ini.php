@@ -36,6 +36,7 @@ default_day = "previous30"
 default_period = "range"
 default_language = "it"
 archiving_custom_ranges[] = previous30
+enable_processing_unique_visitors_range = 1
 
 [Plugins]
 Plugins[] = "CorePluginsAdmin"
