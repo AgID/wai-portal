@@ -156,7 +156,7 @@
         </php>
         <php function="password_hash" returnProperty="HASHED_MATOMO_ROOT_PASSWORD">
             <param value="${HASHED_MATOMO_ROOT_PASSWORD}"/>
-            <param value="1"/> <!-- PHP constant PASSWORD_BCRYPT is 1 -->
+            <param value="2y"/> <!-- PHP constant PASSWORD_BCRYPT is 2y -->
         </php>
         <if>
             <available file="containers/docker-compose.${env.APP_ENV}.yml" type="file" property="ignored"/>
