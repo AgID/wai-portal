@@ -160,7 +160,7 @@ Route::middleware('spid.auth', 'auth', 'verified:verification.notice')->group(fu
         Route::get('/', [
             'as' => 'publicAdministrations.show',
             'uses' => 'PublicAdministrationController@show',
-         ]);
+        ]);
 
         Route::post('/select', [
             'as' => 'publicAdministrations.select',
