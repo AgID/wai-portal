@@ -7,5 +7,4 @@
 
 @section('content')
     @include('pages.websites.partials.add_primary', ['hideTitle' => true, 'customForm' => $customForm ?? false ])
-    @include('pages.pa.partials.buttons')
 @endsection
