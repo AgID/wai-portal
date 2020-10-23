@@ -8,7 +8,7 @@
             @include('partials.datatable')
         @else
             <div class="callout mw-100 text-center">
-                <p class="mw-100">Al momento non appartieni a nessuna pubblica addministrazione.</p>
+                <p class="mw-100">{{ 'Al momento non appartieni a nessuna amministrazione.' }}</p>
             </div>
         @endif
         @include('pages.pa.partials.buttons')
