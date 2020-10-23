@@ -1,7 +1,7 @@
 
 @if (!app()->environment('production') && config('wai.custom_public_administrations', false) && !Auth::user()->isA(UserRole::SUPER_ADMIN))
 <ul class="nav nav-tabs auto pt-3">
-    <li class="nav-item"><a class="nav-link @if(Route::is('websites.index') || Route::is('publicAdministrations.add') ) active @endif" href="{{ route('publicAdministrations.add') }}">Usa IndicePA</a></li>
+    <li class="nav-item"><a class="nav-link @if(Route::is('websites.index') || Route::is('publicAdministrations.add')) active @endif" href="{{ route('publicAdministrations.add') }}">Usa IndicePA</a></li>
     <li class="nav-item"><a class="nav-link @if(Route::is('websites.create.primary.custom')) active @endif" href="{{ route('websites.create.primary.custom') }}">Crea la tua pubblica amministrazione</a></li>
 </ul>
 @endif
@@ -135,9 +135,7 @@
                 </div>
             </div>
             <div class="col-md-5 text-serif d-flex align-items-center">
-
                 @unless($customForm)
-
                 <div id="primary_website_missing" class="callout callout-highlight danger d-none">
                     <div class="callout-title">
                         <svg class="icon icon-sm"><use xlink:href="{{ asset('svg/sprite.svg#it-close-circle') }}"></use></svg>
@@ -195,9 +193,7 @@
                         ]) !!}
                     </p>
                 </div>
-
                 @elseif (app()->environment('public-playground') && config('wai.custom_public_administrations', false))
-
                 <div class="callout callout-highlight success ">
                     <div class="callout-title">
                         <svg class="icon icon-sm"><use xlink:href="{{ asset('svg/sprite.svg#it-warning-circle') }}"></use></svg>
@@ -207,9 +203,7 @@
                         {!! __("Ti ricordiamo che tutti i dati memorizzati sono automaticamente resettati ogni fine settimana.") !!}
                     </p>
                 </div>
-
                 @endunless
-
             </div>
         </div>
         <div class="form-row">
@@ -225,6 +219,7 @@
                 @endif
                 <div><button type="submit" class="btn btn-primary">{{ __('Aggiungi il sito') }}</button></div>
             </div>
+
             @unless($customForm)
             <div class="form-group col-md-6 pl-md-5 d-flex flex-column justify-content-between">
                 <p>{{ __('Se riscontri delle inesattezze nei dati visualizzati potresti non riuscire a completare la procedura. Interrompi adesso e riprendi dopo che saranno stati corretti.') }}</p>
@@ -244,7 +239,5 @@
         @else
         <input type="hidden" id="website_type" name="website_type" value="custom" />
         @endunless
-
     </form>
-
 </div>
