@@ -45,22 +45,18 @@ class PublicAdministrationButtonsComposer
     public function compose(View $view)
     {
         switch ($this->request->route()->getName()) {
-            case 'admin.publicAdministrations.show':
             case 'publicAdministrations.show':
                 $showSelectButton = false;
                 $showAddButton = true;
                 break;
-            case 'admin.publicAdministrations.add':
             case 'publicAdministrations.add':
                 $showSelectButton = $this->request->user()->activePublicAdministrations->isNotEmpty();
                 $showInvitedButton = true;
                 break;
         }
 
-        $view->with('isSuperAdmin', optional($this->request->user())->isA(UserRole::SUPER_ADMIN));
         $view->with('showSelectButton', $showSelectButton ?? false);
         $view->with('showInvitedButton', $showInvitedButton ?? false);
         $view->with('showAddButton', $showAddButton ?? false);
-        $view->with('hasTenant', $this->session->has('tenant_id') ?? false);
     }
 }
