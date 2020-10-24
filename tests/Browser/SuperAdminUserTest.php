@@ -38,7 +38,7 @@ class SuperAdminUserTest extends DuskTestCase
                     ->type('email', 'nome.cognome@example.com')
                     ->type('password', 'password')
                     ->press(__('Accedi'))
-                    ->waitForText(__('Dashboard amministrativa'))
+                    ->waitForText(__('Dashboard amministrazioni'))
                     ->assertPathIs('/admin/dashboard')
                     ->visit('/admin/users/create')
                     ->assertSee(__('Aggiungi un utente super amministratore'))
@@ -85,7 +85,7 @@ class SuperAdminUserTest extends DuskTestCase
                     ->press(__('Accedi'))
                     ->assertPathIs('/admin/dashboard')
                     ->visit(new AdminDashboard())
-                    ->assertSee(__('Dashboard amministrativa'));
+                    ->assertSee(__('Dashboard amministrazioni'));
         });
     }
 }

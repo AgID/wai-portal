@@ -130,7 +130,7 @@ Breadcrumbs::for('admin.user.profile.edit', function ($trail) {
 // Web Analytics Italia > Super admin dashboard
 Breadcrumbs::for('admin.dashboard', function ($trail) {
     $trail->parent('home');
-    $trail->push(__('Dashboard amministrativa'), route('admin.dashboard'));
+    $trail->push(__('Dashboard amministrazioni'), route('admin.dashboard'));
 });
 
 // Web Analytics Italia > Super admin dashboard > Logs view
