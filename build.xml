@@ -301,9 +301,12 @@
                 <exec command="docker cp phpunit.xml application-container:${APP_CODE_PATH_CONTAINER}" checkreturn="true"/>
                 <exec command="docker cp .node-version application-container:${APP_CODE_PATH_CONTAINER}" checkreturn="true"/>
                 <exec command="docker cp lighthouserc.json application-container:${APP_CODE_PATH_CONTAINER}" checkreturn="true"/>
+                <echo msg="Creating docker volumes..."/>
+                <exec command="docker volume create --name=application-mariadb-data" checkreturn="true"/>
+                <exec command="docker volume create --name=application-elastic-data" checkreturn="true"/>
             </then>
             <else>
-                <echo msg="Create log directories if needed..."/>
+                <echo msg="Creating log directories if needed..."/>
                 <mkdir dir="containers/logs/nginx"/>
                 <mkdir dir="containers/logs/php"/>
             </else>
@@ -470,10 +473,31 @@
         <!-- Set testing database files and permissions -->
         <echo msg="Setting testing files and permissions..."/>
         <exec command="docker-compose exec -u www-data php-fpm bash -c 'rm -f database/testing.sqlite; touch database/testing.sqlite'" dir="containers"/>
-        <exec command="docker-compose exec php-fpm chown -R www-data:www-data tests" dir="containers" checkreturn="true"/>
+        <exec command="docker-compose exec php-fpm chown -R www-data:www-data ." dir="containers" checkreturn="true"/>
         <!-- Execute phpunit to run unit tests -->
         <echo msg="Running unit tests [PHPUnit]..."/>
         <exec command="docker-compose exec -u www-data php-fpm vendor/phpunit/phpunit/phpunit" dir="containers" passthru="true" checkreturn="true"/>
+    </target>
+
+    <!-- Target: test -->
+    <target name="browser-test">
+        <echo msg="Browser testing..."/>
+        <!-- Check if we are in the right environment -->
+        <if>
+            <not>
+                <or>
+                    <equals arg1="${env.APP_ENV}" arg2="local"/>
+                    <equals arg1="${env.APP_ENV}" arg2="testing"/>
+                </or>
+            </not>
+            <then>
+                <fail message="Testing not allowed in environments other than local or testing"/>
+            </then>
+        </if>
+        <!-- Set permissions -->
+        <echo msg="Setting permissions..."/>
+        <exec command="docker-compose exec -u www-data php-fpm bash -c 'rm -f database/testing.sqlite; touch database/testing.sqlite'" dir="containers"/>
+        <exec command="docker-compose exec php-fpm chown -R www-data:www-data ." dir="containers" passthru="true" checkreturn="true"/>
         <!-- Install lighthouse -->
         <exec command="docker-compose exec -u www-data php-fpm lhci --version" dir="containers" returnProperty="checkLighthouse"/>
         <if>

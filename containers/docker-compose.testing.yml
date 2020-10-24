@@ -5,6 +5,10 @@ volumes:
     external: true
   application-logs:
     external: true
+  application-mariadb-data:
+    external: true
+  application-elastic-data:
+    external: true
 
 services:
 # php-fpm
@@ -31,3 +35,13 @@ services:
   ipa-redisearch:
     volumes:
       - ./ipa-redisearch/persistence:/bitnami/redis/data
+
+# mariadb
+  mariadb:
+    volumes:
+      - application-mariadb-data:/var/lib/mysql
+
+# elasticsearch
+  elasticsearch:
+    volumes:
+      - application-elastic-data:/usr/share/elasticsearch/data

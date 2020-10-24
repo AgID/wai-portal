@@ -206,6 +206,7 @@ services:
     networks:
       - backend
 
+# Kibana
   kibana:
     image: wai-kibana:dev
     build:
