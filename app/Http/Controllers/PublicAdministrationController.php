@@ -4,12 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Enums\UserRole;
 use App\Enums\UserStatus;
+use App\Enums\WebsiteStatus;
+use App\Enums\WebsiteType;
 use App\Models\PublicAdministration;
 use App\Models\User;
 use App\Traits\HasRoleAwareUrls;
 use App\Traits\SendsResponse;
 use App\Transformers\PublicAdministrationsTransformer;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -44,10 +47,10 @@ class PublicAdministrationController extends Controller
             'columns' => [
                 ['data' => 'name', 'name' => __('nome'), 'className' => 'text-wrap'],
                 ['data' => 'email', 'name' => __('email')],
-                ['data' => 'userStatus', 'name' => __('stato utente')],
+                ['data' => 'user_status', 'name' => __('stato utente')],
                 ['data' => 'buttons', 'name' => '', 'orderable' => false],
             ],
-            'source' => $this->getRoleAwareUrl('publicAdministrations.data.json', [], $publicAdministration),
+            'source' => route('publicAdministrations.data.json'),
             'caption' => __('elenco delle tue pubbliche amministrazioni su :app', ['app' => config('app.name')]),
             'columnsOrder' => [['name', 'asc']],
         ];
@@ -74,15 +77,16 @@ class PublicAdministrationController extends Controller
      */
     public function selectTenant(Request $request)
     {
+        $authUser = $request->user();
+
         $publicAdministration = PublicAdministration::where('ipa_code', $request->input('public-administration'))->firstOrFail();
-        $redirectTo = $request->input('target-route') ?? 'analytics';
+        $fallbackRoute = $authUser->isA(UserRole::SUPER_ADMIN) ? 'admin.publicAdministration.analytics' : 'analytics';
+        $redirectTo = $request->input('target-route') ?? $fallbackRoute;
         $targetRouteHasPublicAdministrationParam = $request->input('target-route-pa-param') ?? false;
 
         if (!Route::has($redirectTo)) {
             abort(404);
         }
-
-        $authUser = $request->user();
 
         if ($authUser->isA(UserRole::SUPER_ADMIN)) {
             if ($publicAdministration->ipa_code) {
@@ -143,7 +147,19 @@ class PublicAdministrationController extends Controller
      */
     public function dataJson()
     {
-        return DataTables::of(auth()->user()->publicAdministrationsWithSuspended)
+        $publicAdministrations = auth()->user()->isA(UserRole::SUPER_ADMIN)
+            ? PublicAdministration::withCount([
+                'websites',
+                'websites as websites_active_count' => function (Builder $query) {
+                    $query->where('status', WebsiteStatus::ACTIVE);
+                },
+                'websites as is_custom' => function (Builder $query) {
+                    $query->where('type', WebsiteType::INSTITUTIONAL_PLAY);
+                },
+            ])->get()
+            : auth()->user()->publicAdministrationsWithSuspended;
+
+        return DataTables::of($publicAdministrations)
             ->setTransformer(new PublicAdministrationsTransformer())
             ->make(true);
     }
