@@ -11,6 +11,16 @@
                 <p class="mw-100">{{ 'Al momento non appartieni a nessuna amministrazione.' }}</p>
             </div>
         @endif
-        @include('pages.pa.partials.buttons')
+        <div class="mt-4 text-sm-center">
+            <div class="d-md-flex justify-content-start">
+                <a role="button" class="btn btn-icon btn-outline-primary my-2 mx-2"
+                    href="{{ route('publicAdministrations.add') }}">
+                    {{ __("Aggiungi un'amministrazione") }}
+                    <svg class="icon icon-primary ml-2 align-middle">
+                        <use xlink:href="{{ asset('svg/sprite.svg#it-plus') }}"></use>
+                    </svg>
+                </a>
+            </div>
+        </div>
     </div>
 @endsection
