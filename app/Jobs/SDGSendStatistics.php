@@ -26,6 +26,6 @@ class SDGSendStatistics implements ShouldQueue
     {
         $dataset = $this->buildDatasetForSDG();
         // $sDGService = app()->make('sdg-service');
-        // send
+        // $sDGService->sendStatisticsInformation($dataset);
     }
 }

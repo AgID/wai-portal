@@ -63,20 +63,35 @@ class SingleDigitalGatewayService
     }
 
     /**
+     * Send a dataset to Single Digital Gateway API for the Statistics on Information Services.
+     *
+     * @param arry the dataset
+     *
+     * @return string The status response
+     */
+    public function sendStatisticsInformation($dataSet): array
+    {
+        $params = ['body' => json_encode($dataSet)];
+
+        return $this->apiCall('/statistics/information-services', 'POST', $params);
+    }
+
+    /**
      * Make an API call to Analytics Service.
      *
      * @param string $path the path
+     * @param string $method the method
      * @param array $params the request parameter
      *
      * @throws CommandErrorException if command finishes with error status
      *
      * @return array the JSON response
      */
-    protected function apiCall(string $path, array $params = []): array
+    protected function apiCall(string $path, string $method = 'GET', array $params = []): array
     {
         try {
             $client = new APIClient(['base_uri' => $this->serviceBaseUri]);
-            $res = $client->request('GET', $path, [
+            $res = $client->request($method, $path, [
                 'query' => array_merge($params, [
                     'module' => 'API',
                     'format' => 'JSON',
