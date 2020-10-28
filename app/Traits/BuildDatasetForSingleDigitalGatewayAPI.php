@@ -33,19 +33,19 @@ trait BuildDatasetForSingleDigitalGatewayAPI
         $days = config('sdg-service.last_days');
         $idSite = config('analytics-service.public_dashboard');
 
+        date_default_timezone_set('UTC');
         $referencePeriod = new stdClass();
-
-        $referencePeriod->startDate = date('Y-m-d H:i:s', strtotime('-' . ($days - 1) . ' days'));
-        $referencePeriod->endDate = date('Y-m-d H:i:s');
+        $referencePeriod->startDate = date('Y-m-d\TH:i:s\Z', strtotime('-' . ($days - 1) . ' days'));
+        $referencePeriod->endDate = date('Y-m-d\TH:i:s\Z');
 
         $data = new stdClass();
 
         // Call the API to get the REAL uniqueID
-        // $data->uniqueId = $sDGService->getUniqueID();
-        $data->uniqueId = Uuid::uuid4()->toString();
+        $data->uniqueId = $sDGService->getUniqueID();
+        // $data->uniqueId = Uuid::uuid4()->toString();
 
         $data->referencePeriod = $referencePeriod;
-        $data->transferDate = date('Y-m-d H:i:s');
+        $data->transferDate = date('Y-m-d\TH:i:s\Z');
         $data->transferType = 'API';
         $data->nbEntries = 0;
         $data->sources = [];
@@ -55,9 +55,8 @@ trait BuildDatasetForSingleDigitalGatewayAPI
 
             foreach ($urls['domains'] as $url) {
                 $source = new stdClass();
-                $source->source = new stdClass();
-                $source->source->sourceUrl = $url;
-                $source->source->statistics = [];
+                $source->sourceUrl = $url;
+                $source->statistics = [];
 
                 $segmentExists = array_search($url, array_column($definedSegments, 'name'));
 
@@ -111,9 +110,13 @@ trait BuildDatasetForSingleDigitalGatewayAPI
                     }
                 }
 
-                array_push($source->source->statistics, array_values($nbvisits));
+                foreach ($nbvisits as $visit) {
+                    array_push($source->statistics, $visit);
+                }
                 array_push($data->sources, $source);
             }
+
+            //die();
         } catch (BindingResolutionException $exception) {
             report($exception);
 
