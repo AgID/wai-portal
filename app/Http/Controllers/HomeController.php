@@ -91,9 +91,12 @@ class HomeController extends Controller
      */
     /* public function showSDGDataset(): JsonResponse
     {
-        $data = $this->buildDatasetForSDG();
+        $dataset = $this->buildDatasetForSDG();
 
-        return response()->json($data);
+        $sDGService = app()->make('sdg-service');
+        $sDGService->sendStatisticsInformation($dataset);
+
+        return response()->json($dataset);
     } */
 
     /**

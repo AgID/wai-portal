@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Enums\Logs\EventType;
 use App\Enums\Logs\ExceptionType;
+use App\Exceptions\AnalyticsServiceException;
 use App\Exceptions\CommandErrorException;
 use GuzzleHttp\Client as APIClient;
 use GuzzleHttp\Exception\GuzzleException;
@@ -55,9 +56,9 @@ class SingleDigitalGatewayService
     /**
      * Get the Unique ID.
      *
-     * @return array The Unique ID for feedback submission for a specific reference period collected
+     * @return string The Unique ID for feedback submission for a specific reference period collected
      */
-    public function getUniqueID(): array
+    public function getUniqueID(): string
     {
         return $this->apiCall('/unique-id');
     }
@@ -69,11 +70,9 @@ class SingleDigitalGatewayService
      *
      * @return string The status response
      */
-    public function sendStatisticsInformation($dataSet): array
+    public function sendStatisticsInformation($dataSet): void
     {
-        $params = ['body' => json_encode($dataSet)];
-
-        return $this->apiCall('/statistics/information-services', 'POST', $params);
+        $this->apiCall('/statistics/information-services', 'POST', [], (array) $dataSet);
     }
 
     /**
@@ -84,23 +83,20 @@ class SingleDigitalGatewayService
      * @param array $params the request parameter
      *
      * @throws CommandErrorException if command finishes with error status
-     *
-     * @return array the JSON response
      */
-    protected function apiCall(string $path, string $method = 'GET', array $params = []): array
+    protected function apiCall(string $path, string $method = 'GET', array $params = [], array $body = null)
     {
         try {
             $client = new APIClient(['base_uri' => $this->serviceBaseUri]);
-            $res = $client->request($method, $path, [
-                'query' => array_merge($params, [
-                    'module' => 'API',
-                    'format' => 'JSON',
-                    'headers' => [
-                        'x-api-key' => $this->apiKey,
-                    ],
-                ]),
+            $options = [
+                'query' => $params,
+                'headers' => [
+                    'X-API-Key' => $this->apiKey,
+                ],
                 'verify' => $this->SSLVerify,
-            ]);
+                'json' => $body,
+            ];
+            $res = $client->request($method, $path, $options);
         } catch (GuzzleException $exception) {
             logger()->critical(
                 'Single Digital Gateway Service exception: ' . $exception->getMessage(),
@@ -110,14 +106,19 @@ class SingleDigitalGatewayService
                     'exception' => $exception,
                 ]
             );
+            throw new AnalyticsServiceException('Si è verificato un errore: ' . $exception->getMessage());
+        }
+
+        if (!isset($res) || is_null($res)) {
+            throw new AnalyticsServiceException('Si è verificato un errore');
+        }
+
+        if (200 != $res->getStatusCode()) {
+            throw new AnalyticsServiceException('Si è verificato un errore: ' . $res->getStatusCode());
         }
 
         $response = json_decode($res->getBody(), true);
 
-        if (!empty($response['result']) && 'error' === $response['result']) {
-            throw new CommandErrorException($response['message']);
-        }
-
-        return $response;
+        return $response ?? $res->getStatusCode();
     }
 }
