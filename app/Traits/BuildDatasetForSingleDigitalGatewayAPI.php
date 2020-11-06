@@ -28,9 +28,9 @@ trait BuildDatasetForSingleDigitalGatewayAPI
         $urls = $this->getUrlsFromConfig('urls');
 
         $analyticsService = app()->make('analytics-service');
-        $sDGService = app()->make('sdg-service');
+        $sDGService = app()->make('single-digital-gateway-service');
 
-        $days = config('sdg-service.last_days');
+        $days = config('single-digital-gateway-service.last_days');
         $idSite = config('analytics-service.public_dashboard');
 
         date_default_timezone_set('UTC');
@@ -41,8 +41,8 @@ trait BuildDatasetForSingleDigitalGatewayAPI
         $data = new stdClass();
 
         // Call the API to get the REAL uniqueID
-        $data->uniqueId = $sDGService->getUniqueID();
-        // $data->uniqueId = Uuid::uuid4()->toString();
+        // $data->uniqueId = $sDGService->getUniqueID();
+        $data->uniqueId = Uuid::uuid4()->toString();
 
         $data->referencePeriod = $referencePeriod;
         $data->transferDate = date('Y-m-d\TH:i:s\Z');
@@ -115,8 +115,6 @@ trait BuildDatasetForSingleDigitalGatewayAPI
                 }
                 array_push($data->sources, $source);
             }
-
-            //die();
         } catch (BindingResolutionException $exception) {
             report($exception);
 

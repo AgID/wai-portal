@@ -44,9 +44,6 @@ Route::get('/faq', 'HomeController@faq')
 Route::get('/contacts', 'HomeController@contacts')
     ->name('contacts');
 
-/* Route::get('/sdg-dataset', 'HomeController@showSDGDataset')
-    ->name('showSDGDataset'); */
-
 // Route::get('/open-data', 'HomeController@openData')
 //     ->name('open-data');
 
@@ -464,6 +461,9 @@ Route::middleware('auth.admin', 'verified:admin.verification.notice')->group(fun
                         ->name('admin.publicAdministration.websites.snippet.javascript');
                 });
             });
+
+            Route::get('/single-digital-gateway-dataset', 'HomeController@showSDGDataset')
+                ->name('showSDGDataset');
         });
 
         Route::get('/user/change-password', 'Auth\SuperAdminAuthController@showPasswordChange')

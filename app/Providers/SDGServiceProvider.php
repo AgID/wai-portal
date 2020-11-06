@@ -16,7 +16,7 @@ class SDGServiceProvider extends ServiceProvider implements DeferrableProvider
      */
     public function register(): void
     {
-        $this->app->singleton('sdg-service', function ($app) {
+        $this->app->singleton('single-digital-gateway-service', function ($app) {
             return new SingleDigitalGatewayService();
         });
     }
@@ -28,6 +28,6 @@ class SDGServiceProvider extends ServiceProvider implements DeferrableProvider
      */
     public function provides(): array
     {
-        return ['sdg-service'];
+        return ['single-digital-gateway-service'];
     }
 }
