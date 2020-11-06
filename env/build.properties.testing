@@ -244,7 +244,7 @@ ANALYTICS_PUBLIC_URL=https://localhost:9443
 # Single Digital Gateway Service Endpoint
 # ----------------------
 
-SDG_API_BASE_URL=
+SDG_API_PUBLIC_URL=
 SDG_API_SSL_VERIFY=false
 SDG_API_KEY=
 SDG_API_LAST_DAYS=30

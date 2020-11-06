@@ -25,7 +25,7 @@ class SDGSendStatistics implements ShouldQueue
     public function handle()
     {
         $dataset = $this->buildDatasetForSDG();
-        $sDGService = app()->make('sdg-service');
+        $sDGService = app()->make('single-digital-gateway-service');
         $sDGService->sendStatisticsInformation($dataset);
     }
 }

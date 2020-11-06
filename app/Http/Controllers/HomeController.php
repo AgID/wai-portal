@@ -89,15 +89,15 @@ class HomeController extends Controller
      *
      * @return JsonResponse
      */
-    /* public function showSDGDataset(): JsonResponse
+    public function showSDGDataset(): JsonResponse
     {
         $dataset = $this->buildDatasetForSDG();
 
-        $sDGService = app()->make('sdg-service');
-        $sDGService->sendStatisticsInformation($dataset);
+        //$sDGService = app()->make('single-digital-gateway-service');
+        //$sDGService->sendStatisticsInformation($dataset);
 
         return response()->json($dataset);
-    } */
+    }
 
     /**
      * Show the application privacy info.

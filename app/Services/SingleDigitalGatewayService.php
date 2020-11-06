@@ -47,10 +47,9 @@ class SingleDigitalGatewayService
      */
     public function __construct()
     {
-        $this->serviceBaseUri = config('sdg-service.api_base_uri');
-        // $this->servicePublicUrl = config('sdg-service.public_url');
-        $this->SSLVerify = config('sdg-service.ssl_verify');
-        $this->apiKey = config('sdg-service.api_key');
+        $this->serviceBaseUri = config('single-digital-gateway-service.api_public_url');
+        $this->SSLVerify = config('single-digital-gateway-service.ssl_verify');
+        $this->apiKey = config('single-digital-gateway-service.api_key');
     }
 
     /**
@@ -102,7 +101,7 @@ class SingleDigitalGatewayService
                 'Single Digital Gateway Service exception: ' . $exception->getMessage(),
                 [
                     'event' => EventType::EXCEPTION,
-                    'exception_type' => ExceptionType::SDG_GENERIC_ERROR,
+                    'exception_type' => ExceptionType::SINGLE_DIGITAL_GATEWAY_GENERIC_ERROR,
                     'exception' => $exception,
                 ]
             );

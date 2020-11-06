@@ -117,7 +117,7 @@
                     <token key="ANALYTICS_API_SSL_VERIFY" value="${ANALYTICS_API_SSL_VERIFY}" />
                     <token key="ANALYTICS_PUBLIC_URL" value="${ANALYTICS_PUBLIC_URL}" />
                     <token key="ANALYTICS_PUBLIC_DASHBOARD_ID" value="${MATOMO_PUBLIC_ROLLUP_ID}" />
-                    <token key="SDG_API_BASE_URL" value="${SDG_API_BASE_URL}" />
+                    <token key="SDG_API_PUBLIC_URL" value="${SDG_API_PUBLIC_URL}" />
                     <token key="SDG_API_SSL_VERIFY" value="${SDG_API_SSL_VERIFY}" />
                     <token key="SDG_API_KEY" value="${SDG_API_KEY}" />
                     <token key="SDG_API_LAST_DAYS" value="${SDG_API_LAST_DAYS}" />
