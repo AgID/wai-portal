@@ -55,5 +55,13 @@ class JobType extends Enum implements LocalizedEnum
      */
     public const PURGE_PENDING_INVITATIONS = 8;
 
+    /**
+     * Reset environment.
+     */
     public const RESET_ENVIRONMENT = 9;
+
+    /**
+     * Send a dataset to Single Digital Gateway API.
+     */
+    public const SEND_DATA_SDG_API = 10;
 }

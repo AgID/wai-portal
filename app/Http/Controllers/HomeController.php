@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\PublicAdministration;
 use App\Models\Website;
+use App\Traits\BuildDatasetForSingleDigitalGatewayAPI;
 use App\Traits\GetsLocalizedYamlContent;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Arr;
 use Illuminate\View\View;
 use Symfony\Component\Yaml\Yaml;
@@ -12,6 +14,7 @@ use Symfony\Component\Yaml\Yaml;
 class HomeController extends Controller
 {
     use GetsLocalizedYamlContent;
+    use BuildDatasetForSingleDigitalGatewayAPI;
 
     /**
      * Show the application home.
@@ -80,6 +83,18 @@ class HomeController extends Controller
     // {
     //     return view('pages.open-data');
     // }
+
+    /**
+     * Show the dataset for SDG.
+     *
+     * @return JsonResponse
+     */
+    /* public function showSDGDataset(): JsonResponse
+    {
+        $data = $this->buildDatasetForSDG();
+
+        return response()->json($data);
+    } */
 
     /**
      * Show the application privacy info.

@@ -79,4 +79,9 @@ class ExceptionType extends Enum implements LocalizedEnum
      * Expired verification URL related exception.
      */
     public const EXPIRED_VERIFICATION_LINK_USAGE = 13;
+
+    /**
+     * Expired verification URL related exception.
+     */
+    public const SDG_GENERIC_ERROR = 14;
 }
