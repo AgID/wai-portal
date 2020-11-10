@@ -2,6 +2,7 @@
 
 namespace App\Transformers;
 
+use App\Enums\UserRole;
 use App\Enums\UserStatus;
 use App\Models\PublicAdministration;
 use App\Models\Website;
@@ -23,8 +24,12 @@ class PublicAdministrationsTransformer extends TransformerAbstract
     {
         $authUser = auth()->user();
 
-        $statusPublicAdministrationUser = UserStatus::fromValue(intval($publicAdministration->pivot->user_status));
-        $emailPublicAdministrationUser = $publicAdministration->pivot->user_email;
+        $statusPublicAdministrationUser = $publicAdministration->pivot
+            ? UserStatus::fromValue(intval($publicAdministration->pivot->user_status))
+            : null;
+        $emailPublicAdministrationUser = $publicAdministration->pivot
+            ? $publicAdministration->pivot->user_email
+            : null;
 
         $data = [
             'name' => [
@@ -32,18 +37,30 @@ class PublicAdministrationsTransformer extends TransformerAbstract
                     '<span>',
                     '<strong>' . e($publicAdministration->name) . '</strong>',
                     '</span>',
+                    $publicAdministration->is_custom ? implode('', [
+                        '<span class="badge pa-type play ml-2">',
+                        strtoupper(__('play')),
+                        '</span>',
+                    ]) : null,
                 ]),
                 'raw' => e($publicAdministration->name),
             ],
             'email' => e($emailPublicAdministrationUser),
-            'userStatus' => [
-                'display' => '<span class="badge user-status ' . strtolower($statusPublicAdministrationUser->key) . '">' . strtoupper($statusPublicAdministrationUser->description) . '</span>',
-                'raw' => $statusPublicAdministrationUser->description,
+            'status' => [
+                'display' => '<span class="badge pa-status ' . strtolower($publicAdministration->status->key) . '">' . strtoupper($publicAdministration->status->description) . '</span>',
+                'raw' => $publicAdministration->status->description,
             ],
+            'user_status' => [
+                'display' => '<span class="badge user-status ' . strtolower(optional($statusPublicAdministrationUser)->key) . '">' . strtoupper(optional($statusPublicAdministrationUser)->description) . '</span>',
+                'raw' => optional($statusPublicAdministrationUser)->description,
+            ],
+            'websites_total' => $publicAdministration->websites_count,
+            'websites_active' => $publicAdministration->websites_active_count,
+            'added_at' => $publicAdministration->created_at->format('d/m/Y'),
             'buttons' => [],
         ];
 
-        if ($statusPublicAdministrationUser->is(UserStatus::INVITED)) {
+        if (optional($statusPublicAdministrationUser)->is(UserStatus::INVITED)) {
             $data['buttons'][] = [
                 'link' => route('publicAdministration.acceptInvitation', ['publicAdministration' => $publicAdministration]),
                 'color' => 'primary',
@@ -56,9 +73,22 @@ class PublicAdministrationsTransformer extends TransformerAbstract
             ];
         }
 
-        if ($statusPublicAdministrationUser->is(UserStatus::ACTIVE) || $statusPublicAdministrationUser->is(UserStatus::PENDING)) {
+        $selectPublicAdministrationRoute = route('publicAdministrations.select', [
+            'public-administration' => $publicAdministration,
+        ]);
+
+        if ($authUser->isA(UserRole::SUPER_ADMIN)) {
+            $selectPublicAdministrationRoute = route('admin.publicAdministrations.select', [
+                'public-administration' => $publicAdministration,
+                'target-route-pa-param' => true,
+            ]);
+        }
+
+        if (optional($statusPublicAdministrationUser)->is(UserStatus::ACTIVE)
+            || optional($statusPublicAdministrationUser)->is(UserStatus::PENDING)
+            || $authUser->isA(UserRole::SUPER_ADMIN)) {
             $data['buttons'][] = [
-                'link' => route('publicAdministrations.select', ['public-administration' => $publicAdministration]),
+                'link' => $selectPublicAdministrationRoute,
                 'color' => 'outline-primary',
                 'icon' => 'it-arrow-right',
                 'label' => __('vai'),

@@ -20,6 +20,13 @@
                 <li><span class="divider"></span></li>
                 @if(!$authUser->status->is(UserStatus::INVITED))
                 <li>
+                    <a class="text-primary right-icon list-item" href="{{ route('admin.dashboard') }}">
+                        <span>{{ __('Dashboard amministrazioni') }}</span>
+                        <svg class="icon icon-sm icon-primary right"><use xlink:href="{{ asset('svg/sprite.svg#it-pa') }}"></use></svg>
+                    </a>
+                </li>
+                <li><span class="divider"></span></li>
+                <li>
                     <a class="text-primary right-icon list-item" href="{{ route('admin.user.profile.edit') }}">
                         <span>{{ __('Profilo') }}</span>
                         <svg class="icon icon-sm icon-primary right"><use xlink:href="{{ asset('svg/sprite.svg#it-user') }}"></use></svg>
@@ -42,17 +49,3 @@
         </div>
     </div>
 </div>
-
-{{-- <ul>
-    <li>
-        <a href="{{ route('admin.dashboard') }}">
-            Dashboard amministrativa
-        </a>
-    </li>
-    <li>
-        <a href="{{ route('admin.users.index') }}">
-            Gestione utenti amministratori
-        </a>
-    </li>
-</ul>
-</li> --}}
