@@ -44,6 +44,9 @@ Route::get('/faq', 'HomeController@faq')
 Route::get('/contacts', 'HomeController@contacts')
     ->name('contacts');
 
+/* Route::get('/sdg-dataset', 'HomeController@showSDGDataset')
+    ->name('showSDGDataset'); */
+
 // Route::get('/open-data', 'HomeController@openData')
 //     ->name('open-data');
 
