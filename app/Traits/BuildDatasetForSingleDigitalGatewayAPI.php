@@ -41,8 +41,8 @@ trait BuildDatasetForSingleDigitalGatewayAPI
         $data = new stdClass();
 
         // Call the API to get the REAL uniqueID
-        // $data->uniqueId = $sDGService->getUniqueID();
-        $data->uniqueId = Uuid::uuid4()->toString();
+        $data->uniqueId = $sDGService->getUniqueID();
+        // $data->uniqueId = Uuid::uuid4()->toString();
 
         $data->referencePeriod = $referencePeriod;
         $data->transferDate = date('Y-m-d\TH:i:s\Z');
@@ -105,7 +105,6 @@ trait BuildDatasetForSingleDigitalGatewayAPI
                             } else {
                                 $nbvisits[$device['label']]->nbVisits += $device['nb_visits'];
                             }
-                            $data->nbEntries += $device['nb_visits'];
                         }
                     }
                 }
@@ -115,6 +114,8 @@ trait BuildDatasetForSingleDigitalGatewayAPI
                 }
                 array_push($data->sources, $source);
             }
+
+            $data->nbEntries = count($data->sources);
         } catch (BindingResolutionException $exception) {
             report($exception);
 

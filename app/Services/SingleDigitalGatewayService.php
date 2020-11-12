@@ -8,6 +8,7 @@ use App\Exceptions\AnalyticsServiceException;
 use App\Exceptions\CommandErrorException;
 use GuzzleHttp\Client as APIClient;
 use GuzzleHttp\Exception\GuzzleException;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * Matomo implementation of Analytics Service.
@@ -50,6 +51,8 @@ class SingleDigitalGatewayService
         $this->serviceBaseUri = config('single-digital-gateway-service.api_public_url');
         $this->SSLVerify = config('single-digital-gateway-service.ssl_verify');
         $this->apiKey = config('single-digital-gateway-service.api_key');
+        $this->storageDisk = config('single-digital-gateway-service.storage_disk');
+        $this->storageFolder = config('single-digital-gateway-service.storage_folder');
     }
 
     /**
@@ -67,11 +70,33 @@ class SingleDigitalGatewayService
      *
      * @param arry the dataset
      *
-     * @return string The status response
+     * @return void
      */
     public function sendStatisticsInformation($dataSet): void
     {
         $this->apiCall('/statistics/information-services', 'POST', [], (array) $dataSet);
+    }
+
+    /**
+     * Save the payload to the filesysem.
+     *
+     * @param arry the dataset
+     *
+     * @return void
+     */
+    public function savePayloadToFilesystem($dataSet): void
+    {
+        Storage::disk($this->storageDisk)->put($this->storageFolder . '/payload.json', json_encode($dataSet));
+    }
+
+    /**
+     * Get the payload from the filesysem.
+     *
+     * @return object
+     */
+    public function getPayloadFromFilesystem(): object
+    {
+        return json_decode(Storage::disk($this->storageDisk)->get($this->storageFolder . '/payload.json'));
     }
 
     /**

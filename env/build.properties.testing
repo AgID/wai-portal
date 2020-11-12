@@ -248,6 +248,8 @@ SDG_API_PUBLIC_URL=
 SDG_API_SSL_VERIFY=false
 SDG_API_KEY=
 SDG_API_LAST_DAYS=30
+SDG_STORAGE_FOLDER=sdg
+SDG_STORAGE_DISK=public
 
 # Elastic Search Service URLs
 # ---------------------------
