@@ -9,7 +9,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class SDGSendStatistics implements ShouldQueue
+class SDGSendStatisticsFromFile implements ShouldQueue
 {
     use Dispatchable;
     use InteractsWithQueue;
@@ -24,8 +24,9 @@ class SDGSendStatistics implements ShouldQueue
      */
     public function handle()
     {
-        $dataset = $this->buildDatasetForSDG();
         $sDGService = app()->make('single-digital-gateway-service');
+        $dataset = $sDGService->getPayloadFromFilesystem();
         $sDGService->sendStatisticsInformation($dataset);
+        $sDGService->savePayloadToFilesystem($dataset);
     }
 }
