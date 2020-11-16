@@ -9,7 +9,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class SDGBuildPayloadAndSendStatistics implements ShouldQueue
+class SDGValidatePayloadFile implements ShouldQueue
 {
     use Dispatchable;
     use InteractsWithQueue;
@@ -24,13 +24,12 @@ class SDGBuildPayloadAndSendStatistics implements ShouldQueue
      */
     public function handle()
     {
-        $dataset = $this->buildDatasetForSDG();
         $sDGService = app()->make('single-digital-gateway-service');
-        if ($sDGService->sendStatisticsInformation($dataset)) {
-            echo 'Ok' . PHP_EOL;
-            $sDGService->savePayloadToFilesystem($dataset);
+        $dataset = $sDGService->getPayloadFromFilesystem();
+        if ($sDGService->payloadValidator($dataset)) {
+            echo 'The payload is valid' . PHP_EOL;
         } else {
-            echo 'Job failed' . PHP_EOL;
+            echo 'The payload is not valid' . PHP_EOL;
         }
     }
 }

@@ -26,7 +26,11 @@ class SDGSendStatisticsFromFile implements ShouldQueue
     {
         $sDGService = app()->make('single-digital-gateway-service');
         $dataset = $sDGService->getPayloadFromFilesystem();
-        $sDGService->sendStatisticsInformation($dataset);
-        $sDGService->savePayloadToFilesystem($dataset);
+        if ($sDGService->sendStatisticsInformation($dataset)) {
+            echo 'Ok' . PHP_EOL;
+            $sDGService->savePayloadToFilesystem($dataset);
+        } else {
+            echo 'Job failed' . PHP_EOL;
+        }
     }
 }
