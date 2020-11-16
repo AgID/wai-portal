@@ -74,13 +74,24 @@ class SingleDigitalGatewayService
      */
     public function sendStatisticsInformation($dataSet): void
     {
-        $this->apiCall('/statistics/information-services', 'POST', [], (array) $dataSet);
+        if ($this->payloadValidator(json_encode($dataSet))) {
+            $this->apiCall('/statistics/information-services', 'POST', [], (array) $dataSet);
+        } else {
+            logger()->critical(
+                'Single Digital Gateway Service exception: sendStatisticsInformation',
+                [
+                    'event' => EventType::EXCEPTION,
+                    'exception_type' => ExceptionType::GENERIC,
+                    'exception' => 'Payload not valid or empty',
+                ]
+            );
+        }
     }
 
     /**
      * Save the payload to the filesysem.
      *
-     * @param arry the dataset
+     * @param object the dataset
      *
      * @return void
      */
@@ -100,7 +111,57 @@ class SingleDigitalGatewayService
     }
 
     /**
-     * Make an API call to Analytics Service.
+     * Check if data is a valid json.
+     *
+     * @param string the data to be validated
+     *
+     * @return bool
+     */
+    public function payloadValidator($dataSetEncoded = null): bool
+    {
+        if (!empty($dataSetEncoded)) {
+            @json_decode($dataSetEncoded);
+
+            if (JSON_ERROR_NONE !== json_last_error()) {
+                logger()->critical(
+                    'Single Digital Gateway Service Json validation error',
+                    [
+                        'event' => EventType::EXCEPTION,
+                        'exception_type' => ExceptionType::GENERIC,
+                        'exception' => 'Payload is empty or not a json',
+                    ]
+                );
+
+                return false;
+            }
+        }
+
+        $currenDirectory = dirname(__FILE__);
+        $validator = new \JsonSchema\Validator();
+        $validator->validate($dataSetEncoded, (object) ['$ref' => 'file://' . realpath($currenDirectory . '/schemas/informationServiceStats.json')]);
+
+        if ($validator->isValid()) {
+            return true;
+        } else {
+            foreach ($validator->getErrors() as $error) {
+                logger()->critical(
+                    'Single Digital Gateway Service Json schema validation error',
+                    [
+                        'event' => EventType::EXCEPTION,
+                        'exception_type' => ExceptionType::JSON_SCHEMA_VALIDATOR_ERROR,
+                        'exception' => $error['property'] . ' - ' . $error['message'],
+                    ]
+                );
+            }
+
+            return false;
+        }
+
+        return false;
+    }
+
+    /**
+     * Make an API call to Single Digital Gateway Service.
      *
      * @param string $path the path
      * @param string $method the method

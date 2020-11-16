@@ -84,4 +84,9 @@ class ExceptionType extends Enum implements LocalizedEnum
      * Generic error in single digital gateway apiCall.
      */
     public const SINGLE_DIGITAL_GATEWAY_GENERIC_ERROR = 14;
+
+    /**
+     * Json schema validator error.
+     */
+    public const JSON_SCHEMA_VALIDATOR_ERROR = 15;
 }

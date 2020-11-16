@@ -1,0 +1,19 @@
+{
+  "oneOf": [
+    {
+      "$ref": "informationServiceStats.json"
+    },
+    {
+      "$ref": "source.json"
+    },
+    {
+      "$ref": "urlStatistics.json"
+    },
+    {
+      "$ref": "country.json"
+    },
+    {
+      "$ref": "referencePeriod.json"
+    }
+  ]
+}

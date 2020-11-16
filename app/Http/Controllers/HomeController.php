@@ -93,9 +93,15 @@ class HomeController extends Controller
     {
         $dataset = $this->buildDatasetForSDG();
 
-        // $sDGService = app()->make('single-digital-gateway-service');
-        // $sDGService->sendStatisticsInformation($dataset);
-        // $sDGService->savePayloadToFilesystem($dataset);
+        /*
+        $sDGService = app()->make('single-digital-gateway-service');
+        $sDGService->payloadValidator($dataset);
+        die();
+
+        $sDGService = app()->make('single-digital-gateway-service');
+        $sDGService->sendStatisticsInformation($dataset);
+        $sDGService->savePayloadToFilesystem($dataset);
+        */
 
         return response()->json($dataset);
     }

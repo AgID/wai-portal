@@ -1,0 +1,16 @@
+{
+  "type": "object",
+  "required": [
+    "sourceUrl",
+    "statistics"
+  ],
+  "properties": {
+    "sourceUrl": {
+      "type": "string"
+    },
+    "statistics": {
+      "$ref": "urlStatistics.json"
+    }
+  },
+  "$schema": "http://json-schema.org/schema#"
+}

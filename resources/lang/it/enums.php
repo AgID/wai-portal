@@ -175,6 +175,8 @@ return [
         ExceptionType::INVALID_USER_STATUS => 'Error stato utente non valido',
         ExceptionType::EXPIRED_INVITATION_LINK_USAGE => 'Errore link invito scaduto',
         ExceptionType::EXPIRED_VERIFICATION_LINK_USAGE => 'Errore link verifica scaduto',
+        ExceptionType::SINGLE_DIGITAL_GATEWAY_GENERIC_ERROR => 'Errore Servizio Single Digital Gateway',
+        ExceptionType::JSON_SCHEMA_VALIDATOR_ERROR => 'Errore nella validazione dello schema Json',
     ],
 
     JobType::class => [
