@@ -175,6 +175,8 @@ return [
         ExceptionType::INVALID_USER_STATUS => 'Invalid user status error',
         ExceptionType::EXPIRED_INVITATION_LINK_USAGE => 'Expired user invitation link used',
         ExceptionType::EXPIRED_VERIFICATION_LINK_USAGE => 'Expired user verification link used',
+        ExceptionType::SINGLE_DIGITAL_GATEWAY_GENERIC_ERROR => 'Single Digital Gateway Service error',
+        ExceptionType::JSON_SCHEMA_VALIDATOR_ERROR => 'Error on schema Json validation',
     ],
 
     JobType::class => [
