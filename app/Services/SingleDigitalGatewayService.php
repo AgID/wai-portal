@@ -181,7 +181,6 @@ class SingleDigitalGatewayService
                     'event' => EventType::SINGLE_DIGITAL_GATEWAY_API_CALL_REQUEST,
                     'path' => $path,
                     'query' => json_encode($params),
-                    'body' => json_encode($body),
                 ]
             );
             $res = $client->request($method, $path, $options);
