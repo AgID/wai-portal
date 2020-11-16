@@ -81,8 +81,7 @@ class SingleDigitalGatewayService
                 'Single Digital Gateway Service exception: sendStatisticsInformation',
                 [
                     'event' => EventType::EXCEPTION,
-                    'exception_type' => ExceptionType::GENERIC,
-                    'exception' => 'Payload not valid or empty',
+                    'message' => 'The payload is not valid',
                 ]
             );
 
@@ -121,6 +120,18 @@ class SingleDigitalGatewayService
      */
     public function payloadValidator($dataSetEncoded = null): bool
     {
+        if (!$dataSetEncoded) {
+            logger()->critical(
+                'Single Digital Gateway Service payload validator',
+                [
+                    'event' => EventType::EXCEPTION,
+                    'message' => 'The payload is empty',
+                ]
+            );
+
+            return false;
+        }
+
         $currenDirectory = dirname(__FILE__);
         $validator = new \JsonSchema\Validator();
         $validator->validate($dataSetEncoded, (object) ['$ref' => 'file://' . realpath($currenDirectory . '/schemas/informationServiceStats.json')]);
@@ -141,8 +152,6 @@ class SingleDigitalGatewayService
 
             return false;
         }
-
-        return false;
     }
 
     /**
@@ -166,6 +175,15 @@ class SingleDigitalGatewayService
                 'verify' => $this->SSLVerify,
                 'json' => $body,
             ];
+            logger()->notice(
+                'Single Digital Gateway Service api call REQUEST',
+                [
+                    'event' => EventType::SINGLE_DIGITAL_GATEWAY_API_CALL_REQUEST,
+                    'path' => $path,
+                    'query' => json_encode($params),
+                    'body' => json_encode($body),
+                ]
+            );
             $res = $client->request($method, $path, $options);
         } catch (GuzzleException $exception) {
             logger()->critical(
@@ -188,6 +206,14 @@ class SingleDigitalGatewayService
         }
 
         $response = json_decode($res->getBody(), true);
+
+        logger()->notice(
+            'Single Digital Gateway Service api call RESPONSE',
+            [
+                'event' => EventType::SINGLE_DIGITAL_GATEWAY_API_CALL_RESPONSE,
+                'response' => json_encode($response),
+            ]
+        );
 
         return $response ?? $res->getStatusCode();
     }
