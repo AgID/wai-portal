@@ -57,23 +57,23 @@
 - cmdrc # Città Metropolitana di Reggio Calabria
 - cmna # Città metropolitana di Napoli
 - cmdca # Città metropolitana di Cagliari
-- cmct # Città metropolitana di Catania 
+- cmct # Città metropolitana di Catania
 - cmfi # Città metropolitana di Firenze
 - cm_me # Città metropolitana di Messina
 - cmmi # Città metropolitana di Milano
 - cmrc # Città metropolitana di Roma Capitale
 - cmto # Città metropolitana di Torino
 - p_ve # Città metropolitana di Venezia
-- cmba # Città metropolitana di Bari 
+- cmba # Città metropolitana di Bari
 - cmbo # Città metropolitana di Bologna
-- p_pa # Città metropolitana di Palermo 
+- p_pa # Città metropolitana di Palermo
 
 - c_a944 # Comune di Bologna
 - c_g273 # Comune di Palermo
 - c_a662 # Comune di Bari
 - c_f839 # Comune di Napoli
 - c_d612 # Comune Firenze
-- c_d969 # Comune di Genova 
+- c_d969 # Comune di Genova
 - c_h224 # Comune di Reggio Calabria
 - c_c351 # Comune di Catania
 - c_f158 # Comune di Messina
@@ -86,6 +86,7 @@
 
 - c_d467 # Comune di Fagnano Olona
 - c_h315 # Comune di Ripalta Cremasca
+- c_h280 # Comune di Riese Pio X
 
 - unive # Università Ca Foscari
 
@@ -94,4 +95,4 @@
 - ifo_058 # IFO Regina Elena San Gallicano
 
 - inail # Istituto Nazionale per l'Assicurazione contro gli Infortuni sul Lavoro - INAIL
-- aci # Automobil Club Italia - ACI 
+- aci # Automobil Club Italia - ACI
