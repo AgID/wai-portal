@@ -5,7 +5,6 @@ namespace App\Traits;
 use App\Exceptions\AnalyticsServiceException;
 use App\Exceptions\CommandErrorException;
 use Illuminate\Contracts\Container\BindingResolutionException;
-use Ramsey\Uuid\Uuid;
 use stdClass;
 
 /**
