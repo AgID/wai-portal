@@ -34,7 +34,7 @@ trait BuildDatasetForSingleDigitalGatewayAPI
 
         date_default_timezone_set('UTC');
         $referencePeriod = new stdClass();
-        $referencePeriod->startDate = date('Y-m-d\TH:i:s\Z', strtotime('-' . ($days - 1) . ' days'));
+        $referencePeriod->startDate = date('Y-m-d\TH:i:s\Z', strtotime('-' . ($days) . ' days'));
         $referencePeriod->endDate = date('Y-m-d\TH:i:s\Z');
 
         $data = new stdClass();
