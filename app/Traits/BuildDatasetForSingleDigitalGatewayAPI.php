@@ -39,11 +39,7 @@ trait BuildDatasetForSingleDigitalGatewayAPI
         $referencePeriod->endDate = date('Y-m-d\TH:i:s\Z');
 
         $data = new stdClass();
-
-        // Call the API to get the REAL uniqueID
         $data->uniqueId = $sDGService->getUniqueID();
-        // $data->uniqueId = Uuid::uuid4()->toString();
-
         $data->referencePeriod = $referencePeriod;
         $data->transferDate = date('Y-m-d\TH:i:s\Z');
         $data->transferType = 'API';
