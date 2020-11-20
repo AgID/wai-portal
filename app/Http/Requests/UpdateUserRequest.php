@@ -23,10 +23,10 @@ class UpdateUserRequest extends StoreUserRequest
         $rules = parent::rules();
         $rules['emailPublicAdministrationUser'] = 'required|email:rfc,dns|max:75';
 
-        $user = ($this->route()->getName() === 'api.users.update')
-          ?  get_user_from_fiscalnumber()
-          :  $user = $this->route('user');
-        
+        $user = ('api.users.update' === $this->route()->getName())
+          ? get_user_from_fiscalnumber()
+          : $user = $this->route('user');
+
         if (!$user->status->is(UserStatus::INVITED)) {
             unset($rules['fiscal_number']);
         } else {
@@ -58,7 +58,10 @@ class UpdateUserRequest extends StoreUserRequest
         });
 
         $validator->after(function (Validator $validator) use ($user, $publicAdministration) {
-            $publicAdministration = $publicAdministration !== null ? $publicAdministration : get_public_administration_from_token();
+            $publicAdministration = request()->route('publicAdministration', current_public_administration());
+            if (null === $publicAdministration) {
+                $publicAdministration = get_public_administration_from_token();
+            }
             $publicAdministrationFromRoute = request()->route('publicAdministration', $publicAdministration);
             if ($user->isTheLastActiveAdministratorOf($publicAdministrationFromRoute) && !$this->input('is_admin')) {
                 $validator->errors()->add('is_admin', __('Deve restare almeno un utente amministratore per ogni PA.'));
