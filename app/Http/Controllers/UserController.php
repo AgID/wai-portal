@@ -28,6 +28,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Validation\Validator;
 use Illuminate\View\View;
+use Laravel\Passport\Client;
+use Laravel\Passport\ClientRepository;
 use Ramsey\Uuid\Uuid;
 use Silber\Bouncer\BouncerFacade as Bouncer;
 use Yajra\DataTables\DataTables;
@@ -82,6 +84,7 @@ class UserController extends Controller
         ];
 
         $userCreateUrl = $this->getRoleAwareUrl('users.create', [], $publicAdministration);
+        //$jsonRes = 'application/json' === $request->header('Content-Type');
 
         return view('pages.users.index')->with(compact('userCreateUrl'))->with($usersDatatable);
     }
@@ -105,74 +108,45 @@ class UserController extends Controller
         return view('pages.users.add')->with(compact('userStoreUrl'))->with($websitesPermissionsDatatable);
     }
 
-    /**
-     * Create a new user.
-     *
-     * @param StoreUserRequest $request the incoming request
-     * @param PublicAdministration $publicAdministration the public administration the user will belong to
-     *
-     * @throws \Exception if unable to generate user UUID
-     *
-     * @return \Illuminate\Http\RedirectResponse the server redirect response
-     */
     public function store(StoreUserRequest $request, PublicAdministration $publicAdministration): RedirectResponse
     {
-        $authUser = auth()->user();
-        $validatedData = $request->validated();
+        $data = $this->storeMethod($request, $publicAdministration, false);
+        $redirectUrl = $data['redirectUri'];
 
-        $currentPublicAdministration = $authUser->can(UserPermission::ACCESS_ADMIN_AREA)
-            ? $publicAdministration
-            : current_public_administration();
-
-        $redirectUrl = $this->getRoleAwareUrl('users.index', [], $publicAdministration);
-
-        // If existingUser is filled the user is already in the database
-        if (isset($validatedData['existingUser']) && isset($validatedData['existingUser']->email)) {
-            $user = $validatedData['existingUser'];
-            $userInCurrentPublicAdministration = $user->publicAdministrationsWithSuspended->where('id', $currentPublicAdministration->id)->isNotEmpty();
-
-            if ($userInCurrentPublicAdministration) {
-                return redirect()->to($redirectUrl)->withModal([
-                    'title' => __("Non è possibile inoltrare l'invito"),
-                    'icon' => 'it-clock',
-                    'message' => __("L'utente fa già parte di questa pubblica amministrazione"),
-                    'image' => asset('images/closed.svg'),
-                ]);
-            }
-
-            $user_message = implode("\n", [
-                __("Abbiamo inviato un invito all'indirizzo email :email.", ['email' => '<strong>' . e($validatedData['email']) . '</strong>']),
-                "\n" . __("L'invito potrà essere confermato dall'utente al prossimo accesso."),
-            ]);
-        } else {
-            $user = User::create([
-                'uuid' => Uuid::uuid4()->toString(),
-                'fiscal_number' => $validatedData['fiscal_number'],
-                'email' => $validatedData['email'],
-                'status' => UserStatus::INVITED,
-            ]);
-
-            $user_message = implode("\n", [
-                __("Abbiamo inviato un invito all'indirizzo email :email.", ['email' => '<strong>' . e($validatedData['email']) . '</strong>']),
-                "\n" . __("L'invito scade dopo :expire giorni e può essere rinnovato.", ['expire' => config('auth.verification.expire')]),
-                "\n<strong>" . __("Attenzione! Se dopo :purge giorni l'utente non avrà ancora accettato l'invito, sarà rimosso.", ['purge' => config('auth.verification.purge')]) . '</strong>',
+        if (true === $data['error']) {
+            return redirect()->to($redirectUrl)->withModal([
+                'title' => __($data['title']),
+                'icon' => 'it-clock',
+                'message' => __($data['message']),
+                'image' => asset('images/closed.svg'),
             ]);
         }
-
-        if (!$user->hasAnalyticsServiceAccount()) {
-            $user->registerAnalyticsServiceAccount();
-        }
-        $user->publicAdministrations()->attach($currentPublicAdministration->id, ['user_email' => $validatedData['email'], 'user_status' => UserStatus::INVITED]);
-        $this->manageUserPermissions($validatedData, $currentPublicAdministration, $user);
-
-        event(new UserInvited($user, $authUser, $currentPublicAdministration));
 
         return redirect()->to($redirectUrl)->withModal([
-            'title' => __('Invito inoltrato'),
+            'title' => __($data['title']),
             'icon' => 'it-clock',
-            'message' => $user_message,
+            'message' => $data['message'],
             'image' => asset('images/invitation-email-sent.svg'),
         ]);
+    }
+
+    public function storeJson(StoreUserRequest $request, PublicAdministration $publicAdministration): JsonResponse
+    {
+        $data = $this->storeMethod($request, $publicAdministration, true);
+
+        if (true === $data['error']) {
+            return response()->json([
+                'title' => $data['title'],
+                'message' => $data['message'],
+                'type' => $data['type'],
+            ], 400);
+        }
+
+        return response()->json([
+            'title' => $data['title'],
+            'message' => $data['message'],
+            'type' => $data['type'],
+        ], 200);
     }
 
     /**
@@ -192,11 +166,19 @@ class UserController extends Controller
         $websitesPermissionsDatatableSource = $this->getRoleAwareUrl('users.websites.permissions.data.json', [
             'user' => $user,
         ], $publicAdministration);
+
+        $publicAdministration = ($publicAdministration->id ?? false) ? $publicAdministration : current_public_administration();
+        $publicAdministrationUser = $user->publicAdministrationsWithSuspended()->where('public_administration_id', $publicAdministration->id)->first();
+        $userPublicAdministrationStatus = UserStatus::fromValue(intval($publicAdministrationUser->pivot->user_status));
+
+        $clientId = $clientSecret = 0;
+
         $roleAwareUrls = $this->getRoleAwareUrlArray([
             'userEditUrl' => 'users.edit',
             'userVerificationResendUrl' => 'users.verification.resend',
             'userSuspendUrl' => 'users.suspend',
             'userReactivateUrl' => 'users.reactivate',
+            'userGenerateCredentials' => 'users.generate.credentials',
         ], [
             'user' => $user,
         ], $publicAdministration);
@@ -208,6 +190,22 @@ class UserController extends Controller
             ->with(compact('user', 'allRoles', 'emailPublicAdministrationUser', 'statusPublicAdministrationUser'))
             ->with($roleAwareUrls)
             ->with($websitesPermissionsDatatable);
+    }
+
+    public function showJson(Request $request): JsonResponse
+    {
+        $user = $this->getUserFromFiscalNumber($request);
+
+        if (!$user) {
+            return response()->json([
+                'error' => true,
+                'message' => 'User Not Found',
+            ], 404);
+        }
+
+        return response()->json([
+            'User' => $user,
+        ], 200);
     }
 
     /**
@@ -263,39 +261,7 @@ class UserController extends Controller
      */
     public function update(UpdateUserRequest $request, PublicAdministration $publicAdministration, User $user): RedirectResponse
     {
-        $validatedData = $request->validated();
-        $currentPublicAdministration = auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)
-            ? $publicAdministration
-            : current_public_administration();
-
-        // Update user information
-        if ($user->email !== $validatedData['email']) {
-            // NOTE: the 'user update' event listener automatically
-            //       sends a new email verification request and
-            //       reset the email verification status
-            $user->email = $validatedData['email'];
-
-            // Update Analytics Service account if needed
-            // NOTE: at this point, user must have an analytics account
-            $user->updateAnalyticsServiceAccountEmail();
-        }
-
-        $emailPublicAdministrationUser = $user->getEmailforPublicAdministration($currentPublicAdministration);
-
-        if ($user->status->is(UserStatus::INVITED) && array_key_exists('fiscal_number', $validatedData)) {
-            $user->fiscal_number = $validatedData['fiscal_number'];
-        }
-
-        if ($user->isDirty()) {
-            $user->save();
-        }
-
-        $this->manageUserPermissions($validatedData, $currentPublicAdministration, $user);
-
-        if ($emailPublicAdministrationUser !== $validatedData['emailPublicAdministrationUser']) {
-            $user->publicAdministrations()->updateExistingPivot($currentPublicAdministration->id, ['user_email' => $validatedData['emailPublicAdministrationUser']]);
-            event(new UserEmailForPublicAdministrationChanged($user, $currentPublicAdministration, $validatedData['emailPublicAdministrationUser']));
-        }
+        $updatedUser = $this->updateMethod($request, $publicAdministration, $user);
 
         $redirectUrl = $this->getRoleAwareUrl('users.index', [], $publicAdministration);
 
@@ -305,6 +271,18 @@ class UserController extends Controller
             'status' => 'success',
             'icon' => 'it-check-circle',
         ]);
+    }
+
+    public function updateApi(Request $request, UpdateUserRequest $reqUpdate): JsonResponse
+    {
+        $user = $this->getUserFromFiscalNumber($request);
+        $publicAdministration = get_public_administration_from_token();
+
+        $updateUser = $this->updateMethod($reqUpdate, $publicAdministration, $user);
+
+        return response()->json([
+            'User' => $updateUser,
+        ], 200);
     }
 
     /**
@@ -321,7 +299,8 @@ class UserController extends Controller
     public function delete(PublicAdministration $publicAdministration, User $user)
     {
         $publicAdministrationUser = $user->publicAdministrations()->where('public_administration_id', $publicAdministration->id)->first();
-
+        /* var_dump($publicAdministration);
+        die(); */
         if (empty($publicAdministrationUser)) {
             return $this->notModifiedResponse();
         }
@@ -353,6 +332,15 @@ class UserController extends Controller
         event(new UserDeleted($user, $publicAdministration));
 
         return $this->userResponse($user, $publicAdministration);
+    }
+
+    public function deleteApi(Request $request): JsonResponse
+    {
+        $user = $this->getUserFromFiscalNumber($request);
+        $publicAdministration = get_public_administration_from_token();
+        $deleteUser = $this->delete($publicAdministration, $user);
+
+        return response()->json($deleteUser, 200);
     }
 
     /**
@@ -453,11 +441,17 @@ class UserController extends Controller
      */
     public function dataJson(Request $request, PublicAdministration $publicAdministration)
     {
-        return DataTables::of($request->user()->can(UserPermission::ACCESS_ADMIN_AREA)
-                ? $publicAdministration->users()->withTrashed()->get()
-                : optional(current_public_administration())->users ?? collect([]))
+        return DataTables::of($this->baseDataJson($request, $publicAdministration))
             ->setTransformer(new UserTransformer())
             ->make(true);
+    }
+
+    public function dataApiJson(): JsonResponse
+    {
+        $publicAdministration = get_public_administration_from_token();
+        $users = $publicAdministration->users;
+
+        return response()->json($users, 200);
     }
 
     /**
@@ -473,8 +467,8 @@ class UserController extends Controller
     public function dataWebsitesPermissionsJson(PublicAdministration $publicAdministration, User $user)
     {
         return DataTables::of(auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)
-                ? $publicAdministration->websites
-                : current_public_administration()->websites)
+            ? $publicAdministration->websites
+            : current_public_administration()->websites)
             ->setTransformer(new WebsitesPermissionsTransformer())
             ->make(true);
     }
@@ -486,10 +480,12 @@ class UserController extends Controller
      */
     public function validateNotLastActiveAdministrator(Validator $validator): void
     {
-        $publicAdministration = request()->route('publicAdministration', current_public_administration());
-        $user = request()->route('user');
+        $current_public_administration = current_public_administration();
+        $publicAdministration = isset($current_public_administration) ? $current_public_administration : get_public_administration_from_token();
+        $publicAdministrationRoute = request()->route('publicAdministration', $publicAdministration);
+        $user = request()->route('user', $this->getUserFromFiscalNumber(request()));
 
-        if ($user->isTheLastActiveAdministratorOf($publicAdministration)) {
+        if ($user->isTheLastActiveAdministratorOf($publicAdministrationRoute)) {
             $validator->errors()->add('is_admin', 'The last administrator cannot be removed or suspended.');
         }
     }
@@ -545,6 +541,162 @@ class UserController extends Controller
             'caption' => __('elenco dei siti web presenti su :app', ['app' => config('app.name')]),
             'columnsOrder' => [['website_name', 'asc']],
         ];
+    }
+
+   /*  public function apiData(Request $request)
+    {
+        $user = 123; //auth()->user();
+        $pubblicAmm = 123; // $user->publicAdministrationsWithSuspended()->first();
+        $publicAdministration = get_public_administration_from_token();
+
+        return response()->json([
+            'test api' => $user,
+            'test 2' => get_public_administration_from_token(),
+            'user' => get_user_from_token(),
+            'tenant_id' => 
+        ], 200);
+    } */
+
+    /**
+     * Create a new user.
+     *
+     * @param StoreUserRequest $request the incoming request
+     * @param PublicAdministration $publicAdministration the public administration the user will belong to
+     *
+     * @throws \Exception if unable to generate user UUID
+     *
+     * @return \Illuminate\Http\RedirectResponse the server redirect response
+     */
+    protected function storeMethod(StoreUserRequest $request, PublicAdministration $publicAdministration, bool $jsonResponse): array
+    {
+        $authUser = auth()->user();
+        $validatedData = $request->validated();
+
+        if (isset($authUser)) {
+            $currentPublicAdministration = $authUser->can(UserPermission::ACCESS_ADMIN_AREA)
+                ? $publicAdministration
+                : current_public_administration();
+        } else {
+            $currentPublicAdministration = get_public_administration_from_token();
+        }
+
+        $redirectUrl = isset($authUser) ? $this->getRoleAwareUrl('users.index', [], $publicAdministration) : null;
+        // If existingUser is filled the user is already in the database
+        if (isset($validatedData['existingUser']) && isset($validatedData['existingUser']->email)) {
+            $user = $validatedData['existingUser'];
+            $userInCurrentPublicAdministration = $user->publicAdministrationsWithSuspended->where('id', $currentPublicAdministration->id)->isNotEmpty();
+
+            if ($userInCurrentPublicAdministration) {
+                return [
+                    'error' => true,
+                    'type' => 'user.exist.in.amministration',
+                    'title' => "Non è possibile inoltrare l'invito",
+                    'message' => "L'utente fa già parte di questa pubblica amministrazione",
+                    'redirectUri' => $redirectUrl,
+                ];
+            }
+
+            $user_message = implode("\n", [
+                __("Abbiamo inviato un invito all'indirizzo email :email.", ['email' => '<strong>' . e($validatedData['email']) . '</strong>']),
+                "\n" . __("L'invito potrà essere confermato dall'utente al prossimo accesso."),
+            ]);
+        } else {
+            $user = User::create([
+                'uuid' => Uuid::uuid4()->toString(),
+                'fiscal_number' => $validatedData['fiscal_number'],
+                'email' => $validatedData['email'],
+                'status' => UserStatus::INVITED,
+            ]);
+
+            $user_message = true === $jsonResponse
+                ? 'test'
+                : implode("\n", [
+                    __("Abbiamo inviato un invito all'indirizzo email :email.", ['email' => '<strong>' . e($validatedData['email']) . '</strong>']),
+                    "\n" . __("L'invito scade dopo :expire giorni e può essere rinnovato.", ['expire' => config('auth.verification.expire')]),
+                    "\n<strong>" . __("Attenzione! Se dopo :purge giorni l'utente non avrà ancora accettato l'invito, sarà rimosso.", ['purge' => config('auth.verification.purge')]) . '</strong>',
+                ]);
+        }
+
+        if (!$user->hasAnalyticsServiceAccount()) {
+            $user->registerAnalyticsServiceAccount();
+        }
+
+        $user->publicAdministrations()->attach(
+            $currentPublicAdministration->id,
+            ['user_email' => $validatedData['email'], 'user_status' => UserStatus::INVITED]
+        );
+
+        $this->manageUserPermissions($validatedData, $currentPublicAdministration, $user);
+
+        isset($authUser) ? event(new UserInvited($user, $authUser, $currentPublicAdministration)) : null;
+
+        return [
+            'error' => false,
+            'type' => 'user.creation.success',
+            'title' => 'Invito inoltrato',
+            'message' => $user_message,
+            'redirectUri' => $redirectUrl,
+        ];
+    }
+
+    protected function getUserFromFiscalNumber(Request $request): User
+    {
+        /* Codice Fiscale */
+        $fn = $request->fn;
+        /* Trova l'utente col codice fiscale */
+        $user = User::findNotSuperAdminByFiscalNumber($fn);
+
+        return $user;
+    }
+
+    protected function updateMethod(UpdateUserRequest $request, PublicAdministration $publicAdministration, User $user)
+    {
+        $validatedData = $request->validated();
+        $authUser = auth()->user();
+        if (isset($authUser)) {
+            $currentPublicAdministration = auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)
+                ? $publicAdministration
+                : current_public_administration();
+        } else {
+            $currentPublicAdministration = get_public_administration_from_token();
+        }
+        // Update user information
+        if ($user->email !== $validatedData['email']) {
+            // NOTE: the 'user update' event listener automatically
+            //       sends a new email verification request and
+            //       reset the email verification status
+            $user->email = $validatedData['email'];
+
+            // Update Analytics Service account if needed
+            // NOTE: at this point, user must have an analytics account
+            $user->updateAnalyticsServiceAccountEmail();
+        }
+
+        $emailPublicAdministrationUser = $user->getEmailforPublicAdministration($currentPublicAdministration);
+
+        if ($user->status->is(UserStatus::INVITED) && array_key_exists('fiscal_number', $validatedData)) {
+            $user->fiscal_number = $validatedData['fiscal_number'];
+        }
+
+        if ($user->isDirty()) {
+            $user->save();
+        }
+
+        $this->manageUserPermissions($validatedData, $currentPublicAdministration, $user);
+
+        if ($emailPublicAdministrationUser !== $validatedData['emailPublicAdministrationUser']) {
+            $user->publicAdministrations()->updateExistingPivot($currentPublicAdministration->id, ['user_email' => $validatedData['emailPublicAdministrationUser']]);
+            event(new UserEmailForPublicAdministrationChanged($user, $currentPublicAdministration, $validatedData['emailPublicAdministrationUser']));
+        }
+
+        return $user;
+    }
+
+    protected function baseDataJson(Request $request, PublicAdministration $publicAdministration)
+    {
+        return $request->user()->can(UserPermission::ACCESS_ADMIN_AREA)
+            ? $publicAdministration->users()->withTrashed()->get()
+            : optional(current_public_administration())->users ?? collect([]);
     }
 
     /**
