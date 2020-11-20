@@ -37,11 +37,14 @@ class ProfileTest extends TestCase
             ->withSession([
                 'spid_sessionIndex' => 'fake-session-index',
             ])
-            ->patch(route('user.profile.update'), [
-                'name' => $user->name,
-                'family_name' => $user->family_name,
-                'email' => 'new@webanalytics.italia.it',
-            ])
+            ->patch(
+                route('user.profile.update'),
+                [
+                    'name' => $user->name,
+                    'family_name' => $user->family_name,
+                    'email' => 'new@webanalytics.italia.it',
+                ]
+            )
             ->assertSessionDoesntHaveErrors([
                 'email',
             ])
@@ -64,9 +67,12 @@ class ProfileTest extends TestCase
                 'spid_sessionIndex' => 'fake-session-index',
             ])
             ->from(route('user.profile.edit'))
-            ->patch(route('user.profile.update'), [
-                'email' => $user->email,
-            ])
+            ->patch(
+                route('user.profile.update'),
+                [
+                    'email' => $user->email,
+                ]
+            )
             ->assertSessionHasErrors([
                 'email',
             ])
@@ -86,11 +92,14 @@ class ProfileTest extends TestCase
         $user->allow(UserPermission::ACCESS_ADMIN_AREA);
 
         $this->actingAs($user)
-            ->patch(route('admin.user.profile.update'), [
-                'name' => 'Mario',
-                'family_name' => 'Rossi',
-                'email' => 'new@webanalytics.italia.it',
-            ])
+            ->patch(
+                route('admin.user.profile.update'),
+                [
+                    'name' => 'Mario',
+                    'family_name' => 'Rossi',
+                    'email' => 'new@webanalytics.italia.it',
+                ]
+            )
             ->assertSessionDoesntHaveErrors([
                 'name',
                 'family_name',
