@@ -49,3 +49,5 @@ TODO
 /hosts.yml
 /ssh_keys
 /spid_cert
+/storage/oauth-private.key
+/storage/oauth-public.key
