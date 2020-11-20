@@ -146,7 +146,7 @@ class UserEventsSubscriberTest extends TestCase
                 $this->assertEquals($this->user->uuid, $mail->viewData['user']['uuid']);
                 $this->assertEquals('fakeverificationurl.local', $mail->viewData['signedUrl']);
                 $this->assertNull($mail->viewData['publicAdministration']);
-                $this->assertEquals($mail->subject, __('Verifica email per :app', ['app' => config('app.name')]));
+                $this->assertEquals($mail->subject, __('Account su :app', ['app' => config('app.name')]));
 
                 return $mail->hasTo($this->user->email, $this->user->full_name);
             }
@@ -333,7 +333,7 @@ class UserEventsSubscriberTest extends TestCase
                 $this->assertEquals($userInvited->uuid, $mail->viewData['user']['uuid']);
                 $this->assertEquals('fakeverificationurl.local', $mail->viewData['signedUrl']);
                 $this->assertEquals($publicAdministration->ipa_code, $mail->viewData['publicAdministration']['ipa_code']);
-                $this->assertEquals($mail->subject, __('Invito su :app', ['app' => config('app.name')]));
+                $this->assertEquals($mail->subject, __('Account su :app', ['app' => config('app.name')]));
 
                 return $mail->hasTo($userInvited->email, $userInvited->full_name);
             }
@@ -525,7 +525,7 @@ class UserEventsSubscriberTest extends TestCase
                 $this->assertEquals($this->user->uuid, $mail->viewData['user']['uuid']);
                 $this->assertEquals('fakeverificationurl.local', $mail->viewData['signedUrl']);
                 $this->assertNull($mail->viewData['publicAdministration']);
-                $this->assertEquals($mail->subject, __('Verifica email per :app', ['app' => config('app.name')]));
+                $this->assertEquals($mail->subject, __('Account su :app', ['app' => config('app.name')]));
 
                 return $mail->hasTo($this->user->email, $this->user->full_name);
             }
@@ -561,7 +561,7 @@ class UserEventsSubscriberTest extends TestCase
                 $this->assertEquals($this->user->uuid, $mail->viewData['user']['uuid']);
                 $this->assertEquals('fakeverificationurl.local', $mail->viewData['signedUrl']);
                 $this->assertNull($mail->viewData['publicAdministration']);
-                $this->assertEquals($mail->subject, __('Verifica email per :app', ['app' => config('app.name')]));
+                $this->assertEquals($mail->subject, __('Account su :app', ['app' => config('app.name')]));
 
                 return $mail->hasTo($this->user->email, $this->user->full_name);
             }
@@ -600,7 +600,7 @@ class UserEventsSubscriberTest extends TestCase
                 $this->assertEquals($this->user->uuid, $mail->viewData['user']['uuid']);
                 $this->assertEquals('fakeverificationurl.local', $mail->viewData['signedUrl']);
                 $this->assertEquals($publicAdministration->ipa_code, $mail->viewData['publicAdministration']['ipa_code']);
-                $this->assertEquals(__('Invito su :app', ['app' => config('app.name')]), $mail->subject);
+                $this->assertEquals($mail->subject, __('Account su :app', ['app' => config('app.name')]));
 
                 return $mail->hasTo($this->user->email, $this->user->full_name);
             }
