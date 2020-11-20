@@ -286,6 +286,9 @@ Route::middleware('spid.auth', 'auth', 'verified:verification.notice')->group(fu
 
                 Route::get('/{user}/verification-resend', 'Auth\VerificationController@resend')
                 ->name('users.verification.resend')->middleware('throttle:5,1');
+
+                Route::get('/{user}/generate-credentials', 'UserController@generateCredentials')
+                ->name('users.generate.credentials');
             });
         });
 

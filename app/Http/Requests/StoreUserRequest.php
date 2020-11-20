@@ -96,6 +96,16 @@ class StoreUserRequest extends FormRequest
      */
     protected function checkWebsitesIds(array $websitesPermissions): bool
     {
-        return empty(array_diff(array_keys($websitesPermissions), request()->route('publicAdministration', current_public_administration())->websites->pluck('id')->all()));
+        $current_public_administration = current_public_administration();
+        $public_administration = ($current_public_administration !== null) 
+            ? $current_public_administration 
+            : get_public_administration_from_token();
+
+        return empty(
+            array_diff(
+                array_keys($websitesPermissions),
+                request()->route('publicAdministration', $public_administration)->websites->pluck('id')->all()
+            )
+        );
     }
 }
