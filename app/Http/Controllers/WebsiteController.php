@@ -31,6 +31,7 @@ use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Yajra\DataTables\DataTables;
@@ -155,42 +156,9 @@ class WebsiteController extends Controller
         return view('pages.websites.add')->with(compact('websiteStoreUrl'))->with($usersPermissionsDatatable);
     }
 
-    /**
-     * Store a new website.
-     *
-     * @param StoreWebsiteRequest $request the request
-     * @param PublicAdministration $publicAdministration the public administration the website will belong to
-     *
-     * @return RedirectResponse the server redirect response
-     */
     public function store(StoreWebsiteRequest $request, PublicAdministration $publicAdministration): RedirectResponse
     {
-        $validatedData = $request->validated();
-
-        $currentPublicAdministration = auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)
-            ? $publicAdministration
-            : current_public_administration();
-
-        $analyticsId = app()->make('analytics-service')->registerSite($validatedData['website_name'], $validatedData['url'], $currentPublicAdministration->name);
-
-        $website = Website::create([
-            'name' => $validatedData['website_name'],
-            'url' => $validatedData['url'],
-            'type' => (int) $validatedData['type'],
-            'public_administration_id' => $currentPublicAdministration->id,
-            'analytics_id' => $analyticsId,
-            'slug' => Str::slug($validatedData['url']),
-            'status' => WebsiteStatus::PENDING,
-        ]);
-
-        event(new WebsiteAdded($website, auth()->user()));
-
-        $currentPublicAdministration->getAdministrators()->map(function ($administrator) use ($website, $currentPublicAdministration) {
-            $administrator->setWriteAccessForWebsite($website);
-            $administrator->syncWebsitesPermissionsToAnalyticsService($currentPublicAdministration);
-        });
-
-        $this->manageWebsitePermissionsOnNonAdministrators($validatedData, $currentPublicAdministration, $website);
+        $this->storeMethod($request, $publicAdministration);
 
         $redirectUrl = $this->getRoleAwareUrl('websites.index', [], $publicAdministration);
 
@@ -200,6 +168,13 @@ class WebsiteController extends Controller
             'message' => __('Abbiamo inviato al tuo indirizzo email le istruzioni per attivare il sito e iniziare a monitorare il traffico.'),
             'image' => asset('images/website-added.svg'),
         ]);
+    }
+
+    public function storeApi(StoreWebsiteRequest $request, PublicAdministration $publicAdministration): JsonResponse
+    {
+        $response = $this->storeMethod($request, $publicAdministration);
+
+        return response()->json($response, 200);
     }
 
     /**
@@ -243,6 +218,13 @@ class WebsiteController extends Controller
             ->with('userPublicAdministrationStatus', $userPublicAdministrationStatus);
     }
 
+    public function showApi(Website $website)
+    {
+        return response()->json([
+            'Website' => $website,
+        ], 200);
+    }
+
     /**
      * Show the form for editing a website.
      *
@@ -279,26 +261,7 @@ class WebsiteController extends Controller
      */
     public function update(UpdateWebsiteRequest $request, PublicAdministration $publicAdministration, Website $website): RedirectResponse
     {
-        $validatedData = $request->validated();
-        $currentPublicAdministration = auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)
-            ? $publicAdministration
-            : current_public_administration();
-
-        if (!$website->type->is(WebsiteType::INSTITUTIONAL)) {
-            if ($website->slug !== Str::slug($validatedData['url'])) {
-                app()->make('analytics-service')->updateSite($website->analytics_id, $validatedData['website_name'] . ' [' . $validatedData['type'] . ']', $validatedData['url'], $website->publicAdministration->name);
-            }
-
-            $website->fill([
-                'name' => $validatedData['website_name'],
-                'url' => $validatedData['url'],
-                'type' => $validatedData['type'],
-                'slug' => Str::slug($validatedData['url']),
-            ]);
-            $website->save();
-        }
-
-        $this->manageWebsitePermissionsOnNonAdministrators($validatedData, $currentPublicAdministration, $website);
+        $this->updateMethod($request, $publicAdministration, $website);
 
         $redirectUrl = $this->getRoleAwareUrl('websites.index', [], $publicAdministration);
 
@@ -308,6 +271,15 @@ class WebsiteController extends Controller
             'status' => 'success',
             'icon' => 'it-check-circle',
         ]);
+    }
+
+    public function updateApi(UpdateWebsiteRequest $request, PublicAdministration $publicAdministration, Website $website): JsonResponse
+    {
+        $response = $this->updateMethod($request, $publicAdministration, $website);
+
+        return response()->json([
+            'website update' => $response,
+        ], 200);
     }
 
     /**
@@ -633,11 +605,17 @@ class WebsiteController extends Controller
      */
     public function dataJson(PublicAdministration $publicAdministration)
     {
-        return DataTables::of(auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)
-                ? $publicAdministration->websites()->withTrashed()->get()
-                : current_public_administration()->websites())
+        return DataTables::of($this->baseDataJson($publicAdministration))
             ->setTransformer(new WebsiteTransformer())
             ->make(true);
+    }
+
+    public function dataApi(): JsonResponse
+    {
+        $publicAdministration = get_public_administration_from_token();
+        $websites = $publicAdministration->websites()->get()->toArray();
+
+        return response()->json($websites, 200);
     }
 
     /**
@@ -687,6 +665,99 @@ class WebsiteController extends Controller
             'caption' => __('elenco degli utenti presenti su :app', ['app' => config('app.name')]),
             'columnsOrder' => [['name', 'asc']],
         ];
+    }
+
+    /**
+     * Store a new website.
+     *
+     * @param StoreWebsiteRequest $request the request
+     * @param PublicAdministration $publicAdministration the public administration the website will belong to
+     *
+     * @return RedirectResponse the server redirect response
+     */
+    protected function storeMethod(StoreWebsiteRequest $request, PublicAdministration $publicAdministration): array
+    {
+        $validatedData = $request->validated();
+        $user = auth()->user();
+        if (isset($user)) {
+            $currentPublicAdministration = $user->can(UserPermission::ACCESS_ADMIN_AREA)
+                ? $publicAdministration
+                : current_public_administration();
+        } else {
+            $currentPublicAdministration = get_public_administration_from_token();
+        }
+
+        $analyticsId = app()->make('analytics-service')->registerSite($validatedData['website_name'], $validatedData['url'], $currentPublicAdministration->name);
+
+        $website = Website::create([
+            'name' => $validatedData['website_name'],
+            'url' => $validatedData['url'],
+            'type' => (int) $validatedData['type'],
+            'public_administration_id' => $currentPublicAdministration->id,
+            'analytics_id' => $analyticsId,
+            'slug' => Str::slug($validatedData['url']),
+            'status' => WebsiteStatus::PENDING,
+        ]);
+        $authUser = auth()->user();
+        $user = isset($authUser) ? $authUser : get_user_from_token();
+        event(new WebsiteAdded($website, $user));
+
+        $currentPublicAdministration->getAdministrators()->map(function ($administrator) use ($website, $currentPublicAdministration) {
+            $administrator->setWriteAccessForWebsite($website);
+            $administrator->syncWebsitesPermissionsToAnalyticsService($currentPublicAdministration);
+        });
+
+        $this->manageWebsitePermissionsOnNonAdministrators($validatedData, $currentPublicAdministration, $website);
+
+        return [
+            'website' => $website,
+        ];
+    }
+
+    protected function updateMethod(UpdateWebsiteRequest $request, PublicAdministration $publicAdministration, Website $website)
+    {
+        $validatedData = $request->validated();
+        $authUser = auth()->user();
+        $user = isset($authUser) ? $authUser : get_user_from_token();
+
+        $currentPublicAdministration = $user->can(UserPermission::ACCESS_ADMIN_AREA)
+            ? $publicAdministration
+            : current_public_administration();
+        $currentPublicAdministration = isset($currentPublicAdministration)
+            ? $currentPublicAdministration
+            : get_public_administration_from_token();
+
+        if (!$website->type->is(WebsiteType::INSTITUTIONAL)) {
+            if ($website->slug !== Str::slug($validatedData['url'])) {
+                app()->make('analytics-service')->updateSite($website->analytics_id, $validatedData['website_name'] . ' [' . $validatedData['type'] . ']', $validatedData['url'], $website->publicAdministration->name);
+            }
+
+            $website->fill([
+                'name' => $validatedData['website_name'],
+                'url' => $validatedData['url'],
+                'type' => $validatedData['type'],
+                'slug' => Str::slug($validatedData['url']),
+            ]);
+            $website->save();
+        }
+
+        $this->manageWebsitePermissionsOnNonAdministrators($validatedData, $currentPublicAdministration, $website);
+
+        return $website;
+    }
+
+    protected function baseDataJson(PublicAdministration $publicAdministration)
+    {
+        $publicAdministrationHelper = current_public_administration();
+
+        $data = auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)
+            ? $publicAdministration->websites()->withTrashed()->get()
+            : $publicAdministrationHelper->websites();
+
+        /*   var_dump($publicAdministrationHelper->websites()->get());
+        die(); */
+
+        return $data;
     }
 
     /**
