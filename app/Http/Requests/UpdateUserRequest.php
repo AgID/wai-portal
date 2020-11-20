@@ -23,11 +23,15 @@ class UpdateUserRequest extends StoreUserRequest
         $rules = parent::rules();
         $rules['emailPublicAdministrationUser'] = 'required|email:rfc,dns|max:75';
 
-        if (!$this->route('user')->status->is(UserStatus::INVITED)) {
+        $user = ($this->route()->getName() === 'api.users.update')
+          ?  get_user_from_fiscalnumber()
+          :  $user = $this->route('user');
+        
+        if (!$user->status->is(UserStatus::INVITED)) {
             unset($rules['fiscal_number']);
         } else {
             unset($rules['fiscal_number'][array_search('unique:users', $rules['fiscal_number'])]);
-            $rules['fiscal_number'][] = Rule::unique('users')->ignore($this->route('user')->id);
+            $rules['fiscal_number'][] = Rule::unique('users')->ignore($user->id);
         }
 
         return $rules;
@@ -40,8 +44,10 @@ class UpdateUserRequest extends StoreUserRequest
      */
     public function withValidator(Validator $validator): void
     {
-        $user = $this->route('user');
         $publicAdministration = $this->route('publicAdministration', current_public_administration());
+
+        $userFromFiscalNumber = 'application/json' === $this->header('Content-Type') ? get_user_from_fiscalnumber() : [];
+        $user = $this->route('user', $userFromFiscalNumber);
 
         $validator->after(function (Validator $validator) use ($user) {
             if (User::where('email', $this->input('email'))->where('id', '<>', $user->id)->whereDoesntHave('roles', function ($query) {
@@ -52,7 +58,9 @@ class UpdateUserRequest extends StoreUserRequest
         });
 
         $validator->after(function (Validator $validator) use ($user, $publicAdministration) {
-            if ($user->isTheLastActiveAdministratorOf($publicAdministration) && !$this->input('is_admin')) {
+            $publicAdministration = $publicAdministration !== null ? $publicAdministration : get_public_administration_from_token();
+            $publicAdministrationFromRoute = request()->route('publicAdministration', $publicAdministration);
+            if ($user->isTheLastActiveAdministratorOf($publicAdministrationFromRoute) && !$this->input('is_admin')) {
                 $validator->errors()->add('is_admin', __('Deve restare almeno un utente amministratore per ogni PA.'));
             }
         });

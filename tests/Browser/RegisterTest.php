@@ -37,7 +37,7 @@ class RegisterTest extends DuskTestCase
                 ->click('label[for="accept_terms"]')
                 ->press(__('Registrati'))
                 ->waitForText('In attesa di conferma')
-                ->assertSee(__('Per andare avanti è necessario prima effetturare una verifica'));
+                ->assertSee(__('Per andare avanti è necessaria la verifica del tuo indirizzo'));
         });
         $signedUrl = $this->getSignedUrl(1);
         $this->browse(function (Browser $browser) use ($signedUrl) {
