@@ -3,6 +3,7 @@
 namespace App\Http;
 
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
+use Laravel\Passport\Http\Middleware\CheckClientCredentials;
 
 class Kernel extends HttpKernel
 {
@@ -42,6 +43,10 @@ class Kernel extends HttpKernel
         'api' => [
             'throttle:60,1',
             'bindings',
+            'client',
+            \App\Http\Middleware\EncryptCookies::class,
+            \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+            \Illuminate\Session\Middleware\StartSession::class,
         ],
 
         'cron' => [
@@ -64,6 +69,7 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $routeMiddleware = [
+        'client' => CheckClientCredentials::class,
         'auth.admin' => \App\Http\Middleware\AuthenticateAdmin::class,
         'auth' => \App\Http\Middleware\Authenticate::class,
         'authorize.public.administrations' => \App\Http\Middleware\AuthorizePublicAdministration::class,
@@ -80,6 +86,7 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'cron.auth' => \App\Http\Middleware\CronAuthenticate::class,
         'enforce.rules' => \App\Http\Middleware\EnforceRule::class,
+        'api.authentication' => \App\Http\Middleware\ApiAuthentication::class,
     ];
 
     /**
@@ -90,8 +97,9 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $middlewarePriority = [
+        CheckClientCredentials::class,
         \Illuminate\Session\Middleware\StartSession::class,
-        \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+        /* \Illuminate\View\Middleware\ShareErrorsFromSession::class, */
         \App\Http\Middleware\ScopeBouncer::class,
         \Italia\SPIDAuth\Middleware::class,
         \App\Http\Middleware\Authenticate::class,
@@ -103,5 +111,6 @@ class Kernel extends HttpKernel
         \App\Http\Middleware\EnsurePasswordIsNotExpired::class,
         \App\Http\Middleware\SelectTenant::class,
         \App\Http\Middleware\AuthorizeAnalytics::class,
+        \App\Http\Middleware\ApiAuthentication::class,
     ];
 }
