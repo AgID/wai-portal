@@ -415,6 +415,9 @@ Route::middleware('auth.admin', 'verified:admin.verification.notice')->group(fun
 
                     Route::get('/{user}/verification-resend', 'Auth\VerificationController@resend')
                         ->name('admin.publicAdministration.users.verification.resend')->middleware('throttle:5,1');
+
+                    Route::get('/{user}/generate-credentials', 'UserController@generateCredentials')
+                        ->name('admin.publicAdministration.users.generate.credentials');
                 });
 
                 Route::prefix('/websites')->group(function () {
