@@ -298,8 +298,7 @@ class UserController extends Controller
     public function delete(PublicAdministration $publicAdministration, User $user)
     {
         $publicAdministrationUser = $user->publicAdministrations()->where('public_administration_id', $publicAdministration->id)->first();
-        /* var_dump($publicAdministration);
-        die(); */
+
         if (empty($publicAdministrationUser)) {
             return $this->notModifiedResponse();
         }
@@ -478,10 +477,16 @@ class UserController extends Controller
      */
     public function validateNotLastActiveAdministrator(Validator $validator): void
     {
-        $current_public_administration = current_public_administration();
-        $publicAdministration = isset($current_public_administration) ? $current_public_administration : get_public_administration_from_token();
+        $publicAdministration = request()->route('publicAdministration', current_public_administration());
+        if (null === $publicAdministration) {
+            $publicAdministration = get_public_administration_from_token();
+        }
         $publicAdministrationRoute = request()->route('publicAdministration', $publicAdministration);
-        $user = request()->route('user', $this->getUserFromFiscalNumber(request()));
+        $user = request()->route('user');
+
+        $user = ('api.users.delete' === request()->route()->getName())
+          ? get_user_from_fiscalnumber()
+          : request()->route('user');
 
         if ($user->isTheLastActiveAdministratorOf($publicAdministrationRoute)) {
             $validator->errors()->add('is_admin', 'The last administrator cannot be removed or suspended.');
@@ -541,19 +546,19 @@ class UserController extends Controller
         ];
     }
 
-   /*  public function apiData(Request $request)
-    {
-        $user = 123; //auth()->user();
-        $pubblicAmm = 123; // $user->publicAdministrationsWithSuspended()->first();
-        $publicAdministration = get_public_administration_from_token();
+    /*  public function apiData(Request $request)
+     {
+         $user = 123; //auth()->user();
+         $pubblicAmm = 123; // $user->publicAdministrationsWithSuspended()->first();
+         $publicAdministration = get_public_administration_from_token();
 
-        return response()->json([
-            'test api' => $user,
-            'test 2' => get_public_administration_from_token(),
-            'user' => get_user_from_token(),
-            'tenant_id' => 
-        ], 200);
-    } */
+         return response()->json([
+             'test api' => $user,
+             'test 2' => get_public_administration_from_token(),
+             'user' => get_user_from_token(),
+             'tenant_id' =>
+         ], 200);
+     } */
 
     /**
      * Create a new user.
