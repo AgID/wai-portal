@@ -137,6 +137,14 @@ class SingleDigitalGatewayService
         $validator->validate($dataSetEncoded, (object) ['$ref' => 'file://' . realpath($currenDirectory . '/schemas/sdg/informationServiceStats.json')]);
 
         if ($validator->isValid()) {
+            logger()->notice(
+                'Single Digital Gateway Service Json schema validation',
+                [
+                    'message' => 'Payload is valid',
+                    'a' => 'b',
+                ]
+            );
+
             return true;
         } else {
             foreach ($validator->getErrors() as $error) {

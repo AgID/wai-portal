@@ -17,6 +17,7 @@
       "$ref": "referencePeriod.json"
     },
     "transferDate": {
+      "description": "Date Time when the web API is called. The format must complies with the RFC 3339 standard. E.g.:2020-12-31T23:59:59.00Z (full-dateTfull-timeZ)",
       "format": "date-time",
       "type": "string"
     },

@@ -18,16 +18,29 @@ trait BuildDatasetForSingleDigitalGatewayAPI
     }
 
     /**
-     * Get the dataset to Single Digital Gateway API for the Statistics on Information Services.
+     * Get the unique Id from the gateway and build the dataset to Single Digital Gateway API for the Statistics on Information Services.
      *
-     * @return array the dataset
+     * @return object the dataset
      */
-    public function buildDatasetForSDG()
+    public function buildDatasetForSDG(): object
+    {
+        $sDGService = app()->make('single-digital-gateway-service');
+
+        return $this->buildDatasetForSDGFromId($sDGService->getUniqueID());
+    }
+
+    /**
+     * Build the dataset to Single Digital Gateway API for the Statistics on Information Services.
+     *
+     * @param string $uid The unique ID
+     *
+     * @return object the dataset
+     */
+    public function buildDatasetForSDGFromId($uId): object
     {
         $urls = $this->getUrlsFromConfig('urls');
 
         $analyticsService = app()->make('analytics-service');
-        $sDGService = app()->make('single-digital-gateway-service');
 
         $days = config('single-digital-gateway-service.last_days');
         $idSite = config('analytics-service.public_dashboard');
@@ -38,7 +51,7 @@ trait BuildDatasetForSingleDigitalGatewayAPI
         $referencePeriod->endDate = config('analytics-service.end_date', date('Y-m-d\TH:i:s\Z'));
 
         $data = new stdClass();
-        $data->uniqueId = $sDGService->getUniqueID();
+        $data->uniqueId = $uId;
         $data->referencePeriod = $referencePeriod;
         $data->transferDate = date('Y-m-d\TH:i:s\Z');
         $data->transferType = 'API';
@@ -54,8 +67,6 @@ trait BuildDatasetForSingleDigitalGatewayAPI
                 $source->statistics = [];
 
                 $segmentExists = array_search($url, array_column($definedSegments, 'name'));
-
-                // creo il segment per la url
 
                 $segment = urlencode('pageUrl==' . $url);
                 if (false === $segmentExists) {
@@ -86,25 +97,24 @@ trait BuildDatasetForSingleDigitalGatewayAPI
                     }
                 }
 
-                $nbvisits = [];
-
+                $nbVisits = [];
                 foreach ($device_days_countries as $country => $device_days) {
                     foreach ($device_days as $report_device) {
                         foreach ($report_device as $device) {
-                            if (!isset($nbvisits[$device['label']])) {
+                            if (!isset($nbVisits[$device['label']])) {
                                 $element = new stdClass();
                                 $element->nbVisits = $device['nb_visits'];
                                 $element->originatingCountry = strtoupper($country);
-                                $element->deviceType = $device['label'];
-                                $nbvisits[$device['label']] = $element;
+                                $element->deviceType = $this->getValidDeviceTypeLabel($device['label']);
+                                $nbVisits[$device['label']] = $element;
                             } else {
-                                $nbvisits[$device['label']]->nbVisits += $device['nb_visits'];
+                                $nbVisits[$device['label']]->nbVisits += $device['nb_visits'];
                             }
                         }
                     }
                 }
 
-                foreach ($nbvisits as $visit) {
+                foreach ($nbVisits as $visit) {
                     array_push($source->statistics, $visit);
                 }
                 array_push($data->sources, $source);
@@ -138,5 +148,32 @@ trait BuildDatasetForSingleDigitalGatewayAPI
         }
 
         return $data;
+    }
+
+    /**
+     * Return validated string for device type.
+     *
+     * @param string $type the device type
+     *
+     * @return array the validated device type
+     */
+    private function getValidDeviceTypeLabel($type): string
+    {
+        /*
+        * Valid values for device type: PC, Tablet, Smartphone, Others ]
+        *
+        * Values from Matomo: desktop, smartphone, tablet, feature phone, console, tv, car browser, smart display, camera, portable media player, phablet, smart speaker, wearable
+        */
+
+        switch (strtolower($type)) {
+            case 'desktop':
+                return 'PC';
+            case 'smartphone':
+                return 'Smartphone';
+            case 'tablet':
+                return 'Tablet';
+            default:
+                return 'Others';
+        }
     }
 }
