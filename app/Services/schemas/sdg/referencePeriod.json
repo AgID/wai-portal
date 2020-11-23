@@ -6,10 +6,12 @@
   ],
   "properties": {
     "StartDate": {
+      "description": "Start date of the reference period. The format must complies with the RFC 3339 standard. E.g.:2020-12-31T23:59:59.00Z (full-dateTfull-timeZ)",
       "format": "date-time",
       "type": "string"
     },
     "EndDate": {
+      "description": "End date of the reference period. The format must complies with the RFC 3339 standard. E.g.:2020-12-31T23:59:59.00Z (full-dateTfull-timeZ)",
       "format": "date-time",
       "type": "string"
     }

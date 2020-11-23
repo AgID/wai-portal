@@ -1,5 +1,5 @@
 {
-  "description": "An object representing the statistical information for one particular source URL. Array of objects because same URL can have several combination of statistics depending on different values of Originating country or type of device.",
+  "description": "An object representing the statistical information for one particular source URL. Array of objects because same URL can have several combination of statistics depending on different values of the originating country or type of device.",
   "type": "array",
   "items": {
     "type": "object",
@@ -16,7 +16,13 @@
         "$ref": "country.json"
       },
       "deviceType": {
-        "type": "string"
+        "type": "string",
+        "enum": [
+          "PC",
+          "Tablet",
+          "Smartphone",
+          "Others"
+        ]
       }
     }
   },

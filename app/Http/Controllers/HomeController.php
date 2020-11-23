@@ -9,6 +9,7 @@ use App\Traits\GetsLocalizedYamlContent;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Arr;
 use Illuminate\View\View;
+use Ramsey\Uuid\Uuid;
 use Symfony\Component\Yaml\Yaml;
 
 class HomeController extends Controller
@@ -91,13 +92,12 @@ class HomeController extends Controller
      */
     public function showSDGDataset(): JsonResponse
     {
-        $dataset = $this->buildDatasetForSDG();
+        $dataset = $this->buildDatasetForSDGFromId(Uuid::uuid4()->toString());
 
-        /*
         $sDGService = app()->make('single-digital-gateway-service');
         $sDGService->payloadValidator($dataset);
-        die();
 
+        /*
         $sDGService = app()->make('single-digital-gateway-service');
         $sDGService->sendStatisticsInformation($dataset);
         $sDGService->savePayloadToFilesystem($dataset);
