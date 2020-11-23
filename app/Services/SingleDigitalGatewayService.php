@@ -134,7 +134,7 @@ class SingleDigitalGatewayService
 
         $currenDirectory = dirname(__FILE__);
         $validator = new \JsonSchema\Validator();
-        $validator->validate($dataSetEncoded, (object) ['$ref' => 'file://' . realpath($currenDirectory . '/schemas/informationServiceStats.json')]);
+        $validator->validate($dataSetEncoded, (object) ['$ref' => 'file://' . realpath($currenDirectory . '/schemas/sdg/informationServiceStats.json')]);
 
         if ($validator->isValid()) {
             return true;
