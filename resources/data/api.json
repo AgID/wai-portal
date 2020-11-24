@@ -1,0 +1,406 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "version": "0.0.1-SNAPSHOT",
+        "title": "WebAnalytics Italia",
+        "description": "L'Api descrivere le operazioni che le Pubbliche Amministrazioni possono fare in interoperabilità per gestire utenti e siti o le consultare alcune informazioni statistiche Le Api sono scritte utilizzando la specifica [OpenAPI 3.0](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md) termsOfService: 'http://swagger.io/terms/'\n",
+        "contact": {
+            "email": "user@email.com",
+            "name": "User Example",
+            "x-audience": ["public"],
+            "x-api-id": "f26b73c2-ec70-4e9a-b5f3-f3cc5e0b9406",
+            "servers": [
+                {
+                    "description": "Staging Server",
+                    "url": "https://staging.webanalytics.itaia.it/api"
+                },
+                {
+                    "description": "Public Play Ground Server",
+                    "url": "https://play.webanalytics.itaia.it/api"
+                },
+                {
+                    "description": "Production Server",
+                    "url": "https://webanalytics.itaia.it/api"
+                }
+            ]
+        }
+    },
+    "paths": {
+        "/api/users": {
+            "post": {
+                "tags": ["Utenti"],
+                "summary": "Creazione di un nuovo utente",
+                "operationId": "addUser",
+                "security": [
+                    { "BearerAuth": { "type": "http", "scheme": "bearer" } }
+                ],
+                "requestBody": {
+                    "description": "Dati dell'utente da creare",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AddUserRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Uri a cui recuperare l'utente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AddUserResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "get": {
+                "tags": ["Utenti"],
+                "summary": "Restituisce l'elenco degli utenti",
+                "operationId": "getUsers",
+                "security": [{ "BearerAuth": [] }],
+                "responses": {
+                    "200": {
+                        "description": "Uri a cui recuperare l'utente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserInfoObjectArray"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/users/{fn}": {
+            "parameters": [
+                { "$ref": "#/components/parameters/FiscalNumberInPath" }
+            ],
+            "get": {
+                "tags": ["Utenti"],
+                "summary": "Acquisisce le informazioni dell'utente",
+                "operationId": "getUser",
+                "security": [{ "BearerAuth": [] }],
+                "responses": {
+                    "200": {
+                        "description": "Informazioni dell'utente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserInfoObject"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "tags": ["Utenti"],
+                "summary": "Modifica i dati dell'utente",
+                "operationId": "patchUser",
+                "security": [{ "BearerAuth": [] }],
+                "requestBody": {
+                    "description": "Dati dell'utente da creare",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchUserRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Utente modificato",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserInfoObject"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": ["Utenti"],
+                "summary": "Eliminazione di un utente",
+                "operationId": "deleteUser",
+                "security": [{ "BearerAuth": [] }],
+                "responses": { "204": { "description": "Utente cancellato" } }
+            }
+        },
+        "/api/sites": {
+            "post": {
+                "tags": ["Siti"],
+                "summary": "Creazione di un sito",
+                "operationId": "addSite",
+                "security": [{ "BearerAuth": [] }],
+                "requestBody": {
+                    "description": "Dati dell'utente da creare",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AddSiteRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": null,
+                    "description": "Uri a cui recuperare il sito",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AddSiteResponse"
+                            }
+                        }
+                    }
+                }
+            },
+            "get": {
+                "tags": ["Siti"],
+                "summary": "Restituisce l'elenco dei siti associati all'amministrazione",
+                "operationId": "getSites",
+                "security": [{ "BearerAuth": [] }],
+                "responses": {
+                    "200": {
+                        "description": "Array dei siti",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SiteInfoArray"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "parameters": {
+            "SiteIdInPath": {
+                "in": "path",
+                "required": true,
+                "name": "sid",
+                "schema": {
+                    "$ref": "#/components/schemas/SiteId"
+                }
+            },
+            "FiscalNumberInPath": {
+                "in": "path",
+                "required": true,
+                "name": "fn",
+                "schema": {
+                    "$ref": "#/components/schemas/FiscalNumber"
+                }
+            }
+        },
+        "schemas": {
+            "SiteId": {
+                "type": "integer",
+                "format": "int32"
+            },
+            "SiteType": {
+                "type": "string",
+                "description": "Tipologia di sito",
+                "enum": [
+                    "site_type_1",
+                    "site_type_2",
+                    "site_type_3"
+                ]
+            },
+            "AddSiteRequest": {
+                "required": [
+                    "name",
+                    "url",
+                    "type"
+                ],
+                "properties": null,
+                "name": {
+                    "description": "Nome del sito",
+                    "type": "string",
+                    "pattern": "^(?!\\s*$).+"
+                },
+                "url": {
+                    "description": "Url del sito",
+                    "type": "string",
+                    "format": "uri"
+                },
+                "type": {
+                    "$ref": "#/components/schemas/SiteType"
+                },
+                "example": {
+                    "name": "WebAnalytics Italia",
+                    "url": "https://webanalytics.italia.it",
+                    "type": "site_type_1"
+                }
+            },
+            "AddSiteResponse": {
+                "type": "object",
+                "required": ["uri"],
+                "properties": {
+                    "uri": {
+                        "type": "string",
+                        "format": "uri"
+                    }
+                },
+                "example": {
+                    "uri": "https://webanalytics.italia.it/api/sites/25"
+                }
+            },
+            "SiteInfoArray": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/SiteInfo"
+                }
+            },
+            "SiteInfo": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/AddSiteRequest"
+                    }
+                ],
+                "type": "object",
+                "required": ["id"],
+                "properties": null,
+                "id": {
+                    "$ref": "#/components/schemas/SiteId"
+                },
+                "example": { "id": 23 }
+            },
+            "FiscalNumber": {
+                "type": "string",
+                "minLength": 16,
+                "maxLength": 16,
+                "pattern": "[A-Z0-9]{16}"
+            },
+            "AddUserRequest": {
+                "type": "object",
+                "required": [
+                    "email",
+                    "fiscalNumber"
+                ],
+                "properties": {
+                    "email": {
+                        "type": "string"
+                    },
+                    "fiscalNumber": {
+                        "$ref": "#/components/schemas/FiscalNumber"
+                    },
+                    "example": {
+                        "email": "user@email.com",
+                        "fiscalNumber": "ZRSGLC89D05H501J"
+                    }
+                }
+            },
+            "PatchUserRequest": {
+                "type": "object",
+                "required": ["fiscalNumber"],
+                "properties": {
+                    "fiscalNumber": {
+                        "$ref": "#/components/schemas/FiscalNumber"
+                    }
+                },
+                "example": {
+                    "fiscalNumber": "ZRSGLC89D05H501J"
+                }
+            },
+            "AddUserResponse": {
+                "type": "object",
+                "required": ["uri"],
+                "properties": {
+                    "uri": {
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "example": {
+                        "uri": "https://webanalytics.italia.it/api/users/ZRSGLC89D05H501J"
+                    }
+                }
+            },
+            "UserStatus": {
+                "type": "string",
+                "description": "Stato dell'utente",
+                "enum": [
+                    "activated",
+                    "not_activated"
+                ]
+            },
+            "UserInfoObjectArray": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/UserInfoObject"
+                }
+            },
+            "UserInfoObject": {
+                "type": "object",
+                "required": [
+                    "firstName",
+                    "lastName",
+                    "email",
+                    "fiscalNumber",
+                    "status",
+                    "created"
+                ],
+                "properties": {
+                    "firstName": {
+                        "type": "string",
+                        "pattern": "^(?!\\s*$).+"
+                    },
+                    "lastName": {
+                        "type": "string",
+                        "pattern": "^(?!\\s*$).+"
+                    },
+                    "email": {
+                        "type": "string",
+                        "pattern": "^(?!\\s*$).+"
+                    },
+                    "fiscalNumber": {
+                        "$ref": "#/components/schemas/FiscalNumber"
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/UserStatus"
+                    },
+                    "created": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "modified": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "lastLogin": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                }
+            },
+            "example": {
+                "firstName": "User",
+                "lastName": "Example",
+                "email": "user@email.com",
+                "fiscalNumber": "ZRSGLC89D05H501J",
+                "status": "activated",
+                "created": "2020-07-21T17:32:28Z",
+                "modified": "2020-07-22T17:32:28Z",
+                "lastLogin": "2020-07-22T17:32:28Z"
+            }
+        },
+        "securitySchemes": {
+            "BearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "GUID"
+            }
+        }
+    }
+}
