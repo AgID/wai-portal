@@ -179,6 +179,7 @@ class UserController extends Controller
             'userSuspendUrl' => 'users.suspend',
             'userReactivateUrl' => 'users.reactivate',
             'userGenerateCredentials' => 'users.generate.credentials',
+            'userSwagger' => 'show.swagger',
         ], [
             'user' => $user,
         ], $publicAdministration);

@@ -195,6 +195,7 @@
                 <span>{{ $userClientSecret }}</span>
             </div>
         </div>
+
         @else
         <div class="mt-4 text-center text-sm-left">
             @component('layouts.components.link_button', [
@@ -207,7 +208,18 @@
         </div>
         @endif
     </div>
+    @if($userHasCredentials)
+        <div class="mt-4 text-center text-sm-left">
+            @component('layouts.components.link_button', [
+                'link' => $userSwagger,
+                'size' => 'lg',
+            ])
+            {{ ucfirst(__('Visualizza Swagger')) }}
+            @endcomponent
+        </div>
+    @endif
     @endcomponent
+
     @endcan
     </div>
 @endsection
