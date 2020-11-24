@@ -8,7 +8,6 @@ use App\Enums\UserStatus;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Date;
-use Illuminate\Support\Facades\Event;
 use Silber\Bouncer\BouncerFacade as Bouncer;
 use Tests\TestCase;
 
@@ -32,7 +31,6 @@ class SingleDigitalGatewayTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        Event::fake();
         $this->user = factory(User::class)->create([
             'status' => UserStatus::ACTIVE,
             'email_verified_at' => Date::now(),
@@ -47,25 +45,12 @@ class SingleDigitalGatewayTest extends TestCase
     }
 
     /**
-     * Test password reset email send successful.
+     * Test payload generation.
      */
     public function testPayloadGeneration(): void
     {
         $this->actingAs($this->user)
             ->json('GET', route('admin.sdg.dataset.show'))
             ->assertOk();
-
-        /*
-        $this->expectLogMessage(
-            'notice',
-            [
-                'Single Digital Gateway Service Json schema validation',
-                [
-                    'message' => 'Payload is valid',
-                    'a' => 'b',
-                ],
-            ]
-        );
-        */
     }
 }

@@ -22,7 +22,7 @@ trait BuildDatasetForSingleDigitalGatewayAPI
      *
      * @return object the dataset
      */
-    public function buildDatasetForSDG(): object
+    public function buildDatasetForSDG()
     {
         $sDGService = app()->make('single-digital-gateway-service');
 
@@ -36,7 +36,7 @@ trait BuildDatasetForSingleDigitalGatewayAPI
      *
      * @return object the dataset
      */
-    public function buildDatasetForSDGFromId($uId): object
+    public function buildDatasetForSDGFromId($uId)
     {
         $urls = $this->getUrlsFromConfig('urls');
 
