@@ -49,6 +49,12 @@ Breadcrumbs::for('analytics', function ($trail) {
     $trail->push(__('Analytics'), route('analytics'));
 });
 
+// Web Analytics Italia > Swagger
+Breadcrumbs::for('show.swagger', function ($trail) {
+    $trail->parent('home');
+    $trail->push(__('Swagger'), route('show.swagger'));
+});
+
 // Web Analytics Italia > Analytics > Logs view
 Breadcrumbs::for('logs.show', function ($trail) {
     $trail->parent('analytics');
