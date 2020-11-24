@@ -23,7 +23,7 @@ import FaqSelector from './faqSelector';
 import WidgetResizer from './widgets';
 import HighlightBar from './highlightBar';
 import Trackers from './trackers';
-
+import Swagger from './swagger'
 
 $(document).ready(() => {
     Forms.init();
@@ -38,6 +38,7 @@ $(document).ready(() => {
     WidgetResizer.init();
     HighlightBar.init();
     Trackers.init();
+    Swagger.init();
     Datatables.init([
         datatableApi => LogsDatatables.preDatatableInit(datatableApi),
     ], [
