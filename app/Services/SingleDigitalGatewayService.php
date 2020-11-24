@@ -141,7 +141,6 @@ class SingleDigitalGatewayService
                 'Single Digital Gateway Service Json schema validation',
                 [
                     'message' => 'Payload is valid',
-                    'a' => 'b',
                 ]
             );
 
