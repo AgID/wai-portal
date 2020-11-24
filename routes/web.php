@@ -190,6 +190,9 @@ Route::middleware('spid.auth', 'auth', 'verified:verification.notice')->group(fu
         Route::get('/analytics', 'AnalyticsController@index')
         ->name('analytics');
 
+        Route::get('/swagger', 'SwaggerController@index')
+            ->name('show.swagger');
+
         Route::middleware('authorize.analytics:' . UserPermission::VIEW_LOGS)->group(function () {
             Route::prefix('/logs')->group(function () {
                 Route::get('/', 'Logs\LogController@show')
