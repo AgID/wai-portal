@@ -94,12 +94,12 @@ class HomeController extends Controller
     {
         $dataset = $this->buildDatasetForSDGFromId(Uuid::uuid4()->toString());
 
-        /* $sDGService = app()->make('single-digital-gateway-service');
+        $sDGService = app()->make('single-digital-gateway-service');
         $isValid = $sDGService->payloadValidator($dataset);
 
         if (!$isValid) {
             return response()->json(['message' => 'Payload not valid.'], 400);
-        } */
+        }
 
         /*
         $sDGService = app()->make('single-digital-gateway-service');
