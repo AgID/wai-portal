@@ -462,7 +462,7 @@ Route::middleware('auth.admin', 'verified:admin.verification.notice')->group(fun
                 });
             });
 
-            Route::get('/single-digital-gateway-dataset', 'HomeController@showSDGDataset')
+            Route::get('/sdg-current-dataset', 'HomeController@showCurrentSDGDataset')
                 ->name('admin.sdg.dataset.show');
         });
 

@@ -9,7 +9,6 @@ use App\Traits\GetsLocalizedYamlContent;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Arr;
 use Illuminate\View\View;
-use Ramsey\Uuid\Uuid;
 use Symfony\Component\Yaml\Yaml;
 
 class HomeController extends Controller
@@ -90,22 +89,9 @@ class HomeController extends Controller
      *
      * @return JsonResponse
      */
-    public function showSDGDataset(): JsonResponse
+    public function showCurrentSDGDataset(): JsonResponse
     {
-        $dataset = $this->buildDatasetForSDGFromId(Uuid::uuid4()->toString());
-
-        $sDGService = app()->make('single-digital-gateway-service');
-        $isValid = $sDGService->payloadValidator($dataset);
-
-        if (!$isValid) {
-            return response()->json(['message' => 'Payload not valid.'], 400);
-        }
-
-        /*
-        $sDGService = app()->make('single-digital-gateway-service');
-        $sDGService->sendStatisticsInformation($dataset);
-        $sDGService->savePayloadToFilesystem($dataset);
-        */
+        $dataset = $this->buildDatasetForSDG();
 
         return response()->json($dataset);
     }

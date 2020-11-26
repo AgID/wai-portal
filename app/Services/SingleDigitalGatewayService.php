@@ -3,12 +3,12 @@
 namespace App\Services;
 
 use App\Enums\Logs\EventType;
-use App\Enums\Logs\ExceptionType;
-use App\Exceptions\AnalyticsServiceException;
-use App\Exceptions\CommandErrorException;
+use App\Exceptions\SDGServiceException;
+use Carbon\Carbon;
 use GuzzleHttp\Client as APIClient;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Facades\Storage;
+use JsonSchema\Validator as JsonValidator;
 
 /**
  * Matomo implementation of Analytics Service.
@@ -68,96 +68,44 @@ class SingleDigitalGatewayService
     /**
      * Send a dataset to Single Digital Gateway API for the Statistics on Information Services.
      *
-     * @param arry the dataset
+     * @param array the dataset
      *
-     * @return bool
+     * @throws SDGServiceException if passed dataset is not a valid payload
      */
-    public function sendStatisticsInformation($dataSet): bool
+    public function sendStatisticsInformation($dataset): void
     {
-        if ($this->payloadValidator($dataSet)) {
-            $this->apiCall('/statistics/information-services', 'POST', [], (array) $dataSet);
-        } else {
-            logger()->critical(
-                'Single Digital Gateway Service exception: sendStatisticsInformation',
-                [
-                    'event' => EventType::EXCEPTION,
-                    'message' => 'The payload is not valid',
-                ]
-            );
+        $uniqueId = $this->getUniqueID();
+        $dataset->uniqueId = $uniqueId;
 
-            return false;
-        }
+        $this->validatePayload($dataset);
 
-        return true;
+        $requestDatetime = Carbon::now()->format('Y-m-d_H-i-s');
+        Storage::disk($this->storageDisk)->put($this->storageFolder . "/requests/req_{$requestDatetime}.json", json_encode($dataset, JSON_PRETTY_PRINT) . PHP_EOL);
+
+        $response = $this->apiCall('/statistics/information-services', 'POST', [], (array) $dataset);
+
+        $responseDatetime = Carbon::now()->format('Y-m-d_H-i-s');
+        Storage::disk($this->storageDisk)->put($this->storageFolder . "/responses/res_{$responseDatetime}.json", json_encode(json_decode($response), JSON_PRETTY_PRINT) . PHP_EOL);
     }
 
     /**
-     * Save the payload to the filesysem.
-     *
-     * @param object the dataset
-     *
-     * @return void
-     */
-    public function savePayloadToFilesystem($dataSet): void
-    {
-        Storage::disk($this->storageDisk)->put($this->storageFolder . '/payload.json', json_encode($dataSet));
-    }
-
-    /**
-     * Get the payload from the filesysem.
-     */
-    public function getPayloadFromFilesystem()
-    {
-        return json_decode(Storage::disk($this->storageDisk)->get($this->storageFolder . '/payload.json'));
-    }
-
-    /**
-     * Check if data is a valid json.
+     * Check if data is a valid json against the information services payload schema.
      *
      * @param string the data to be validated
      *
-     * @return bool
+     * @throws SDGServiceException if passed dataset is not a valid payload
      */
-    public function payloadValidator($dataSetEncoded = null): bool
+    public function validatePayload($dataset): void
     {
-        if (!$dataSetEncoded) {
-            logger()->critical(
-                'Single Digital Gateway Service payload validator',
-                [
-                    'event' => EventType::EXCEPTION,
-                    'message' => 'The payload is empty',
-                ]
-            );
+        $validator = new JsonValidator();
+        $validator->validate($dataset, (object) ['$ref' => 'file://' . resource_path('data/sdg/schemas/informationServiceStats.json')]);
 
-            return false;
-        }
+        if (!$validator->isValid()) {
+            $validatorErrors = implode(array_map(function ($error) {
+                return (empty($error['property']) ? '' : $error['property'] . ', ') . $error['message'] . "\n";
+            }, $validator->getErrors()));
 
-        $currenDirectory = dirname(__FILE__);
-        $validator = new \JsonSchema\Validator();
-        $validator->validate($dataSetEncoded, (object) ['$ref' => 'file://' . realpath($currenDirectory . '/schemas/sdg/informationServiceStats.json')]);
-
-        if ($validator->isValid()) {
-            logger()->notice(
-                'Single Digital Gateway Service Json schema validation',
-                [
-                    'message' => 'Payload is valid',
-                ]
-            );
-
-            return true;
-        } else {
-            foreach ($validator->getErrors() as $error) {
-                logger()->critical(
-                    'Single Digital Gateway Service Json schema validation error: ' . $error['message'],
-                    [
-                        'event' => EventType::EXCEPTION,
-                        'exception_type' => ExceptionType::JSON_SCHEMA_VALIDATOR_ERROR,
-                        'exception' => $error['message'],
-                    ]
-                );
-            }
-
-            return false;
+            throw new SDGServiceException("Invalid statistics data: \n" . $validatorErrors);
         }
     }
 
@@ -168,7 +116,7 @@ class SingleDigitalGatewayService
      * @param string $method the method
      * @param array $params the request parameter
      *
-     * @throws CommandErrorException if command finishes with error status
+     * @throws SDGServiceException
      */
     protected function apiCall(string $path, string $method = 'GET', array $params = [], array $body = null)
     {
@@ -182,6 +130,7 @@ class SingleDigitalGatewayService
                 'verify' => $this->SSLVerify,
                 'json' => $body,
             ];
+
             logger()->notice(
                 'Single Digital Gateway Service api call REQUEST',
                 [
@@ -190,37 +139,30 @@ class SingleDigitalGatewayService
                     'query' => json_encode($params),
                 ]
             );
+
             $res = $client->request($method, $path, $options);
         } catch (GuzzleException $exception) {
-            logger()->critical(
-                'Single Digital Gateway Service exception: ' . $exception->getMessage(),
-                [
-                    'event' => EventType::EXCEPTION,
-                    'exception_type' => ExceptionType::SINGLE_DIGITAL_GATEWAY_GENERIC_ERROR,
-                    'exception' => $exception,
-                ]
-            );
-            throw new AnalyticsServiceException('Si è verificato un errore: ' . $exception->getMessage());
+            throw new SDGServiceException("Error during API call to SDG endpoint '{$path}': " . $exception->getMessage());
         }
 
         if (!isset($res) || is_null($res)) {
-            throw new AnalyticsServiceException('Si è verificato un errore');
+            throw new SDGServiceException("Error in the response during API call to SDG endpoint '{$path}'.");
         }
 
         if (200 != $res->getStatusCode()) {
-            throw new AnalyticsServiceException('Si è verificato un errore: ' . $res->getStatusCode());
+            throw new SDGServiceException("Error response status from API call to SDG endpoint '{$path}: '" . $res->getStatusCode());
         }
 
         $response = json_decode($res->getBody(), true);
 
         logger()->notice(
-            'Single Digital Gateway Service api call RESPONSE',
+            'Single Digital Gateway Service api call RESPONSE status code',
             [
                 'event' => EventType::SINGLE_DIGITAL_GATEWAY_API_CALL_RESPONSE,
-                'response' => json_encode($response),
+                'response' => $res->getStatusCode(),
             ]
         );
 
-        return $response ?? $res->getStatusCode();
+        return $response;
     }
 }
