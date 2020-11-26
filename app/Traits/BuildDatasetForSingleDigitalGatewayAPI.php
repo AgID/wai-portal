@@ -48,7 +48,7 @@ trait BuildDatasetForSingleDigitalGatewayAPI
                     $source = new stdClass();
                     $source->sourceUrl = $urlRow[$columnIndexUrl];
 
-                    if (!filter_var($source->sourceUrl, FILTER_VALIDATE_URL)) {
+                    if ((0 !== strpos($source->sourceUrl, 'http')) || !filter_var($source->sourceUrl, FILTER_VALIDATE_URL)) {
                         continue;
                     }
                     $source->statistics = [];
