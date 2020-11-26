@@ -5,6 +5,7 @@ namespace App\Traits;
 use App\Exceptions\AnalyticsServiceException;
 use App\Exceptions\CommandErrorException;
 use Illuminate\Contracts\Container\BindingResolutionException;
+use Illuminate\Support\Facades\Storage;
 use stdClass;
 
 /**
@@ -12,31 +13,12 @@ use stdClass;
  */
 trait BuildDatasetForSingleDigitalGatewayAPI
 {
-    public function getUrlsFromConfig($name)
-    {
-        return json_decode(file_get_contents(resource_path('data/' . $name . '.json')), true);
-    }
-
     /**
-     * Get the unique Id from the gateway and build the dataset to Single Digital Gateway API for the Statistics on Information Services.
+     * Build the dataset to Single Digital Gateway API for the Statistics on Information Services.
      *
      * @return object the dataset
      */
     public function buildDatasetForSDG()
-    {
-        $sDGService = app()->make('single-digital-gateway-service');
-
-        return $this->buildDatasetForSDGFromId($sDGService->getUniqueID());
-    }
-
-    /**
-     * Build the dataset to Single Digital Gateway API for the Statistics on Information Services.
-     *
-     * @param string $uid The unique ID
-     *
-     * @return object the dataset
-     */
-    public function buildDatasetForSDGFromId($uId)
     {
         $urls = $this->getUrlsFromConfig('urls');
 
@@ -51,7 +33,6 @@ trait BuildDatasetForSingleDigitalGatewayAPI
         $referencePeriod->endDate = config('analytics-service.end_date', date('Y-m-d\TH:i:s\Z'));
 
         $data = new stdClass();
-        $data->uniqueId = $uId;
         $data->referencePeriod = $referencePeriod;
         $data->transferDate = date('Y-m-d\TH:i:s\Z');
         $data->transferType = 'API';
@@ -143,11 +124,17 @@ trait BuildDatasetForSingleDigitalGatewayAPI
             return [
                 'failed' => [
                     'reason' => 'SDG -  Invalid command for Analytics Service',
+                    'message' => $exception->getMessage(),
                 ],
             ];
         }
 
         return $data;
+    }
+
+    protected function getUrlsFromConfig($name)
+    {
+        return json_decode(Storage::disk('persistent')->get('sdg/urls.json'), true);
     }
 
     /**
@@ -160,9 +147,10 @@ trait BuildDatasetForSingleDigitalGatewayAPI
     private function getValidDeviceTypeLabel($type): string
     {
         /*
-        * Valid values for device type: PC, Tablet, Smartphone, Others ]
+        * Valid values for device type: PC, Tablet, Smartphone, Others
         *
-        * Values from Matomo: desktop, smartphone, tablet, feature phone, console, tv, car browser, smart display, camera, portable media player, phablet, smart speaker, wearable
+        * Values from Matomo: desktop, smartphone, tablet, feature phone, console, tv, car browser, smart display,
+        * camera, portable media player, phablet, smart speaker, wearable
         */
 
         switch (strtolower($type)) {
