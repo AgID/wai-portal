@@ -20,12 +20,13 @@ trait BuildDatasetForSingleDigitalGatewayAPI
      */
     public function buildDatasetForSDG()
     {
-        $urls = $this->getUrlsFromConfig('urls');
+        $arrayUrls = $this->getUrlsFromConfig('urls');
 
         $analyticsService = app()->make('analytics-service');
 
         $days = config('single-digital-gateway-service.last_days');
-        $idSite = config('analytics-service.public_dashboard');
+        $columnIndexUrl = config('single-digital-gateway-service.url_column_index_csv');
+        $matomoRollupId = config('analytics-service.public_dashboard');
 
         date_default_timezone_set('UTC');
         $referencePeriod = new stdClass();
@@ -40,65 +41,71 @@ trait BuildDatasetForSingleDigitalGatewayAPI
         $data->sources = [];
 
         try {
-            $definedSegments = $analyticsService->getAllSegments();
+            if ($matomoRollupId) {
+                $definedSegments = $analyticsService->getAllSegments();
 
-            foreach ($urls['domains'] as $url) {
-                $source = new stdClass();
-                $source->sourceUrl = $url;
-                $source->statistics = [];
+                foreach ($arrayUrls as $urlRow) {
+                    $source = new stdClass();
+                    $source->sourceUrl = $urlRow[$columnIndexUrl];
 
-                $segmentExists = array_search($url, array_column($definedSegments, 'name'));
-
-                $segment = urlencode('pageUrl==' . $url);
-                if (false === $segmentExists) {
-                    $analyticsService->segmentAdd($idSite, $segment, $url);
-                }
-
-                $countries = $analyticsService->getCountryBySegment($idSite, $days, $segment);
-                $countriesSegmented = [];
-                $device_days_countries = [];
-
-                foreach ($countries as $country) {
-                    if (!isset($country[0])) {
+                    if (!filter_var($source->sourceUrl, FILTER_VALIDATE_URL)) {
                         continue;
                     }
+                    $source->statistics = [];
 
-                    $segmentName = $country[0]['code'] . '-' . $url;
-                    $segmentCountry = $country[0]['segment'] . ';' . $segment;
+                    $segmentExists = array_search($source->sourceUrl, array_column($definedSegments, 'name'));
 
-                    if (!in_array($segmentCountry, $countriesSegmented)) {
-                        array_push($countriesSegmented, $segmentCountry);
+                    $segment = urlencode('pageUrl==' . $source->sourceUrl);
+                    if (false === $segmentExists) {
+                        $analyticsService->segmentAdd($matomoRollupId, $segment, $source->sourceUrl);
+                    }
 
-                        $segmentExists = array_search($segmentName, array_column($definedSegments, 'name'));
-                        if (false === $segmentExists) {
-                            $analyticsService->segmentAdd($idSite, $segmentCountry, $url);
+                    $countries = $analyticsService->getCountryBySegment($matomoRollupId, $days, $segment);
+                    $countriesSegmented = [];
+                    $device_days_countries = [];
+
+                    foreach ($countries as $country) {
+                        if (!isset($country[0])) {
+                            continue;
                         }
 
-                        $device_days_countries[$country[0]['code']] = $analyticsService->getDeviceBySegment($idSite, $days, $segmentCountry);
-                    }
-                }
+                        $segmentName = $country[0]['code'] . '-' . $source->sourceUrl;
+                        $segmentCountry = $country[0]['segment'] . ';' . $segment;
 
-                $nbVisits = [];
-                foreach ($device_days_countries as $country => $device_days) {
-                    foreach ($device_days as $report_device) {
-                        foreach ($report_device as $device) {
-                            if (!isset($nbVisits[$device['label']])) {
-                                $element = new stdClass();
-                                $element->nbVisits = $device['nb_visits'];
-                                $element->originatingCountry = strtoupper($country);
-                                $element->deviceType = $this->getValidDeviceTypeLabel($device['label']);
-                                $nbVisits[$device['label']] = $element;
-                            } else {
-                                $nbVisits[$device['label']]->nbVisits += $device['nb_visits'];
+                        if (!in_array($segmentCountry, $countriesSegmented)) {
+                            array_push($countriesSegmented, $segmentCountry);
+
+                            $segmentExists = array_search($segmentName, array_column($definedSegments, 'name'));
+                            if (false === $segmentExists) {
+                                $analyticsService->segmentAdd($matomoRollupId, $segmentCountry, $source->sourceUrl);
+                            }
+
+                            $device_days_countries[$country[0]['code']] = $analyticsService->getDeviceBySegment($matomoRollupId, $days, $segmentCountry);
+                        }
+                    }
+
+                    $nbVisits = [];
+                    foreach ($device_days_countries as $country => $device_days) {
+                        foreach ($device_days as $report_device) {
+                            foreach ($report_device as $device) {
+                                if (!isset($nbVisits[$device['label']])) {
+                                    $element = new stdClass();
+                                    $element->nbVisits = $device['nb_visits'];
+                                    $element->originatingCountry = strtoupper($country);
+                                    $element->deviceType = $this->getValidDeviceTypeLabel($device['label']);
+                                    $nbVisits[$device['label']] = $element;
+                                } else {
+                                    $nbVisits[$device['label']]->nbVisits += $device['nb_visits'];
+                                }
                             }
                         }
                     }
-                }
 
-                foreach ($nbVisits as $visit) {
-                    array_push($source->statistics, $visit);
+                    foreach ($nbVisits as $visit) {
+                        array_push($source->statistics, $visit);
+                    }
+                    array_push($data->sources, $source);
                 }
-                array_push($data->sources, $source);
             }
 
             $data->nbEntries = count($data->sources);
@@ -134,7 +141,7 @@ trait BuildDatasetForSingleDigitalGatewayAPI
 
     protected function getUrlsFromConfig($name)
     {
-        return json_decode(Storage::disk('persistent')->get('sdg/urls.json'), true);
+        return array_map('str_getcsv', file(Storage::disk('persistent')->path('sdg/urls.csv')));
     }
 
     /**

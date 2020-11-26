@@ -47,10 +47,10 @@ class SingleDigitalGatewayTest extends TestCase
     /*
      * Test payload generation.
      */
-/*     public function testPayloadGeneration(): void
+    public function testPayloadGeneration(): void
     {
         $this->actingAs($this->user)
             ->json('GET', route('admin.sdg.dataset.show'))
             ->assertOk();
-    } */
+    }
 }
