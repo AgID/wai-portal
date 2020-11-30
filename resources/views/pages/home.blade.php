@@ -45,7 +45,7 @@
                             <div class="card-body">
                             <h2 class="card-title big-heading">{{ __("Cos'è") }}</h2>
                             <p class="card-text">
-                                {{ __(':app è una piattaforma che offre le statistiche in tempo reale dei visitatori di un sito della pubblica aministrazione, fornendo agli operatori dei report dettagliati.', ['app' => config('app.name')]) }}
+                                {{ __(':app è una piattaforma che offre le statistiche in tempo reale dei visitatori dei siti della Pubblica Amministrazione, fornendo agli operatori dei report dettagliati.', ['app' => config('app.name')]) }}
                             </p>
                             </div>
                         </div>
