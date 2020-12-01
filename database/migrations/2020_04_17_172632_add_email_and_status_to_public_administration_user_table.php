@@ -4,6 +4,7 @@ use App\Enums\UserStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class AddEmailAndStatusToPublicAdministrationUserTable extends Migration
@@ -20,7 +21,9 @@ class AddEmailAndStatusToPublicAdministrationUserTable extends Migration
             $table->tinyInteger('user_status')->unsigned()->default(UserStatus::INACTIVE);
         });
 
-        Artisan::call('db:seed', ['--class' => 'UpdatePublicAdministrationUser']);
+        if (DB::table('users')->count() > 0) {
+            Artisan::call('db:seed', ['--class' => 'UpdatePublicAdministrationUser']);
+        }
     }
 
     /**
