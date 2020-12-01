@@ -1,7 +1,8 @@
 # Build properties file
 # ^^^^^^^^^^^^^^^^^^^^^
 #
-# This property file is need for phing to build the project in the testing environment.
+# This property file is need for phing to build the project.
+# Adjust your settings and copy this file to env/build.properties.
 
 # PHP
 # ---
@@ -13,7 +14,6 @@ APP_CODE_PATH_CONTAINER=/var/www/html
 
 # Application
 # -----------
-APP_VERSION=testing
 APP_DEBUG=true
 APP_CLOSED_BETA_ENABLED=false
 APP_CUSTOM_PUBLIC_ADMINISTRATIONS_ENABLED=true
@@ -74,7 +74,6 @@ SPID_SP_CERTIFICATE=MIIC8DCCAdgCCQCs7kMqzjPF9DANBgkqhkiG9w0BAQsFADA6MQswCQYDVQQG
 # SPID test identity providers
 # ----------------------------
 
-SPID_TESTENV_HOSTNAME=
 SPID_TESTENV_ENABLED=
 SPID_TESTENV_ENTITY_ID=
 SPID_TESTENV_SSO=
@@ -144,7 +143,6 @@ SESSION_ENCRYPT=false
 # Leave blank/defaults if not using Redis Sentinel
 
 # Comma separated list of Redis Sentinels connection strings
-# e.g. tcp://sentinel1:26379,tcp://sentinel2:26379
 REDIS_SENTINELS=
 REDIS_SENTINEL_SET=
 
@@ -202,15 +200,6 @@ MATOMO_ROOT_PASSWORD=Password
 # Matomo super user API Key, put any MD5 hash.
 MATOMO_ROOT_APIKEY=d300edfad46f2723f0df5b5b5877033b
 
-# Matomo public dashboard user name
-MATOMO_PUBLIC_USER=viewer
-
-# Matomo public dashboard user password
-MATOMO_PUBLIC_USER_PASSWORD=ViewerPassword
-
-# Matomo public dashboard user API Key, put any MD5 hash.
-MATOMO_PUBLIC_USER_APIKEY=d300edfad46f2723f0df5b5b5877033b
-
 # Matomo version
 MATOMO_VERSION=3.14.1
 
@@ -227,22 +216,14 @@ MATOMO_PLUGIN_USERSMANAGERONLYSUPERUSER_VERSION=0.2.0
 MATOMO_PLUGIN_USERSMANAGERONLYSUPERUSER_ENABLED=0
 MATOMO_PLUGIN_TRACKERHOSTNAME_VERSION=0.1.0
 MATOMO_PLUGIN_VISITORGENERATOR_VERSION=3.1.2
-MATOMO_PLUGIN_RESETDATABASE_VERSION=0.1.0
 
 # Matomo phpredis extension version
 MATOMO_PHPREDIS_VERSION=5.1.1
 
-# Matomo public RollUp report ID is the Matomo
-# site ID for widgets in the portal public dashboard (home page);
-# if using the RollUpReporting plugin, this is
-# the site ID of the RollUp site configured to include "all" websites.
-# NOTE: requires "view" accesso for anonymous user.
-# Leave blank if not using matomo widgets in home page.
+# Matomo public RollUp report ID
 MATOMO_PUBLIC_ROLLUP_ID=
 
 # Matomo tracker hostname
-# Leave blank if not using a different hostname
-# for matomo tracking ingestion
 MATOMO_INGESTION_HOSTNAME=
 
 # Analytics Service URLs
@@ -266,13 +247,11 @@ ELASTICSEARCH_VERSION=7.6.0
 ELASTICSEARCH_USER=
 ELASTICSEARCH_PASSWORD=
 ELASTICSEARCH_HOST=elasticsearch
+ELASTICSEARCH_PORT=9200
 ELASTICSEARCH_INDEX_PREFIX=wai
 ELASTICSEARCH_INDEX_NAME=log
 ELASTICSEARCH_SEARCH_TEMPLATE_NAME=log_search
 ELASTICSEARCH_IGNORE_EXCEPTIONS=false
-
-KIBANA_VERSION=7.6.0
-KIBANA_PORT=5601
 
 # Debugging
 # ---------
