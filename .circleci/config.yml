@@ -120,7 +120,6 @@ jobs:
   build_and_test:
     docker:
       - image: circleci/php:7.4-cli
-    resource_class: medium+
     environment:
       APP_ENV: "testing"
     steps:
