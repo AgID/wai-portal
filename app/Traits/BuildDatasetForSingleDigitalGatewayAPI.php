@@ -51,16 +51,24 @@ trait BuildDatasetForSingleDigitalGatewayAPI
                     if ((0 !== strpos($source->sourceUrl, 'http')) || !filter_var($source->sourceUrl, FILTER_VALIDATE_URL)) {
                         continue;
                     }
-                    $source->statistics = [];
 
+                    $siteId = $analyticsService->getSitesIdFromUrl($this->getFQDNFromUrl($source->sourceUrl));
+
+                    if ($siteId && $siteId[0]) {
+                        $siteId = $siteId[0]['idsite'];
+                    } else {
+                        continue;
+                    }
+
+                    $source->statistics = [];
                     $segmentExists = array_search($source->sourceUrl, array_column($definedSegments, 'name'));
 
                     $segment = urlencode('pageUrl==' . $source->sourceUrl);
                     if (false === $segmentExists) {
-                        $analyticsService->segmentAdd($matomoRollupId, $segment, $source->sourceUrl);
+                        $analyticsService->segmentAdd($siteId, $segment, $source->sourceUrl);
                     }
 
-                    $countries = $analyticsService->getCountryBySegment($matomoRollupId, $days, $segment);
+                    $countries = $analyticsService->getCountryBySegment($siteId, $days, $segment);
                     $countriesSegmented = [];
                     $device_days_countries = [];
 
@@ -77,10 +85,10 @@ trait BuildDatasetForSingleDigitalGatewayAPI
 
                             $segmentExists = array_search($segmentName, array_column($definedSegments, 'name'));
                             if (false === $segmentExists) {
-                                $analyticsService->segmentAdd($matomoRollupId, $segmentCountry, $source->sourceUrl);
+                                $analyticsService->segmentAdd($siteId, $segmentCountry, $source->sourceUrl);
                             }
 
-                            $device_days_countries[$country[0]['code']] = $analyticsService->getDeviceBySegment($matomoRollupId, $days, $segmentCountry);
+                            $device_days_countries[$country[0]['code']] = $analyticsService->getDeviceBySegment($siteId, $days, $segmentCountry);
                         }
                     }
 
@@ -170,5 +178,12 @@ trait BuildDatasetForSingleDigitalGatewayAPI
             default:
                 return 'Others';
         }
+    }
+
+    private function getFQDNFromUrl($url)
+    {
+        $urlParts = parse_url($url);
+
+        return $urlParts['scheme'] . '://' . $urlParts['host'];
     }
 }

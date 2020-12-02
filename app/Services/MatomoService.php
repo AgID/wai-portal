@@ -154,6 +154,27 @@ class MatomoService implements AnalyticsServiceContract
     }
 
     /**
+     * Get the id of the site with this url in the Analytics Service.
+     *
+     * @param string $siteUrl the site url of the website
+     *
+     * @throws AnalyticsServiceException if unable to connect the Analytics Service
+     * @throws CommandErrorException if command is unsuccessful
+     *
+     * @return array all the ids of all the sites
+     */
+    public function getSitesIdFromUrl($siteUrl): array
+    {
+        $params = [
+            'method' => 'SitesManager.getSitesIdFromSiteUrl',
+            'token_auth' => $this->tokenAuth,
+            'url' => $siteUrl,
+        ];
+
+        return $this->apiCall($params);
+    }
+
+    /**
      * Change archive status in the Analytics Service.
      *
      * @param string $idSites the Analytics Service website ID
