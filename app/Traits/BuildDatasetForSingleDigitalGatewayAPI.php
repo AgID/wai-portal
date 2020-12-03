@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use App\Exceptions\AnalyticsServiceException;
 use App\Exceptions\CommandErrorException;
+use App\Exceptions\SDGServiceException;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Support\Facades\Storage;
 use stdClass;
@@ -46,10 +47,14 @@ trait BuildDatasetForSingleDigitalGatewayAPI
 
                 foreach ($arrayUrls as $urlRow) {
                     $source = new stdClass();
+                    if (!isset($urlRow[$columnIndexUrl])) {
+                        throw new SDGServiceException('Error during dataset build: CSV file not well formed.');
+                    }
+
                     $source->sourceUrl = $urlRow[$columnIndexUrl];
 
                     if ((0 !== strpos($source->sourceUrl, 'http')) || !filter_var($source->sourceUrl, FILTER_VALIDATE_URL)) {
-                        continue;
+                        throw new SDGServiceException("Error during dataset build: {$source->sourceUrl} is not a valid url.");
                     }
 
                     $siteId = $analyticsService->getSitesIdFromUrl($this->getFQDNFromUrl($source->sourceUrl));
@@ -57,7 +62,7 @@ trait BuildDatasetForSingleDigitalGatewayAPI
                     if ($siteId && $siteId[0]) {
                         $siteId = $siteId[0]['idsite'];
                     } else {
-                        continue;
+                        throw new SDGServiceException("Error during dataset build: Site not found for {$source->sourceUrl} url.");
                     }
 
                     $source->statistics = [];
