@@ -5,7 +5,6 @@ namespace App\Providers;
 use App\Extensions\AppUserProvider;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Auth;
-use Laravel\Passport\Passport;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -30,8 +29,5 @@ class AuthServiceProvider extends ServiceProvider
         Auth::provider('app', function ($app, array $config) {
             return new AppUserProvider($app['hash'], $config['model']);
         });
-
-        Passport::routes();
-        Passport::tokensExpireIn(now()->addDays(7));
     }
 }

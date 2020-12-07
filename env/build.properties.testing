@@ -284,3 +284,7 @@ XDEBUG_IDEKEY=
 # check the IP address of docker0 and adjust DOCKER_HOST_IP value
 # in your env-containers-* file to use dockerhost, if Docker host is Linux OS.
 XDEBUG_REMOTE_HOST=host.docker.internal
+
+# Kong Service 
+# ----------------------
+KONG_ENDPOINT_URL=
