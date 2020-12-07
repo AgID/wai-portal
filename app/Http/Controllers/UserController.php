@@ -28,8 +28,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Validation\Validator;
 use Illuminate\View\View;
-use Laravel\Passport\Client;
-use Laravel\Passport\ClientRepository;
 use Ramsey\Uuid\Uuid;
 use Silber\Bouncer\BouncerFacade as Bouncer;
 use Yajra\DataTables\DataTables;
@@ -133,7 +131,6 @@ class UserController extends Controller
     public function storeJson(StoreUserRequest $request, PublicAdministration $publicAdministration): JsonResponse
     {
         $data = $this->storeMethod($request, $publicAdministration, true);
-
         if (true === $data['error']) {
             return response()->json([
                 'title' => $data['title'],
@@ -170,8 +167,6 @@ class UserController extends Controller
         $publicAdministration = ($publicAdministration->id ?? false) ? $publicAdministration : current_public_administration();
         $publicAdministrationUser = $user->publicAdministrationsWithSuspended()->where('public_administration_id', $publicAdministration->id)->first();
         $userPublicAdministrationStatus = UserStatus::fromValue(intval($publicAdministrationUser->pivot->user_status));
-
-        $clientId = $clientSecret = 0;
 
         $roleAwareUrls = $this->getRoleAwareUrlArray([
             'userEditUrl' => 'users.edit',
@@ -343,6 +338,24 @@ class UserController extends Controller
         return response()->json($deleteUser, 200);
     }
 
+    public function suspendApi(Request $request): JsonResponse
+    {
+        $user = $this->getUserFromFiscalNumber($request);
+        $publicAdministration = get_public_administration_from_token();
+        $suspendUser = $this->suspend($request, $publicAdministration, $user);
+
+        return response()->json($suspendUser, 200);
+    }
+
+    public function reactivateApi(Request $request): JsonResponse
+    {
+        $user = $this->getUserFromFiscalNumber($request);
+        $publicAdministration = get_public_administration_from_token();
+        $reactivateUser = $this->reactivate($publicAdministration, $user);
+
+        return response()->json($reactivateUser, 200);
+    }
+
     /**
      * Suspend an existing user.
      *
@@ -375,7 +388,7 @@ class UserController extends Controller
             }
 
             //NOTE: super admin are allowed to suspend the last active administrator of a public administration
-            if (auth()->user()->cannot(UserPermission::ACCESS_ADMIN_AREA)) {
+            if (null !== auth()->user() && auth()->user()->cannot(UserPermission::ACCESS_ADMIN_AREA)) {
                 $validator = validator(request()->all())->after([$this, 'validateNotLastActiveAdministrator']);
                 if ($validator->fails()) {
                     throw new OperationNotAllowedException($validator->errors()->first('is_admin'));
@@ -549,20 +562,6 @@ class UserController extends Controller
         ];
     }
 
-    /*  public function apiData(Request $request)
-     {
-         $user = 123; //auth()->user();
-         $pubblicAmm = 123; // $user->publicAdministrationsWithSuspended()->first();
-         $publicAdministration = get_public_administration_from_token();
-
-         return response()->json([
-             'test api' => $user,
-             'test 2' => get_public_administration_from_token(),
-             'user' => get_user_from_token(),
-             'tenant_id' =>
-         ], 200);
-     } */
-
     /**
      * Create a new user.
      *
@@ -578,7 +577,7 @@ class UserController extends Controller
         $authUser = auth()->user();
         $validatedData = $request->validated();
 
-        if (isset($authUser)) {
+        if (null !== $authUser) {
             $currentPublicAdministration = $authUser->can(UserPermission::ACCESS_ADMIN_AREA)
                 ? $publicAdministration
                 : current_public_administration();
