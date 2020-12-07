@@ -179,47 +179,6 @@
     @endcomponent
     </div>
     @endcomponent
-    @component('layouts.components.box', ['classes' => 'mt-0'])
-    <h4 class="text-uppercase mb-5">{{ __('credenziali per accesso api') }}</h4>
-    <div class="box-section lightgrey-bg-a1 my-4 py-5">
-        @if($userHasCredentials)
-        <h5 class="section-header ">{{ __('client id') }}</h5>
-        <div class="row mb-4">
-            <div class="col-md-8 d-flex align-items-center">
-                <span>{{ $userClientId }}</span>
-            </div>
-        </div>
-        <h5 class="section-header ">{{ __('client secret') }}</h5>
-        <div class="row mb-4">
-            <div class="col-md-8 d-flex align-items-center">
-                <span>{{ $userClientSecret }}</span>
-            </div>
-        </div>
-
-        @else
-        <div class="mt-4 text-center text-sm-left">
-            @component('layouts.components.link_button', [
-                'icon' => 'it-key',
-                'link' => $userGenerateCredentials,
-                'size' => 'lg',
-            ])
-            {{ ucfirst(__('genera')) }}
-            @endcomponent
-        </div>
-        @endif
-    </div>
-    @if($userHasCredentials)
-        <div class="mt-4 text-center text-sm-left">
-            @component('layouts.components.link_button', [
-                'link' => $userSwagger,
-                'size' => 'lg',
-            ])
-            {{ ucfirst(__('Visualizza Swagger')) }}
-            @endcomponent
-        </div>
-    @endif
-    @endcomponent
-
     @endcan
     </div>
 @endsection
