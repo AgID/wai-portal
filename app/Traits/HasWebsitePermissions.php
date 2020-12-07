@@ -22,7 +22,7 @@ trait HasWebsitePermissions
      */
     public function setNoAccessForWebsite(Website $website): void
     {
-        if (empty(request()->route('publicAdministration'))) {
+        if (empty(request()->route('publicAdministration')) && empty(request()->get('publicAdministration'))) {
             $this->ensurePermissionScopeIsSet();
         }
         Bouncer::allow($this)->to(UserPermission::NO_ACCESS, $website);
@@ -43,7 +43,7 @@ trait HasWebsitePermissions
      */
     public function setViewAccessForWebsite(Website $website): void
     {
-        if (empty(request()->route('publicAdministration'))) {
+        if (empty(request()->route('publicAdministration')) && empty(request()->get('publicAdministration'))) {
             $this->ensurePermissionScopeIsSet();
         }
         Bouncer::allow($this)->to(UserPermission::READ_ANALYTICS, $website);
@@ -64,7 +64,7 @@ trait HasWebsitePermissions
      */
     public function setWriteAccessForWebsite(Website $website): void
     {
-        if (empty(request()->route('publicAdministration'))) {
+        if (empty(request()->route('publicAdministration')) && empty(request()->get('publicAdministration'))) {
             $this->ensurePermissionScopeIsSet();
         }
         Bouncer::allow($this)->to(UserPermission::READ_ANALYTICS, $website);
@@ -88,8 +88,12 @@ trait HasWebsitePermissions
     public function syncWebsitesPermissionsToAnalyticsService(?PublicAdministration $publicAdministration = null): void
     {
         if (!isset($publicAdministration)) {
-            $this->ensurePermissionScopeIsSet();
-            $publicAdministration = PublicAdministration::find(session('tenant_id'));
+            if (!empty(request()->get('publicAdministration'))) {
+                $publicAdministration = get_public_administration_from_token();
+            } else {
+                $this->ensurePermissionScopeIsSet();
+                $publicAdministration = PublicAdministration::find(session('tenant_id'));
+            }
         }
 
         $publicAdministration->websites()->get()->map(function ($website) {

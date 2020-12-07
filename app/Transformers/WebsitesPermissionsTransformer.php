@@ -29,7 +29,9 @@ class WebsitesPermissionsTransformer extends TransformerAbstract
         return Bouncer::scope()->onceTo($publicAdministration->id, function () use ($website, $websiteUrlLink) {
             $user = request()->route('user');
             $readOnly = request()->has('readOnly');
+            $editKeyPermissions = request()->has('editKeyPermissions');
             $oldPermissions = request()->query('oldPermissions');
+            $oldKeyPermission = request()->query('oldKeyPermissions');
             $canRead = !is_array($oldPermissions) && optional($user)->can(UserPermission::READ_ANALYTICS, $website);
             $canManage = !is_array($oldPermissions) && optional($user)->can(UserPermission::MANAGE_ANALYTICS, $website);
 
@@ -51,40 +53,64 @@ class WebsitesPermissionsTransformer extends TransformerAbstract
                 ],
             ];
 
-            if ($readOnly) {
-                $data['icons'] = [
-                    [
-                        'icon' => $canRead ? 'it-check-circle' : 'it-close-circle',
-                        'color' => $canRead ? 'success' : 'danger',
-                        'label' => UserPermission::getDescription(UserPermission::READ_ANALYTICS),
-                    ],
-                    [
-                        'icon' => $canManage ? 'it-check-circle' : 'it-close-circle',
-                        'color' => $canManage ? 'success' : 'danger',
-                        'label' => UserPermission::getDescription(UserPermission::MANAGE_ANALYTICS),
-                    ],
-                ];
+            if ($editKeyPermissions) {
+                if ($readOnly) {
+                    $data['icons'] = [
+                        [
+                            'icon' => 'it-check-circle',
+                            'color' => 'success',
+                            'label' => 'Gestione Sito',
+                        ],
+                    ];
+                } else {
+                    $data['toggles'] = [
+                        [
+                            'name' => 'permissions[' . $website->id . '][]',
+                            'value' => 'editPermission',
+                            'label' => 'Gestione Sito',
+                            'checked' => in_array($website->id, $oldKeyPermission ?? []),
+                            'dataAttributes' => [
+                                'entity' => $website->id,
+                            ],
+                        ],
+                    ];
+                }
             } else {
-                $data['toggles'] = [
-                    [
-                        'name' => 'permissions[' . $website->id . '][]',
-                        'value' => UserPermission::READ_ANALYTICS,
-                        'label' => UserPermission::getDescription(UserPermission::READ_ANALYTICS),
-                        'checked' => in_array(UserPermission::READ_ANALYTICS, $oldPermissions[$website->id] ?? []) || $canRead,
-                        'dataAttributes' => [
-                            'entity' => $website->id,
+                if ($readOnly) {
+                    $data['icons'] = [
+                        [
+                            'icon' => $canRead ? 'it-check-circle' : 'it-close-circle',
+                            'color' => $canRead ? 'success' : 'danger',
+                            'label' => UserPermission::getDescription(UserPermission::READ_ANALYTICS),
                         ],
-                    ],
-                    [
-                        'name' => 'permissions[' . $website->id . '][]',
-                        'value' => UserPermission::MANAGE_ANALYTICS,
-                        'label' => UserPermission::getDescription(UserPermission::MANAGE_ANALYTICS),
-                        'checked' => in_array(UserPermission::MANAGE_ANALYTICS, $oldPermissions[$website->id] ?? []) || $canManage,
-                        'dataAttributes' => [
-                            'entity' => $website->id,
+                        [
+                            'icon' => $canManage ? 'it-check-circle' : 'it-close-circle',
+                            'color' => $canManage ? 'success' : 'danger',
+                            'label' => UserPermission::getDescription(UserPermission::MANAGE_ANALYTICS),
                         ],
-                    ],
-                ];
+                    ];
+                } else {
+                    $data['toggles'] = [
+                        [
+                            'name' => 'permissions[' . $website->id . '][]',
+                            'value' => UserPermission::READ_ANALYTICS,
+                            'label' => UserPermission::getDescription(UserPermission::READ_ANALYTICS),
+                            'checked' => in_array(UserPermission::READ_ANALYTICS, $oldPermissions[$website->id] ?? []) || $canRead,
+                            'dataAttributes' => [
+                                'entity' => $website->id,
+                            ],
+                        ],
+                        [
+                            'name' => 'permissions[' . $website->id . '][]',
+                            'value' => UserPermission::MANAGE_ANALYTICS,
+                            'label' => UserPermission::getDescription(UserPermission::MANAGE_ANALYTICS),
+                            'checked' => in_array(UserPermission::MANAGE_ANALYTICS, $oldPermissions[$website->id] ?? []) || $canManage,
+                            'dataAttributes' => [
+                                'entity' => $website->id,
+                            ],
+                        ],
+                    ];
+                }
             }
 
             return $data;
