@@ -191,7 +191,39 @@ Route::middleware('spid.auth', 'auth', 'verified:verification.notice')->group(fu
         ->name('analytics');
 
         Route::get('/swagger', 'SwaggerController@index')
-            ->name('show.swagger');
+        ->name('show.swagger');
+
+        Route::prefix('/api-key')->group(function () {
+            Route::get('/', 'KeysController@index')
+            ->name('api-key.index');
+
+            Route::get('/create', 'KeysController@create')
+            ->name('api-key.create');
+
+            Route::post('/store', 'KeysController@store')
+            ->name('api-key.store');
+
+            Route::get('/data', 'KeysController@dataJson')
+            ->name('api-key.data.json');
+
+            Route::get('/data/permissions/', 'KeysController@makeKeyWebsitesPermissionsJson')
+            ->name('api-key.websites.permissions.make');
+
+            Route::get('/data/permissions/show/{key}', 'KeysController@showDataKeyWebsitesPermissionsJson')
+            ->name('api-key.websites.permissions');
+
+            Route::get('/{key}/show', 'KeysController@show')
+            ->name('api-key.show');
+
+            Route::get('/{key}/edit', 'KeysController@edit')
+            ->name('api-key.edit');
+
+            Route::put('/{key}', 'KeysController@update')
+            ->name('api-key.update');
+
+            Route::get('/{key}/delete', 'KeysController@delete')
+            ->name('api-key.delete');
+        });
 
         Route::middleware('authorize.analytics:' . UserPermission::VIEW_LOGS)->group(function () {
             Route::prefix('/logs')->group(function () {
