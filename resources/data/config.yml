@@ -42,6 +42,8 @@ it:
         #   route: open-data
         - name: FAQ
           route: faq
+        - name: API
+          route: show.swagger
 
     slim_header_links:
       - name: Piano triennale
