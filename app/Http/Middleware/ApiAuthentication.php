@@ -2,9 +2,9 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Key;
 use Closure;
 use Illuminate\Session\Middleware\StartSession;
-use Silber\Bouncer\BouncerFacade as Bouncer;
 
 class ApiAuthentication extends StartSession
 {
@@ -18,11 +18,40 @@ class ApiAuthentication extends StartSession
      */
     public function handle($request, Closure $next)
     {
-        $publicAdministration = get_public_administration_from_token();
+        $consumerId = $request->header('X-Consumer-Id');
 
-        session()->put('tenant_id', $publicAdministration->id);
-        Bouncer::scope()->to($publicAdministration->id);
+        if (null === $consumerId) {
+            return response()->json($this->jsonError(), 403);
+        }
+        $keys = new Key();
+        $selectKey = $keys->getKeyFromConsumerId($consumerId);
+        $publicAdministration = $selectKey->publicAdministration()->first();
+
+        $request->attributes->add(['publicAdministration' => $publicAdministration]);
+
+        $website = $request->route()->parameter('website');
+
+        if (null !== $website) {
+            if (null !== $request->header('X-Consumer-Custom-Id')) {
+                $keyCustomId = $request->header('X-Consumer-Custom-Id');
+                $allowedId = explode(',', $keyCustomId);
+                if (!in_array($website->id, $allowedId)) {
+                    return response()->json($this->jsonError(), 403);
+                }
+            } else {
+                return response()->json($this->jsonError(), 403);
+            }
+        }
 
         return $next($request);
+    }
+
+    protected function jsonError()
+    {
+        return [
+            'title' => 'insufficient permission',
+            'message' => 'You\'re not allowed to carry out this action',
+            'type' => 'insufficient_permission',
+        ];
     }
 }
