@@ -2,7 +2,6 @@
 
 use App\Models\PublicAdministration;
 use App\Models\User;
-use Lcobucci\JWT\Parser;
 
 if (!function_exists('current_public_administration')) {
     /**
@@ -22,37 +21,14 @@ if (!function_exists('current_public_administration')) {
         return null;
     }
 }
-if (!function_exists('get_client_id_from_token')) {
-    function get_client_id_from_token(): ?string
-    {
-        $bearerToken = request()->bearerToken();
-        $clientId = (new Parser())->parse($bearerToken)->getClaim('aud');
-
-        return $clientId;
-    }
-}
 if (!function_exists('get_public_administration_from_token')) {
     function get_public_administration_from_token(): ?PublicAdministration
     {
-        $clientId = get_client_id_from_token();
+        $ipaCode = request()->get('publicAdministration')['ipa_code'];
+        $publicAdministration = new PublicAdministration();
+        $currentPublicAdministration = $publicAdministration->findByIpaCode($ipaCode);
 
-        $publicAdministration = PublicAdministration::whereHas('users', function ($q) use ($clientId) {
-            $q->where('api_client_id', $clientId);
-        })->firstOrFail();
-
-        return $publicAdministration;
-    }
-}
-if (!function_exists('get_user_from_token')) {
-    function get_user_from_token(): ?User
-    {
-        $clientId = get_client_id_from_token();
-
-        $user = User::whereHas('publicAdministrations', function ($q) use ($clientId) {
-            $q->where('api_client_id', $clientId);
-        })->firstOrFail();
-
-        return $user;
+        return $currentPublicAdministration;
     }
 }
 if (!function_exists('get_user_from_fiscalnumber')) {
