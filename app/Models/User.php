@@ -19,7 +19,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
-use Laravel\Passport\HasApiTokens;
 use Silber\Bouncer\Database\HasRolesAndAbilities;
 
 /**
@@ -34,7 +33,6 @@ class User extends Authenticatable implements MustVerifyEmail
     use HasAnalyticsServiceAccount;
     use SendsNotificationsToUser;
     use SoftDeletes;
-    use HasApiTokens;
 
     /**
      * The attributes that are mass assignable.
@@ -173,7 +171,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function publicAdministrationsWithSuspended(): BelongsToMany
     {
-        return $this->belongsToMany(PublicAdministration::class)->withPivot('user_status')->withPivot('user_email')->withPivot('api_client_id');
+        return $this->belongsToMany(PublicAdministration::class)->withPivot('user_status')->withPivot('user_email');
     }
 
     /**

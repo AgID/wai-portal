@@ -198,4 +198,9 @@ class PublicAdministration extends Model
             return User::whereIs(UserRole::DELEGATED)->get();
         });
     }
+
+    public function keys()
+    {
+        return $this->hasMany(Key::class);
+    }
 }
