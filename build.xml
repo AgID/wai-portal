@@ -148,6 +148,7 @@
                     <token key="MATOMO_PLUGIN_TRACKERHOSTNAME_VERSION" value="${MATOMO_PLUGIN_TRACKERHOSTNAME_VERSION}" />
                     <token key="MATOMO_PLUGIN_RESETDATABASE_VERSION" value="${MATOMO_PLUGIN_RESETDATABASE_VERSION}" />
                     <token key="MATOMO_INGESTION_HOSTNAME" value="${MATOMO_INGESTION_HOSTNAME}" />
+                    <token key="KONG_ENDPOINT_URL" value="${KONG_ENDPOINT_URL}" />
                 </replacetokens>
             </filterchain>
         </copy>
@@ -407,7 +408,6 @@
         <!-- Run migrations -->
         <echo msg="Running database migrations..."/>
         <exec command="docker-compose exec -u www-data php-fpm php artisan migrate" dir="containers" passthru="true" checkreturn="true"/>
-        <exec command="docker-compose exec -u www-data php-fpm php artisan passport:install" dir="containers" passthru="true" checkreturn="true"/>
         <!-- Create roles -->
         <exec command="docker-compose exec mariadb mysql -u root -p${MARIADB_ROOT_PASSWORD} ${MARIADB_DATABASE} -e 'select * from abilities where id=1'" dir="containers" outputProperty="checkRoles"/>
         <if>

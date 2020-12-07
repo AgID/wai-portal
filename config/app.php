@@ -195,6 +195,7 @@ return [
         /*
          * Application Service Providers...
          */
+        App\Providers\KongClientProvider::class,
         App\Providers\AnalyticsServiceProvider::class,
         App\Providers\SDGServiceProvider::class,
         App\Providers\AppServiceProvider::class,
