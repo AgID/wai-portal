@@ -98,7 +98,7 @@ class StoreUserRequest extends FormRequest
     {
         $current_public_administration = current_public_administration();
 
-        if (!auth()->user()->isA(UserRole::SUPER_ADMIN) && (null === $current_public_administration)) {
+        if (null === auth()->user() || (!auth()->user()->isA(UserRole::SUPER_ADMIN) && (null === $current_public_administration))) {
             $current_public_administration = get_public_administration_from_token();
         }
 
