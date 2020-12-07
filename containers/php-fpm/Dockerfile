@@ -29,7 +29,8 @@ ARG ENV=local
 ARG CHROME_BROWSER_CHANNEL=stable
 RUN if [ "env-${ENV}" = "env-local" ] || [ "env-${ENV}" = "env-testing" ]; then \
     apt-get update \
-    && apt-get -y --no-install-recommends install apt-utils wget unzip libnss3 libgconf-2-4 xdg-utils hicolor-icon-theme \
+    && apt-get -y --no-install-recommends install apt-utils wget unzip libnss3 libgconf-2-4 xdg-utils hicolor-icon-theme gnupg \
+    && wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add - \
     && chrome_version=`wget -qO- http://omahaproxy.appspot.com/history | awk -v CHANNEL="$CHROME_BROWSER_CHANNEL" -F [,\.] '$1 == "linux" && $2 == CHANNEL {print $3"."$4"."$5}' | head -1` \
     && wget https://dl.google.com/linux/direct/google-chrome-${CHROME_BROWSER_CHANNEL}_current_amd64.deb \
     && dpkg -i --force-depends google-chrome-${CHROME_BROWSER_CHANNEL}_current_amd64.deb \
