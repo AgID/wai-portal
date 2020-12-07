@@ -170,8 +170,10 @@ class WebsiteController extends Controller
         ]);
     }
 
-    public function storeApi(StoreWebsiteRequest $request, PublicAdministration $publicAdministration): JsonResponse
+    public function storeApi(StoreWebsiteRequest $request): JsonResponse
     {
+        $publicAdministration = get_public_administration_from_token();
+
         $response = $this->storeMethod($request, $publicAdministration);
 
         return response()->json($response, 200);
@@ -273,8 +275,10 @@ class WebsiteController extends Controller
         ]);
     }
 
-    public function updateApi(UpdateWebsiteRequest $request, PublicAdministration $publicAdministration, Website $website): JsonResponse
+    public function updateApi(UpdateWebsiteRequest $request, Website $website): JsonResponse
     {
+        $publicAdministration = get_public_administration_from_token();
+
         $response = $this->updateMethod($request, $publicAdministration, $website);
 
         return response()->json([
@@ -445,6 +449,20 @@ class WebsiteController extends Controller
         return $this->errorResponse($message, $code, $httpStatusCode);
     }
 
+    public function forceActivationApi(Website $website)
+    {
+        $publicAdministration = get_public_administration_from_token();
+
+        return $this->forceActivation($publicAdministration, $website);
+    }
+
+    public function archiveApi(Website $website)
+    {
+        $publicAdministration = get_public_administration_from_token();
+
+        return $this->archive($publicAdministration, $website);
+    }
+
     /**
      * Archive website request.
      * Only active and not primary type websites can be archived.
@@ -557,6 +575,13 @@ class WebsiteController extends Controller
         return $this->errorResponse($message, $code, $httpStatusCode);
     }
 
+    public function unarchiveApi(Website $website)
+    {
+        $publicAdministration = get_public_administration_from_token();
+
+        return $this->unarchive($publicAdministration, $website);
+    }
+
     /**
      * Get Javascript snippet for a website.
      *
@@ -610,10 +635,21 @@ class WebsiteController extends Controller
             ->make(true);
     }
 
-    public function dataApi(): JsonResponse
+    public function dataApi(Request $request): JsonResponse
     {
         $publicAdministration = get_public_administration_from_token();
         $websites = $publicAdministration->websites()->get()->toArray();
+
+        return response()->json($websites, 200);
+    }
+
+    public function websiteList(Request $request): JsonResponse
+    {
+        $publicAdministration = PublicAdministration::find($request->id);
+        $websites = $publicAdministration->websites()->get()->toArray();
+        $websites = array_map(function ($elem) {
+            return $elem['url'];
+        }, $websites);
 
         return response()->json($websites, 200);
     }
@@ -679,7 +715,7 @@ class WebsiteController extends Controller
     {
         $validatedData = $request->validated();
         $user = auth()->user();
-        if (isset($user)) {
+        if (null !== $user) {
             $currentPublicAdministration = $user->can(UserPermission::ACCESS_ADMIN_AREA)
                 ? $publicAdministration
                 : current_public_administration();
@@ -698,9 +734,10 @@ class WebsiteController extends Controller
             'slug' => Str::slug($validatedData['url']),
             'status' => WebsiteStatus::PENDING,
         ]);
-        $authUser = auth()->user();
-        $user = isset($authUser) ? $authUser : get_user_from_token();
-        event(new WebsiteAdded($website, $user));
+
+        if (null !== $user) {
+            event(new WebsiteAdded($website, $user));
+        }
 
         $currentPublicAdministration->getAdministrators()->map(function ($administrator) use ($website, $currentPublicAdministration) {
             $administrator->setWriteAccessForWebsite($website);
@@ -717,15 +754,15 @@ class WebsiteController extends Controller
     protected function updateMethod(UpdateWebsiteRequest $request, PublicAdministration $publicAdministration, Website $website)
     {
         $validatedData = $request->validated();
-        $authUser = auth()->user();
-        $user = isset($authUser) ? $authUser : get_user_from_token();
 
-        $currentPublicAdministration = $user->can(UserPermission::ACCESS_ADMIN_AREA)
-            ? $publicAdministration
-            : current_public_administration();
-        $currentPublicAdministration = isset($currentPublicAdministration)
-            ? $currentPublicAdministration
-            : get_public_administration_from_token();
+        $user = auth()->user();
+        if (null !== $user) {
+            $currentPublicAdministration = $user->can(UserPermission::ACCESS_ADMIN_AREA)
+                ? $publicAdministration
+                : current_public_administration();
+        } elseif (null !== $request->get('publicAdministration')) {
+            $currentPublicAdministration = get_public_administration_from_token();
+        }
 
         if (!$website->type->is(WebsiteType::INSTITUTIONAL)) {
             if ($website->slug !== Str::slug($validatedData['url'])) {
@@ -753,9 +790,6 @@ class WebsiteController extends Controller
         $data = auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)
             ? $publicAdministration->websites()->withTrashed()->get()
             : $publicAdministrationHelper->websites();
-
-        /*   var_dump($publicAdministrationHelper->websites()->get());
-        die(); */
 
         return $data;
     }
