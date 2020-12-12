@@ -281,8 +281,7 @@ KIBANA_PORT=5601
 # Set your XDebug IDE key, if needed.
 XDEBUG_IDEKEY=
 
-# Use docker.for.win.localhost if Docker host is Windows OS,
-# use docker.for.mac.localhost if Docker host is Mac OS,
+# Use host.docker.internal if Docker host is Windows OS or Mac OS,
 # check the IP address of docker0 and adjust DOCKER_HOST_IP value
 # in your env-containers-* file to use dockerhost, if Docker host is Linux OS.
-XDEBUG_REMOTE_HOST=docker.for.mac.localhost
+XDEBUG_REMOTE_HOST=host.docker.internal
