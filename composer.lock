@@ -171,10 +171,6 @@
                 }
             ],
             "description": "Provides a way to patch Composer packages.",
-            "support": {
-                "issues": "https://github.com/cweagans/composer-patches/issues",
-                "source": "https://github.com/cweagans/composer-patches/tree/1.7.0"
-            },
             "time": "2020-09-30T17:56:20+00:00"
         },
         {
@@ -234,7 +230,7 @@
             "keywords": [
                 "laravel"
             ],
-            "abandoned": true,
+            "abandoned": "diglactic/laravel-breadcrumbs",
             "time": "2019-12-30T22:50:51+00:00"
         },
         {
@@ -1032,6 +1028,7 @@
                     "email": "ethanhann@gmail.com"
                 }
             ],
+            "abandoned": true,
             "time": "2019-11-02T10:21:18+00:00"
         },
         {
@@ -2520,11 +2517,6 @@
                 "ext-openssl": "Install openssl lib in order to handle with x509 certs (require to support sign and encryption)"
             },
             "type": "library",
-            "extra": {
-                "patches_applied": {
-                    "Compatibility with SPID": "https://rawgit.com/italia/spid-laravel/master/patches/php-saml-3.4.1-spid.patch"
-                }
-            },
             "autoload": {
                 "psr-4": {
                     "OneLogin\\": "src/"
@@ -2541,7 +2533,12 @@
                 "onelogin",
                 "saml"
             ],
-            "time": "2019-11-25T17:30:07+00:00"
+            "time": "2019-11-25T17:30:07+00:00",
+            "extra": {
+                "patches_applied": {
+                    "Compatibility with SPID": "https://rawgit.com/italia/spid-laravel/master/patches/php-saml-3.4.1-spid.patch"
+                }
+            }
         },
         {
             "name": "opis/closure",
@@ -3542,27 +3539,27 @@
         },
         {
             "name": "spatie/laravel-webhook-client",
-            "version": "2.7.1",
+            "version": "2.7.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-webhook-client.git",
-                "reference": "6ebefb5a7756c2a7b532cf55c0265259a5ffe053"
+                "reference": "aea9c0dbaba2aeb9883a9d69d092da7d63212eaa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-webhook-client/zipball/6ebefb5a7756c2a7b532cf55c0265259a5ffe053",
-                "reference": "6ebefb5a7756c2a7b532cf55c0265259a5ffe053",
+                "url": "https://api.github.com/repos/spatie/laravel-webhook-client/zipball/aea9c0dbaba2aeb9883a9d69d092da7d63212eaa",
+                "reference": "aea9c0dbaba2aeb9883a9d69d092da7d63212eaa",
                 "shasum": ""
             },
             "require": {
-                "illuminate/bus": "^6.0|^7.0",
-                "illuminate/database": "^6.0|^7.0",
-                "illuminate/support": "^6.0|^7.0",
-                "php": "^7.4"
+                "illuminate/bus": "^7.0|^8.0",
+                "illuminate/database": "^7.0|^8.0",
+                "illuminate/support": "^7.0|^8.0",
+                "php": "8.0|^7.4"
             },
             "require-dev": {
-                "orchestra/testbench": "^4.0|^5.0",
-                "phpunit/phpunit": "^7.0|^8.2|^9.0"
+                "orchestra/testbench": "^5.0|^6.0",
+                "phpunit/phpunit": "^9.3.8"
             },
             "type": "library",
             "extra": {
@@ -3601,7 +3598,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2020-04-30T14:32:09+00:00"
+            "time": "2020-11-28T23:46:01+00:00"
         },
         {
             "name": "swiftmailer/swiftmailer",
@@ -7105,6 +7102,7 @@
                 "faker",
                 "fixtures"
             ],
+            "abandoned": true,
             "time": "2019-12-12T13:22:17+00:00"
         },
         {
@@ -9900,5 +9898,5 @@
         "php": "^7.4"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.0.0"
+    "plugin-api-version": "1.1.0"
 }
