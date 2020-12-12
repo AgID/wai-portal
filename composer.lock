@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d61f672f308790dc2d25ca25ca058f32",
+    "content-hash": "86f9cec231187df6e704110e2f09775d",
     "packages": [
         {
             "name": "bensampo/laravel-enum",
@@ -171,10 +171,6 @@
                 }
             ],
             "description": "Provides a way to patch Composer packages.",
-            "support": {
-                "issues": "https://github.com/cweagans/composer-patches/issues",
-                "source": "https://github.com/cweagans/composer-patches/tree/1.7.0"
-            },
             "time": "2020-09-30T17:56:20+00:00"
         },
         {
@@ -234,7 +230,7 @@
             "keywords": [
                 "laravel"
             ],
-            "abandoned": true,
+            "abandoned": "diglactic/laravel-breadcrumbs",
             "time": "2019-12-30T22:50:51+00:00"
         },
         {
@@ -1032,6 +1028,7 @@
                     "email": "ethanhann@gmail.com"
                 }
             ],
+            "abandoned": true,
             "time": "2019-11-02T10:21:18+00:00"
         },
         {
@@ -2520,11 +2517,6 @@
                 "ext-openssl": "Install openssl lib in order to handle with x509 certs (require to support sign and encryption)"
             },
             "type": "library",
-            "extra": {
-                "patches_applied": {
-                    "Compatibility with SPID": "https://rawgit.com/italia/spid-laravel/master/patches/php-saml-3.4.1-spid.patch"
-                }
-            },
             "autoload": {
                 "psr-4": {
                     "OneLogin\\": "src/"
@@ -2541,7 +2533,12 @@
                 "onelogin",
                 "saml"
             ],
-            "time": "2019-11-25T17:30:07+00:00"
+            "time": "2019-11-25T17:30:07+00:00",
+            "extra": {
+                "patches_applied": {
+                    "Compatibility with SPID": "https://rawgit.com/italia/spid-laravel/master/patches/php-saml-3.4.1-spid.patch"
+                }
+            }
         },
         {
             "name": "opis/closure",
@@ -3472,31 +3469,32 @@
         },
         {
             "name": "silber/bouncer",
-            "version": "v1.0.0-rc.8",
+            "version": "v1.0.0-rc.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/JosephSilber/bouncer.git",
-                "reference": "c716ee07f9568e9774b6934314620bc9d9d1d65a"
+                "reference": "429262a84414569be2fad1fad417f05d752c075b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/JosephSilber/bouncer/zipball/c716ee07f9568e9774b6934314620bc9d9d1d65a",
-                "reference": "c716ee07f9568e9774b6934314620bc9d9d1d65a",
+                "url": "https://api.github.com/repos/JosephSilber/bouncer/zipball/429262a84414569be2fad1fad417f05d752c075b",
+                "reference": "429262a84414569be2fad1fad417f05d752c075b",
                 "shasum": ""
             },
             "require": {
-                "illuminate/auth": "^6.0|^7.0",
-                "illuminate/cache": "^6.0|^7.0",
-                "illuminate/container": "^6.0|^7.0",
-                "illuminate/contracts": "^6.0|^7.0",
-                "illuminate/database": "^6.0|^7.0",
-                "php": "^7.2"
+                "illuminate/auth": "^6.0|^7.0|^8.0",
+                "illuminate/cache": "^6.0|^7.0|^8.0",
+                "illuminate/container": "^6.0|^7.0|^8.0",
+                "illuminate/contracts": "^6.0|^7.0|^8.0",
+                "illuminate/database": "^6.0|^7.0|^8.0",
+                "php": "^7.2|^8.0"
             },
             "require-dev": {
-                "illuminate/console": "^6.0|^7.0",
-                "illuminate/events": "^6.0|^7.0",
+                "illuminate/console": "^6.0|^7.0|^8.0",
+                "illuminate/events": "^6.0|^7.0|^8.0",
                 "larapack/dd": "^1.1",
-                "phpunit/phpunit": "^8.0"
+                "mockery/mockery": "^1.3.3",
+                "phpunit/phpunit": "^8.0|^9.0"
             },
             "suggest": {
                 "illuminate/console": "Allows running the bouncer:clean artisan command",
@@ -3538,7 +3536,7 @@
                 "permissions",
                 "roles"
             ],
-            "time": "2020-03-31T15:14:45+00:00"
+            "time": "2020-12-08T15:31:20+00:00"
         },
         {
             "name": "spatie/laravel-webhook-client",
@@ -7105,6 +7103,7 @@
                 "faker",
                 "fixtures"
             ],
+            "abandoned": true,
             "time": "2019-12-12T13:22:17+00:00"
         },
         {
@@ -9900,5 +9899,5 @@
         "php": "^7.4"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.0.0"
+    "plugin-api-version": "1.1.0"
 }
