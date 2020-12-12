@@ -241,7 +241,7 @@
                 <replaceregexp file="containers/php-fpm/xdebug.ini" match="xdebug.idekey=(\S*)" replace="xdebug.idekey=${XDEBUG_IDEKEY}"/>
                 <!-- Set XDEBUG remote host -->
                 <echo message="Setting XDEBUG remote host to ${XDEBUG_REMOTE_HOST} ..."/>
-                <replaceregexp file="containers/php-fpm/xdebug.ini" match="xdebug.remote_host=(\S*)" replace="xdebug.remote_host=${XDEBUG_REMOTE_HOST}"/>
+                <replaceregexp file="containers/php-fpm/xdebug.ini" match="xdebug.client_host=(\S*)" replace="xdebug.client_host=${XDEBUG_REMOTE_HOST}"/>
                 <!-- Set dusk .env file according to current environment -->
                 <echo msg="Setting Laravel Dusk .env file according to current environment..."/>
                 <phingcall target="compile-template">
@@ -281,7 +281,7 @@
             <equals arg1="${env.APP_ENV}" arg2="testing"/>
             <then>
                 <echo msg="Copying application files to application-code volume"/>
-                <exec command="docker run -v application-code:${APP_CODE_PATH_CONTAINER} -v application-logs:/var/log/ --name application-container busybox mkdir -p /var/log/nginx" checkreturn="true"/>
+                <exec command="docker run -v application-code:${APP_CODE_PATH_CONTAINER} -v application-logs:/var/log/ --name application-container busybox mkdir -p /var/log/nginx /var/log/php" checkreturn="true"/>
                 <exec command="docker cp app application-container:${APP_CODE_PATH_CONTAINER}" checkreturn="true"/>
                 <exec command="docker cp bootstrap application-container:${APP_CODE_PATH_CONTAINER}" checkreturn="true"/>
                 <exec command="docker cp config application-container:${APP_CODE_PATH_CONTAINER}" checkreturn="true"/>
@@ -349,6 +349,7 @@
         <echo msg="Setting files ownership..."/>
         <exec command="docker-compose exec php-fpm chown -R www-data:www-data storage database .env" dir="containers" checkreturn="true"/>
         <exec command="docker-compose exec php-fpm chown -R www-data:www-data /opt/matomo" dir="containers" checkreturn="true"/>
+        <exec command="docker-compose exec php-fpm chown -R www-data:www-data /var/log/php" dir="containers" checkreturn="true"/>
         <!-- Set certificates -->
         <echo msg="Copying CA certificate into php-fpm container..."/>
         <exec command="docker cp nginx/certs/ca/local-root-ca.crt `docker-compose ps -q php-fpm`:/usr/local/share/ca-certificates/" dir="containers" passthru="true"/>

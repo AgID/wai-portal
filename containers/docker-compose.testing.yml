@@ -11,11 +11,13 @@ services:
   php-fpm:
     volumes:
       - application-code:${APP_CODE_PATH_CONTAINER}
+      - application-logs:${APP_LOGS_PATH_CONTAINER}
 
 # queue-worker
   queue-worker:
     volumes:
       - application-code:${APP_CODE_PATH_CONTAINER}
+      - application-logs:${APP_LOGS_PATH_CONTAINER}
 
 # nginx
   nginx:
