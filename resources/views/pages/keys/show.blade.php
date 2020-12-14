@@ -68,8 +68,38 @@
 <div class="row">
     <div class="col-lg-12 d-flex">
         @component('layouts.components.box')
-            <h4 class="text-uppercase m-0">{{ __('PERMESSI SUI SITI WEB') }}</h4>
-            <div class="mt-5 pt-5">
+            <h4 class="text-uppercase m-2">{{ __('PERMESSI SUI SITI WEB') }}</h4>
+            <div class="form-row ">
+                <div class="form-group mt-4 pt-4">
+                    <input 
+                    type="text" 
+                    class="form-control-plaintext" 
+                    id="type" 
+                    value="{{ $type ?? __('Non ancora disponibile') }}" 
+                    readonly
+                    >
+                    <label for="type">{{ __('Tipologia Chiave') }}</label>
+                </div>
+            </div>
+            <div>
+                <div class="box-section lightgrey-bg-a1 my-4 py-5">
+                    <h5 class="section-header mb-4">{{ __('ruolo') }}</h5>
+                    <div class="row">
+                        <div class="col-md-4 d-flex align-items-center">
+                            <span class="badge user-role {{ $type }}">{{$type === "admin" ? __("Amministratore") : __("Analytics")}}</span>
+                        </div>
+                        <div class="col-md-8">
+                            <p class="mb-0">
+                                <svg class="icon"><use xlink:href="{{ asset('svg/sprite.svg#it-info-circle') }}"></use></svg>
+                                {{ 
+                                $type === "admin" 
+                                    ? __('l\'amministratore può gestire i siti web abilitati e tutti gli utenti')
+                                    : __('La chiave Analytics')
+                                }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
                 @include('partials.datatable')
             </div>
             <div class="mt-4 text-center text-sm-left">

@@ -29,6 +29,7 @@ class UpdateKeyRequest extends FormRequest
     {
         return [
             'key_name' => 'required|min:3|max:255',
+            'type' => 'required',
             'permissions' => 'array',
         ];
     }
