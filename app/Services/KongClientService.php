@@ -4,8 +4,10 @@ namespace App\Services;
 
 use App\Exceptions\AnalyticsServiceException;
 use App\Exceptions\CommandErrorException;
+use App\Exceptions\InvalidKeyException;
 use GuzzleHttp\Client as APIClient;
 use GuzzleHttp\Exception\GuzzleException;
+use Illuminate\Support\Facades\Redis;
 
 /**
  * Matomo implementation of Analytics Service.
@@ -19,9 +21,12 @@ class KongClientService
      */
     protected $serviceBaseUri;
 
+    protected $redisCache;
+
     public function __construct()
     {
         $this->serviceBaseUri = config('kong-service.endpoint_url');
+        $this->redisCache = Redis::connection(env('CACHE_CONNECTION'))->client();
     }
 
     public function getConsumer(string $idConsumer): ?array
@@ -33,7 +38,20 @@ class KongClientService
             ],
         ];
 
-        return $this->apiCall($data, 'GET', '/consumers/' . $idConsumer);
+        $consumer = $this->redisCache->get('kong:consumer:' . $idConsumer);
+
+        if (null !== $consumer) {
+            $consumer = json_decode($consumer);
+            $consumer = (array) $consumer;
+
+            return $consumer;
+        }
+
+        $consumer = $this->apiCall($data, 'GET', '/consumers/' . $idConsumer);
+
+        $this->redisCache->set('kong:consumer:' . $idConsumer, json_encode($consumer));
+
+        return $consumer;
     }
 
     public function getClient(string $idConsumer): ?array
@@ -45,7 +63,28 @@ class KongClientService
             ],
         ];
 
-        return $this->apiCall($data, 'GET', '/consumers/' . $idConsumer . '/oauth2');
+        $client = $this->redisCache->get('kong:client:' . $idConsumer);
+
+        if (null !== $client) {
+            $client = json_decode($client);
+            if (null === $client && !is_array($client)) {
+                throw new InvalidKeyException('client[0] not found');
+            }
+            $client = (array) $client[0];
+
+            return $client;
+        }
+
+        $client = $this->apiCall($data, 'GET', '/consumers/' . $idConsumer . '/oauth2');
+        $client = $client['data'];
+
+        if (null === $client && !is_array($client)) {
+            throw new InvalidKeyException('client[0] not found');
+        }
+
+        $this->redisCache->set('kong:client:' . $idConsumer, json_encode($client));
+
+        return $client[0];
     }
 
     public function makeConsumer(string $username, string $customID): array
@@ -90,10 +129,27 @@ class KongClientService
             ],
         ];
 
-        return $this->apiCall($data, 'PUT', '/consumers/' . $idConsumer);
+        $consumer = $this->apiCall($data, 'PUT', '/consumers/' . $idConsumer);
+        $this->redisCache->set('kong:consumer:' . $idConsumer, json_encode($consumer));
+
+        return $consumer;
     }
 
-    protected function apiCall(array $data, string $method = 'GET', string $path = '/'): array
+    public function deleteConsumer(string $idConsumer): bool
+    {
+        $data = [
+            'headers' => [
+                'Accept' => 'application/json',
+                'Content-Type' => 'application/json',
+            ],
+        ];
+
+        $consumer = $this->apiCall($data, 'DELETE', '/consumers/' . $idConsumer);
+
+        return true;
+    }
+
+    protected function apiCall(array $data, string $method = 'GET', string $path = '/'): ?array
     {
         try {
             $client = new APIClient();

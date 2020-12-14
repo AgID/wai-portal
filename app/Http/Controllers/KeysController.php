@@ -3,14 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Enums\UserPermission;
+use App\Exceptions\InvalidKeyException;
 use App\Http\Requests\StoreKeysRequest;
 use App\Http\Requests\UpdateKeyRequest;
 use App\Models\Key;
 use App\Models\PublicAdministration;
 use App\Models\Website;
 use App\Traits\HasRoleAwareUrls;
+use App\Traits\SendsResponse;
 use App\Transformers\KeysTransformer;
 use App\Transformers\WebsitesPermissionsTransformer;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Yajra\DataTables\DataTables;
@@ -18,6 +21,8 @@ use Yajra\DataTables\DataTables;
 class KeysController extends Controller
 {
     use HasRoleAwareUrls;
+    use SendsResponse;
+
     protected $clientService;
 
     public function __construct()
@@ -56,7 +61,15 @@ class KeysController extends Controller
             ->with($keysDatatable);
     }
 
-    public function create(Request $request, PublicAdministration $publicAdministration)
+    /**
+     * Create a new Key.
+     *
+     * @param Request $request the request
+     * @param PublicAdministration $publicAdministration the keys belong to
+     *
+     * @return View the view
+     */
+    public function create(Request $request, PublicAdministration $publicAdministration): View
     {
         $user = auth()->user();
         $currentPublicAdministration = $user->can(UserPermission::ACCESS_ADMIN_AREA)
@@ -76,6 +89,15 @@ class KeysController extends Controller
         return view('pages.keys.add')->with(compact('keysStoreUrl'))->with($websitesPermissionsDatatable);
     }
 
+    /**
+     * Display the key list.
+     *
+     * @param Request $request the request
+     * @param Key $key the key
+     * @param PublicAdministration $publicAdministration the public administration the user belongs to
+     *
+     * @return View the view
+     */
     public function show(Request $request, Key $key, PublicAdministration $publicAdministration): View
     {
         $user = auth()->user();
@@ -84,6 +106,10 @@ class KeysController extends Controller
             : current_public_administration();
 
         $client = $this->clientService->getClient($key->consumer_id);
+
+        $consumer = $this->clientService->getConsumer($key->consumer_id);
+        $customId = (array) json_decode($consumer['custom_id']);
+        $conumerType = $customId['type'];
 
         $roleAwareUrls = $this->getRoleAwareUrlArray([
             'keyEditUrl' => 'api-key.edit',
@@ -100,8 +126,8 @@ class KeysController extends Controller
         $websitesPermissionsDatatable = $this->getDatatableWebsitesPermissionsParams($websitesPermissionsDatatableSource, true);
 
         $keyData = [
-            //aggiungere eccezzione se non esiste client['data']
-            'client' => $client['data'][0],
+            'client' => $client,
+            'type' => $conumerType,
         ];
 
         return view('pages.keys.show')
@@ -111,7 +137,16 @@ class KeysController extends Controller
             ->with($roleAwareUrls);
     }
 
-    public function edit(Request $request, Key $key, PublicAdministration $publicAdministration)
+    /**
+     * Edit key view page.
+     *
+     * @param Request $request The request
+     * @param Key $key The key
+     * @param PublicAdministration $publicAdministration the public administration the user belongs to
+     *
+     * @return View the view
+     */
+    public function edit(Request $request, Key $key, PublicAdministration $publicAdministration): View
     {
         $user = auth()->user();
         $currentPublicAdministration = $user->can(UserPermission::ACCESS_ADMIN_AREA)
@@ -123,28 +158,42 @@ class KeysController extends Controller
         ], $currentPublicAdministration);
 
         $consumer = $this->clientService->getConsumer($key->consumer_id);
-        $customId = explode(',', $consumer['custom_id']);
+        $customId = json_decode($consumer['custom_id']);
 
         $websitesPermissionsDatatableSource = $this->getRoleAwareUrl(
             'api-key.websites.permissions.make',
             [
                 'key' => $key,
-                'oldKeyPermissions' => $customId,
+                'oldKeyPermissions' => $customId->siteId,
             ],
             $currentPublicAdministration
         );
 
+        $keyData = [
+            'type' => $customId->type,
+        ];
+
         $websitesPermissionsDatatable = $this->getDatatableWebsitesPermissionsParams($websitesPermissionsDatatableSource);
 
-        return view('pages.keys.edit')->with(compact('key', 'updateUrl'))->with($websitesPermissionsDatatable);
+        return view('pages.keys.edit')
+            ->with(compact('key', 'updateUrl'))
+            ->with($websitesPermissionsDatatable)
+            ->with($keyData);
     }
 
-    public function update(UpdateKeyRequest $request, Key $key)
+    /**
+     * Update the keys.
+     *
+     * @param UpdateKeyRequest $request The request
+     * @param Key $key The key
+     *
+     * @return RedirectResponse
+     */
+    public function update(UpdateKeyRequest $request, Key $key): RedirectResponse
     {
         $validatedData = $request->validated();
 
-        $permissionsArray = array_keys($validatedData['permissions']);
-        $permissions = implode(',', $permissionsArray);
+        $permissions = array_keys($validatedData['permissions']);
 
         $key->fill([
             'client_name' => $validatedData['key_name'],
@@ -155,7 +204,7 @@ class KeysController extends Controller
             $key->consumer_id,
             [
                 'username' => $validatedData['key_name'],
-                'custom_id' => $permissions,
+                'custom_id' => json_encode(['type' => $validatedData['type'], 'siteId' => $permissions]),
             ]
         );
 
@@ -166,11 +215,39 @@ class KeysController extends Controller
         ]);
     }
 
-    public function delete(Request $request)
+    /**
+     * Deletes the key.
+     *
+     * @param Key $key The key
+     *
+     * @return JsonResponse|RedirectResponse the response in json or http redirect format
+     */
+    public function delete(Key $key)
     {
-        //aggiungere il delete
+        try {
+            $this->clientService->deleteConsumer($key->consumer_id);
+            $key->delete();
+
+            return $this->keyResponse($key);
+        } catch (InvalidKeyException $exception) {
+            report($exception);
+            $code = $exception->getCode();
+            $message = 'Invalid Key';
+            $httpStatusCode = 400;
+        }
+
+        return $this->errorResponse($message, $code, $httpStatusCode);
     }
 
+    /**
+     * Get the websites data.
+     *
+     * @param PublicAdministration $publicAdministration the Public Administration to filter keys or null to use current one
+     *
+     * @throws \Exception if unable to initialize the datatable
+     *
+     * @return mixed the response in JSON format
+     */
     public function dataJson(PublicAdministration $publicAdministration)
     {
         $user = auth()->user();
@@ -181,15 +258,15 @@ class KeysController extends Controller
         $data = $currentPublicAdministration->keys()->get();
 
         return DataTables::of($data)
-            ->setTransformer(new KeysTransformer()) //Key Transformer
+            ->setTransformer(new KeysTransformer())
             ->make(true);
     }
 
     public function store(StoreKeysRequest $request, PublicAdministration $publicAdministration)
     {
         $validatedData = $request->validated();
-        $permissionsArray = array_keys($validatedData['permissions']);
-        $permissions = implode(',', $permissionsArray);
+        $permissions = array_keys($validatedData['permissions']);
+        //$permissions = implode(',', $permissionsArray);
 
         $user = auth()->user();
 
@@ -197,7 +274,11 @@ class KeysController extends Controller
             ? $publicAdministration
             : current_public_administration();
 
-        $clientJSON = $this->clientService->makeConsumer($validatedData['key_name'], $permissions);
+        $clientJSON = $this->clientService
+            ->makeConsumer(
+                $validatedData['key_name'],
+                json_encode(['type' => $validatedData['type'], 'siteId' => $permissions])
+            );
 
         $client = Key::create([
             'client_name' => $validatedData['key_name'],
@@ -224,8 +305,9 @@ class KeysController extends Controller
     public function showDataKeyWebsitesPermissionsJson(Key $key)
     {
         $consumer = $this->clientService->getConsumer($key->consumer_id);
-        $customId = explode(',', $consumer['custom_id']);
-        $websites = Website::whereIn('id', $customId)->get();
+        $customId = json_decode($consumer['custom_id']); //explode(',', $consumer['custom_id']);
+
+        $websites = Website::whereIn('id', $customId->siteId)->get();
 
         return DataTables::of($websites)
             ->setTransformer(new WebsitesPermissionsTransformer())

@@ -19,10 +19,26 @@ class ApiAuthentication extends StartSession
     public function handle($request, Closure $next)
     {
         $consumerId = $request->header('X-Consumer-Id');
+        $customId = $request->header('X-Consumer-Custom-Id');
 
-        if (null === $consumerId) {
-            return response()->json($this->jsonError(), 403);
+        if (null === $customId) {
+            return response()->json($this->jsonError(1), 403);
         }
+
+        $customId = json_decode($customId);
+        $keyType = $keySites = '';
+
+        if (property_exists($customId, 'type') && property_exists($customId, 'siteId')) {
+            $keyType = $customId->type;
+            $keySites = $customId->siteId;
+        }
+
+        if (null === $consumerId || 'admin' !== $keyType || !is_array($keySites)) {
+            print_r([$consumerId, $keyType, $keySites]);
+
+            return response()->json($this->jsonError(3), 403);
+        }
+
         $keys = new Key();
         $selectKey = $keys->getKeyFromConsumerId($consumerId);
         $publicAdministration = $selectKey->publicAdministration()->first();
@@ -32,24 +48,18 @@ class ApiAuthentication extends StartSession
         $website = $request->route()->parameter('website');
 
         if (null !== $website) {
-            if (null !== $request->header('X-Consumer-Custom-Id')) {
-                $keyCustomId = $request->header('X-Consumer-Custom-Id');
-                $allowedId = explode(',', $keyCustomId);
-                if (!in_array($website->id, $allowedId)) {
-                    return response()->json($this->jsonError(), 403);
-                }
-            } else {
-                return response()->json($this->jsonError(), 403);
+            if (!in_array($website->id, $keySites)) {
+                return response()->json($this->jsonError(3), 401);
             }
         }
 
         return $next($request);
     }
 
-    protected function jsonError()
+    protected function jsonError($code)
     {
         return [
-            'title' => 'insufficient permission',
+            'title' => 'insufficient permission err. ' . $code,
             'message' => 'You\'re not allowed to carry out this action',
             'type' => 'insufficient_permission',
         ];
