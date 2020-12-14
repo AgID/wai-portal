@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use App\Enums\UserStatus;
+use App\Models\Key;
 use App\Models\PublicAdministration;
 use App\Models\User;
 use App\Models\Website;
@@ -49,8 +50,7 @@ trait SendsResponse
                 'message' => $userTrashed
                     ? ($publicAdministration
                         ? __("L'utente :user è stato eliminato da :pa.", ['user' => '<strong>' . e($user->full_name) . '</strong>', 'pa' => '<strong>' . e($publicAdministration->name) . '</strong>'])
-                        : __("L'utente :user è stato eliminato.", ['user' => '<strong>' . e($user->full_name) . '</strong>'])
-                    )
+                        : __("L'utente :user è stato eliminato.", ['user' => '<strong>' . e($user->full_name) . '</strong>']))
                     : implode("\n", [
                         __("L'utente :user è stato aggiornato.", ['user' => '<strong>' . e($user->full_name) . '</strong>']),
                         __("Stato dell'utente: :status", [
@@ -133,6 +133,30 @@ trait SendsResponse
             : back()->withNotification([
                 'title' => __('operazione non effettuata'),
                 'message' => __('La richiesta non ha determinato cambiamenti nello stato.'),
+                'status' => 'info',
+                'icon' => 'it-info-circle',
+            ]);
+    }
+
+    /**
+     * Returns a success response for the specified key.
+     *
+     * @param Key $key the key
+     *
+     * @return JsonResponse|RedirectResponse the response in json or http redirect format
+     */
+    public function keyResponse(Key $key)
+    {
+        return request()->expectsJson()
+            ? response()->json([
+                'result' => 'ok',
+                'id' => $key->consumer_id,
+                'key_name' => e($key->client_name),
+                'status' => 200,
+            ])
+            : back()->withNotification([
+                'title' => __('Chiave modificata'),
+                'message' => __('Il sito web :website è stato eliminato.', ['website' => '<strong>' . e($key->client_name) . '</strong>']),
                 'status' => 'info',
                 'icon' => 'it-info-circle',
             ]);
