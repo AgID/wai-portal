@@ -54,18 +54,16 @@ class KeysTransformer extends TransformerAbstract
             ];
         }
 
-        if ($authUserCanAccessAdminArea) {
-            $data['buttons'][] = [
+        $data['buttons'][] = [
                 'link' => route('api-key.delete', ['key' => $keys->consumer_id]),
                 'label' => __('elimina'),
                 'color' => 'danger',
-                /* 'dataAttributes' => [
-                    'website-name' => e($website->name),
-                    'type' => 'websiteDeleteRestore',
+                'dataAttributes' => [
+                    'keyName' => e($keys->client_name),
+                    'type' => 'keyDelete',
                     'ajax' => true,
-                ], */
+                ],
             ];
-        }
 
         return $data;
     }
