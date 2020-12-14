@@ -19,6 +19,7 @@ use App\Exceptions\TenantIdNotSetException;
 use App\Http\Requests\StorePrimaryWebsiteRequest;
 use App\Http\Requests\StoreWebsiteRequest;
 use App\Http\Requests\UpdateWebsiteRequest;
+use App\Jobs\UpdateSiteListOnRedis;
 use App\Models\PublicAdministration;
 use App\Models\Website;
 use App\Traits\ActivatesWebsite;
@@ -307,6 +308,8 @@ class WebsiteController extends Controller
 
             app()->make('analytics-service')->changeArchiveStatus($website->analytics_id, WebsiteStatus::ARCHIVED);
             $website->delete();
+            
+            /* dispatch(new UpdateSiteListOnRedis()); aggiorno solo la pubblica amministrazione corrente*/
 
             return $this->websiteResponse($website);
         } catch (AnalyticsServiceException | BindingResolutionException $exception) {
@@ -708,7 +711,7 @@ class WebsiteController extends Controller
      * @param StoreWebsiteRequest $request the request
      * @param PublicAdministration $publicAdministration the public administration the website will belong to
      *
-     * @return RedirectResponse the server redirect response
+     * @return array the new website
      */
     protected function storeMethod(StoreWebsiteRequest $request, PublicAdministration $publicAdministration): array
     {
@@ -745,6 +748,8 @@ class WebsiteController extends Controller
 
         $this->manageWebsitePermissionsOnNonAdministrators($validatedData, $currentPublicAdministration, $website);
 
+        /* dispatch(new UpdateSiteListOnRedis()); aggiorno solo la pubblica amministrazione corrente*/
+
         return [
             'website' => $website,
         ];
@@ -778,6 +783,8 @@ class WebsiteController extends Controller
         }
 
         $this->manageWebsitePermissionsOnNonAdministrators($validatedData, $currentPublicAdministration, $website);
+
+       /* dispatch(new UpdateSiteListOnRedis()); aggiorno solo la pubblica amministrazione corrente*/
 
         return $website;
     }
