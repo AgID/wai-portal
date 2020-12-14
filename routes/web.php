@@ -221,7 +221,7 @@ Route::middleware('spid.auth', 'auth', 'verified:verification.notice')->group(fu
             Route::put('/{key}', 'KeysController@update')
             ->name('api-key.update');
 
-            Route::get('/{key}/delete', 'KeysController@delete')
+            Route::patch('/{key}/delete', 'KeysController@delete')
             ->name('api-key.delete');
         });
 
