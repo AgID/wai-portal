@@ -10,6 +10,7 @@
             @component('layouts.components.link_button', [
                 'link' => $keys,
                 'size' => 'lg',
+                'icon' => 'it-key'
             ])
             {{ ucfirst(__('Gestione delle credenziali OAuth')) }}
             @endcomponent
