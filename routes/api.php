@@ -53,21 +53,4 @@ Route::middleware('api.authentication')->group(function () {
         Route::get('/{website}/force', 'WebsiteController@forceActivationApi')
             ->name('api.sites.force');
     });
-
-    /* Route::prefix('/test')->group(function () {
-            Route::get('/', function () {
-                return response()->json(['test' => 'Hello World'], 200);
-            });
-            Route::get('/update', 'UserController@update')
-                ->name('api.users.test.update');
-            //show test
-            Route::get('/show/{fn}', 'UserController@showJson')
-                ->name('api.users.test.show');
-
-            Route::get('/data', 'UserController@apiData')
-                ->name('api.users.test.apiData');
-            Route::get('/test', function () {
-                return response()->json(['test' => 'Hello World'], 200);
-            });
-        }); */
 });
