@@ -29,6 +29,7 @@ class StoreKeysRequest extends FormRequest
     {
         return [
             'key_name' => 'required|unique:keys,client_name|min:3|max:255',
+            'type' => 'required',
             'permissions' => 'array',
         ];
     }

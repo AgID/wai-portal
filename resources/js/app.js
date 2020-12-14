@@ -14,6 +14,7 @@ import WebsiteArchiveUnarchive from './buttons/websiteArchiveUnarchive';
 import UserSuspendReactivate from './buttons/userSuspendReactivate';
 import UserDelete from './buttons/userDelete';
 import WebsiteDeleteRestore from './buttons/websiteDeleteRestore';
+import keyDelete from './buttons/keyDelete';
 import UserVerificationResend from './buttons/userVerificationResend';
 import GetJavascriptSnippet from './getJavascriptSnippet';
 import SearchIpa from './searchIpa';
@@ -47,6 +48,7 @@ $(document).ready(() => {
         () => PermissionsToggles.init(),
         () => WebsiteArchiveUnarchive.init(),
         () => WebsiteDeleteRestore.init(),
+        () => keyDelete.init(),
         () => UserSuspendReactivate.init(),
         () => UserDelete.init(),
         () => UserSelectTenant.init(),
