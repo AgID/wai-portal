@@ -308,7 +308,7 @@ class WebsiteController extends Controller
 
             app()->make('analytics-service')->changeArchiveStatus($website->analytics_id, WebsiteStatus::ARCHIVED);
             $website->delete();
-            
+
             /* dispatch(new UpdateSiteListOnRedis()); aggiorno solo la pubblica amministrazione corrente*/
 
             return $this->websiteResponse($website);
@@ -784,7 +784,7 @@ class WebsiteController extends Controller
 
         $this->manageWebsitePermissionsOnNonAdministrators($validatedData, $currentPublicAdministration, $website);
 
-       /* dispatch(new UpdateSiteListOnRedis()); aggiorno solo la pubblica amministrazione corrente*/
+        /* dispatch(new UpdateSiteListOnRedis()); aggiorno solo la pubblica amministrazione corrente*/
 
         return $website;
     }

@@ -137,6 +137,10 @@
                     <token key="MATOMO_PLUGIN_RESETDATABASE_VERSION" value="${MATOMO_PLUGIN_RESETDATABASE_VERSION}" />
                     <token key="MATOMO_INGESTION_HOSTNAME" value="${MATOMO_INGESTION_HOSTNAME}" />
                     <token key="KONG_ENDPOINT_URL" value="${KONG_ENDPOINT_URL}" />
+                    <token key="POSTGRES_PASSWORD" value="${POSTGRES_PASSWORD}" />
+                    <token key="POSTGRES_USER" value="${POSTGRES_USER}" />
+                    <token key="POSTGRES_DATABASE" value="${POSTGRES_DATABASE}" />
+                    <token key="POSTGRES_DATABASE_TYPE" value="${POSTGRES_DATABASE_TYPE}" />
                 </replacetokens>
             </filterchain>
         </copy>
@@ -535,6 +539,38 @@
                 <echo msg="Starting Docker containers..."/>
                 <exec command="docker-compose up -d nginx mariadb redis ipa-redisearch mailhog php-fpm queue-worker elasticsearch spid-testenv" dir="containers" passthru="true" checkreturn="true"/>
                 <echo msg="Web Analytics Italia up and running!"/>
+            </then>
+        </if>
+    </target>
+
+    <!-- Target: start Kong -->
+    <target name="kong-build">
+        <if>
+            <available file="containers" type="dir" property="ignored"/>
+            <then>
+                <echo msg="Starting Docker kong..."/>
+                
+                <exec command="docker-compose up -d postgres kong-migrations kong" dir="containers" passthru="true" checkreturn="true"/>
+                <!--http://localhost:8001 da spostare nell'env -->
+                <exec command="curl -X POST -s http://localhost:8001/plugins/ --data &quot;name=prometheus&quot; > /dev/null" passthru="true" checkreturn="true"/>     
+                <exec command="curl -X POST -s http://localhost:8001/plugins/ --data &quot;name=oauth2&amp;config.enable_client_credentials=true&amp;config.global_credentials=true&amp;config.accept_http_if_already_terminated=true&quot; > /dev/null" passthru="true" checkreturn="true"/>
+                <exec command="curl -X POST -s http://localhost:8001/services --data &quot;name=portal&amp;url=https://nginx/api&quot; > /dev/null" passthru="true" checkreturn="true"/>     
+                <exec command="curl -X POST -s http://localhost:8001/services/portal/routes  --data &quot;paths[]=/portal&amp;name=portal&quot; > /dev/null" passthru="true" checkreturn="true"/> 
+
+                <echo msg="Kong up and running!"/>
+            </then>
+        </if>
+    </target>
+
+    <!-- Target: start Kong -->
+    <target name="kong">
+        <if>
+            <available file="containers" type="dir" property="ignored"/>
+            <then>
+                <echo msg="Starting Docker kong..."/>
+                
+                <exec command="docker-compose up -d postgres kong" dir="containers" passthru="true" checkreturn="true"/>
+                <echo msg="Kong up and running!"/>
             </then>
         </if>
     </target>
