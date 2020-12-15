@@ -93,8 +93,8 @@
                                 <svg class="icon"><use xlink:href="{{ asset('svg/sprite.svg#it-info-circle') }}"></use></svg>
                                 {{ 
                                 $type === "admin" 
-                                    ? __('l\'amministratore può gestire i siti web abilitati e tutti gli utenti')
-                                    : __('La chiave Analytics')
+                                    ? __('L\'amministratore può gestire i siti web abilitati e tutti gli utenti')
+                                    : __('Chiave Analytics')
                                 }}
                             </p>
                         </div>
