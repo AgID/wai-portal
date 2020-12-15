@@ -71,7 +71,7 @@
                 @enderror
             </div>
             <small id="type-input-help" class="form-text text-muted">
-                {{ __('l\'amministratore può gestire i siti web abilitati e tutti gli utenti') }}
+                {{ __('L\'amministratore può gestire i siti web abilitati e tutti gli utenti') }}
             </small>     
         </div>
     </div>
