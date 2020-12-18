@@ -302,6 +302,7 @@
                 <exec command="docker cp .node-version application-container:${APP_CODE_PATH_CONTAINER}" checkreturn="true"/>
                 <exec command="docker cp lighthouserc.json application-container:${APP_CODE_PATH_CONTAINER}" checkreturn="true"/>
                 <exec command="docker cp containers/ipa-redisearch/persistence/appendonly.aof application-container:/redis-data" checkreturn="true"/>
+                <exec command="docker run -v ipa-redisearch-persistence:/redis-data busybox chown -R 1000:1000 /redis-data/appendonly.aof" checkreturn="true"/>
             </then>
             <else>
                 <echo msg="Create log directories if needed..."/>
