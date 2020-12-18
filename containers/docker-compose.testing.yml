@@ -5,6 +5,8 @@ volumes:
     external: true
   application-logs:
     external: true
+  ipa-redisearch-persistence:
+    external: true
 
 services:
 # php-fpm
@@ -32,4 +34,4 @@ services:
 # ipa-redisearch
   ipa-redisearch:
     volumes:
-      - ./ipa-redisearch/persistence:/bitnami/redis/data
+      - ipa-redisearch-persistence:/bitnami/redis/data

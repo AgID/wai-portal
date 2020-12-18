@@ -119,7 +119,7 @@ commands:
 jobs:
   build_and_test:
     docker:
-      - image: circleci/php:7.4-cli
+      - image: circleci/php:7.4.12-cli
     environment:
       APP_ENV: "testing"
     steps:

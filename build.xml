@@ -280,8 +280,8 @@
         <if>
             <equals arg1="${env.APP_ENV}" arg2="testing"/>
             <then>
-                <echo msg="Copying application files to application-code volume"/>
-                <exec command="docker run -v application-code:${APP_CODE_PATH_CONTAINER} -v application-logs:/var/log/ --name application-container busybox mkdir -p /var/log/nginx /var/log/php" checkreturn="true"/>
+                <echo msg="Copying application files to docker volumes"/>
+                <exec command="docker run -v application-code:${APP_CODE_PATH_CONTAINER} -v application-logs:/var/log/ -v ipa-redisearch-persistence:/redis-data --name application-container busybox mkdir -p /var/log/nginx /var/log/php" checkreturn="true"/>
                 <exec command="docker cp app application-container:${APP_CODE_PATH_CONTAINER}" checkreturn="true"/>
                 <exec command="docker cp bootstrap application-container:${APP_CODE_PATH_CONTAINER}" checkreturn="true"/>
                 <exec command="docker cp config application-container:${APP_CODE_PATH_CONTAINER}" checkreturn="true"/>
@@ -301,6 +301,8 @@
                 <exec command="docker cp phpunit.xml application-container:${APP_CODE_PATH_CONTAINER}" checkreturn="true"/>
                 <exec command="docker cp .node-version application-container:${APP_CODE_PATH_CONTAINER}" checkreturn="true"/>
                 <exec command="docker cp lighthouserc.json application-container:${APP_CODE_PATH_CONTAINER}" checkreturn="true"/>
+                <exec command="docker cp containers/ipa-redisearch/persistence/appendonly.aof application-container:/redis-data" checkreturn="true"/>
+                <exec command="docker run -v ipa-redisearch-persistence:/redis-data busybox chown -R 1000:1000 /redis-data/appendonly.aof" checkreturn="true"/>
             </then>
             <else>
                 <echo msg="Create log directories if needed..."/>
