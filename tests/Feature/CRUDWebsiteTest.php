@@ -121,14 +121,24 @@ class CRUDWebsiteTest extends TestCase
 
         $this->user->registerAnalyticsServiceAccount();
 
-        $this->customPublicAdministration = factory(PublicAdministration::class)->create([
-            'status' => PublicAdministrationStatus::PENDING,
-        ]);
-        $this->customWebsite = factory(Website::class)->create([
-            'public_administration_id' => $this->customPublicAdministration->id,
-            'status' => WebsiteStatus::PENDING,
-            'type' => WebsiteType::INSTITUTIONAL_PLAY,
-        ]);
+        do {
+            $customPublicAdministration = factory(PublicAdministration::class)->make([
+                'status' => PublicAdministrationStatus::PENDING,
+            ]);
+        } while ($customPublicAdministration->ipa_code === $this->publicAdministration->ipa_code);
+        $this->customPublicAdministration = $customPublicAdministration;
+        $this->customPublicAdministration->save();
+
+        do {
+            $customWebsite = factory(Website::class)->make([
+                'public_administration_id' => $this->customPublicAdministration->id,
+                'status' => WebsiteStatus::PENDING,
+                'type' => WebsiteType::INSTITUTIONAL_PLAY,
+            ]);
+        } while ($customWebsite->slug === $this->website->slug);
+        $this->customWebsite = $customWebsite;
+        $this->customWebsite->save();
+
         $this->customPublicAdministration->users()->sync([$this->user->id]);
 
         Bouncer::dontCache();
