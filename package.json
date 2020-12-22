@@ -37,7 +37,7 @@
         "stylelint-config-standard": "^20.0.0",
         "stylelint-webpack-plugin": "^2.1.0",
         "throttle-debounce": "^2.3.0",
-        "upper-case-first": "^2.0.1",
+        "upper-case-first": "^2.0.2",
         "vue-template-compiler": "^2.6.12"
     }
 }
