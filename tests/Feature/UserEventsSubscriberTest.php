@@ -661,7 +661,7 @@ class UserEventsSubscriberTest extends TestCase
         ]);
         $accessType = WebsiteAccessType::fromValue(WebsiteAccessType::VIEW);
         $publicAdministration->users()->sync([$this->user->id, $secondUser->id]);
-        Bouncer::scope()->onceTo($publicAdministration->id, function () use ($secondUser) {
+        Bouncer::scope()->onceTo($publicAdministration->id, function () {
             $this->user->assign(UserRole::ADMIN);
         });
 
