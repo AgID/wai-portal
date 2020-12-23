@@ -25,6 +25,7 @@ import WidgetResizer from './widgets';
 import HighlightBar from './highlightBar';
 import Trackers from './trackers';
 import Swagger from './swagger'
+import keyPermissionsToggles from './keyPermissionsToggles';
 
 $(document).ready(() => {
     Forms.init();
@@ -46,6 +47,7 @@ $(document).ready(() => {
         () => WebsiteCheckTracking.init(),
         () => UserAcceptInvitation.init(),
         () => PermissionsToggles.init(),
+        () => keyPermissionsToggles.init(),
         () => WebsiteArchiveUnarchive.init(),
         () => WebsiteDeleteRestore.init(),
         () => keyDelete.init(),
