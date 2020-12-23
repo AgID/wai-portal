@@ -7038,16 +7038,16 @@
         },
         {
             "name": "johnkary/phpunit-speedtrap",
-            "version": "v3.2.0",
+            "version": "v3.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/johnkary/phpunit-speedtrap.git",
-                "reference": "8c0e149b80c6e86c33315f05699512678655c158"
+                "reference": "9ba81d42676da31366c85d3ff8c10a8352d02030"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/johnkary/phpunit-speedtrap/zipball/8c0e149b80c6e86c33315f05699512678655c158",
-                "reference": "8c0e149b80c6e86c33315f05699512678655c158",
+                "url": "https://api.github.com/repos/johnkary/phpunit-speedtrap/zipball/9ba81d42676da31366c85d3ff8c10a8352d02030",
+                "reference": "9ba81d42676da31366c85d3ff8c10a8352d02030",
                 "shasum": ""
             },
             "require": {
@@ -7057,7 +7057,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.2-dev"
+                    "dev-master": "4.0-dev"
                 }
             },
             "autoload": {
@@ -7082,7 +7082,7 @@
                 "profile",
                 "slow"
             ],
-            "time": "2020-02-12T16:19:51+00:00"
+            "time": "2020-12-18T16:20:16+00:00"
         },
         {
             "name": "laravel/dusk",
