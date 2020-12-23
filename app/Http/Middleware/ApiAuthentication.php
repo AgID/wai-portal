@@ -36,7 +36,7 @@ class ApiAuthentication extends StartSession
         if (null === $consumerId || 'admin' !== $keyType || !is_array($keySites)) {
             print_r([$consumerId, $keyType, $keySites]);
 
-            return response()->json($this->jsonError(3), 403);
+            return response()->json($this->jsonError(2), 403);
         }
 
         $keys = new Key();
@@ -48,7 +48,8 @@ class ApiAuthentication extends StartSession
         $website = $request->route()->parameter('website');
 
         if (null !== $website) {
-            if (!in_array($website->id, $keySites)) {
+            $column = array_column($keySites, 'id');
+            if (!in_array($website->id, $column)) {
                 return response()->json($this->jsonError(3), 401);
             }
         }

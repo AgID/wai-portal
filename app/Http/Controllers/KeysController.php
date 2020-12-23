@@ -111,6 +111,10 @@ class KeysController extends Controller
         $customId = (array) json_decode($consumer['custom_id']);
         $conumerType = $customId['type'];
 
+        $sitesIdArray = is_array($customId['siteId'])
+            ? $customId['siteId']
+            : [];
+
         $roleAwareUrls = $this->getRoleAwareUrlArray([
             'keyEditUrl' => 'api-key.edit',
         ], [
@@ -119,7 +123,7 @@ class KeysController extends Controller
 
         $websitesPermissionsDatatableSource = $this->getRoleAwareUrl(
             'api-key.websites.permissions',
-            ['key' => $key],
+            ['key' => $key, 'oldKeyPermissions' => $sitesIdArray],
             $currentPublicAdministration
         );
 
@@ -159,12 +163,15 @@ class KeysController extends Controller
 
         $consumer = $this->clientService->getConsumer($key->consumer_id);
         $customId = json_decode($consumer['custom_id']);
+        $sitesIdArray = is_array($customId->siteId)
+            ? $customId->siteId
+            : [];
 
         $websitesPermissionsDatatableSource = $this->getRoleAwareUrl(
             'api-key.websites.permissions.make',
             [
                 'key' => $key,
-                'oldKeyPermissions' => $customId->siteId,
+                'oldKeyPermissions' => $sitesIdArray,
             ],
             $currentPublicAdministration
         );
@@ -193,7 +200,12 @@ class KeysController extends Controller
     {
         $validatedData = $request->validated();
 
-        $permissions = array_keys($validatedData['permissions']);
+        $permissions = [];
+        if (array_key_exists('permissions', $validatedData)) {
+            foreach ($validatedData['permissions'] as $keyId => $permission) {
+                array_push($permissions, ['id' => $keyId, 'permission' => implode('', $permission)]);
+            }
+        }
 
         $key->fill([
             'client_name' => $validatedData['key_name'],
@@ -265,8 +277,11 @@ class KeysController extends Controller
     public function store(StoreKeysRequest $request, PublicAdministration $publicAdministration)
     {
         $validatedData = $request->validated();
-        $permissions = array_keys($validatedData['permissions']);
-        //$permissions = implode(',', $permissionsArray);
+        $permissions = [];
+
+        foreach ($validatedData['permissions'] as $key => $permission) {
+            array_push($permissions, ['id' => $key, 'permission' => implode('', $permission)]);
+        }
 
         $user = auth()->user();
 
@@ -306,8 +321,13 @@ class KeysController extends Controller
     {
         $consumer = $this->clientService->getConsumer($key->consumer_id);
         $customId = json_decode($consumer['custom_id']); //explode(',', $consumer['custom_id']);
+        $sitesIdArray = is_array($customId->siteId)
+            ? array_map(function ($elem) {
+                return $elem->id;
+            }, $customId->siteId)
+            : [];
 
-        $websites = Website::whereIn('id', $customId->siteId)->get();
+        $websites = Website::whereIn('id', $sitesIdArray)->get();
 
         return DataTables::of($websites)
             ->setTransformer(new WebsitesPermissionsTransformer())
@@ -325,7 +345,9 @@ class KeysController extends Controller
      */
     public function makeKeyWebsitesPermissionsJson(?Key $key)
     {
-        $websites = Website::all();
+        $publicAdministration = current_public_administration();
+
+        $websites = $publicAdministration->websites->all();
 
         return DataTables::of($websites)
             ->setTransformer(new WebsitesPermissionsTransformer())
