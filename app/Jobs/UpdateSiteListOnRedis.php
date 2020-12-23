@@ -9,6 +9,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Str;
 
 class UpdateSiteListOnRedis implements ShouldQueue
 {
@@ -27,25 +28,31 @@ class UpdateSiteListOnRedis implements ShouldQueue
         Redis::connection(env('CACHE_CONNECTION'))->client()->pipeline(function ($pipe) use ($publicAdministrationsList) {
             foreach ($publicAdministrationsList as &$publicAdministration) {
                 $list = $publicAdministration->websites()->get()
-                ->map(function ($website) {
-                    $url = collect($website->toArray())
-                    ->only(['url'])
-                    ->all();
+                    ->map(function ($website) {
+                        $url = collect($website->toArray())
+                            ->only(['url'])
+                            ->all();
 
-                    return $url['url'];
-                })->values()->toArray();
+                        $url = $url['url'];
+
+                        $hasProtocol = Str::startsWith($url, 'http');
+
+                        return $hasProtocol ? $url : 'http://' . $url . ' ' . 'https://' . $url;
+                    })->values()->toArray();
 
                 $id = $publicAdministration['id'];
+
+                $listToString = implode(' ', $list);
 
                 logger()->notice(
                     'Caching websites for public administrations',
                     [
                         'pa' => $id,
-                        'list' => json_encode($list),
+                        'list' => $listToString,
                     ]
                 );
 
-                $pipe->set('websiteList-' . $id, json_encode($list));
+                $pipe->set('websiteList-' . $id, $listToString);
             }
         });
     }
