@@ -33,7 +33,7 @@ class RegisterTest extends DuskTestCase
                 ->click('a[href="/analytics"]')
                 ->assertPathIs('/register')
                 ->assertSee('Registrazione')
-                ->type('email', 'nome.cognome@example.com')
+                ->type('email', 'nome.cognome@webanalytics.italia.it')
                 ->click('label[for="accept_terms"]')
                 ->press(__('Registrati'))
                 ->waitForText('In attesa di conferma')

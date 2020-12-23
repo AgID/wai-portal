@@ -138,7 +138,7 @@ class InviteUserTest extends TestCase
      */
     public function testInviteRegisteredUserSuccesful(): void
     {
-        $email = $this->faker->unique()->safeEmail;
+        $email = $this->faker->unique()->freeEmail;
 
         $this->actingAs($this->user)
             ->withSession([
@@ -225,7 +225,7 @@ class InviteUserTest extends TestCase
     public function testStoreWebsiteWhitPendingInviteSuccessful(): void
     {
         $this->publicAdministration->users()->sync([$this->secondUser->id => ['user_email' => $this->secondUser->email, 'user_status' => UserStatus::INVITED]], false);
-        $alternativeEmail = $this->faker->unique()->safeEmail;
+        $alternativeEmail = $this->faker->unique()->freeEmail;
 
         $this->actingAs($this->secondUser)
             ->withSession([

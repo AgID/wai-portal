@@ -43,7 +43,7 @@ class RegisterTest extends TestCase
             ->post(
                 route('auth.register'),
                 [
-                    'email' => 'new@example.com',
+                    'email' => 'new@webanalytics.italia.it',
                     'accept_terms' => 'on',
                 ]
             )
@@ -54,7 +54,7 @@ class RegisterTest extends TestCase
             ->assertRedirect(route('verification.notice'));
 
         Event::assertDispatched(Registered::class, function ($event) {
-            return 'new@example.com' === $event->user->email;
+            return 'new@webanalytics.italia.it' === $event->user->email;
         });
     }
 
