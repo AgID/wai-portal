@@ -35,7 +35,7 @@ class SuperAdminUserTest extends DuskTestCase
             $browser->visit('/admin')
                     ->assertPathIs('/admin/user/login')
                     ->assertSee(__('Accesso super amministratori'))
-                    ->type('email', 'nome.cognome@example.com')
+                    ->type('email', 'nome.cognome@webanalytics.italia.it')
                     ->type('password', 'password')
                     ->press(__('Accedi'))
                     ->waitForText(__('Dashboard amministrazioni'))
