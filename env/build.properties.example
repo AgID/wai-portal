@@ -289,6 +289,7 @@ XDEBUG_REMOTE_HOST=host.docker.internal
 # Kong Service 
 # ----------------------
 KONG_ENDPOINT_URL=http://kong:8001
+KONG_ENDPOINT_FRONTEND_URL=http://localhost:8001
 
 # Postgres Kong
 POSTGRES_PASSWORD=password.1
