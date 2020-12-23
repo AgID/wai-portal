@@ -32,6 +32,7 @@ class WebsitesPermissionsTransformer extends TransformerAbstract
             $editKeyPermissions = request()->has('editKeyPermissions');
             $oldPermissions = request()->query('oldPermissions');
             $oldKeyPermission = request()->query('oldKeyPermissions');
+            /* $ array_column($oldKeyPermission, "id"); */
             $canRead = !is_array($oldPermissions) && optional($user)->can(UserPermission::READ_ANALYTICS, $website);
             $canManage = !is_array($oldPermissions) && optional($user)->can(UserPermission::MANAGE_ANALYTICS, $website);
 
@@ -57,18 +58,32 @@ class WebsitesPermissionsTransformer extends TransformerAbstract
                 if ($readOnly) {
                     $data['icons'] = [
                         [
-                            'icon' => 'it-check-circle',
-                            'color' => 'success',
-                            'label' => 'Gestione Sito',
+                            'icon' => $this->getKeyPermission($website->id, $oldKeyPermission, 'R') ? 'it-check-circle' : 'it-close-circle',
+                            'color' => $this->getKeyPermission($website->id, $oldKeyPermission, 'R') ? 'success' : 'danger',
+                            'label' => 'gestione',
+                        ],
+                        [
+                            'icon' => $this->getKeyPermission($website->id, $oldKeyPermission, 'W') ? 'it-check-circle' : 'it-close-circle',
+                            'color' => $this->getKeyPermission($website->id, $oldKeyPermission, 'W') ? 'success' : 'danger',
+                            'label' => 'lettura',
                         ],
                     ];
                 } else {
                     $data['toggles'] = [
                         [
                             'name' => 'permissions[' . $website->id . '][]',
-                            'value' => 'editPermission',
-                            'label' => 'Gestione Sito',
-                            'checked' => in_array($website->id, $oldKeyPermission ?? []),
+                            'value' => 'R',
+                            'label' => 'lettura',
+                            'checked' => $this->getKeyPermission($website->id, $oldKeyPermission, 'R'),
+                            'dataAttributes' => [
+                                'entity' => $website->id,
+                            ],
+                        ],
+                        [
+                            'name' => 'permissions[' . $website->id . '][]',
+                            'value' => 'W',
+                            'label' => 'gestione',
+                            'checked' => $this->getKeyPermission($website->id, $oldKeyPermission, 'W'),
                             'dataAttributes' => [
                                 'entity' => $website->id,
                             ],
@@ -115,5 +130,18 @@ class WebsitesPermissionsTransformer extends TransformerAbstract
 
             return $data;
         });
+    }
+
+    protected function getKeyPermission(int $id, array $permissions, string $key): bool
+    {
+        $column = array_column($permissions, 'id');
+
+        $found_key = array_search($id, $column);
+        $site = $permissions[$found_key];
+        $permission = $site['permission'];
+
+        $hasPermission = str_contains($permission, $key);
+
+        return $hasPermission;
     }
 }

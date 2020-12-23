@@ -19,7 +19,6 @@ use App\Exceptions\TenantIdNotSetException;
 use App\Http\Requests\StorePrimaryWebsiteRequest;
 use App\Http\Requests\StoreWebsiteRequest;
 use App\Http\Requests\UpdateWebsiteRequest;
-use App\Jobs\UpdateSiteListOnRedis;
 use App\Models\PublicAdministration;
 use App\Models\Website;
 use App\Traits\ActivatesWebsite;
@@ -33,6 +32,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Yajra\DataTables\DataTables;
@@ -46,6 +46,14 @@ class WebsiteController extends Controller
     use SendsResponse;
     use HasRoleAwareUrls;
     use ManagePublicAdministrationRegistration;
+
+    protected $redisCache;
+
+    public function __construct()
+    {
+        $this->serviceBaseUri = config('kong-service.endpoint_url');
+        $this->redisCache = Redis::connection(env('CACHE_CONNECTION'))->client();
+    }
 
     /**
      * Display the websites list.
@@ -309,7 +317,7 @@ class WebsiteController extends Controller
             app()->make('analytics-service')->changeArchiveStatus($website->analytics_id, WebsiteStatus::ARCHIVED);
             $website->delete();
 
-            /* dispatch(new UpdateSiteListOnRedis()); aggiorno solo la pubblica amministrazione corrente*/
+            $this->updateWebsiteListCache($publicAdministration);
 
             return $this->websiteResponse($website);
         } catch (AnalyticsServiceException | BindingResolutionException $exception) {
@@ -748,7 +756,7 @@ class WebsiteController extends Controller
 
         $this->manageWebsitePermissionsOnNonAdministrators($validatedData, $currentPublicAdministration, $website);
 
-        /* dispatch(new UpdateSiteListOnRedis()); aggiorno solo la pubblica amministrazione corrente*/
+        $this->updateWebsiteListCache($publicAdministration);
 
         return [
             'website' => $website,
@@ -784,7 +792,7 @@ class WebsiteController extends Controller
 
         $this->manageWebsitePermissionsOnNonAdministrators($validatedData, $currentPublicAdministration, $website);
 
-        /* dispatch(new UpdateSiteListOnRedis()); aggiorno solo la pubblica amministrazione corrente*/
+        $this->updateWebsiteListCache($publicAdministration);
 
         return $website;
     }
@@ -838,5 +846,25 @@ class WebsiteController extends Controller
                 $user->syncWebsitesPermissionsToAnalyticsService($publicAdministration);
             }
         });
+    }
+
+    private function updateWebsiteListCache(PublicAdministration $publicAdministration)
+    {
+        $list = $publicAdministration->websites()->get()
+            ->map(function ($website) {
+                $url = collect($website->toArray())
+                    ->only(['url'])
+                    ->all();
+
+                $url = $url['url'];
+
+                $hasProtocol = Str::startsWith($url, 'http');
+
+                return $hasProtocol ? $url : 'http://' . $url . ' ' . 'https://' . $url;
+            })->values()->toArray();
+
+        $id = $publicAdministration['id'];
+
+        $this->redisCache->set('websiteList-' . $id, implode(' ', $list));
     }
 }
