@@ -42,7 +42,7 @@ class ProfileTest extends TestCase
                 [
                     'name' => $user->name,
                     'family_name' => $user->family_name,
-                    'email' => 'new@example.com',
+                    'email' => 'new@webanalytics.italia.it',
                 ]
             )
             ->assertSessionDoesntHaveErrors([
@@ -52,7 +52,7 @@ class ProfileTest extends TestCase
             ->assertSessionHas('notification');
 
         Event::assertDispatched(UserUpdated::class, function ($event) {
-            return 'new@example.com' === $event->getUser()->email;
+            return 'new@webanalytics.italia.it' === $event->getUser()->email;
         });
     }
 
@@ -97,7 +97,7 @@ class ProfileTest extends TestCase
                 [
                     'name' => 'Mario',
                     'family_name' => 'Rossi',
-                    'email' => 'new@example.com',
+                    'email' => 'new@webanalytics.italia.it',
                 ]
             )
             ->assertSessionDoesntHaveErrors([
@@ -110,7 +110,7 @@ class ProfileTest extends TestCase
         Event::assertDispatched(UserUpdated::class, function ($event) {
             $user = $event->getUser();
 
-            return 'new@example.com' === $user->email
+            return 'new@webanalytics.italia.it' === $user->email
                 && 'Mario' === $user->name
                 && 'Rossi' === $user->family_name;
         });

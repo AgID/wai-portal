@@ -82,7 +82,7 @@ class PublicAdministrationEventsSubscriberTest extends TestCase
         $this->user = factory(User::class)->create();
         $this->publicAdministration->users()->sync([$this->user->id => [
             'user_status' => UserStatus::ACTIVE,
-            'user_email' => $this->faker->unique()->safeEmail,
+            'user_email' => $this->faker->unique()->freeEmail,
         ]]);
         $this->publicAdministration->save();
         $this->website = factory(Website::class)->create([

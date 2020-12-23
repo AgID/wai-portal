@@ -128,7 +128,7 @@ class CRUDUserTest extends TestCase
      */
     public function testCreateAdminUserSuccessful(): void
     {
-        $email = $this->faker->unique()->safeEmail;
+        $email = $this->faker->unique()->freeEmail;
         $fiscalNumber = 'ESXLKY44P09I168D';
 
         $this->actingAs($this->user)
@@ -177,7 +177,7 @@ class CRUDUserTest extends TestCase
      */
     public function testCreateUserSuccessful(): void
     {
-        $email = $this->faker->unique()->safeEmail;
+        $email = $this->faker->unique()->freeEmail;
         $fiscalNumber = 'ESXLKY44P09I168D';
 
         $this->actingAs($this->user)
@@ -269,7 +269,7 @@ class CRUDUserTest extends TestCase
             ])
             ->put(route('users.update', ['user' => $this->user]), [
                 '_token' => 'test',
-                'email' => 'new@example.com',
+                'email' => 'new@webanalytics.italia.it',
                 'is_admin' => '1',
                 'permissions' => [
                     $this->website->id => [
@@ -286,7 +286,7 @@ class CRUDUserTest extends TestCase
 
         $this->user->refresh();
         Event::assertDispatched(UserUpdated::class, function ($event) {
-            return 'new@example.com' === $event->getUser()->email;
+            return 'new@webanalytics.italia.it' === $event->getUser()->email;
         });
 
         $this->user->deleteAnalyticsServiceAccount();

@@ -29,8 +29,8 @@ class SuperAdminUserTest extends DuskTestCase
      */
     public function testVisit()
     {
-        $mailAddress = 'nome.cognome@gov.it';
-        $newPassword = 'Password.1'; // really?
+        $mailAddress = 'nuovo.superadmin@webanalytics.italia.it';
+        $newPassword = 'Password.1';
         $this->browse(function (Browser $browser) use ($mailAddress) {
             $browser->visit('/admin')
                     ->assertPathIs('/admin/user/login')

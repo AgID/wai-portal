@@ -195,7 +195,7 @@ class CRUDWebsiteTest extends TestCase
             'status' => UserStatus::PENDING,
             'email_verified_at' => Date::now(),
         ]);
-        $alternativeEmail = $this->faker->unique()->safeEmail;
+        $alternativeEmail = $this->faker->unique()->freeEmail;
         $this->actingAs($user)
             ->withSession([
                 'spid_sessionIndex' => 'fake-session-index',
@@ -278,7 +278,7 @@ class CRUDWebsiteTest extends TestCase
             'status' => UserStatus::PENDING,
             'email_verified_at' => Date::now(),
         ]);
-        $alternativeEmail = $this->faker->unique()->safeEmail;
+        $alternativeEmail = $this->faker->unique()->freeEmail;
         $this->actingAs($user)
             ->withSession([
                 'spid_sessionIndex' => 'fake-session-index',
@@ -786,7 +786,7 @@ class CRUDWebsiteTest extends TestCase
             'status' => UserStatus::PENDING,
             'email_verified_at' => Date::now(),
         ]);
-        $alternativeEmail = $this->faker->unique()->safeEmail;
+        $alternativeEmail = $this->faker->unique()->freeEmail;
 
         $this->app->bind('analytics-service', function () use ($user) {
             return $this->partialMock(MatomoService::class, function ($mock) use ($user) {

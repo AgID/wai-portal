@@ -100,7 +100,7 @@ class WebsiteEventsSubscriberTest extends TestCase
         $this->user = factory(User::class)->state('active')->create();
         $this->publicAdministration->users()->sync([$this->user->id => [
             'user_status' => UserStatus::ACTIVE,
-            'user_email' => $this->faker->unique()->safeEmail,
+            'user_email' => $this->faker->unique()->freeEmail,
         ]]);
 
         Bouncer::dontCache();
@@ -241,7 +241,7 @@ class WebsiteEventsSubscriberTest extends TestCase
         $secondUser = factory(User::class)->state('active')->create();
         $this->publicAdministration->users()->sync([$secondUser->id => [
             'user_status' => UserStatus::ACTIVE,
-            'user_email' => $this->faker->unique()->safeEmail,
+            'user_email' => $this->faker->unique()->freeEmail,
         ]], false);
 
         Bouncer::scope()->onceTo($this->publicAdministration->id, function () use ($secondUser) {

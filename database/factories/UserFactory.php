@@ -28,7 +28,7 @@ $factory->define(User::class, function (Faker $faker) {
             )
         )
         )->calculate(),
-        'email' => $faker->unique()->safeEmail,
+        'email' => $faker->unique()->freeEmail,
         'uuid' => Uuid::uuid4()->toString(),
         'password_changed_at' => Carbon::now()->format('Y-m-d H:i:s'),
         'status' => UserStatus::INACTIVE,
