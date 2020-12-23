@@ -67,6 +67,8 @@ it:
           route: how-to-join
         - name: Domande frequenti
           route: faq
+        - name: API
+          route: show.swagger
         # - name: Open data
         #   route: open-data
         - name: Guida utente
