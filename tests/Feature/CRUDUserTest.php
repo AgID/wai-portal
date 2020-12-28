@@ -270,6 +270,7 @@ class CRUDUserTest extends TestCase
             ->put(route('users.update', ['user' => $this->user]), [
                 '_token' => 'test',
                 'email' => 'new@webanalytics.italia.it',
+                'emailPublicAdministrationUser' => 'new@webanalytics.italia.it',
                 'is_admin' => '1',
                 'permissions' => [
                     $this->website->id => [
@@ -285,10 +286,6 @@ class CRUDUserTest extends TestCase
             ]);
 
         $this->user->refresh();
-        Event::assertDispatched(UserUpdated::class, function ($event) {
-            return 'new@webanalytics.italia.it' === $event->getUser()->email;
-        });
-
         $this->user->deleteAnalyticsServiceAccount();
         app()->make('analytics-service')->deleteSite($this->website->analytics_id);
     }
@@ -301,6 +298,7 @@ class CRUDUserTest extends TestCase
         $user = factory(User::class)->state('invited')->create();
         $fiscalNumber = 'SKYLKU77E25H501R';
         $this->publicAdministration->users()->sync([$user->id], false);
+
         $user->registerAnalyticsServiceAccount();
 
         Bouncer::scope()->to($this->publicAdministration->id);
@@ -317,6 +315,7 @@ class CRUDUserTest extends TestCase
             ->put(route('users.update', ['user' => $user]), [
                 '_token' => 'test',
                 'email' => $user->email,
+                'emailPublicAdministrationUser' => 'old@webanalytics.italia.it',
                 'fiscal_number' => $fiscalNumber,
                 'permissions' => [
                     $this->website->id => [
@@ -366,6 +365,7 @@ class CRUDUserTest extends TestCase
                 '_token' => 'test',
                 'email' => $user->email,
                 'fiscal_number' => $user->fiscal_number,
+                'emailPublicAdministrationUser' => 'new@webanalytics.italia.it',
                 'is_admin' => '1',
                 'permissions' => [
                     $this->website->id => [
@@ -414,6 +414,7 @@ class CRUDUserTest extends TestCase
                 '_token' => 'test',
                 'email' => $user->email,
                 'fiscal_number' => $user->fiscal_number,
+                'emailPublicAdministrationUser' => 'new@webanalytics.italia.it',
                 'permissions' => [
                     $this->website->id => [
                         UserPermission::READ_ANALYTICS,

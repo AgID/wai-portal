@@ -29,6 +29,7 @@
         </div>
     </div>
     @endisset
+    @empty($emailPublicAdministrationUser)
     <div class="form-row">
         <div class="form-group has-form-text col-md-6">
             <div class="input-group">
@@ -46,6 +47,29 @@
             <small id="email-input-help" class="form-text text-muted">{{ __('es. nome.cognome@agid.gov.it') }}</small>
         </div>
     </div>
+    @endempty
+    @isset($emailPublicAdministrationUser)
+    <div class="form-row">
+        <div class="form-group has-form-text col-md-6">
+            <div class="input-group">
+
+                <input type="hidden" id="email" name="email" value="{{ old('email', $user->email ?? '') }}" >
+
+                <div class="input-group-prepend">
+                    <div class="input-group-text"><svg class="icon icon-sm"><use xlink:href="{{ asset('svg/sprite.svg#it-mail') }}"></use></svg></div>
+                </div>
+                <label for="emailPublicAdministrationUser">{{ __('Indirizzo email di lavoro') }}</label>
+                <input type="email" class="form-control{{ $errors->has('emailPublicAdministrationUser') ? ' is-invalid' : '' }}" id="emailPublicAdministrationUser" name="emailPublicAdministrationUser" value="{{ old('emailPublicAdministrationUser', $emailPublicAdministrationUser ?? '') }}" maxlength="75" aria-describedby="email-input-help" aria-required="true" required>
+                @error('emailPublicAdministrationUser')
+                <div class="invalid-feedback">{{ $errors->first('emailPublicAdministrationUser') }}</div>
+                @else
+                <div class="invalid-feedback">{{ __('validation.email', ['attribute' => __('validation.attributes.email')]) }}</div>
+                @enderror
+            </div>
+            <small id="email-input-help" class="form-text text-muted">{{ __('es. nome.cognome@agid.gov.it') }}</small>
+        </div>
+    </div>
+    @endisset
     <div class="form-row">
         <div class="form-group col-md-6">
             <div class="input-group">

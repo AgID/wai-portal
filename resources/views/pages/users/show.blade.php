@@ -24,7 +24,7 @@
                         <label for="fiscal_number">{{ __('Codice fiscale') }}</label>
                     </div>
                     <div class="form-group col-md-6">
-                        <input type="text" class="form-control-plaintext" id="email" value="{{ $user->email }}" readonly>
+                        <input type="text" class="form-control-plaintext" id="email" value="{{ $emailPublicAdministrationUser }}" readonly>
                         <label for="email">{{ __('Indirizzo email') }}</label>
                     </div>
                 </div>

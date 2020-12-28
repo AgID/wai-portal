@@ -6,6 +6,7 @@ use App\Enums\Logs\EventType;
 use App\Events\User\UserActivated;
 use App\Events\User\UserDeleted;
 use App\Events\User\UserEmailChanged;
+use App\Events\User\UserEmailForPublicAdministrationChanged;
 use App\Events\User\UserInvited;
 use App\Events\User\UserLogin;
 use App\Events\User\UserLogout;
@@ -161,6 +162,26 @@ class UserEventsSubscriber implements ShouldQueue
         $user->sendEmailVerificationNotification($user->publicAdministrations()->first());
 
         logger()->notice('User ' . $user->uuid . ' email address changed',
+            [
+                'event' => EventType::USER_EMAIL_CHANGED,
+                'user' => $user->uuid,
+            ]
+        );
+    }
+
+    /**
+     * Handle user email changed event.
+     *
+     * @param UserEmailForPublicAdministrationChanged $event the event
+     */
+    public function onUserEmailForPublicAdministrationChanged(UserEmailForPublicAdministrationChanged $event): void
+    {
+        $user = $event->getUser();
+        $publicAdministration = $event->getPublicAdministration();
+
+        $user->sendEmailPublicAdministrationChangedNotification($publicAdministration);
+
+        logger()->notice('User ' . $user->uuid . ' email address changed for the public administration ' . $publicAdministration->name,
             [
                 'event' => EventType::USER_EMAIL_CHANGED,
                 'user' => $user->uuid,
@@ -392,6 +413,11 @@ class UserEventsSubscriber implements ShouldQueue
         $events->listen(
             'App\Events\User\UserEmailChanged',
             'App\Listeners\UserEventsSubscriber@onUserEmailChanged'
+        );
+
+        $events->listen(
+            'App\Events\User\UserEmailForPublicAdministrationChanged',
+            'App\Listeners\UserEventsSubscriber@onUserEmailForPublicAdministrationChanged'
         );
 
         $events->listen(

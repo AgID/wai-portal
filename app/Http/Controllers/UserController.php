@@ -6,6 +6,7 @@ use App\Enums\UserPermission;
 use App\Enums\UserRole;
 use App\Enums\UserStatus;
 use App\Events\User\UserDeleted;
+use App\Events\User\UserEmailForPublicAdministrationChanged;
 use App\Events\User\UserInvited;
 use App\Events\User\UserReactivated;
 use App\Events\User\UserSuspended;
@@ -184,6 +185,10 @@ class UserController extends Controller
      */
     public function show(PublicAdministration $publicAdministration, User $user): View
     {
+        $publicAdministration = request()->route('publicAdministration', current_public_administration());
+        $publicAdministrationUser = $user->publicAdministrationsWithSuspended()->where('public_administration_id', $publicAdministration->id)->first();
+        $emailPublicAdministrationUser = $publicAdministrationUser->pivot->user_email;
+
         $websitesPermissionsDatatableSource = $this->getRoleAwareUrl('users.websites.permissions.data.json', [
             'user' => $user,
         ], $publicAdministration);
@@ -199,7 +204,7 @@ class UserController extends Controller
 
         $websitesPermissionsDatatable = $this->getDatatableWebsitesPermissionsParams($websitesPermissionsDatatableSource, true);
 
-        return view('pages.users.show')->with(compact('user', 'allRoles'))->with($roleAwareUrls)->with($websitesPermissionsDatatable);
+        return view('pages.users.show')->with(compact('user', 'allRoles', 'emailPublicAdministrationUser'))->with($roleAwareUrls)->with($websitesPermissionsDatatable);
     }
 
     /**
@@ -213,6 +218,10 @@ class UserController extends Controller
      */
     public function edit(Request $request, PublicAdministration $publicAdministration, User $user): View
     {
+        $publicAdministration = request()->route('publicAdministration', current_public_administration());
+        $publicAdministrationUser = $user->publicAdministrationsWithSuspended()->where('public_administration_id', $publicAdministration->id)->first();
+        $emailPublicAdministrationUser = $publicAdministrationUser->pivot->user_email;
+
         $oldPermissions = old('permissions', $request->session()->hasOldInput() ? [] : null);
         $websitesPermissionsDatatableSource = $this->getRoleAwareUrl('users.websites.permissions.data.json', [
             'user' => $user,
@@ -232,7 +241,7 @@ class UserController extends Controller
             $isAdmin = $user->isA(UserRole::ADMIN);
         }
 
-        return view('pages.users.edit')->with(compact('user', 'userUpdateUrl', 'isAdmin'))->with($websitesPermissionsDatatable);
+        return view('pages.users.edit')->with(compact('user', 'userUpdateUrl', 'isAdmin', 'emailPublicAdministrationUser'))->with($websitesPermissionsDatatable);
     }
 
     /**
@@ -278,6 +287,14 @@ class UserController extends Controller
         }
 
         $this->manageUserPermissions($validatedData, $currentPublicAdministration, $user);
+
+        $publicAdministrationUser = $user->publicAdministrationsWithSuspended()->where('public_administration_id', $currentPublicAdministration->id)->first();
+        $emailPublicAdministrationUser = $publicAdministrationUser->pivot->user_email;
+
+        if ($emailPublicAdministrationUser !== $validatedData['emailPublicAdministrationUser']) {
+            $user->publicAdministrations()->updateExistingPivot($currentPublicAdministration->id, ['user_email' => $validatedData['emailPublicAdministrationUser']]);
+            event(new UserEmailForPublicAdministrationChanged($user, $currentPublicAdministration));
+        }
 
         $redirectUrl = $this->getRoleAwareUrl('users.index', [], $publicAdministration);
 

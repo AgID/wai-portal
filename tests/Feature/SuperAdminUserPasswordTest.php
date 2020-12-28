@@ -82,7 +82,7 @@ class SuperAdminUserPasswordTest extends TestCase
         $this->post(
             route('admin.password.reset.send'),
             [
-                'email' => 'nonexisting@example.com',
+                'email' => 'nonexisting@webanalytics.italia.it',
             ],
             )
             ->assertRedirect(route('home'));
