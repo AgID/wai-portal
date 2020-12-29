@@ -9,9 +9,9 @@
 @section('content')
 <div class="row">
     <div class="col-sm-8">
-        <p>{{ __('Ti sei registrato oppure sei stato invitato su :app.', ['app' => config('app.name')]) }}</p>
-        <p>{!! __('Per andare avanti è necessaria la verifica del tuo indirizzo :email.', ['email' => '<strong>' . e($user->email) . '</strong>']) !!}</p>
-        <p>{{ __('Clicca sul link che trovi nel messaggio che ti abbiamo inviato.') }}</p>
+        <p>{{ __('Hai inserito un nuovo indirizzo email su :app.', ['app' => config('app.name')]) }}</p>
+        <p>{{ __('Per andare avanti è necessario prima effetturare una verifica.') }}</p>
+        <p>{!! __('Clicca sul link che trovi nel messaggio che ti abbiamo inviato alla casella :email.', ['email' => '<strong>' . e($user->email) . '</strong>']) !!}</p>
     </div>
     <div class="col-sm-4 d-flex align-items-center justify-content-center">
         <img src="{{ asset('images/verification-email-sent.svg') }}" alt="">
