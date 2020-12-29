@@ -3,7 +3,7 @@
 namespace App\Notifications;
 
 use App\Enums\UserRole;
-use App\Mail\AccountVerification;
+use App\Mail\EmailVerification;
 use Illuminate\Mail\Mailable;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
@@ -23,7 +23,7 @@ class VerifyEmail extends UserEmailNotification
      */
     protected function buildEmail($notifiable): Mailable
     {
-        return new AccountVerification(
+        return new EmailVerification(
             $notifiable,
             $this->verificationUrl($notifiable),
             $this->publicAdministration,
