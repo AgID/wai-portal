@@ -234,6 +234,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->publicAdministrations()->wherePivot('user_status', UserStatus::SUSPENDED);
     }
 
+    public function getEmailforPublicAdministration(PublicAdministration $publicAdministration): ?string
+    {
+        return $this->publicAdministrationsWithSuspended()->where('public_administration_id', $publicAdministration->id)->first()->pivot->user_email;
+    }
+
     /**
      * Return calculated password for this User's Analytics Service account.
      *
