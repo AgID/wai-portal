@@ -17,23 +17,25 @@ class UserEmailForPublicAdministrationChanged extends UserMailable
      * @param User $recipient the mail recipient
      * @param PublicAdministration $publicAdministration the public administration the invited user belogns to
      */
-    public function __construct(User $recipient, PublicAdministration $publicAdministration)
+    public function __construct(User $recipient, PublicAdministration $publicAdministration, string $updatedEmail)
     {
         parent::__construct($recipient, $publicAdministration);
+        $this->updatedEmail = $updatedEmail;
     }
 
     /**
      * Build the message.
      *
-     * @return \App\Mail\UserInvitUserEmailForPublicAdministrationChanged the email
+     * @return UserInvitUserEmailForPublicAdministrationChanged the email
      */
     public function build(): UserEmailForPublicAdministrationChanged
     {
-        return $this->subject(__('Notifica modifica indirizzo email'))
+        return $this->subject(__("Modifica dell'indirizzo email"))
             ->markdown('mail.user_email_pa_changed')->with([
                 'locale' => Lang::getLocale(),
                 'user' => $this->recipient,
                 'publicAdministration' => $this->publicAdministration,
+                'updatedEmail' => $this->updatedEmail,
             ]);
     }
 }

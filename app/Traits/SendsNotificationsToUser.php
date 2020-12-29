@@ -95,10 +95,12 @@ trait SendsNotificationsToUser
      * Send user suspended notification.
      *
      * @param PublicAdministration $publicAdministration the public administration the suspended user belongs to
+     * @param string $recipientEmail the email address to use for the notification
+     * @param string $updatedEmail the updated email address
      */
-    public function sendEmailPublicAdministrationChangedNotification(PublicAdministration $publicAdministration): void
+    public function sendEmailPublicAdministrationChangedNotification(PublicAdministration $publicAdministration, string $recipientEmail, string $updatedEmail): void
     {
-        $this->notify(new UserPublicAdministrationChangedEmail($publicAdministration));
+        $this->notify(new UserPublicAdministrationChangedEmail($publicAdministration, $recipientEmail, $updatedEmail));
     }
 
     /**
