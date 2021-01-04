@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Lang;
 /**
  * Account verification email.
  */
-class AccountVerification extends UserMailable
+class EmailVerification extends UserMailable
 {
     /**
      * The signed url user for account verification.
@@ -36,15 +36,20 @@ class AccountVerification extends UserMailable
     /**
      * Build the message.
      *
-     * @return AccountVerification the email
+     * @return EmailVerification the email
      */
-    public function build(): AccountVerification
+    public function build(): EmailVerification
     {
-        if ($this->recipient->status->is(UserStatus::INVITED) && $this->recipient->isA(UserRole::SUPER_ADMIN)) {
+        if ($this->recipient->status->is(UserStatus::INVITED)) {
             $this->subject(__('Invito su :app', ['app' => config('app.name')]));
-            $mailTemplate = 'mail.admin_invited_verification';
+
+            if ($this->recipient->isA(UserRole::SUPER_ADMIN)) {
+                $mailTemplate = 'mail.admin_invited_verification';
+            } else {
+                $mailTemplate = 'mail.user_invited_verification';
+            }
         } else {
-            $this->subject(__('Account su :app', ['app' => config('app.name')]));
+            $this->subject(__('Verifica email per :app', ['app' => config('app.name')]));
             $mailTemplate = 'mail.verification';
         }
 

@@ -41,7 +41,7 @@ class UpdateUserRequest extends StoreUserRequest
     public function withValidator(Validator $validator): void
     {
         $user = $this->route('user');
-        $publicAdministration = request()->route('publicAdministration', current_public_administration());
+        $publicAdministration = $this->route('publicAdministration', current_public_administration());
 
         $validator->after(function (Validator $validator) use ($user) {
             if (User::where('email', $this->input('email'))->where('id', '<>', $user->id)->whereDoesntHave('roles', function ($query) {

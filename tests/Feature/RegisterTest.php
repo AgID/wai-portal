@@ -40,13 +40,10 @@ class RegisterTest extends TestCase
                 'spid_sessionIndex' => 'fake-session-index',
                 'spid_user' => $spidUser,
             ])
-            ->post(
-                route('auth.register'),
-                [
-                    'email' => 'new@webanalytics.italia.it',
-                    'accept_terms' => 'on',
-                ]
-            )
+            ->post(route('auth.register'), [
+                'email' => 'new@webanalytics.italia.it',
+                'accept_terms' => 'on',
+            ])
             ->assertSessionDoesntHaveErrors([
                 'email',
                 'accept_terms',

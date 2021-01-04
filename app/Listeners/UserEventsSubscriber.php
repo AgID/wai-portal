@@ -17,6 +17,7 @@ use App\Events\User\UserSuspended;
 use App\Events\User\UserUpdated;
 use App\Events\User\UserWebsiteAccessChanged;
 use App\Models\PublicAdministration;
+use App\Traits\AnonymizesEmailAddresses;
 use App\Traits\InteractsWithRedisIndex;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Auth\Events\Registered;
@@ -30,6 +31,7 @@ use Illuminate\Support\Facades\Date;
  */
 class UserEventsSubscriber implements ShouldQueue
 {
+    use AnonymizesEmailAddresses;
     use InteractsWithRedisIndex;
 
     /**
@@ -178,10 +180,12 @@ class UserEventsSubscriber implements ShouldQueue
     {
         $user = $event->getUser();
         $publicAdministration = $event->getPublicAdministration();
+        $updatedEmail = $event->getUpdatedEmail();
+        $anonymizedUpdatedEmail = $this->anonymizeEmailAddress($updatedEmail);
 
-        $user->sendEmailPublicAdministrationChangedNotification($publicAdministration);
+        $user->sendEmailPublicAdministrationChangedNotification($publicAdministration, $user->email, $updatedEmail);
 
-        logger()->notice('User ' . $user->uuid . ' email address changed for the public administration ' . $publicAdministration->name,
+        logger()->notice('User ' . $user->uuid . ' changed the email address to ' . $anonymizedUpdatedEmail . ' for the public administration ' . $publicAdministration->name,
             [
                 'event' => EventType::USER_EMAIL_CHANGED,
                 'user' => $user->uuid,

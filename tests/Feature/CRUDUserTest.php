@@ -286,6 +286,10 @@ class CRUDUserTest extends TestCase
             ]);
 
         $this->user->refresh();
+        Event::assertDispatched(UserUpdated::class, function ($event) {
+            return 'new@webanalytics.italia.it' === $event->getUser()->email;
+        });
+
         $this->user->deleteAnalyticsServiceAccount();
         app()->make('analytics-service')->deleteSite($this->website->analytics_id);
     }
