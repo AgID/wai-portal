@@ -32,13 +32,22 @@
     <div class="form-row">
         <div class="form-group has-form-text col-md-6">
             <div class="input-group">
+                @isset($emailPublicAdministrationUser)
+                <input type="hidden" id="email" name="email" value="{{ old('email', $user->email ?? '') }}" >
+                @endisset
                 <div class="input-group-prepend">
                     <div class="input-group-text"><svg class="icon icon-sm"><use xlink:href="{{ asset('svg/sprite.svg#it-mail') }}"></use></svg></div>
                 </div>
-                <label for="email">{{ __('Indirizzo email di lavoro') }}</label>
-                <input type="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" id="email" name="email" value="{{ old('email', $user->email ?? '') }}" maxlength="75" aria-describedby="email-input-help" aria-required="true" required>
-                @error('email')
-                <div class="invalid-feedback">{{ $errors->first('email') }}</div>
+                <label for="{{ $emailFieldName }}">
+                    {{ __('Indirizzo email di lavoro') }}
+                </label>
+                <input type="email" class="form-control{{ $errors->has($emailFieldName) ? ' is-invalid' : '' }}"
+                    id="{{ $emailFieldName }}"
+                    name="{{ $emailFieldName }}"
+                    value="{{ old($emailFieldName, $emailFieldValue ?? '') }}"
+                    maxlength="75" aria-describedby="email-input-help" aria-required="true" required>
+                @error($emailFieldName)
+                <div class="invalid-feedback">{{ $errors->first($emailFieldName) }}</div>
                 @else
                 <div class="invalid-feedback">{{ __('validation.email', ['attribute' => __('validation.attributes.email')]) }}</div>
                 @enderror

@@ -7,5 +7,9 @@
 @endsection
 
 @section('content')
-@include('pages.users.partials.form', ['route' => $userUpdateUrl])
+@include('pages.users.partials.form', [
+    'route' => $userUpdateUrl,
+    'emailFieldName' => isset($emailPublicAdministrationUser) ? 'emailPublicAdministrationUser' : 'email',
+    'emailFieldValue' => isset($emailPublicAdministrationUser) ? $emailPublicAdministrationUser : $user->email,
+])
 @endsection

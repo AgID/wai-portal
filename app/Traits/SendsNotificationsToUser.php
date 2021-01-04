@@ -13,6 +13,7 @@ use App\Notifications\PublicAdministrationPurgedEmail;
 use App\Notifications\PublicAdministrationRegisteredEmail;
 use App\Notifications\ReactivatedEmail;
 use App\Notifications\SuspendedEmail;
+use App\Notifications\UserPublicAdministrationChangedEmail;
 use App\Notifications\UserPublicAdministrationInvitedEmail;
 use App\Notifications\VerifyEmail;
 use App\Notifications\WebsiteAddedEmail;
@@ -88,6 +89,18 @@ trait SendsNotificationsToUser
     public function sendReactivatedNotification(PublicAdministration $publicAdministration): void
     {
         $this->notify(new ReactivatedEmail($publicAdministration));
+    }
+
+    /**
+     * Send user suspended notification.
+     *
+     * @param PublicAdministration $publicAdministration the public administration the suspended user belongs to
+     * @param string $recipientEmail the email address to use for the notification
+     * @param string $updatedEmail the updated email address
+     */
+    public function sendEmailPublicAdministrationChangedNotification(PublicAdministration $publicAdministration, string $recipientEmail, string $updatedEmail): void
+    {
+        $this->notify(new UserPublicAdministrationChangedEmail($publicAdministration, $recipientEmail, $updatedEmail));
     }
 
     /**

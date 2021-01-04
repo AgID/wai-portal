@@ -1,6 +1,6 @@
 Hello {{ $user->full_name }},
 
-you have entered a new e-mail address on [{{ config('app.name') }}]({{ url('/') }})!
+you've been invited on [{{ config('app.name') }}]({{ url('/') }}).
 
 Verification is required to complete the procedure.
 

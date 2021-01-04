@@ -32,11 +32,12 @@ abstract class UserEmailNotification extends EmailNotification
      * Default constructor.
      *
      * @param PublicAdministration $publicAdministration the public administration
+     * @param string $recipientEmail the email address to use for thins notification
      */
-    public function __construct(PublicAdministration $publicAdministration = null, string $userEmailForPublicAdministration = null)
+    public function __construct(PublicAdministration $publicAdministration = null, string $recipientEmail = null)
     {
         $this->publicAdministration = $publicAdministration;
-        $this->recipientEmail = $userEmailForPublicAdministration;
+        $this->recipientEmail = $recipientEmail;
     }
 
     /**
