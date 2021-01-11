@@ -8,6 +8,7 @@ RUN mkdir -p /opt/matomo
 ARG MATOMO_VERSION
 ARG MATOMO_WAI_THEME_VERSION
 ARG MATOMO_PLUGIN_USERSMANAGERONLYSUPERUSER_VERSION
+ARG MATOMO_PLUGIN_UPDATEEXPOSEDFQDNLIST_VERSION
 ARG MATOMO_PLUGIN_DISABLESITETRACKING_VERSION
 ARG MATOMO_PLUGIN_QUEUEDTRACKING_VERSION
 ARG MATOMO_PLUGIN_PROTECTTRACKID_VERSION
@@ -50,6 +51,20 @@ RUN if [ -n "$MATOMO_PLUGIN_USERSMANAGERONLYSUPERUSER_VERSION" ]; then \
     && sed -i -E -e 's/(@MATOMO_PLUGINS_INSTALLED@)/PluginsInstalled[] = "UsersManagerOnlySuperUser"\n\1/g' /opt/matomo/config/config.ini.php \
     && sed -i -E -e 's/(@MATOMO_MORE_CONFIG@)/[UsersManagerOnlySuperUser]\n\1/g' /opt/matomo/config/config.ini.php \
     && sed -i -E -e 's/(@MATOMO_MORE_CONFIG@)/users_manager_only_super_user_enabled = @MATOMO_PLUGIN_USERSMANAGERONLYSUPERUSER_ENABLED@\n\n\1/g' /opt/matomo/config/config.ini.php \
+;fi
+
+RUN if [ -n "$MATOMO_PLUGIN_UPDATEEXPOSEDFQDNLIST_VERSION" ]; then \
+    curl -fsSL -o UpdateExposedFqdnList.zip \
+        "https://github.com/AgID/wai-matomo-plugin-UpdateExposedFqdnList/archive/${MATOMO_PLUGIN_UPDATEEXPOSEDFQDNLIST_VERSION}.zip" \
+    && unzip UpdateExposedFqdnList.zip -d /opt/matomo/plugins \
+    && mv /opt/matomo/plugins/wai-matomo-plugin-UpdateExposedFqdnList-${MATOMO_PLUGIN_UPDATEEXPOSEDFQDNLIST_VERSION} /opt/matomo/plugins/UpdateExposedFqdnList \
+    && rm -rf UpdateExposedFqdnList.zip \
+    && sed -i -E -e 's/(@MATOMO_PLUGINS@)/Plugins[] = "UpdateExposedFqdnList"\n\1/g' /opt/matomo/config/config.ini.php \
+    && sed -i -E -e 's/(@MATOMO_PLUGINS_INSTALLED@)/PluginsInstalled[] = "UpdateExposedFqdnList"\n\1/g' /opt/matomo/config/config.ini.php \
+    && sed -i -E -e 's/(@MATOMO_MORE_CONFIG@)/[UpdateExposedFqdnList]\n\1/g' /opt/matomo/config/config.ini.php \
+    && sed -i -E -e 's/(@MATOMO_MORE_CONFIG@)/redis_ip = "@MATOMO_PLUGIN_UPDATEEXPOSEDFQDNLIST_REDIS_IP@"\n\1/g' /opt/matomo/config/config.ini.php \
+    && sed -i -E -e 's/(@MATOMO_MORE_CONFIG@)/redis_port = "@MATOMO_PLUGIN_UPDATEEXPOSEDFQDNLIST_REDIS_PORT@"\n\1/g' /opt/matomo/config/config.ini.php \
+    && sed -i -E -e 's/(@MATOMO_MORE_CONFIG@)/db_index = "@MATOMO_PLUGIN_UPDATEEXPOSEDFQDNLIST_DB_INDEX@"\n\1/g' /opt/matomo/config/config.ini.php \
 ;fi
 
 RUN if [ -n "$MATOMO_PLUGIN_DISABLESITETRACKING_VERSION" ]; then \
@@ -144,6 +159,13 @@ RUN sed -i -e s/@MATOMO_WAI_URL@/${MATOMO_WAI_URL}/g /opt/matomo/config/config.i
 
 ARG MATOMO_PLUGIN_USERSMANAGERONLYSUPERUSER_ENABLED
 RUN sed -i -e s/@MATOMO_PLUGIN_USERSMANAGERONLYSUPERUSER_ENABLED@/${MATOMO_PLUGIN_USERSMANAGERONLYSUPERUSER_ENABLED}/g /opt/matomo/config/config.ini.php
+
+ARG MATOMO_PLUGIN_UPDATEEXPOSEDFQDNLIST_REDIS_IP
+RUN sed -i -e s/@MATOMO_PLUGIN_UPDATEEXPOSEDFQDNLIST_REDIS_IP@/${MATOMO_PLUGIN_UPDATEEXPOSEDFQDNLIST_REDIS_IP}/g /opt/matomo/config/config.ini.php
+ARG MATOMO_PLUGIN_UPDATEEXPOSEDFQDNLIST_REDIS_PORT
+RUN sed -i -e s/@MATOMO_PLUGIN_UPDATEEXPOSEDFQDNLIST_REDIS_PORT@/${MATOMO_PLUGIN_UPDATEEXPOSEDFQDNLIST_REDIS_PORT}/g /opt/matomo/config/config.ini.php
+ARG MATOMO_PLUGIN_UPDATEEXPOSEDFQDNLIST_DB_INDEX
+RUN sed -i -e s/@MATOMO_PLUGIN_UPDATEEXPOSEDFQDNLIST_DB_INDEX@/${MATOMO_PLUGIN_UPDATEEXPOSEDFQDNLIST_DB_INDEX}/g /opt/matomo/config/config.ini.php
 
 ARG DB_PASSWORD
 ARG MATOMO_DB_READER
