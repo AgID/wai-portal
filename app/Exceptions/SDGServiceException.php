@@ -17,12 +17,11 @@ class SDGServiceException extends Exception implements SymfonyConsoleExceptionIn
      */
     public function report(): void
     {
-        logger()->critical(
+        logger()->error(
             'SDG Service exception: ' . $this->getMessage(),
             [
                 'event' => EventType::EXCEPTION,
                 'exception_type' => ExceptionType::SINGLE_DIGITAL_GATEWAY,
-                'exception' => $this,
             ]
         );
     }
