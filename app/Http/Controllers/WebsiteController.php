@@ -318,7 +318,7 @@ class WebsiteController extends Controller
             app()->make('analytics-service')->changeArchiveStatus($website->analytics_id, WebsiteStatus::ARCHIVED);
             $website->delete();
 
-            $this->updateWebsiteListCache($publicAdministration);
+            $this->updateWebsiteListCache($website);
 
             return $this->websiteResponse($website);
         } catch (AnalyticsServiceException | BindingResolutionException $exception) {
@@ -757,7 +757,7 @@ class WebsiteController extends Controller
 
         $this->manageWebsitePermissionsOnNonAdministrators($validatedData, $currentPublicAdministration, $website);
 
-        $this->updateWebsiteListCache($publicAdministration);
+        $this->updateWebsiteListCache($website);
 
         return [
             'website' => $website,
@@ -793,7 +793,7 @@ class WebsiteController extends Controller
 
         $this->manageWebsitePermissionsOnNonAdministrators($validatedData, $currentPublicAdministration, $website);
 
-        $this->updateWebsiteListCache($publicAdministration);
+        $this->updateWebsiteListCache($website);
 
         return $website;
     }
@@ -849,23 +849,11 @@ class WebsiteController extends Controller
         });
     }
 
-    private function updateWebsiteListCache(PublicAdministration $publicAdministration)
+    private function updateWebsiteListCache(Website $website)
     {
-        $list = $publicAdministration->websites()->get()
-            ->map(function ($website) {
-                $url = collect($website->toArray())
-                    ->only(['url'])
-                    ->all();
+        $id = $website->analytics_id;
+        $list = app()->make('analytics-service')->getSiteUrlsFromId($id);
 
-                $url = $url['url'];
-
-                $hasProtocol = Str::startsWith($url, 'http');
-
-                return $hasProtocol ? $url : 'http://' . $url . ' ' . 'https://' . $url;
-            })->values()->toArray();
-
-        $id = $publicAdministration['id'];
-
-        $this->redisCache->set('websiteList-' . $id, implode(' ', $list));
+        $this->redisCache->set($id, implode(' ', $list));
     }
 }
