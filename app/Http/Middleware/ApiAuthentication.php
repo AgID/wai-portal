@@ -40,7 +40,9 @@ class ApiAuthentication extends StartSession
         }
 
         $keys = new Key();
+
         $selectKey = $keys->getKeyFromConsumerId($consumerId);
+
         $publicAdministration = $selectKey->publicAdministration()->first();
 
         $request->attributes->add(['publicAdministration' => $publicAdministration]);
