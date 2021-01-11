@@ -4,6 +4,7 @@ namespace App\Models;
 
 use BenSampo\Enum\Traits\CastsEnums;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Key extends Model
 {
@@ -25,12 +26,12 @@ class Key extends Model
         return 'consumer_id';
     }
 
-    public function getKeyFromConsumerId(string $consumerID): key
+    public function getKeyFromConsumerId(string $consumerID): ?Key
     {
-        return static::where('consumer_id', $consumerID)->first();
+        return Key::where('consumer_id', $consumerID)->first();
     }
 
-    public function publicAdministration()
+    public function publicAdministration(): BelongsTo
     {
         return $this->belongsTo(PublicAdministration::class);
     }
