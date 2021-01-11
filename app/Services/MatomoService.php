@@ -451,7 +451,6 @@ class MatomoService implements AnalyticsServiceContract
             'idSite' => $idSite,
             'period' => 'range',
             'date' => $from . ',' . now()->format('Y-m-d'),
-            'trigger' => 'archivephp',
             'token_auth' => $this->tokenAuth,
         ];
         $response = $this->apiCall($params);
@@ -477,7 +476,6 @@ class MatomoService implements AnalyticsServiceContract
             'idSite' => $idSite,
             'period' => 'month',
             'date' => 'yesterday',
-            'trigger' => 'archivephp',
             'token_auth' => $this->tokenAuth,
         ];
         $response = $this->apiCall($params);
@@ -503,7 +501,6 @@ class MatomoService implements AnalyticsServiceContract
             'idSite' => $idSite,
             'period' => 'day',
             'date' => 'last' . $days,
-            'trigger' => 'archivephp',
             'token_auth' => $this->tokenAuth,
         ];
 
@@ -530,7 +527,6 @@ class MatomoService implements AnalyticsServiceContract
             'period' => 'day',
             'date' => 'last' . $days,
             'pageUrl' => $url,
-            'trigger' => 'archivephp',
             'token_auth' => $this->tokenAuth,
         ];
 
@@ -580,7 +576,6 @@ class MatomoService implements AnalyticsServiceContract
             'definition' => $segment,
             'enabledAllUsers' => 1,
             'autoArchive' => 1,
-            'trigger' => 'archivephp',
             'token_auth' => $this->tokenAuth,
         ];
 
@@ -634,7 +629,6 @@ class MatomoService implements AnalyticsServiceContract
             'period' => 'day',
             'date' => 'last' . $days,
             'segment' => $segment,
-            'trigger' => 'archivephp',
             'token_auth' => $this->tokenAuth,
         ];
 
