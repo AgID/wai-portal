@@ -60,13 +60,10 @@ class SuperAdminUserPasswordTest extends TestCase
     {
         Queue::fake();
         Notification::fake();
-        $this->post(
-            route('admin.password.reset.send'),
-            [
-                'email' => $this->user->email,
-            ],
-            )
-            ->assertRedirect(route('home'));
+        $this->post(route('admin.password.reset.send'), [
+            'email' => $this->user->email,
+        ])
+        ->assertRedirect(route('home'));
 
         Notification::assertSentTo([$this->user], PasswordResetRequestEmail::class);
         Queue::assertPushed(ClearPasswordResetToken::class);
@@ -79,13 +76,10 @@ class SuperAdminUserPasswordTest extends TestCase
     {
         Queue::fake();
         Notification::fake();
-        $this->post(
-            route('admin.password.reset.send'),
-            [
-                'email' => 'nonexisting@example.com',
-            ],
-            )
-            ->assertRedirect(route('home'));
+        $this->post(route('admin.password.reset.send'), [
+            'email' => 'nonexisting@webanalytics.italia.it',
+        ])
+        ->assertRedirect(route('home'));
 
         Notification::assertNothingSent();
         Queue::assertNotPushed(ClearPasswordResetToken::class);
@@ -104,15 +98,13 @@ class SuperAdminUserPasswordTest extends TestCase
 
         Event::fake();
 
-        $this->post(
-            route('admin.password.reset'),
-            [
-                'email' => $this->user->email,
-                'token' => $token,
-                'password' => 'Nu0vaP4ssword!',
-                'password_confirmation' => 'Nu0vaP4ssword!',
-            ])
-            ->assertRedirect(route('admin.dashboard'));
+        $this->post(route('admin.password.reset'), [
+            'email' => $this->user->email,
+            'token' => $token,
+            'password' => 'Nu0vaP4ssword!',
+            'password_confirmation' => 'Nu0vaP4ssword!',
+        ])
+        ->assertRedirect(route('admin.dashboard'));
 
         Event::assertDispatched(UserUpdated::class);
         Event::assertDispatched(PasswordReset::class, function ($event) {
@@ -128,15 +120,13 @@ class SuperAdminUserPasswordTest extends TestCase
         Event::fake();
         $token = hash_hmac('sha256', Str::random(40), config('app.key'));
 
-        $this->post(
-            route('admin.password.reset'),
-            [
-                'email' => $this->user->email,
-                'token' => $token,
-                'password' => 'Nu0vaP4ssword!',
-                'password_confirmation' => 'Nu0vaP4ssword!',
-            ])
-            ->assertRedirect(route('admin.password.reset.show'));
+        $this->post(route('admin.password.reset'), [
+            'email' => $this->user->email,
+            'token' => $token,
+            'password' => 'Nu0vaP4ssword!',
+            'password_confirmation' => 'Nu0vaP4ssword!',
+        ])
+        ->assertRedirect(route('admin.password.reset.show'));
 
         Event::assertNotDispatched(UserUpdated::class);
         Event::assertNotDispatched(PasswordReset::class);
@@ -152,13 +142,10 @@ class SuperAdminUserPasswordTest extends TestCase
         Event::fake();
 
         $this->actingAs($this->user)
-            ->post(
-                route('admin.password.change'),
-                [
-                    'password' => 'Nu0vaP4ssword!',
-                    'password_confirmation' => 'Nu0vaP4ssword!',
-                ]
-            )
+            ->post(route('admin.password.change'), [
+                'password' => 'Nu0vaP4ssword!',
+                'password_confirmation' => 'Nu0vaP4ssword!',
+            ])
             ->assertRedirect(route('admin.dashboard'));
 
         Event::assertDispatched(UserUpdated::class, function ($event) {
@@ -176,13 +163,10 @@ class SuperAdminUserPasswordTest extends TestCase
 
         $this->actingAs($this->user)
             ->from(route('admin.password.change.show'))
-            ->post(
-                route('admin.password.change'),
-                [
-                    'password' => 'passwordsemplice',
-                    'password_confirmation' => 'passwordsemplice',
-                ]
-            )
+            ->post(route('admin.password.change'), [
+                'password' => 'passwordsemplice',
+                'password_confirmation' => 'passwordsemplice',
+            ])
             ->assertRedirect(route('admin.password.change.show'));
 
         Event::assertNotDispatched(UserUpdated::class);
