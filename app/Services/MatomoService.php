@@ -533,8 +533,6 @@ class MatomoService implements AnalyticsServiceContract
         return $this->apiCall($params);
     }
 
-    // SegmentEditor.getAll
-
     /**
      * Get all defined segments.
      *
@@ -548,6 +546,7 @@ class MatomoService implements AnalyticsServiceContract
         $params = [
             'method' => 'SegmentEditor.getAll',
             'token_auth' => $this->tokenAuth,
+            'filter_limit' => -1,
         ];
 
         return $this->apiCall($params);
@@ -566,12 +565,11 @@ class MatomoService implements AnalyticsServiceContract
      *
      * @return array the list of days with the number of visits
      */
-    public function segmentAdd(string $idSite, string $segment, string $name): array
+    public function addSegment(string $idSite, string $segment, string $name): array
     {
         $params = [
             'method' => 'SegmentEditor.add',
             'idSite' => $idSite,
-            'period' => 'range',
             'name' => $name,
             'definition' => $segment,
             'enabledAllUsers' => 1,
@@ -583,7 +581,7 @@ class MatomoService implements AnalyticsServiceContract
     }
 
     /**
-     * Get the device from a specific url.
+     * Get the country report for a specific segment.
      *
      * @param string $idSite the Analytics Service website ID
      * @param int $days the requested number of days
@@ -592,36 +590,9 @@ class MatomoService implements AnalyticsServiceContract
      * @throws CommandErrorException if command is unsuccessful
      * @throws AnalyticsServiceException if unable to connect the Analytics Service
      *
-     * @return array the list of days with the number of visits
+     * @return array the report with the countries detected for the specific segment
      */
-    public function getDeviceBySegment(string $idSite, int $days, string $segment): array
-    {
-        $params = [
-            'method' => 'DevicesDetection.getType',
-            'idSite' => $idSite,
-            'period' => 'day',
-            'date' => 'last' . $days,
-            'segment' => $segment,
-            'trigger' => 'archivephp',
-            'token_auth' => $this->tokenAuth,
-        ];
-
-        return $this->apiCall($params);
-    }
-
-    /**
-     * Get the country from a specific url.
-     *
-     * @param string $idSite the Analytics Service website ID
-     * @param int $days the requested number of days
-     * @param string $segment the segment of the report
-     *
-     * @throws CommandErrorException if command is unsuccessful
-     * @throws AnalyticsServiceException if unable to connect the Analytics Service
-     *
-     * @return array the list of days with the number of visits
-     */
-    public function getCountryBySegment(string $idSite, int $days, string $segment): array
+    public function getCountriesInSegment(string $idSite, int $days, string $segment): array
     {
         $params = [
             'method' => 'UserCountry.getCountry',
