@@ -26,6 +26,7 @@ import HighlightBar from './highlightBar';
 import Trackers from './trackers';
 import Swagger from './swagger'
 import keyPermissionsToggles from './keyPermissionsToggles';
+import PreviewWidgets from './previewWidgets';
 
 $(() => {
     Forms.init();
@@ -41,6 +42,7 @@ $(() => {
     HighlightBar.init();
     Trackers.init();
     Swagger.init();
+    PreviewWidgets.init();
     Datatables.init([
         datatableApi => LogsDatatables.preDatatableInit(datatableApi),
     ], [
