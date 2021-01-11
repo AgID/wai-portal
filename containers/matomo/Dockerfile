@@ -49,7 +49,7 @@ RUN if [ -n "$MATOMO_PLUGIN_USERSMANAGERONLYSUPERUSER_VERSION" ]; then \
     && sed -i -E -e 's/(@MATOMO_PLUGINS@)/Plugins[] = "UsersManagerOnlySuperUser"\n\1/g' /opt/matomo/config/config.ini.php \
     && sed -i -E -e 's/(@MATOMO_PLUGINS_INSTALLED@)/PluginsInstalled[] = "UsersManagerOnlySuperUser"\n\1/g' /opt/matomo/config/config.ini.php \
     && sed -i -E -e 's/(@MATOMO_MORE_CONFIG@)/[UsersManagerOnlySuperUser]\n\1/g' /opt/matomo/config/config.ini.php \
-    && sed -i -E -e 's/(@MATOMO_MORE_CONFIG@)/users_manager_only_super_user_enabled = @MATOMO_PLUGIN_USERSMANAGERONLYSUPERUSER_ENABLED@\n\n\1/g' /opt/matomo/config/config.ini.php \
+    && sed -i -E -e 's/(@MATOMO_MORE_CONFIG@)/users_manager_only_super_user_enabled = @MATOMO_PLUGIN_USERSMANAGERONLYSUPERUSER_ENABLED@\n\1/g' /opt/matomo/config/config.ini.php \
 ;fi
 
 RUN if [ -n "$MATOMO_PLUGIN_DISABLESITETRACKING_VERSION" ]; then \
