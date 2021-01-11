@@ -270,6 +270,9 @@ Route::middleware('spid.auth', 'auth', 'verified:verification.notice')->group(fu
                 Route::put('/{website}', 'WebsiteController@update')
                 ->name('websites.update');
 
+                Route::get('/{website}/widgets/', 'WidgetsController@index')
+                ->name('websites.show.widgets');
+
                 Route::patch('/{website}/archive', 'WebsiteController@archive')
                 ->name('websites.archive');
 
