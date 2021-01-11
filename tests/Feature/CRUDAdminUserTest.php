@@ -7,6 +7,7 @@ use App\Enums\UserRole;
 use App\Enums\UserStatus;
 use App\Enums\WebsiteAccessType;
 use App\Events\User\UserDeleted;
+use App\Events\User\UserEmailForPublicAdministrationChanged;
 use App\Events\User\UserInvited;
 use App\Events\User\UserReactivated;
 use App\Events\User\UserSuspended;
@@ -454,7 +455,7 @@ class CRUDAdminUserTest extends TestCase
         $publicAdministration = factory(PublicAdministration::class)
             ->state('active')
             ->create();
-        $publicAdministration->users()->sync([$user->id]);
+        $publicAdministration->users()->sync([$user->id => ['user_status' => UserStatus::ACTIVE, 'user_email' => 'old@webanalytics.italia.it']]);
         $website = factory(Website::class)->create([
             'public_administration_id' => $publicAdministration->id,
         ]);
@@ -478,6 +479,7 @@ class CRUDAdminUserTest extends TestCase
             ]), [
                 '_token' => 'test',
                 'email' => 'new@webanalytics.italia.it',
+                'emailPublicAdministrationUser' => 'new@webanalytics.italia.it',
                 'fiscal_number' => $user->fiscal_number,
                 'is_admin' => '1',
                 'permissions' => [
@@ -512,7 +514,7 @@ class CRUDAdminUserTest extends TestCase
         $publicAdministration = factory(PublicAdministration::class)
             ->state('active')
             ->create();
-        $publicAdministration->users()->sync([$user->id], false);
+        $publicAdministration->users()->sync([$user->id => ['user_status' => UserStatus::ACTIVE, 'user_email' => 'old@webanalytics.italia.it']]);
         $website = factory(Website::class)->create([
             'public_administration_id' => $publicAdministration->id,
         ]);
@@ -530,6 +532,7 @@ class CRUDAdminUserTest extends TestCase
             ]), [
                 '_token' => 'test',
                 'email' => $user->email,
+                'emailPublicAdministrationUser' => 'old@webanalytics.italia.it',
                 'fiscal_number' => $user->fiscal_number,
                 'is_admin' => '1',
                 'permissions' => [
@@ -567,7 +570,7 @@ class CRUDAdminUserTest extends TestCase
         $publicAdministration = factory(PublicAdministration::class)
             ->state('active')
             ->create();
-        $publicAdministration->users()->sync([$user->id], false);
+        $publicAdministration->users()->sync([$user->id => ['user_status' => UserStatus::ACTIVE, 'user_email' => 'old@webanalytics.italia.it']]);
         $website = factory(Website::class)->create([
             'public_administration_id' => $publicAdministration->id,
         ]);
@@ -584,6 +587,7 @@ class CRUDAdminUserTest extends TestCase
             ]), [
                 '_token' => 'test',
                 'email' => $user->email,
+                'emailPublicAdministrationUser' => 'old@webanalytics.italia.it',
                 'permissions' => [
                     $website->id => [
                         UserPermission::READ_ANALYTICS,
