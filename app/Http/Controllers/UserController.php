@@ -181,7 +181,6 @@ class UserController extends Controller
 
         $websitesPermissionsDatatable = $this->getDatatableWebsitesPermissionsParams($websitesPermissionsDatatableSource, true);
 
-
         return view('pages.users.show')->with(compact('user', 'allRoles', 'emailPublicAdministrationUser'))
             ->with($roleAwareUrls)
             ->with($websitesPermissionsDatatable);
