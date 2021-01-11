@@ -3,7 +3,6 @@
 namespace App\Traits;
 
 use App\Exceptions\AnalyticsServiceException;
-use App\Exceptions\CommandErrorException;
 use App\Exceptions\SDGServiceException;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Support\Facades\Storage;
@@ -14,6 +13,8 @@ use stdClass;
  */
 trait BuildDatasetForSingleDigitalGatewayAPI
 {
+    use ParseUrls;
+
     /**
      * Build the dataset to Single Digital Gateway API for the Statistics on Information Services.
      *
@@ -21,13 +22,15 @@ trait BuildDatasetForSingleDigitalGatewayAPI
      */
     public function buildDatasetForSDG()
     {
-        $arrayUrls = $this->getUrlsFromConfig('urls');
-
         $analyticsService = app()->make('analytics-service');
 
         $days = config('single-digital-gateway-service.last_days');
+        $columnSeparator = config('single-digital-gateway-service.url_column_separator_csv');
         $columnIndexUrl = config('single-digital-gateway-service.url_column_index_csv');
         $matomoRollupId = config('analytics-service.public_dashboard');
+        $cronArchivingEnabled = config('analytics-service.cron_archiving_enabled');
+
+        $arrayUrls = $this->getUrlsFromConfig($columnSeparator, $columnIndexUrl);
 
         date_default_timezone_set('UTC');
         $referencePeriod = new stdClass();
@@ -42,153 +45,154 @@ trait BuildDatasetForSingleDigitalGatewayAPI
         $data->sources = [];
 
         try {
-            if ($matomoRollupId) {
-                $definedSegments = $analyticsService->getAllSegments();
+            $allSegments = $analyticsService->getAllSegments();
+            $allSegmentsNames = array_column($allSegments, 'idsegment');
+            $sdgDeviceTypes = [
+                'PC',
+                'Smartphone',
+                'Tablet',
+                'Others',
+            ];
 
-                foreach ($arrayUrls as $urlRow) {
-                    $source = new stdClass();
-                    if (!isset($urlRow[$columnIndexUrl])) {
-                        throw new SDGServiceException('Error during dataset build: CSV file not well formed.');
-                    }
+            foreach ($arrayUrls as $url) {
+                $source = new stdClass();
+                $source->sourceUrl = trim($url);
 
-                    $source->sourceUrl = $urlRow[$columnIndexUrl];
+                if ((0 !== strpos($source->sourceUrl, 'http')) || !filter_var($source->sourceUrl, FILTER_VALIDATE_URL)) {
+                    report(new SDGServiceException("Error during dataset build: '{$source->sourceUrl}' is not a valid url."));
 
-                    if ((0 !== strpos($source->sourceUrl, 'http')) || !filter_var($source->sourceUrl, FILTER_VALIDATE_URL)) {
-                        throw new SDGServiceException("Error during dataset build: {$source->sourceUrl} is not a valid url.");
-                    }
-
-                    $siteId = $analyticsService->getSitesIdFromUrl($this->getFQDNFromUrl($source->sourceUrl));
-
-                    if ($siteId && $siteId[0]) {
-                        $siteId = $siteId[0]['idsite'];
-                    } else {
-                        throw new SDGServiceException("Error during dataset build: Site not found for {$source->sourceUrl} url.");
-                    }
-
-                    $source->statistics = [];
-                    $segmentExists = array_search($source->sourceUrl, array_column($definedSegments, 'name'));
-
-                    $segment = urlencode('pageUrl==' . $source->sourceUrl);
-                    if (false === $segmentExists) {
-                        $analyticsService->segmentAdd($siteId, $segment, $source->sourceUrl);
-                    }
-
-                    $countries = $analyticsService->getCountryBySegment($siteId, $days, $segment);
-                    $countriesSegmented = [];
-                    $device_days_countries = [];
-
-                    foreach ($countries as $country) {
-                        if (!isset($country[0])) {
-                            continue;
-                        }
-
-                        $segmentName = $country[0]['code'] . '-' . $source->sourceUrl;
-                        $segmentCountry = $country[0]['segment'] . ';' . $segment;
-
-                        if (!in_array($segmentCountry, $countriesSegmented)) {
-                            array_push($countriesSegmented, $segmentCountry);
-
-                            $segmentExists = array_search($segmentName, array_column($definedSegments, 'name'));
-                            if (false === $segmentExists) {
-                                $analyticsService->segmentAdd($siteId, $segmentCountry, $source->sourceUrl);
-                            }
-
-                            $device_days_countries[$country[0]['code']] = $analyticsService->getDeviceBySegment($siteId, $days, $segmentCountry);
-                        }
-                    }
-
-                    $nbVisits = [];
-                    foreach ($device_days_countries as $country => $device_days) {
-                        foreach ($device_days as $report_device) {
-                            foreach ($report_device as $device) {
-                                if (!isset($nbVisits[$device['label']])) {
-                                    $element = new stdClass();
-                                    $element->nbVisits = $device['nb_visits'];
-                                    $element->originatingCountry = strtoupper($country);
-                                    $element->deviceType = $this->getValidDeviceTypeLabel($device['label']);
-                                    $nbVisits[$device['label']] = $element;
-                                } else {
-                                    $nbVisits[$device['label']]->nbVisits += $device['nb_visits'];
-                                }
-                            }
-                        }
-                    }
-
-                    foreach ($nbVisits as $visit) {
-                        array_push($source->statistics, $visit);
-                    }
-                    array_push($data->sources, $source);
+                    continue;
                 }
+
+                $siteId = $analyticsService->getSitesIdFromUrl($this->getFqdnFromUrl($source->sourceUrl));
+
+                if (!empty($siteId)) {
+                    $siteId = $siteId[0]['idsite'];
+                } else {
+                    report(new SDGServiceException("Error during dataset build: site id not found for '{$source->sourceUrl}' url."));
+
+                    continue;
+                }
+
+                $newSegmentsAdded = false;
+
+                foreach ($sdgDeviceTypes as $sdgDeviceType) {
+                    $segmentName = $source->sourceUrl . '___' . $sdgDeviceType;
+                    $segmentDefinition = 'pageUrl==' . urlencode($source->sourceUrl) . ';' . static::getDeviceTypeSegmentParameter($sdgDeviceType);
+                    $segmentExists = in_array($segmentName, $allSegmentsNames);
+
+                    if (!$segmentExists) {
+                        $analyticsService->addSegment($siteId, $segmentDefinition, $segmentName);
+                        $newSegmentsAdded = true;
+                    }
+                }
+
+                if ($newSegmentsAdded && $cronArchivingEnabled) {
+                    report(new SDGServiceException("Cron archiving is enabled and new segments has been added: reports for '{$source->sourceUrl}' will be available after the next archiving job."));
+
+                    continue;
+                }
+
+                $source->statistics = [];
+                $sourceStatistics = [];
+
+                foreach ($sdgDeviceTypes as $sdgDeviceType) {
+                    $segmentDefinition = 'pageUrl==' . urlencode($source->sourceUrl) . ';' . static::getDeviceTypeSegmentParameter($sdgDeviceType);
+                    $countryDays = $analyticsService->getCountriesInSegment($siteId, $days, $segmentDefinition);
+
+                    foreach ($countryDays as $countryDay) {
+                        foreach ($countryDay as $country) {
+                            $deviceCountry = $sdgDeviceType . '_' . $country['code'];
+                            $sourceStatistics[$deviceCountry]['nbVisits'] += $country['nb_visits'];
+                            $sourceStatistics[$deviceCountry]['originatingCountry'] = $country['code'];
+                            $sourceStatistics[$deviceCountry]['deviceType'] = $sdgDeviceType;
+                        }
+                    }
+
+                    $source->statistics += array_values($sourceStatistics);
+                }
+
+                array_push($data->sources, $source);
             }
 
             $data->nbEntries = count($data->sources);
         } catch (BindingResolutionException $exception) {
-            report($exception);
-
-            return [
-                'failed' => [
-                    'reason' => 'SDG - Unable to bind to Analytics Service',
-                ],
-            ];
+            throw new SDGServiceException('Unable to bind to the Analytics Service: ' . $exception->getMessage());
         } catch (AnalyticsServiceException $exception) {
-            report($exception);
-
-            return [
-                'failed' => [
-                    'reason' => 'SDG - Unable to contact the Analytics Service',
-                ],
-            ];
-        } catch (CommandErrorException $exception) {
-            report($exception);
-
-            return [
-                'failed' => [
-                    'reason' => 'SDG -  Invalid command for Analytics Service',
-                    'message' => $exception->getMessage(),
-                ],
-            ];
+            throw new SDGServiceException('Unable to contact to the Analytics Service: ' . $exception->getMessage());
         }
 
         return $data;
     }
 
-    protected function getUrlsFromConfig($name)
+    /**
+     * Return an array of URLs to be used for the dataset build.
+     *
+     * @param string $separator the separator char for the CSV
+     * @param string $index the index of the column containing the URL
+     *
+     * @throws SDGServiceException if the CSV is not valid or contains invalid values
+     *
+     * @return array the URLs to be used for the dataset build
+     */
+    protected function getUrlsFromConfig(string $separator, int $index): array
     {
-        return array_map('str_getcsv', file(Storage::disk('persistent')->path('sdg/urls.csv')));
+        try {
+            $csvContents = file(Storage::disk('persistent')->path('sdg/urls.csv'));
+        } catch (Exception $e) {
+            throw new SDGServiceException("Error reading the CSV file populated with SDG URLs.\n" . $e->getMessage());
+        }
+
+        $urls = array_map(function ($row) use ($separator, $index) {
+            $rowArray = str_getcsv($row, $separator);
+
+            if (!isset($rowArray[$index])) {
+                report(new SDGServiceException('Error during dataset build: CSV file not well formed.'));
+
+                return;
+            }
+
+            return $rowArray[$index];
+        }, $csvContents);
+
+        return $urls;
     }
 
     /**
-     * Return validated string for device type.
+     * Return segment parameter for a specific SDG device type.
      *
-     * @param string $type the device type
+     * @param string $type the SDG device type
      *
-     * @return array the validated device type
+     * @return array the segment parameter for the provided device type
      */
-    private function getValidDeviceTypeLabel($type): string
+    private static function getDeviceTypeSegmentParameter(string $type): string
     {
-        /*
-        * Valid values for device type: PC, Tablet, Smartphone, Others
-        *
-        * Values from Matomo: desktop, smartphone, tablet, feature phone, console, tv, car browser, smart display,
-        * camera, portable media player, phablet, smart speaker, wearable
-        */
-
         switch (strtolower($type)) {
-            case 'desktop':
-                return 'PC';
+            case 'pc':
+                return 'deviceType==desktop';
             case 'smartphone':
-                return 'Smartphone';
+                return 'deviceType==smartphone';
             case 'tablet':
-                return 'Tablet';
-            default:
-                return 'Others';
+                return 'deviceType==tablet';
+            case 'others':
+                return 'deviceType!=desktop;deviceType!=smartphone;deviceType!=tablet';
         }
     }
 
-    private function getFQDNFromUrl($url)
+    /**
+     * Return SDG country codes from ISO-3166 to SDG standard.
+     * N.B. Greece is a documented exception required by the EC.
+     *
+     * @param string $code the country code
+     *
+     * @return string the SDG country code
+     */
+    private static function getSdgCountryCode(string $code): string
     {
-        $urlParts = parse_url($url);
+        if ('gr' === strtolower($code)) {
+            return 'EL';
+        }
 
-        return $urlParts['scheme'] . '://' . $urlParts['host'];
+        return strtoupper($code);
     }
 }
