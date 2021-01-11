@@ -142,6 +142,11 @@ RUN sed -i -e s/@MATOMO_WAI_URL@/${MATOMO_WAI_URL}/g /opt/matomo/config/config.i
     sed -i -e s/@MATOMO_PLUGINS_INSTALLED@//g /opt/matomo/config/config.ini.php && \
     sed -i -e s/@MATOMO_MORE_CONFIG@//g /opt/matomo/config/config.ini.php
 
+ARG MATOMO_CRON_ARCHIVING_ENABLED
+RUN if [ "${MATOMO_CRON_ARCHIVING_ENABLED}" == "true" ]; then enabled=1; disabled=0; else enabled=0; disabled=1; fi && \
+    sed -i -e "s/@MATOMO_CRON_ARCHIVING_ENABLED@/$enabled/g" /opt/matomo/config/config.ini.php && \
+    sed -i -e "s/@MATOMO_CRON_ARCHIVING_DISABLED@/$disabled/g" /opt/matomo/config/config.ini.php
+
 ARG MATOMO_PLUGIN_USERSMANAGERONLYSUPERUSER_ENABLED
 RUN sed -i -e s/@MATOMO_PLUGIN_USERSMANAGERONLYSUPERUSER_ENABLED@/${MATOMO_PLUGIN_USERSMANAGERONLYSUPERUSER_ENABLED}/g /opt/matomo/config/config.ini.php
 

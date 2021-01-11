@@ -202,6 +202,9 @@ MATOMO_ROOT_PASSWORD=Password
 # Matomo super user API Key, put any MD5 hash.
 MATOMO_ROOT_APIKEY=d300edfad46f2723f0df5b5b5877033b
 
+# Matomo cron archiving enabled
+MATOMO_CRON_ARCHIVING_ENABLED=false
+
 # Matomo public dashboard user name
 MATOMO_PUBLIC_USER=viewer
 
