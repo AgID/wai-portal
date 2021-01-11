@@ -29,7 +29,7 @@ export default (() => {
                 ].join(" "),
                 image: "/images/website-archive.svg"
             };
-            console.log(">>>before success")
+
             const success = ()  => {
                 Notification.showNotification(
                     I18n.t("Chiave eliminata"),

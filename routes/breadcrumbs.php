@@ -85,6 +85,12 @@ Breadcrumbs::for('websites.show', function ($trail, $website) {
     $trail->push($website->name ?? '', route('websites.show', ['website' => $website]));
 });
 
+// Web Analytics Italia > Widgets Preview
+Breadcrumbs::for('websites.show.widgets', function ($trail, $website) {
+    $trail->parent('websites.show', $website);
+    $trail->push(__('Preview Widgets'), route('websites.show.widgets', ['website' => $website]));
+});
+
 // Web Analytics Italia > Websites > [website->name] (edit)
 Breadcrumbs::for('websites.edit', function ($trail, $website) {
     $trail->parent('websites.index');
