@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use App\Exceptions\AnalyticsServiceException;
 use App\Exceptions\SDGServiceException;
+use Exception;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Support\Facades\Storage;
 use stdClass;
