@@ -17,7 +17,7 @@ it:
       public-playground: |
         Questo è l'ambiente **public playground**. Ogni settimana il sistema
         viene automaticamente resettato. [Maggiori
-        informazioni](https://webanalytics.italia.it/faq#public-playground).
+        informazioni](https://play.webanalytics.italia.it/faq#public-playground).
       staging: |
         Questo è l'ambiente di **staging**. L'istanza potrebbe essere resettata
         senza preavviso.
