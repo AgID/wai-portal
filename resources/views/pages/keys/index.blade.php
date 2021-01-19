@@ -8,11 +8,15 @@
         @component('layouts.components.box')
         @if (session()->has('tenant_id') || $authUser->can(UserPermission::ACCESS_ADMIN_AREA))
         @include('partials.datatable')
-        <div class="show-when-active mt-4 text-center text-sm-left{{ $authUser->cannot(UserPermission::MANAGE_WEBSITES) ? ' d-none' : '' }}">
+        @if ($authUser->cannot(UserPermission::MANAGE_WEBSITES))
+            <p><strong>{{__('È necessario attivare almeno un sito per accedere alla gestione delle chiavi')}}</strong></p>
+        @endif
+        <div class="show-when-active mt-4 text-center text-sm-left">
             @component('layouts.components.link_button', [
                 'icon' => 'it-plus',
                 'link' => $newKeyUrl,
                 'size' => 'lg',
+                'disabled' => $authUser->cannot(UserPermission::MANAGE_WEBSITES),
             ])
             {{ __('aggiungi chiave') }}
             @endcomponent
