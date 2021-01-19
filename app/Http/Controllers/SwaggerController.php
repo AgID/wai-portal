@@ -12,12 +12,21 @@ class SwaggerController extends Controller
 
     public function index(Request $request, PublicAdministration $publicAdministration)
     {
+        $kongApiUrl = config('kong-service.endpoint_url');
         $publicAdministration = ($publicAdministration->id ?? false) ? $publicAdministration : current_public_administration();
 
+        if(null === $publicAdministration){
+            return redirect()->route('websites.index');
+        }
+
         $roleAwareUrls = $this->getRoleAwareUrlArray([
-            'keys' => 'api-key.index',
+            'keys' => 'api-key.index'
         ], [], $publicAdministration);
 
-        return view('pages.swagger')->with($roleAwareUrls);
+        $config = [
+            'apiUrl' => $kongApiUrl
+        ];
+
+        return view('pages.swagger')->with($roleAwareUrls)->with($config);
     }
 }
