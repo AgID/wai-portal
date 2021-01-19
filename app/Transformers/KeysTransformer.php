@@ -22,8 +22,6 @@ class KeysTransformer extends TransformerAbstract
     {
         $authUser = auth()->user();
 
-        $authUserCanAccessAdminArea = $authUser->can(UserPermission::ACCESS_ADMIN_AREA);
-
         $data = [
             'client_name' => [
                 'display' => implode('', [
