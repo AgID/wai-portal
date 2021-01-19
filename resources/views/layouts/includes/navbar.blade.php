@@ -34,11 +34,35 @@
                             @else
                             <ul class="navbar-nav secondary ml-auto">
                                 @foreach (config('site.menu_items.secondary') as $secondaryMenuItem)
-                                <li class="nav-item">
-                                    <a class="nav-link{{ request()->route()->named($secondaryMenuItem['route']) ? ' active' : '' }}" href="{{ route($secondaryMenuItem['route']) }}">
-                                        <span>{{ __($secondaryMenuItem['name']) }}</span>
-                                    </a>
-                                </li>
+                                @if (
+                                (
+                                    $secondaryMenuItem &&
+                                    !array_key_exists('requires', $secondaryMenuItem)
+                                )
+                                ||
+                                (
+                                    !$secondaryMenuItem["requires"]["auth"]
+                                ) ||
+                                (
+                                    $secondaryMenuItem["requires"]["auth"] &&
+                                    ( $authUser || $spidAuthUser ) && 
+                                    (
+                                        (
+                                            !$secondaryMenuItem["requires"]["publicAdministration"]
+                                        ) ||
+                                        (
+                                            $secondaryMenuItem["requires"]["publicAdministration"] &&
+                                            $hasPublicAdministration
+                                        )
+                                    )
+                                )
+                                )
+                                    <li class="nav-item">
+                                        <a class="nav-link{{ request()->route()->named($secondaryMenuItem['route']) ? ' active' : '' }}" href="{{ route($secondaryMenuItem['route']) }}">
+                                            <span>{{ __($secondaryMenuItem['name']) }}</span>
+                                        </a>
+                                    </li>
+                                @endif
                                 @endforeach
                             </ul>
                             @endif
