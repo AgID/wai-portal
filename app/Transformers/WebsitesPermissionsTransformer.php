@@ -132,16 +132,18 @@ class WebsitesPermissionsTransformer extends TransformerAbstract
         });
     }
 
-    protected function getKeyPermission(int $id, array $permissions, string $key): bool
+    protected function getKeyPermission(int $id, ?array $permissions, string $key): bool
     {
+        if($permissions === null){
+            return false;
+        }
+
         $column = array_column($permissions, 'id');
 
         $found_key = array_search($id, $column);
         $site = $permissions[$found_key];
         $permission = $site['permission'];
 
-        $hasPermission = str_contains($permission, $key);
-
-        return $hasPermission;
+        return str_contains($permission, $key);
     }
 }
