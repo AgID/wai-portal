@@ -44,6 +44,9 @@ it:
           route: faq
         - name: API
           route: show.swagger
+          requires:
+              auth: true
+              publicAdministration: true
 
     slim_header_links:
       - name: Piano triennale
@@ -69,6 +72,9 @@ it:
           route: faq
         - name: API
           route: show.swagger
+          requires:
+              auth: true
+              publicAdministration: true
         # - name: Open data
         #   route: open-data
         - name: Guida utente
