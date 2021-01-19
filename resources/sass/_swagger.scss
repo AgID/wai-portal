@@ -1,0 +1,25 @@
+$titillium: "Titillium Web", geneva, tahoma, sans-serif !important;
+
+.swagger-ui {
+  font-family: $titillium;
+
+  pre,
+  span,
+  a,
+  div,
+  button,
+  h2,
+  h3,
+  h4,
+  select,
+  option,
+  td,
+  input,
+  p {
+    font-family: $titillium;
+  }
+
+  pre {
+    overflow: hidden;
+  }
+}
