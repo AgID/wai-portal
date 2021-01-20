@@ -12,19 +12,21 @@
             "servers": [
                 {
                     "description": "Staging Server",
-                    "url": "https://staging.webanalytics.itaia.it/api"
+                    "url": "https://staging.webanalytics.italia.it/api"
                 },
                 {
                     "description": "Public Play Ground Server",
-                    "url": "https://play.webanalytics.itaia.it/api"
+                    "url": "https://play.webanalytics.italia.it/api"
                 },
                 {
                     "description": "Production Server",
-                    "url": "https://webanalytics.itaia.it/api"
+                    "url": "https://webanalytics.italia.it/api"
                 }
             ]
         }
     },
+    "servers": [
+      ],
     "paths": {
         "/api/users": {
             "post": {
@@ -212,18 +214,10 @@
             "SiteType": {
                 "type": "string",
                 "description": "Tipologia di sito",
-                "enum": [
-                    "site_type_1",
-                    "site_type_2",
-                    "site_type_3"
-                ]
+                "enum": ["site_type_1", "site_type_2", "site_type_3"]
             },
             "AddSiteRequest": {
-                "required": [
-                    "name",
-                    "url",
-                    "type"
-                ],
+                "required": ["name", "url", "type"],
                 "properties": null,
                 "name": {
                     "description": "Nome del sito",
@@ -285,10 +279,7 @@
             },
             "AddUserRequest": {
                 "type": "object",
-                "required": [
-                    "email",
-                    "fiscalNumber"
-                ],
+                "required": ["email", "fiscalNumber"],
                 "properties": {
                     "email": {
                         "type": "string"
@@ -330,10 +321,7 @@
             "UserStatus": {
                 "type": "string",
                 "description": "Stato dell'utente",
-                "enum": [
-                    "activated",
-                    "not_activated"
-                ]
+                "enum": ["activated", "not_activated"]
             },
             "UserInfoObjectArray": {
                 "type": "array",
