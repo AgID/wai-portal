@@ -15,16 +15,16 @@ class SwaggerController extends Controller
         $kongApiUrl = config('kong-service.api_url');
         $publicAdministration = ($publicAdministration->id ?? false) ? $publicAdministration : current_public_administration();
 
-        if(null === $publicAdministration){
+        if (null === $publicAdministration) {
             return redirect()->route('websites.index');
         }
 
         $roleAwareUrls = $this->getRoleAwareUrlArray([
-            'keys' => 'api-key.index'
+            'keys' => 'api-key.index',
         ], [], $publicAdministration);
 
         $config = [
-            'apiUrl' => $kongApiUrl
+            'apiUrl' => $kongApiUrl,
         ];
 
         return view('pages.swagger')->with($roleAwareUrls)->with($config);
