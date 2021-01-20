@@ -129,9 +129,9 @@
                     <token key="MATOMO_PLUGIN_USERSMANAGERONLYSUPERUSER_ENABLED" value="${MATOMO_PLUGIN_USERSMANAGERONLYSUPERUSER_ENABLED}" />
                     <token key="MATOMO_WIDGETS_URL" value="${MATOMO_WIDGETS_URL}" />
                     <token key="MATOMO_PLUGIN_UPDATEEXPOSEDFQDNLIST_VERSION" value="${MATOMO_PLUGIN_UPDATEEXPOSEDFQDNLIST_VERSION}" />
-                    <token key="MATOMO_PLUGIN_UPDATEEXPOSEDFQDNLIST_REDIS_IP" value="${MATOMO_PLUGIN_UPDATEEXPOSEDFQDNLIST_REDIS_IP}" />
+                    <token key="MATOMO_PLUGIN_UPDATEEXPOSEDFQDNLIST_REDIS_HOST" value="${MATOMO_PLUGIN_UPDATEEXPOSEDFQDNLIST_REDIS_HOST}" />
                     <token key="MATOMO_PLUGIN_UPDATEEXPOSEDFQDNLIST_REDIS_PORT" value="${MATOMO_PLUGIN_UPDATEEXPOSEDFQDNLIST_REDIS_PORT}" />
-                    <token key="MATOMO_PLUGIN_UPDATEEXPOSEDFQDNLIST_DB_INDEX" value="${MATOMO_PLUGIN_UPDATEEXPOSEDFQDNLIST_DB_INDEX}" />
+                    <token key="MATOMO_PLUGIN_UPDATEEXPOSEDFQDNLIST_REDIS_DB_INDEX" value="${MATOMO_PLUGIN_UPDATEEXPOSEDFQDNLIST_REDIS_DB_INDEX}" />
                     <token key="MATOMO_PLUGIN_DISABLESITETRACKING_VERSION" value="${MATOMO_PLUGIN_DISABLESITETRACKING_VERSION}" />
                     <token key="MATOMO_PLUGIN_QUEUEDTRACKING_VERSION" value="${MATOMO_PLUGIN_QUEUEDTRACKING_VERSION}" />
                     <token key="MATOMO_PLUGIN_PROTECTTRACKID_VERSION" value="${MATOMO_PLUGIN_PROTECTTRACKID_VERSION}" />
@@ -142,6 +142,7 @@
                     <token key="MATOMO_PLUGIN_RESETDATABASE_VERSION" value="${MATOMO_PLUGIN_RESETDATABASE_VERSION}" />
                     <token key="MATOMO_INGESTION_HOSTNAME" value="${MATOMO_INGESTION_HOSTNAME}" />
                     <token key="KONG_ENDPOINT_URL" value="${KONG_ENDPOINT_URL}" />
+                    <token key="KONG_API_URL" value="${KONG_API_URL}" />
                     <token key="KONG_ENDPOINT_FRONTEND_URL" value="${KONG_ENDPOINT_FRONTEND_URL}" />
                     <token key="POSTGRES_PASSWORD" value="${POSTGRES_PASSWORD}" />
                     <token key="POSTGRES_USER" value="${POSTGRES_USER}" />
@@ -557,11 +558,10 @@
                 <echo msg="Starting Docker kong..."/>
                 
                 <exec command="docker-compose up -d postgres kong-migrations kong" dir="containers" passthru="true" checkreturn="true"/>
-                <!--http://localhost:8001 da spostare nell'env -->
-                <exec command="curl -X POST -s ${KONG_ENDPOINT_FRONTEND_URL}/plugins/ --data &quot;name=prometheus&quot; > /dev/null" passthru="true" checkreturn="true"/>     
-                <exec command="curl -X POST -s ${KONG_ENDPOINT_FRONTEND_URL}/plugins/ --data &quot;name=oauth2&amp;config.enable_client_credentials=true&amp;config.global_credentials=true&amp;config.accept_http_if_already_terminated=true&quot; > /dev/null" passthru="true" checkreturn="true"/>
-                <exec command="curl -X POST -s ${KONG_ENDPOINT_FRONTEND_URL}/services --data &quot;name=portal&amp;url=https://nginx/api&quot; > /dev/null" passthru="true" checkreturn="true"/>     
-                <exec command="curl -X POST -s ${KONG_ENDPOINT_FRONTEND_URL}/services/portal/routes  --data &quot;paths[]=/portal&amp;name=portal&quot; > /dev/null" passthru="true" checkreturn="true"/> 
+                <exec command="curl -X POST -s ${KONG_ENDPOINT_FRONTEND_URL}/plugins/ --data &quot;name=prometheus&quot; > /dev/null" passthru="true"/>     
+                <exec command="curl -X POST -s ${KONG_ENDPOINT_FRONTEND_URL}/plugins/ --data &quot;name=oauth2&amp;config.enable_client_credentials=true&amp;config.global_credentials=true&amp;config.accept_http_if_already_terminated=true&quot; > /dev/null" passthru="true"/>
+                <exec command="curl -X POST -s ${KONG_ENDPOINT_FRONTEND_URL}/services --data &quot;name=portal&amp;url=https://nginx/api&quot; > /dev/null" passthru="true"/>     
+                <exec command="curl -X POST -s ${KONG_ENDPOINT_FRONTEND_URL}/services/portal/routes  --data &quot;paths[]=/portal&amp;name=portal&quot; > /dev/null" passthru="true"/> 
 
                 <echo msg="Kong up and running!"/>
             </then>
@@ -691,9 +691,9 @@
             --build-arg MATOMO_PLUGIN_USERSMANAGERONLYSUPERUSER_VERSION=${MATOMO_PLUGIN_USERSMANAGERONLYSUPERUSER_VERSION}
             --build-arg MATOMO_PLUGIN_USERSMANAGERONLYSUPERUSER_ENABLED=${MATOMO_PLUGIN_USERSMANAGERONLYSUPERUSER_ENABLED}
             --build-arg MATOMO_PLUGIN_UPDATEEXPOSEDFQDNLIST_VERSION=${MATOMO_PLUGIN_UPDATEEXPOSEDFQDNLIST_VERSION}
-            --build-arg MATOMO_PLUGIN_UPDATEEXPOSEDFQDNLIST_REDIS_IP=${MATOMO_PLUGIN_UPDATEEXPOSEDFQDNLIST_REDIS_IP}
+            --build-arg MATOMO_PLUGIN_UPDATEEXPOSEDFQDNLIST_REDIS_HOST=${MATOMO_PLUGIN_UPDATEEXPOSEDFQDNLIST_REDIS_HOST}
             --build-arg MATOMO_PLUGIN_UPDATEEXPOSEDFQDNLIST_REDIS_PORT=${MATOMO_PLUGIN_UPDATEEXPOSEDFQDNLIST_REDIS_PORT}
-            --build-arg MATOMO_PLUGIN_UPDATEEXPOSEDFQDNLIST_DB_INDEX=${MATOMO_PLUGIN_UPDATEEXPOSEDFQDNLIST_DB_INDEX}
+            --build-arg MATOMO_PLUGIN_UPDATEEXPOSEDFQDNLIST_REDIS_DB_INDEX=${MATOMO_PLUGIN_UPDATEEXPOSEDFQDNLIST_REDIS_DB_INDEX}
             --build-arg MATOMO_PLUGIN_DISABLESITETRACKING_VERSION=${MATOMO_PLUGIN_DISABLESITETRACKING_VERSION}
             --build-arg MATOMO_PLUGIN_QUEUEDTRACKING_VERSION=${MATOMO_PLUGIN_QUEUEDTRACKING_VERSION}
             --build-arg MATOMO_PLUGIN_PROTECTTRACKID_VERSION=${MATOMO_PLUGIN_PROTECTTRACKID_VERSION}
