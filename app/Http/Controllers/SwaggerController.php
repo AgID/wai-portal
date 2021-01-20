@@ -12,7 +12,7 @@ class SwaggerController extends Controller
 
     public function index(Request $request, PublicAdministration $publicAdministration)
     {
-        $kongApiUrl = config('kong-service.endpoint_url');
+        $kongApiUrl = config('kong-service.api_url');
         $publicAdministration = ($publicAdministration->id ?? false) ? $publicAdministration : current_public_administration();
 
         if(null === $publicAdministration){
