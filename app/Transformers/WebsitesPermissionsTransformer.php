@@ -134,7 +134,7 @@ class WebsitesPermissionsTransformer extends TransformerAbstract
 
     protected function getKeyPermission(int $id, ?array $permissions, string $key): bool
     {
-        if($permissions === null){
+        if (null === $permissions) {
             return false;
         }
 
