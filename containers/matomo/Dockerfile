@@ -62,9 +62,9 @@ RUN if [ -n "$MATOMO_PLUGIN_UPDATEEXPOSEDFQDNLIST_VERSION" ]; then \
     && sed -i -E -e 's/(@MATOMO_PLUGINS@)/Plugins[] = "UpdateExposedFqdnList"\n\1/g' /opt/matomo/config/config.ini.php \
     && sed -i -E -e 's/(@MATOMO_PLUGINS_INSTALLED@)/PluginsInstalled[] = "UpdateExposedFqdnList"\n\1/g' /opt/matomo/config/config.ini.php \
     && sed -i -E -e 's/(@MATOMO_MORE_CONFIG@)/[UpdateExposedFqdnList]\n\1/g' /opt/matomo/config/config.ini.php \
-    && sed -i -E -e 's/(@MATOMO_MORE_CONFIG@)/redis_ip = "@MATOMO_PLUGIN_UPDATEEXPOSEDFQDNLIST_REDIS_IP@"\n\1/g' /opt/matomo/config/config.ini.php \
+    && sed -i -E -e 's/(@MATOMO_MORE_CONFIG@)/redis_host = "@MATOMO_PLUGIN_UPDATEEXPOSEDFQDNLIST_REDIS_HOST@"\n\1/g' /opt/matomo/config/config.ini.php \
     && sed -i -E -e 's/(@MATOMO_MORE_CONFIG@)/redis_port = "@MATOMO_PLUGIN_UPDATEEXPOSEDFQDNLIST_REDIS_PORT@"\n\1/g' /opt/matomo/config/config.ini.php \
-    && sed -i -E -e 's/(@MATOMO_MORE_CONFIG@)/db_index = "@MATOMO_PLUGIN_UPDATEEXPOSEDFQDNLIST_DB_INDEX@"\n\1/g' /opt/matomo/config/config.ini.php \
+    && sed -i -E -e 's/(@MATOMO_MORE_CONFIG@)/redis_db_index = "@MATOMO_PLUGIN_UPDATEEXPOSEDFQDNLIST_REDIS_DB_INDEX@"\n\1/g' /opt/matomo/config/config.ini.php \
 ;fi
 
 RUN if [ -n "$MATOMO_PLUGIN_DISABLESITETRACKING_VERSION" ]; then \
@@ -160,12 +160,12 @@ RUN sed -i -e s/@MATOMO_WAI_URL@/${MATOMO_WAI_URL}/g /opt/matomo/config/config.i
 ARG MATOMO_PLUGIN_USERSMANAGERONLYSUPERUSER_ENABLED
 RUN sed -i -e s/@MATOMO_PLUGIN_USERSMANAGERONLYSUPERUSER_ENABLED@/${MATOMO_PLUGIN_USERSMANAGERONLYSUPERUSER_ENABLED}/g /opt/matomo/config/config.ini.php
 
-ARG MATOMO_PLUGIN_UPDATEEXPOSEDFQDNLIST_REDIS_IP
-RUN sed -i -e s/@MATOMO_PLUGIN_UPDATEEXPOSEDFQDNLIST_REDIS_IP@/${MATOMO_PLUGIN_UPDATEEXPOSEDFQDNLIST_REDIS_IP}/g /opt/matomo/config/config.ini.php
+ARG MATOMO_PLUGIN_UPDATEEXPOSEDFQDNLIST_REDIS_HOST
+RUN sed -i -e s/@MATOMO_PLUGIN_UPDATEEXPOSEDFQDNLIST_REDIS_HOST@/${MATOMO_PLUGIN_UPDATEEXPOSEDFQDNLIST_REDIS_HOST}/g /opt/matomo/config/config.ini.php
 ARG MATOMO_PLUGIN_UPDATEEXPOSEDFQDNLIST_REDIS_PORT
 RUN sed -i -e s/@MATOMO_PLUGIN_UPDATEEXPOSEDFQDNLIST_REDIS_PORT@/${MATOMO_PLUGIN_UPDATEEXPOSEDFQDNLIST_REDIS_PORT}/g /opt/matomo/config/config.ini.php
-ARG MATOMO_PLUGIN_UPDATEEXPOSEDFQDNLIST_DB_INDEX
-RUN sed -i -e s/@MATOMO_PLUGIN_UPDATEEXPOSEDFQDNLIST_DB_INDEX@/${MATOMO_PLUGIN_UPDATEEXPOSEDFQDNLIST_DB_INDEX}/g /opt/matomo/config/config.ini.php
+ARG MATOMO_PLUGIN_UPDATEEXPOSEDFQDNLIST_REDIS_DB_INDEX
+RUN sed -i -e s/@MATOMO_PLUGIN_UPDATEEXPOSEDFQDNLIST_REDIS_DB_INDEX@/${MATOMO_PLUGIN_UPDATEEXPOSEDFQDNLIST_REDIS_DB_INDEX}/g /opt/matomo/config/config.ini.php
 
 ARG DB_PASSWORD
 ARG MATOMO_DB_READER
