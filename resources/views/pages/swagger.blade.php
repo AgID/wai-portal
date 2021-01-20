@@ -15,7 +15,7 @@
             {{ ucfirst(__('Gestione delle credenziali OAuth')) }}
             @endcomponent
         </div>
-        <div id="swagger-ui" />
+        <div id="swagger-ui" data-url="{{ $apiUrl }}"/>
         @endcomponent
     </div>
 </div>
