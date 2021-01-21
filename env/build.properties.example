@@ -237,7 +237,7 @@ MATOMO_PHPREDIS_VERSION=5.1.1
 # site ID for widgets in the portal public dashboard (home page);
 # if using the RollUpReporting plugin, this is
 # the site ID of the RollUp site configured to include "all" websites.
-# NOTE: requires "view" accesso for anonymous user.
+# NOTE: requires "view" access for anonymous user.
 # Leave blank if not using matomo widgets in home page.
 MATOMO_PUBLIC_ROLLUP_ID=
 
