@@ -42,6 +42,7 @@
                                 ) ||
                                 (
                                     $footerPrimaryMenuItem["requires"]["auth"] &&
+                                    isset($authUser) && isset($spidAuthUser)
                                     ( $authUser || $spidAuthUser ) && 
                                     (
                                         (
@@ -49,7 +50,7 @@
                                         ) ||
                                         (
                                             $footerPrimaryMenuItem["requires"]["publicAdministration"] &&
-                                            $hasPublicAdministration
+                                            isset($hasPublicAdministration) && $hasPublicAdministration
                                         )
                                     )
                                 )
