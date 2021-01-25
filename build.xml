@@ -581,6 +581,17 @@
         </if>
     </target>
 
+    <!-- Target: start Redis Commander -->
+    <target name="redis-commander">
+        <if>
+            <available file="containers" type="dir" property="ignored"/>
+            <then>
+                <echo msg="Running Redis Commander..."/>
+                <exec command="docker-compose up -d redis-commander" dir="containers" passthru="true"/>
+            </then>
+        </if>
+    </target>
+
     <!-- Target: Visitor Generator -->
     <target name="visitorgen">
         <if>

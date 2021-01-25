@@ -181,7 +181,7 @@ services:
     networks:
       - frontend
 
-# ElasticSearch
+# elasticsearch
   elasticsearch:
     image: wai-elasticsearch:dev
     build:
@@ -206,6 +206,7 @@ services:
     networks:
       - backend
 
+# kibana
   kibana:
     image: wai-kibana:dev
     build:
@@ -222,7 +223,7 @@ services:
       - frontend
       - backend
 
-# Redis Sentinel
+# redis-sentinel
   redis-sentinel:
     image: wai-redis-sentinel:dev
     depends_on:
@@ -232,5 +233,15 @@ services:
       args:
         - REDIS_SENTINEL_SET=${REDIS_SENTINEL_SET}
         - REDIS_IPA_INDEX_SENTINEL_SET=${REDIS_IPA_INDEX_SENTINEL_SET}
+    networks:
+      - backend
+
+# redis-commander
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    environment:
+      - REDIS_HOSTS=redis
+    ports:
+      - "8081:8081"
     networks:
       - backend

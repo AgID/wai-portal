@@ -35,15 +35,16 @@
 
 #### Available tasks
 
-```
+```shell
 bin/phing build               # build the portal
 bin/phing test                # perform tests
 bin/phing clean               # delete containers and data
 bin/phing stop                # stop containers
 bin/phing start               # start containers
 bin/phing pma                 # start phpMyAdmin container (not started with bin/phing start)
-bin/phing kibana              # start kibana container (not started with bin/phing start)
-bin/phing sentinel            # start redis sentinel container (not started with bin/phing start)
+bin/phing kibana              # start Kibana container (not started with bin/phing start)
+bin/phing sentinel            # start Redis Sentinel container (not started with bin/phing start)
+bin/phing redis-commander     # start Redis Commander container (not started with bin/phing start)
 bin/phing build-portal-image  # build a docker image for the portal application
 bin/phing build-matomo-image  # build a docker image for matomo
 ```
