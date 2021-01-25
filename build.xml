@@ -281,7 +281,7 @@
             <equals arg1="${env.APP_ENV}" arg2="testing"/>
             <then>
                 <echo msg="Copying application files to docker volumes"/>
-                <exec command="docker run -v application-code:${APP_CODE_PATH_CONTAINER} -v application-logs:/var/log/ -v ipa-redisearch-persistence:/redis-data --name application-container busybox mkdir -p /var/log/nginx /var/log/php" checkreturn="true"/>
+                <exec command="docker run -v application-code:${APP_CODE_PATH_CONTAINER} -v application-logs:/var/log/ -v ipa-redisearch-persistence:/redis-data --name application-container busybox mkdir -p /var/log/nginx /var/log/php /var/log/matomo" checkreturn="true"/>
                 <exec command="docker cp app application-container:${APP_CODE_PATH_CONTAINER}" checkreturn="true"/>
                 <exec command="docker cp bootstrap application-container:${APP_CODE_PATH_CONTAINER}" checkreturn="true"/>
                 <exec command="docker cp config application-container:${APP_CODE_PATH_CONTAINER}" checkreturn="true"/>
@@ -352,6 +352,7 @@
         <exec command="docker-compose exec php-fpm chown -R www-data:www-data storage database .env" dir="containers" checkreturn="true"/>
         <exec command="docker-compose exec php-fpm chown -R www-data:www-data /opt/matomo" dir="containers" checkreturn="true"/>
         <exec command="docker-compose exec php-fpm chown -R www-data:www-data /var/log/php" dir="containers" checkreturn="true"/>
+        <exec command="docker-compose exec php-fpm chown -R www-data:www-data /var/log/matomo" dir="containers" checkreturn="true"/>
         <!-- Set certificates -->
         <echo msg="Copying CA certificate into php-fpm container..."/>
         <exec command="docker cp nginx/certs/ca/local-root-ca.crt `docker-compose ps -q php-fpm`:/usr/local/share/ca-certificates/" dir="containers" passthru="true"/>
