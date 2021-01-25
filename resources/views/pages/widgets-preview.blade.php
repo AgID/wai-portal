@@ -33,6 +33,7 @@
                     dell'amministrazione</p>
                 <div class="row">
                     @foreach ($widgets as $key => &$widget)
+                    @if (is_array($allowedWidgets) && in_array($widget["uniqueId"], $allowedWidgets)) 
                         <div class="col-4">
                             <div class="btn btn-block border rounded mb-4 text-center pointer" id="widget-{{ $key }}"
                                 data-type="widget-select" data-attribute="back-to-top">
@@ -41,6 +42,7 @@
                                 <span class="align-middle" id="widget-child-text-{{ $key }}">{{ $widget['name'] }}</span>
                             </div>
                         </div>
+                    @endif
                     @endforeach
                 </div>
             @endcomponent
