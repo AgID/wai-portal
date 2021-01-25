@@ -154,6 +154,11 @@ PluginsInstalled[] = "CustomPiwikJs"
 PluginsInstalled[] = "WAIMatomoTheme"
 @MATOMO_PLUGINS_INSTALLED@
 
+[log]
+log_writers[] = file
+log_level = DEBUG
+logger_file_path = /var/log/matomo/matomo.log
+
 [WAIMatomoTheme]
 waiUrl = "https://@MATOMO_WAI_URL@"
 
