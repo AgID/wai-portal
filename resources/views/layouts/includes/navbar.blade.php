@@ -45,6 +45,7 @@
                                 ) ||
                                 (
                                     $secondaryMenuItem["requires"]["auth"] &&
+                                    isset($authUser) && isset($spidAuthUser)
                                     ( $authUser || $spidAuthUser ) && 
                                     (
                                         (
@@ -52,7 +53,7 @@
                                         ) ||
                                         (
                                             $secondaryMenuItem["requires"]["publicAdministration"] &&
-                                            $hasPublicAdministration
+                                            isset($hasPublicAdministration) && $hasPublicAdministration
                                         )
                                     )
                                 )
