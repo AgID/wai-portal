@@ -42,7 +42,7 @@
                                 ) ||
                                 (
                                     $footerPrimaryMenuItem["requires"]["auth"] &&
-                                    isset($authUser) && isset($spidAuthUser)
+                                    isset($authUser) && isset($spidAuthUser) &&
                                     ( $authUser || $spidAuthUser ) && 
                                     (
                                         (
