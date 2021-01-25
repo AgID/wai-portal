@@ -98,6 +98,8 @@ export default (() => {
                     const selectedResult = JSON.parse(event.currentTarget.dataset.item);
 
                     event.preventDefault();
+                    event.stopPropagation();
+
                     autocompleteList.style.display = 'none';
                     searchInput.value = resultName;
 
