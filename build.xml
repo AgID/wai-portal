@@ -308,6 +308,7 @@
                 <echo msg="Create log directories if needed..."/>
                 <mkdir dir="containers/logs/nginx"/>
                 <mkdir dir="containers/logs/php"/>
+                <mkdir dir="containers/logs/matomo"/>
             </else>
         </if>
     </target>
