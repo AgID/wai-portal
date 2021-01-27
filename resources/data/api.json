@@ -25,8 +25,7 @@
             ]
         }
     },
-    "servers": [
-      ],
+    "servers": [],
     "paths": {
         "/api/users": {
             "post": {
@@ -384,11 +383,26 @@
             }
         },
         "securitySchemes": {
+            "oAuthSample": {
+                "type": "oauth2",
+                "description": "This API uses OAuth 2 with the implicit grant flow. [More info](https://api.example.com/docs/auth)",
+                "flows": {
+                    "clientCredentials": {
+                        "tokenUrl": "",
+                        "scopes": {}
+                    }
+                }
+            },
             "BearerAuth": {
                 "type": "http",
                 "scheme": "bearer",
                 "bearerFormat": "GUID"
             }
         }
-    }
+    },
+    "security": [
+        {
+            "oAuthNoScopes": []
+        }
+    ]
 }
