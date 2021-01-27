@@ -18,7 +18,7 @@ class WidgetsController extends Controller
             'widgets' => $widgetData,
             'idSite' => $analyticsId,
             'url' => $matomoWidgetUrl,
-            'allowedWidgets' => $allowedWidgets["allowed_widgets_preview"] ?? []
+            'allowedWidgets' => $allowedWidgets['allowed_widgets_preview'] ?? [],
         ];
 
         return view('pages.widgets-preview')->with($data);

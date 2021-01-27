@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Key;
 use App\Models\PublicAdministration;
 use App\Traits\HasRoleAwareUrls;
 use Illuminate\Http\Request;
@@ -23,8 +24,14 @@ class SwaggerController extends Controller
             'keys' => 'api-key.index',
         ], [], $publicAdministration);
 
+        $keys = Key::all();
+        $hasKeys = count($keys) !== 0;
+
         $config = [
             'apiUrl' => $kongApiUrl,
+            'production' => app()->environment('production'),
+            'keysList' => $keys,
+            'haskeys' => $hasKeys
         ];
 
         return view('pages.swagger')->with($roleAwareUrls)->with($config);
