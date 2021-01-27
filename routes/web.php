@@ -215,6 +215,9 @@ Route::middleware('spid.auth', 'auth', 'verified:verification.notice')->group(fu
             Route::get('/{key}/show', 'KeysController@show')
             ->name('api-key.show');
 
+            Route::get('/{key}/show/json', 'KeysController@showJson')
+            ->name('api-key.show-json');
+
             Route::get('/{key}/edit', 'KeysController@edit')
             ->name('api-key.edit');
 
