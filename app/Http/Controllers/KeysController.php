@@ -90,55 +90,88 @@ class KeysController extends Controller
     }
 
     /**
-     * Display the key list.
+     * Display the key details.
      *
      * @param Request $request the request
      * @param Key $key the key
      * @param PublicAdministration $publicAdministration the public administration the user belongs to
      *
-     * @return View the view
+     * @return View|Redirect the view or redirect error
      */
-    public function show(Request $request, Key $key, PublicAdministration $publicAdministration): View
+    public function show(Request $request, Key $key, PublicAdministration $publicAdministration)
     {
         $user = auth()->user();
+
         $currentPublicAdministration = $user->can(UserPermission::ACCESS_ADMIN_AREA)
             ? $publicAdministration
             : current_public_administration();
 
-        $client = $this->clientService->getClient($key->consumer_id);
+        if ($currentPublicAdministration->id === $key->public_administration_id) {
+            $client = $this->clientService->getClient($key->consumer_id);
 
-        $consumer = $this->clientService->getConsumer($key->consumer_id);
-        $customId = (array) json_decode($consumer['custom_id']);
-        $conumerType = $customId['type'];
+            $consumer = $this->clientService->getConsumer($key->consumer_id);
+            $customId = (array) json_decode($consumer['custom_id']);
+            $conumerType = $customId['type'];
 
-        $sitesIdArray = is_array($customId['siteId'])
-            ? $customId['siteId']
-            : [];
+            $sitesIdArray = is_array($customId['siteId'])
+                ? $customId['siteId']
+                : [];
 
-        $roleAwareUrls = $this->getRoleAwareUrlArray([
-            'keyEditUrl' => 'api-key.edit',
-        ], [
-            'key' => $key,
-        ], $currentPublicAdministration);
+            $roleAwareUrls = $this->getRoleAwareUrlArray([
+                'keyEditUrl' => 'api-key.edit',
+            ], [
+                'key' => $key,
+            ], $currentPublicAdministration);
 
-        $websitesPermissionsDatatableSource = $this->getRoleAwareUrl(
-            'api-key.websites.permissions',
-            ['key' => $key, 'oldKeyPermissions' => $sitesIdArray],
-            $currentPublicAdministration
-        );
+            $websitesPermissionsDatatableSource = $this->getRoleAwareUrl(
+                'api-key.websites.permissions',
+                ['key' => $key, 'oldKeyPermissions' => $sitesIdArray],
+                $currentPublicAdministration
+            );
 
-        $websitesPermissionsDatatable = $this->getDatatableWebsitesPermissionsParams($websitesPermissionsDatatableSource, true);
+            $websitesPermissionsDatatable = $this->getDatatableWebsitesPermissionsParams($websitesPermissionsDatatableSource, true);
 
-        $keyData = [
-            'client' => $client,
-            'type' => $conumerType,
-        ];
+            $keyData = [
+                'client' => $client,
+                'type' => $conumerType,
+            ];
 
-        return view('pages.keys.show')
-            ->with(compact('key'))
-            ->with($keyData)
-            ->with($websitesPermissionsDatatable)
-            ->with($roleAwareUrls);
+            return view('pages.keys.show')
+                ->with(compact('key'))
+                ->with($keyData)
+                ->with($websitesPermissionsDatatable)
+                ->with($roleAwareUrls);
+        }
+
+        return redirect()->home()->withNotification([
+            'title' => __('Non è possibile visualizzare questa chiave'),
+            'message' => "La chiave appartiene ad un'altra pubblica amministrazione",
+            'status' => 'error',
+            'icon' => 'it-close-circle',
+        ]);
+
+    }
+
+    public function showJson(Key $key, PublicAdministration $publicAdministration)
+    {
+        $user = auth()->user();
+
+        $currentPublicAdministration = $user->can(UserPermission::ACCESS_ADMIN_AREA)
+            ? $publicAdministration
+            : current_public_administration();
+
+        if ($currentPublicAdministration->id === $key->public_administration_id) {
+            $keyData = $this->clientService->getClient($key->consumer_id);
+
+            return response()->json([
+                'key' => $keyData
+            ], 200);
+        }
+
+        return response()->json([
+            'Error' => true,
+            'Message' => "La chiave appartiene ad un'altra pubblica amministrazione"
+        ], 403);
     }
 
     /**
@@ -252,7 +285,7 @@ class KeysController extends Controller
     }
 
     /**
-     * Get the websites data.
+     * Get the Keys data.
      *
      * @param PublicAdministration $publicAdministration the Public Administration to filter keys or null to use current one
      *
