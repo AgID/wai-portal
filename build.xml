@@ -562,31 +562,19 @@
     </target>
 
     <!-- Target: start Kong -->
-    <target name="kong-build">
-        <if>
-            <available file="containers" type="dir" property="ignored"/>
-            <then>
-                <echo msg="Starting Docker kong..."/>
-                
-                <exec command="docker-compose up -d postgres kong-migrations kong" dir="containers" passthru="true" checkreturn="true"/>
-                <exec command="curl -X POST -s ${KONG_ENDPOINT_FRONTEND_URL}/plugins/ --data &quot;name=prometheus&quot; > /dev/null" passthru="true"/>     
-                <exec command="curl -X POST -s ${KONG_ENDPOINT_FRONTEND_URL}/plugins/ --data &quot;name=oauth2&amp;config.enable_client_credentials=true&amp;config.global_credentials=true&amp;config.accept_http_if_already_terminated=true&quot; > /dev/null" passthru="true"/>
-                <exec command="curl -X POST -s ${KONG_ENDPOINT_FRONTEND_URL}/services --data &quot;name=portal&amp;url=https://nginx/api&quot; > /dev/null" passthru="true"/>     
-                <exec command="curl -X POST -s ${KONG_ENDPOINT_FRONTEND_URL}/services/portal/routes  --data &quot;paths[]=/portal&amp;name=portal&quot; > /dev/null" passthru="true"/> 
-
-                <echo msg="Kong up and running!"/>
-            </then>
-        </if>
-    </target>
-
-    <!-- Target: start Kong -->
     <target name="kong">
         <if>
             <available file="containers" type="dir" property="ignored"/>
             <then>
                 <echo msg="Starting Docker kong..."/>
                 
-                <exec command="docker-compose up -d postgres kong" dir="containers" passthru="true" checkreturn="true"/>
+                <exec command="docker-compose up -d postgres" dir="containers" passthru="true" checkreturn="true"/>
+                <exec command="./kong/wait-for-postgres.sh ${POSTGRES_USER} ${POSTGRES_PASSWORD}" dir="containers" passthru="true" checkreturn="true"/>
+                <exec command="docker-compose up -d kong-migrations kong" dir="containers" passthru="true" checkreturn="true"/>
+                <exec command="./kong/wait-kong-migration.sh ${POSTGRES_USER} ${POSTGRES_PASSWORD} ${POSTGRES_DATABASE}" dir="containers" passthru="true" checkreturn="true"/>
+                <exec command="docker-compose up -d kong" dir="containers" passthru="true" checkreturn="true"/>
+                <exec command="./kong/kong-setup.sh ${KONG_ENDPOINT_FRONTEND_URL}" dir="containers" passthru="true" checkreturn="true"/>
+
                 <echo msg="Kong up and running!"/>
             </then>
         </if>
