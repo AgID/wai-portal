@@ -149,7 +149,6 @@ class KeysController extends Controller
             'status' => 'error',
             'icon' => 'it-close-circle',
         ]);
-
     }
 
     public function showJson(Key $key, PublicAdministration $publicAdministration)
@@ -164,13 +163,13 @@ class KeysController extends Controller
             $keyData = $this->clientService->getClient($key->consumer_id);
 
             return response()->json([
-                'key' => $keyData
+                'key' => $keyData,
             ], 200);
         }
 
         return response()->json([
             'Error' => true,
-            'Message' => "La chiave appartiene ad un'altra pubblica amministrazione"
+            'Message' => "La chiave appartiene ad un'altra pubblica amministrazione",
         ], 403);
     }
 
