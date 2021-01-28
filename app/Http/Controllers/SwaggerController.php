@@ -25,13 +25,13 @@ class SwaggerController extends Controller
         ], [], $publicAdministration);
 
         $keys = Key::all();
-        $hasKeys = count($keys) !== 0;
+        $hasKeys = 0 !== count($keys);
 
         $config = [
             'apiUrl' => $kongApiUrl,
             'production' => app()->environment('production'),
             'keysList' => $keys,
-            'haskeys' => $hasKeys
+            'haskeys' => $hasKeys,
         ];
 
         return view('pages.swagger')->with($roleAwareUrls)->with($config);
