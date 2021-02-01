@@ -29,7 +29,7 @@ metadata:
 # CONFIGURAZIONE TESTENV WEB SERVER
 
 # Abilita (true) o disabilita (false) la modalità debug
-debug: true
+debug: false
 
 # Indirizzo IP dell'interfaccia su cui esporre il server e porta
 # (0.0.0.0 per ascoltare su tutte le interfacce)
@@ -51,3 +51,11 @@ endpoints:
 
 # Abilita (true) o disabilita (false) la possibilità di aggiungere nuovi utenti
 can_add_user: false
+
+# Abilita (true) o disbilita (false) l'interfaccia /admin che consente di gestire
+# gli oggetti nel database
+database_admin_interface: false
+
+# Abilita (true) o disabilita (false) le opzioni avanzate per modificare le asserzioni
+# generate dal testenv
+show_response_options: false

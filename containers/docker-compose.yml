@@ -173,7 +173,10 @@ services:
 
 # spid-testenv
   spid-testenv:
-    image: italia/spid-testenv2:1.0.1
+    build:
+      context: ./spid-testenv
+      args:
+        - SPID_TESTENV_VERSION=1.0.1
     volumes:
       - ./spid-testenv/conf:/app/conf
     ports:
