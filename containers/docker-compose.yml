@@ -254,54 +254,40 @@ services:
     networks:
       - backend
 
+# postgres
   postgres:
-      image: postgres:9.6
-      environment:
-        - POSTGRES_USER=${POSTGRES_USER}
-        - POSTGRES_DB=${POSTGRES_DATABASE}
-        - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      networks:
-        - backend
-      volumes:
-      - pg_data:/var/lib/postgresql/data
-
-  kong-migrations:
-    image: kong:2.2.0
-    depends_on:
-      - postgres
-    command: kong migrations bootstrap --vv
+    image: postgres:9.6
     environment:
-      - KONG_DATABASE= ${POSTGRES_DATABASE_TYPE}
-      - KONG_PG_DATABASE= ${POSTGRES_DATABASE}
-      - KONG_PG_USER= ${POSTGRES_USER}      
-      - KONG_PG_PASSWORD= ${POSTGRES_PASSWORD}      
-      - KONG_PG_HOST= postgres
-      - KONG_LOG_LEVEL= info
-      - KONG_PROXY_ACCESS_LOG= /dev/stdout
-      - KONG_ADMIN_ACCESS_LOG= /dev/stdout
-      - KONG_PROXY_ERROR_LOG= /dev/stderr
-      - KONG_ADMIN_ERROR_LOG= /dev/stderr
-      - KONG_ADMIN_LISTEN= 0.0.0.0:8001,0.0.0.0:8444 ssl
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_DB=${POSTGRES_DATABASE}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     networks:
       - backend
+    volumes:
+    - pg_data:/var/lib/postgresql/data
 
+# kong
   kong:
-    image: kong:2.2.0
+    image: wai-kong:dev
+    build:
+      context: ./kong
+      args:
+        - KONG_VERSION=${KONG_VERSION}
     depends_on:
       - postgres
     environment:
-      - KONG_DATABASE= ${POSTGRES_DATABASE_TYPE}
-      - KONG_PG_DATABASE= ${POSTGRES_DATABASE}
-      - KONG_PG_USER= ${POSTGRES_USER}      
-      - KONG_PG_PASSWORD= ${POSTGRES_PASSWORD}      
-      - KONG_PG_HOST= postgres
-      - KONG_LOG_LEVEL= info
-      - KONG_PROXY_ACCESS_LOG= /dev/stdout
-      - KONG_ADMIN_ACCESS_LOG= /dev/stdout
-      - KONG_PROXY_ERROR_LOG= /dev/stderr
-      - KONG_ADMIN_ERROR_LOG= /dev/stderr
-      - KONG_ADMIN_LISTEN= 0.0.0.0:8001,0.0.0.0:8444 ssl
-      - KONG_CUSTOM_PLUGINS=rate-limiting,jwt-signer,jwt
+      - KONG_DATABASE=postgres
+      - KONG_PG_DATABASE=${POSTGRES_DATABASE}
+      - KONG_PG_USER=${POSTGRES_USER}
+      - KONG_PG_PASSWORD=${POSTGRES_PASSWORD}
+      - KONG_PG_HOST=postgres
+      - KONG_LOG_LEVEL=info
+      - KONG_PROXY_ACCESS_LOG=/dev/stdout
+      - KONG_ADMIN_ACCESS_LOG=/dev/stdout
+      - KONG_PROXY_ERROR_LOG=/dev/stderr
+      - KONG_ADMIN_ERROR_LOG=/dev/stderr
+      - KONG_ADMIN_LISTEN=0.0.0.0:8001,0.0.0.0:8444 ssl
+      - KONG_CUSTOM_PLUGINS=rate-limiting
     networks:
       - backend
     ports:
