@@ -155,13 +155,12 @@
                     <token key="MATOMO_PLUGIN_CUSTOMPDFREPORT_VERSION" value="${MATOMO_PLUGIN_CUSTOMPDFREPORT_VERSION}" />
                     <token key="MATOMO_PLUGIN_RESETDATABASE_VERSION" value="${MATOMO_PLUGIN_RESETDATABASE_VERSION}" />
                     <token key="MATOMO_INGESTION_HOSTNAME" value="${MATOMO_INGESTION_HOSTNAME}" />
+                    <token key="KONG_VERSION" value="${KONG_VERSION}" />
                     <token key="KONG_ENDPOINT_URL" value="${KONG_ENDPOINT_URL}" />
                     <token key="KONG_API_URL" value="${KONG_API_URL}" />
-                    <token key="KONG_ENDPOINT_FRONTEND_URL" value="${KONG_ENDPOINT_FRONTEND_URL}" />
                     <token key="POSTGRES_PASSWORD" value="${POSTGRES_PASSWORD}" />
                     <token key="POSTGRES_USER" value="${POSTGRES_USER}" />
                     <token key="POSTGRES_DATABASE" value="${POSTGRES_DATABASE}" />
-                    <token key="POSTGRES_DATABASE_TYPE" value="${POSTGRES_DATABASE_TYPE}" />
                 </replacetokens>
             </filterchain>
         </copy>
@@ -575,15 +574,14 @@
         <if>
             <available file="containers" type="dir" property="ignored"/>
             <then>
-                <echo msg="Starting Docker kong..."/>
-                
+                <echo msg="Starting kong API gateway..."/>
+                <echo msg="Waiting for postgres database to be ready..."/>
                 <exec command="docker-compose up -d postgres" dir="containers" passthru="true" checkreturn="true"/>
-                <exec command="./kong/wait-for-postgres.sh ${POSTGRES_USER} ${POSTGRES_PASSWORD}" dir="containers" passthru="true" checkreturn="true"/>
-                <exec command="docker-compose up -d kong-migrations kong" dir="containers" passthru="true" checkreturn="true"/>
-                <exec command="./kong/wait-kong-migration.sh ${POSTGRES_USER} ${POSTGRES_PASSWORD} ${POSTGRES_DATABASE}" dir="containers" passthru="true" checkreturn="true"/>
+                <retry retryDelay="5" retryCount="12">
+                    <exec command="docker-compose exec postgres psql -U ${POSTGRES_USER} -d ${POSTGRES_DATABASE} -c '\q'" dir="containers" checkreturn="true"/>
+                </retry>
                 <exec command="docker-compose up -d kong" dir="containers" passthru="true" checkreturn="true"/>
-                <exec command="./kong/kong-setup.sh ${KONG_ENDPOINT_FRONTEND_URL}" dir="containers" passthru="true" checkreturn="true"/>
-
+                <exec command="docker-compose exec kong /kong-setup.sh" dir="containers" passthru="true" checkreturn="true"/>
                 <echo msg="Kong up and running!"/>
             </then>
         </if>
