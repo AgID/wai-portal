@@ -3,12 +3,14 @@
 
 set -e
 
-KONG_ENDPOINT_FRONTEND_URL="$1"
+until $(curl --output /dev/null --silent --head --fail http://localhost:8001/services); do
+    sleep 2
+done
 
-INSTALL_PLUGIN=`curl -X POST -s ${KONG_ENDPOINT_FRONTEND_URL}/plugins/ --data "name=prometheus" > /dev/null`
-INSTALL_PLUGIN=`curl -X POST -s ${KONG_ENDPOINT_FRONTEND_URL}/plugins/ --data "name=oauth2&config.enable_client_credentials=true&config.global_credentials=true&config.accept_http_if_already_terminated=true" > /dev/null`
+if ! curl -s http://localhost:8001/services | grep -q "nginx"; then
+    curl --output /dev/null --silent -X POST -s http://localhost:8001/plugins/ --data "name=oauth2&config.enable_client_credentials=true&config.global_credentials=true&config.accept_http_if_already_terminated=true"
+    curl --output /dev/null --silent -X POST -s http://localhost:8001/services --data "name=portal&url=https://nginx/api"
+    curl --output /dev/null --silent -X POST -s http://localhost:8001/services/portal/routes --data "paths[]=/portal&name=portal"
+fi
 
-ADD_SERVICE=`curl -X POST -s ${KONG_ENDPOINT_FRONTEND_URL}/services --data "name=portal&url=https://nginx/api" > /dev/null`
-ADD_ROUTE=`curl -X POST -s ${KONG_ENDPOINT_FRONTEND_URL}/services/portal/routes  --data "paths[]=/portal&name=portal" > /dev/null`
-
->&2 echo "Kong plugins and routes are ready ..."
+echo "Kong plugins and routes are ready"
