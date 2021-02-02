@@ -136,4 +136,38 @@ class UpdatePublicAdministrationsFromIpaTest extends TestCase
         Event::assertNotDispatched(PublicAdministrationUpdated::class);
         Event::assertNotDispatched(PublicAdministrationPrimaryWebsiteUpdated::class);
     }
+
+    /**
+     * Test registered Public Administration check with no updates.
+     */
+    public function testCustomPublicAdministration(): void
+    {
+        Event::fake();
+        config(['wai.custom_public_administrations' => true]);
+
+        $public_administration = factory(PublicAdministration::class)->create([
+            'ipa_code' => 'custom',
+            'name' => 'Name',
+            'city' => 'Roma',
+            'county' => 'RM',
+            'region' => 'Region',
+            'type' => 'Type',
+            'status' => PublicAdministrationStatus::ACTIVE,
+        ]);
+
+        factory(Website::class)->create([
+            'url' => 'www.institutional.it',
+            'slug' => Str::slug('www.institutional.it'),
+            'public_administration_id' => $public_administration->id,
+            'type' => WebsiteType::INSTITUTIONAL_PLAY,
+        ]);
+
+        $job = new ProcessPublicAdministrationsUpdateFromIpa();
+        $job->handle();
+
+        Event::assertDispatched(PublicAdministrationsUpdateFromIpaCompleted::class);
+        Event::assertNotDispatched(PublicAdministrationNotFoundInIpa::class);
+        Event::assertNotDispatched(PublicAdministrationUpdated::class);
+        Event::assertNotDispatched(PublicAdministrationPrimaryWebsiteUpdated::class);
+    }
 }

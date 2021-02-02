@@ -33,11 +33,11 @@
                             <input type="search" autocomplete="off"
                                 class="form-control autocomplete{{ $errors->has('public_administration_name') ? ' is-invalid' : '' }}"
                                 id="public_administration_name" name="public_administration_name"
-                                @unless($customForm) data-search="searchIpa" data-source="{{ route('ipa.search') }}" @endunless
+                                @unless ($customForm) data-search="searchIpa" data-source="{{ route('ipa.search') }}" @endunless
                                 value="{{ old('public_administration_name') }}"
                                 maxlength="255" aria-describedby="pa_name-input-help" aria-required="true" required >
 
-                            @unless($customForm)
+                            @unless ($customForm)
                                 <ul class="autocomplete-list"></ul>
                                 <div class="searching-icon input-group-append">
                                     <div class="input-group-text">
@@ -53,7 +53,7 @@
                             @enderror
                         </div>
 
-                        @unless($customForm)
+                        @unless ($customForm)
                         <small id="pa_name-input-help" class="form-text text-muted">{{ __('Per la ricerca puoi usare il nome, il codice IPA e il luogo dove si trova la tua PA.') }}</small>
                         @endunless
                     </div>
@@ -67,7 +67,7 @@
                             <label for="url">{{ __('URL sito istituzionale') }}</label>
 
                             <input type="text" class="form-control{{ $errors->has('url') ? ' is-invalid' : '' }}"
-                                id="url" name="url" aria-describedby="url-input-help" value="{{ old('url') }}" aria-required="true" required @unless($customForm) readonly @endunless >
+                                id="url" name="url" aria-describedby="url-input-help" value="{{ old('url') }}" aria-required="true" required @unless ($customForm) readonly @endunless >
 
                             @error('url')
                             <div class="invalid-feedback">{{ $errors->first('url') }}</div>
@@ -80,7 +80,7 @@
                         @endif
                     </div>
                 </div>
-                @unless($customForm)
+                @unless ($customForm)
                 <div class="form-row">
                     <div class="form-group col">
                         <div class="input-group">
@@ -89,7 +89,7 @@
                             </div>
                             <label for="rtd_name">{{ __('Responsabile ufficio per la transizione al digitale') }}</label>
                             <input type="text" class="form-control{{ $errors->has('rtd_name') ? ' is-invalid' : '' }}"
-                                id="rtd_name" name="rtd_name" value="{{ old('rtd_name') }}" @unless($customForm) readonly @endunless >
+                                id="rtd_name" name="rtd_name" value="{{ old('rtd_name') }}" @unless ($customForm) readonly @endunless >
                             @error('rtd_name')
                             <div class="invalid-feedback">{{ $errors->first('rtd_name') }}</div>
                             @else
@@ -106,7 +106,7 @@
                             </div>
                             <label for="rtd_mail">{{ __('Indirizzo email responsabile ufficio per la transizione al digitale') }}</label>
                             <input type="text" class="form-control{{ $errors->has('rtd_mail') ? ' is-invalid' : '' }}"
-                                id="rtd_mail" name="rtd_mail" value="{{ old('rtd_mail') }}" @unless($customForm) readonly @endunless >
+                                id="rtd_mail" name="rtd_mail" value="{{ old('rtd_mail') }}" @unless ($customForm) readonly @endunless >
                             @error('rtd_mail')
                             <div class="invalid-feedback">{{ $errors->first('rtd_mail') }}</div>
                             @else
@@ -134,8 +134,19 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-5 text-serif d-flex align-items-center">
-                @unless($customForm)
+            <div class="col-md-5 text-serif d-flex flex-column justify-content-start">
+                @env('public-playground')
+                <div class="callout callout-highlight danger">
+                    <div class="callout-title">
+                        <svg class="icon icon-sm"><use xlink:href="{{ asset('svg/sprite.svg#it-warning-circle') }}"></use></svg>
+                        {{ __('avviso') }}
+                    </div>
+                    <p>
+                        {{ __("Ti ricordiamo che tutti i dati memorizzati sono automaticamente resettati ogni fine settimana.") }}
+                    </p>
+                </div>
+                @endenv
+                @unless ($customForm)
                 <div id="primary_website_missing" class="callout callout-highlight danger d-none">
                     <div class="callout-title">
                         <svg class="icon icon-sm"><use xlink:href="{{ asset('svg/sprite.svg#it-close-circle') }}"></use></svg>
@@ -166,6 +177,7 @@
                             'rtd' => '<strong>' . __('Responsabile ufficio per la transizione al digitale') . '</strong>',
                         ]) !!}
                     </p>
+                    @unlessenv ('public-playground')
                     <p>
                         {!! __("Dopo questo passaggio invieremo un messaggio all'indirizzo email del/la :rtd della tua PA per informarlo/a dell'avvenuta richiesta di :onboarding su :app.", [
                             'rtd' => '<strong>' . __('Responsabile ufficio per la transizione al digitale') . '</strong>',
@@ -173,10 +185,18 @@
                             'app' => config('app.name'),
                         ]) !!}
                     </p>
+                    @else
+                    <p>
+                        {!! __(':nb: in questo ambiente (public playground) NON sarà inviata alcuna mail al/la :rtd.', [
+                            'nb' => '<strong>' . __('Nota bene') . '</strong>',
+                            'rtd' => '<strong>' . __('Responsabile ufficio per la transizione al digitale') . '</strong>'
+                        ]) !!}
+                    </p>
+                    @endenv
                 </div>
                 <div id="rtd_mail_missing" class="callout callout-highlight warning d-none">
                     <div class="callout-title">
-                        <svg class="icon icon-sm"><use xlink:href="{{ asset('svg/sprite.svg#it-warning-circle') }}"></use></svg>
+                        <svg class="icon icon-sm"><use xlink:href="{{ asset('svg/sprite.svg#it-info-circle') }}"></use></svg>
                         {{ __('attenzione') }}
                     </div>
                     <p>
@@ -186,28 +206,29 @@
                         ]) !!}
                     </p>
                     <p>
-                        {!! __("Questo non ti impedisce di andare avanti con la richiesta di :onboarding su :app per la tua PA. Quando il recapito del/la :rtd sarà disponibile invieremo un messaggio per informarlo/a.", [
-                            'rtd' => '<strong>' . __('Responsabile ufficio per la transizione al digitale') . '</strong>',
+                        {!! __("Questo non ti impedisce di andare avanti con la richiesta di :onboarding su :app per la tua PA.", [
                             'onboarding' => '<i>onboarding</i>',
                             'app' => config('app.name'),
                         ]) !!}
-                    </p>
-                </div>
-                @elseif (app()->environment('public-playground') && config('wai.custom_public_administrations', false))
-                <div class="callout callout-highlight success ">
-                    <div class="callout-title">
-                        <svg class="icon icon-sm"><use xlink:href="{{ asset('svg/sprite.svg#it-warning-circle') }}"></use></svg>
-                        {{ __('attenzione') }}
-                    </div>
-                    <p>
-                        {!! __("Ti ricordiamo che tutti i dati memorizzati sono automaticamente resettati ogni fine settimana.") !!}
+                        @unlessenv ('public-playground')
+                        <br><br>
+                        {!! __('Quando il recapito del/la :rtd sarà disponibile invieremo un messaggio per informarlo/a.', [
+                            'rtd' => '<strong>' . __('Responsabile ufficio per la transizione al digitale') . '</strong>'
+                        ]) !!}
+                        @else
+                        <br><br>
+                        {!! __(':nb: in questo ambiente (public playground) NON sarà inviata alcuna mail al/la :rtd.', [
+                            'nb' => '<strong>' . __('Nota bene') . '</strong>',
+                            'rtd' => '<strong>' . __('Responsabile ufficio per la transizione al digitale') . '</strong>'
+                        ]) !!}
+                        @endenv
                     </p>
                 </div>
                 @endunless
             </div>
         </div>
         <div class="form-row">
-            <div class="form-group col-md-6 border-bottom border-md-bottom-0 @unless($customForm) border-md-right @endunless pb-5 pb-md-0 pr-md-5 d-flex flex-column justify-content-between">
+            <div class="form-group col-md-6 border-bottom border-md-bottom-0 @unless ($customForm) border-md-right @endunless pb-5 pb-md-0 pr-md-5 d-flex flex-column justify-content-between">
                 @if($customForm)
                 <input type="hidden" id="correct_confirmation" name="correct_confirmation" value="true"/>
                 @else
@@ -220,7 +241,7 @@
                 <div><button type="submit" class="btn btn-primary">{{ __('Aggiungi il sito') }}</button></div>
             </div>
 
-            @unless($customForm)
+            @unless ($customForm)
             <div class="form-group col-md-6 pl-md-5 d-flex flex-column justify-content-between">
                 <p>{{ __('Se riscontri delle inesattezze nei dati visualizzati potresti non riuscire a completare la procedura. Interrompi adesso e riprendi dopo che saranno stati corretti.') }}</p>
                 <div>
@@ -234,7 +255,7 @@
             </div>
             @endunless
         </div>
-        @unless($customForm)
+        @unless ($customForm)
         <input type="hidden" id="ipa_code" name="ipa_code" value="{{ old('ipa_code') }}"/>
         @else
         <input type="hidden" id="website_type" name="website_type" value="custom" />

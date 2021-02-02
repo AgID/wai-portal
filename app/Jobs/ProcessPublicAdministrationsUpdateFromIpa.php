@@ -12,6 +12,7 @@ use App\Models\PublicAdministration;
 use App\Traits\InteractsWithRedisIndex;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
@@ -40,7 +41,16 @@ class ProcessPublicAdministrationsUpdateFromIpa implements ShouldQueue
             ]
         );
 
-        $registeredPublicAdministrations = PublicAdministration::withTrashed()->get();
+        $publicAdministrationsQuery = PublicAdministration::withTrashed();
+
+        if (config('wai.custom_public_administrations', false)) {
+            $publicAdministrationsQuery = $publicAdministrationsQuery->whereHas('websites', function (Builder $query) {
+                $query->where('type', '<>', WebsiteType::INSTITUTIONAL_PLAY);
+            });
+        }
+
+        $registeredPublicAdministrations = $publicAdministrationsQuery->get();
+
         $report = $registeredPublicAdministrations->mapWithKeys(function ($publicAdministration) {
             $ipaCode = $publicAdministration->ipa_code;
             $updatedPublicAdministration = $this->getPublicAdministrationEntryByIpaCode($ipaCode);

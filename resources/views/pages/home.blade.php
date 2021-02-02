@@ -111,6 +111,8 @@
                 <div class="d-flex justify-content-center pb-5">
                     <p class="text-serif text-center">
                         {{ __('Questa sezione espone alcuni set di dati che mostrano la maniera in cui i cittadini interagiscono online con i siti web della pubblica amministrazione italiana.') }}
+                        <br>
+                        <span class="font-italic">{{ __('I dati analytics mostrati si riferiscono agli ultimi 30 giorni (oggi escluso).') }}</span>
                     </p>
                 </div>
                 <div class="row">

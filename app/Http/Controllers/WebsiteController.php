@@ -444,14 +444,14 @@ class WebsiteController extends Controller
     public function forceActivation(PublicAdministration $publicAdministration, Website $website)
     {
         try {
-            if ($website->status->is(WebsiteStatus::PENDING) && $website->type->is(WebsiteType::INSTITUTIONAL_PLAY)) {
+            if ($website->status->is(WebsiteStatus::PENDING) && !app()->environment('production')) {
                 $this->activate($website);
                 event(new WebsiteActivated($website));
 
                 return $this->websiteResponse($website);
             }
 
-            throw new InvalidWebsiteStatusException('Unable to check activation for website ' . $website->info . ' in status ' . $website->status->key . '.');
+            throw new InvalidWebsiteStatusException('Unable to force activation for website ' . $website->info . ' in status ' . $website->status->key . '.');
         } catch (AnalyticsServiceException | BindingResolutionException $exception) {
             report($exception);
             $code = $exception->getCode();
