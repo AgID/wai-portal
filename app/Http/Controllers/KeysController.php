@@ -253,9 +253,11 @@ class KeysController extends Controller
         );
 
         return redirect()->route('api-key.index')->withModal([
-            'title' => __('La chiave ' . $validatedData['key_name'] . ' è stata modificata con successo!'),
+            'title' => __('modifica credenziale'),
             'icon' => 'it-check-circle',
-            'message' => __('Adesso puoi utilizzare il tuo client_id e client_secret per ottenere il token OAuth2 e usare le API'),
+            'message' => __('La modifica della credenziale :credential è andata a buon fine.', [
+                'credential' => '<strong>' . $validatedData['key_name'] . '</strong>'
+            ]),
         ]);
     }
 
@@ -336,7 +338,7 @@ class KeysController extends Controller
         return redirect()->route('api-key.index')->withModal([
             'title' => __('La chiave è stata inserita!'),
             'icon' => 'it-check-circle',
-            'message' => __('Adesso puoi utilizzare il tuo client_id e client_secret per ottenere il token OAuth2 e usare le API'),
+            'message' => __('Adesso puoi utilizzare la tua nuova credenziale e usare le API con il flusso "Client credentials" OAuth2.'),
         ]);
     }
 
