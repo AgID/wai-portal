@@ -17,15 +17,11 @@ const getKeyInfo = async consumerId => {
             timeout: 3000
         });
     } catch (error) {
-        response.data = {
-            error: true,
-            ...(error?.response?.data && { message: error.response.data })
-        };
+        // key not found
+        return false;
     }
 
-    const data = await response.data;
-
-    return data;
+    return response.data.key;
 };
 
 export default (() => {
@@ -42,26 +38,28 @@ export default (() => {
                 : "false";
 
             const isProduction = production === "true" ? true : false;
-
             const selectKey = document.getElementById("select-key");
             const getKey = document.getElementById("use-key");
 
             spec.servers.push({
                 url: apiUrl + "/portal",
-                description: "Kong Portal Gateway"
+                description: "API Gateway"
             });
 
             spec.components.securitySchemes.oAuthSample.flows.clientCredentials.tokenUrl =
                 apiUrl + "/portal/oauth2/token";
 
-            const disableTryItOutPlugin = () => {
+            const disableTryItOutAndAuthorizePlugin = () => {
                 return {
                     statePlugins: {
                         spec: {
                             wrapSelectors: {
-                                allowTryItOutFor: () => () => !isProduction
+                                allowTryItOutFor: () => () => !isProduction && selectKey
                             }
                         }
+                    },
+                    wrapComponents: {
+                        authorizeBtn: () => () => null
                     }
                 };
             };
@@ -69,17 +67,17 @@ export default (() => {
             const ui = SwaggerUIBundle({
                 spec,
                 dom_id: "#swagger-ui",
-                plugins: [disableTryItOutPlugin]
+                plugins: [disableTryItOutAndAuthorizePlugin]
             });
 
             if (selectKey && !isProduction) {
                 getKey.addEventListener("click", async () => {
-                    const { key } = await getKeyInfo(selectKey.value);
+                    const key = await getKeyInfo(selectKey.value);
 
-                    ui.initOAuth({
-                        clientId: key?.client_id,
-                        clientSecret: key?.client_secret,
-                        appName: key?.name,
+                    key && ui.initOAuth({
+                        clientId: key.client_id,
+                        clientSecret: key.client_secret,
+                        appName: key.name,
                         scopeSeparator: " ",
                         scopes: "user",
                         additionalQueryStringParams: {
