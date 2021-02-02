@@ -87,7 +87,7 @@ RUN if [ -n "$MATOMO_PLUGIN_UPDATEEXPOSEDFQDNLIST_VERSION" ]; then \
     && sed -i -E -e 's/(@MATOMO_MORE_CONFIG@)/[UpdateExposedFqdnList]\n\1/g' /opt/matomo/config/config.ini.php \
     && sed -i -E -e 's/(@MATOMO_MORE_CONFIG@)/redis_host = "@MATOMO_PLUGIN_UPDATEEXPOSEDFQDNLIST_REDIS_HOST@"\n\1/g' /opt/matomo/config/config.ini.php \
     && sed -i -E -e 's/(@MATOMO_MORE_CONFIG@)/redis_port = "@MATOMO_PLUGIN_UPDATEEXPOSEDFQDNLIST_REDIS_PORT@"\n\1/g' /opt/matomo/config/config.ini.php \
-    && sed -i -E -e 's/(@MATOMO_MORE_CONFIG@)/redis_db_index = "@MATOMO_PLUGIN_UPDATEEXPOSEDFQDNLIST_REDIS_DB_INDEX@"\n\1/g' /opt/matomo/config/config.ini.php \
+    && sed -i -E -e 's/(@MATOMO_MORE_CONFIG@)/redis_db_index = "@MATOMO_PLUGIN_UPDATEEXPOSEDFQDNLIST_REDIS_DB_INDEX@"\n\n\1/g' /opt/matomo/config/config.ini.php \
 ;fi
 
 RUN if [ -n "$MATOMO_PLUGIN_DISABLESITETRACKING_VERSION" ]; then \
