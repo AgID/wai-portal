@@ -14,7 +14,7 @@
         <div class="show-when-active mt-4 text-center text-sm-left">
             @component('layouts.components.link_button', [
                 'icon' => 'it-plus',
-                'link' => $newKeyUrl,
+                'link' => $newCredentialUrl,
                 'size' => 'lg',
                 'disabled' => $authUser->cannot(UserPermission::MANAGE_WEBSITES),
             ])

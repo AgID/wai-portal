@@ -10,14 +10,14 @@ use Illuminate\Http\RedirectResponse;
 /**
  * Operation not allowed exception.
  */
-class InvalidKeyException extends Exception
+class InvalidCredentialException extends Exception
 {
     /**
      * Report the exception.
      */
     public function report(): void
     {
-        logger()->error('Key not found: ' . $this->getMessage(),
+        logger()->error('Credential not found: ' . $this->getMessage(),
             [
                 'event' => EventType::EXCEPTION,
                 'exception_type' => ExceptionType::INVALID_OPERATION,
