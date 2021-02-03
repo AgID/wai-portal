@@ -10,7 +10,7 @@
             <div class="col-md-6 col-12">
                 @if ($hascredentials)
                 <div class="bootstrap-select-wrapper">
-                    <label>{{ __('Seleziona una credenziale da usare per le prove.') }}</label>
+                    <label>{{ __('Seleziona una credenziale da usare per le chiamate API di prova.') }}</label>
                     <select class="form-select" aria-label="{{ __('Seleziona una credenziale OAuth2') }}" id="select-credential">
                         @foreach ($credentialsList as $index => &$credential)
                             <option value="{{ $credential->consumer_id }}">
