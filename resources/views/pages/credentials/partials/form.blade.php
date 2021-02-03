@@ -4,14 +4,14 @@
     @method('put')
     @endisset
     @component('layouts.components.box', ['classes' => 'rounded'])
-    <h3 class="section-header">{{__('Informazioni Chiave')}}</h3>
+    <h3 class="section-header">{{__('Informazioni Credenziale')}}</h3>
     <div class="form-row">
         <div class="form-group has-form-text col-md-7">
             <div class="input-group">
                 <div class="input-group-prepend">
                     <div class="input-group-text"><svg class="icon icon-sm"><use xlink:href="{{ asset('svg/sprite.svg#it-help-circle') }}"></use></svg></div>
                 </div>
-                <label for="credential_name">{{ ucfirst(__('nome della chiave')) }}</label>
+                <label for="credential_name">{{ ucfirst(__('nome della Credenziale')) }}</label>
                 <input 
                     type="text" 
                     class="form-control{{ $errors->has('credential_name') ? ' is-invalid' : '' }}" 
@@ -29,7 +29,7 @@
                 <div class="invalid-feedback">{{ __('validation.required', ['attribute' => __('validation.attributes.credential_name')]) }}</div>
                 @enderror
             </div>
-            <small id="name-input-help" class="form-text text-muted">{{ __('Inserisci il nome della chiave.') }}</small>
+            <small id="name-input-help" class="form-text text-muted">{{ __('Inserisci il nome della Credenziale.') }}</small>
         </div>
     </div>
     <div class="form-row">
@@ -71,7 +71,7 @@
                 @enderror
             </div>
             <small id="type-input-help" class="form-text text-muted">
-                {{ __('L\'amministratore può gestire i siti web abilitati e tutti gli utenti') }}
+                {{ __('L\'amministratore può gestire tutti i siti web e tutti gli utenti') }}
             </small>     
         </div>
     </div>
