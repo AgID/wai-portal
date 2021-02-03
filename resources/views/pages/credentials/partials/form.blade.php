@@ -1,6 +1,6 @@
 <form method="post" action="{{ $route }}" class="needs-validation" novalidate>
     @csrf
-    @isset($key)
+    @isset($credential)
     @method('put')
     @endisset
     @component('layouts.components.box', ['classes' => 'rounded'])
@@ -11,22 +11,22 @@
                 <div class="input-group-prepend">
                     <div class="input-group-text"><svg class="icon icon-sm"><use xlink:href="{{ asset('svg/sprite.svg#it-help-circle') }}"></use></svg></div>
                 </div>
-                <label for="key_name">{{ ucfirst(__('nome della chiave')) }}</label>
+                <label for="credential_name">{{ ucfirst(__('nome della chiave')) }}</label>
                 <input 
                     type="text" 
-                    class="form-control{{ $errors->has('key_name') ? ' is-invalid' : '' }}" 
-                    id="key_name" 
-                    name="key_name" 
-                    value="{{ old('key_name', $key->client_name ?? '') }}" 
+                    class="form-control{{ $errors->has('credential_name') ? ' is-invalid' : '' }}" 
+                    id="credential_name" 
+                    name="credential_name" 
+                    value="{{ old('credential_name', $credential->client_name ?? '') }}" 
                     maxlength="255" 
                     aria-describedby="name-input-help" 
                     aria-required="true" 
                     required 
                     >
-                @error('key_name')
-                <div class="invalid-feedback">{{ $errors->first('key_name') }}</div>
+                @error('credential_name')
+                <div class="invalid-feedback">{{ $errors->first('credential_name') }}</div>
                 @else
-                <div class="invalid-feedback">{{ __('validation.required', ['attribute' => __('validation.attributes.key_name')]) }}</div>
+                <div class="invalid-feedback">{{ __('validation.required', ['attribute' => __('validation.attributes.credential_name')]) }}</div>
                 @enderror
             </div>
             <small id="name-input-help" class="form-text text-muted">{{ __('Inserisci il nome della chiave.') }}</small>

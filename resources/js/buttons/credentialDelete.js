@@ -7,14 +7,14 @@ import FormButton from "../formButton";
 
 export default (() => {
     const init = () => {
-        const keyDeleteButtons = [
+        const credentialDeleteButtons = [
             ...document.querySelectorAll(
-                'a[role="button"][data-type="keyDelete"]'
+                'a[role="button"][data-type="credentialDelete"]'
             )
         ];
 
-        keyDeleteButtons.map(keyDeleteButton => {
-            const isAjax = "ajax" in keyDeleteButton.dataset;
+        credentialDeleteButtons.map(credentialDeleteButton => {
+            const isAjax = "ajax" in credentialDeleteButton.dataset;
             const currentAction = I18n.t("eliminazione");
             const confirmation = {
                 title: upperCaseFirst(
@@ -23,7 +23,7 @@ export default (() => {
                 body: [
                     "<p>",
                     I18n.t("Stai eliminando la chiave"),
-                    "<strong>" + keyDeleteButton.dataset.keyname + "</strong>",
+                    "<strong>" + credentialDeleteButton.dataset.credentialname + "</strong>",
                     "</p>",
                     "<p>" + I18n.t("Sei sicuro?") + "<p>"
                 ].join(" "),
@@ -36,7 +36,7 @@ export default (() => {
                     [
                         I18n.t("La chiave"),
                         "<strong>" +
-                        keyDeleteButton.dataset.keyname  +
+                        credentialDeleteButton.dataset.credentialname  +
                             "</strong>",
                         I18n.t("è stata eliminata.")
                     ].join(" "),
@@ -48,12 +48,12 @@ export default (() => {
 
             isAjax &&
                 AjaxButton.init(
-                    keyDeleteButton,
+                    credentialDeleteButton,
                     "patch",
                     confirmation,
                     success
                 );
-            isAjax || FormButton.init(keyDeleteButton, "patch", confirmation);
+            isAjax || FormButton.init(credentialDeleteButton, "patch", confirmation);
         });
     };
 

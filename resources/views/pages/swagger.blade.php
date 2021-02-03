@@ -8,18 +8,18 @@
         @component('layouts.components.box')
         <div class="row">
             <div class="col-md-6 col-12">
-                @if ($haskeys)
+                @if ($hascredentials)
                 <div class="bootstrap-select-wrapper">
                     <label>{{ __('Seleziona una credenziale da usare per le prove.') }}</label>
-                    <select class="form-select" aria-label="{{ __('Seleziona una credenziale OAuth2') }}" id="select-key">
-                        @foreach ($keysList as $index => &$key)
-                            <option value="{{ $key->consumer_id }}"{{ $index === 0 ? ' selected' : '' }}>
-                                {{ $key->client_name }}
+                    <select class="form-select" aria-label="{{ __('Seleziona una credenziale OAuth2') }}" id="select-credential">
+                        @foreach ($credentialsList as $index => &$credential)
+                            <option value="{{ $credential->consumer_id }}">
+                                {{ $credential->client_name }}
                             </option>
                         @endforeach
                     </select>
                 </div>
-                <button type="button" class="btn btn-outline-primary mt-4" id="use-key">{{ __('Conferma') }}</button>
+                <button type="button" class="btn btn-outline-primary mt-4" id="use-credential">{{ __('Conferma') }}</button>
                 @else
                     <p>
                         {!! __('Se vuoi provare le API è necessario prima aggiungere una :credential.', [
@@ -31,9 +31,9 @@
             <div class="col-md-6 col-12">
                 <div class="text-center text-sm-right">
                     @component('layouts.components.link_button', [
-                        'link' => $keys,
+                        'link' => $credentials,
                         'size' => 'lg',
-                        'icon' => 'it-key'
+                        'icon' => 'it-credential'
                     ])
                     {{ __('Gestione delle credenziali OAuth') }}
                     @endcomponent

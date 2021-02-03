@@ -3,13 +3,13 @@ import SwaggerUIBundle from "swagger-ui";
 import "swagger-ui/dist/swagger-ui.css";
 import spec from "../data/api.json";
 
-const getKeyInfo = async consumerId => {
+const getCredentialInfo = async consumerId => {
     let response = {};
 
     try {
         response = await axios({
             method: "GET",
-            url: `/api-key/${consumerId}/show/json`,
+            url: `/api-credential/${consumerId}/show/json`,
             headers: {
                 accept: "*/*",
                 "content-type": "application/json"
@@ -17,11 +17,11 @@ const getKeyInfo = async consumerId => {
             timeout: 3000
         });
     } catch (error) {
-        // key not found
+        // credential not found
         return false;
     }
 
-    return response.data.key;
+    return response.data.credential;
 };
 
 export default (() => {
@@ -38,8 +38,8 @@ export default (() => {
                 : "false";
 
             const isProduction = production === "true" ? true : false;
-            const selectKey = document.getElementById("select-key");
-            const getKey = document.getElementById("use-key");
+            const selectCredential = document.getElementById("select-credential");
+            const getCredential = document.getElementById("use-credential");
 
             spec.servers.push({
                 url: apiUrl + "/portal",
@@ -54,7 +54,7 @@ export default (() => {
                     statePlugins: {
                         spec: {
                             wrapSelectors: {
-                                allowTryItOutFor: () => () => !isProduction && selectKey
+                                allowTryItOutFor: () => () => !isProduction && selectCredential
                             }
                         }
                     },
@@ -70,14 +70,14 @@ export default (() => {
                 plugins: [disableTryItOutAndAuthorizePlugin]
             });
 
-            if (selectKey && !isProduction) {
-                getKey.addEventListener("click", async () => {
-                    const key = await getKeyInfo(selectKey.value);
+            if (selectCredential && !isProduction) {
+                getCredential.addEventListener("click", async () => {
+                    const credential = await getCredentialInfo(selectCredential.value);
 
-                    key && ui.initOAuth({
-                        clientId: key.client_id,
-                        clientSecret: key.client_secret,
-                        appName: key.name,
+                    credential && ui.initOAuth({
+                        clientId: credential.client_id,
+                        clientSecret: credential.client_secret,
+                        appName: credential.name,
                         scopeSeparator: " ",
                         scopes: "user",
                         additionalQueryStringParams: {
