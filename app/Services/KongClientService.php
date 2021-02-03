@@ -25,7 +25,7 @@ class KongClientService
 
     public function __construct()
     {
-        $this->serviceBaseUri = config('kong-service.endpoint_url');
+        $this->serviceBaseUri = config('kong-service.admin_api_url');
         $this->redisCache = Redis::connection(env('CACHE_CONNECTION'))->client();
     }
 
