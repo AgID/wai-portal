@@ -155,7 +155,7 @@ trait SendsResponse
                 'status' => 200,
             ])
             : back()->withNotification([
-                'title' => __('Chiave modificata'),
+                'title' => __('credenziale modificata'),
                 'message' => __('Il sito web :website è stato eliminato.', ['website' => '<strong>' . e($credential->client_name) . '</strong>']),
                 'status' => 'info',
                 'icon' => 'it-info-circle',
