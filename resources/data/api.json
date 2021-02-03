@@ -3,17 +3,15 @@
     "info": {
         "version": "0.0.1",
         "title": "Web Analytics Italia API",
-        "description": "L'Api descrivere le operazioni che le Pubbliche Amministrazioni possono fare in interoperabilità per gestire utenti e siti o le consultare alcune informazioni statistiche Le Api sono scritte utilizzando la specifica [OpenAPI 3.0](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md) termsOfService: 'http://swagger.io/terms/'\n",
+        "description": "Questa interfaccia API si riferisce alle operazioni che le Pubbliche Amministrazioni possono eseguire in interoperabilità per gestire utenti e siti o consultare le informazioni statistiche.",
         "contact": {
-            "x-audience": ["public"],
-            "x-api-id": "f26b73c2-ec70-4e9a-b5f3-f3cc5e0b9406",
             "servers": [
                 {
                     "description": "Staging Server",
                     "url": "https://staging.webanalytics.italia.it/api"
                 },
                 {
-                    "description": "Public Play Ground Server",
+                    "description": "Public Playground Server",
                     "url": "https://play.webanalytics.italia.it/api"
                 },
                 {
