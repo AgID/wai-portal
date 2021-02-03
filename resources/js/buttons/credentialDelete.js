@@ -18,11 +18,11 @@ export default (() => {
             const currentAction = I18n.t("eliminazione");
             const confirmation = {
                 title: upperCaseFirst(
-                    [currentAction, I18n.t("della chiave")].join(" ")
+                    [currentAction, I18n.t("della credenziale")].join(" ")
                 ),
                 body: [
                     "<p>",
-                    I18n.t("Stai eliminando la chiave"),
+                    I18n.t("Stai eliminando la credenziale"),
                     "<strong>" + credentialDeleteButton.dataset.credentialname + "</strong>",
                     "</p>",
                     "<p>" + I18n.t("Sei sicuro?") + "<p>"
@@ -32,9 +32,9 @@ export default (() => {
 
             const success = ()  => {
                 Notification.showNotification(
-                    I18n.t("Chiave eliminata"),
+                    I18n.t("credenziale eliminata"),
                     [
-                        I18n.t("La chiave"),
+                        I18n.t("La credenziale"),
                         "<strong>" +
                         credentialDeleteButton.dataset.credentialname  +
                             "</strong>",
