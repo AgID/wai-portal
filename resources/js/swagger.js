@@ -46,10 +46,10 @@ export default (() => {
                 description: "API Gateway"
             });
 
-            spec.components.securitySchemes.oAuthSample.flows.clientCredentials.tokenUrl =
+            spec.components.securitySchemes.oAuth.flows.clientCredentials.tokenUrl =
                 apiUrl + "/portal/oauth2/token";
 
-            const disableTryItOutAndAuthorizePlugin = () => {
+            const disableTryItOutPlugin = () => {
                 return {
                     statePlugins: {
                         spec: {
@@ -57,9 +57,6 @@ export default (() => {
                                 allowTryItOutFor: () => () => !isProduction && selectCredential
                             }
                         }
-                    },
-                    wrapComponents: {
-                        authorizeBtn: () => () => null
                     }
                 };
             };
@@ -67,7 +64,7 @@ export default (() => {
             const ui = SwaggerUIBundle({
                 spec,
                 dom_id: "#swagger-ui",
-                plugins: [disableTryItOutAndAuthorizePlugin]
+                plugins: [disableTryItOutPlugin]
             });
 
             if (selectCredential && !isProduction) {
@@ -78,12 +75,9 @@ export default (() => {
                         clientId: credential.client_id,
                         clientSecret: credential.client_secret,
                         appName: credential.name,
-                        scopeSeparator: " ",
-                        scopes: "user",
                         additionalQueryStringParams: {
                             grant_type: "client_credentials"
-                        },
-                        usePkceWithAuthorizationCodeGrant: false
+                        }
                     });
                 });
             }

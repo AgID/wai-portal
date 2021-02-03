@@ -28,9 +28,6 @@
                 "tags": ["Utenti"],
                 "summary": "Creazione di un nuovo utente",
                 "operationId": "addUser",
-                "security": [
-                    { "BearerAuth": { "type": "http", "scheme": "bearer" } }
-                ],
                 "requestBody": {
                     "description": "Dati dell'utente da creare",
                     "required": true,
@@ -59,7 +56,6 @@
                 "tags": ["Utenti"],
                 "summary": "Restituisce l'elenco degli utenti",
                 "operationId": "getUsers",
-                "security": [{ "BearerAuth": [] }],
                 "responses": {
                     "200": {
                         "description": "Uri a cui recuperare l'utente",
@@ -82,7 +78,6 @@
                 "tags": ["Utenti"],
                 "summary": "Acquisisce le informazioni dell'utente",
                 "operationId": "getUser",
-                "security": [{ "BearerAuth": [] }],
                 "responses": {
                     "200": {
                         "description": "Informazioni dell'utente",
@@ -100,7 +95,6 @@
                 "tags": ["Utenti"],
                 "summary": "Modifica i dati dell'utente",
                 "operationId": "patchUser",
-                "security": [{ "BearerAuth": [] }],
                 "requestBody": {
                     "description": "Dati dell'utente da creare",
                     "required": true,
@@ -129,7 +123,6 @@
                 "tags": ["Utenti"],
                 "summary": "Eliminazione di un utente",
                 "operationId": "deleteUser",
-                "security": [{ "BearerAuth": [] }],
                 "responses": { "204": { "description": "Utente cancellato" } }
             }
         },
@@ -138,7 +131,6 @@
                 "tags": ["Siti"],
                 "summary": "Creazione di un sito",
                 "operationId": "addSite",
-                "security": [{ "BearerAuth": [] }],
                 "requestBody": {
                     "description": "Dati dell'utente da creare",
                     "required": true,
@@ -166,7 +158,6 @@
                 "tags": ["Siti"],
                 "summary": "Restituisce l'elenco dei siti associati all'amministrazione",
                 "operationId": "getSites",
-                "security": [{ "BearerAuth": [] }],
                 "responses": {
                     "200": {
                         "description": "Array dei siti",
@@ -379,26 +370,21 @@
             }
         },
         "securitySchemes": {
-            "oAuthSample": {
+            "oAuth": {
                 "type": "oauth2",
-                "description": "This API uses OAuth 2 with the implicit grant flow. [More info](https://api.example.com/docs/auth)",
+                "description": "This API uses OAuth 2 with the client credentials flow.",
                 "flows": {
                     "clientCredentials": {
                         "tokenUrl": "",
                         "scopes": {}
                     }
                 }
-            },
-            "BearerAuth": {
-                "type": "http",
-                "scheme": "bearer",
-                "bearerFormat": "GUID"
             }
         }
     },
     "security": [
         {
-            "oAuthNoScopes": []
+            "oAuth": []
         }
     ]
 }
