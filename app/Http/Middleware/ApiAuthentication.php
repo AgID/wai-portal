@@ -2,7 +2,7 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\Key;
+use App\Models\Credential;
 use Closure;
 use Illuminate\Session\Middleware\StartSession;
 
@@ -26,31 +26,31 @@ class ApiAuthentication extends StartSession
         }
 
         $customId = json_decode($customId);
-        $keyType = $keySites = '';
+        $credentialType = $credentialSites = '';
 
         if (property_exists($customId, 'type') && property_exists($customId, 'siteId')) {
-            $keyType = $customId->type;
-            $keySites = $customId->siteId;
+            $credentialType = $customId->type;
+            $credentialSites = $customId->siteId;
         }
 
-        if (null === $consumerId || 'admin' !== $keyType || !is_array($keySites)) {
-            print_r([$consumerId, $keyType, $keySites]);
+        if (null === $consumerId || 'admin' !== $credentialType || !is_array($credentialSites)) {
+            print_r([$consumerId, $credentialType, $credentialSites]);
 
             return response()->json($this->jsonError(2), 403);
         }
 
-        $keys = new Key();
+        $credentials = new Credential();
 
-        $selectKey = $keys->getKeyFromConsumerId($consumerId);
+        $selectCredential = $credentials->getCredentialFromConsumerId($consumerId);
 
-        $publicAdministration = $selectKey->publicAdministration()->first();
+        $publicAdministration = $selectCredential->publicAdministration()->first();
 
         $request->attributes->add(['publicAdministration' => $publicAdministration]);
 
         $website = $request->route()->parameter('website');
 
         if (null !== $website) {
-            $column = array_column($keySites, 'id');
+            $column = array_column($credentialSites, 'id');
             if (!in_array($website->id, $column)) {
                 return response()->json($this->jsonError(3), 401);
             }

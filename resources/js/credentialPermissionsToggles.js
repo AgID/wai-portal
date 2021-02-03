@@ -1,5 +1,5 @@
 export default (() => {
-    const initTogglesKeys = () => {
+    const initTogglesCredentials = () => {
         const adminSelect = document.getElementById("type");
         const permissionsToggles = [
             ...document.querySelectorAll(
@@ -49,7 +49,7 @@ export default (() => {
     };
 
     const init = () => {
-        initTogglesKeys();
+        initTogglesCredentials();
     };
 
     return { init };
