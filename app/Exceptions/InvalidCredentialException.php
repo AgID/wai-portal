@@ -34,8 +34,8 @@ class InvalidCredentialException extends Exception
     public function render(): RedirectResponse
     {
         return redirect()->home()->withNotification([
-            'title' => __('chiave non trovata'),
-            'message' => __('La chiave selezionata non può essere trovata.'),
+            'title' => __('credenziale non trovata'),
+            'message' => __('La credenziale selezionata non può essere trovata.'),
             'status' => 'error',
             'icon' => 'it-close-circle',
         ]);
