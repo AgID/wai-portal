@@ -74,20 +74,6 @@ class CRUDWebsiteTest extends TestCase
     private $faker;
 
     /**
-     * The custom public administration.
-     *
-     * @var PublicAdministration the custom public administration
-     */
-    private $customPublicAdministration;
-
-    /**
-     * The custom website.
-     *
-     * @var Website the website for custom public administration
-     */
-    private $customWebsite;
-
-    /**
      * Pre-test setup.
      *
      * @throws \Illuminate\Contracts\Container\BindingResolutionException if unable to bind to the service
@@ -120,26 +106,6 @@ class CRUDWebsiteTest extends TestCase
         ]);
 
         $this->user->registerAnalyticsServiceAccount();
-
-        do {
-            $customPublicAdministration = factory(PublicAdministration::class)->make([
-                'status' => PublicAdministrationStatus::PENDING,
-            ]);
-        } while ($customPublicAdministration->ipa_code === $this->publicAdministration->ipa_code);
-        $this->customPublicAdministration = $customPublicAdministration;
-        $this->customPublicAdministration->save();
-
-        do {
-            $customWebsite = factory(Website::class)->make([
-                'public_administration_id' => $this->customPublicAdministration->id,
-                'status' => WebsiteStatus::PENDING,
-                'type' => WebsiteType::INSTITUTIONAL_PLAY,
-            ]);
-        } while ($customWebsite->slug === $this->website->slug);
-        $this->customWebsite = $customWebsite;
-        $this->customWebsite->save();
-
-        $this->customPublicAdministration->users()->sync([$this->user->id]);
 
         Bouncer::dontCache();
         Bouncer::scope()->onceTo($this->publicAdministration->id, function () {
@@ -367,27 +333,42 @@ class CRUDWebsiteTest extends TestCase
         ]);
 
         $user->registerAnalyticsServiceAccount();
-        $this->customPublicAdministration->users()->sync([$user->id => ['user_status' => UserStatus::PENDING]]);
 
-        $this->assertTrue($this->customWebsite->status->is(WebsiteStatus::PENDING));
+        do {
+            $customPublicAdministration = factory(PublicAdministration::class)->make([
+                'status' => PublicAdministrationStatus::PENDING,
+            ]);
+        } while ($customPublicAdministration->ipa_code === $this->publicAdministration->ipa_code);
+        $customPublicAdministration->save();
+
+        do {
+            $customWebsite = factory(Website::class)->make([
+                'public_administration_id' => $customPublicAdministration->id,
+                'status' => WebsiteStatus::PENDING,
+                'type' => WebsiteType::INSTITUTIONAL_PLAY,
+            ]);
+        } while ($customWebsite->slug === $this->website->slug);
+        $customWebsite->save();
+
+        $customPublicAdministration->users()->sync([$user->id => ['user_status' => UserStatus::PENDING]]);
 
         $this->actingAs($user)
             ->withSession([
                 'spid_sessionIndex' => 'fake-session-index',
                 'spid_user' => $spidUser,
-                'tenant_id' => $this->customPublicAdministration->id,
+                'tenant_id' => $customPublicAdministration->id,
             ])
             ->from(route('websites.index'))
-            ->json('GET', route('websites.activate.force', ['website' => $this->customWebsite->slug]))
+            ->json('GET', route('websites.activate.force', ['website' => $customWebsite->slug]))
             ->assertOk()
             ->assertJsonFragment([
-                'website_name' => e($this->customWebsite->name),
+                'website_name' => e($customWebsite->name),
             ]);
 
         $user->refresh();
-        $this->customWebsite->refresh();
+        $customWebsite->refresh();
 
-        $this->assertTrue($this->customWebsite->status->is(WebsiteStatus::ACTIVE));
+        $this->assertTrue($customWebsite->status->is(WebsiteStatus::ACTIVE));
     }
 
     /**
