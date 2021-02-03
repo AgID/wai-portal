@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Models\Key;
+use App\Models\Credential;
 use App\Models\PublicAdministration;
 use Faker\Factory;
 use GuzzleHttp\Client;
@@ -18,11 +18,11 @@ class ApiTest extends TestCase
     use RefreshDatabase;
 
     /**
-     * The Kong key.
+     * The Kong credential.
      *
-     * @var SPIDUser the Kong key
+     * @var $credential the Kong credential
      */
-    private $key;
+    private $credential;
 
     /**
      * The public administration.
@@ -52,7 +52,7 @@ class ApiTest extends TestCase
             ->state('active')
             ->create();
 
-        $this->key = factory(Key::class)->create([
+        $this->credential = factory(Credential::class)->create([
             'public_administration_id' => $this->publicAdministration->id,
         ]);
 
@@ -89,7 +89,7 @@ class ApiTest extends TestCase
     }
 
     /**
-     * Test API request fails as Key type is not "admin".
+     * Test API request fails as Credential type is not "admin".
      */
     public function testApiErrorAnalyticsType(): void
     {
@@ -112,7 +112,7 @@ class ApiTest extends TestCase
     {
         $response = $this->json('GET', route('api.sites.show'), [], [
             'X-Consumer-Custom-Id' => '{"type":"admin","siteId":[1,11,2,16,21]}',
-            'X-Consumer-Id' => $this->key->consumer_id,
+            'X-Consumer-Id' => $this->credential->consumer_id,
         ]);
 
         $this->assertEquals(200, $response->getStatusCode());

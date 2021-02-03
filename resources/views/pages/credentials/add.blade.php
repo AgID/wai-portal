@@ -3,5 +3,5 @@
 @section('title', "Aggiungi Chiave")
 
 @section('content')
-@include('pages.keys.partials.form', ['route' => $keysStoreUrl])
+@include('pages.credentials.partials.form', ['route' => $credentialsStoreUrl])
 @endsection
