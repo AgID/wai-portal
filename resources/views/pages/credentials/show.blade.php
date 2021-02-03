@@ -6,7 +6,7 @@
 <div class="row">
     <div class="col-lg-12 d-flex">
         @component('layouts.components.box')
-            <h4 class="text-uppercase m-0">{{ __('Informazioni Chiave') }}</h4>
+            <h4 class="text-uppercase m-0">{{ __('Informazioni Credenziale') }}</h4>
             <div class="mt-5 pt-5">
                 <div class="form-row">
                     <div class="form-group col-md-6">
@@ -69,18 +69,6 @@
     <div class="col-lg-12 d-flex">
         @component('layouts.components.box')
             <h4 class="text-uppercase m-2">{{ __('PERMESSI SUI SITI WEB') }}</h4>
-            <div class="form-row ">
-                <div class="form-group mt-4 pt-4">
-                    <input 
-                    type="text" 
-                    class="form-control-plaintext" 
-                    id="type" 
-                    value="{{ $type ?? __('Non ancora disponibile') }}" 
-                    readonly
-                    >
-                    <label for="type">{{ __('Tipologia Chiave') }}</label>
-                </div>
-            </div>
             <div>
                 <div class="box-section lightgrey-bg-a1 my-4 py-5">
                     <h5 class="section-header mb-4">{{ __('ruolo') }}</h5>
@@ -94,7 +82,7 @@
                                 {{ 
                                 $type === "admin" 
                                     ? __('L\'amministratore può gestire i siti web abilitati e tutti gli utenti')
-                                    : __('Chiave Analytics')
+                                    : __('Credenziale Analytics')
                                 }}
                             </p>
                         </div>
