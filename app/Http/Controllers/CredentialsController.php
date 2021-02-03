@@ -256,7 +256,7 @@ class CredentialsController extends Controller
             'title' => __('modifica credenziale'),
             'icon' => 'it-check-circle',
             'message' => __('La modifica della credenziale :credential è andata a buon fine.', [
-                'credential' => '<strong>' . $validatedData['credential_name'] . '</strong>'
+                'credential' => '<strong>' . $validatedData['credential_name'] . '</strong>',
             ]),
         ]);
     }
