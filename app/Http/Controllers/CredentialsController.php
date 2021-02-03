@@ -3,22 +3,22 @@
 namespace App\Http\Controllers;
 
 use App\Enums\UserPermission;
-use App\Exceptions\InvalidKeyException;
-use App\Http\Requests\StoreKeysRequest;
-use App\Http\Requests\UpdateKeyRequest;
-use App\Models\Key;
+use App\Exceptions\InvalidCredentialException;
+use App\Http\Requests\StoreCredentialsRequest;
+use App\Http\Requests\UpdateCredentialRequest;
+use App\Models\Credential;
 use App\Models\PublicAdministration;
 use App\Models\Website;
 use App\Traits\HasRoleAwareUrls;
 use App\Traits\SendsResponse;
-use App\Transformers\KeysTransformer;
+use App\Transformers\CredentialsTransformer;
 use App\Transformers\WebsitesPermissionsTransformer;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Yajra\DataTables\DataTables;
 
-class KeysController extends Controller
+class CredentialsController extends Controller
 {
     use HasRoleAwareUrls;
     use SendsResponse;
@@ -31,7 +31,7 @@ class KeysController extends Controller
     }
 
     /**
-     * Display the key list.
+     * Display the credential list.
      *
      * @param PublicAdministration $publicAdministration the public administration the websites belong to
      *
@@ -39,7 +39,7 @@ class KeysController extends Controller
      */
     public function index(Request $request, PublicAdministration $publicAdministration)
     {
-        $keysDatatable = [
+        $credentialsDatatable = [
             'columns' => [
                 ['data' => 'client_name', 'name' => __('Nome della chiave'), 'className' => 'text-wrap'],
                 ['data' => 'consumer_id', 'name' => __('Consumer ID')],
@@ -47,25 +47,25 @@ class KeysController extends Controller
                 ['data' => 'icons', 'name' => '', 'orderable' => false],
                 ['data' => 'buttons', 'name' => '', 'orderable' => false],
             ],
-            'source' => $this->getRoleAwareUrl('api-key.data.json', [], $publicAdministration),
+            'source' => $this->getRoleAwareUrl('api-credential.data.json', [], $publicAdministration),
             'caption' => __('elenco delle chiavi presenti su :app', ['app' => config('app.name')]),
             'columnsOrder' => [['added_at', 'asc'], ['client_name', 'asc']],
         ];
 
         $roleAwareUrls = $this->getRoleAwareUrlArray([
-            'newKeyUrl' => 'api-key.create',
+            'newCredentialUrl' => 'api-credential.create',
         ], [], $publicAdministration);
 
-        return view('pages.keys.index')
+        return view('pages.credentials.index')
             ->with($roleAwareUrls)
-            ->with($keysDatatable);
+            ->with($credentialsDatatable);
     }
 
     /**
-     * Create a new Key.
+     * Create a new Credential.
      *
      * @param Request $request the request
-     * @param PublicAdministration $publicAdministration the keys belong to
+     * @param PublicAdministration $publicAdministration the credentials belong to
      *
      * @return View the view
      */
@@ -76,29 +76,29 @@ class KeysController extends Controller
             ? $publicAdministration
             : current_public_administration();
 
-        $keysStoreUrl = $this->getRoleAwareUrl('api-key.store', [], $currentPublicAdministration);
+        $credentialsStoreUrl = $this->getRoleAwareUrl('api-credential.store', [], $currentPublicAdministration);
 
         $websitesPermissionsDatatableSource = $this->getRoleAwareUrl(
-            'api-key.websites.permissions.make',
-            ['key' => null],
+            'api-credential.websites.permissions.make',
+            ['credential' => null],
             $currentPublicAdministration
         );
 
         $websitesPermissionsDatatable = $this->getDatatableWebsitesPermissionsParams($websitesPermissionsDatatableSource);
 
-        return view('pages.keys.add')->with(compact('keysStoreUrl'))->with($websitesPermissionsDatatable);
+        return view('pages.credentials.add')->with(compact('credentialsStoreUrl'))->with($websitesPermissionsDatatable);
     }
 
     /**
-     * Display the key details.
+     * Display the credential details.
      *
      * @param Request $request the request
-     * @param Key $key the key
+     * @param Credential $credential the credential
      * @param PublicAdministration $publicAdministration the public administration the user belongs to
      *
      * @return View|Redirect the view or redirect error
      */
-    public function show(Request $request, Key $key, PublicAdministration $publicAdministration)
+    public function show(Request $request, Credential $credential, PublicAdministration $publicAdministration)
     {
         $user = auth()->user();
 
@@ -106,10 +106,10 @@ class KeysController extends Controller
             ? $publicAdministration
             : current_public_administration();
 
-        if ($currentPublicAdministration->id === $key->public_administration_id) {
-            $client = $this->clientService->getClient($key->consumer_id);
+        if ($currentPublicAdministration->id === $credential->public_administration_id) {
+            $client = $this->clientService->getClient($credential->consumer_id);
 
-            $consumer = $this->clientService->getConsumer($key->consumer_id);
+            $consumer = $this->clientService->getConsumer($credential->consumer_id);
             $customId = (array) json_decode($consumer['custom_id']);
             $conumerType = $customId['type'];
 
@@ -118,27 +118,27 @@ class KeysController extends Controller
                 : [];
 
             $roleAwareUrls = $this->getRoleAwareUrlArray([
-                'keyEditUrl' => 'api-key.edit',
+                'credentialEditUrl' => 'api-credential.edit',
             ], [
-                'key' => $key,
+                'credential' => $credential,
             ], $currentPublicAdministration);
 
             $websitesPermissionsDatatableSource = $this->getRoleAwareUrl(
-                'api-key.websites.permissions',
-                ['key' => $key, 'oldKeyPermissions' => $sitesIdArray],
+                'api-credential.websites.permissions',
+                ['credential' => $credential, 'oldCredentialPermissions' => $sitesIdArray],
                 $currentPublicAdministration
             );
 
             $websitesPermissionsDatatable = $this->getDatatableWebsitesPermissionsParams($websitesPermissionsDatatableSource, true);
 
-            $keyData = [
+            $credentialData = [
                 'client' => $client,
                 'type' => $conumerType,
             ];
 
-            return view('pages.keys.show')
-                ->with(compact('key'))
-                ->with($keyData)
+            return view('pages.credentials.show')
+                ->with(compact('credential'))
+                ->with($credentialData)
                 ->with($websitesPermissionsDatatable)
                 ->with($roleAwareUrls);
         }
@@ -151,7 +151,7 @@ class KeysController extends Controller
         ]);
     }
 
-    public function showJson(Key $key, PublicAdministration $publicAdministration)
+    public function showJson(Credential $credential, PublicAdministration $publicAdministration)
     {
         $user = auth()->user();
 
@@ -159,11 +159,11 @@ class KeysController extends Controller
             ? $publicAdministration
             : current_public_administration();
 
-        if ($currentPublicAdministration->id === $key->public_administration_id) {
-            $keyData = $this->clientService->getClient($key->consumer_id);
+        if ($currentPublicAdministration->id === $credential->public_administration_id) {
+            $credentialData = $this->clientService->getClient($credential->consumer_id);
 
             return response()->json([
-                'key' => $keyData,
+                'credential' => $credentialData,
             ], 200);
         }
 
@@ -174,111 +174,111 @@ class KeysController extends Controller
     }
 
     /**
-     * Edit key view page.
+     * Edit credential view page.
      *
      * @param Request $request The request
-     * @param Key $key The key
+     * @param Credential $credential The credential
      * @param PublicAdministration $publicAdministration the public administration the user belongs to
      *
      * @return View the view
      */
-    public function edit(Request $request, Key $key, PublicAdministration $publicAdministration): View
+    public function edit(Request $request, Credential $credential, PublicAdministration $publicAdministration): View
     {
         $user = auth()->user();
         $currentPublicAdministration = $user->can(UserPermission::ACCESS_ADMIN_AREA)
             ? $publicAdministration
             : current_public_administration();
 
-        $updateUrl = $this->getRoleAwareUrl('api-key.update', [
-            'key' => $key,
+        $updateUrl = $this->getRoleAwareUrl('api-credential.update', [
+            'credential' => $credential,
         ], $currentPublicAdministration);
 
-        $consumer = $this->clientService->getConsumer($key->consumer_id);
+        $consumer = $this->clientService->getConsumer($credential->consumer_id);
         $customId = json_decode($consumer['custom_id']);
         $sitesIdArray = is_array($customId->siteId)
             ? $customId->siteId
             : [];
 
         $websitesPermissionsDatatableSource = $this->getRoleAwareUrl(
-            'api-key.websites.permissions.make',
+            'api-credential.websites.permissions.make',
             [
-                'key' => $key,
-                'oldKeyPermissions' => $sitesIdArray,
+                'credential' => $credential,
+                'oldCredentialPermissions' => $sitesIdArray,
             ],
             $currentPublicAdministration
         );
 
-        $keyData = [
+        $credentialData = [
             'type' => $customId->type,
         ];
 
         $websitesPermissionsDatatable = $this->getDatatableWebsitesPermissionsParams($websitesPermissionsDatatableSource);
 
-        return view('pages.keys.edit')
-            ->with(compact('key', 'updateUrl'))
+        return view('pages.credentials.edit')
+            ->with(compact('credential', 'updateUrl'))
             ->with($websitesPermissionsDatatable)
-            ->with($keyData);
+            ->with($credentialData);
     }
 
     /**
-     * Update the keys.
+     * Update the credentials.
      *
-     * @param UpdateKeyRequest $request The request
-     * @param Key $key The key
+     * @param UpdateCredentialRequest $request The request
+     * @param Credential $credential The credential
      *
      * @return RedirectResponse
      */
-    public function update(UpdateKeyRequest $request, Key $key): RedirectResponse
+    public function update(UpdateCredentialRequest $request, Credential $credential): RedirectResponse
     {
         $validatedData = $request->validated();
 
         $permissions = [];
         if (array_key_exists('permissions', $validatedData)) {
-            foreach ($validatedData['permissions'] as $keyId => $permission) {
-                array_push($permissions, ['id' => $keyId, 'permission' => implode('', $permission)]);
+            foreach ($validatedData['permissions'] as $credentialId => $permission) {
+                array_push($permissions, ['id' => $credentialId, 'permission' => implode('', $permission)]);
             }
         }
 
-        $key->fill([
-            'client_name' => $validatedData['key_name'],
+        $credential->fill([
+            'client_name' => $validatedData['credential_name'],
         ]);
-        $key->save();
+        $credential->save();
 
         $clientJSON = $this->clientService->updateClient(
-            $key->consumer_id,
+            $credential->consumer_id,
             [
-                'username' => $validatedData['key_name'],
+                'username' => $validatedData['credential_name'],
                 'custom_id' => json_encode(['type' => $validatedData['type'], 'siteId' => $permissions]),
             ]
         );
 
-        return redirect()->route('api-key.index')->withModal([
+        return redirect()->route('api-credential.index')->withModal([
             'title' => __('modifica credenziale'),
             'icon' => 'it-check-circle',
             'message' => __('La modifica della credenziale :credential è andata a buon fine.', [
-                'credential' => '<strong>' . $validatedData['key_name'] . '</strong>'
+                'credential' => '<strong>' . $validatedData['credential_name'] . '</strong>'
             ]),
         ]);
     }
 
     /**
-     * Deletes the key.
+     * Deletes the credential.
      *
-     * @param Key $key The key
+     * @param Credential $credential The credential
      *
      * @return JsonResponse|RedirectResponse the response in json or http redirect format
      */
-    public function delete(Key $key)
+    public function delete(Credential $credential)
     {
         try {
-            $this->clientService->deleteConsumer($key->consumer_id);
-            $key->delete();
+            $this->clientService->deleteConsumer($credential->consumer_id);
+            $credential->delete();
 
-            return $this->keyResponse($key);
-        } catch (InvalidKeyException $exception) {
+            return $this->credentialResponse($credential);
+        } catch (InvalidCredentialException $exception) {
             report($exception);
             $code = $exception->getCode();
-            $message = 'Invalid Key';
+            $message = 'Invalid Credential';
             $httpStatusCode = 400;
         }
 
@@ -286,9 +286,9 @@ class KeysController extends Controller
     }
 
     /**
-     * Get the Keys data.
+     * Get the Credentials data.
      *
-     * @param PublicAdministration $publicAdministration the Public Administration to filter keys or null to use current one
+     * @param PublicAdministration $publicAdministration the Public Administration to filter credentials or null to use current one
      *
      * @throws \Exception if unable to initialize the datatable
      *
@@ -301,20 +301,20 @@ class KeysController extends Controller
             ? $publicAdministration
             : current_public_administration();
 
-        $data = $currentPublicAdministration->keys()->get();
+        $data = $currentPublicAdministration->credentials()->get();
 
         return DataTables::of($data)
-            ->setTransformer(new KeysTransformer())
+            ->setTransformer(new CredentialsTransformer())
             ->make(true);
     }
 
-    public function store(StoreKeysRequest $request, PublicAdministration $publicAdministration)
+    public function store(StoreCredentialsRequest $request, PublicAdministration $publicAdministration)
     {
         $validatedData = $request->validated();
         $permissions = [];
 
-        foreach ($validatedData['permissions'] as $key => $permission) {
-            array_push($permissions, ['id' => $key, 'permission' => implode('', $permission)]);
+        foreach ($validatedData['permissions'] as $credential => $permission) {
+            array_push($permissions, ['id' => $credential, 'permission' => implode('', $permission)]);
         }
 
         $user = auth()->user();
@@ -325,17 +325,17 @@ class KeysController extends Controller
 
         $clientJSON = $this->clientService
             ->makeConsumer(
-                $validatedData['key_name'],
+                $validatedData['credential_name'],
                 json_encode(['type' => $validatedData['type'], 'siteId' => $permissions])
             );
 
-        $client = Key::create([
-            'client_name' => $validatedData['key_name'],
+        $client = Credential::create([
+            'client_name' => $validatedData['credential_name'],
             'public_administration_id' => $currentPublicAdministration->id,
             'consumer_id' => $clientJSON['consumer']['id'],
         ]);
 
-        return redirect()->route('api-key.index')->withModal([
+        return redirect()->route('api-credential.index')->withModal([
             'title' => __('La chiave è stata inserita!'),
             'icon' => 'it-check-circle',
             'message' => __('Adesso puoi utilizzare la tua nuova credenziale e usare le API con il flusso "Client credentials" OAuth2.'),
@@ -343,17 +343,17 @@ class KeysController extends Controller
     }
 
     /**
-     * Show the oauth key permissions on websites.
+     * Show the oauth credential permissions on websites.
      *
-     * @param Website $websites websites associated with the key
+     * @param Website $websites websites associated with the credential
      *
      * @throws \Exception if unable to initialize the datatable
      *
      * @return mixed the response in JSON format
      */
-    public function showDataKeyWebsitesPermissionsJson(Key $key)
+    public function showDataCredentialsWebsitesPermissionsJson(Credential $credential)
     {
-        $consumer = $this->clientService->getConsumer($key->consumer_id);
+        $consumer = $this->clientService->getConsumer($credential->consumer_id);
         $customId = json_decode($consumer['custom_id']); //explode(',', $consumer['custom_id']);
         $sitesIdArray = is_array($customId->siteId)
             ? array_map(function ($elem) {
@@ -369,15 +369,15 @@ class KeysController extends Controller
     }
 
     /**
-     * Show the oauth key permissions on websites.
+     * Show the oauth credential permissions on websites.
      *
-     * @param Website $websites websites associated with the key
+     * @param Website $websites websites associated with the credential
      *
      * @throws \Exception if unable to initialize the datatable
      *
      * @return mixed the response in JSON format
      */
-    public function makeKeyWebsitesPermissionsJson(?Key $key)
+    public function makeCredentialsWebsitesPermissionsJson(?Credential $credential)
     {
         $publicAdministration = current_public_administration();
 
@@ -423,7 +423,7 @@ class KeysController extends Controller
                     'searchable' => false,
                 ],
             ],
-            'source' => $source . '?&editKeyPermissions' . ($readonly ? '&readOnly' : ''),
+            'source' => $source . '?&editCredentialPermissions' . ($readonly ? '&readOnly' : ''),
             'caption' => __('elenco dei siti web presenti su :app', ['app' => config('app.name')]),
             'columnsOrder' => [['website_name', 'asc']],
         ];

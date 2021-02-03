@@ -1,6 +1,6 @@
 @extends('layouts.page', ['graphicBackground' => true])
 
-@section('title', $key->client_name)
+@section('title', $credential->client_name)
 
 @section('content')
 <div class="row">
@@ -14,7 +14,7 @@
                         type="text" 
                         class="form-control-plaintext" 
                         id="name" 
-                        value="{{ $key->client_name ?? __('Non ancora disponibile') }}" 
+                        value="{{ $credential->client_name ?? __('Non ancora disponibile') }}" 
                         readonly
                         >
                         <label for="name">{{ __('Nome') }}</label>
@@ -24,7 +24,7 @@
                         type="text" 
                         class="form-control-plaintext" 
                         id="name" 
-                        value="{{ $key->consumer_id ?? __('Non ancora disponibile') }}" 
+                        value="{{ $credential->consumer_id ?? __('Non ancora disponibile') }}" 
                         readonly
                         >
                         <label for="name">{{ __('Consumer ID') }}</label>
@@ -56,7 +56,7 @@
             <div class="mt-4 text-center text-sm-left">
                 @component('layouts.components.link_button', [
                     'icon' => 'it-pencil',
-                    'link' => $keyEditUrl,
+                    'link' => $credentialEditUrl,
                     'size' => 'lg',
                 ])
                 {{ ucfirst(__('modifica')) }}
@@ -105,7 +105,7 @@
             <div class="mt-4 text-center text-sm-left">
                 @component('layouts.components.link_button', [
                     'icon' => 'it-pencil',
-                    'link' => $keyEditUrl,
+                    'link' => $credentialEditUrl,
                     'size' => 'lg',
                 ])
                 {{ ucfirst(__('modifica')) }}
