@@ -51,7 +51,6 @@ class WebsiteController extends Controller
 
     public function __construct()
     {
-        $this->serviceBaseUri = config('kong-service.endpoint_url');
         $this->redisCache = Redis::connection(env('CACHE_CONNECTION'))->client();
     }
 
