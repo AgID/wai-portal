@@ -3,7 +3,7 @@
 namespace App\Traits;
 
 use App\Enums\UserStatus;
-use App\Models\Key;
+use App\Models\Credential;
 use App\Models\PublicAdministration;
 use App\Models\User;
 use App\Models\Website;
@@ -139,24 +139,24 @@ trait SendsResponse
     }
 
     /**
-     * Returns a success response for the specified key.
+     * Returns a success response for the specified credential.
      *
-     * @param Key $key the key
+     * @param Credential $credential the credential
      *
      * @return JsonResponse|RedirectResponse the response in json or http redirect format
      */
-    public function keyResponse(Key $key)
+    public function credentialResponse(Credential $credential)
     {
         return request()->expectsJson()
             ? response()->json([
                 'result' => 'ok',
-                'id' => $key->consumer_id,
-                'key_name' => e($key->client_name),
+                'id' => $credential->consumer_id,
+                'credential_name' => e($credential->client_name),
                 'status' => 200,
             ])
             : back()->withNotification([
                 'title' => __('Chiave modificata'),
-                'message' => __('Il sito web :website è stato eliminato.', ['website' => '<strong>' . e($key->client_name) . '</strong>']),
+                'message' => __('Il sito web :website è stato eliminato.', ['website' => '<strong>' . e($credential->client_name) . '</strong>']),
                 'status' => 'info',
                 'icon' => 'it-info-circle',
             ]);

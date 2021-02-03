@@ -6,9 +6,9 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Validator;
 
 /**
- * Store key request.
+ * Update credential request.
  */
-class StoreKeysRequest extends FormRequest
+class UpdateCredentialRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -28,7 +28,7 @@ class StoreKeysRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'key_name' => 'required|unique:keys,client_name|min:3|max:255',
+            'credential_name' => 'required|min:3|max:255',
             'type' => 'required',
             'permissions' => 'array',
         ];
@@ -46,17 +46,4 @@ class StoreKeysRequest extends FormRequest
             $validator->setData($data);
         });
     }
-
-    /*
-     * Check whether the 'permissions' array contains keys belonging to
-     * websites of the current selected public administration.
-     *
-     * @param array $usersPermissions The users permissions array
-     *
-     * @return bool true if the provided user permissions contains keys belonging to users in the current public administration, false otherwise
-     */
-    /* protected function checkUsersIds(array $usersPermissions): bool
-    {
-        return empty(array_diff(array_keys($usersPermissions), request()->route('publicAdministration', current_public_administration())->users->pluck('id')->all()));
-    } */
 }
