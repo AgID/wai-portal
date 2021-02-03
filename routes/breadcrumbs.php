@@ -253,26 +253,26 @@ Breadcrumbs::for('websites.create.primary.custom', function ($trail) {
     $trail->push(__('Registra Pubblica Amministrazione'), route('websites.create.primary.custom'));
 });
 
-// Web Analytics Italia > Api Keys
-Breadcrumbs::for('api-key.index', function ($trail) {
+// Web Analytics Italia > Api Credentials
+Breadcrumbs::for('api-credential.index', function ($trail) {
     $trail->parent('home');
-    $trail->push(__('Chiavi OAuth'), route('api-key.index'));
+    $trail->push(__('Chiavi OAuth'), route('api-credential.index'));
 });
 
-// Web Analytics Italia > Api Keys > Add key
-Breadcrumbs::for('api-key.create', function ($trail) {
-    $trail->parent('api-key.index');
-    $trail->push(__('Aggiungi chiave'), route('api-key.create'));
+// Web Analytics Italia > Api Credentials > Add credential
+Breadcrumbs::for('api-credential.create', function ($trail) {
+    $trail->parent('api-credential.index');
+    $trail->push(__('Aggiungi chiave'), route('api-credential.create'));
 });
 
-// Web Analytics Italia > Api Keys > [key->client_name]
-Breadcrumbs::for('api-key.show', function ($trail, $key) {
-    $trail->parent('api-key.index');
-    $trail->push(implode(' ', [$key->client_name ?? '']), route('api-key.show', ['key' => $key]));
+// Web Analytics Italia > Api Credentials > [credential->client_name]
+Breadcrumbs::for('api-credential.show', function ($trail, $credential) {
+    $trail->parent('api-credential.index');
+    $trail->push(implode(' ', [$credential->client_name ?? '']), route('api-credential.show', ['credential' => $credential]));
 });
 
-// Web Analytics Italia > Api Keys > [key->client_name] (edit)
-Breadcrumbs::for('api-key.edit', function ($trail, $key) {
-    $trail->parent('api-key.index');
-    $trail->push(implode(' ', [$key->client_name ?? '']), route('api-key.edit', ['key' => $key]));
+// Web Analytics Italia > Api Credentials > [credential->client_name] (edit)
+Breadcrumbs::for('api-credential.edit', function ($trail, $credential) {
+    $trail->parent('api-credential.index');
+    $trail->push(implode(' ', [$credential->client_name ?? '']), route('api-credential.edit', ['credential' => $credential]));
 });

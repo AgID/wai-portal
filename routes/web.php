@@ -193,39 +193,39 @@ Route::middleware('spid.auth', 'auth', 'verified:verification.notice')->group(fu
         Route::get('/swagger', 'SwaggerController@index')
         ->name('show.swagger');
 
-        Route::prefix('/api-key')->group(function () {
-            Route::get('/', 'KeysController@index')
-            ->name('api-key.index');
+        Route::prefix('/api-credential')->group(function () {
+            Route::get('/', 'CredentialsController@index')
+            ->name('api-credential.index');
 
-            Route::get('/create', 'KeysController@create')
-            ->name('api-key.create');
+            Route::get('/create', 'CredentialsController@create')
+            ->name('api-credential.create');
 
-            Route::post('/store', 'KeysController@store')
-            ->name('api-key.store');
+            Route::post('/store', 'CredentialsController@store')
+            ->name('api-credential.store');
 
-            Route::get('/data', 'KeysController@dataJson')
-            ->name('api-key.data.json');
+            Route::get('/data', 'CredentialsController@dataJson')
+            ->name('api-credential.data.json');
 
-            Route::get('/data/permissions/', 'KeysController@makeKeyWebsitesPermissionsJson')
-            ->name('api-key.websites.permissions.make');
+            Route::get('/data/permissions/', 'CredentialsController@makeCredentialsWebsitesPermissionsJson')
+            ->name('api-credential.websites.permissions.make');
 
-            Route::get('/data/permissions/show/{key}', 'KeysController@showDataKeyWebsitesPermissionsJson')
-            ->name('api-key.websites.permissions');
+            Route::get('/data/permissions/show/{credentials}', 'CredentialsController@showDataCredentialsWebsitesPermissionsJson')
+            ->name('api-credential.websites.permissions');
 
-            Route::get('/{key}/show', 'KeysController@show')
-            ->name('api-key.show');
+            Route::get('/{credentials}/show', 'CredentialsController@show')
+            ->name('api-credential.show');
 
-            Route::get('/{key}/show/json', 'KeysController@showJson')
-            ->name('api-key.show-json');
+            Route::get('/{credentials}/show/json', 'CredentialsController@showJson')
+            ->name('api-credential.show-json');
 
-            Route::get('/{key}/edit', 'KeysController@edit')
-            ->name('api-key.edit');
+            Route::get('/{credentials}/edit', 'CredentialsController@edit')
+            ->name('api-credential.edit');
 
-            Route::put('/{key}', 'KeysController@update')
-            ->name('api-key.update');
+            Route::put('/{credentials}', 'CredentialsController@update')
+            ->name('api-credential.update');
 
-            Route::patch('/{key}/delete', 'KeysController@delete')
-            ->name('api-key.delete');
+            Route::patch('/{credentials}/delete', 'CredentialsController@delete')
+            ->name('api-credential.delete');
         });
 
         Route::middleware('authorize.analytics:' . UserPermission::VIEW_LOGS)->group(function () {

@@ -199,8 +199,8 @@ class PublicAdministration extends Model
         });
     }
 
-    public function keys()
+    public function credentials()
     {
-        return $this->hasMany(Key::class);
+        return $this->hasMany(Credential::class);
     }
 }
