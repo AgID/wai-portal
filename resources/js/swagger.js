@@ -38,8 +38,9 @@ export default (() => {
                 : "false";
 
             const isProduction = production === "true" ? true : false;
-            const selectCredential = document.getElementById("select-credential");
-            const getCredential = document.getElementById("use-credential");
+            const selectCredential = document.getElementById(
+                "select-credential"
+            );
 
             spec.servers.push({
                 url: apiUrl + "/portal",
@@ -54,7 +55,8 @@ export default (() => {
                     statePlugins: {
                         spec: {
                             wrapSelectors: {
-                                allowTryItOutFor: () => () => !isProduction && selectCredential
+                                allowTryItOutFor: () => () =>
+                                    !isProduction && selectCredential
                             }
                         }
                     }
@@ -68,17 +70,21 @@ export default (() => {
             });
 
             if (selectCredential && !isProduction) {
-                getCredential.addEventListener("click", async () => {
-                    const credential = await getCredentialInfo(selectCredential.value);
+                selectCredential.addEventListener("change", async e => {
+                    if (e.target.value !== "false") {
+                        const credential = await getCredentialInfo(
+                            selectCredential.value
+                        );
 
-                    credential && ui.initOAuth({
-                        clientId: credential.client_id,
-                        clientSecret: credential.client_secret,
-                        appName: credential.name,
-                        additionalQueryStringParams: {
-                            grant_type: "client_credentials"
-                        }
-                    });
+                        credential && ui.initOAuth({
+                            clientId: credential.client_id,
+                            clientSecret: credential.client_secret,
+                            appName: credential.name,
+                            additionalQueryStringParams: {
+                                grant_type: "client_credentials"
+                            }
+                        });
+                     }
                 });
             }
         }
