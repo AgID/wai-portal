@@ -18,7 +18,7 @@
                 'size' => 'lg',
                 'disabled' => $authUser->cannot(UserPermission::MANAGE_WEBSITES),
             ])
-            {{ __('aggiungi chiave') }}
+            {{ __('aggiungi Credenziale') }}
             @endcomponent
             </div>
         @endcomponent

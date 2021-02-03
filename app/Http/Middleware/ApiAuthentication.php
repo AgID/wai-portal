@@ -34,8 +34,6 @@ class ApiAuthentication extends StartSession
         }
 
         if (null === $consumerId || 'admin' !== $credentialType || !is_array($credentialSites)) {
-            print_r([$consumerId, $credentialType, $credentialSites]);
-
             return response()->json($this->jsonError(2), 403);
         }
 
@@ -46,15 +44,6 @@ class ApiAuthentication extends StartSession
         $publicAdministration = $selectCredential->publicAdministration()->first();
 
         $request->attributes->add(['publicAdministration' => $publicAdministration]);
-
-        $website = $request->route()->parameter('website');
-
-        if (null !== $website) {
-            $column = array_column($credentialSites, 'id');
-            if (!in_array($website->id, $column)) {
-                return response()->json($this->jsonError(3), 401);
-            }
-        }
 
         return $next($request);
     }

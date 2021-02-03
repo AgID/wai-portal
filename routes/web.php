@@ -209,22 +209,22 @@ Route::middleware('spid.auth', 'auth', 'verified:verification.notice')->group(fu
             Route::get('/data/permissions/', 'CredentialsController@makeCredentialsWebsitesPermissionsJson')
             ->name('api-credential.websites.permissions.make');
 
-            Route::get('/data/permissions/show/{credentials}', 'CredentialsController@showDataCredentialsWebsitesPermissionsJson')
+            Route::get('/data/permissions/show/{credential}', 'CredentialsController@showDataCredentialsWebsitesPermissionsJson')
             ->name('api-credential.websites.permissions');
 
-            Route::get('/{credentials}/show', 'CredentialsController@show')
+            Route::get('/{credential}/show', 'CredentialsController@show')
             ->name('api-credential.show');
 
-            Route::get('/{credentials}/show/json', 'CredentialsController@showJson')
+            Route::get('/{credential}/show/json', 'CredentialsController@showJson')
             ->name('api-credential.show-json');
 
-            Route::get('/{credentials}/edit', 'CredentialsController@edit')
+            Route::get('/{credential}/edit', 'CredentialsController@edit')
             ->name('api-credential.edit');
 
-            Route::put('/{credentials}', 'CredentialsController@update')
+            Route::put('/{credential}', 'CredentialsController@update')
             ->name('api-credential.update');
 
-            Route::patch('/{credentials}/delete', 'CredentialsController@delete')
+            Route::patch('/{credential}/delete', 'CredentialsController@delete')
             ->name('api-credential.delete');
         });
 

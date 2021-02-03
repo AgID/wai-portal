@@ -17,11 +17,11 @@ class Credential extends Model
     ];
 
     /**
-     * Get the route credential for the model.
+     * Get the route key for the model.
      *
      * @return string the DB column name to use for route binding
      */
-    public function getRouteCredentialName(): string
+    public function getRouteKeyName(): string
     {
         return 'consumer_id';
     }
