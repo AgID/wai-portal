@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Exceptions\AnalyticsServiceException;
 use App\Exceptions\CommandErrorException;
-use App\Exceptions\InvalidKeyException;
+use App\Exceptions\InvalidCredentialException;
 use GuzzleHttp\Client as APIClient;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Facades\Redis;
@@ -68,7 +68,7 @@ class KongClientService
         if (null !== $client) {
             $client = json_decode($client);
             if (null === $client && !is_array($client)) {
-                throw new InvalidKeyException('client[0] not found');
+                throw new InvalidCredentialException('client[0] not found');
             }
             $client = (array) $client[0];
 
@@ -79,7 +79,7 @@ class KongClientService
         $client = $client['data'];
 
         if (null === $client && !is_array($client)) {
-            throw new InvalidKeyException('client[0] not found');
+            throw new InvalidCredentialException('client[0] not found');
         }
 
         $this->redisCache->set('kong:client:' . $idConsumer, json_encode($client));
