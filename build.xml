@@ -154,7 +154,7 @@
                     <token key="MATOMO_PLUGIN_RESETDATABASE_VERSION" value="${MATOMO_PLUGIN_RESETDATABASE_VERSION}" />
                     <token key="MATOMO_INGESTION_HOSTNAME" value="${MATOMO_INGESTION_HOSTNAME}" />
                     <token key="KONG_VERSION" value="${KONG_VERSION}" />
-                    <token key="KONG_ENDPOINT_URL" value="${KONG_ENDPOINT_URL}" />
+                    <token key="KONG_ADMIN_API_URL" value="${KONG_ADMIN_API_URL}" />
                     <token key="KONG_API_URL" value="${KONG_API_URL}" />
                     <token key="POSTGRES_PASSWORD" value="${POSTGRES_PASSWORD}" />
                     <token key="POSTGRES_USER" value="${POSTGRES_USER}" />
