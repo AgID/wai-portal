@@ -314,7 +314,7 @@ XDEBUG_REMOTE_HOST=host.docker.internal
 # Kong Service
 # ----------------------
 KONG_VERSION=
-KONG_ENDPOINT_URL=
+KONG_ADMIN_API_URL=
 KONG_API_URL=
 
 # Postgres Kong
