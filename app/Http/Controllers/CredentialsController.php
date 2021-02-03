@@ -41,7 +41,7 @@ class CredentialsController extends Controller
     {
         $credentialsDatatable = [
             'columns' => [
-                ['data' => 'client_name', 'name' => __('Nome della chiave'), 'className' => 'text-wrap'],
+                ['data' => 'client_name', 'name' => __('Nome della credenziale'), 'className' => 'text-wrap'],
                 ['data' => 'consumer_id', 'name' => __('Consumer ID')],
                 ['data' => 'added_at', 'name' => __('aggiunto il')],
                 ['data' => 'icons', 'name' => '', 'orderable' => false],
@@ -144,8 +144,8 @@ class CredentialsController extends Controller
         }
 
         return redirect()->home()->withNotification([
-            'title' => __('Non è possibile visualizzare questa chiave'),
-            'message' => "La chiave appartiene ad un'altra pubblica amministrazione",
+            'title' => __('Non è possibile visualizzare questa credenziale'),
+            'message' => "La credenziale appartiene ad un'altra pubblica amministrazione",
             'status' => 'error',
             'icon' => 'it-close-circle',
         ]);
@@ -169,7 +169,7 @@ class CredentialsController extends Controller
 
         return response()->json([
             'Error' => true,
-            'Message' => "La chiave appartiene ad un'altra pubblica amministrazione",
+            'Message' => "La credenziale appartiene ad un'altra pubblica amministrazione",
         ], 403);
     }
 
@@ -313,8 +313,10 @@ class CredentialsController extends Controller
         $validatedData = $request->validated();
         $permissions = [];
 
-        foreach ($validatedData['permissions'] as $credential => $permission) {
-            array_push($permissions, ['id' => $credential, 'permission' => implode('', $permission)]);
+        if (array_key_exists("permissions", $validatedData)) {
+            foreach ($validatedData['permissions'] as $credential => $permission) {
+                array_push($permissions, ['id' => $credential, 'permission' => implode('', $permission)]);
+            }
         }
 
         $user = auth()->user();
@@ -336,7 +338,7 @@ class CredentialsController extends Controller
         ]);
 
         return redirect()->route('api-credential.index')->withModal([
-            'title' => __('La chiave è stata inserita!'),
+            'title' => __('La credenziale è stata inserita!'),
             'icon' => 'it-check-circle',
             'message' => __('Adesso puoi utilizzare la tua nuova credenziale e usare le API con il flusso "Client credentials" OAuth2.'),
         ]);
@@ -418,7 +420,7 @@ class CredentialsController extends Controller
                 ['data' => 'status', 'name' => __('stato')],
                 [
                     'data' => ($readonly ? 'icons' : 'toggles'),
-                    'name' => __('permessi della chiave'),
+                    'name' => __('permessi della credenziale'),
                     'orderable' => false,
                     'searchable' => false,
                 ],

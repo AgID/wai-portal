@@ -9,10 +9,6 @@ export default (() => {
 
         permissionsToggles.map(toggle => {
             toggle.addEventListener("change", event => {
-                if (adminSelect.value === "admin") {
-                    event.target.checked = true;
-                    return;
-                }
                 if (!event.currentTarget.checked) {
                     adminSelect && (adminSelect.value = "analytics");
                 }
@@ -40,12 +36,9 @@ export default (() => {
             adminSelect.addEventListener("change", event => {
                 permissionsToggles.map(toggle => {
                     toggle.checked = event.target.value === "admin";
-                    toggle.readOnly =
-                        event.target.value === "admin" ? "readonly" : "";
+                    toggle.disabled = event.target.value === "admin";
                 });
             });
-
-        permissionsToggles && (permissionsToggles.disabled = false);
     };
 
     const init = () => {

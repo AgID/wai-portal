@@ -262,7 +262,7 @@ Breadcrumbs::for('api-credential.index', function ($trail) {
 // Web Analytics Italia > Api Credentials > Add credential
 Breadcrumbs::for('api-credential.create', function ($trail) {
     $trail->parent('api-credential.index');
-    $trail->push(__('Aggiungi chiave'), route('api-credential.create'));
+    $trail->push(__('Aggiungi credenziale'), route('api-credential.create'));
 });
 
 // Web Analytics Italia > Api Credentials > [credential->client_name]
