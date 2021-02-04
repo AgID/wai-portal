@@ -20,7 +20,7 @@ class ApiTest extends TestCase
     /**
      * The Kong credential.
      *
-     * @var $credential the Kong credential
+     * @var the Kong credential
      */
     private $credential;
 

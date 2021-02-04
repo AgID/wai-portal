@@ -42,7 +42,7 @@ Route::middleware('api.authentication')->group(function () {
             ->name('api.sites.read');
         Route::get('/list/{id}', 'WebsiteController@websiteList')
             ->name('api.sites.websites');
-        Route::put('/{website}', 'WebsiteController@updateApi')
+        Route::patch('/{website}', 'WebsiteController@updateApi')
             ->name('api.sites.update');
         Route::patch('/{website}/archive', 'WebsiteController@archiveApi')
             ->name('api.sites.archive');
@@ -52,5 +52,7 @@ Route::middleware('api.authentication')->group(function () {
             ->name('api.sites.check');
         Route::get('/{website}/force', 'WebsiteController@forceActivationApi')
             ->name('api.sites.force');
+        Route::get('/{website}/js-snippet', 'WebsiteController@showJavascriptSnippet')
+            ->name('api.sites.snippet.javascript');
     });
 });
