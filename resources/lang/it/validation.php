@@ -181,5 +181,6 @@ return [
         'end_date' => 'data di fine',
         'start_time' => 'orario di inizio',
         'end_time' => 'orario di fine',
+        'credential_name' => 'nome delle credenziali',
     ],
 ];
