@@ -5,25 +5,14 @@
         "title": "Web Analytics Italia API",
         "description": "Questa interfaccia API si riferisce alle operazioni che le Pubbliche Amministrazioni possono eseguire in interoperabilità per gestire utenti e siti o consultare le informazioni statistiche.",
         "contact": {
-            "servers": [
-                {
-                    "description": "Staging Server",
-                    "url": "https://staging.webanalytics.italia.it/api"
-                },
-                {
-                    "description": "Public Playground Server",
-                    "url": "https://play.webanalytics.italia.it/api"
-                },
-                {
-                    "description": "Production Server",
-                    "url": "https://webanalytics.italia.it/api"
-                }
-            ]
+            "name": "AGID - Web Analytics Italia",
+            "url": "https://webanalytics.italia.it/contacts",
+            "email": "wai@agid.gov.it"
         }
     },
     "servers": [],
     "paths": {
-        "/api/users": {
+        "/portal/users": {
             "post": {
                 "tags": ["Utenti"],
                 "summary": "Creazione di un nuovo utente",
@@ -58,7 +47,7 @@
                 "operationId": "getUsers",
                 "responses": {
                     "200": {
-                        "description": "Uri a cui recuperare l'utente",
+                        "description": "Elenco di tutti gli utenti che appartengono alla pubblica amministrazione delle credenziali",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -70,7 +59,7 @@
                 }
             }
         },
-        "/api/users/{fn}": {
+        "/portal/users/{fn}": {
             "parameters": [
                 { "$ref": "#/components/parameters/FiscalNumberInPath" }
             ],
@@ -126,7 +115,51 @@
                 "responses": { "204": { "description": "Utente cancellato" } }
             }
         },
-        "/api/sites": {
+        "/portal/users/{fn}/suspend": {
+            "parameters": [
+                { "$ref": "#/components/parameters/FiscalNumberInPath" }
+            ],
+            "patch": {
+                "tags": ["Utenti"],
+                "summary": "Sospendi utente",
+                "operationId": "sospendUser",
+                "responses": {
+                    "200": {
+                        "description": "Utente sospeso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserSuspendObject"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/portal/users/{fn}/reactivate": {
+            "parameters": [
+                { "$ref": "#/components/parameters/FiscalNumberInPath" }
+            ],
+            "patch": {
+                "tags": ["Utenti"],
+                "summary": "Ri-attiva utente",
+                "operationId": "reactivateUser",
+                "responses": {
+                    "200": {
+                        "description": "Utente Ri-attivato",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserSuspendObject"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/portal/sites": {
             "post": {
                 "tags": ["Siti"],
                 "summary": "Creazione di un sito",
@@ -143,12 +176,13 @@
                     }
                 },
                 "responses": {
-                    "201": null,
-                    "description": "Uri a cui recuperare il sito",
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/AddSiteResponse"
+                    "201": {
+                        "description": "Uri a cui recuperare il sito",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AddSiteResponse"
+                                }
                             }
                         }
                     }
@@ -171,16 +205,137 @@
                     }
                 }
             }
+        },
+        "/portal/sites/{website}": {
+            "parameters": [{ "$ref": "#/components/parameters/SlugInPath" }],
+            "get": {
+                "tags": ["Siti"],
+                "summary": "Restituisce un sito",
+                "operationId": "getSite",
+                "responses": {
+                    "200": {
+                        "description": "Dati sito",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SingleSite"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "tags": ["Siti"],
+                "summary": "Modifica di un sito",
+                "operationId": "patchSite",
+                "requestBody": {
+                    "description": "Dati del sito da modificare",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AddSiteRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Sito modificato",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SingleSite"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/portal/sites/{website}/archive": {
+            "parameters": [{ "$ref": "#/components/parameters/SlugInPath" }],
+            "patch": {
+                "tags": ["Siti"],
+                "summary": "Archivia un sito",
+                "operationId": "archiveSite",
+                "responses": {
+                    "200": {
+                        "description": "Sito archiviato con successo",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ArchiveWebsite"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/portal/sites/{website}/unarchive": {
+            "parameters": [{ "$ref": "#/components/parameters/SlugInPath" }],
+            "patch": {
+                "tags": ["Siti"],
+                "summary": "De-archivia un sito",
+                "operationId": "unarchiveSite",
+                "responses": {
+                    "200": {
+                        "description": "Sito de-archiviato con successo",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UnarchiveWebsite"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/portal/sites/{website}/check": {
+            "parameters": [{ "$ref": "#/components/parameters/SlugInPath" }],
+            "get": {
+                "tags": ["Siti"],
+                "summary": "Controlla se il sito è attivo",
+                "operationId": "checkSite",
+                "responses": {
+                    "304": {
+                        "description": "Sito non attivo"
+                    }
+                }
+            }
+        },
+        "/portal/sites/{website}/js-snippet": {
+            "parameters": [{ "$ref": "#/components/parameters/SlugInPath" }],
+            "get": {
+                "tags": ["Siti"],
+                "summary": "Ottieni lo snippet javascript",
+                "operationId": "jsSnippetSite",
+                "responses": {
+                    "200": {
+                        "description": "Javascript Snippet",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/JsSnippet"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "components": {
         "parameters": {
-            "SiteIdInPath": {
+            "SlugInPath": {
                 "in": "path",
                 "required": true,
-                "name": "sid",
+                "name": "slug",
                 "schema": {
-                    "$ref": "#/components/schemas/SiteId"
+                    "$ref": "#/components/schemas/SiteSlug"
                 }
             },
             "FiscalNumberInPath": {
@@ -193,9 +348,9 @@
             }
         },
         "schemas": {
-            "SiteId": {
-                "type": "integer",
-                "format": "int32"
+            "SiteSlug": {
+                "type": "string",
+                "format": "^\\w+$"
             },
             "SiteType": {
                 "type": "string",
@@ -215,13 +370,32 @@
                     "type": "string",
                     "format": "uri"
                 },
+                "permissions":{
+                    "$ref": "#/components/schemas/WebsiteInfoPermisionObject"
+                },
                 "type": {
                     "$ref": "#/components/schemas/SiteType"
                 },
+                
                 "example": {
                     "name": "WebAnalytics Italia",
                     "url": "https://webanalytics.italia.it",
-                    "type": "site_type_1"
+                    "type": "site_type_1",
+                    "permissions":{
+                        "userId": ["MANAGE_ANALYTICS"]
+                    }
+                }
+            },
+            "WebsiteInfoPermisionObject": {
+                "type": "object",
+                "required": ["userId"],
+                "properties": {
+                    "userId": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
                 }
             },
             "AddSiteResponse": {
@@ -243,19 +417,101 @@
                     "$ref": "#/components/schemas/SiteInfo"
                 }
             },
-            "SiteInfo": {
-                "allOf": [
-                    {
-                        "$ref": "#/components/schemas/AddSiteRequest"
-                    }
-                ],
+            "SingleSite": {
                 "type": "object",
-                "required": ["id"],
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string",
+                        "pattern": "^(?!\\s*$).+"
+                    },
+                    "url": {
+                        "type": "string",
+                        "pattern": "^(?!\\s*$).+"
+                    },
+                    "type": {
+                        "type": "integer"
+                    },
+                    "public_administration_id": {
+                        "type": "integer"
+                    },
+                    "analytics_id": {
+                        "type": "integer"
+                    },
+                    "slug": {
+                        "type": "string",
+                        "pattern": "^(?!\\s*$).+"
+                    },
+                    "status": {
+                        "type": "integer"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                }
+            },
+            "SiteInfo": {
+                "allOf": [{ "$ref": "#/components/schemas/SingleSite/" }],
+                "type": "object",
+                "required": ["slug"],
                 "properties": null,
-                "id": {
-                    "$ref": "#/components/schemas/SiteId"
+                "slug": {
+                    "$ref": "#/components/schemas/SiteSlug"
                 },
-                "example": { "id": 23 }
+                "example": {
+                    "id": 1,
+                    "name": "Agenzia per L'Italia Digitale",
+                    "url": "www.agid.gov.it",
+                    "type": 0,
+                    "public_administration_id": 1,
+                    "analytics_id": 2,
+                    "slug": "wwwagidgovit",
+                    "status": 1,
+                    "created_at": "2020-07-21T17:32:28Z",
+                    "updated_at": "2020-07-21T17:32:28Z",
+                    "deleted_at": "2020-07-21T17:32:28Z"
+                }
+            },
+            "ArchiveWebsite": {
+                "type": "object",
+                "required": ["slug"],
+                "properties": null,
+                "example": {
+                    "result": "ok",
+                    "id": "wwwagidgovit",
+                    "website_name": "Agenzia per L'Italia Digitale",
+                    "status": "ARCHIVED",
+                    "status_description": "archiviato",
+                    "trashed": false
+                }
+            },
+            "UnarchiveWebsite": {
+                "type": "object",
+                "required": ["slug"],
+                "properties": null,
+                "example": {
+                    "result": "ok",
+                    "id": "wwwagidgovit",
+                    "website_name": "Agenzia per L'Italia Digitale",
+                    "status": "ACTIVE",
+                    "status_description": "attivo",
+                    "trashed": false
+                }
+            },
+            "JsSnippet": {
+                "example": {
+                    "result": "ok",
+                    "id": "wwwagidgovit",
+                    "name": "Agenzia per L'Italia Digitale",
+                    "javascriptSnippet": "<!-- Matomo -->\n<script type=\"text/javascript\">\n  var _paq = window._paq || [];\n  /* tracker methods like \"setCustomDimension\" should be called before \"trackPageView\" */\n  _paq.push(['trackPageView']);\n  _paq.push(['enableLinkTracking']);\n  (function() {\n    var u=\"https://172.22.0.10/\";\n    _paq.push(['setTrackerUrl', u+'matomo.php']);\n    _paq.push(['setSiteId', '3']);\n    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];\n    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);\n  })();\n</script>\n<!-- End Matomo Code -->"
+                }
             },
             "FiscalNumber": {
                 "type": "string",
@@ -264,20 +520,7 @@
                 "pattern": "[A-Z0-9]{16}"
             },
             "AddUserRequest": {
-                "type": "object",
-                "required": ["email", "fiscalNumber"],
-                "properties": {
-                    "email": {
-                        "type": "string"
-                    },
-                    "fiscalNumber": {
-                        "$ref": "#/components/schemas/FiscalNumber"
-                    },
-                    "example": {
-                        "email": "user@email.com",
-                        "fiscalNumber": "ZRSGLC89D05H501J"
-                    }
-                }
+                "$ref": "#/components/schemas/UserInfoObject"
             },
             "PatchUserRequest": {
                 "type": "object",
@@ -300,7 +543,7 @@
                         "format": "uri"
                     },
                     "example": {
-                        "uri": "https://webanalytics.italia.it/api/users/ZRSGLC89D05H501J"
+                        "uri": "https://webanalytics.italia.it/portal/users/ZRSGLC89D05H501J"
                     }
                 }
             },
@@ -315,6 +558,18 @@
                     "$ref": "#/components/schemas/UserInfoObject"
                 }
             },
+            "UserInfoPermisionObject": {
+                "type": "object",
+                "required": ["siteId"],
+                "properties": {
+                    "siteId": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
             "UserInfoObject": {
                 "type": "object",
                 "required": [
@@ -322,6 +577,7 @@
                     "lastName",
                     "email",
                     "fiscalNumber",
+                    "permissions",
                     "status",
                     "created"
                 ],
@@ -337,6 +593,9 @@
                     "email": {
                         "type": "string",
                         "pattern": "^(?!\\s*$).+"
+                    },
+                    "permissions": {
+                        "$ref": "#/components/schemas/UserInfoPermisionObject"
                     },
                     "fiscalNumber": {
                         "$ref": "#/components/schemas/FiscalNumber"
