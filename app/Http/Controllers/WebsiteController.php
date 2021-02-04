@@ -182,7 +182,16 @@ class WebsiteController extends Controller
 
         $response = $this->storeMethod($request, $publicAdministration);
 
-        return response()->json($response, 200);
+        if (is_array($response) && array_key_exists('website', $response)) {
+            $website = $response['website'];
+
+            return response()->json(['uri' => $this->getUriWebsiteAPI($website)], 200);
+        }
+
+        return response()->json([
+            'Error' => $response,
+            'Message' => 'Il sito non è stato aggiunto',
+        ], 400);
     }
 
     /**
@@ -853,5 +862,11 @@ class WebsiteController extends Controller
         $list = app()->make('analytics-service')->getSiteUrlsFromId($id);
 
         $this->redisCache->set($id, implode(' ', $list));
+    }
+
+    private function getUriWebsiteAPI(Website $website): string
+    {
+        return config('kong-service.api_url') .
+            str_replace('/api/', '/portal/', route('api.sites.read', ['website' => $website], false));
     }
 }
