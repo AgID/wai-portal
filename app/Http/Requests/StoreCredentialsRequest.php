@@ -46,5 +46,4 @@ class StoreCredentialsRequest extends FormRequest
             $validator->setData($data);
         });
     }
-
 }

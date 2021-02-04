@@ -313,7 +313,7 @@ class CredentialsController extends Controller
         $validatedData = $request->validated();
         $permissions = [];
 
-        if (array_key_exists("permissions", $validatedData)) {
+        if (array_key_exists('permissions', $validatedData)) {
             foreach ($validatedData['permissions'] as $credential => $permission) {
                 array_push($permissions, ['id' => $credential, 'permission' => implode('', $permission)]);
             }
