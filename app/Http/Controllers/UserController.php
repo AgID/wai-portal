@@ -140,9 +140,7 @@ class UserController extends Controller
         }
 
         return response()->json([
-            'title' => $data['title'],
-            'message' => $data['message'],
-            'type' => $data['type'],
+            'uri' => $this->getUriUserAPI($data['fiscalNumber']),
         ], 200);
     }
 
@@ -498,8 +496,8 @@ class UserController extends Controller
         $user = request()->route('user');
 
         $user = ('api.users.delete' === request()->route()->getName())
-          ? get_user_from_fiscalnumber()
-          : request()->route('user');
+            ? get_user_from_fiscalnumber()
+            : request()->route('user');
 
         if ($user->isTheLastActiveAdministratorOf($publicAdministrationRoute)) {
             $validator->errors()->add('is_admin', 'The last administrator cannot be removed or suspended.');
@@ -638,6 +636,7 @@ class UserController extends Controller
             'title' => 'Invito inoltrato',
             'message' => $user_message,
             'redirectUri' => $redirectUrl,
+            'fiscalNumber' => $user->fiscal_number,
         ];
     }
 
@@ -752,5 +751,11 @@ class UserController extends Controller
                 }
             });
         });
+    }
+
+    private function getUriUserAPI(string $fn): string
+    {
+        return config('kong-service.api_url') .
+            str_replace('/api/', '/portal/', route('api.users.show', ['fn' => $fn], false));
     }
 }
