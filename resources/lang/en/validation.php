@@ -181,6 +181,7 @@ return [
         'end_date' => 'ending date',
         'start_time' => 'starting time',
         'end_time' => 'ending time',
+        'credential_name' => 'credentials name',
     ],
 
 ];
