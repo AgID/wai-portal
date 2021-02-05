@@ -38,9 +38,9 @@ jobs:
             -d @- \
             -H 'Accept: application/json' \
             -H 'Content-Type: application/json-patch+json' \
-            https://k8s.webanalytics.italia.it/apis/apps/v1/namespaces/wai-stag/deployments/portal <<'EOF'
+            https://k8s.webanalytics.italia.it/apis/apps/v1/namespaces/wai-stag/deployments/portal <<EOF
           [
-            { "op": "replace", "path": "/spec/template/metadata/annotations/releaseDate", "value": "d`date +%Y%m%d%H%M`" }
+            { "op": "replace", "path": "/spec/template/metadata/annotations/releaseDate", "value": "d$(date +%Y%m%d%H%M)" }
           ]
           EOF
       - name: Trigger portal-queue-worker rolling update in staging environment
@@ -54,8 +54,8 @@ jobs:
             -d @- \
             -H 'Accept: application/json' \
             -H 'Content-Type: application/json-patch+json' \
-            https://k8s.webanalytics.italia.it/apis/apps/v1/namespaces/wai-stag/deployments/portal-queue-worker <<'EOF'
+            https://k8s.webanalytics.italia.it/apis/apps/v1/namespaces/wai-stag/deployments/portal-queue-worker <<EOF
           [
-            { "op": "replace", "path": "/spec/template/metadata/annotations/releaseDate", "value": "d`date +%Y%m%d%H%M`" }
+            { "op": "replace", "path": "/spec/template/metadata/annotations/releaseDate", "value": "d$(date +%Y%m%d%H%M)" }
           ]
           EOF
