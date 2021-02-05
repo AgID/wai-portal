@@ -11,11 +11,11 @@ env:
   K8S_CLIENT_KEY: ${{ secrets.K8S_CLIENT_KEY }}
 jobs:
   build:
-    environment: public-playground
+    environment: PublicPlayground
     runs-on: ubuntu-latest
     steps:
       - name: Set release image tag
-        run: echo ::set-env name=RELEASE_TAG::$(echo ${{ github.ref }} | cut -c11-)
+        run: echo "RELEASE_TAG=$(echo ${{ github.ref }} | cut -c11-)" >> $GITHUB_ENV
       - name: Checkout code
         uses: actions/checkout@v2
       - name: Build image
