@@ -11,7 +11,7 @@ env:
   K8S_CLIENT_KEY: ${{ secrets.K8S_CLIENT_KEY }}
 jobs:
   build:
-    environment: staging
+    environment: Staging
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
