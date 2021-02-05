@@ -27,7 +27,7 @@ jobs:
       - name: Push image
         if: success()
         run: |
-          docker login --username ${{ secrets.DOCKER_HUB_USERNAME }} --password ${{ secrets.DOCKER_HUB_TOKEN }}
+          echo ${{ secrets.DOCKER_HUB_TOKEN }} | docker login --username ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
           docker push $ORGANIZATION/$IMAGE_NAME:$RELEASE_TAG
           docker push $ORGANIZATION/$IMAGE_NAME:$IMAGE_TAG
       - name: Docker logout
