@@ -54,4 +54,6 @@ class JobType extends Enum implements LocalizedEnum
      * Purge pending invitations.
      */
     public const PURGE_PENDING_INVITATIONS = 8;
+
+    public const RESET_ENVIRONMENT = 9;
 }

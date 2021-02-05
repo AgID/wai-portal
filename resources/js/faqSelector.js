@@ -94,7 +94,9 @@ export default (() => {
             renderFaqs();
         });
 
-        window.location.hash && $(`${window.location.hash}-body`).collapse('show');
+        const faqNode = document.getElementById(`${window.location.hash}-body`);
+
+        faqNode && $(faqNode).collapse('show');
     };
 
     return { init };

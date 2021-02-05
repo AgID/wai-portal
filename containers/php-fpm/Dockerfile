@@ -8,7 +8,7 @@ ENV DEBIAN_FRONTEND noninteractive
 
 # php required extensions
 RUN apt-get update && apt-get install -y --no-install-recommends libfaketime procps libicu-dev libpng-dev libfreetype6-dev libjpeg62-turbo-dev libjpeg62-turbo libpng16-16 libfreetype6 libzip-dev unzip && rm -rf /var/lib/apt/lists/* \
-    && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
+    && docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/ \
     && docker-php-ext-install pdo_mysql gd opcache zip bcmath pcntl intl \
     && apt-get purge -y --auto-remove libpng-dev libfreetype6-dev libjpeg62-turbo-dev
 
@@ -29,7 +29,8 @@ ARG ENV=local
 ARG CHROME_BROWSER_CHANNEL=stable
 RUN if [ "env-${ENV}" = "env-local" ] || [ "env-${ENV}" = "env-testing" ]; then \
     apt-get update \
-    && apt-get -y --no-install-recommends install apt-utils wget unzip libnss3 libgconf-2-4 xdg-utils hicolor-icon-theme \
+    && apt-get -y --no-install-recommends install apt-utils wget unzip libnss3 libgconf-2-4 xdg-utils hicolor-icon-theme gnupg \
+    && wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add - \
     && chrome_version=`wget -qO- http://omahaproxy.appspot.com/history | awk -v CHANNEL="$CHROME_BROWSER_CHANNEL" -F [,\.] '$1 == "linux" && $2 == CHANNEL {print $3"."$4"."$5}' | head -1` \
     && wget https://dl.google.com/linux/direct/google-chrome-${CHROME_BROWSER_CHANNEL}_current_amd64.deb \
     && dpkg -i --force-depends google-chrome-${CHROME_BROWSER_CHANNEL}_current_amd64.deb \

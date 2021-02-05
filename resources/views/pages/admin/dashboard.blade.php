@@ -1,7 +1,13 @@
 @extends('layouts.page')
 
-@section('title', __('Dashboard amministrativa'))
+@section('title', __('Dashboard amministrazioni'))
 
 @section('content')
-    Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam vel delectus animi! Quasi, voluptate. Adipisci nisi ullam eligendi laudantium fugit ipsum facilis. Reprehenderit quibusdam eligendi quaerat? Aperiam, illum? Rem, laborum?
+    @if($hasPublicAdministrations)
+    @include('partials.datatable')
+    @else
+    <div class="callout mw-100 text-center">
+        <p class="mw-100">{{ 'Al momento non ci sono amministrazioni registrate.' }}</p>
+    </div>
+    @endif
 @endsection

@@ -3,8 +3,7 @@
 namespace App\Notifications;
 
 use App\Enums\UserRole;
-use App\Mail\AccountVerification;
-use App\Models\PublicAdministration;
+use App\Mail\EmailVerification;
 use Illuminate\Mail\Mailable;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
@@ -16,23 +15,6 @@ use Illuminate\Support\Facades\URL;
 class VerifyEmail extends UserEmailNotification
 {
     /**
-     * The public administration selected for the invitation.
-     *
-     * @var \App\Models\PublicAdministration the public administration
-     */
-    protected $publicAdministration;
-
-    /**
-     * Create a new notification instance.
-     *
-     * @param PublicAdministration|null $publicAdministration the public administration this user belongs to or null if it is a super admin
-     */
-    public function __construct(?PublicAdministration $publicAdministration = null)
-    {
-        $this->publicAdministration = $publicAdministration;
-    }
-
-    /**
      * Initialize the mail message.
      *
      * @param mixed $notifiable the target
@@ -41,7 +23,7 @@ class VerifyEmail extends UserEmailNotification
      */
     protected function buildEmail($notifiable): Mailable
     {
-        return new AccountVerification(
+        return new EmailVerification(
             $notifiable,
             $this->verificationUrl($notifiable),
             $this->publicAdministration,

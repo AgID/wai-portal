@@ -36,6 +36,6 @@ class WebsiteStatusChanged extends AbstractWebsiteEvent
      */
     public function getOldStatus(): WebsiteStatus
     {
-        return WebsiteStatus::getInstance($this->oldStatus);
+        return WebsiteStatus::fromValue($this->oldStatus);
     }
 }

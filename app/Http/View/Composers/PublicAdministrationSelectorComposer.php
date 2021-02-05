@@ -2,11 +2,10 @@
 
 namespace App\Http\View\Composers;
 
+use App\Enums\UserRole;
 use App\Models\PublicAdministration;
 use Illuminate\Http\Request;
 use Illuminate\Session\Store;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Route;
 use Illuminate\View\View;
 
 class PublicAdministrationSelectorComposer
@@ -47,39 +46,65 @@ class PublicAdministrationSelectorComposer
     public function compose(View $view)
     {
         $lastRoute = $this->request->route();
+        $lastRouteName = $lastRoute->getName();
         $lastRouteParameters = $lastRoute->parameters();
+        $authUser = $this->request->user();
+        $targetRouteHasPublicAdministrationParam = array_key_exists('publicAdministration', $lastRouteParameters);
+        $selectTenantUrl = route('publicAdministrations.select');
 
         if ($lastRoute->isFallback) {
             return;
         }
 
         switch (true) {
-            case Arr::has($lastRouteParameters, ['publicAdministration', 'user']):
-                $newRoute = 'admin.publicAdministration.users.index';
+            case 'admin.dashboard' === $lastRouteName:
+            case 'home' === $lastRouteName:
+                $targetRoute = 'analytics';
+                $targetRouteHasPublicAdministrationParam = true;
+
                 break;
-            case Arr::has($lastRouteParameters, ['publicAdministration', 'website']):
-                $newRoute = 'admin.publicAdministration.websites.index';
+            case array_key_exists('website', $lastRouteParameters):
+                $targetRoute = 'websites.index';
+
                 break;
-            case !Arr::has($lastRouteParameters, 'publicAdministration'):
-                if ($this->request->has('publicAdministration')) {
-                    $this->session->put('super_admin_tenant_ipa_code', $this->request->input('publicAdministration'));
-                }
-                // no break
+            case array_key_exists('user', $lastRouteParameters):
+                $targetRoute = 'users.index';
+
+                break;
             default:
-                $newRoute = $lastRoute->getName();
+                $targetRoute = $lastRouteName;
         }
 
-        $publicAdministrationSelectorArray = PublicAdministration::all([
-            'ipa_code',
-            'name',
-        ])->sortBy('name')->map(function ($publicAdministration) use ($newRoute, $lastRouteParameters) {
-            $publicAdministration->url = route($newRoute, array_merge($lastRouteParameters, [
-                'publicAdministration' => $publicAdministration->ipa_code,
-            ]));
+        if ($authUser && $authUser->isA(UserRole::SUPER_ADMIN)) {
+            if ($targetRouteHasPublicAdministrationParam && 'admin.' !== substr($targetRoute, 0, 6)) {
+                $targetRoute = 'admin.publicAdministration.' . $targetRoute;
+            }
 
-            return $publicAdministration;
-        })->toArray();
+            $publicAdministrationSelectorArray = PublicAdministration::all([
+                'ipa_code',
+                'name',
+            ])->sortBy('name')->toArray();
+
+            $publicAdministrationShowSelector = true;
+            $selectTenantUrl = route('admin.publicAdministrations.select');
+        } elseif ($authUser) {
+            $publicAdministrationSelectorArray = $authUser->publicAdministrations()->get()
+                ->map(function ($publicAdministration) {
+                    return collect($publicAdministration->toArray())
+                        ->only(['id', 'ipa_code', 'name', 'url'])
+                        ->all();
+                })->sortBy('name')->values()->toArray();
+
+            $publicAdministrationShowSelector = count($publicAdministrationSelectorArray) > 1;
+        } else {
+            $publicAdministrationSelectorArray = [];
+            $publicAdministrationShowSelector = false;
+        }
 
         $view->with('publicAdministrationSelectorArray', $publicAdministrationSelectorArray);
+        $view->with('publicAdministrationShowSelector', $publicAdministrationShowSelector);
+        $view->with('selectTenantUrl', $selectTenantUrl);
+        $view->with('targetRoute', $targetRoute);
+        $view->with('targetRouteHasPublicAdministrationParam', $targetRouteHasPublicAdministrationParam);
     }
 }

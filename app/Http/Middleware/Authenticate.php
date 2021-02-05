@@ -2,7 +2,6 @@
 
 namespace App\Http\Middleware;
 
-use App\Enums\UserStatus;
 use App\Models\User;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Auth\Middleware\Authenticate as Middleware;
@@ -31,10 +30,6 @@ class Authenticate extends Middleware
         }
 
         parent::authenticate($request, $guards);
-
-        if ($request->user()->status->is(UserStatus::SUSPENDED) && !$request->routeIs('admin.logout')) {
-            throw new AuthenticationException('User suspended.', $guards, $this->redirectSuspendedTo($request));
-        }
     }
 
     /**
@@ -47,25 +42,6 @@ class Authenticate extends Middleware
     protected function redirectTo($request): string
     {
         return route('auth.register.show');
-    }
-
-    /**
-     * Get the path the user should be redirected to when they are suspended.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return string
-     */
-    protected function redirectSuspendedTo($request): string
-    {
-        $request->session()->flash('notification', [
-            'title' => __('accesso negato'),
-            'message' => __("L'utenza è stata sospesa."),
-            'status' => 'error',
-            'icon' => 'it-close-circle',
-        ]);
-
-        return route('home');
     }
 
     protected function redirectTrashedTo($request): string

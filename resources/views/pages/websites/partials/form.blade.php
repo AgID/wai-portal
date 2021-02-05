@@ -39,7 +39,7 @@
             <small id="url-input-help" class="form-text text-muted">{!! __("Inserisci l'indirizzo del sito completo del protocollo :http o :https (es. https://www.agid.gov.it).", ['http' => '<code>http://</code>', 'https' => '<code>https://</code>']) !!}</small>
         </div>
     </div>
-    @unless (optional($website->type ?? null)->is(WebsiteType::INSTITUTIONAL))
+    @unless (optional($website->type ?? null)->is(WebsiteType::INSTITUTIONAL) || optional($website->type ?? null)->is(WebsiteType::INSTITUTIONAL_PLAY))
     <div class="form-row">
         <div class="form-group has-form-text col-md-7">
             <div class="input-group">
@@ -50,7 +50,7 @@
                     <label for="type">{{ ucfirst(__('tipologia')) }}</label>
                     <select title="Scegli una tipologia" id="type" name="type" aria-required="true" required>
                     @foreach(WebsiteType::toSelectArray() as $value => $label)
-                        @unless ($value === WebsiteType::INSTITUTIONAL)
+                        @unless ($value === (WebsiteType::INSTITUTIONAL) || $value === (WebsiteType::INSTITUTIONAL_PLAY))
                         <option value="{{ $value }}" {{ old('type', $website->type->value ?? '') == $value ? "selected" : "" }}>{{ $label }}</option>
                         @endif
                     @endforeach

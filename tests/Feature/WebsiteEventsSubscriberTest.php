@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Enums\Logs\EventType;
 use App\Enums\UserRole;
+use App\Enums\UserStatus;
 use App\Enums\WebsiteAccessType;
 use App\Enums\WebsiteStatus;
 use App\Enums\WebsiteType;
@@ -36,6 +37,8 @@ use App\Notifications\UserWebsiteUrlChangedEmail;
 use App\Notifications\WebsiteAddedEmail;
 use App\Services\MatomoService;
 use App\Traits\InteractsWithRedisIndex;
+use Faker\Factory;
+use Faker\Generator;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
@@ -65,7 +68,19 @@ class WebsiteEventsSubscriberTest extends TestCase
      */
     private $website;
 
+    /**
+     * The user.
+     *
+     * @var User the user
+     */
     private $user;
+
+    /**
+     * Fake data generator.
+     *
+     * @var Generator the generator
+     */
+    private $faker;
 
     /**
      * Pre-tests setup.
@@ -73,6 +88,7 @@ class WebsiteEventsSubscriberTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+        $this->faker = Factory::create();
         $this->publicAdministration = factory(PublicAdministration::class)->state('active')->create([
             'rollup_id' => 1,
             'token_auth' => 'faketoken',
@@ -82,7 +98,10 @@ class WebsiteEventsSubscriberTest extends TestCase
             'analytics_id' => 1,
         ]);
         $this->user = factory(User::class)->state('active')->create();
-        $this->publicAdministration->users()->sync([$this->user->id]);
+        $this->publicAdministration->users()->sync([$this->user->id => [
+            'user_status' => UserStatus::ACTIVE,
+            'user_email' => $this->faker->unique()->freeEmail,
+        ]]);
 
         Bouncer::dontCache();
         Notification::fake();
@@ -220,7 +239,11 @@ class WebsiteEventsSubscriberTest extends TestCase
             $this->website->save();
         });
         $secondUser = factory(User::class)->state('active')->create();
-        $this->publicAdministration->users()->sync([$secondUser->id], false);
+        $this->publicAdministration->users()->sync([$secondUser->id => [
+            'user_status' => UserStatus::ACTIVE,
+            'user_email' => $this->faker->unique()->freeEmail,
+        ]], false);
+
         Bouncer::scope()->onceTo($this->publicAdministration->id, function () use ($secondUser) {
             $secondUser->assign(UserRole::ADMIN);
         });
@@ -262,12 +285,14 @@ class WebsiteEventsSubscriberTest extends TestCase
             function ($notification, $channels) {
                 $this->assertEquals($channels, ['mail']);
                 $mail = $notification->toMail($this->user)->build();
+                $userEmailAddress = $this->user->publicAdministrations
+                    ->where('id', $this->publicAdministration->id)->first()->pivot->user_email;
                 $this->assertEquals($this->user->uuid, $mail->viewData['user']['uuid']);
                 $this->assertEquals($this->website->slug, $mail->viewData['website']['slug']);
                 $this->assertEquals('fakesnippet', $mail->viewData['javascriptSnippet']);
                 $this->assertEquals($mail->subject, __('Nuovo sito web aggiunto'));
 
-                return $mail->hasTo($this->user->email, $this->user->full_name);
+                return $mail->hasTo($userEmailAddress, $this->user->full_name);
             }
         );
 
@@ -277,11 +302,13 @@ class WebsiteEventsSubscriberTest extends TestCase
             function ($notification, $channels) use ($secondUser) {
                 $this->assertEquals($channels, ['mail']);
                 $mail = $notification->toMail($secondUser)->build();
+                $userEmailAddress = $secondUser->publicAdministrations
+                    ->where('id', $this->publicAdministration->id)->first()->pivot->user_email;
                 $this->assertEquals($secondUser->uuid, $mail->viewData['user']['uuid']);
                 $this->assertEquals($this->website->slug, $mail->viewData['website']['slug']);
                 $this->assertEquals($mail->subject, __('Nuovo sito web aggiunto'));
 
-                return $mail->hasTo($secondUser->email, $secondUser->full_name);
+                return $mail->hasTo($userEmailAddress, $secondUser->full_name);
             }
         );
 
@@ -343,12 +370,14 @@ class WebsiteEventsSubscriberTest extends TestCase
             function ($notification, $channels) {
                 $this->assertEquals($channels, ['mail']);
                 $mail = $notification->toMail($this->user)->build();
+                $userEmailAddress = $this->user->publicAdministrations
+                    ->where('id', $this->publicAdministration->id)->first()->pivot->user_email;
                 $this->assertEquals($this->user->uuid, $mail->viewData['user']['uuid']);
                 $this->assertEquals($this->website->slug, $mail->viewData['website']['slug']);
                 $this->assertEquals('fakesnippet', $mail->viewData['javascriptSnippet']);
                 $this->assertEquals($mail->subject, __('Nuovo sito web aggiunto'));
 
-                return $mail->hasTo($this->user->email, $this->user->full_name);
+                return $mail->hasTo($userEmailAddress, $this->user->full_name);
             }
         );
 
@@ -439,6 +468,8 @@ class WebsiteEventsSubscriberTest extends TestCase
 
     public function testWebsiteActivatedWithRTD(): void
     {
+        $this->app['env'] = 'production';
+
         $this->expectLogMessage('notice', [
             'Website ' . $this->website->info . ' activated',
             [
@@ -489,6 +520,60 @@ class WebsiteEventsSubscriberTest extends TestCase
                 return $mail->hasTo($this->publicAdministration->rtd_mail, $this->publicAdministration->rtd_name);
             }
         );
+
+        $this->app['env'] = 'testing';
+    }
+
+    /*
+     * Test website activated on public playground with rtd
+     */
+    public function testWebsiteActivatedOnPublicPlaygroundWithRTD(): void
+    {
+        $this->app['env'] = 'public-playground';
+
+        $this->expectLogMessage('notice', [
+            'Website ' . $this->website->info . ' activated',
+            [
+                'event' => EventType::WEBSITE_ACTIVATED,
+                'website' => $this->website->id,
+                'pa' => $this->publicAdministration->ipa_code,
+            ],
+        ]);
+
+        $this->app->bind('analytics-service', function () {
+            return $this->partialMock(MatomoService::class, function ($mock) {
+                $mock->shouldReceive('setWebsiteAccess')
+                    ->once()
+                    ->withArgs([
+                        'anonymous',
+                        WebsiteAccessType::VIEW,
+                        $this->website->analytics_id,
+                    ]);
+            });
+        });
+
+        event(new WebsiteActivated($this->website));
+
+        Notification::assertSentTo(
+            [$this->user],
+            UserWebsiteActivatedEmail::class,
+            function ($notification, $channels) {
+                $this->assertEquals($channels, ['mail']);
+                $mail = $notification->toMail($this->user)->build();
+                $this->assertEquals($this->user->uuid, $mail->viewData['user']['uuid']);
+                $this->assertEquals($this->website->slug, $mail->viewData['website']['slug']);
+                $this->assertEquals($mail->subject, __('Sito web attivato'));
+
+                return $mail->hasTo($this->user->email, $this->user->full_name);
+            }
+        );
+
+        Notification::assertNotSentTo(
+            [$this->publicAdministration],
+            RTDWebsiteActivatedEmail::class
+        );
+
+        $this->app['env'] = 'testing';
     }
 
     public function testWebsiteActivatedWithoutRTD(): void
@@ -738,11 +823,13 @@ class WebsiteEventsSubscriberTest extends TestCase
             function ($notification, $channels) {
                 $this->assertEquals($channels, ['mail']);
                 $mail = $notification->toMail($this->user)->build();
+                $userEmailAddress = $this->user->publicAdministrations
+                    ->where('id', $this->publicAdministration->id)->first()->pivot->user_email;
                 $this->assertEquals($this->user->uuid, $mail->viewData['user']['uuid']);
                 $this->assertEquals($this->website->slug, $mail->viewData['website']->slug);
                 $this->assertEquals($mail->subject, __('[Attenzione] - Sito web eliminato'));
 
-                return $mail->hasTo($this->user->email, $this->user->full_name);
+                return $mail->hasTo($userEmailAddress, $this->user->full_name);
             }
         );
     }
@@ -764,20 +851,6 @@ class WebsiteEventsSubscriberTest extends TestCase
             [$this->user],
             UserWebsitePurgedEmail::class
         );
-    }
-
-    public function testWebsiteDeleted(): void
-    {
-        $this->expectLogMessage('notice', [
-            'Website ' . $this->website->info . ' deleted.',
-            [
-                'event' => EventType::WEBSITE_DELETED,
-                'website' => $this->website->id,
-                'pa' => $this->publicAdministration->ipa_code,
-            ],
-        ]);
-
-        event(new WebsiteDeleted($this->website));
     }
 
     public function testWebsiteRestored(): void
@@ -855,5 +928,111 @@ class WebsiteEventsSubscriberTest extends TestCase
         ]);
 
         event(new WebsiteStatusChanged($this->website, WebsiteStatus::ARCHIVED));
+    }
+
+    /**
+     * Test website added event handler.
+     */
+    public function testWebsiteAdded(): void
+    {
+        $this->partialMock(InteractsWithRedisIndex::class)
+            ->shouldAllowMockingProtectedMethods()
+            ->shouldReceive('updateWebsitesIndex')
+            ->with($this->website);
+
+        $this->expectLogMessage(
+            'notice',
+            [
+                'Website ' . $this->website->info . ' added of type ' . $this->website->type->description,
+                [
+                    'event' => EventType::WEBSITE_ADDED,
+                    'website' => $this->website->id,
+                    'pa' => $this->website->publicAdministration->ipa_code,
+                    'user' => $this->user->uuid,
+                ],
+            ]
+        );
+
+        event(new WebsiteAdded($this->website, $this->user));
+    }
+
+    /**
+     * Test website activated event handler.
+     */
+    public function testWebsiteActivated(): void
+    {
+        $this->expectLogMessage(
+            'notice',
+            [
+                'Website ' . $this->website->info . ' activated',
+                [
+                    'event' => EventType::WEBSITE_ACTIVATED,
+                    'website' => $this->website->id,
+                    'pa' => $this->website->publicAdministration->ipa_code,
+                ],
+            ]
+        );
+
+        event(new WebsiteActivated($this->website));
+    }
+
+    /**
+     * Test website archived event handler.
+     */
+    public function testWebsiteArchivedForInactivity(): void
+    {
+        $this->expectLogMessage(
+            'notice',
+            [
+                'Website ' . $this->website->info . ' archived due to inactivity',
+                [
+                    'event' => EventType::WEBSITE_ARCHIVED,
+                    'website' => $this->website->id,
+                    'pa' => $this->website->publicAdministration->ipa_code,
+                ],
+            ]
+        );
+
+        event(new WebsiteArchived($this->website, false));
+    }
+
+    /**
+     * Test website manually deleted event handler.
+     */
+    public function testWebsiteDeleted(): void
+    {
+        $this->expectLogMessage(
+            'notice',
+            [
+                'Website ' . $this->website->info . ' deleted.',
+                [
+                    'event' => EventType::WEBSITE_DELETED,
+                    'website' => $this->website->id,
+                    'pa' => $this->website->publicAdministration->ipa_code,
+                ],
+            ]
+        );
+
+        event(new WebsiteDeleted($this->website));
+    }
+
+    /**
+     * Test primary website inactive event handler.
+     */
+    public function testPrimaryWebsiteInactive(): void
+    {
+        $this->expectLogMessage(
+            'notice',
+            [
+                'Primary website ' . $this->website->info . ' tracking inactive.',
+                [
+                    'event' => EventType::PRIMARY_WEBSITE_NOT_TRACKING,
+                    'website' => $this->website->id,
+                    'pa' => $this->website->publicAdministration->ipa_code,
+                ],
+            ]
+        );
+
+        event(new PrimaryWebsiteNotTracking($this->website));
     }
 }

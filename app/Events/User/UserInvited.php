@@ -11,13 +11,6 @@ use App\Models\User;
 class UserInvited extends AbstractUserEvent
 {
     /**
-     * The public administration selected for the invitation.
-     *
-     * @var PublicAdministration the public administration
-     */
-    protected $publicAdministration;
-
-    /**
      * The user issuing the invitation.
      *
      * @var User the user issuing the invitation
@@ -33,19 +26,8 @@ class UserInvited extends AbstractUserEvent
      */
     public function __construct(User $user, User $invitedBy, ?PublicAdministration $publicAdministration = null)
     {
-        parent::__construct($user);
-        $this->publicAdministration = $publicAdministration;
+        parent::__construct($user, $publicAdministration);
         $this->invitedBy = $invitedBy;
-    }
-
-    /**
-     * Get the public administration.
-     *
-     * @return PublicAdministration|null the public administration
-     */
-    public function getPublicAdministration(): ?PublicAdministration
-    {
-        return $this->publicAdministration;
     }
 
     /**

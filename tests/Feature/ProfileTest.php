@@ -37,14 +37,11 @@ class ProfileTest extends TestCase
             ->withSession([
                 'spid_sessionIndex' => 'fake-session-index',
             ])
-            ->patch(
-                route('user.profile.update'),
-                [
-                    'name' => $user->name,
-                    'family_name' => $user->family_name,
-                    'email' => 'new@example.com',
-                ]
-            )
+            ->patch(route('user.profile.update'), [
+                'name' => $user->name,
+                'family_name' => $user->family_name,
+                'email' => 'new@webanalytics.italia.it',
+            ])
             ->assertSessionDoesntHaveErrors([
                 'email',
             ])
@@ -52,7 +49,7 @@ class ProfileTest extends TestCase
             ->assertSessionHas('notification');
 
         Event::assertDispatched(UserUpdated::class, function ($event) {
-            return 'new@example.com' === $event->getUser()->email;
+            return 'new@webanalytics.italia.it' === $event->getUser()->email;
         });
     }
 
@@ -67,12 +64,9 @@ class ProfileTest extends TestCase
                 'spid_sessionIndex' => 'fake-session-index',
             ])
             ->from(route('user.profile.edit'))
-            ->patch(
-                route('user.profile.update'),
-                [
-                    'email' => $user->email,
-                ]
-            )
+            ->patch(route('user.profile.update'), [
+                'email' => $user->email,
+            ])
             ->assertSessionHasErrors([
                 'email',
             ])
@@ -92,14 +86,11 @@ class ProfileTest extends TestCase
         $user->allow(UserPermission::ACCESS_ADMIN_AREA);
 
         $this->actingAs($user)
-            ->patch(
-                route('admin.user.profile.update'),
-                [
-                    'name' => 'Mario',
-                    'family_name' => 'Rossi',
-                    'email' => 'new@example.com',
-                ]
-            )
+            ->patch(route('admin.user.profile.update'), [
+                'name' => 'Mario',
+                'family_name' => 'Rossi',
+                'email' => 'new@webanalytics.italia.it',
+            ])
             ->assertSessionDoesntHaveErrors([
                 'name',
                 'family_name',
@@ -110,7 +101,7 @@ class ProfileTest extends TestCase
         Event::assertDispatched(UserUpdated::class, function ($event) {
             $user = $event->getUser();
 
-            return 'new@example.com' === $user->email
+            return 'new@webanalytics.italia.it' === $user->email
                 && 'Mario' === $user->name
                 && 'Rossi' === $user->family_name;
         });

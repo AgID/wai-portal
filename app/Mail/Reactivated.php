@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Models\User;
 use Illuminate\Support\Facades\Lang;
 
 /**
@@ -20,6 +21,7 @@ class Reactivated extends UserMailable
             ->markdown('mail.reactivated')->with([
                 'locale' => Lang::getLocale(),
                 'user' => $this->recipient,
+                'publicAdministration' => $this->publicAdministration,
             ]);
     }
 }

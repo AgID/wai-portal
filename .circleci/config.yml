@@ -58,7 +58,10 @@ commands:
     steps:
       - run:
           name: Run security-checker
-          command: bin/security-checker security:check
+          command: |
+            wget https://get.symfony.com/cli/installer -O - | bash
+            sudo mv /home/circleci/.symfony/bin/symfony /usr/local/bin/symfony
+            symfony check:security
 
   install_node_packages:
     description: Ensure all javascript dependencies are installed
@@ -119,9 +122,9 @@ commands:
 jobs:
   build_and_test:
     docker:
-      - image: circleci/php:7.3-cli
+      - image: circleci/php:7.4.12-cli
     environment:
-      - APP_ENV: "testing"
+      APP_ENV: "testing"
     steps:
       - install_system_dependencies
       - checkout

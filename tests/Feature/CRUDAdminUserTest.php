@@ -7,9 +7,9 @@ use App\Enums\UserRole;
 use App\Enums\UserStatus;
 use App\Enums\WebsiteAccessType;
 use App\Events\User\UserDeleted;
+use App\Events\User\UserEmailForPublicAdministrationChanged;
 use App\Events\User\UserInvited;
 use App\Events\User\UserReactivated;
-use App\Events\User\UserRestored;
 use App\Events\User\UserSuspended;
 use App\Events\User\UserUpdated;
 use App\Events\User\UserWebsiteAccessChanged;
@@ -77,7 +77,7 @@ class CRUDAdminUserTest extends TestCase
         $this->actingAs($this->user)
             ->post(route('admin.users.store'), [
                 '_token' => 'test',
-                'email' => 'new@example.com',
+                'email' => 'new@webanalytics.italia.it',
                 'name' => 'Mario',
                 'family_name' => 'Rossi',
             ])
@@ -90,7 +90,7 @@ class CRUDAdminUserTest extends TestCase
 
         Event::assertDispatched(UserInvited::class, function ($event) {
             return
-                'new@example.com' === $event->getUser()->email
+                'new@webanalytics.italia.it' === $event->getUser()->email
                 && null === $event->getPublicAdministration()
                 && $this->user->is($event->getInvitedBy());
         });
@@ -135,7 +135,7 @@ class CRUDAdminUserTest extends TestCase
         $this->actingAs($this->user)
             ->put(route('admin.users.update', ['user' => $user]), [
                 '_token' => 'test',
-                'email' => 'new@example.com',
+                'email' => 'new@webanalytics.italia.it',
                 'name' => 'Mario',
                 'family_name' => 'Rossi',
             ])
@@ -147,7 +147,7 @@ class CRUDAdminUserTest extends TestCase
         Event::assertDispatched(UserUpdated::class, function ($event) {
             $user = $event->getUser();
 
-            return 'new@example.com' === $user->email
+            return 'new@webanalytics.italia.it' === $user->email
                 && 'Mario' === $user->name
                 && 'Rossi' === $user->family_name;
         });
@@ -296,11 +296,18 @@ class CRUDAdminUserTest extends TestCase
      */
     public function testPublicAdministrationUserDatatableData(): void
     {
-        $user = factory(User::class)->create();
+        $user = factory(User::class)->create([
+            'status' => UserStatus::ACTIVE,
+        ]);
+        Bouncer::scope()->onceTo(0, function () use ($user) {
+            $user->assign(UserRole::ADMIN);
+            $user->allow(UserPermission::MANAGE_ANALYTICS);
+        });
+
         $publicAdministration = factory(PublicAdministration::class)
             ->state('active')
             ->create();
-        $publicAdministration->users()->sync([$user->id]);
+        $publicAdministration->users()->sync([$user->id => ['user_email' => $user->email, 'user_status' => UserStatus::ACTIVE]]);
 
         $this->actingAs($this->user)
             ->json('GET', route('admin.publicAdministration.users.data.json', ['publicAdministration' => $publicAdministration]))
@@ -319,7 +326,7 @@ class CRUDAdminUserTest extends TestCase
      */
     public function testPublicAdministrationCreateAdminUserSuccessful(): void
     {
-        $email = 'new@example.com';
+        $email = 'new@webanalytics.italia.it';
         $fiscalNumber = 'ESXLKY44P09I168D';
         $publicAdministration = factory(PublicAdministration::class)
             ->state('active')
@@ -368,7 +375,7 @@ class CRUDAdminUserTest extends TestCase
      */
     public function testPublicAdministrationCreateUserSuccessful(): void
     {
-        $email = 'new@example.com';
+        $email = 'new@webanalytics.italia.it';
         $fiscalNumber = 'ESXLKY44P09I168D';
         $publicAdministration = factory(PublicAdministration::class)
             ->state('active')
@@ -417,17 +424,18 @@ class CRUDAdminUserTest extends TestCase
             ->create();
         $publicAdministration->users()->sync([$user->id]);
 
+        $fiscalNumber = 'XNTMDF63C44D878E';
+
         $this->actingAs($this->user)
             ->from(route('admin.publicAdministration.users.create', ['publicAdministration' => $publicAdministration]))
             ->post(route('admin.publicAdministration.users.store', ['publicAdministration' => $publicAdministration]), [
                 '_token' => 'test',
                 'email' => $user->email,
-                'fiscal_number' => $user->fiscal_number,
+                'fiscal_number' => $fiscalNumber,
             ])
             ->assertRedirect(route('admin.publicAdministration.users.create', ['publicAdministration' => $publicAdministration]))
             ->assertSessionHasErrors([
                 'email',
-                'fiscal_number',
                 'permissions',
             ]);
 
@@ -447,7 +455,7 @@ class CRUDAdminUserTest extends TestCase
         $publicAdministration = factory(PublicAdministration::class)
             ->state('active')
             ->create();
-        $publicAdministration->users()->sync([$user->id]);
+        $publicAdministration->users()->sync([$user->id => ['user_status' => UserStatus::ACTIVE, 'user_email' => 'old@webanalytics.italia.it']]);
         $website = factory(Website::class)->create([
             'public_administration_id' => $publicAdministration->id,
         ]);
@@ -470,7 +478,8 @@ class CRUDAdminUserTest extends TestCase
                     'user' => $user,
             ]), [
                 '_token' => 'test',
-                'email' => 'new@example.com',
+                'email' => 'new@webanalytics.italia.it',
+                'emailPublicAdministrationUser' => 'new@webanalytics.italia.it',
                 'fiscal_number' => $user->fiscal_number,
                 'is_admin' => '1',
                 'permissions' => [
@@ -482,8 +491,13 @@ class CRUDAdminUserTest extends TestCase
             ->assertSessionHasNoErrors();
 
         $this->user->refresh();
-        Event::assertDispatched(UserUpdated::class, function ($event) {
-            return 'new@example.com' === $event->getUser()->email;
+        Event::assertDispatched(UserEmailForPublicAdministrationChanged::class, function ($event) {
+            $publicAdministration = $event->getPublicAdministration();
+            $user = $event->getUser();
+            $publicAdministrationUser = $user->publicAdministrationsWithSuspended()->where('public_administration_id', $publicAdministration->id)->first();
+            $emailPublicAdministrationUser = $publicAdministrationUser->pivot->user_email;
+
+            return 'new@webanalytics.italia.it' === $emailPublicAdministrationUser;
         });
 
         $user->deleteAnalyticsServiceAccount();
@@ -501,7 +515,7 @@ class CRUDAdminUserTest extends TestCase
         $publicAdministration = factory(PublicAdministration::class)
             ->state('active')
             ->create();
-        $publicAdministration->users()->sync([$user->id], false);
+        $publicAdministration->users()->sync([$user->id => ['user_status' => UserStatus::ACTIVE, 'user_email' => 'old@webanalytics.italia.it']]);
         $website = factory(Website::class)->create([
             'public_administration_id' => $publicAdministration->id,
         ]);
@@ -519,6 +533,7 @@ class CRUDAdminUserTest extends TestCase
             ]), [
                 '_token' => 'test',
                 'email' => $user->email,
+                'emailPublicAdministrationUser' => 'old@webanalytics.italia.it',
                 'fiscal_number' => $user->fiscal_number,
                 'is_admin' => '1',
                 'permissions' => [
@@ -556,7 +571,7 @@ class CRUDAdminUserTest extends TestCase
         $publicAdministration = factory(PublicAdministration::class)
             ->state('active')
             ->create();
-        $publicAdministration->users()->sync([$user->id], false);
+        $publicAdministration->users()->sync([$user->id => ['user_status' => UserStatus::ACTIVE, 'user_email' => 'old@webanalytics.italia.it']]);
         $website = factory(Website::class)->create([
             'public_administration_id' => $publicAdministration->id,
         ]);
@@ -573,6 +588,7 @@ class CRUDAdminUserTest extends TestCase
             ]), [
                 '_token' => 'test',
                 'email' => $user->email,
+                'emailPublicAdministrationUser' => 'old@webanalytics.italia.it',
                 'permissions' => [
                     $website->id => [
                         UserPermission::READ_ANALYTICS,
@@ -666,11 +682,15 @@ class CRUDAdminUserTest extends TestCase
                 'user_name' => e($user->full_name),
                 'status' => UserStatus::getKey(UserStatus::SUSPENDED),
                 'status_description' => UserStatus::getDescription(UserStatus::SUSPENDED),
+                'administration' => $publicAdministration->name,
             ])
             ->assertOk();
 
-        Event::assertDispatched(UserUpdated::class, function ($event) {
-            return $event->getUser()->status->is(UserStatus::SUSPENDED);
+        Event::assertDispatched(UserUpdated::class, function ($event) use ($publicAdministration) {
+            $publicAdministrationUser = $event->getUser()->publicAdministrationsWithSuspended()->where('public_administration_id', $publicAdministration->id)->first();
+            $statusPublicAdministrationUser = UserStatus::fromValue(intval($publicAdministrationUser->pivot->user_status));
+
+            return $statusPublicAdministrationUser->is(UserStatus::SUSPENDED);
         });
     }
 
@@ -680,12 +700,12 @@ class CRUDAdminUserTest extends TestCase
     public function testSuspendUserFailAlreadySuspended(): void
     {
         $user = factory(User::class)->create([
-            'status' => UserStatus::SUSPENDED,
+            'status' => UserStatus::ACTIVE,
         ]);
         $publicAdministration = factory(PublicAdministration::class)
             ->state('active')
             ->create();
-        $publicAdministration->users()->sync([$user->id], false);
+        $publicAdministration->users()->sync([$user->id => ['user_status' => UserStatus::SUSPENDED]], false);
 
         $this->actingAs($this->user)
             ->json('patch', route('admin.publicAdministration.users.suspend', [
@@ -708,7 +728,7 @@ class CRUDAdminUserTest extends TestCase
         $publicAdministration = factory(PublicAdministration::class)
             ->state('active')
             ->create();
-        $publicAdministration->users()->sync([$user->id], false);
+        $publicAdministration->users()->sync([$user->id => ['user_status' => UserStatus::ACTIVE]], false);
         Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user) {
             $user->assign(UserRole::ADMIN);
             $user->allow(UserPermission::MANAGE_USERS);
@@ -725,11 +745,15 @@ class CRUDAdminUserTest extends TestCase
                 'user_name' => e($user->full_name),
                 'status' => UserStatus::getKey(UserStatus::SUSPENDED),
                 'status_description' => UserStatus::getDescription(UserStatus::SUSPENDED),
+                'administration' => $publicAdministration->name,
             ])
             ->assertOk();
 
-        Event::assertDispatched(UserUpdated::class, function ($event) {
-            return $event->getUser()->status->is(UserStatus::SUSPENDED);
+        Event::assertDispatched(UserUpdated::class, function ($event) use ($publicAdministration) {
+            $publicAdministrationUser = $event->getUser()->publicAdministrationsWithSuspended()->where('public_administration_id', $publicAdministration->id)->first();
+            $statusPublicAdministrationUser = UserStatus::fromValue(intval($publicAdministrationUser->pivot->user_status));
+
+            return $statusPublicAdministrationUser->is(UserStatus::SUSPENDED);
         });
     }
 
@@ -739,10 +763,10 @@ class CRUDAdminUserTest extends TestCase
     public function testSuspendUserFailPending(): void
     {
         $user = factory(User::class)->create([
-            'status' => UserStatus::PENDING,
+            'status' => UserStatus::ACTIVE,
         ]);
         $publicAdministration = factory(PublicAdministration::class)->create();
-        $publicAdministration->users()->sync([$user->id], false);
+        $publicAdministration->users()->sync([$user->id => ['user_status' => UserStatus::PENDING]], false);
 
         $this->actingAs($this->user)
             ->json('patch', route('admin.publicAdministration.users.suspend', [
@@ -764,10 +788,10 @@ class CRUDAdminUserTest extends TestCase
     public function testReactivateUserSuccessful(): void
     {
         $user = factory(User::class)->create([
-            'status' => UserStatus::SUSPENDED,
+            'status' => UserStatus::ACTIVE,
         ]);
         $publicAdministration = factory(PublicAdministration::class)->create();
-        $publicAdministration->users()->sync([$user->id], false);
+        $publicAdministration->users()->sync([$user->id => ['user_status' => UserStatus::SUSPENDED]], false);
 
         $this->actingAs($this->user)
             ->json('patch', route('admin.publicAdministration.users.reactivate', [
@@ -780,11 +804,15 @@ class CRUDAdminUserTest extends TestCase
                 'user_name' => e($user->full_name),
                 'status' => UserStatus::getKey(UserStatus::INVITED),
                 'status_description' => UserStatus::getDescription(UserStatus::INVITED),
+                'administration' => $publicAdministration->name,
             ])
             ->assertOk();
 
-        Event::assertDispatched(UserUpdated::class, function ($event) {
-            return $event->getUser()->status->is(UserStatus::INVITED);
+        Event::assertDispatched(UserUpdated::class, function ($event) use ($publicAdministration) {
+            $publicAdministrationUser = $event->getUser()->publicAdministrations()->where('public_administration_id', $publicAdministration->id)->first();
+            $statusPublicAdministrationUser = UserStatus::fromValue(intval($publicAdministrationUser->pivot->user_status));
+
+            return $statusPublicAdministrationUser->is(UserStatus::INVITED);
         });
     }
 
@@ -820,7 +848,7 @@ class CRUDAdminUserTest extends TestCase
         $user = factory(User::class)->create([
             'status' => UserStatus::ACTIVE,
         ]);
-        $publicAdministration->users()->sync([$user->id]);
+        $publicAdministration->users()->sync([$user->id => ['user_status' => UserStatus::ACTIVE]]);
         Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user) {
             $user->assign(UserRole::DELEGATED);
         });
@@ -832,9 +860,7 @@ class CRUDAdminUserTest extends TestCase
             ]))
             ->assertOk();
 
-        Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user) {
-            $this->assertTrue($user->isA(UserRole::DELETED));
-        });
+        $this->assertTrue($user->publicAdministrations->where('id', $publicAdministration->id)->isEmpty());
 
         Event::assertDispatched(UserDeleted::class, function ($event) use ($user) {
             return $user->is($event->getUser());
@@ -852,7 +878,7 @@ class CRUDAdminUserTest extends TestCase
         $user = factory(User::class)->create([
             'status' => UserStatus::ACTIVE,
         ]);
-        $publicAdministration->users()->sync([$user->id]);
+        $publicAdministration->users()->sync([$user->id => ['user_status' => UserStatus::ACTIVE]]);
         Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user) {
             $user->assign(UserRole::ADMIN);
         });
@@ -883,7 +909,7 @@ class CRUDAdminUserTest extends TestCase
         $user = factory(User::class)->create([
             'status' => UserStatus::PENDING,
         ]);
-        $publicAdministration->users()->sync([$user->id]);
+        $publicAdministration->users()->sync([$user->id => ['user_status' => UserStatus::PENDING]]);
         Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user) {
             $user->assign(UserRole::DELEGATED);
         });
@@ -900,50 +926,5 @@ class CRUDAdminUserTest extends TestCase
             ]);
 
         Event::assertNotDispatched(UserDeleted::class);
-    }
-
-    /**
-     * Test normal user restore successful.
-     */
-    public function testPublicAdministrationRestoreUserSuccessful(): void
-    {
-        $publicAdministration = factory(PublicAdministration::class)
-            ->state('active')
-            ->create();
-        $user = factory(User::class)->create([
-            'status' => UserStatus::PENDING,
-            'deleted_at' => Date::now(),
-        ]);
-        $publicAdministration->users()->sync([$user->id]);
-        Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user) {
-            $user->assign(UserRole::DELEGATED);
-            $user->assign(UserRole::DELETED);
-        });
-
-        $this->actingAs($this->user)
-            ->json('patch', route('admin.publicAdministration.users.restore', [
-                'publicAdministration' => $publicAdministration,
-                'trashed_user' => $user,
-            ]))
-            ->assertOk()
-            ->assertJson([
-                'result' => 'ok',
-                'id' => $user->uuid,
-                'user_name' => e($user->full_name),
-                'status' => UserStatus::getKey(UserStatus::PENDING),
-                'status_description' => UserStatus::getDescription(UserStatus::PENDING),
-            ]);
-
-        $user->refresh();
-
-        $this->assertFalse($user->trashed());
-
-        Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user) {
-            $this->assertFalse($user->isA(UserRole::DELETED));
-        });
-
-        Event::assertDispatched(UserRestored::class, function ($event) use ($user) {
-            return $user->is($event->getUser());
-        });
     }
 }

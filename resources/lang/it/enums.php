@@ -101,6 +101,7 @@ return [
         WebsiteType::INFORMATIONAL => 'sito informativo',
         WebsiteType::SERVICE => 'sito di servizi',
         WebsiteType::MOBILE => 'applicazione per dispositivi mobili',
+        WebsiteType::INSTITUTIONAL_PLAY => 'sito istituzionale',
     ],
 
     WebsiteAccessType::class => [
@@ -155,6 +156,7 @@ return [
         EventType::WEBSITE_UPDATED => 'Sito web aggiornato',
         EventType::CLOSED_BETA_WHITELIST_UPDATE_FAILED => 'Aggiornamento closed beta whitelist fallito',
         EventType::PURGE_PENDING_INVITATIONS_COMPLETED => 'Cancellazione vecchi inviti in attesa completata',
+        EventType::ENVIRONMENT_RESET_COMPLETED => 'Reset ambiente completato',
         EventType::MAIL_SENT => 'Email inviata',
     ],
 
@@ -185,6 +187,7 @@ return [
         JobType::PROCESS_WEBSITES_INDEX => 'Aggiornamento indice siti web',
         JobType::MONITOR_WEBSITES_TRACKING => 'Monitoraggio del tracciamento dei siti web',
         JobType::PURGE_PENDING_INVITATIONS => 'Cancellazione vecchi inviti in attesa',
+        JobType::RESET_ENVIRONMENT => 'Reset ambiente',
     ],
 
 ];

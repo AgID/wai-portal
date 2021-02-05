@@ -6,22 +6,18 @@
 
 @section('title', __('In attesa di conferma'))
 
-@section('page-content')
-<div class="page-overlay"></div>
-@parent
-@endsection
-
 @section('content')
 <div class="row">
     <div class="col-sm-8">
-        <p>{!! __('Abbiamo inviato un link di conferma al tuo indirizzo :email.', ['email' => '<strong>' . e($user->email) . '</strong>']) !!}</p>
-        <p>{{ __('Per procedere clicca sul link che trovi nel messaggio email.') }}</p>
+        <p>{{ __('Hai inserito un nuovo indirizzo email su :app.', ['app' => config('app.name')]) }}</p>
+        <p>{{ __('Per andare avanti è necessario prima effetturare una verifica.') }}</p>
+        <p>{!! __('Clicca sul link che trovi nel messaggio che ti abbiamo inviato alla casella :email.', ['email' => '<strong>' . e($user->email) . '</strong>']) !!}</p>
     </div>
     <div class="col-sm-4 d-flex align-items-center justify-content-center">
         <img src="{{ asset('images/verification-email-sent.svg') }}" alt="">
     </div>
     <div class="col">
-        <p class="font-italic mt-4 mb-0">
+        <p class="font-italic mt-4 mb-1">
             <small>
                 {{ __('Se non hai ricevuto il link al tuo indirizzo, controlla che la casella non sia piena e verifica che il messaggio non sia stato erroneamente classificato come spam.') }}
                 {{ __('Se necessario, ') }}
@@ -30,7 +26,7 @@
         </p>
         <p class="font-italic mb-0">
             <small>
-                {{ __('Se hai ha inserito un indirizzo email errato, ') }}
+                {{ __("Se l'indirizzo email è errato, ") }}
                 <a href="{{ route($user->isA(UserRole::SUPER_ADMIN) ? 'admin.user.profile.edit' : 'user.profile.edit', [], false) }}">{{ ('puoi modificarlo') }}</a>.
             </small>
         </p>

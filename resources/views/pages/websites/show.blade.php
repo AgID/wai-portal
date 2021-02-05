@@ -59,7 +59,7 @@
             <div class="box-section lightgrey-bg-a1 my-4">
                 <p>{{ WebsiteStatus::getLongDescription($website->status) }}</p>
                 @if ($website->status->is(WebsiteStatus::PENDING))
-                @if ($authUser->can(UserPermission::MANAGE_WEBSITES) || $authUser->status->is(UserStatus::PENDING))
+                @if ($authUser->can(UserPermission::MANAGE_WEBSITES) || ($userPublicAdministrationStatus && $userPublicAdministrationStatus->is(UserStatus::PENDING)))
                 <h5 class="section-header">{{ __('attivazione') }}</h5>
                 <p>
                     {{ __('Per impostare il tracciamento, usa il codice che trovi in questa pagina.') }}
@@ -121,7 +121,7 @@
             @endcomponent
         </div>
     </div>
-    @if ($authUser->can(UserPermission::MANAGE_WEBSITES) || $authUser->status->is(UserStatus::PENDING))
+    @if ($authUser->can(UserPermission::MANAGE_WEBSITES) || ( $userPublicAdministrationStatus && $userPublicAdministrationStatus->is(UserStatus::PENDING)))
     @component('layouts.components.box', ['classes' => 'mt-0 full-width'])
     <div class="javascript-snippet-container blank">
         <div class="collapse-header box-section" id="javascript-snippet-header">
@@ -141,7 +141,7 @@
     </div>
     @cannot(UserPermission::ACCESS_ADMIN_AREA)
     <div class="row box-section">
-        <div class="col-md-5">
+        <div class="@if($forceActivationButtonVisible && $website->status->is(WebsiteStatus::PENDING)) col-md-4 @else col-md-5 @endif">
             @if ($website->status->is(WebsiteStatus::PENDING))
             <h5 class="section-header">{{ __('verifica tracciamento') }}</h5>
             <p>
@@ -158,6 +158,26 @@
                     {{ __('Verifica adesso') }}
                 </a>
             </p>
+
+            @if ($forceActivationButtonVisible)
+            </div>
+            <div class="col-md-4" >
+            <h5 class="section-header">{{ __('forza attivazione') }}</h5>
+            <p>
+                {{ __("Questa è una pubblica amministrazione personalizzata, puoi saltare la verifica e forzare l'attivazione del sito.") }}
+            </p>
+            <p class="text-center">
+                <a role="button" class="btn btn-sm btn-outline-secondary text-center disabled"
+                    href="{{ $websiteActivateForceUrl }}"
+                    data-type="checkTracking"
+                    data-website-name="{{ $website->name }}"
+                    aria-disabled="true">
+                    {{ __('Attivazione forzata') }}
+                </a>
+            </p>
+
+            @endif
+
             @elseif ($website->status->is(WebsiteStatus::ACTIVE))
             <h5 class="section-header">{{ __('tracciamento attivo') }}</h5>
             <p>
@@ -178,7 +198,7 @@
             @else
             @endif
         </div>
-        <div class="col-md-5 offset-md-2">
+        <div class="@if($forceActivationButtonVisible && $website->status->is(WebsiteStatus::PENDING)) col-md-4 @else col-md-5 offset-md-2 @endif">
             <h5 class="section-header">{{ __('opzioni avanzate') }}</h5>
             <p class="text-serif">
                 {{ __('Se vuoi personalizzare il codice di tracciamento per attivare opzioni avanzate') }},

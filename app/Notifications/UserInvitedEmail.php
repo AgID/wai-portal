@@ -20,13 +20,6 @@ class UserInvitedEmail extends UserEmailNotification
     protected $invitedUser;
 
     /**
-     * The public administration the invited user belogns to.
-     *
-     * @var PublicAdministration the public administration
-     */
-    protected $publicAdministration;
-
-    /**
      * Default constructor.
      *
      * @param User $invitedUser the invited user
@@ -34,8 +27,8 @@ class UserInvitedEmail extends UserEmailNotification
      */
     public function __construct(User $invitedUser, PublicAdministration $publicAdministration)
     {
+        parent::__construct($publicAdministration);
         $this->invitedUser = $invitedUser;
-        $this->publicAdministration = $publicAdministration;
     }
 
     /**

@@ -7,6 +7,7 @@ RUN apk --update add curl patch && rm /var/cache/apk/*
 RUN mkdir -p /opt/matomo
 ARG MATOMO_VERSION
 ARG MATOMO_WAI_THEME_VERSION
+ARG MATOMO_PLUGIN_USERSMANAGERONLYSUPERUSER_VERSION
 ARG MATOMO_PLUGIN_DISABLESITETRACKING_VERSION
 ARG MATOMO_PLUGIN_QUEUEDTRACKING_VERSION
 ARG MATOMO_PLUGIN_PROTECTTRACKID_VERSION
@@ -14,6 +15,7 @@ ARG MATOMO_PLUGIN_CUSTOMDIMENSIONS_VERSION
 ARG MATOMO_PLUGIN_VISITORGENERATOR_VERSION
 ARG MATOMO_PLUGIN_LOGINFILTERIP_VERSION
 ARG MATOMO_PLUGIN_TRACKERHOSTNAME_VERSION
+ARG MATOMO_PLUGIN_RESETDATABASE_VERSION
 ARG MATOMO_INGESTION_HOSTNAME
 
 RUN curl -fsSL -o matomo.tar.gz \
@@ -37,6 +39,18 @@ RUN curl -fsSL -o WAIMatomoTheme.tar.gz \
         "https://github.com/agid/wai-matomo-theme/releases/download/${MATOMO_WAI_THEME_VERSION}/wai-matomo-theme_${MATOMO_WAI_THEME_VERSION}_auto_activate.tar.gz" \
     && tar -xf WAIMatomoTheme.tar.gz -C /opt/matomo/plugins \
     && rm -rf WAIMatomoTheme.tar.gz
+
+RUN if [ -n "$MATOMO_PLUGIN_USERSMANAGERONLYSUPERUSER_VERSION" ]; then \
+    curl -fsSL -o UsersManagerOnlySuperUser.zip \
+        "https://github.com/AgID/wai-matomo-plugin-UsersManagerOnlySuperUser/archive/${MATOMO_PLUGIN_USERSMANAGERONLYSUPERUSER_VERSION}.zip" \
+    && unzip UsersManagerOnlySuperUser.zip -d /opt/matomo/plugins \
+    && mv /opt/matomo/plugins/wai-matomo-plugin-UsersManagerOnlySuperUser-${MATOMO_PLUGIN_USERSMANAGERONLYSUPERUSER_VERSION} /opt/matomo/plugins/UsersManagerOnlySuperUser \
+    && rm -rf UsersManagerOnlySuperUser.zip \
+    && sed -i -E -e 's/(@MATOMO_PLUGINS@)/Plugins[] = "UsersManagerOnlySuperUser"\n\1/g' /opt/matomo/config/config.ini.php \
+    && sed -i -E -e 's/(@MATOMO_PLUGINS_INSTALLED@)/PluginsInstalled[] = "UsersManagerOnlySuperUser"\n\1/g' /opt/matomo/config/config.ini.php \
+    && sed -i -E -e 's/(@MATOMO_MORE_CONFIG@)/[UsersManagerOnlySuperUser]\n\1/g' /opt/matomo/config/config.ini.php \
+    && sed -i -E -e 's/(@MATOMO_MORE_CONFIG@)/users_manager_only_super_user_enabled = @MATOMO_PLUGIN_USERSMANAGERONLYSUPERUSER_ENABLED@\n\n\1/g' /opt/matomo/config/config.ini.php \
+;fi
 
 RUN if [ -n "$MATOMO_PLUGIN_DISABLESITETRACKING_VERSION" ]; then \
     curl -fsSL -o DisableTracking.tar.gz \
@@ -86,6 +100,16 @@ RUN if [ -n "$MATOMO_PLUGIN_VISITORGENERATOR_VERSION" ]; then \
     && sed -i -E -e 's/(@MATOMO_PLUGINS_INSTALLED@)/PluginsInstalled[] = "VisitorGenerator"\n\1/g' /opt/matomo/config/config.ini.php \
 ;fi
 
+RUN if [ -n "$MATOMO_PLUGIN_RESETDATABASE_VERSION" ]; then \
+    curl -fsSL -o ResetDatabase.zip \
+        "https://github.com/AgID/wai-matomo-plugin-ResetDatabase/archive/${MATOMO_PLUGIN_RESETDATABASE_VERSION}.zip" \
+    && unzip ResetDatabase.zip -d /opt/matomo/plugins \
+    && mv /opt/matomo/plugins/wai-matomo-plugin-ResetDatabase-${MATOMO_PLUGIN_RESETDATABASE_VERSION} /opt/matomo/plugins/ResetDatabase \
+    && rm -rf ResetDatabase.zip \
+    && sed -i -E -e 's/(@MATOMO_PLUGINS@)/Plugins[] = "ResetDatabase"\n\1/g' /opt/matomo/config/config.ini.php \
+    && sed -i -E -e 's/(@MATOMO_PLUGINS_INSTALLED@)/PluginsInstalled[] = "ResetDatabase"\n\1/g' /opt/matomo/config/config.ini.php \
+;fi
+
 RUN if [ -n "$MATOMO_PLUGIN_LOGINFILTERIP_VERSION" ]; then \
     curl -fsSL -o LoginFilterIp.zip \
         "https://github.com/AgID/wai-matomo-plugin-LoginFilterIp/archive/${MATOMO_PLUGIN_LOGINFILTERIP_VERSION}.zip" \
@@ -96,7 +120,7 @@ RUN if [ -n "$MATOMO_PLUGIN_LOGINFILTERIP_VERSION" ]; then \
     && sed -i -E -e 's/(@MATOMO_PLUGINS_INSTALLED@)/PluginsInstalled[] = "LoginFilterIp"\n\1/g' /opt/matomo/config/config.ini.php \
     && sed -i -E -e 's/(@MATOMO_MORE_CONFIG@)/[LoginFilterIp]\n\1/g' /opt/matomo/config/config.ini.php \
     && sed -i -E -e 's/(@MATOMO_MORE_CONFIG@)/allow_login_from[] = "localhost"\n\1/g' /opt/matomo/config/config.ini.php \
-    && sed -i -E -e 's/(@MATOMO_MORE_CONFIG@)/allow_login_from[] = "@MATOMO_WAI_URL@"\n\1/g' /opt/matomo/config/config.ini.php \
+    && sed -i -E -e 's/(@MATOMO_MORE_CONFIG@)/allow_login_from[] = "@MATOMO_WAI_URL@"\n\n\1/g' /opt/matomo/config/config.ini.php \
 ;fi
 
 RUN if [ -n "$MATOMO_PLUGIN_TRACKERHOSTNAME_VERSION" ]; then \
@@ -108,7 +132,7 @@ RUN if [ -n "$MATOMO_PLUGIN_TRACKERHOSTNAME_VERSION" ]; then \
     && sed -i -E -e 's/(@MATOMO_PLUGINS_INSTALLED@)/PluginsInstalled[] = "TrackerHostname"\n\1/g' /opt/matomo/config/config.ini.php \
     && if [ -n "$MATOMO_INGESTION_HOSTNAME" ]; then \
         sed -i -E -e 's/(@MATOMO_MORE_CONFIG@)/[TrackerHostname]\n\1/g' /opt/matomo/config/config.ini.php \
-        && sed -i -E -e 's/(@MATOMO_MORE_CONFIG@)/hostname = "${MATOMO_INGESTION_HOSTNAME}"\n\1/g' /opt/matomo/config/config.ini.php \
+        && sed -i -E -e 's/(@MATOMO_MORE_CONFIG@)/hostname = "${MATOMO_INGESTION_HOSTNAME}"\n\n\1/g' /opt/matomo/config/config.ini.php \
     ;fi \
 ;fi
 
@@ -117,6 +141,9 @@ RUN sed -i -e s/@MATOMO_WAI_URL@/${MATOMO_WAI_URL}/g /opt/matomo/config/config.i
     sed -i -e s/@MATOMO_PLUGINS@//g /opt/matomo/config/config.ini.php && \
     sed -i -e s/@MATOMO_PLUGINS_INSTALLED@//g /opt/matomo/config/config.ini.php && \
     sed -i -e s/@MATOMO_MORE_CONFIG@//g /opt/matomo/config/config.ini.php
+
+ARG MATOMO_PLUGIN_USERSMANAGERONLYSUPERUSER_ENABLED
+RUN sed -i -e s/@MATOMO_PLUGIN_USERSMANAGERONLYSUPERUSER_ENABLED@/${MATOMO_PLUGIN_USERSMANAGERONLYSUPERUSER_ENABLED}/g /opt/matomo/config/config.ini.php
 
 ARG DB_PASSWORD
 ARG MATOMO_DB_READER

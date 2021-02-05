@@ -1,0 +1,43 @@
+name: Publish pre-release portal image
+on:
+  push:
+    branches: [master]
+env:
+  PHP_VERSION: 7.4
+  IMAGE_TAG: latest
+  IMAGE_NAME: wai-portal
+  ORGANIZATION: webanalyticsitalia
+  K8S_CLIENT_CERT: ${{ secrets.K8S_CLIENT_CERT }}
+  K8S_CLIENT_KEY: ${{ secrets.K8S_CLIENT_KEY }}
+jobs:
+  build:
+    environment: staging
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Build image
+        if: success()
+        run: docker build --no-cache --rm -f ${{ github.workspace }}/Dockerfile.portal --build-arg PHP_VERSION=$PHP_VERSION -t $ORGANIZATION/$IMAGE_NAME:$IMAGE_TAG ${{ github.workspace }}
+      - name: Push image
+        if: success()
+        run: |
+          docker login --username ${{ secrets.DOCKER_HUB_USERNAME }} --password ${{ secrets.DOCKER_HUB_TOKEN }}
+          docker push $ORGANIZATION/$IMAGE_NAME:$IMAGE_TAG
+      - name: Docker logout
+        if: always()
+        run: docker logout
+      - name: Trigger rolling update in staging environment
+        if: success()
+        run: |
+          curl -X PATCH \
+            --cert <(echo "$K8S_CLIENT_CERT") \
+            --key <(echo "$K8S_CLIENT_KEY") \
+            -d @- \
+            -H 'Accept: application/json' \
+            -H 'Content-Type: application/json-patch+json' \
+            https://k8s.webanalytics.italia.it/apis/apps/v1/namespaces/wai-stag/deployments/portal <<'EOF'
+          [
+            { "op": "replace", "path": "/spec/template/metadata/annotations/releaseDate", "value": "d`date +%Y%m%d%H%M`" }
+          ]
+          EOF

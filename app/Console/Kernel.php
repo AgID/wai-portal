@@ -6,6 +6,7 @@ use App\Jobs\MonitorWebsitesTracking;
 use App\Jobs\ProcessPendingWebsites;
 use App\Jobs\ProcessPublicAdministrationsUpdateFromIpa;
 use App\Jobs\PurgePendingInvitations;
+use App\Jobs\ResetEnvironment;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -23,9 +24,11 @@ class Kernel extends ConsoleKernel
     {
         $schedule->job(new ProcessPublicAdministrationsUpdateFromIpa())->dailyAt('06:30')->onOneServer();
         $schedule->job(new ProcessPendingWebsites())->hourly()->onOneServer();
-        $schedule->job(new ProcessPendingWebsites(true))->dailyAt('04:30')->onOneServer();
-        $schedule->job(new MonitorWebsitesTracking())->daily()->onOneServer();
+        // $schedule->job(new ProcessPendingWebsites(true))->dailyAt('04:30')->onOneServer();
+        // $schedule->job(new MonitorWebsitesTracking())->daily()->onOneServer(); // DisableTracking plugin is currently not working properly
         $schedule->job(new PurgePendingInvitations())->dailyAt('03:30')->onOneServer();
+        // $publicPlaygroundResetTime = config('wai.reset_public_playground_hour', 23) . ':' . config('wai.reset_public_playground_minute', 30);
+        // $schedule->job(new ResetEnvironment())->weekly()->days(config('wai.reset_public_playground_day', 0))->at($publicPlaygroundResetTime)->onOneServer()->environments(['public-playground']);
     }
 
     /**

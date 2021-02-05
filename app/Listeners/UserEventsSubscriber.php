@@ -6,6 +6,7 @@ use App\Enums\Logs\EventType;
 use App\Events\User\UserActivated;
 use App\Events\User\UserDeleted;
 use App\Events\User\UserEmailChanged;
+use App\Events\User\UserEmailForPublicAdministrationChanged;
 use App\Events\User\UserInvited;
 use App\Events\User\UserLogin;
 use App\Events\User\UserLogout;
@@ -16,6 +17,7 @@ use App\Events\User\UserSuspended;
 use App\Events\User\UserUpdated;
 use App\Events\User\UserWebsiteAccessChanged;
 use App\Models\PublicAdministration;
+use App\Traits\AnonymizesEmailAddresses;
 use App\Traits\InteractsWithRedisIndex;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Auth\Events\Registered;
@@ -29,6 +31,7 @@ use Illuminate\Support\Facades\Date;
  */
 class UserEventsSubscriber implements ShouldQueue
 {
+    use AnonymizesEmailAddresses;
     use InteractsWithRedisIndex;
 
     /**
@@ -72,6 +75,10 @@ class UserEventsSubscriber implements ShouldQueue
         if (null !== $publicAdministration) {
             $context['pa'] = $event->getPublicAdministration()->ipa_code;
 
+            if (!empty($user->email_verified_at)) {
+                // Notify the user only if is already confirmed otherwise is notified by classic invitation
+                $user->sendPublicAdministrationInvitedNotification($publicAdministration);
+            }
             //Notify public administration administrators
             $publicAdministration->sendUserInvitedNotificationToAdministrators($user);
         }
@@ -108,7 +115,7 @@ class UserEventsSubscriber implements ShouldQueue
         $publicAdministration = $event->getPublicAdministration();
 
         //Notify user
-        $user->sendActivatedNotification();
+        $user->sendActivatedNotification($publicAdministration);
 
         //Notify public administration administrators
         $publicAdministration->sendUserActivatedNotificationToAdministrators($user);
@@ -157,6 +164,28 @@ class UserEventsSubscriber implements ShouldQueue
         $user->sendEmailVerificationNotification($user->publicAdministrations()->first());
 
         logger()->notice('User ' . $user->uuid . ' email address changed',
+            [
+                'event' => EventType::USER_EMAIL_CHANGED,
+                'user' => $user->uuid,
+            ]
+        );
+    }
+
+    /**
+     * Handle user email changed event.
+     *
+     * @param UserEmailForPublicAdministrationChanged $event the event
+     */
+    public function onUserEmailForPublicAdministrationChanged(UserEmailForPublicAdministrationChanged $event): void
+    {
+        $user = $event->getUser();
+        $publicAdministration = $event->getPublicAdministration();
+        $updatedEmail = $event->getUpdatedEmail();
+        $anonymizedUpdatedEmail = $this->anonymizeEmailAddress($updatedEmail);
+
+        $user->sendEmailPublicAdministrationChangedNotification($publicAdministration, $user->email, $updatedEmail);
+
+        logger()->notice('User ' . $user->uuid . ' changed the email address to ' . $anonymizedUpdatedEmail . ' for the public administration ' . $publicAdministration->name,
             [
                 'event' => EventType::USER_EMAIL_CHANGED,
                 'user' => $user->uuid,
@@ -249,12 +278,12 @@ class UserEventsSubscriber implements ShouldQueue
     public function onSuspended(UserSuspended $event): void
     {
         $user = $event->getUser();
-
+        $publicAdministration = $event->getPublicAdministration();
         //Notify user
-        $user->sendSuspendedNotification();
+        $user->sendSuspendedNotification($publicAdministration);
 
         //Notify public administration administrators
-        $user->publicAdministrations()->each(function (PublicAdministration $publicAdministration) use ($user) {
+        $user->publicAdministrationsWithSuspended()->each(function (PublicAdministration $publicAdministration) use ($user) {
             $publicAdministration->sendUserSuspendedNotificationToAdministrators($user);
         });
 
@@ -263,6 +292,7 @@ class UserEventsSubscriber implements ShouldQueue
             [
                 'user' => $user->uuid,
                 'event' => EventType::USER_SUSPENDED,
+                'pa' => $publicAdministration->ipa_code,
             ]
         );
     }
@@ -275,9 +305,10 @@ class UserEventsSubscriber implements ShouldQueue
     public function onReactivated(UserReactivated $event): void
     {
         $user = $event->getUser();
+        $publicAdministration = $event->getPublicAdministration();
 
         //Notify user
-        $user->sendReactivatedNotification();
+        $user->sendReactivatedNotification($publicAdministration);
 
         //Notify public administration administrators
         $user->publicAdministrations()->each(function (PublicAdministration $publicAdministration) use ($user) {
@@ -289,6 +320,7 @@ class UserEventsSubscriber implements ShouldQueue
             [
                 'user' => $user->uuid,
                 'event' => EventType::USER_REACTIVATED,
+                'pa' => $publicAdministration->ipa_code,
             ]
         );
     }
@@ -301,10 +333,15 @@ class UserEventsSubscriber implements ShouldQueue
     public function onDeleted(UserDeleted $event): void
     {
         $user = $event->getUser();
+        $publicAdministration = $event->getPublicAdministration();
+
+        $user->sendDeletededNotification($publicAdministration);
+
         logger()->notice('User ' . $user->uuid . ' deleted.',
             [
                 'event' => EventType::USER_DELETED,
                 'user' => $user->uuid,
+                'pa' => $publicAdministration->ipa_code,
             ]
         );
     }
@@ -380,6 +417,11 @@ class UserEventsSubscriber implements ShouldQueue
         $events->listen(
             'App\Events\User\UserEmailChanged',
             'App\Listeners\UserEventsSubscriber@onUserEmailChanged'
+        );
+
+        $events->listen(
+            'App\Events\User\UserEmailForPublicAdministrationChanged',
+            'App\Listeners\UserEventsSubscriber@onUserEmailForPublicAdministrationChanged'
         );
 
         $events->listen(

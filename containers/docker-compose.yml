@@ -134,6 +134,9 @@ services:
         - MATOMO_PLUGIN_DISABLESITETRACKING_VERSION=${MATOMO_PLUGIN_DISABLESITETRACKING_VERSION}
         - MATOMO_PLUGIN_CUSTOMDIMENSIONS_VERSION=${MATOMO_PLUGIN_CUSTOMDIMENSIONS_VERSION}
         - MATOMO_PLUGIN_VISITORGENERATOR_VERSION=${MATOMO_PLUGIN_VISITORGENERATOR_VERSION}
+        - MATOMO_PLUGIN_RESETDATABASE_VERSION=${MATOMO_PLUGIN_RESETDATABASE_VERSION}
+        - MATOMO_PLUGIN_USERSMANAGERONLYSUPERUSER_VERSION=${MATOMO_PLUGIN_USERSMANAGERONLYSUPERUSER_VERSION}
+        - MATOMO_PLUGIN_USERSMANAGERONLYSUPERUSER_ENABLED=${MATOMO_PLUGIN_USERSMANAGERONLYSUPERUSER_ENABLED}
         # - MATOMO_PLUGIN_QUEUEDTRACKING_VERSION=${MATOMO_PLUGIN_QUEUEDTRACKING_VERSION}
         # - MATOMO_PLUGIN_PROTECTTRACKID_VERSION=${MATOMO_PLUGIN_PROTECTTRACKID_VERSION}
         # - MATOMO_PLUGIN_LOGINFILTERIP_VERSION=${MATOMO_PLUGIN_LOGINFILTERIP_VERSION}
@@ -153,7 +156,7 @@ services:
 
 # ipa-redisearch
   ipa-redisearch:
-    image: webanalyticsitalia/wai-ipa-redisearch:5.0.7-stable
+    image: webanalyticsitalia/wai-ipa-redisearch:5.0.9-stable
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
     networks:
@@ -170,7 +173,10 @@ services:
 
 # spid-testenv
   spid-testenv:
-    image: italia/spid-testenv2:1.0.1
+    build:
+      context: ./spid-testenv
+      args:
+        - SPID_TESTENV_VERSION=1.0.1
     volumes:
       - ./spid-testenv/conf:/app/conf
     ports:
@@ -178,7 +184,7 @@ services:
     networks:
       - frontend
 
-# ElasticSearch
+# elasticsearch
   elasticsearch:
     image: wai-elasticsearch:dev
     build:
@@ -203,6 +209,7 @@ services:
     networks:
       - backend
 
+# kibana
   kibana:
     image: wai-kibana:dev
     build:
@@ -219,7 +226,7 @@ services:
       - frontend
       - backend
 
-# Redis Sentinel
+# redis-sentinel
   redis-sentinel:
     image: wai-redis-sentinel:dev
     depends_on:
@@ -229,5 +236,15 @@ services:
       args:
         - REDIS_SENTINEL_SET=${REDIS_SENTINEL_SET}
         - REDIS_IPA_INDEX_SENTINEL_SET=${REDIS_IPA_INDEX_SENTINEL_SET}
+    networks:
+      - backend
+
+# redis-commander
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    environment:
+      - REDIS_HOSTS=redis
+    ports:
+      - "8081:8081"
     networks:
       - backend

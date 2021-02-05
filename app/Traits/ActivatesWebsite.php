@@ -60,12 +60,13 @@ trait ActivatesWebsite
             $publicAdministration->status = PublicAdministrationStatus::ACTIVE;
             $publicAdministration->save();
 
-            $pendingUser = $publicAdministration->users()->where('status', UserStatus::PENDING)->first();
+            $pendingUser = $publicAdministration->users()->where('user_status', UserStatus::PENDING)->first();
             if ($pendingUser) {
-                $pendingUser->status = UserStatus::ACTIVE;
-
+                // Detach UserRole::REGISTERED role from the pending user in the global scope
                 $pendingUser->roles()->detach();
+
                 Bouncer::scope()->to($publicAdministration->id);
+
                 $pendingUser->assign(UserRole::ADMIN);
 
                 //NOTE: don't use HasWebsitePermissions since this trait is shared with batch jobs
@@ -78,7 +79,9 @@ trait ActivatesWebsite
 
                 event(new UserWebsiteAccessChanged($pendingUser, $website, WebsiteAccessType::WRITE()));
 
+                $pendingUser->status = UserStatus::ACTIVE;
                 $pendingUser->save();
+                $publicAdministration->users()->updateExistingPivot($pendingUser->id, ['user_status' => UserStatus::ACTIVE]);
 
                 event(new UserActivated($pendingUser, $publicAdministration));
             }

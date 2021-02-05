@@ -2,10 +2,10 @@ version: '3.7'
 
 volumes:
   application-code:
-    driver: local
     external: true
   application-logs:
-    driver: local
+    external: true
+  ipa-redisearch-persistence:
     external: true
 
 services:
@@ -13,11 +13,13 @@ services:
   php-fpm:
     volumes:
       - application-code:${APP_CODE_PATH_CONTAINER}
+      - application-logs:${APP_LOGS_PATH_CONTAINER}
 
 # queue-worker
   queue-worker:
     volumes:
       - application-code:${APP_CODE_PATH_CONTAINER}
+      - application-logs:${APP_LOGS_PATH_CONTAINER}
 
 # nginx
   nginx:
@@ -32,4 +34,4 @@ services:
 # ipa-redisearch
   ipa-redisearch:
     volumes:
-      - ./ipa-redisearch/persistence:/bitnami/redis/data
+      - ipa-redisearch-persistence:/bitnami/redis/data

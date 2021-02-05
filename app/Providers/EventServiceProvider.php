@@ -6,6 +6,7 @@ use App\Events\User\UserInvitationLinkExpired;
 use App\Events\User\UserInvited;
 use App\Listeners\CheckPendingWebsiteJobsEventsSubscriber;
 use App\Listeners\CheckWebsitesMonitoringJobEventsSubscriber;
+use App\Listeners\EnvironmentResetJobSubscriber;
 use App\Listeners\LogSentMessage;
 use App\Listeners\PublicAdministrationEventsSubscriber;
 use App\Listeners\PurgePendingInvitationsJobSubcriber;
@@ -69,6 +70,7 @@ class EventServiceProvider extends ServiceProvider
         WebsiteUpdatesSubscriber::class,
         UpdateClosedBetaWhitelistJobSubscriber::class,
         PurgePendingInvitationsJobSubcriber::class,
+        EnvironmentResetJobSubscriber::class,
     ];
 
     /**

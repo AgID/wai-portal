@@ -12,6 +12,7 @@ export default (() => {
             const isAjax = 'ajax' in websiteCheckTrackingButton.dataset;
             const success = response => {
                 const showWhenActiveElements = [...document.querySelectorAll('.show-when-active')];
+                const hideWhenActiveElements = [...document.querySelectorAll('.hide-when-active')];
                 const publicAdministrationTenantElement = document.querySelector('.it-nav-wrapper .it-tenant');
                 const headerSocialsElement = document.querySelector('.it-nav-wrapper .it-socials');
 
@@ -24,6 +25,11 @@ export default (() => {
                 showWhenActiveElements.map(showWhenActiveElement => {
                     showWhenActiveElement.classList.remove('d-none');
                 });
+
+                hideWhenActiveElements.map(hideWhenActiveElement => {
+                    hideWhenActiveElement.classList.add('d-none');
+                });
+
                 headerSocialsElement && headerSocialsElement.classList.remove('d-md-flex');
                 publicAdministrationTenantElement && publicAdministrationTenantElement.classList.add('d-md-block');
 

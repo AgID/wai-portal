@@ -127,7 +127,7 @@ Route::middleware('spid.auth', 'auth')->group(function () {
             ->name('verification.notice');
 
         Route::get('/resend', 'Auth\VerificationController@resend')
-            ->name('verification.resend')->middleware('enforce.rules:forbid-invited', 'throttle:5,1');
+            ->name('verification.resend')->middleware('throttle:5,1');
 
         Route::get('/{uuid}/{hash}', 'Auth\VerificationController@verify')
             ->name('verification.verify')->middleware('signed', 'throttle:5,1');
@@ -139,7 +139,7 @@ Route::middleware('spid.auth', 'auth')->group(function () {
  *
  * Both SPID and application authentication required
  */
-Route::middleware('spid.auth', 'auth', 'enforce.rules:forbid-invited')->group(function () {
+Route::middleware('spid.auth', 'auth')->group(function () {
     Route::prefix('/user/profile')->group(function () {
         Route::get('/', 'Auth\ProfileController@edit')
             ->name('user.profile.edit');
@@ -156,120 +156,143 @@ Route::middleware('spid.auth', 'auth', 'enforce.rules:forbid-invited')->group(fu
  * This is the default for registered users.
  */
 Route::middleware('spid.auth', 'auth', 'verified:verification.notice')->group(function () {
-    // Route::get('/select-public-administration', [
-    //     'as' => 'publicAdministration.tenant.select',
-    //     'uses' => 'PublicAdministrationController@selectTenant',
-    // ]);
+    Route::prefix('/public-administrations')->group(function () {
+        Route::get('/', [
+            'as' => 'publicAdministrations.show',
+            'uses' => 'PublicAdministrationController@show',
+        ]);
 
-    Route::get('/analytics', 'AnalyticsController@index')
-        ->name('analytics');
+        Route::post('/select', [
+            'as' => 'publicAdministrations.select',
+            'uses' => 'PublicAdministrationController@selectTenant',
+        ]);
+
+        Route::post('/accept/{publicAdministration}', [
+            'as' => 'publicAdministration.acceptInvitation',
+            'uses' => 'PublicAdministrationController@acceptInvitation',
+        ]);
+
+        Route::get('/add', 'PublicAdministrationController@add')
+            ->name('publicAdministrations.add');
+
+        Route::get('/data', 'PublicAdministrationController@dataJson')
+            ->name('publicAdministrations.data.json');
+    });
 
     Route::get('/search-ipa-index', 'SearchIpaIndexController@search')
         ->name('ipa.search')
         ->middleware('throttle:60,1');
 
-    Route::middleware('authorize.analytics:' . UserPermission::VIEW_LOGS)->group(function () {
-        Route::prefix('/logs')->group(function () {
-            Route::get('/', 'Logs\LogController@show')
+    Route::post('/store-primary', 'WebsiteController@storePrimary')
+        ->name('websites.store.primary');
+
+    Route::middleware('select.tenant', 'authorize.public.administrations')->group(function () {
+        Route::get('/analytics', 'AnalyticsController@index')
+        ->name('analytics');
+
+        Route::middleware('authorize.analytics:' . UserPermission::VIEW_LOGS)->group(function () {
+            Route::prefix('/logs')->group(function () {
+                Route::get('/', 'Logs\LogController@show')
                 ->name('logs.show');
 
-            Route::get('/data', 'Logs\LogController@data')
+                Route::get('/data', 'Logs\LogController@data')
                 ->name('logs.data');
 
-            Route::get('/search-website-index', 'Logs\SearchIndexController@searchWebsite')
+                Route::get('/search-website-index', 'Logs\SearchIndexController@searchWebsite')
                 ->name('logs.websites.search')
                 ->middleware('throttle:60,1');
 
-            Route::get('/search-user-index', 'Logs\SearchIndexController@searchUser')
+                Route::get('/search-user-index', 'Logs\SearchIndexController@searchUser')
                 ->name('logs.users.search')
                 ->middleware('throttle:60,1');
+            });
         });
-    });
 
-    Route::prefix('/websites')->group(function () {
-        Route::get('/', 'WebsiteController@index')
+        Route::prefix('/websites')->group(function () {
+            Route::get('/', 'WebsiteController@index')
             ->name('websites.index');
 
-        Route::get('/data', 'WebsiteController@dataJson')
+            Route::get('/data', 'WebsiteController@dataJson')
             ->name('websites.data.json');
 
-        Route::get('/{website}/show', 'WebsiteController@show')
+            Route::get('/{website}/show', 'WebsiteController@show')
             ->name('websites.show');
 
-        Route::post('/store-primary', 'WebsiteController@storePrimary')
-            ->name('websites.store.primary');
-
-        Route::middleware('authorize.analytics:' . UserPermission::MANAGE_WEBSITES)->group(function () {
-            // Authorization for specific websites is handled in the middleware
-            Route::get('/create', 'WebsiteController@create')
+            Route::middleware('authorize.analytics:' . UserPermission::MANAGE_WEBSITES)->group(function () {
+                // Authorization for specific websites is handled in the middleware
+                Route::get('/create', 'WebsiteController@create')
                 ->name('websites.create');
 
-            Route::get('/users-data/{website?}', 'WebsiteController@dataUsersPermissionsJson')
+                Route::get('/users-data/{website?}', 'WebsiteController@dataUsersPermissionsJson')
                 ->name('websites.users.permissions.data.json');
 
-            Route::post('/store', 'WebsiteController@store')
+                Route::post('/store', 'WebsiteController@store')
                 ->name('websites.store');
 
-            Route::get('/{website}/edit', 'WebsiteController@edit')
+                Route::get('/{website}/edit', 'WebsiteController@edit')
                 ->name('websites.edit');
 
-            Route::put('/{website}', 'WebsiteController@update')
+                Route::put('/{website}', 'WebsiteController@update')
                 ->name('websites.update');
 
-            Route::patch('/{website}/archive', 'WebsiteController@archive')
+                Route::patch('/{website}/archive', 'WebsiteController@archive')
                 ->name('websites.archive');
 
-            Route::patch('/{website}/unarchive', 'WebsiteController@unarchive')
+                Route::patch('/{website}/unarchive', 'WebsiteController@unarchive')
                 ->name('websites.unarchive');
 
-            Route::get('/{website}/check', 'WebsiteController@checkTracking')
-                ->name('websites.tracking.check');
+                Route::get('/{website}/check', 'WebsiteController@checkTracking')
+                    ->name('websites.tracking.check');
 
-            Route::get('/{website}/javascript-snippet', 'WebsiteController@showJavascriptSnippet')
-                ->name('websites.snippet.javascript');
+                Route::get('/{website}/force', 'WebsiteController@forceActivation')
+                    ->name('websites.activate.force');
+
+                Route::get('/{website}/javascript-snippet', 'WebsiteController@showJavascriptSnippet')
+                    ->name('websites.snippet.javascript');
+            });
         });
-    });
 
-    Route::prefix('/users')->group(function () {
-        Route::get('/', 'UserController@index')
+        Route::prefix('/users')->group(function () {
+            Route::get('/', 'UserController@index')
             ->name('users.index');
 
-        Route::get('/data', 'UserController@dataJson')
+            Route::get('/data', 'UserController@dataJson')
             ->name('users.data.json');
 
-        Route::middleware('authorize.analytics:' . UserPermission::MANAGE_USERS)->group(function () {
-            Route::get('/create', 'UserController@create')
+            Route::middleware('authorize.analytics:' . UserPermission::MANAGE_USERS)->group(function () {
+                Route::get('/create', 'UserController@create')
                 ->name('users.create');
 
-            Route::get('/websites-data/{user?}', 'UserController@dataWebsitesPermissionsJson')
+                Route::get('/websites-data/{user?}', 'UserController@dataWebsitesPermissionsJson')
                 ->name('users.websites.permissions.data.json');
 
-            Route::post('/', 'UserController@store')
+                Route::post('/', 'UserController@store')
                 ->name('users.store');
 
-            Route::get('/{user}/show', 'UserController@show')
+                Route::get('/{user}/show', 'UserController@show')
                 ->name('users.show');
 
-            Route::get('/{user}/edit', 'UserController@edit')
+                Route::get('/{user}/edit', 'UserController@edit')
                 ->name('users.edit');
 
-            Route::put('/{user}', 'UserController@update')
+                Route::put('/{user}', 'UserController@update')
                 ->name('users.update');
 
-            Route::patch('/{user}/suspend', 'UserController@suspend')
+                Route::patch('/{user}/suspend', 'UserController@suspend')
                 ->name('users.suspend');
 
-            Route::patch('/{user}/reactivate', 'UserController@reactivate')
+                Route::patch('/{user}/reactivate', 'UserController@reactivate')
                 ->name('users.reactivate');
 
-            Route::get('/{user}/verification-resend', 'Auth\VerificationController@resend')
+                Route::get('/{user}/verification-resend', 'Auth\VerificationController@resend')
                 ->name('users.verification.resend')->middleware('throttle:5,1');
+            });
         });
-    });
 
-    Route::prefix('/analytics-service')->group(function () {
-        Route::get('/login/{websiteAnalyticsId?}', 'AnalyticsServiceController@login')
+        Route::prefix('/analytics-service')->group(function () {
+            Route::get('/login/{websiteAnalyticsId?}', 'AnalyticsServiceController@login')
             ->name('analytics.service.login');
+        });
     });
 });
 
@@ -283,6 +306,16 @@ Route::middleware('auth.admin', 'verified:admin.verification.notice')->group(fun
         Route::middleware('password.not.expired')->group(function () {
             Route::get('/', function () {
                 return redirect()->route('admin.dashboard');
+            });
+
+            Route::prefix('/public-administrations')->group(function () {
+                Route::post('/select', [
+                    'as' => 'admin.publicAdministrations.select',
+                    'uses' => 'PublicAdministrationController@selectTenant',
+                ]);
+
+                Route::get('/data', 'PublicAdministrationController@dataJson')
+                    ->name('admin.publicAdministrations.data.json');
             });
 
             Route::get('/dashboard', 'SuperAdminDashboardController@dashboard')
@@ -420,6 +453,9 @@ Route::middleware('auth.admin', 'verified:admin.verification.notice')->group(fun
 
                     Route::get('/{website}/check', 'WebsiteController@checkTracking')
                         ->name('admin.publicAdministration.websites.tracking.check');
+
+                    Route::get('/{website}/force', 'WebsiteController@forceActivation')
+                        ->name('admin.publicAdministration.websites.activate.force');
 
                     Route::get('/{website}/javascript-snippet', 'WebsiteController@showJavascriptSnippet')
                         ->name('admin.publicAdministration.websites.snippet.javascript');

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Enums\PublicAdministrationStatus;
 use App\Enums\UserPermission;
 use App\Enums\UserRole;
 use App\Enums\UserStatus;
@@ -18,6 +19,8 @@ use App\Models\PublicAdministration;
 use App\Models\User;
 use App\Models\Website;
 use App\Services\MatomoService;
+use Faker\Factory;
+use Faker\Generator;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
@@ -64,6 +67,13 @@ class CRUDWebsiteTest extends TestCase
     private $website;
 
     /**
+     * Fake data generator.
+     *
+     * @var Generator the generator
+     */
+    private $faker;
+
+    /**
      * Pre-test setup.
      *
      * @throws \Illuminate\Contracts\Container\BindingResolutionException if unable to bind to the service
@@ -87,7 +97,7 @@ class CRUDWebsiteTest extends TestCase
             'status' => WebsiteStatus::ACTIVE,
             'type' => WebsiteType::INSTITUTIONAL,
         ]);
-        $this->publicAdministration->users()->sync([$this->user->id]);
+        $this->publicAdministration->users()->sync([$this->user->id => ['user_email' => $this->user->email, 'user_status' => UserStatus::ACTIVE]]);
 
         $this->spidUser = new SPIDUser([
             'fiscalNumber' => $this->user->fiscal_number,
@@ -104,6 +114,8 @@ class CRUDWebsiteTest extends TestCase
             $this->user->allow(UserPermission::READ_ANALYTICS, $this->website);
             $this->user->allow(UserPermission::MANAGE_WEBSITES);
         });
+
+        $this->faker = Factory::create();
     }
 
     /**
@@ -149,6 +161,7 @@ class CRUDWebsiteTest extends TestCase
             'status' => UserStatus::PENDING,
             'email_verified_at' => Date::now(),
         ]);
+        $alternativeEmail = $this->faker->unique()->freeEmail;
         $this->actingAs($user)
             ->withSession([
                 'spid_sessionIndex' => 'fake-session-index',
@@ -156,6 +169,7 @@ class CRUDWebsiteTest extends TestCase
             ])
             ->from(route('websites.index'))
             ->post(route('websites.store.primary'), [
+                'email' => $alternativeEmail,
                 'public_administration_name' => 'Camera dei Deputati',
                 'url' => 'www.camera.it',
                 'ipa_code' => 'camera',
@@ -218,6 +232,146 @@ class CRUDWebsiteTest extends TestCase
     }
 
     /**
+     * Test primary custom creation successful.
+     *
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException if unable to bind to the service
+     * @throws \App\Exceptions\AnalyticsServiceException if unable to connect the Analytics Service
+     * @throws \App\Exceptions\CommandErrorException if command is unsuccessful
+     */
+    public function testStoreCustomWebsiteSuccessful(): void
+    {
+        $user = factory(User::class)->create([
+            'status' => UserStatus::PENDING,
+            'email_verified_at' => Date::now(),
+        ]);
+        $alternativeEmail = $this->faker->unique()->freeEmail;
+        $this->actingAs($user)
+            ->withSession([
+                'spid_sessionIndex' => 'fake-session-index',
+                'spid_user' => $this->spidUser,
+            ])
+            ->from(route('websites.create.primary.custom'))
+            ->post(route('websites.store.primary'), [
+                'email' => $alternativeEmail,
+                'public_administration_name' => 'Pubblica amministrazione personalizzata',
+                'url' => 'https://www.pubblica-amministrazione.personalizzata.it',
+                'rtd_name' => 'Utente Utenti',
+                'rtd_mail' => 'utente@personalizzata.it',
+                'skip_rtd_validation' => true,
+                'correct_confirmation' => 'on',
+                'website_type' => 'custom',
+            ])
+            ->assertSessionHasNoErrors()
+            ->assertRedirect(route('websites.index'));
+
+        $user->refresh();
+
+        $createdWebsite = Website::where('slug', Str::slug('https://www.pubblica-amministrazione.personalizzata.it'))->first();
+        $this->app->make('analytics-service')->deleteSite($createdWebsite->analytics_id);
+
+        Event::assertDispatched(PublicAdministrationRegistered::class, function ($event) use ($user) {
+            return 'Pubblica amministrazione personalizzata' === $event->getPublicAdministration()->name && $user->is($event->getUser());
+        });
+        Event::assertDispatched(WebsiteAdded::class, function ($event) {
+            return $event->getWebsite()->slug === Str::slug('https://www.pubblica-amministrazione.personalizzata.it');
+        });
+
+        $this->assertEquals('Pubblica amministrazione personalizzata', $user->publicAdministrations()->first()->name);
+    }
+
+    /**
+     * Test custom website creation fail due to fields validation.
+     */
+    public function testStoreCustomWebsiteFailValidation(): void
+    {
+        $user = factory(User::class)->create([
+            'status' => UserStatus::PENDING,
+            'email_verified_at' => Date::now(),
+        ]);
+        $this->actingAs($user)
+            ->withSession([
+                'spid_sessionIndex' => 'fake-session-index',
+                'spid_user' => $this->spidUser,
+            ])
+            ->from(route('websites.create.primary.custom'))
+            ->post(route('websites.store.primary'), [
+                'public_administration_name' => 'Pubblica amministrazione personalizzata',
+                'url' => $this->website->url,
+                'website_type' => 'custom',
+            ])
+            ->assertSessionHasErrors([
+                'url',
+            ])
+            ->assertRedirect(route('websites.create.primary.custom'));
+
+        $user->refresh();
+
+        Event::assertNotDispatched(PublicAdministrationRegistered::class);
+        Event::assertNotDispatched(WebsiteAdded::class);
+
+        $this->assertEmpty($user->publicAdministrations()->get());
+    }
+
+    /**
+     * Test primary custom creation successful.
+     *
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException if unable to bind to the service
+     * @throws \App\Exceptions\AnalyticsServiceException if unable to connect the Analytics Service
+     * @throws \App\Exceptions\CommandErrorException if command is unsuccessful
+     */
+    public function testForceActivationCustomWebsiteSuccessful(): void
+    {
+        $user = factory(User::class)->create([
+            'status' => UserStatus::PENDING,
+            'email_verified_at' => Date::now(),
+        ]);
+
+        $spidUser = new SPIDUser([
+            'fiscalNumber' => $user->fiscal_number,
+            'familyName' => $user->family_name,
+            'name' => $user->name,
+        ]);
+
+        $user->registerAnalyticsServiceAccount();
+
+        do {
+            $customPublicAdministration = factory(PublicAdministration::class)->make([
+                'status' => PublicAdministrationStatus::PENDING,
+            ]);
+        } while ($customPublicAdministration->ipa_code === $this->publicAdministration->ipa_code);
+        $customPublicAdministration->save();
+
+        do {
+            $customWebsite = factory(Website::class)->make([
+                'public_administration_id' => $customPublicAdministration->id,
+                'status' => WebsiteStatus::PENDING,
+                'type' => WebsiteType::INSTITUTIONAL_PLAY,
+            ]);
+        } while ($customWebsite->slug === $this->website->slug);
+        $customWebsite->save();
+
+        $customPublicAdministration->users()->sync([$user->id => ['user_status' => UserStatus::PENDING]]);
+
+        $this->actingAs($user)
+            ->withSession([
+                'spid_sessionIndex' => 'fake-session-index',
+                'spid_user' => $spidUser,
+                'tenant_id' => $customPublicAdministration->id,
+            ])
+            ->from(route('websites.index'))
+            ->json('GET', route('websites.activate.force', ['website' => $customWebsite->slug]))
+            ->assertOk()
+            ->assertJsonFragment([
+                'website_name' => e($customWebsite->name),
+            ]);
+
+        $user->refresh();
+        $customWebsite->refresh();
+
+        $this->assertTrue($customWebsite->status->is(WebsiteStatus::ACTIVE));
+    }
+
+    /**
      * Test website creation successful.
      *
      * @throws \Illuminate\Contracts\Container\BindingResolutionException if unable to bind to the service
@@ -232,7 +386,7 @@ class CRUDWebsiteTest extends TestCase
         $thirdUser = factory(User::class)->create([
             'status' => UserStatus::INVITED,
         ]);
-        $this->publicAdministration->users()->sync([$secondUser->id, $thirdUser->id], false);
+        $this->publicAdministration->users()->sync([$secondUser->id => ['user_email' => $secondUser->email, 'user_status' => UserStatus::INVITED], $thirdUser->id => ['user_email' => $thirdUser->email, 'user_status' => UserStatus::INVITED]], false);
 
         $secondUser->registerAnalyticsServiceAccount();
         $thirdUser->registerAnalyticsServiceAccount();
@@ -613,6 +767,7 @@ class CRUDWebsiteTest extends TestCase
             'status' => UserStatus::PENDING,
             'email_verified_at' => Date::now(),
         ]);
+        $alternativeEmail = $this->faker->unique()->freeEmail;
 
         $this->app->bind('analytics-service', function () use ($user) {
             return $this->partialMock(MatomoService::class, function ($mock) use ($user) {
@@ -647,6 +802,7 @@ class CRUDWebsiteTest extends TestCase
             ])
             ->from(route('websites.index'))
             ->post(route('websites.store.primary'), [
+                'email' => $alternativeEmail,
                 'public_administration_name' => 'PA Test',
                 'url' => 'www.example.local',
                 'ipa_code' => 'fake',

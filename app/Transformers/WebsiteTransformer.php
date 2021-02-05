@@ -3,7 +3,6 @@
 namespace App\Transformers;
 
 use App\Enums\UserPermission;
-use App\Enums\UserStatus;
 use App\Enums\WebsiteStatus;
 use App\Enums\WebsiteType;
 use App\Models\Website;
@@ -23,9 +22,12 @@ class WebsiteTransformer extends TransformerAbstract
      */
     public function transform(Website $website): array
     {
-        $publicAdministration = request()->route('publicAdministration');
         $authUser = auth()->user();
         $authUserCanAccessAdminArea = $authUser->can(UserPermission::ACCESS_ADMIN_AREA);
+        $publicAdministration = $authUserCanAccessAdminArea
+            ? request()->route('publicAdministration')
+            : current_public_administration();
+
         $websiteUrlLink = array_key_exists('scheme', parse_url($website->url))
             ? e($website->url)
             : 'http://' . e($website->url);
@@ -64,7 +66,7 @@ class WebsiteTransformer extends TransformerAbstract
             ];
 
             if ($website->status->is(WebsiteStatus::PENDING)) {
-                if ($authUser->can(UserPermission::MANAGE_WEBSITES) || $authUser->status->is(UserStatus::PENDING)) {
+                if ($authUser->can(UserPermission::MANAGE_WEBSITES) || $website->type->is(WebsiteType::INSTITUTIONAL) || $website->type->is(WebsiteType::INSTITUTIONAL_PLAY)) {
                     $data['icons'][] = [
                         'icon' => 'it-plug',
                         'link' => $authUserCanAccessAdminArea
@@ -81,6 +83,24 @@ class WebsiteTransformer extends TransformerAbstract
                             'ajax' => true,
                         ],
                     ];
+                    if (!app()->environment('production') && config('wai.custom_public_administrations', false)) {
+                        $data['icons'][] = [
+                            'icon' => 'it-plug',
+                            'link' => $authUserCanAccessAdminArea
+                                ? route('admin.publicAdministration.websites.activate.force', [
+                                    'publicAdministration' => $publicAdministration,
+                                    'website' => $website,
+                                ])
+                                : route('websites.activate.force', ['website' => $website->slug]),
+                            'color' => 'warning',
+                            'title' => __('attivazione forzata'),
+                            'dataAttributes' => [
+                                'website-name' => e($website->name),
+                                'type' => 'checkTracking',
+                                'ajax' => true,
+                            ],
+                        ];
+                    }
                 }
             }
 

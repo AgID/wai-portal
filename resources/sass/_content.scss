@@ -96,26 +96,35 @@ h3.section-header {
 }
 
 // User status
-.badge.user-status {
-  &.invited {
+.badge {
+  &.user-status {
+    &.invited {
+      background-color: #0bd9d2;
+    }
+
+    &.inactive {
+      background-color: #f5f6f7;
+    }
+  }
+
+  &.user-status,
+  &.pa-status {
+    &.active {
+      background-color: #004080;
+      color: #fff;
+    }
+
+    &.pending {
+      background-color: #f5f6f7;
+    }
+
+    &.suspended {
+      background-color: #f5f6f7;
+    }
+  }
+
+  &.pa-type.play {
     background-color: #0bd9d2;
-  }
-
-  &.active {
-    background-color: #004080;
-    color: #fff;
-  }
-
-  &.inactive {
-    background-color: #f5f6f7;
-  }
-
-  &.pending {
-    background-color: #f5f6f7;
-  }
-
-  &.suspended {
-    background-color: #f5f6f7;
   }
 }
 

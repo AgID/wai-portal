@@ -36,6 +36,7 @@ default_day = "previous30"
 default_period = "range"
 default_language = "it"
 archiving_custom_ranges[] = previous30
+enable_processing_unique_visitors_range = 1
 
 [Plugins]
 Plugins[] = "CorePluginsAdmin"
@@ -152,6 +153,11 @@ PluginsInstalled[] = "UserId"
 PluginsInstalled[] = "CustomPiwikJs"
 PluginsInstalled[] = "WAIMatomoTheme"
 @MATOMO_PLUGINS_INSTALLED@
+
+[log]
+log_writers[] = file
+log_level = DEBUG
+logger_file_path = /var/log/matomo/matomo.log
 
 [WAIMatomoTheme]
 waiUrl = "https://@MATOMO_WAI_URL@"

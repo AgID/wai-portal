@@ -40,13 +40,10 @@ class RegisterTest extends TestCase
                 'spid_sessionIndex' => 'fake-session-index',
                 'spid_user' => $spidUser,
             ])
-            ->post(
-                route('auth.register'),
-                [
-                    'email' => 'new@example.com',
-                    'accept_terms' => 'on',
-                ]
-            )
+            ->post(route('auth.register'), [
+                'email' => 'new@webanalytics.italia.it',
+                'accept_terms' => 'on',
+            ])
             ->assertSessionDoesntHaveErrors([
                 'email',
                 'accept_terms',
@@ -54,7 +51,7 @@ class RegisterTest extends TestCase
             ->assertRedirect(route('verification.notice'));
 
         Event::assertDispatched(Registered::class, function ($event) {
-            return 'new@example.com' === $event->user->email;
+            return 'new@webanalytics.italia.it' === $event->user->email;
         });
     }
 

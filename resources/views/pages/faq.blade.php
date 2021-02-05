@@ -20,7 +20,7 @@
                 <div class="link-list-wrapper">
                     <ul class="link-list">
                         <li>
-                            <h3>{{ __('Categorie') }}</h3>
+                            <h2>{{ __('Categorie') }}</h2>
                         </li>
                         <li>
                             <button type="button" class="btn btn-icon list-item faq-selector selected" data-theme="all">

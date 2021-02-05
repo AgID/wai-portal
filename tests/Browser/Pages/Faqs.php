@@ -16,7 +16,7 @@ class Faqs extends Page
      */
     public function url()
     {
-        return '/faqs';
+        return '/faq';
     }
 
     /**
@@ -30,6 +30,9 @@ class Faqs extends Page
     {
         parent::assertBase($browser);
         $browser->assertPathIs($this->url());
+        $browser->assertSourceHas('"@type": "Organization"');
+        $browser->assertSourceHas('"@type": "BreadcrumbList"');
+        $browser->assertSourceHas('"@type": "FAQPage"');
         $this->lighthouseTest();
     }
 }

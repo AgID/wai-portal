@@ -80,7 +80,7 @@ class CRUDUserTest extends TestCase
         $this->publicAdministration = factory(PublicAdministration::class)
             ->state('active')
             ->create();
-        $this->publicAdministration->users()->sync([$this->user->id]);
+        $this->publicAdministration->users()->sync([$this->user->id => ['user_email' => $this->user->email, 'user_status' => UserStatus::ACTIVE]]);
 
         $this->website = factory(Website::class)->create([
             'public_administration_id' => $this->publicAdministration->id,
@@ -128,7 +128,7 @@ class CRUDUserTest extends TestCase
      */
     public function testCreateAdminUserSuccessful(): void
     {
-        $email = $this->faker->unique()->safeEmail;
+        $email = $this->faker->unique()->freeEmail;
         $fiscalNumber = 'ESXLKY44P09I168D';
 
         $this->actingAs($this->user)
@@ -169,7 +169,7 @@ class CRUDUserTest extends TestCase
     }
 
     /**
-     * Test public administration user creation successful.
+     * Test public administration user creation and invitation successful.
      *
      * @throws \App\Exceptions\AnalyticsServiceException if unable to connect the Analytics Service
      * @throws \App\Exceptions\CommandErrorException if command is unsuccessful
@@ -177,7 +177,7 @@ class CRUDUserTest extends TestCase
      */
     public function testCreateUserSuccessful(): void
     {
-        $email = $this->faker->unique()->safeEmail;
+        $email = $this->faker->unique()->freeEmail;
         $fiscalNumber = 'ESXLKY44P09I168D';
 
         $this->actingAs($this->user)
@@ -221,6 +221,8 @@ class CRUDUserTest extends TestCase
      */
     public function testCreateUserFailValidation(): void
     {
+        $fiscalNumber = 'XNTMDF63C44D878E';
+
         $this->actingAs($this->user)
             ->withSession([
                 'spid_sessionIndex' => 'fake-session-index',
@@ -232,12 +234,11 @@ class CRUDUserTest extends TestCase
             ->post(route('users.store'), [
                 '_token' => 'test',
                 'email' => $this->user->email,
-                'fiscal_number' => $this->user->fiscal_number,
+                'fiscal_number' => $fiscalNumber,
             ])
             ->assertRedirect(route('users.create'))
             ->assertSessionHasErrors([
                 'email',
-                'fiscal_number',
                 'permissions',
             ]);
 
@@ -268,7 +269,8 @@ class CRUDUserTest extends TestCase
             ])
             ->put(route('users.update', ['user' => $this->user]), [
                 '_token' => 'test',
-                'email' => 'new@example.com',
+                'email' => 'new@webanalytics.italia.it',
+                'emailPublicAdministrationUser' => 'new@webanalytics.italia.it',
                 'is_admin' => '1',
                 'permissions' => [
                     $this->website->id => [
@@ -285,7 +287,7 @@ class CRUDUserTest extends TestCase
 
         $this->user->refresh();
         Event::assertDispatched(UserUpdated::class, function ($event) {
-            return 'new@example.com' === $event->getUser()->email;
+            return 'new@webanalytics.italia.it' === $event->getUser()->email;
         });
 
         $this->user->deleteAnalyticsServiceAccount();
@@ -300,6 +302,7 @@ class CRUDUserTest extends TestCase
         $user = factory(User::class)->state('invited')->create();
         $fiscalNumber = 'SKYLKU77E25H501R';
         $this->publicAdministration->users()->sync([$user->id], false);
+
         $user->registerAnalyticsServiceAccount();
 
         Bouncer::scope()->to($this->publicAdministration->id);
@@ -316,6 +319,7 @@ class CRUDUserTest extends TestCase
             ->put(route('users.update', ['user' => $user]), [
                 '_token' => 'test',
                 'email' => $user->email,
+                'emailPublicAdministrationUser' => 'old@webanalytics.italia.it',
                 'fiscal_number' => $fiscalNumber,
                 'permissions' => [
                     $this->website->id => [
@@ -365,6 +369,7 @@ class CRUDUserTest extends TestCase
                 '_token' => 'test',
                 'email' => $user->email,
                 'fiscal_number' => $user->fiscal_number,
+                'emailPublicAdministrationUser' => 'new@webanalytics.italia.it',
                 'is_admin' => '1',
                 'permissions' => [
                     $this->website->id => [
@@ -413,6 +418,7 @@ class CRUDUserTest extends TestCase
                 '_token' => 'test',
                 'email' => $user->email,
                 'fiscal_number' => $user->fiscal_number,
+                'emailPublicAdministrationUser' => 'new@webanalytics.italia.it',
                 'permissions' => [
                     $this->website->id => [
                         UserPermission::READ_ANALYTICS,
@@ -475,7 +481,7 @@ class CRUDUserTest extends TestCase
         $user = factory(User::class)->create([
             'status' => UserStatus::ACTIVE,
         ]);
-        $this->publicAdministration->users()->sync([$user->id], false);
+        $this->publicAdministration->users()->sync([$user->id => ['user_status' => UserStatus::ACTIVE]], false);
 
         $this->actingAs($this->user)
             ->withSession([
@@ -489,6 +495,7 @@ class CRUDUserTest extends TestCase
                 'id' => $user->uuid,
                 'status' => UserStatus::getKey(UserStatus::SUSPENDED),
                 'status_description' => UserStatus::getDescription(UserStatus::SUSPENDED),
+                'administration' => $this->publicAdministration->name,
             ])
             ->assertOk();
 
@@ -497,7 +504,10 @@ class CRUDUserTest extends TestCase
         });
 
         Event::assertDispatched(UserUpdated::class, function ($event) {
-            return $event->getUser()->status->is(UserStatus::SUSPENDED);
+            $publicAdministrationUser = $event->getUser()->publicAdministrationsWithSuspended()->where('public_administration_id', $this->publicAdministration->id)->first();
+            $statusPublicAdministrationUser = UserStatus::fromValue(intval($publicAdministrationUser->pivot->user_status));
+
+            return $statusPublicAdministrationUser->is(UserStatus::SUSPENDED);
         });
     }
 
@@ -507,9 +517,9 @@ class CRUDUserTest extends TestCase
     public function testSuspendUserFailAlreadySuspended(): void
     {
         $user = factory(User::class)->create([
-            'status' => UserStatus::SUSPENDED,
+            'status' => UserStatus::ACTIVE,
         ]);
-        $this->publicAdministration->users()->sync([$user->id], false);
+        $this->publicAdministration->users()->sync([$user->id => ['user_status' => UserStatus::SUSPENDED]], false);
 
         $this->actingAs($this->user)
             ->withSession([
@@ -550,20 +560,21 @@ class CRUDUserTest extends TestCase
      */
     public function testSuspendUserFailPending(): void
     {
-        Event::fakeFor(function () {
-            $this->user->status = UserStatus::PENDING;
-            $this->user->save();
-        });
+        $user = factory(User::class)->create([
+            'status' => UserStatus::ACTIVE,
+        ]);
+        $this->publicAdministration->users()->sync([$user->id => ['user_status' => UserStatus::PENDING]], false);
+
         $this->actingAs($this->user)
             ->withSession([
                 'spid_sessionIndex' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
             ])
-            ->json('patch', route('users.suspend', ['user' => $this->user]))
-            ->assertStatus(403)
+            ->json('patch', route('users.suspend', ['user' => $user]))
+            ->assertStatus(400)
             ->assertJson([
                 'result' => 'error',
-                'message' => 'invalid operation for current user',
+                'message' => 'invalid operation for current user status',
             ]);
 
         Event::assertNotDispatched(UserSuspended::class);
@@ -576,9 +587,9 @@ class CRUDUserTest extends TestCase
     public function testReactivateUserSuccessful(): void
     {
         $user = factory(User::class)->create([
-            'status' => UserStatus::SUSPENDED,
+            'status' => UserStatus::ACTIVE,
         ]);
-        $this->publicAdministration->users()->sync([$user->id], false);
+        $this->publicAdministration->users()->sync([$user->id => ['user_status' => UserStatus::SUSPENDED]], false);
 
         $this->actingAs($this->user)
             ->withSession([
@@ -592,6 +603,7 @@ class CRUDUserTest extends TestCase
                 'user_name' => e($user->full_name),
                 'status' => UserStatus::getKey(UserStatus::INVITED),
                 'status_description' => UserStatus::getDescription(UserStatus::INVITED),
+                'administration' => $this->publicAdministration->name,
             ])
             ->assertOk();
 
@@ -600,7 +612,10 @@ class CRUDUserTest extends TestCase
         });
 
         Event::assertDispatched(UserUpdated::class, function ($event) {
-            return $event->getUser()->status->is(UserStatus::INVITED);
+            $publicAdministrationUser = $event->getUser()->publicAdministrations()->where('public_administration_id', $this->publicAdministration->id)->first();
+            $statusPublicAdministrationUser = UserStatus::fromValue(intval($publicAdministrationUser->pivot->user_status));
+
+            return $statusPublicAdministrationUser->is(UserStatus::INVITED);
         });
     }
 
@@ -612,7 +627,7 @@ class CRUDUserTest extends TestCase
         $user = factory(User::class)->create([
             'status' => UserStatus::ACTIVE,
         ]);
-        $this->publicAdministration->users()->sync([$user->id], false);
+        $this->publicAdministration->users()->sync([$user->id => ['user_status' => UserStatus::ACTIVE]], false);
 
         $this->actingAs($this->user)
             ->withSession([

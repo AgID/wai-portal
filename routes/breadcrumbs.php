@@ -61,6 +61,12 @@ Breadcrumbs::for('websites.index', function ($trail) {
     $trail->push(__('Siti web'), route('websites.index'));
 });
 
+// Web Analytics Italia > Add public administration
+Breadcrumbs::for('publicAdministrations.add', function ($trail) {
+    $trail->parent('home');
+    $trail->push(__('Aggiungi pubblica amministrazione'), route('publicAdministrations.add'));
+});
+
 // Web Analytics Italia > Websites > Add website
 Breadcrumbs::for('websites.create', function ($trail) {
     $trail->parent('websites.index');
@@ -124,7 +130,7 @@ Breadcrumbs::for('admin.user.profile.edit', function ($trail) {
 // Web Analytics Italia > Super admin dashboard
 Breadcrumbs::for('admin.dashboard', function ($trail) {
     $trail->parent('home');
-    $trail->push(__('Dashboard amministrativa'), route('admin.dashboard'));
+    $trail->push(__('Dashboard amministrazioni'), route('admin.dashboard'));
 });
 
 // Web Analytics Italia > Super admin dashboard > Logs view
@@ -227,4 +233,10 @@ Breadcrumbs::for('admin.publicAdministration.users.show', function ($trail, $pub
 Breadcrumbs::for('admin.publicAdministration.users.edit', function ($trail, $publicAdministrationIpaCode, $user) {
     $trail->parent('admin.publicAdministration.users.index', $publicAdministrationIpaCode);
     $trail->push(implode(' ', [$user->full_name ?? '', __('(modifica)')]), route('admin.publicAdministration.users.edit', ['publicAdministration' => $publicAdministrationIpaCode, 'user' => $user]));
+});
+
+// Web Analytics Italia > Websites (Custom Public Administration)
+Breadcrumbs::for('websites.create.primary.custom', function ($trail) {
+    $trail->parent('websites.index');
+    $trail->push(__('Registra Pubblica Amministrazione'), route('websites.create.primary.custom'));
 });

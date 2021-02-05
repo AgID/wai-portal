@@ -28,6 +28,12 @@
                         <svg class="icon icon-sm icon-primary right"><use xlink:href="{{ asset('svg/sprite.svg#it-user') }}"></use></svg>
                     </a>
                 </li>
+                <li>
+                    <a class="text-primary right-icon list-item" href="{{ route('publicAdministrations.show') }}">
+                        <span>{{ __('Amministrazioni') }}</span>
+                        <svg class="icon icon-sm icon-primary right"><use xlink:href="{{ asset('svg/sprite.svg#it-pa') }}"></use></svg>
+                    </a>
+                </li>
                 @endif
                 @endauth
                 <li>

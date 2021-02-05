@@ -33,6 +33,7 @@ class UserWebsiteArchivingEmail extends UserEmailNotification
      */
     public function __construct(Website $website, int $daysLeft)
     {
+        parent::__construct();
         $this->website = $website;
         $this->daysLeft = $daysLeft;
     }

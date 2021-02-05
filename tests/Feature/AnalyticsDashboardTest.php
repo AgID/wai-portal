@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Enums\UserPermission;
 use App\Enums\UserRole;
+use App\Enums\UserStatus;
 use App\Models\PublicAdministration;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -45,7 +46,7 @@ class AnalyticsDashboardTest extends TestCase
             'email_verified_at' => Date::now(),
         ]);
         $this->publicAdministration = factory(PublicAdministration::class)->create();
-        $this->publicAdministration->users()->sync($this->user->id);
+        $this->publicAdministration->users()->sync([$this->user->id => ['user_email' => $this->user->email, 'user_status' => UserStatus::ACTIVE]]);
 
         Bouncer::dontCache();
     }
@@ -112,10 +113,13 @@ class AnalyticsDashboardTest extends TestCase
      */
     public function testSuperAdminEmptyPublicAdministrationDashboard(): void
     {
-        $this->user->assign(UserRole::SUPER_ADMIN);
-        $this->user->allow(UserPermission::ACCESS_ADMIN_AREA);
+        $superAdmin = factory(User::class)->state('active')->create();
+        Bouncer::scope()->onceTo(0, function () use ($superAdmin) {
+            $superAdmin->assign(UserRole::SUPER_ADMIN);
+            $superAdmin->allow(UserPermission::ACCESS_ADMIN_AREA);
+        });
 
-        $this->actingAs($this->user)
+        $this->actingAs($superAdmin)
             ->get(route('admin.publicAdministration.analytics', ['publicAdministration' => $this->publicAdministration->ipa_code]))
             ->assertViewIs('pages.analytics')
             ->assertViewHasAll([
@@ -129,13 +133,16 @@ class AnalyticsDashboardTest extends TestCase
      */
     public function testSuperAdminPublicAdministrationDashboard(): void
     {
+        $superAdmin = factory(User::class)->state('active')->create();
+        Bouncer::scope()->onceTo(0, function () use ($superAdmin) {
+            $superAdmin->assign(UserRole::SUPER_ADMIN);
+            $superAdmin->allow(UserPermission::ACCESS_ADMIN_AREA);
+        });
         $this->publicAdministration->rollup_id = 1;
         $this->publicAdministration->save();
-        $this->user->assign(UserRole::SUPER_ADMIN);
-        $this->user->allow(UserPermission::ACCESS_ADMIN_AREA);
         $widgets = Yaml::parseFile(resource_path('data/widgets.yml'))['pa'];
 
-        $this->actingAs($this->user)
+        $this->actingAs($superAdmin)
             ->get(route('admin.publicAdministration.analytics', ['publicAdministration' => $this->publicAdministration->ipa_code]))
             ->assertViewIs('pages.analytics')
             ->assertViewHasAll([

@@ -13,20 +13,20 @@ class PublicAdministrationPurged extends UserMailable
     /**
      * The purged public administration.
      *
-     * @var mixed the public administration
+     * @var stdClass the purged public administration
      */
-    protected $publicAdministration;
+    protected $purgedPublicAdministration;
 
     /**
      * Default constructor.
      *
      * @param User $recipient the mail recipient
-     * @param mixed $publicAdministration the purged public administration
+     * @param stdClass $publicAdministration the purged public administration
      */
-    public function __construct(User $recipient, $publicAdministration)
+    public function __construct(User $recipient, $purgedPublicAdministration)
     {
         parent::__construct($recipient);
-        $this->publicAdministration = $publicAdministration;
+        $this->purgedPublicAdministration = $purgedPublicAdministration;
     }
 
     /**
@@ -40,7 +40,7 @@ class PublicAdministrationPurged extends UserMailable
             ->markdown('mail.purged_public_administration')->with([
                 'locale' => Lang::getLocale(),
                 'user' => $this->recipient,
-                'publicAdministration' => $this->publicAdministration,
+                'publicAdministration' => $this->purgedPublicAdministration,
             ]);
     }
 }

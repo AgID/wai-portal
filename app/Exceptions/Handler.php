@@ -4,7 +4,6 @@ namespace App\Exceptions;
 
 use App\Enums\Logs\EventType;
 use App\Enums\Logs\ExceptionType;
-use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Exceptions\InvalidSignatureException;
@@ -26,7 +25,7 @@ class Handler extends ExceptionHandler
      *
      * @throws Exception if an error occurred during reporting
      */
-    public function report(Exception $exception)
+    public function report(Throwable $exception)
     {
         if ($exception instanceof HttpException) {
             $user = auth()->check() ? 'User ' . auth()->user()->uuid : 'Anonymous user';
@@ -64,7 +63,7 @@ class Handler extends ExceptionHandler
      *
      * @return mixed the response
      */
-    public function render($request, Exception $exception)
+    public function render($request, Throwable $exception)
     {
         if ($exception instanceof TokenMismatchException) {
             return redirect()->home()->withNotification([

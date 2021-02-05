@@ -33,10 +33,11 @@ class RegisterTest extends DuskTestCase
                 ->click('a[href="/analytics"]')
                 ->assertPathIs('/register')
                 ->assertSee('Registrazione')
-                ->type('email', 'nome.cognome@example.com')
+                ->type('email', 'nome.cognome@webanalytics.italia.it')
                 ->click('label[for="accept_terms"]')
                 ->press(__('Registrati'))
-                ->assertSee(__('Abbiamo inviato un link di conferma al tuo indirizzo'));
+                ->waitForText('In attesa di conferma')
+                ->assertSee(__('Per andare avanti è necessario prima effetturare una verifica'));
         });
         $signedUrl = $this->getSignedUrl(1);
         $this->browse(function (Browser $browser) use ($signedUrl) {

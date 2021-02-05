@@ -19,6 +19,7 @@
         <div id="main" role="main">
             <div class="container">
             <h1>@yield('title')@yield('title-after')</h1>
+            @yield('title-description')
             </div>
 
             @unless ($fullWidth ?? false)

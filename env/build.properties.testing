@@ -1,12 +1,11 @@
 # Build properties file
 # ^^^^^^^^^^^^^^^^^^^^^
 #
-# This property file is need for phing to build the project.
-# Adjust your settings and copy this file to env/build.properties.
+# This property file is need for phing to build the project in the testing environment.
 
 # PHP
 # ---
-PHP_VERSION=7.3
+PHP_VERSION=7.4
 
 # Container
 # ---------
@@ -14,8 +13,18 @@ APP_CODE_PATH_CONTAINER=/var/www/html
 
 # Application
 # -----------
+APP_VERSION=testing
 APP_DEBUG=true
 APP_CLOSED_BETA_ENABLED=false
+APP_CUSTOM_PUBLIC_ADMINISTRATIONS_ENABLED=true
+
+# Reset public playground
+# Value must be between 0 = Sunday and 6 = Saturday
+# -----------
+RESET_PUBLIC_PLAYGROUND_DAY_VERBOSE=sunday
+RESET_PUBLIC_PLAYGROUND_DAY=0
+RESET_PUBLIC_PLAYGROUND_HOUR=23
+RESET_PUBLIC_PLAYGROUND_MINUTE=30
 
 # Closed beta repository
 # ----------------------
@@ -35,6 +44,8 @@ LOG_STACK_CHANNELS=testing
 # -------------------
 LOG_SLACK_WEBHOOK_URL=
 LOG_SLACK_USERNAME=
+LOG_SLACK_WEBHOOK_URL_EXTRA_CHANNEL=
+LOG_SLACK_USERNAME_EXTRA_CHANNEL=
 
 # Tackers
 # -------
@@ -57,12 +68,13 @@ CLOSED_BETA_WHITELIST_WEBHOOK_CLIENT_SECRET=256394010059991a71ea05e5d859d2be
 SPID_SP_ENTITY_ID=https://webanalytics.italia.it
 SPID_SP_ACS_INDEX=0
 SPID_SP_ATTRIBUTES_INDEX=0
-SPID_SP_PRIVATE_KEY=MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAOxumINAzHFm3Z7GiNvACZqDo6F8Z82C6rTK3x4OGjWrxL9zAE5AEK4+budqBAU9m7qRdqCwF3g2dvNQdNqOjs9bmE+W7oA0YQuC3hoI/GoHrcQWMOv4cV4JiM0qNfRwbhnqp2vpCloDN54wHVnqw8eogN8As261P1MbZl7ul/KVAgMBAAECgYEAvg106WUIMkw27++1ibfHwH365c+D/Y40Lto5GgbKCMSnpiHCaCRVhEtJiRoOW0wXx5QwoKCMbSSS36mYFSutHPR0DbVr8HrH33TFxPFhgsi8tplrnGg8FpH82y6TSGAbrBjGoC8q+8nzW1LiGHK9gCUPvDN6GmsGGZtzIZhKkS0CQQD6ZPnWoxZIP4sgmM7d70EA82BBpFwqw5R5/2y6R5RNehSZ5aQjzaIsIKVrkMBoGBMc+FG0rIUFuFRSesk4vcBTAkEA8bmZtUPvgTszsGjJ0Gf3vtrGxwixKMu2c/jJxyudSSmogfwBnkJCEnJxx/pacMsI28DqT3iKo6m1P8nIR8zEdwJAK0DwK5Smj7pyVSIwcgQXbYudMBmtVjHM3zoxVQhyZOPW1TLnJMwr3IWTLb6mjhTCkHmQ264FmJRb9JeDVQrqQwJAF+WgY4Iu2FjQ+Fyzru3IWU7pnd2nHgBdrkNnN1CBgS0kIo2WX13viEFWLE38yO/ZlVgSEf85vYpWh9LcAPUmawJAapOrhuxyqvTOrd/KCYqoHF2Gy25wbktM8cw0hQCDzncd8fezAVESFejZs9DxkqHqsEogfVAYZz57jZbjCgKvtg==
-SPID_SP_CERTIFICATE=MIICajCCAdOgAwIBAgIBADANBgkqhkiG9w0BAQsFADBSMQswCQYDVQQGEwJpdDELMAkGA1UECAwCUk0xDTALBgNVBAoMBEFHSUQxJzAlBgNVBAMMHmh0dHBzOi8vd2ViYW5hbHl0aWNzLml0YWxpYS5pdDAeFw0xOTAxMzExNzI4MThaFw0yMDAxMzExNzI4MThaMFIxCzAJBgNVBAYTAml0MQswCQYDVQQIDAJSTTENMAsGA1UECgwEQUdJRDEnMCUGA1UEAwweaHR0cHM6Ly93ZWJhbmFseXRpY3MuaXRhbGlhLml0MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDsbpiDQMxxZt2exojbwAmag6OhfGfNguq0yt8eDho1q8S/cwBOQBCuPm7nagQFPZu6kXagsBd4NnbzUHTajo7PW5hPlu6ANGELgt4aCPxqB63EFjDr+HFeCYjNKjX0cG4Z6qdr6QpaAzeeMB1Z6sPHqIDfALNutT9TG2Ze7pfylQIDAQABo1AwTjAdBgNVHQ4EFgQUeUfdMs78bmoiKg4wypF4ZSoZsREwHwYDVR0jBBgwFoAUeUfdMs78bmoiKg4wypF4ZSoZsREwDAYDVR0TBAUwAwEB/zANBgkqhkiG9w0BAQsFAAOBgQDh/yiKTSgWhwmvAo20aI/P5/kg5/WreKdA4DGYKr63w0fnUULyvcSg5yMuPA5e1OOhx8tkYN+KHa4G3mN8yuzHnudLpmncsKNiA+X8iGTnzmP9bgQoL8mpjRouKGDuXkufsn+1gw/qUsr9W/hpo9YWyqznznQpItsxMmQ2qc/04w==
+SPID_SP_PRIVATE_KEY=MIIEogIBAAKCAQEA0rWFGdaHCxa7n7hQ6qlaN1BtQMN+KWSTNLJsb6mldLuBwqnNK5pqCkLIqHokIFKIt0NetKdpVqTgvZlXav1n217ZyxeucImAoU8XYBx4h39BilghqJ3pPUL8P9eXbwzd8Y9OE11Ok+kB0Of9dNl3LiiTGXzI/SDv+jguSXr7rJcy/ZFGBCYo0QNfY0oj+UsqvrHDzNmLJjrrlLKUYOZr8tvIpi86ckt3AF/5b6xZTUrhMXojKrdgy56+s9603BgzkhaOpOTbWnwIZoP6liq/7i1hTpHxYQ4tFGW0guFjWvqFA3Oh9Bi2U55ioWUapqH7d9UpWvKOL3VHFvzH/wC0dwIDAQABAoIBACA864dffjvhF4XBYof0rzvlT0HoZyYYIDmgztxqvUjV422QIzb3oh+9xguY3GwhlI9NfHDxaDl8cnIvwuM4sCotIe9jySmosAh+HFp1IK/CdZmgEE5HEsdvtz5hUucHtfFedpiZ3wrcTI3U4L9/AjAKvy7YG7w2zOCgtdxCN71ZAb7zqRlF9F1Ng3zYvNiSiCy7Eg9dY8zc2sVlUYSyv3rG5TJtdZTJkd9khSdg8sk7naFhLK5pu4VBrDG41VWhsutCETR+GU5N5nJQnawmfLsE+U05ztsEUJ9HzQyn/jO2k1Dtgl6RztAfFcf9kWWc/CEidRCS8RAs4XB7z8g77KECgYEA6ezzgpCA4jU1Z7EBMJNmcI2Dy5vdT1Im0diM6UpW1VGZQYwiUA1Mdx/jNVfAwxXp87kcVb2pK/neX8m1d/BCbb3JZl/4SJ6swy9SKPWcGBXr9Q9uYju/g8DdPFmE/TgHsryYC/+JQkXlI6VnDgVo70CTY7UTjzHgkK4AdBbuvkcCgYEA5pe3Xq6sDQEDSCK30IPBUnpsA+ytnoz1MRboZVzDt+ItAXbDNQqCmGaD86kPz6gWiJjYzz/NywtewQU/tDDEoJspyPKNmk5aSxuYC6pOWI7Pax5AiOut5so3WUhn1yuIWylZKl2KIhM9rZvIS+qqfSL+7ThkycFaxFCy/umVgFECgYA1f2dBWOLg2OJZ0HVBMrSe0P5vNjoqxdLy8t9nCwVIy9yMzQub2y69n6FKtcLz2rMidhcw1Ks3z3E33t2NjHjkuB6zNweFNCS2jr/vdhw4teq8pMbN2HQ4IYd3IdH0RzgbfF4ZgFtXuLxqpo0m+72/2bjbeLH8cZ+19tVLt2LqSQKBgDOtJnP6kyYq5vBgj28UR9vTAafzf4k7r6s7pgMpQddQwaNFWUPmwhOjTcjqR1fTJJGiJ1xywQzS1H5PTdJ052vSug+FhARjsMqKOY3LsdkY0BUCZ5YHsyY4hSTmHBdVcy5y2r+qzM0MINNqSP3ybhizIgxJihTI1y2NpD+KW22xAoGAJdg2+i6FFljXyG+nm9MuDR9QhJazLYNFQJz8RIPrBZSTzBQom4grFYUCbY6QCLEletlhKDRHFvGHfQrf8dK7Hyrsn3i6i58bdNQ9aT8o23cvPn2S937Sa9pRKaOWvcQs1EigpDaGEeY0RI76BOgVx8pvW/bohPMONZkO0b0OQf0=
+SPID_SP_CERTIFICATE=MIIC8DCCAdgCCQCs7kMqzjPF9DANBgkqhkiG9w0BAQsFADA6MQswCQYDVQQGEwJJVDENMAsGA1UECAwEUm9tZTENMAsGA1UEBwwEUm9tZTENMAsGA1UECgwEQUdJRDAeFw0yMDEwMjAxNzI0NDBaFw0zMDEwMTgxNzI0NDBaMDoxCzAJBgNVBAYTAklUMQ0wCwYDVQQIDARSb21lMQ0wCwYDVQQHDARSb21lMQ0wCwYDVQQKDARBR0lEMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0rWFGdaHCxa7n7hQ6qlaN1BtQMN+KWSTNLJsb6mldLuBwqnNK5pqCkLIqHokIFKIt0NetKdpVqTgvZlXav1n217ZyxeucImAoU8XYBx4h39BilghqJ3pPUL8P9eXbwzd8Y9OE11Ok+kB0Of9dNl3LiiTGXzI/SDv+jguSXr7rJcy/ZFGBCYo0QNfY0oj+UsqvrHDzNmLJjrrlLKUYOZr8tvIpi86ckt3AF/5b6xZTUrhMXojKrdgy56+s9603BgzkhaOpOTbWnwIZoP6liq/7i1hTpHxYQ4tFGW0guFjWvqFA3Oh9Bi2U55ioWUapqH7d9UpWvKOL3VHFvzH/wC0dwIDAQABMA0GCSqGSIb3DQEBCwUAA4IBAQAzLlUGgsRiJm9BsGTYUqOhmgIlmqWtfQnjAtSAS0UI6yPbW9P+C1WL33nyWCCDqu/s0TsWTprpy14wLLqXuOVenVF6SCdDzARXepevYCXwBeSApzeJBg4uJPKoKf400wUcnO4jhzbPQ6W0jsLXKqbFhEo+Ul6OPRqr9rSGKWqQmi4tRpcUCif17SIqbX5AHAE3EfpHeJ1U22efYexTQlTERmGisbJmgdHjIZnn4BuuwRgvItTErl1UQbdbQx2vhEzoD/YKAEQsEMq+z2scGcYbjwGjD6aedsi9NcZeTpqP3PVGJJ2YAQxynTOp84v9DTacy7HcFUdIvvfb0h180cj+
 
 # SPID test identity providers
 # ----------------------------
 
+SPID_TESTENV_HOSTNAME=
 SPID_TESTENV_ENABLED=
 SPID_TESTENV_ENTITY_ID=
 SPID_TESTENV_SSO=
@@ -85,7 +97,7 @@ CRON_TOKEN=94b0ef4e300dbd0da2ceb6f7c5c09a2b
 APP_SUPER_ADMIN_NAME=Nome
 APP_SUPER_ADMIN_FAMILY_NAME=Cognome
 APP_SUPER_ADMIN_FISCAL_NUMBER=FSCLNB17A01H501X
-APP_SUPER_ADMIN_EMAIL=nome.cognome@example.com
+APP_SUPER_ADMIN_EMAIL=nome.cognome@webanalytics.italia.it
 APP_SUPER_ADMIN_PASSWORD=password
 
 # Pending websites thresholds
@@ -132,6 +144,7 @@ SESSION_ENCRYPT=false
 # Leave blank/defaults if not using Redis Sentinel
 
 # Comma separated list of Redis Sentinels connection strings
+# e.g. tcp://sentinel1:26379,tcp://sentinel2:26379
 REDIS_SENTINELS=
 REDIS_SENTINEL_SET=
 
@@ -189,8 +202,17 @@ MATOMO_ROOT_PASSWORD=Password
 # Matomo super user API Key, put any MD5 hash.
 MATOMO_ROOT_APIKEY=d300edfad46f2723f0df5b5b5877033b
 
+# Matomo public dashboard user name
+MATOMO_PUBLIC_USER=viewer
+
+# Matomo public dashboard user password
+MATOMO_PUBLIC_USER_PASSWORD=ViewerPassword
+
+# Matomo public dashboard user API Key, put any MD5 hash.
+MATOMO_PUBLIC_USER_APIKEY=d300edfad46f2723f0df5b5b5877033b
+
 # Matomo version
-MATOMO_VERSION=3.13.5
+MATOMO_VERSION=3.14.1
 
 # Matomo WAI theme version
 MATOMO_WAI_THEME_VERSION=1.0.0-beta
@@ -201,16 +223,26 @@ MATOMO_PLUGIN_QUEUEDTRACKING_VERSION=3.3.6
 MATOMO_PLUGIN_PROTECTTRACKID_VERSION=1.0.0
 MATOMO_PLUGIN_CUSTOMDIMENSIONS_VERSION=3.1.10
 MATOMO_PLUGIN_LOGINFILTERIP_VERSION=0.1.0
+MATOMO_PLUGIN_USERSMANAGERONLYSUPERUSER_VERSION=0.2.0
+MATOMO_PLUGIN_USERSMANAGERONLYSUPERUSER_ENABLED=0
 MATOMO_PLUGIN_TRACKERHOSTNAME_VERSION=0.1.0
 MATOMO_PLUGIN_VISITORGENERATOR_VERSION=3.1.2
+MATOMO_PLUGIN_RESETDATABASE_VERSION=0.1.0
 
 # Matomo phpredis extension version
 MATOMO_PHPREDIS_VERSION=5.1.1
 
-# Matomo public RollUp report ID
+# Matomo public RollUp report ID is the Matomo
+# site ID for widgets in the portal public dashboard (home page);
+# if using the RollUpReporting plugin, this is
+# the site ID of the RollUp site configured to include "all" websites.
+# NOTE: requires "view" accesso for anonymous user.
+# Leave blank if not using matomo widgets in home page.
 MATOMO_PUBLIC_ROLLUP_ID=
 
 # Matomo tracker hostname
+# Leave blank if not using a different hostname
+# for matomo tracking ingestion
 MATOMO_INGESTION_HOSTNAME=
 
 # Analytics Service URLs
@@ -234,11 +266,13 @@ ELASTICSEARCH_VERSION=7.6.0
 ELASTICSEARCH_USER=
 ELASTICSEARCH_PASSWORD=
 ELASTICSEARCH_HOST=elasticsearch
-ELASTICSEARCH_PORT=9200
 ELASTICSEARCH_INDEX_PREFIX=wai
 ELASTICSEARCH_INDEX_NAME=log
 ELASTICSEARCH_SEARCH_TEMPLATE_NAME=log_search
 ELASTICSEARCH_IGNORE_EXCEPTIONS=false
+
+KIBANA_VERSION=7.6.0
+KIBANA_PORT=5601
 
 # Debugging
 # ---------
@@ -246,8 +280,7 @@ ELASTICSEARCH_IGNORE_EXCEPTIONS=false
 # Set your XDebug IDE key, if needed.
 XDEBUG_IDEKEY=
 
-# Use docker.for.win.localhost if Docker host is Windows OS,
-# use docker.for.mac.localhost if Docker host is Mac OS,
+# Use host.docker.internal if Docker host is Windows OS or Mac OS,
 # check the IP address of docker0 and adjust DOCKER_HOST_IP value
 # in your env-containers-* file to use dockerhost, if Docker host is Linux OS.
-XDEBUG_REMOTE_HOST=docker.for.mac.localhost
+XDEBUG_REMOTE_HOST=host.docker.internal

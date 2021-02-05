@@ -37,7 +37,7 @@ class ScopeBouncer
         $tenantId = 0;
         $authUser = $request->user();
 
-        if ($authUser && $authUser->publicAdministrations->isNotEmpty()) {
+        if ($authUser && session()->has('tenant_id')) {
             $tenantId = session('tenant_id');
         }
 

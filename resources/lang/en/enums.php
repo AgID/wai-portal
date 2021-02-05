@@ -101,6 +101,7 @@ return [
         WebsiteType::INFORMATIONAL => 'informational or thematic website',
         WebsiteType::SERVICE => 'services website',
         WebsiteType::MOBILE => 'mobile application',
+        WebsiteType::INSTITUTIONAL_PLAY => 'institutional website',
     ],
 
     WebsiteAccessType::class => [
@@ -155,6 +156,7 @@ return [
         EventType::WEBSITE_UPDATED => 'Website updated',
         EventType::CLOSED_BETA_WHITELIST_UPDATE_FAILED => 'Closed beta whitelist update failed',
         EventType::PURGE_PENDING_INVITATIONS_COMPLETED => 'Purge old pending invitations completed',
+        EventType::ENVIRONMENT_RESET_COMPLETED => 'Environment reset completed',
         EventType::MAIL_SENT => 'Mail sent',
     ],
 
@@ -185,5 +187,6 @@ return [
         JobType::PROCESS_WEBSITES_INDEX => 'Update websites index',
         JobType::MONITOR_WEBSITES_TRACKING => 'Monitor websites tracking status',
         JobType::PURGE_PENDING_INVITATIONS => 'Purge old pending invitations',
+        JobType::RESET_ENVIRONMENT => 'Environment reset',
     ],
 ];

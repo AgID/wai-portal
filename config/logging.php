@@ -102,6 +102,17 @@ return [
             ],
         ],
 
+        'slack_extra_channel' => [
+            'driver' => 'slack',
+            'url' => env('LOG_SLACK_WEBHOOK_URL_EXTRA_CHANNEL', ''),
+            'username' => env('LOG_SLACK_USERNAME_EXTRA_CHANNEL', config('app.name')),
+            'tap' => [App\Logging\SlackLogger::class],
+            'level' => 'notice',
+            'exclude_fields' => [
+                'context.exception',
+            ],
+        ],
+
         'papertrail' => [
             'driver' => 'monolog',
             'level' => 'debug',

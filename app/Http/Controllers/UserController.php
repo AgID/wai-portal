@@ -6,9 +6,11 @@ use App\Enums\UserPermission;
 use App\Enums\UserRole;
 use App\Enums\UserStatus;
 use App\Events\User\UserDeleted;
+use App\Events\User\UserEmailForPublicAdministrationChanged;
 use App\Events\User\UserInvited;
 use App\Events\User\UserReactivated;
 use App\Events\User\UserSuspended;
+use App\Events\User\UserUpdated;
 use App\Exceptions\CommandErrorException;
 use App\Exceptions\InvalidUserStatusException;
 use App\Exceptions\OperationNotAllowedException;
@@ -117,34 +119,58 @@ class UserController extends Controller
     {
         $authUser = auth()->user();
         $validatedData = $request->validated();
+
         $currentPublicAdministration = $authUser->can(UserPermission::ACCESS_ADMIN_AREA)
             ? $publicAdministration
             : current_public_administration();
 
-        $user = User::create([
-            'uuid' => Uuid::uuid4()->toString(),
-            'fiscal_number' => $validatedData['fiscal_number'],
-            'email' => $validatedData['email'],
-            'status' => UserStatus::INVITED,
-        ]);
+        $redirectUrl = $this->getRoleAwareUrl('users.index', [], $publicAdministration);
 
-        $user->publicAdministrations()->attach($currentPublicAdministration->id);
-        $user->registerAnalyticsServiceAccount();
+        // If existingUser is filled the user is already in the database
+        if (isset($validatedData['existingUser']) && isset($validatedData['existingUser']->email)) {
+            $user = $validatedData['existingUser'];
+            $userInCurrentPublicAdministration = $user->publicAdministrationsWithSuspended->where('id', $currentPublicAdministration->id)->isNotEmpty();
 
+            if ($userInCurrentPublicAdministration) {
+                return redirect()->to($redirectUrl)->withModal([
+                    'title' => __("Non è possibile inoltrare l'invito"),
+                    'icon' => 'it-clock',
+                    'message' => __("L'utente fa già parte di questa pubblica amministrazione"),
+                    'image' => asset('images/closed.svg'),
+                ]);
+            }
+
+            $user_message = implode("\n", [
+                __("Abbiamo inviato un invito all'indirizzo email :email.", ['email' => '<strong>' . e($validatedData['email']) . '</strong>']),
+                "\n" . __("L'invito potrà essere confermato dall'utente al prossimo accesso."),
+            ]);
+        } else {
+            $user = User::create([
+                'uuid' => Uuid::uuid4()->toString(),
+                'fiscal_number' => $validatedData['fiscal_number'],
+                'email' => $validatedData['email'],
+                'status' => UserStatus::INVITED,
+            ]);
+
+            $user_message = implode("\n", [
+                __("Abbiamo inviato un invito all'indirizzo email :email.", ['email' => '<strong>' . e($validatedData['email']) . '</strong>']),
+                "\n" . __("L'invito scade dopo :expire giorni e può essere rinnovato.", ['expire' => config('auth.verification.expire')]),
+                "\n<strong>" . __("Attenzione! Se dopo :purge giorni l'utente non avrà ancora accettato l'invito, sarà rimosso.", ['purge' => config('auth.verification.purge')]) . '</strong>',
+            ]);
+        }
+
+        if (!$user->hasAnalyticsServiceAccount()) {
+            $user->registerAnalyticsServiceAccount();
+        }
+        $user->publicAdministrations()->attach($currentPublicAdministration->id, ['user_email' => $validatedData['email'], 'user_status' => UserStatus::INVITED]);
         $this->manageUserPermissions($validatedData, $currentPublicAdministration, $user);
 
         event(new UserInvited($user, $authUser, $currentPublicAdministration));
 
-        $redirectUrl = $this->getRoleAwareUrl('users.index', [], $publicAdministration);
-
         return redirect()->to($redirectUrl)->withModal([
             'title' => __('Invito inoltrato'),
             'icon' => 'it-clock',
-            'message' => implode("\n", [
-                __("Abbiamo inviato un invito all'indirizzo email :email.", ['email' => '<strong>' . e($user->email) . '</strong>']),
-                "\n" . __("L'invito scade dopo :expire giorni e può essere rinnovato.", ['expire' => config('auth.verification.expire')]),
-                "\n<strong>" . __("Attenzione! Se dopo :purge giorni l'utente non avrà ancora accettato l'invito, sarà rimosso.", ['purge' => config('auth.verification.purge')]) . '</strong>',
-            ]),
+            'message' => $user_message,
             'image' => asset('images/invitation-email-sent.svg'),
         ]);
     }
@@ -159,6 +185,9 @@ class UserController extends Controller
      */
     public function show(PublicAdministration $publicAdministration, User $user): View
     {
+        $publicAdministration = request()->route('publicAdministration', current_public_administration());
+        $emailPublicAdministrationUser = $user->getEmailforPublicAdministration($publicAdministration);
+
         $websitesPermissionsDatatableSource = $this->getRoleAwareUrl('users.websites.permissions.data.json', [
             'user' => $user,
         ], $publicAdministration);
@@ -174,7 +203,7 @@ class UserController extends Controller
 
         $websitesPermissionsDatatable = $this->getDatatableWebsitesPermissionsParams($websitesPermissionsDatatableSource, true);
 
-        return view('pages.users.show')->with(compact('user', 'allRoles'))->with($roleAwareUrls)->with($websitesPermissionsDatatable);
+        return view('pages.users.show')->with(compact('user', 'allRoles', 'emailPublicAdministrationUser'))->with($roleAwareUrls)->with($websitesPermissionsDatatable);
     }
 
     /**
@@ -188,6 +217,9 @@ class UserController extends Controller
      */
     public function edit(Request $request, PublicAdministration $publicAdministration, User $user): View
     {
+        $publicAdministration = request()->route('publicAdministration', current_public_administration());
+        $emailPublicAdministrationUser = $user->getEmailforPublicAdministration($publicAdministration);
+
         $oldPermissions = old('permissions', $request->session()->hasOldInput() ? [] : null);
         $websitesPermissionsDatatableSource = $this->getRoleAwareUrl('users.websites.permissions.data.json', [
             'user' => $user,
@@ -207,7 +239,7 @@ class UserController extends Controller
             $isAdmin = $user->isA(UserRole::ADMIN);
         }
 
-        return view('pages.users.edit')->with(compact('user', 'userUpdateUrl', 'isAdmin'))->with($websitesPermissionsDatatable);
+        return view('pages.users.edit')->with(compact('user', 'userUpdateUrl', 'isAdmin', 'emailPublicAdministrationUser'))->with($websitesPermissionsDatatable);
     }
 
     /**
@@ -244,6 +276,8 @@ class UserController extends Controller
             $user->updateAnalyticsServiceAccountEmail();
         }
 
+        $emailPublicAdministrationUser = $user->getEmailforPublicAdministration($currentPublicAdministration);
+
         if ($user->status->is(UserStatus::INVITED) && array_key_exists('fiscal_number', $validatedData)) {
             $user->fiscal_number = $validatedData['fiscal_number'];
         }
@@ -254,14 +288,16 @@ class UserController extends Controller
 
         $this->manageUserPermissions($validatedData, $currentPublicAdministration, $user);
 
+        if ($emailPublicAdministrationUser !== $validatedData['emailPublicAdministrationUser']) {
+            $user->publicAdministrations()->updateExistingPivot($currentPublicAdministration->id, ['user_email' => $validatedData['emailPublicAdministrationUser']]);
+            event(new UserEmailForPublicAdministrationChanged($user, $currentPublicAdministration, $validatedData['emailPublicAdministrationUser']));
+        }
+
         $redirectUrl = $this->getRoleAwareUrl('users.index', [], $publicAdministration);
 
         return redirect()->to($redirectUrl)->withNotification([
             'title' => __('modifica utente'),
-            'message' => implode("\n", [
-                __("La modifica dell'utente è andata a buon fine."),
-                __("Se è stato modificato l'indirizzo email, l'utente riceverà un messaggio per effettuarne la verifica."),
-            ]),
+            'message' => __("La modifica dell'utente è andata a buon fine."),
             'status' => 'success',
             'icon' => 'it-check-circle',
         ]);
@@ -280,12 +316,16 @@ class UserController extends Controller
      */
     public function delete(PublicAdministration $publicAdministration, User $user)
     {
-        try {
-            if ($user->trashed()) {
-                return $this->notModifiedResponse();
-            }
+        $publicAdministrationUser = $user->publicAdministrations()->where('public_administration_id', $publicAdministration->id)->first();
 
-            if ($user->status->is(UserStatus::PENDING)) {
+        if (empty($publicAdministrationUser)) {
+            return $this->notModifiedResponse();
+        }
+
+        $userPublicAdministrationStatus = UserStatus::fromValue(intval($publicAdministrationUser->pivot->user_status));
+
+        try {
+            if ($userPublicAdministrationStatus->is(UserStatus::PENDING)) {
                 throw new OperationNotAllowedException('Pending users cannot be deleted.');
             }
 
@@ -294,52 +334,21 @@ class UserController extends Controller
                 throw new OperationNotAllowedException($validator->errors()->first('is_admin'));
             }
 
-            $user->publicAdministrations()->get()->map(function ($publicAdministration) use ($user) {
-                Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user) {
-                    $user->assign(UserRole::DELETED);
-                });
+            Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user) {
+                $user->abilities()->detach();
+                $user->roles()->detach();
             });
 
-            // NOTE: don't use 'user->delete()' directly since
-            //       it cascades delete to roles and permissions
-            // See: https://github.com/JosephSilber/bouncer/issues/439
-            $user->deleted_at = $user->freshTimestamp();
-            $user->save();
+            $publicAdministration->users()->detach([$user->id]);
         } catch (OperationNotAllowedException $exception) {
             report($exception);
 
             return $this->errorResponse($exception->getMessage(), $exception->getCode(), 400);
         }
 
-        event(new UserDeleted($user));
+        event(new UserDeleted($user, $publicAdministration));
 
-        return $this->userResponse($user);
-    }
-
-    /**
-     * Restore a soft-deleted user.
-     * NOTE: Super admin only.
-     *
-     * @param PublicAdministration $publicAdministration the public administration the user belongs to
-     * @param User $user the user to restore
-     *
-     * @return JsonResponse|RedirectResponse the response in json or http redirect format
-     */
-    public function restore(PublicAdministration $publicAdministration, User $user)
-    {
-        if (!$user->trashed()) {
-            return $this->notModifiedResponse();
-        }
-
-        $user->publicAdministrations()->get()->map(function ($publicAdministration) use ($user) {
-            Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user) {
-                $user->retract(UserRole::DELETED);
-            });
-        });
-
-        $user->restore();
-
-        return $this->userResponse($user);
+        return $this->userResponse($user, $publicAdministration);
     }
 
     /**
@@ -353,7 +362,12 @@ class UserController extends Controller
      */
     public function suspend(Request $request, PublicAdministration $publicAdministration, User $user)
     {
-        if ($user->status->is(UserStatus::SUSPENDED)) {
+        $publicAdministration = ($publicAdministration->id ?? false) ? $publicAdministration : current_public_administration();
+        $publicAdministrationUser = $user->publicAdministrationsWithSuspended()->where('public_administration_id', $publicAdministration->id)->first();
+
+        $userPublicAdministrationStatus = UserStatus::fromValue(intval($publicAdministrationUser->pivot->user_status));
+
+        if ($userPublicAdministrationStatus->is(UserStatus::SUSPENDED)) {
             return $this->notModifiedResponse();
         }
 
@@ -362,11 +376,11 @@ class UserController extends Controller
                 throw new OperationNotAllowedException('Cannot suspend the current authenticated user.');
             }
 
-            if ($user->status->is(UserStatus::PENDING)) {
+            if ($userPublicAdministrationStatus->is(UserStatus::PENDING)) {
                 throw new InvalidUserStatusException('Pending users cannot be suspended.');
             }
 
-            //NOTE: super admin are allowed to suspend the last active administrator of a Public Administration
+            //NOTE: super admin are allowed to suspend the last active administrator of a public administration
             if (auth()->user()->cannot(UserPermission::ACCESS_ADMIN_AREA)) {
                 $validator = validator(request()->all())->after([$this, 'validateNotLastActiveAdministrator']);
                 if ($validator->fails()) {
@@ -374,12 +388,12 @@ class UserController extends Controller
                 }
             }
 
-            $user->status = UserStatus::SUSPENDED;
-            $user->save();
+            $publicAdministration->users()->updateExistingPivot($user->id, ['user_status' => UserStatus::SUSPENDED]);
 
-            event(new UserSuspended($user));
+            event(new UserSuspended($user, $publicAdministration));
+            event(new UserUpdated($user, $publicAdministration));
 
-            return $this->userResponse($user);
+            return $this->userResponse($user, $publicAdministration);
         } catch (InvalidUserStatusException $exception) {
             report($exception);
             $code = $exception->getCode();
@@ -405,16 +419,21 @@ class UserController extends Controller
      */
     public function reactivate(PublicAdministration $publicAdministration, User $user)
     {
-        if (!$user->status->is(UserStatus::SUSPENDED)) {
+        $publicAdministration = ($publicAdministration->id ?? false) ? $publicAdministration : current_public_administration();
+        $publicAdministrationUser = $user->publicAdministrationsWithSuspended()->where('public_administration_id', $publicAdministration->id)->first();
+        $userPublicAdministrationStatus = UserStatus::fromValue(intval($publicAdministrationUser->pivot->user_status));
+
+        if (!$userPublicAdministrationStatus->is(UserStatus::SUSPENDED)) {
             return $this->notModifiedResponse();
         }
 
-        $user->status = $user->hasVerifiedEmail() ? UserStatus::ACTIVE : UserStatus::INVITED;
-        $user->save();
+        $updatedStatus = $user->hasVerifiedEmail() ? UserStatus::ACTIVE : UserStatus::INVITED;
+        $publicAdministration->users()->updateExistingPivot($user->id, ['user_status' => $updatedStatus]);
 
-        event(new UserReactivated($user));
+        event(new UserReactivated($user, $publicAdministration));
+        event(new UserUpdated($user, $publicAdministration));
 
-        return $this->userResponse($user);
+        return $this->userResponse($user, $publicAdministration);
     }
 
     /**
@@ -425,7 +444,7 @@ class UserController extends Controller
      *
      * @throws \Exception if unable to initialize the datatable
      *
-     * @return mixed the response the JSON format
+     * @return mixed the response in JSON format
      */
     public function dataJson(Request $request, PublicAdministration $publicAdministration)
     {
@@ -444,7 +463,7 @@ class UserController extends Controller
      *
      * @throws \Exception if unable to initialize the datatable
      *
-     * @return mixed the response the JSON format
+     * @return mixed the response in JSON format
      */
     public function dataWebsitesPermissionsJson(PublicAdministration $publicAdministration, User $user)
     {

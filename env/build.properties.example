@@ -6,7 +6,7 @@
 
 # PHP
 # ---
-PHP_VERSION=7.3
+PHP_VERSION=7.4
 
 # Container
 # ---------
@@ -17,6 +17,15 @@ APP_CODE_PATH_CONTAINER=/var/www/html
 APP_VERSION=0.1-alpha
 APP_DEBUG=true
 APP_CLOSED_BETA_ENABLED=false
+APP_CUSTOM_PUBLIC_ADMINISTRATIONS_ENABLED=false
+
+# Reset public playground
+# Value must be between 0 = Sunday and 6 = Saturday
+# -----------
+RESET_PUBLIC_PLAYGROUND_DAY_VERBOSE=sunday
+RESET_PUBLIC_PLAYGROUND_DAY=0
+RESET_PUBLIC_PLAYGROUND_HOUR=23
+RESET_PUBLIC_PLAYGROUND_MINUTE=30
 
 # Closed beta repository
 # ----------------------
@@ -36,6 +45,8 @@ LOG_STACK_CHANNELS=
 # -------------------
 LOG_SLACK_WEBHOOK_URL=
 LOG_SLACK_USERNAME=
+LOG_SLACK_WEBHOOK_URL_EXTRA_CHANNEL=
+LOG_SLACK_USERNAME_EXTRA_CHANNEL=
 
 # Tackers
 # -------
@@ -64,6 +75,7 @@ SPID_SP_CERTIFICATE=
 # SPID test identity providers
 # ----------------------------
 
+SPID_TESTENV_HOSTNAME=
 SPID_TESTENV_ENABLED=
 SPID_TESTENV_ENTITY_ID=
 SPID_TESTENV_SSO=
@@ -191,8 +203,17 @@ MATOMO_ROOT_PASSWORD=Password
 # Matomo super user API Key, put any MD5 hash.
 MATOMO_ROOT_APIKEY=8aa23f3ca5903d451d1ff8eb947c7a8f
 
+# Matomo public dashboard user name
+MATOMO_PUBLIC_USER=viewer
+
+# Matomo public dashboard user password
+MATOMO_PUBLIC_USER_PASSWORD=ViewerPassword
+
+# Matomo public dashboard user API Key, put any MD5 hash.
+MATOMO_PUBLIC_USER_APIKEY=540e13e315b7c8bbf374a0ff227a1ae1
+
 # Matomo version
-MATOMO_VERSION=3.13.5
+MATOMO_VERSION=3.14.1
 
 # Matomo WAI theme version
 MATOMO_WAI_THEME_VERSION=1.0.0-beta
@@ -203,8 +224,11 @@ MATOMO_PLUGIN_QUEUEDTRACKING_VERSION=3.3.6
 MATOMO_PLUGIN_PROTECTTRACKID_VERSION=1.0.0
 MATOMO_PLUGIN_CUSTOMDIMENSIONS_VERSION=3.1.10
 MATOMO_PLUGIN_LOGINFILTERIP_VERSION=0.1.0
+MATOMO_PLUGIN_USERSMANAGERONLYSUPERUSER_VERSION=0.2.0
+MATOMO_PLUGIN_USERSMANAGERONLYSUPERUSER_ENABLED=0
 MATOMO_PLUGIN_TRACKERHOSTNAME_VERSION=0.1.0
 MATOMO_PLUGIN_VISITORGENERATOR_VERSION=3.1.2
+MATOMO_PLUGIN_RESETDATABASE_VERSION=0.1.0
 
 # Matomo phpredis extension version
 MATOMO_PHPREDIS_VERSION=5.1.1
@@ -213,7 +237,7 @@ MATOMO_PHPREDIS_VERSION=5.1.1
 # site ID for widgets in the portal public dashboard (home page);
 # if using the RollUpReporting plugin, this is
 # the site ID of the RollUp site configured to include "all" websites.
-# NOTE: requires "view" accesso for anonymous user.
+# NOTE: requires "view" access for anonymous user.
 # Leave blank if not using matomo widgets in home page.
 MATOMO_PUBLIC_ROLLUP_ID=
 
@@ -257,8 +281,7 @@ KIBANA_PORT=5601
 # Set your XDebug IDE key, if needed.
 XDEBUG_IDEKEY=
 
-# Use docker.for.win.localhost if Docker host is Windows OS,
-# use docker.for.mac.localhost if Docker host is Mac OS,
+# Use host.docker.internal if Docker host is Windows OS or Mac OS,
 # check the IP address of docker0 and adjust DOCKER_HOST_IP value
 # in your env-containers-* file to use dockerhost, if Docker host is Linux OS.
-XDEBUG_REMOTE_HOST=docker.for.mac.localhost
+XDEBUG_REMOTE_HOST=host.docker.internal

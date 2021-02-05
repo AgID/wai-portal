@@ -52,6 +52,11 @@ required:
             required:
               name: "//str"
               link: "//str"
+          meta:
+            type: "//rec"
+            required:
+              description: "//str"
+              image: "//str"
         optional:
           pill: "//str"
           footer_links:
@@ -140,6 +145,11 @@ optional:
             required:
               name: "//str"
               link: "//str"
+          meta:
+            type: "//rec"
+            required:
+              description: "//str"
+              image: "//str"
         optional:
           pill: "//str"
           footer_links:
