@@ -75,3 +75,19 @@ jobs:
             { "op": "replace", "path": "/spec/template/spec/containers/0/image", "value": "$ORGANIZATION/$IMAGE_NAME:$RELEASE_TAG" }
           ]
           EOF
+      - name: Trigger portal-scheduler rolling update in public-playground environment
+        if: success()
+        run: |
+          curl -X PATCH \
+            --silent \
+            --output /dev/null \
+            --cert <(echo "$K8S_CLIENT_CERT") \
+            --key <(echo "$K8S_CLIENT_KEY") \
+            -d @- \
+            -H 'Accept: application/json' \
+            -H 'Content-Type: application/json-patch+json' \
+            https://k8s.webanalytics.italia.it/apis/apps/v1/namespaces/wai-play/deployments/portal-scheduler <<EOF
+          [
+            { "op": "replace", "path": "/spec/template/spec/containers/0/image", "value": "$ORGANIZATION/$IMAGE_NAME:$RELEASE_TAG" }
+          ]
+          EOF
