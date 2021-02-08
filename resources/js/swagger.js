@@ -1,5 +1,7 @@
 import axios from "axios";
 import SwaggerUIBundle from "swagger-ui";
+import Notification from './notification';
+import I18n from './i18n';
 import "swagger-ui/dist/swagger-ui.css";
 import spec from "../data/api.json";
 
@@ -42,6 +44,11 @@ export default (() => {
                 "select-credential"
             );
 
+            selectCredential && selectCredential.addEventListener('change', () => {
+                Notification.showNotification(I18n.t('credenziale selezionata'), I18n.t("Adesso è possibile usare la credenziale con il bottone 'Authorize'."), 'info', 'it-info-circle');
+                document.querySelector('.swagger-ui .auth-wrapper').style.setProperty('display', 'flex', 'important');
+            });
+
             spec.servers.push({
                 url: apiUrl,
                 description: "API Gateway"
@@ -63,14 +70,22 @@ export default (() => {
                 };
             };
 
+            const disableAuthorizeButtonPlugin = () => {
+                return (!isProduction && selectCredential) ? {} : {
+                    wrapComponents: {
+                        authorizeBtn: () => () => null
+                    }
+                };
+            };
+
             const ui = SwaggerUIBundle({
                 spec,
                 dom_id: "#swagger-ui",
-                plugins: [disableTryItOutPlugin]
+                plugins: [disableTryItOutPlugin, disableAuthorizeButtonPlugin]
             });
 
             if (selectCredential && !isProduction) {
-                selectCredential.addEventListener("change", async e => {
+                selectCredential.addEventListener('change', async e => {
                     if (e.target.value !== "false") {
                         const credential = await getCredentialInfo(
                             selectCredential.value
