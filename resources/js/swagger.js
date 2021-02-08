@@ -43,7 +43,7 @@ export default (() => {
             );
 
             spec.servers.push({
-                url: apiUrl + "/portal",
+                url: apiUrl,
                 description: "API Gateway"
             });
 
