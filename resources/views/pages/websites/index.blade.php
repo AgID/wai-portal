@@ -27,12 +27,13 @@
                 {!! __("L'attivazione può essere verificata manualmente usando l'icona 'verifica attivazione' :icon.", [
                     'icon' => '<svg class="icon icon-primary icon-sm"><use xlink:href="' . asset('svg/sprite.svg#it-plug') . '"></use></svg>'
                 ]) !!}
-                @unlessenv ('production')
+                @if ((!app()->environment('production') && config('wai.custom_public_administrations', false)))
                     <br><br>
-                    {!! __("In questo ambiente, l'attivazione può essere forzata mediante l'icona 'attivazione forzata' :icon.", [
+                    {!! __(":nb: in questo ambiente, l'attivazione può essere forzata mediante l'icona 'attivazione forzata' :icon.", [
+                        'nb' => '<strong>' . __('Nota bene') . '</strong>',
                         'icon' => '<svg class="icon icon-warning icon-sm"><use xlink:href="' . asset('svg/sprite.svg#it-plug') . '"></use></svg>'
                     ]) !!}
-                @endunless
+                @endif
             </div>
         @endcannot
     @else
