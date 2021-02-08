@@ -44,23 +44,12 @@
                 </div>
                 <div class="bootstrap-select-wrapper form-control flex-grow-1{{ $errors->has('type') ? ' is-invalid' : '' }}">
                     <label for="type">{{ ucfirst(__('tipologia')) }}</label>
-                    <select title="Scegli una tipologia" id="type" name="type" aria-required="true" required>
-                        <option
-                        value="admin"
-                        @isset($type)
-                            {{ $type === "admin" ? "selected" : "" }}
-                        @endisset
-
-                        >
-                            Amministratore
+                    <select title="{{ __('Scegli una tipologia') }}" id="type" name="type" aria-required="true" required>
+                        <option value="admin" {{ old('type', $type ?? '') === 'admin' ? 'selected' : '' }}>
+                            {{ __('Amministratore') }}
                         </option>
-                        <option
-                        value="analytics"
-                        @isset($type)
-                            {{ $type === "analytics" ? "selected" : "" }}
-                        @endisset
-                        >
-                            Analytics
+                        <option value="analytics" {{ old('type', $type ?? '') === 'analytics' ? 'selected' : '' }}>
+                            {{ __('Analytics') }}
                         </option>
                     </select>
                 </div>
@@ -71,7 +60,7 @@
                 @enderror
             </div>
             <small id="type-input-help" class="form-text text-muted">
-                {{ __('L\'amministratore può gestire tutti i siti web e tutti gli utenti') }}
+                {{ __("L'amministratore può gestire tutti i siti web e tutti gli utenti") }}
             </small>
         </div>
     </div>
@@ -84,6 +73,5 @@
         </div>
     </div>
     @endcomponent
-
 </form>
 
