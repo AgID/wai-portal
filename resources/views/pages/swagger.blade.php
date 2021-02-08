@@ -33,7 +33,7 @@
                     @component('layouts.components.link_button', [
                         'link' => $credentials,
                         'size' => 'lg',
-                        'icon' => 'it-credential'
+                        'icon' => 'it-key'
                     ])
                     {{ __('Gestione delle credenziali OAuth') }}
                     @endcomponent
