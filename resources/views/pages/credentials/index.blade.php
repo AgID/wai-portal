@@ -1,6 +1,6 @@
 @extends('layouts.page', ['graphicBackground' => true])
 
-@section('title', "Chiavi OAuth")
+@section('title', "Credenziali OAuth")
 
 @section('content')
 <div class="row">
@@ -9,7 +9,7 @@
         @if (session()->has('tenant_id') || $authUser->can(UserPermission::ACCESS_ADMIN_AREA))
         @include('partials.datatable')
         @if ($authUser->cannot(UserPermission::MANAGE_WEBSITES))
-            <p><strong>{{__('È necessario attivare almeno un sito per accedere alla gestione delle chiavi')}}</strong></p>
+            <p><strong>{{__('È necessario attivare almeno un sito per accedere alla gestione delle credenziali')}}</strong></p>
         @endif
         <div class="show-when-active mt-4 text-center text-sm-left">
             @component('layouts.components.link_button', [
