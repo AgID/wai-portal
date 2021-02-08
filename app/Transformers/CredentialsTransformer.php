@@ -38,7 +38,7 @@ class CredentialsTransformer extends TransformerAbstract
         ];
 
         $data['buttons'][] = [
-            'link' => route('api-credential.show', ['credential' => $credentials->consumer_id]),
+            'link' => route('api-credentials.show', ['credential' => $credentials->consumer_id]),
             'color' => 'outline-primary',
             'label' => __('dettagli'),
         ];
@@ -46,14 +46,14 @@ class CredentialsTransformer extends TransformerAbstract
         if ($authUser->can(UserPermission::MANAGE_WEBSITES)) {
             $data['icons'][] = [
                 'icon' => 'it-pencil',
-                'link' => route('api-credential.edit', ['credential' => $credentials->consumer_id]),
+                'link' => route('api-credentials.edit', ['credential' => $credentials->consumer_id]),
                 'color' => 'primary',
                 'title' => __('modifica'),
             ];
         }
 
         $data['buttons'][] = [
-                'link' => route('api-credential.delete', ['credential' => $credentials->consumer_id]),
+                'link' => route('api-credentials.delete', ['credential' => $credentials->consumer_id]),
                 'label' => __('elimina'),
                 'color' => 'danger',
                 'dataAttributes' => [

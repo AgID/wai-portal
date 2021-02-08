@@ -47,13 +47,13 @@ class CredentialsController extends Controller
                 ['data' => 'icons', 'name' => '', 'orderable' => false],
                 ['data' => 'buttons', 'name' => '', 'orderable' => false],
             ],
-            'source' => $this->getRoleAwareUrl('api-credential.data.json', [], $publicAdministration),
+            'source' => $this->getRoleAwareUrl('api-credentials.data.json', [], $publicAdministration),
             'caption' => __('elenco delle credenziali presenti su :app', ['app' => config('app.name')]),
             'columnsOrder' => [['added_at', 'asc'], ['client_name', 'asc']],
         ];
 
         $roleAwareUrls = $this->getRoleAwareUrlArray([
-            'newCredentialUrl' => 'api-credential.create',
+            'newCredentialUrl' => 'api-credentials.create',
         ], [], $publicAdministration);
 
         return view('pages.credentials.index')
@@ -76,10 +76,10 @@ class CredentialsController extends Controller
             ? $publicAdministration
             : current_public_administration();
 
-        $credentialsStoreUrl = $this->getRoleAwareUrl('api-credential.store', [], $currentPublicAdministration);
+        $credentialsStoreUrl = $this->getRoleAwareUrl('api-credentials.store', [], $currentPublicAdministration);
 
         $websitesPermissionsDatatableSource = $this->getRoleAwareUrl(
-            'api-credential.websites.permissions.make',
+            'api-credentials.websites.permissions.make',
             ['credential' => null],
             $currentPublicAdministration
         );
@@ -118,13 +118,13 @@ class CredentialsController extends Controller
                 : [];
 
             $roleAwareUrls = $this->getRoleAwareUrlArray([
-                'credentialEditUrl' => 'api-credential.edit',
+                'credentialEditUrl' => 'api-credentials.edit',
             ], [
                 'credential' => $credential,
             ], $currentPublicAdministration);
 
             $websitesPermissionsDatatableSource = $this->getRoleAwareUrl(
-                'api-credential.websites.permissions',
+                'api-credentials.websites.permissions',
                 ['credential' => $credential, 'oldCredentialPermissions' => $sitesIdArray],
                 $currentPublicAdministration
             );
@@ -189,7 +189,7 @@ class CredentialsController extends Controller
             ? $publicAdministration
             : current_public_administration();
 
-        $updateUrl = $this->getRoleAwareUrl('api-credential.update', [
+        $updateUrl = $this->getRoleAwareUrl('api-credentials.update', [
             'credential' => $credential,
         ], $currentPublicAdministration);
 
@@ -200,7 +200,7 @@ class CredentialsController extends Controller
             : [];
 
         $websitesPermissionsDatatableSource = $this->getRoleAwareUrl(
-            'api-credential.websites.permissions.make',
+            'api-credentials.websites.permissions.make',
             [
                 'credential' => $credential,
                 'oldCredentialPermissions' => $sitesIdArray,
@@ -252,7 +252,7 @@ class CredentialsController extends Controller
             ]
         );
 
-        return redirect()->route('api-credential.index')->withModal([
+        return redirect()->route('api-credentials.index')->withModal([
             'title' => __('modifica credenziale'),
             'icon' => 'it-check-circle',
             'message' => __('La modifica della credenziale :credential è andata a buon fine.', [
@@ -337,7 +337,7 @@ class CredentialsController extends Controller
             'consumer_id' => $clientJSON['consumer']['id'],
         ]);
 
-        return redirect()->route('api-credential.index')->withModal([
+        return redirect()->route('api-credentials.index')->withModal([
             'title' => __('La credenziale è stata inserita!'),
             'icon' => 'it-check-circle',
             'message' => __('Adesso puoi utilizzare la tua nuova credenziale e usare le API con il flusso "Client credentials" OAuth2.'),
