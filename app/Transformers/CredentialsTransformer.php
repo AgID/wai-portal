@@ -18,7 +18,7 @@ class CredentialsTransformer extends TransformerAbstract
      *
      * @return array the response
      */
-    public function transform(Credential $credentials): array
+    public function transform(Credential $credential): array
     {
         $authUser = auth()->user();
 
@@ -26,19 +26,19 @@ class CredentialsTransformer extends TransformerAbstract
             'client_name' => [
                 'display' => implode('', [
                     '<span>',
-                    '<strong>' . e($credentials->client_name) . '</strong>',
+                    '<strong>' . e($credential->client_name) . '</strong>',
                     '</span>',
                 ]),
-                'raw' => e($credentials->client_name),
+                'raw' => e($credential->client_name),
             ],
-            'consumer_id' => $credentials->consumer_id,
-            'added_at' => $credentials->created_at->format('d/m/Y'),
+            'consumer_id' => $credential->consumer_id,
+            'added_at' => $credential->created_at->format('d/m/Y'),
             'icons' => [],
             'buttons' => [],
         ];
 
         $data['buttons'][] = [
-            'link' => route('api-credentials.show', ['credential' => $credentials->consumer_id]),
+            'link' => route('api-credentials.show', ['credential' => $credential->consumer_id]),
             'color' => 'outline-primary',
             'label' => __('dettagli'),
         ];
@@ -46,18 +46,18 @@ class CredentialsTransformer extends TransformerAbstract
         if ($authUser->can(UserPermission::MANAGE_WEBSITES)) {
             $data['icons'][] = [
                 'icon' => 'it-pencil',
-                'link' => route('api-credentials.edit', ['credential' => $credentials->consumer_id]),
+                'link' => route('api-credentials.edit', ['credential' => $credential->consumer_id]),
                 'color' => 'primary',
                 'title' => __('modifica'),
             ];
         }
 
         $data['buttons'][] = [
-                'link' => route('api-credentials.delete', ['credential' => $credentials->consumer_id]),
+                'link' => route('api-credentials.delete', ['credential' => $credential->consumer_id]),
                 'label' => __('elimina'),
                 'color' => 'danger',
                 'dataAttributes' => [
-                    'credentialName' => e($credentials->client_name),
+                    'credentialName' => e($credential->client_name),
                     'type' => 'credentialDelete',
                     'ajax' => true,
                 ],
