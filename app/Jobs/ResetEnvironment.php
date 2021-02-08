@@ -43,6 +43,9 @@ class ResetEnvironment implements ShouldQueue
             'command' => 'config:cache',
         ],
         [
+            'command' => 'cache:clear',
+        ],
+        [
             'command' => 'clear-compiled',
         ],
         [
