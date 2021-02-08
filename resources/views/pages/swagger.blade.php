@@ -35,7 +35,7 @@
                         'size' => 'lg',
                         'icon' => 'it-key'
                     ])
-                    {{ __('Gestione delle credenziali OAuth') }}
+                    {{ __('Gestione delle credenziali API') }}
                     @endcomponent
                 </div>
             </div>
