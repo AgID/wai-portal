@@ -278,7 +278,7 @@ class CredentialsController extends Controller
         } catch (InvalidCredentialException $exception) {
             report($exception);
             $code = $exception->getCode();
-            $message = 'Invalid Credential';
+            $message = 'Invalid credential';
             $httpStatusCode = 400;
         }
 
