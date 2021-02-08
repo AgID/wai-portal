@@ -9,7 +9,7 @@ const getCredentialInfo = async consumerId => {
     try {
         response = await axios({
             method: "GET",
-            url: `/api-credential/${consumerId}/show/json`,
+            url: `/api-credentials/${consumerId}/show/json`,
             headers: {
                 accept: "*/*",
                 "content-type": "application/json"
