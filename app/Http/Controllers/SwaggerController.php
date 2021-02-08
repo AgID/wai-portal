@@ -21,7 +21,7 @@ class SwaggerController extends Controller
         }
 
         $roleAwareUrls = $this->getRoleAwareUrlArray([
-            'credentials' => 'api-credential.index',
+            'credentials' => 'api-credentials.index',
         ], [], $publicAdministration);
 
         $credentials = Credential::all();
