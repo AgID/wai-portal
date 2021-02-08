@@ -256,7 +256,7 @@ Breadcrumbs::for('websites.create.primary.custom', function ($trail) {
 // Web Analytics Italia > Api Credentials
 Breadcrumbs::for('api-credential.index', function ($trail) {
     $trail->parent('home');
-    $trail->push(__('Chiavi OAuth'), route('api-credential.index'));
+    $trail->push(__('Credenziali OAuth'), route('api-credential.index'));
 });
 
 // Web Analytics Italia > Api Credentials > Add credential
