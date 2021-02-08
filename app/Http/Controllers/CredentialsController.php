@@ -48,7 +48,7 @@ class CredentialsController extends Controller
                 ['data' => 'buttons', 'name' => '', 'orderable' => false],
             ],
             'source' => $this->getRoleAwareUrl('api-credential.data.json', [], $publicAdministration),
-            'caption' => __('elenco delle chiavi presenti su :app', ['app' => config('app.name')]),
+            'caption' => __('elenco delle credenziali presenti su :app', ['app' => config('app.name')]),
             'columnsOrder' => [['added_at', 'asc'], ['client_name', 'asc']],
         ];
 
