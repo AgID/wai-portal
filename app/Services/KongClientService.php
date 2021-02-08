@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Exceptions\AnalyticsServiceException;
+use App\Exceptions\ApiGatewayServiceException;
 use App\Exceptions\CommandErrorException;
 use App\Exceptions\InvalidCredentialException;
 use GuzzleHttp\Client as APIClient;
@@ -155,7 +155,7 @@ class KongClientService
             $client = new APIClient();
             $res = $client->request($method, $this->serviceBaseUri . $path, $data);
         } catch (GuzzleException $exception) {
-            throw new AnalyticsServiceException($exception->getMessage());
+            throw new ApiGatewayServiceException($exception->getMessage());
         }
 
         $response = json_decode((string) $res->getBody(), true);
