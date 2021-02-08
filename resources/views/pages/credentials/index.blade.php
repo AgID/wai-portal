@@ -1,6 +1,11 @@
 @extends('layouts.page', ['graphicBackground' => true])
 
-@section('title', "Credenziali OAuth")
+@section('title', 'Credenziali API')
+@section('title-description')
+    {!! __('Le credenziali si riferiscono al :client_credentials_flow', [
+        'client_credentials_flow' => '<a class="external-link" target="_blank" href="https://oauth.net/2/grant-types/client-credentials/">' . __('flusso "Client credentials" OAuth2') . '</a>'
+    ]) !!}
+@endsection
 
 @section('content')
 <div class="row">

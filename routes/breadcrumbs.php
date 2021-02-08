@@ -49,10 +49,10 @@ Breadcrumbs::for('analytics', function ($trail) {
     $trail->push(__('Analytics'), route('analytics'));
 });
 
-// Web Analytics Italia > Swagger
+// Web Analytics Italia > API
 Breadcrumbs::for('show.swagger', function ($trail) {
     $trail->parent('home');
-    $trail->push(__('Swagger'), route('show.swagger'));
+    $trail->push(__('API'), route('show.swagger'));
 });
 
 // Web Analytics Italia > Analytics > Logs view
@@ -254,25 +254,25 @@ Breadcrumbs::for('websites.create.primary.custom', function ($trail) {
 });
 
 // Web Analytics Italia > Api Credentials
-Breadcrumbs::for('api-credential.index', function ($trail) {
+Breadcrumbs::for('api-credentials.index', function ($trail) {
     $trail->parent('home');
-    $trail->push(__('Credenziali OAuth'), route('api-credential.index'));
+    $trail->push(__('Credenziali API'), route('api-credentials.index'));
 });
 
 // Web Analytics Italia > Api Credentials > Add credential
-Breadcrumbs::for('api-credential.create', function ($trail) {
-    $trail->parent('api-credential.index');
-    $trail->push(__('Aggiungi credenziale'), route('api-credential.create'));
+Breadcrumbs::for('api-credentials.create', function ($trail) {
+    $trail->parent('api-credentials.index');
+    $trail->push(__('Aggiungi credenziale'), route('api-credentials.create'));
 });
 
 // Web Analytics Italia > Api Credentials > [credential->client_name]
-Breadcrumbs::for('api-credential.show', function ($trail, $credential) {
-    $trail->parent('api-credential.index');
-    $trail->push(implode(' ', [$credential->client_name ?? '']), route('api-credential.show', ['credential' => $credential]));
+Breadcrumbs::for('api-credentials.show', function ($trail, $credential) {
+    $trail->parent('api-credentials.index');
+    $trail->push(implode(' ', [$credential->client_name ?? '']), route('api-credentials.show', ['credential' => $credential]));
 });
 
 // Web Analytics Italia > Api Credentials > [credential->client_name] (edit)
-Breadcrumbs::for('api-credential.edit', function ($trail, $credential) {
-    $trail->parent('api-credential.index');
-    $trail->push(implode(' ', [$credential->client_name ?? '']), route('api-credential.edit', ['credential' => $credential]));
+Breadcrumbs::for('api-credentials.edit', function ($trail, $credential) {
+    $trail->parent('api-credentials.index');
+    $trail->push(implode(' ', [$credential->client_name ?? '']), route('api-credentials.edit', ['credential' => $credential]));
 });
