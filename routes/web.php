@@ -190,42 +190,42 @@ Route::middleware('spid.auth', 'auth', 'verified:verification.notice')->group(fu
         Route::get('/analytics', 'AnalyticsController@index')
         ->name('analytics');
 
-        Route::get('/swagger', 'SwaggerController@index')
+        Route::get('/api', 'SwaggerController@index')
         ->name('show.swagger');
 
-        Route::prefix('/api-credential')->group(function () {
+        Route::prefix('/api-credentials')->group(function () {
             Route::get('/', 'CredentialsController@index')
-            ->name('api-credential.index');
+            ->name('api-credentials.index');
 
             Route::get('/create', 'CredentialsController@create')
-            ->name('api-credential.create');
+            ->name('api-credentials.create');
 
             Route::post('/store', 'CredentialsController@store')
-            ->name('api-credential.store');
+            ->name('api-credentials.store');
 
             Route::get('/data', 'CredentialsController@dataJson')
-            ->name('api-credential.data.json');
+            ->name('api-credentials.data.json');
 
             Route::get('/data/permissions/', 'CredentialsController@makeCredentialsWebsitesPermissionsJson')
-            ->name('api-credential.websites.permissions.make');
+            ->name('api-credentials.websites.permissions.make');
 
             Route::get('/data/permissions/show/{credential}', 'CredentialsController@showDataCredentialsWebsitesPermissionsJson')
-            ->name('api-credential.websites.permissions');
+            ->name('api-credentials.websites.permissions');
 
             Route::get('/{credential}/show', 'CredentialsController@show')
-            ->name('api-credential.show');
+            ->name('api-credentials.show');
 
             Route::get('/{credential}/show/json', 'CredentialsController@showJson')
-            ->name('api-credential.show-json');
+            ->name('api-credentials.show-json');
 
             Route::get('/{credential}/edit', 'CredentialsController@edit')
-            ->name('api-credential.edit');
+            ->name('api-credentials.edit');
 
             Route::put('/{credential}', 'CredentialsController@update')
-            ->name('api-credential.update');
+            ->name('api-credentials.update');
 
             Route::patch('/{credential}/delete', 'CredentialsController@delete')
-            ->name('api-credential.delete');
+            ->name('api-credentials.delete');
         });
 
         Route::middleware('authorize.analytics:' . UserPermission::VIEW_LOGS)->group(function () {
