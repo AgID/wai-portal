@@ -82,7 +82,6 @@ class UserController extends Controller
         ];
 
         $userCreateUrl = $this->getRoleAwareUrl('users.create', [], $publicAdministration);
-        //$jsonRes = 'application/json' === $request->header('Content-Type');
 
         return view('pages.users.index')->with(compact('userCreateUrl'))->with($usersDatatable);
     }
