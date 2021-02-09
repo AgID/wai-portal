@@ -215,6 +215,9 @@ Route::middleware('spid.auth', 'auth', 'verified:verification.notice')->group(fu
             Route::get('/{credential}/show', 'CredentialsController@show')
             ->name('api-credentials.show');
 
+            Route::get('/{credential}/regenerate', 'CredentialsController@regenerateCredential')
+            ->name('api-credentials.regenerate');
+
             Route::get('/{credential}/show/json', 'CredentialsController@showJson')
             ->name('api-credentials.show-json');
 

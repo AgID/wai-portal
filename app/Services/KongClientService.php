@@ -67,24 +67,35 @@ class KongClientService
 
         if (null !== $client) {
             $client = json_decode($client);
-            if (null === $client && !is_array($client)) {
-                throw new InvalidCredentialException('client[0] not found');
-            }
-            $client = (array) $client[0];
 
-            return $client;
+            if (null === $client && !is_array($client)) {
+                throw new InvalidCredentialException('OAuth2 credentials not found');
+            }
+
+            return (array) $client;
         }
 
-        $client = $this->apiCall($data, 'GET', '/consumers/' . $idConsumer . '/oauth2');
-        $client = $client['data'];
+        $clients = $this->apiCall($data, 'GET', '/consumers/' . $idConsumer . '/oauth2');
+        $clients = $clients['data'];
 
-        if (null === $client && !is_array($client)) {
-            throw new InvalidCredentialException('client[0] not found');
+        if (null === $clients && !is_array($clients)) {
+            throw new InvalidCredentialException('OAuth2 credentials not found');
+        }
+
+        if(count($clients) > 1){
+            /* Se sono state create più credenziali oauth recupero le più recenti */
+            usort($clients, function ($a, $b) {
+                return $b['created_at'] <=> $a['created_at'];
+            });
+            $client = $clients[0];
+        }
+        else{
+            $client = $clients[0];
         }
 
         $this->redisCache->set('kong:client:' . $idConsumer, json_encode($client));
 
-        return $client[0];
+        return $client;
     }
 
     public function makeConsumer(string $username, string $customID): array
@@ -99,12 +110,15 @@ class KongClientService
                 'Content-Type' => 'application/json',
             ],
         ];
+
         $response = $this->apiCall($data, 'POST', '/consumers');
 
-        return $this->makeClient($response['username']);
+        $this->redisCache->set('kong:consumer:' . $response["id"], json_encode($response));
+
+        return $this->makeClient($response['username'], $response["id"]);
     }
 
-    public function makeClient(string $name): array
+    public function makeClient(string $name, string $idConsumer): array
     {
         $body = [
             'form_params' => [
@@ -116,7 +130,31 @@ class KongClientService
             ],
         ];
 
-        return $this->apiCall($body, 'POST', '/consumers/' . $name . '/oauth2');
+        $response = $this->apiCall($body, 'POST', '/consumers/' . $name . '/oauth2');
+
+        $this->redisCache->set('kong:client:' . $idConsumer, json_encode($response));
+        
+        return $response;
+    }
+
+    public function regenerateSecret(string $name, string $idConsumer, string $idClient)
+    {
+        $body = [
+            'form_params' => [
+                'name' => $name . '-oauth2',
+                'client_id' => $idClient
+            ],
+            'headers' => [
+                'Accept' => 'application/json',
+                'Content-Type' => 'application/x-www-form-urlencoded',
+            ],
+        ];
+
+        $response = $this->apiCall($body, 'PUT', '/consumers/' . $name . '/oauth2/'. $idClient);
+
+        $this->redisCache->set('kong:client:' . $idConsumer, json_encode($response));
+
+        return $response;
     }
 
     public function updateClient(string $idConsumer, array $newData): array
