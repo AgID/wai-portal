@@ -42,7 +42,7 @@ class CredentialsController extends Controller
         $credentialsDatatable = [
             'columns' => [
                 ['data' => 'client_name', 'name' => __('Nome della credenziale'), 'className' => 'text-wrap'],
-                ['data' => 'consumer_id', 'name' => __('Consumer ID')],
+                ['data' => 'type', 'name' => __('Tipo Credenziale')],
                 ['data' => 'added_at', 'name' => __('aggiunto il')],
                 ['data' => 'icons', 'name' => '', 'orderable' => false],
                 ['data' => 'buttons', 'name' => '', 'orderable' => false],
@@ -107,33 +107,23 @@ class CredentialsController extends Controller
             : current_public_administration();
 
         if ($currentPublicAdministration->id === $credential->public_administration_id) {
-            $client = $this->clientService->getClient($credential->consumer_id);
-
-            $consumer = $this->clientService->getConsumer($credential->consumer_id);
-            $customId = (array) json_decode($consumer['custom_id']);
-            $conumerType = $customId['type'];
-
-            $sitesIdArray = is_array($customId['siteId'])
-                ? $customId['siteId']
-                : [];
-
             $roleAwareUrls = $this->getRoleAwareUrlArray([
                 'credentialEditUrl' => 'api-credentials.edit',
+                'credentialRegenerate' => 'api-credentials.regenerate'
             ], [
                 'credential' => $credential,
             ], $currentPublicAdministration);
 
             $websitesPermissionsDatatableSource = $this->getRoleAwareUrl(
                 'api-credentials.websites.permissions',
-                ['credential' => $credential, 'oldCredentialPermissions' => $sitesIdArray],
+                ['credential' => $credential, 'oldCredentialPermissions' => $credential->permission],
                 $currentPublicAdministration
             );
 
             $websitesPermissionsDatatable = $this->getDatatableWebsitesPermissionsParams($websitesPermissionsDatatableSource, true);
 
             $credentialData = [
-                'client' => $client,
-                'type' => $conumerType,
+                'type' => $credential->type,
             ];
 
             return view('pages.credentials.show')
@@ -160,10 +150,12 @@ class CredentialsController extends Controller
             : current_public_administration();
 
         if ($currentPublicAdministration->id === $credential->public_administration_id) {
-            $credentialData = $this->clientService->getClient($credential->consumer_id);
-
+            
             return response()->json([
-                'credential' => $credentialData,
+                'credential' => [
+                    "client_id" => $credential->client_id,
+                    "client_secret" => ""
+                ],
             ], 200);
         }
 
@@ -193,23 +185,17 @@ class CredentialsController extends Controller
             'credential' => $credential,
         ], $currentPublicAdministration);
 
-        $consumer = $this->clientService->getConsumer($credential->consumer_id);
-        $customId = json_decode($consumer['custom_id']);
-        $sitesIdArray = is_array($customId->siteId)
-            ? $customId->siteId
-            : [];
-
         $websitesPermissionsDatatableSource = $this->getRoleAwareUrl(
             'api-credentials.websites.permissions.make',
             [
                 'credential' => $credential,
-                'oldCredentialPermissions' => $sitesIdArray,
+                'oldCredentialPermissions' => $credential->permission,
             ],
             $currentPublicAdministration
         );
 
         $credentialData = [
-            'type' => $customId->type,
+            'type' => $credential->type,
         ];
 
         $websitesPermissionsDatatable = $this->getDatatableWebsitesPermissionsParams($websitesPermissionsDatatableSource);
@@ -328,8 +314,9 @@ class CredentialsController extends Controller
         $clientJSON = $this->clientService
             ->makeConsumer(
                 $validatedData['credential_name'],
-                json_encode(['type' => $validatedData['type'], 'siteId' => $permissions])
+                json_encode(['name' => $validatedData['credential_name'], 'type' => $validatedData['type'], 'siteId' => $permissions])
             );
+        $oauthCredentials = $this->clientService->getClient($clientJSON['consumer']['id']);
 
         $client = Credential::create([
             'client_name' => $validatedData['credential_name'],
@@ -340,7 +327,36 @@ class CredentialsController extends Controller
         return redirect()->route('api-credentials.index')->withModal([
             'title' => __('La credenziale è stata inserita!'),
             'icon' => 'it-check-circle',
-            'message' => __('Adesso puoi utilizzare la tua nuova credenziale e usare le API con il flusso "Client credentials" OAuth2.'),
+            'message' => implode("\n",
+                [
+                    __('Adesso puoi utilizzare la tua nuova credenziale e usare le API con il flusso "Client credentials" OAuth2.')."\n",
+                    __('<strong>Il tuo client_id è:</strong> ').$oauthCredentials["client_id"]."\n",
+                    __('<strong>Il tuo client_secret è:</strong> ').$oauthCredentials["client_secret"]."\n",
+                    __('<h3>Attenzione!</h3>')."\n",
+                    __('Conserva il tuo <strong>client_secret</strong> in un posto sicuro.')."\n",
+                    __('In caso di smarrimento, può essere rigenerato nella pagina della credenziale.')."\n",
+                ]
+            ),      
+        ]);
+    }
+
+    public function regenerateCredential(Credential $credential)
+    {
+        $oauthCredentials = $this->clientService->regenerateSecret($credential->client_name, $credential->consumer_id, $credential->client_id);
+
+        return redirect()->route('api-credentials.show', ['credential' => $credential])->withModal([
+            'title' => __('La credenziale è stata inserita!'),
+            'icon' => 'it-check-circle',
+            'message' => implode("\n",
+                [
+                    __('Questa è la nuova credenziale utilizzabile per il flusso "Client credentials" OAuth2.')."\n",
+                    __('<strong>Il tuo client_id è:</strong> ').$oauthCredentials["client_id"]."\n",
+                    __('<strong>Il tuo client_secret è:</strong> ').$oauthCredentials["client_secret"]."\n",
+                    __('<h3>Attenzione!</h3>')."\n",
+                    __('Conserva il tuo <strong>client_secret</strong> in un posto sicuro.')."\n",
+                    __('In caso di smarrimento, può essere rigenerato nella pagina della credenziale.')."\n",
+                ]
+            ),      
         ]);
     }
 
