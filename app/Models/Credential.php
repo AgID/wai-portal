@@ -35,4 +35,31 @@ class Credential extends Model
     {
         return $this->belongsTo(PublicAdministration::class);
     }
+
+    public function getTypeAttribute(): string
+    {
+        $data = $this->customIdArray($this->consumer_id);
+        return  $data['type'];
+    }
+
+    public function getPermissionAttribute(): Array
+    {
+        $data = $this->customIdArray($this->consumer_id);
+        
+        return is_array($data['siteId'])
+            ? $data['siteId']
+            : [];
+    }
+
+    public function getClientIdAttribute(): string
+    {
+        $data =  app()->make('kong-client-service')->getClient($this->consumer_id);
+        return  $data['client_id'];
+    }
+
+    private function customIdArray(string $consumerId):? Array
+    {
+        $consumer =  app()->make('kong-client-service')->getConsumer($consumerId);    
+        return (array) json_decode($consumer['custom_id']);
+    }
 }
