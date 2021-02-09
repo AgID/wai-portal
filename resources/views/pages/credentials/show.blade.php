@@ -23,33 +23,31 @@
                         <input
                         type="text"
                         class="form-control-plaintext"
-                        id="name"
-                        value="{{ $credential->consumer_id ?? __('Non ancora disponibile') }}"
-                        readonly
-                        >
-                        <label for="name">{{ __('Consumer ID') }}</label>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group col-md-6">
-                        <input
-                        type="text"
-                        class="form-control-plaintext"
                         id="id"
-                        value="{{ $client['client_id'] ?? __('Non ancora disponibile') }}"
+                        value="{{ $credential->client_id ?? __('Non ancora disponibile') }}"
                         readonly
                         >
                         <label for="id">{{ __('client_id') }}</label>
                     </div>
-                    <div class="form-group col-md-6">
-                        <input
-                        type="text"
-                        class="form-control-plaintext"
-                        id="secret"
-                        value="{{ $client['client_secret'] ?? __('Non ancora disponibile') }}"
-                        readonly
-                        >
-                        <label for="secret">{{ __('client_secret') }}</label>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <p>
+                            {{__('Il ')}}
+                            <strong>{{__('client_secret ')}} </strong>
+                            {{__('necessario al flusso')}} 
+                            <strong>{{__('OAuth2 ')}}</strong> 
+                            {{__('ti è stato fornito durante la creazione della credenziale.')}}
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <p>{{__('Se necessario poi rigenerare il tuo client_id e client_secret')}}</p>
+                        @component('layouts.components.link_button', [
+                            'link' => $credentialRegenerate,
+                            'size' => 'lg',
+                        ])
+                        {{ ucfirst(__('Rigenera la credenziale')) }}
+                        @endcomponent
                     </div>
                 </div>
             </div>
@@ -88,7 +86,9 @@
                         </div>
                     </div>
                 </div>
-                @include('partials.datatable')
+                @if ($type !== "admin")  
+                    @include('partials.datatable')
+                @endif
             </div>
             <div class="mt-4 text-center text-sm-left">
                 @component('layouts.components.link_button', [

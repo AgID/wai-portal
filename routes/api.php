@@ -35,7 +35,7 @@ Route::middleware('api.authentication')->group(function () {
     });
     Route::prefix('/sites')->group(function () {
         Route::post('/', 'WebsiteController@storeApi')
-            ->name('api.sites.update');
+            ->name('api.sites.add');
         Route::get('/', 'WebsiteController@dataApi')
             ->name('api.sites.show');
         Route::get('/{website}', 'WebsiteController@showApi')
