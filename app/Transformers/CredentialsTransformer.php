@@ -31,7 +31,7 @@ class CredentialsTransformer extends TransformerAbstract
                 ]),
                 'raw' => e($credential->client_name),
             ],
-            'consumer_id' => $credential->consumer_id,
+            'type' => $credential->type,
             'added_at' => $credential->created_at->format('d/m/Y'),
             'icons' => [],
             'buttons' => [],
