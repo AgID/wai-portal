@@ -35,8 +35,11 @@ export default (() => {
         adminSelect &&
             adminSelect.addEventListener("change", event => {
                 permissionsToggles.map(toggle => {
-                    toggle.checked = event.target.value === "admin";
-                    toggle.disabled = event.target.value === "admin";
+                    const isAdminCredentials = event.target.value === "admin";
+                    toggle.disabled = isAdminCredentials;
+                    isAdminCredentials
+                        ? toggle.setAttribute("checked", true)
+                        : toggle.removeAttribute("checked");
                 });
             });
     };
