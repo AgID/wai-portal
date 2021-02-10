@@ -20,8 +20,8 @@ use App\Models\PublicAdministration;
 use App\Models\User;
 use App\Traits\HasRoleAwareUrls;
 use App\Traits\SendsResponse;
-use App\Transformers\UserTransformer;
 use App\Transformers\UserApiTransformer;
+use App\Transformers\UserTransformer;
 use App\Transformers\WebsitesPermissionsTransformer;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -140,7 +140,7 @@ class UserController extends Controller
             ], 400);
         }
 
-        $user = (new UserApiTransformer)->transform($data['user']);
+        $user = (new UserApiTransformer())->transform($data['user']);
 
         return response()
             ->json($user, 201)
@@ -189,7 +189,7 @@ class UserController extends Controller
 
     public function showJson(Request $request): JsonResponse
     {
-        $user = (new UserApiTransformer)->transform($this->getUserFromFiscalNumber($request));
+        $user = (new UserApiTransformer())->transform($this->getUserFromFiscalNumber($request));
 
         if (!$user) {
             return response()->json([
@@ -198,9 +198,7 @@ class UserController extends Controller
             ], 404);
         }
 
-        return response()->json([
-            'User' => $user,
-        ], 200);
+        return response()->json($user, 200);
     }
 
     /**
@@ -275,11 +273,9 @@ class UserController extends Controller
 
         $updateUser = $this->updateMethod($reqUpdate, $publicAdministration, $user);
 
-        $data = (new UserApiTransformer)->transform($updateUser);
-        
-        return response()->json([
-            'User' => $data,
-        ], 200);
+        $data = (new UserApiTransformer())->transform($updateUser);
+
+        return response()->json($data, 200);
     }
 
     /**
@@ -463,7 +459,7 @@ class UserController extends Controller
     {
         $publicAdministration = get_public_administration_from_token();
         $users = $publicAdministration->users->map(function ($user) {
-            return (new UserApiTransformer)->transform($user);
+            return (new UserApiTransformer())->transform($user);
         });
 
         return response()->json($users, 200);
