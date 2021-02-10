@@ -33,9 +33,9 @@ class CommandErrorException extends Exception
     /**
      * Render the exception into an HTTP response.
      *
-     * @return \Illuminate\Http\RedirectResponse the response
+     * @return RedirectResponse|JsonResponse the response
      */
-    public function render(): RedirectResponse
+    public function render()
     {
         return $this->errorResponse('Anaytics command error', ExceptionType::ANALYTICS_COMMAND, 500);
     }
