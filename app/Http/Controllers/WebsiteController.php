@@ -26,6 +26,7 @@ use App\Traits\HasRoleAwareUrls;
 use App\Traits\ManagePublicAdministrationRegistration;
 use App\Traits\SendsResponse;
 use App\Transformers\UsersPermissionsTransformer;
+use App\Transformers\WebsiteApiTransformer;
 use App\Transformers\WebsiteTransformer;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Http\JsonResponse;
@@ -185,9 +186,11 @@ class WebsiteController extends Controller
         $response = $this->storeMethod($request, $publicAdministration);
 
         if (is_array($response) && array_key_exists('website', $response)) {
-            $website = $response['website'];
+            $website = (new WebsiteApiTransformer)->transform($response['website']);
 
-            return response()->json(['uri' => $this->getUriWebsiteAPI($website)], 200);
+            return response()
+                ->json($website, 201)
+                ->header('Location', $this->getUriWebsiteAPI($response['website']));
         }
 
         return response()->json([
@@ -239,9 +242,9 @@ class WebsiteController extends Controller
 
     public function showApi(Website $website)
     {
-        return response()->json([
-            'Website' => $website,
-        ], 200);
+        $data = (new WebsiteApiTransformer)->transform($website);
+
+        return response()->json($data, 200);
     }
 
     /**
@@ -298,9 +301,9 @@ class WebsiteController extends Controller
 
         $response = $this->updateMethod($request, $publicAdministration, $website);
 
-        return response()->json([
-            'website update' => $response,
-        ], 200);
+        $data = (new WebsiteApiTransformer)->transform($response);
+
+        return response()->json($data, 200);
     }
 
     /**
@@ -657,7 +660,9 @@ class WebsiteController extends Controller
     public function dataApi(Request $request): JsonResponse
     {
         $publicAdministration = get_public_administration_from_token();
-        $websites = $publicAdministration->websites()->get()->toArray();
+        $websites = $publicAdministration->websites()->get()->map(function ($website) {
+            return (new WebsiteApiTransformer)->transform($website);
+        });
 
         return response()->json($websites, 200);
     }
