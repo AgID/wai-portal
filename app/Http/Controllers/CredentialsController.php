@@ -109,7 +109,7 @@ class CredentialsController extends Controller
         if ($currentPublicAdministration->id === $credential->public_administration_id) {
             $roleAwareUrls = $this->getRoleAwareUrlArray([
                 'credentialEditUrl' => 'api-credentials.edit',
-                'credentialRegenerate' => 'api-credentials.regenerate'
+                'credentialRegenerate' => 'api-credentials.regenerate',
             ], [
                 'credential' => $credential,
             ], $currentPublicAdministration);
@@ -150,11 +150,10 @@ class CredentialsController extends Controller
             : current_public_administration();
 
         if ($currentPublicAdministration->id === $credential->public_administration_id) {
-            
             return response()->json([
                 'credential' => [
-                    "client_id" => $credential->client_id,
-                    "client_secret" => ""
+                    'client_id' => $credential->client_id,
+                    'client_secret' => '',
                 ],
             ], 200);
         }
@@ -329,14 +328,14 @@ class CredentialsController extends Controller
             'icon' => 'it-check-circle',
             'message' => implode("\n",
                 [
-                    __('Adesso puoi utilizzare la tua nuova credenziale e usare le API con il flusso "Client credentials" OAuth2.')."\n",
-                    __('<strong>Il tuo client_id è:</strong> ').$oauthCredentials["client_id"]."\n",
-                    __('<strong>Il tuo client_secret è:</strong> ').$oauthCredentials["client_secret"]."\n",
-                    __('<h3>Attenzione!</h3>')."\n",
-                    __('Conserva il tuo <strong>client_secret</strong> in un posto sicuro.')."\n",
-                    __('In caso di smarrimento, può essere rigenerato nella pagina della credenziale.')."\n",
+                    __('Adesso puoi utilizzare la tua nuova credenziale e usare le API con il flusso "Client credentials" OAuth2.') . "\n",
+                    __('<strong>Il tuo client_id è:</strong> ') . $oauthCredentials['client_id'] . "\n",
+                    __('<strong>Il tuo client_secret è:</strong> ') . $oauthCredentials['client_secret'] . "\n",
+                    __('<h3>Attenzione!</h3>') . "\n",
+                    __('Conserva il tuo <strong>client_secret</strong> in un posto sicuro.') . "\n",
+                    __('In caso di smarrimento, può essere rigenerato nella pagina della credenziale.') . "\n",
                 ]
-            ),      
+            ),
         ]);
     }
 
@@ -349,14 +348,14 @@ class CredentialsController extends Controller
             'icon' => 'it-check-circle',
             'message' => implode("\n",
                 [
-                    __('Questa è la nuova credenziale utilizzabile per il flusso "Client credentials" OAuth2.')."\n",
-                    __('<strong>Il tuo client_id è:</strong> ').$oauthCredentials["client_id"]."\n",
-                    __('<strong>Il tuo client_secret è:</strong> ').$oauthCredentials["client_secret"]."\n",
-                    __('<h3>Attenzione!</h3>')."\n",
-                    __('Conserva il tuo <strong>client_secret</strong> in un posto sicuro.')."\n",
-                    __('In caso di smarrimento, può essere rigenerato nella pagina della credenziale.')."\n",
+                    __('Questa è la nuova credenziale utilizzabile per il flusso "Client credentials" OAuth2.') . "\n",
+                    __('<strong>Il tuo client_id è:</strong> ') . $oauthCredentials['client_id'] . "\n",
+                    __('<strong>Il tuo client_secret è:</strong> ') . $oauthCredentials['client_secret'] . "\n",
+                    __('<h3>Attenzione!</h3>') . "\n",
+                    __('Conserva il tuo <strong>client_secret</strong> in un posto sicuro.') . "\n",
+                    __('In caso di smarrimento, può essere rigenerato nella pagina della credenziale.') . "\n",
                 ]
-            ),      
+            ),
         ]);
     }
 

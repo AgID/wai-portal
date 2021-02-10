@@ -186,7 +186,7 @@ class WebsiteController extends Controller
         $response = $this->storeMethod($request, $publicAdministration);
 
         if (is_array($response) && array_key_exists('website', $response)) {
-            $website = (new WebsiteApiTransformer)->transform($response['website']);
+            $website = (new WebsiteApiTransformer())->transform($response['website']);
 
             return response()
                 ->json($website, 201)
@@ -242,7 +242,7 @@ class WebsiteController extends Controller
 
     public function showApi(Website $website)
     {
-        $data = (new WebsiteApiTransformer)->transform($website);
+        $data = (new WebsiteApiTransformer())->transform($website);
 
         return response()->json($data, 200);
     }
@@ -295,13 +295,12 @@ class WebsiteController extends Controller
         ]);
     }
 
-    public function updateApi(UpdateWebsiteRequest $request, Website $website): JsonResponse
+    public function updateApi(UpdateWebsiteRequest $request, Website $website)
     {
         $publicAdministration = get_public_administration_from_token();
 
         $response = $this->updateMethod($request, $publicAdministration, $website);
-
-        $data = (new WebsiteApiTransformer)->transform($response);
+        $data = (new WebsiteApiTransformer())->transform($response);
 
         return response()->json($data, 200);
     }
@@ -661,7 +660,7 @@ class WebsiteController extends Controller
     {
         $publicAdministration = get_public_administration_from_token();
         $websites = $publicAdministration->websites()->get()->map(function ($website) {
-            return (new WebsiteApiTransformer)->transform($website);
+            return (new WebsiteApiTransformer())->transform($website);
         });
 
         return response()->json($websites, 200);
