@@ -21,6 +21,7 @@ use App\Models\User;
 use App\Traits\HasRoleAwareUrls;
 use App\Traits\SendsResponse;
 use App\Transformers\UserTransformer;
+use App\Transformers\UserApiTransformer;
 use App\Transformers\WebsitesPermissionsTransformer;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -127,9 +128,10 @@ class UserController extends Controller
         ]);
     }
 
-    public function storeJson(StoreUserRequest $request, PublicAdministration $publicAdministration): JsonResponse
+    public function storeJson(StoreUserRequest $request, PublicAdministration $publicAdministration)
     {
         $data = $this->storeMethod($request, $publicAdministration, true);
+
         if (true === $data['error']) {
             return response()->json([
                 'title' => $data['title'],
@@ -138,9 +140,11 @@ class UserController extends Controller
             ], 400);
         }
 
-        return response()->json([
-            'uri' => $this->getUriUserAPI($data['fiscalNumber']),
-        ], 200);
+        $user = (new UserApiTransformer)->transform($data['user']);
+
+        return response()
+            ->json($user, 201)
+            ->header('Location', $this->getUriUserAPI($data['user']->fiscal_number));
     }
 
     /**
@@ -187,7 +191,7 @@ class UserController extends Controller
 
     public function showJson(Request $request): JsonResponse
     {
-        $user = $this->getUserFromFiscalNumber($request);
+        $user = (new UserApiTransformer)->transform($this->getUserFromFiscalNumber($request));
 
         if (!$user) {
             return response()->json([
@@ -273,8 +277,10 @@ class UserController extends Controller
 
         $updateUser = $this->updateMethod($reqUpdate, $publicAdministration, $user);
 
+        $data = (new UserApiTransformer)->transform($updateUser);
+        
         return response()->json([
-            'User' => $updateUser,
+            'User' => $data,
         ], 200);
     }
 
@@ -459,7 +465,9 @@ class UserController extends Controller
     public function dataApiJson(): JsonResponse
     {
         $publicAdministration = get_public_administration_from_token();
-        $users = $publicAdministration->users;
+        $users = $publicAdministration->users->map(function ($user) {
+            return (new UserApiTransformer)->transform($user);
+        });
 
         return response()->json($users, 200);
     }
@@ -638,7 +646,7 @@ class UserController extends Controller
             'title' => 'Invito inoltrato',
             'message' => $user_message,
             'redirectUri' => $redirectUrl,
-            'fiscalNumber' => $user->fiscal_number,
+            'user' => $user,
         ];
     }
 
