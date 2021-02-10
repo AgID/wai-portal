@@ -39,13 +39,14 @@ class Credential extends Model
     public function getTypeAttribute(): string
     {
         $data = $this->customIdArray($this->consumer_id);
-        return  $data['type'];
+
+        return $data['type'];
     }
 
-    public function getPermissionAttribute(): Array
+    public function getPermissionAttribute(): array
     {
         $data = $this->customIdArray($this->consumer_id);
-        
+
         return is_array($data['siteId'])
             ? $data['siteId']
             : [];
@@ -53,13 +54,15 @@ class Credential extends Model
 
     public function getClientIdAttribute(): string
     {
-        $data =  app()->make('kong-client-service')->getClient($this->consumer_id);
-        return  $data['client_id'];
+        $data = app()->make('kong-client-service')->getClient($this->consumer_id);
+
+        return $data['client_id'];
     }
 
-    private function customIdArray(string $consumerId):? Array
+    private function customIdArray(string $consumerId): ?array
     {
-        $consumer =  app()->make('kong-client-service')->getConsumer($consumerId);    
+        $consumer = app()->make('kong-client-service')->getConsumer($consumerId);
+
         return (array) json_decode($consumer['custom_id']);
     }
 }
