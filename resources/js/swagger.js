@@ -3,7 +3,6 @@ import SwaggerUIBundle from "swagger-ui";
 import Notification from './notification';
 import I18n from './i18n';
 import "swagger-ui/dist/swagger-ui.css";
-import spec from "../data/api.json";
 
 const getCredentialInfo = async consumerId => {
     let response = {};
@@ -31,10 +30,6 @@ export default (() => {
         const swaggerDiv = document.getElementById("swagger-ui");
 
         if (swaggerDiv) {
-            const apiUrl = swaggerDiv.hasAttribute("data-url")
-                ? swaggerDiv.getAttribute("data-url")
-                : "localhost";
-
             const production = swaggerDiv.hasAttribute("data-environment")
                 ? swaggerDiv.getAttribute("data-environment")
                 : "false";
@@ -48,14 +43,6 @@ export default (() => {
                 Notification.showNotification(I18n.t('credenziale selezionata'), I18n.t("Adesso è possibile usare la credenziale con il bottone 'Authorize'."), 'info', 'it-info-circle');
                 document.querySelector('.swagger-ui .auth-wrapper').style.setProperty('display', 'flex', 'important');
             });
-
-            spec.servers.push({
-                url: apiUrl,
-                description: "API Gateway"
-            });
-
-            spec.components.securitySchemes.oAuth.flows.clientCredentials.tokenUrl =
-                apiUrl + "/portal/oauth2/token";
 
             const disableTryItOutPlugin = () => {
                 return {
@@ -79,7 +66,7 @@ export default (() => {
             };
 
             const ui = SwaggerUIBundle({
-                spec,
+                url: "/api/configuration",
                 dom_id: "#swagger-ui",
                 plugins: [disableTryItOutPlugin, disableAuthorizeButtonPlugin]
             });
