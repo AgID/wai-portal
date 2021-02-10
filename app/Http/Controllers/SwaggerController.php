@@ -6,7 +6,6 @@ use App\Models\Credential;
 use App\Models\PublicAdministration;
 use App\Traits\HasRoleAwareUrls;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class SwaggerController extends Controller
 {
@@ -42,7 +41,7 @@ class SwaggerController extends Controller
 
         if (!is_file($path) || !is_readable($path)) {
             return response()
-                ->json(["error" => "configuration file not readable"], 400);
+                ->json(['error' => 'configuration file not readable'], 400);
         }
 
         $data = json_decode(file_get_contents($path));
@@ -50,9 +49,9 @@ class SwaggerController extends Controller
 
         $data->servers = [
             [
-                "url" => $apiUrl,
-                "description" => "API Gateway"
-            ]
+                'url' => $apiUrl,
+                'description' => 'API Gateway',
+            ],
         ];
 
         $data->components
@@ -60,7 +59,7 @@ class SwaggerController extends Controller
             ->oAuth
             ->flows
             ->clientCredentials
-            ->tokenUrl = $apiUrl . "/portal/oauth2/token";
+            ->tokenUrl = $apiUrl . '/portal/oauth2/token';
 
         return response()
             ->json($data, 200);

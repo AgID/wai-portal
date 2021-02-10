@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
 
 /**
@@ -43,7 +42,7 @@ class StoreCredentialsRequest extends FormRequest
     public function withValidator(Validator $validator): void
     {
         $validator->after(function (Validator $validator) {
-            if (!is_array($this->input('permissions')) && $this->input('type') !== "admin") {
+            if (!is_array($this->input('permissions')) && 'admin' !== $this->input('type')) {
                 $validator->errors()->add('permissions', __('È necessario selezionare tutti i permessi correttamente'));
             }
         });
