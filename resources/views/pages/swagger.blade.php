@@ -41,7 +41,7 @@
         </div>
 
         @if (!$production)
-            <div id="swagger-ui" data-url="{{ $apiUrl }}" data-environment={{ $production }}/>
+            <div id="swagger-ui" data-environment={{ $production }}/>
         @endif
 
         @endcomponent
