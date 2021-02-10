@@ -90,7 +90,7 @@ trait BuildDatasetForSingleDigitalGatewayAPI
 
                 if ($newSegmentsAdded && $cronArchivingEnabled) {
                     report(new SDGServiceException("Cron archiving is enabled and new segments has been added: reports for '{$source->sourceUrl}' will be available after the next archiving job."));
-                    array_push($data->sources, $source);
+
                     continue;
                 }
 

@@ -93,10 +93,20 @@ class SingleDigitalGatewayTest extends TestCase
      */
     public function testDatasetBuild(): void
     {
+        config(['analytics-service.cron_archiving_enabled' => false]);
+
         $this->actingAs($this->user)
             ->json('GET', route('admin.sdg.dataset.show'))
             ->assertJson([
                 'nbEntries' => count($this->websites),
+            ]);
+
+        config(['analytics-service.cron_archiving_enabled' => true]);
+
+        $this->actingAs($this->user)
+            ->json('GET', route('admin.sdg.dataset.show'))
+            ->assertJson([
+                'nbEntries' => 0,
             ]);
     }
 }
