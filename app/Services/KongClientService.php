@@ -82,14 +82,13 @@ class KongClientService
             throw new InvalidCredentialException('OAuth2 credentials not found');
         }
 
-        if(count($clients) > 1){
+        if (count($clients) > 1) {
             /* Se sono state create più credenziali oauth recupero le più recenti */
             usort($clients, function ($a, $b) {
                 return $b['created_at'] <=> $a['created_at'];
             });
             $client = $clients[0];
-        }
-        else{
+        } else {
             $client = $clients[0];
         }
 
@@ -113,9 +112,9 @@ class KongClientService
 
         $response = $this->apiCall($data, 'POST', '/consumers');
 
-        $this->redisCache->set('kong:consumer:' . $response["id"], json_encode($response));
+        $this->redisCache->set('kong:consumer:' . $response['id'], json_encode($response));
 
-        return $this->makeClient($response['username'], $response["id"]);
+        return $this->makeClient($response['username'], $response['id']);
     }
 
     public function makeClient(string $name, string $idConsumer): array
@@ -133,7 +132,7 @@ class KongClientService
         $response = $this->apiCall($body, 'POST', '/consumers/' . $name . '/oauth2');
 
         $this->redisCache->set('kong:client:' . $idConsumer, json_encode($response));
-        
+
         return $response;
     }
 
@@ -142,7 +141,7 @@ class KongClientService
         $body = [
             'form_params' => [
                 'name' => $name . '-oauth2',
-                'client_id' => $idClient
+                'client_id' => $idClient,
             ],
             'headers' => [
                 'Accept' => 'application/json',
@@ -150,7 +149,7 @@ class KongClientService
             ],
         ];
 
-        $response = $this->apiCall($body, 'PUT', '/consumers/' . $name . '/oauth2/'. $idClient);
+        $response = $this->apiCall($body, 'PUT', '/consumers/' . $name . '/oauth2/' . $idClient);
 
         $this->redisCache->set('kong:client:' . $idConsumer, json_encode($response));
 
