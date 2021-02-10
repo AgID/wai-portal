@@ -6,6 +6,7 @@ use App\Models\Credential;
 use App\Models\PublicAdministration;
 use App\Traits\HasRoleAwareUrls;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class SwaggerController extends Controller
 {
@@ -13,7 +14,6 @@ class SwaggerController extends Controller
 
     public function index(Request $request, PublicAdministration $publicAdministration)
     {
-        $kongApiUrl = config('kong-service.api_url');
         $publicAdministration = ($publicAdministration->id ?? false) ? $publicAdministration : current_public_administration();
 
         if (null === $publicAdministration) {
@@ -28,12 +28,41 @@ class SwaggerController extends Controller
         $hasCredentials = 0 !== count($credentials);
 
         $config = [
-            'apiUrl' => $kongApiUrl,
             'production' => app()->environment('production'),
             'credentialsList' => $credentials,
             'hascredentials' => $hasCredentials,
         ];
 
         return view('pages.swagger')->with($roleAwareUrls)->with($config);
+    }
+
+    public function apiConfiguration()
+    {
+        $path = resource_path('data/api.json');
+
+        if (!is_file($path) || !is_readable($path)) {
+            return response()
+                ->json(["error" => "configuration file not readable"], 400);
+        }
+
+        $data = json_decode(file_get_contents($path));
+        $apiUrl = config('kong-service.api_url');
+
+        $data->servers = [
+            [
+                "url" => $apiUrl,
+                "description" => "API Gateway"
+            ]
+        ];
+
+        $data->components
+            ->securitySchemes
+            ->oAuth
+            ->flows
+            ->clientCredentials
+            ->tokenUrl = $apiUrl . "/portal/oauth2/token";
+
+        return response()
+            ->json($data, 200);
     }
 }

@@ -30,7 +30,16 @@
                 },
                 "responses": {
                     "201": {
-                        "description": "Uri a cui recuperare l'utente",
+                        "description": "Dati utente creato e uri a cui recuperare l'utente",
+                        "headers": {
+                            "Location": {
+                                "schema": {
+                                    "type": "string",
+                                    "format": "uri"
+                                },
+                                "description": "Uri a cui recuperare l'utente"
+                            }
+                        },
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -177,7 +186,16 @@
                 },
                 "responses": {
                     "201": {
-                        "description": "Uri a cui recuperare il sito",
+                        "description": "Dati sito e uri a cui recuperare il sito",
+                        "headers": {
+                            "Location": {
+                                "schema": {
+                                    "type": "string",
+                                    "format": "uri"
+                                },
+                                "description": "Uri a cui recuperare il sito"
+                            }
+                        },
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -370,18 +388,18 @@
                     "type": "string",
                     "format": "uri"
                 },
-                "permissions":{
+                "permissions": {
                     "$ref": "#/components/schemas/WebsiteInfoPermisionObject"
                 },
                 "type": {
                     "$ref": "#/components/schemas/SiteType"
                 },
-                
+
                 "example": {
                     "name": "WebAnalytics Italia",
                     "url": "https://webanalytics.italia.it",
                     "type": "site_type_1",
-                    "permissions":{
+                    "permissions": {
                         "userId": ["MANAGE_ANALYTICS"]
                     }
                 }
@@ -400,21 +418,36 @@
             },
             "AddSiteResponse": {
                 "type": "object",
-                "required": ["uri"],
+                "required": ["id", "name", "url", "analytics_id", "slug"],
                 "properties": {
-                    "uri": {
-                        "type": "string",
-                        "format": "uri"
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "url": {
+                        "type": "string"
+                    },
+                    "analytics_id": {
+                        "type": "integer"
+                    },
+                    "slug": {
+                        "type": "string"
                     }
                 },
                 "example": {
-                    "uri": "https://webanalytics.italia.it/api/sites/25"
+                    "id": 1,
+                    "name": "Agenzia per L'Italia Digitale",
+                    "url": "www.agid.gov.it",
+                    "analytics_id": 2,
+                    "slug": "wwwagidgovit"
                 }
             },
             "SiteInfoArray": {
                 "type": "array",
                 "items": {
-                    "$ref": "#/components/schemas/SiteInfo"
+                    "$ref": "#/components/schemas/AddSiteResponse"
                 }
             },
             "SingleSite": {
@@ -424,36 +457,16 @@
                         "type": "integer"
                     },
                     "name": {
-                        "type": "string",
-                        "pattern": "^(?!\\s*$).+"
+                        "type": "string"
                     },
                     "url": {
-                        "type": "string",
-                        "pattern": "^(?!\\s*$).+"
-                    },
-                    "type": {
-                        "type": "integer"
-                    },
-                    "public_administration_id": {
-                        "type": "integer"
+                        "type": "string"
                     },
                     "analytics_id": {
                         "type": "integer"
                     },
                     "slug": {
-                        "type": "string",
-                        "pattern": "^(?!\\s*$).+"
-                    },
-                    "status": {
-                        "type": "integer"
-                    },
-                    "created_at": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "updated_at": {
-                        "type": "string",
-                        "format": "date-time"
+                        "type": "string"
                     }
                 }
             },
@@ -538,12 +551,27 @@
                 "type": "object",
                 "required": ["uri"],
                 "properties": {
-                    "uri": {
-                        "type": "string",
-                        "format": "uri"
+                    "id": {
+                        "type": "integer"
+                    },
+                    "firstName": {
+                        "type": "string"
+                    },
+                    "lastName": {
+                        "type": "string"
+                    },
+                    "codice_fiscale": {
+                        "$ref": "#/components/schemas/FiscalNumber"
+                    },
+                    "email": {
+                        "type": "string"
                     },
                     "example": {
-                        "uri": "https://webanalytics.italia.it/portal/users/ZRSGLC89D05H501J"
+                        "id": 1,
+                        "firstName": "Mario",
+                        "lastName": "Rossi",
+                        "codice_fiscale": "RSSMRA80H04F205W",
+                        "email": "mario.rossi@agid.gov.it"
                     }
                 }
             },
@@ -555,7 +583,7 @@
             "UserInfoObjectArray": {
                 "type": "array",
                 "items": {
-                    "$ref": "#/components/schemas/UserInfoObject"
+                    "$ref": "#/components/schemas/AddUserResponse"
                 }
             },
             "UserInfoPermisionObject": {
@@ -577,9 +605,7 @@
                     "lastName",
                     "email",
                     "fiscalNumber",
-                    "permissions",
-                    "status",
-                    "created"
+                    "permissions"
                 ],
                 "properties": {
                     "firstName": {
@@ -599,21 +625,6 @@
                     },
                     "fiscalNumber": {
                         "$ref": "#/components/schemas/FiscalNumber"
-                    },
-                    "status": {
-                        "$ref": "#/components/schemas/UserStatus"
-                    },
-                    "created": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "modified": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "lastLogin": {
-                        "type": "string",
-                        "format": "date-time"
                     }
                 }
             },
@@ -621,11 +632,7 @@
                 "firstName": "User",
                 "lastName": "Example",
                 "email": "user@email.com",
-                "fiscalNumber": "ZRSGLC89D05H501J",
-                "status": "activated",
-                "created": "2020-07-21T17:32:28Z",
-                "modified": "2020-07-22T17:32:28Z",
-                "lastLogin": "2020-07-22T17:32:28Z"
+                "fiscalNumber": "ZRSGLC89D05H501J"
             }
         },
         "securitySchemes": {
