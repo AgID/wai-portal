@@ -240,6 +240,8 @@ class CRUDWebsiteTest extends TestCase
      */
     public function testStoreCustomWebsiteSuccessful(): void
     {
+        config(['wai.custom_public_administrations' => true]);
+
         $user = factory(User::class)->create([
             'status' => UserStatus::PENDING,
             'email_verified_at' => Date::now(),
@@ -284,6 +286,8 @@ class CRUDWebsiteTest extends TestCase
      */
     public function testStoreCustomWebsiteFailValidation(): void
     {
+        config(['wai.custom_public_administrations' => true]);
+
         $user = factory(User::class)->create([
             'status' => UserStatus::PENDING,
             'email_verified_at' => Date::now(),
@@ -296,7 +300,7 @@ class CRUDWebsiteTest extends TestCase
             ->from(route('websites.create.primary.custom'))
             ->post(route('websites.store.primary'), [
                 'public_administration_name' => 'Pubblica amministrazione personalizzata',
-                'url' => $this->website->url,
+                'url' => 'ThisIsNotAValidURL',
                 'website_type' => 'custom',
             ])
             ->assertSessionHasErrors([
