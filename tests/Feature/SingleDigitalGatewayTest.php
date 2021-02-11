@@ -68,10 +68,15 @@ class SingleDigitalGatewayTest extends TestCase
             array_push($pageUrls, $pageUrl);
         }
 
+        $jsonArray = array_map(function ($url) {
+            return ['test_url' => $url];
+        }, $pageUrls);
+
         Storage::fake('persistent');
         Storage::disk('persistent')->put('sdg/urls.csv', implode("\n", $pageUrls));
+        Storage::disk('persistent')->put('sdg/urls.json', json_encode(['test_path' => $jsonArray], JSON_PRETTY_PRINT));
 
-        config(['single-digital-gateway-service.url_column_index_csv' => 0]);
+        $this->withoutExceptionHandling();
     }
 
     /*
@@ -89,10 +94,12 @@ class SingleDigitalGatewayTest extends TestCase
     }
 
     /*
-     * Test payload generation.
+     * Test payload generation from CSV data file.
      */
-    public function testDatasetBuild(): void
+    public function testDatasetBuildCsv(): void
     {
+        config(['single-digital-gateway-service.urls_file_format' => 'csv']);
+        config(['single-digital-gateway-service.url_column_index_csv' => 0]);
         config(['analytics-service.cron_archiving_enabled' => false]);
 
         $this->actingAs($this->user)
@@ -102,6 +109,108 @@ class SingleDigitalGatewayTest extends TestCase
             ]);
 
         config(['analytics-service.cron_archiving_enabled' => true]);
+
+        $this->actingAs($this->user)
+            ->json('GET', route('admin.sdg.dataset.show'))
+            ->assertJson([
+                'nbEntries' => 0,
+            ]);
+    }
+
+    /*
+     * Test payload generation failure from missing CSV data file.
+     */
+    public function testDatasetBuildFailMissingCsvFile(): void
+    {
+        config(['single-digital-gateway-service.urls_file_format' => 'csv']);
+
+        Storage::disk('persistent')->delete('sdg/urls.csv');
+
+        $this->expectException(SDGServiceException::class);
+
+        $this->actingAs($this->user)
+            ->json('GET', route('admin.sdg.dataset.show'));
+    }
+
+    /*
+     * Test payload generation from JSON data file.
+     */
+    public function testDatasetBuildJson(): void
+    {
+        config(['single-digital-gateway-service.urls_file_format' => 'json']);
+        config(['single-digital-gateway-service.url_array_path_json' => 'test_path']);
+        config(['single-digital-gateway-service.url_key_json' => 'test_url']);
+        config(['analytics-service.cron_archiving_enabled' => false]);
+
+        $this->actingAs($this->user)
+            ->json('GET', route('admin.sdg.dataset.show'))
+            ->assertJson([
+                'nbEntries' => count($this->websites),
+            ]);
+
+        config(['analytics-service.cron_archiving_enabled' => true]);
+
+        $this->actingAs($this->user)
+            ->json('GET', route('admin.sdg.dataset.show'))
+            ->assertJson([
+                'nbEntries' => 0,
+            ]);
+    }
+
+    /*
+     * Test payload generation failure from missing JSON data file.
+     */
+    public function testDatasetBuildFailMissingJsonFile(): void
+    {
+        config(['single-digital-gateway-service.urls_file_format' => 'json']);
+
+        Storage::disk('persistent')->delete('sdg/urls.json');
+
+        $this->expectException(SDGServiceException::class);
+
+        $this->actingAs($this->user)
+            ->json('GET', route('admin.sdg.dataset.show'));
+    }
+
+    /*
+     * Test payload generation failure with wrong JSON path.
+     */
+    public function testDatasetBuildFailWithJsonWrongPath(): void
+    {
+        config(['single-digital-gateway-service.urls_file_format' => 'json']);
+        config(['single-digital-gateway-service.url_array_path_json' => 'wrong_test_path']);
+
+        $this->expectException(SDGServiceException::class);
+
+        $this->actingAs($this->user)
+            ->json('GET', route('admin.sdg.dataset.show'));
+    }
+
+    /*
+     * Test empty payload generation with wrong url key for JSON data file.
+     */
+    public function testEmptyDatasetBuildFailWithWrongJsonKey(): void
+    {
+        config(['single-digital-gateway-service.urls_file_format' => 'json']);
+        config(['single-digital-gateway-service.url_array_path_json' => 'test_path']);
+        config(['single-digital-gateway-service.url_key_json' => 'wrong_key']);
+        config(['analytics-service.cron_archiving_enabled' => false]);
+
+        $this->actingAs($this->user)
+            ->json('GET', route('admin.sdg.dataset.show'))
+            ->assertJson([
+                'nbEntries' => 0,
+            ]);
+    }
+
+    /*
+     * Test empty payload generation with wrong url key for JSON data file.
+     */
+    public function testEmptyDatasetBuildWithMissingJsonKey(): void
+    {
+        config(['single-digital-gateway-service.urls_file_format' => 'json']);
+        config(['single-digital-gateway-service.url_array_path_json' => 'test_path']);
+        config(['analytics-service.cron_archiving_enabled' => false]);
 
         $this->actingAs($this->user)
             ->json('GET', route('admin.sdg.dataset.show'))

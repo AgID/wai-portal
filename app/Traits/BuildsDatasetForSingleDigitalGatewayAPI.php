@@ -31,7 +31,7 @@ trait BuildsDatasetForSingleDigitalGatewayAPI
         $matomoRollupId = config('analytics-service.public_dashboard');
         $cronArchivingEnabled = config('analytics-service.cron_archiving_enabled');
 
-        $arrayUrls = $this->getUrlsFromConfig($columnSeparator, $columnIndexUrl);
+        $arrayUrls = $this->getUrls();
 
         date_default_timezone_set('UTC');
         $referencePeriod = new stdClass();
@@ -56,6 +56,10 @@ trait BuildsDatasetForSingleDigitalGatewayAPI
             ];
 
             foreach ($arrayUrls as $url) {
+                if (!is_string($url)) {
+                    continue;
+                }
+
                 $source = new stdClass();
                 $source->sourceUrl = trim($url);
 
@@ -129,15 +133,29 @@ trait BuildsDatasetForSingleDigitalGatewayAPI
     /**
      * Return an array of URLs to be used for the dataset build.
      *
-     * @param string $separator the separator char for the CSV
-     * @param string $index the index of the column containing the URL
+     * @return array the URLs to be used for the dataset build
+     */
+    protected function getUrls(): array
+    {
+        if ('csv' === strtolower(config('single-digital-gateway-service.urls_file_format', 'json'))) {
+            return $this->getUrlsFromCsv();
+        } else {
+            return $this->getUrlsFromJson();
+        }
+    }
+
+    /**
+     * Return an array of URLs to be used for the dataset build.
      *
      * @throws SDGServiceException if the CSV is not valid or contains invalid values
      *
      * @return array the URLs to be used for the dataset build
      */
-    protected function getUrlsFromConfig(string $separator, int $index): array
+    protected function getUrlsFromCsv(): array
     {
+        $separator = config('single-digital-gateway-service.url_column_separator_csv');
+        $index = config('single-digital-gateway-service.url_column_index_csv');
+
         try {
             $csvContents = file(Storage::disk('persistent')->path('sdg/urls.csv'));
         } catch (Exception $e) {
@@ -155,6 +173,44 @@ trait BuildsDatasetForSingleDigitalGatewayAPI
 
             return $rowArray[$index];
         }, $csvContents);
+
+        return $urls;
+    }
+
+    /**
+     * Return an array of URLs to be used for the dataset build.
+     *
+     * @throws SDGServiceException if the JSON is not valid or contains invalid values
+     *
+     * @return array the URLs to be used for the dataset build
+     */
+    protected function getUrlsFromJson(): array
+    {
+        $urlsArrayPath = config('single-digital-gateway-service.url_array_path_json');
+        $urlsKey = config('single-digital-gateway-service.url_key_json');
+
+        try {
+            $jsonContents = Storage::disk('persistent')->get('sdg/urls.json');
+            $urlsArray = json_decode($jsonContents, true, 512, JSON_THROW_ON_ERROR);
+        } catch (Exception $e) {
+            throw new SDGServiceException("Error reading the JSON file populated with SDG URLs.\n" . $e->getMessage());
+        }
+
+        $urlsArrayPathSegments = array_filter(explode('.', $urlsArrayPath));
+
+        foreach ($urlsArrayPathSegments as $urlsArrayPathSegment) {
+            if (!array_key_exists($urlsArrayPathSegment, $urlsArray)) {
+                throw new SDGServiceException('Error during dataset build: JSON file not well formed.');
+            }
+
+            if (!is_array($urlsArray[$urlsArrayPathSegment])) {
+                throw new SDGServiceException('Error during dataset build: JSON file not well formed.');
+            }
+
+            $urlsArray = $urlsArray[$urlsArrayPathSegment];
+        }
+
+        $urls = array_filter(collect($urlsArray)->pluck($urlsKey)->all());
 
         return $urls;
     }

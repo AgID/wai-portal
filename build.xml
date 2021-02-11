@@ -123,8 +123,11 @@
                     <token key="SDG_API_LAST_DAYS" value="${SDG_API_LAST_DAYS}" />
                     <token key="SDG_API_START_DATE" value="${SDG_API_START_DATE}" />
                     <token key="SDG_API_END_DATE" value="${SDG_API_END_DATE}" />
+                    <token key="SDG_URLS_FILE_FORMAT" value="${SDG_URLS_FILE_FORMAT}" />
                     <token key="SDG_COLUMN_INDEX_URL_CSV" value="${SDG_COLUMN_INDEX_URL_CSV}" />
                     <token key="SDG_COLUMN_SEPARATOR_CSV" value="${SDG_COLUMN_SEPARATOR_CSV}" />
+                    <token key="SDG_URL_ARRAY_PATH_JSON" value="${SDG_COLUMN_SEPARATOR_CSV}" />
+                    <token key="SDG_URL_KEY_JSON" value="${SDG_COLUMN_SEPARATOR_CSV}" />
                     <token key="SDG_STORAGE_FOLDER" value="${SDG_STORAGE_FOLDER}" />
                     <token key="SDG_STORAGE_DISK" value="${SDG_STORAGE_DISK}" />
                     <token key="MATOMO_DB_READER" value="${MATOMO_DB_READER}" />
