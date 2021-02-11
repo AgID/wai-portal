@@ -120,9 +120,6 @@
                     <token key="SDG_API_PUBLIC_URL" value="${SDG_API_PUBLIC_URL}" />
                     <token key="SDG_API_SSL_VERIFY" value="${SDG_API_SSL_VERIFY}" />
                     <token key="SDG_API_KEY" value="${SDG_API_KEY}" />
-                    <token key="SDG_API_LAST_DAYS" value="${SDG_API_LAST_DAYS}" />
-                    <token key="SDG_API_START_DATE" value="${SDG_API_START_DATE}" />
-                    <token key="SDG_API_END_DATE" value="${SDG_API_END_DATE}" />
                     <token key="SDG_URLS_FILE_FORMAT" value="${SDG_URLS_FILE_FORMAT}" />
                     <token key="SDG_COLUMN_INDEX_URL_CSV" value="${SDG_COLUMN_INDEX_URL_CSV}" />
                     <token key="SDG_COLUMN_SEPARATOR_CSV" value="${SDG_COLUMN_SEPARATOR_CSV}" />

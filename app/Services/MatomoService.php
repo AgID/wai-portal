@@ -584,7 +584,7 @@ class MatomoService implements AnalyticsServiceContract
      * Get the country report for a specific segment.
      *
      * @param string $idSite the Analytics Service website ID
-     * @param int $days the requested number of days
+     * @param string $range the requested number of days
      * @param string $segment the segment of the report
      *
      * @throws CommandErrorException if command is unsuccessful
@@ -592,13 +592,13 @@ class MatomoService implements AnalyticsServiceContract
      *
      * @return array the report with the countries detected for the specific segment
      */
-    public function getCountriesInSegment(string $idSite, int $days, string $segment): array
+    public function getCountriesInSegment(string $idSite, string $range, string $segment): array
     {
         $params = [
             'method' => 'UserCountry.getCountry',
             'idSite' => $idSite,
-            'period' => 'day',
-            'date' => 'last' . $days,
+            'period' => 'range',
+            'date' => $range,
             'segment' => $segment,
             'token_auth' => $this->tokenAuth,
         ];

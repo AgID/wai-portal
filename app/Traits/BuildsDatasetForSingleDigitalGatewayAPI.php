@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use App\Exceptions\AnalyticsServiceException;
 use App\Exceptions\SDGServiceException;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Support\Facades\Storage;
@@ -21,26 +22,44 @@ trait BuildsDatasetForSingleDigitalGatewayAPI
      *
      * @return object the dataset
      */
-    public function buildDatasetForSDG()
+    public function buildDatasetForSDG(?string $rangePeriod = null)
     {
         $analyticsService = app()->make('analytics-service');
 
-        $days = config('single-digital-gateway-service.last_days');
-        $columnSeparator = config('single-digital-gateway-service.url_column_separator_csv');
-        $columnIndexUrl = config('single-digital-gateway-service.url_column_index_csv');
         $matomoRollupId = config('analytics-service.public_dashboard');
         $cronArchivingEnabled = config('analytics-service.cron_archiving_enabled');
 
+        if (is_string($rangePeriod)) {
+            if (false === strpos($rangePeriod, ',')) {
+                throw new SDGServiceException('Invalid period parameter');
+            }
+            list($startDateString, $endDateString) = explode(',', $rangePeriod);
+
+            $startDate = Carbon::createFromFormat('Y-m-d', $startDateString, 'UTC')->startOfDay();
+            $endDate = Carbon::createFromFormat('Y-m-d', $endDateString, 'UTC')->endOfDay();
+
+            if ($startDate->toDateString() !== $startDateString || $endDate->toDateString() !== $endDateString) {
+                throw new SDGServiceException('Invalid date in period parameter');
+            }
+        } else {
+            $startDate = Carbon::now('UTC')->startOfMonth()->subMonth(); // firstDayofPreviousMonth
+            $endDate = Carbon::now('UTC')->startofMonth()->subMonth()->endOfMonth(); // lastDayofPreviousMonth
+
+            $rangePeriod = implode(',', [
+                $startDate->toDateString(),
+                $endDate->toDateString(),
+            ]);
+        }
+
         $arrayUrls = $this->getUrls();
 
-        date_default_timezone_set('UTC');
         $referencePeriod = new stdClass();
-        $referencePeriod->startDate = config('analytics-service.start_date', date('Y-m-d\TH:i:s\Z', strtotime('-' . ($days) . ' days')));
-        $referencePeriod->endDate = config('analytics-service.end_date', date('Y-m-d\TH:i:s\Z'));
+        $referencePeriod->startDate = $startDate->toIso8601ZuluString();
+        $referencePeriod->endDate = $endDate->toIso8601ZuluString();
 
         $data = new stdClass();
         $data->referencePeriod = $referencePeriod;
-        $data->transferDate = date('Y-m-d\TH:i:s\Z');
+        $data->transferDate = Carbon::now('UTC')->toIso8601ZuluString();
         $data->transferType = 'API';
         $data->nbEntries = 0;
         $data->sources = [];
@@ -103,7 +122,7 @@ trait BuildsDatasetForSingleDigitalGatewayAPI
 
                 foreach ($sdgDeviceTypes as $sdgDeviceType) {
                     $segmentDefinition = 'pageUrl==' . urlencode($source->sourceUrl) . ';' . static::getDeviceTypeSegmentParameter($sdgDeviceType);
-                    $countryDays = $analyticsService->getCountriesInSegment($siteId, $days, $segmentDefinition);
+                    $countryDays = $analyticsService->getCountriesInSegment($siteId, $rangePeriod, $segmentDefinition);
 
                     foreach ($countryDays as $countryDay) {
                         foreach ($countryDay as $country) {

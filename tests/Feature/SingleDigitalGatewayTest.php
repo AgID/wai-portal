@@ -5,8 +5,10 @@ namespace Tests\Feature;
 use App\Enums\UserPermission;
 use App\Enums\UserRole;
 use App\Enums\UserStatus;
+use App\Exceptions\SDGServiceException;
 use App\Models\User;
 use App\Traits\ParseUrls;
+use Carbon\Carbon;
 use Faker\Factory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Date;
@@ -217,5 +219,67 @@ class SingleDigitalGatewayTest extends TestCase
             ->assertJson([
                 'nbEntries' => 0,
             ]);
+    }
+
+    /*
+     * Test payload generation with a specified period.
+     */
+    public function testDatasetBuildWithPeriod(): void
+    {
+        config(['single-digital-gateway-service.urls_file_format' => 'json']);
+        config(['single-digital-gateway-service.url_array_path_json' => 'test_path']);
+        config(['single-digital-gateway-service.url_key_json' => 'test_url']);
+        config(['analytics-service.cron_archiving_enabled' => false]);
+
+        $randomStartDate = Carbon::today('UTC')->subDays(rand(30, 365))->startOfDay();
+        $randomEndDate = $randomStartDate->clone()->addDays(30)->endOfDay();
+        $randomPeriod = implode(',', [
+            $randomStartDate->toDateString(),
+            $randomEndDate->toDateString(),
+        ]);
+
+        $this->actingAs($this->user)
+            ->json('GET', route('admin.sdg.dataset.show') . '?period=' . $randomPeriod)
+            ->assertJson([
+                'nbEntries' => count($this->websites),
+                'referencePeriod' => [
+                    'startDate' => $randomStartDate->toIso8601ZuluString(),
+                    'endDate' => $randomEndDate->toIso8601ZuluString(),
+                ],
+            ]);
+    }
+
+    /*
+     * Test payload generation failure with an invalid specified period.
+     */
+    public function testDatasetBuildFailWithInvalidPeriod(): void
+    {
+        config(['single-digital-gateway-service.urls_file_format' => 'json']);
+        config(['single-digital-gateway-service.url_array_path_json' => 'test_path']);
+        config(['single-digital-gateway-service.url_key_json' => 'test_url']);
+        config(['analytics-service.cron_archiving_enabled' => false]);
+
+        $this->expectException(SDGServiceException::class);
+        $this->expectExceptionMessage('Invalid period parameter');
+
+        $this->actingAs($this->user)
+            ->json('GET', route('admin.sdg.dataset.show') . '?period=not-valid');
+    }
+
+    /*
+     * Test payload generation failure with an invalid date in the specified period.
+     */
+    public function testDatasetBuildFailWithInvalidDateInPeriod(): void
+    {
+        config(['single-digital-gateway-service.urls_file_format' => 'json']);
+        config(['single-digital-gateway-service.url_array_path_json' => 'test_path']);
+        config(['single-digital-gateway-service.url_key_json' => 'test_url']);
+        config(['analytics-service.cron_archiving_enabled' => false]);
+
+        $this->expectException(SDGServiceException::class);
+        $this->expectExceptionMessage('Invalid date in period parameter');
+
+        $this->actingAs($this->user)
+            ->json('GET', route('admin.sdg.dataset.show') . '?period=2021-01-01,2021-01-40');
     }
 }
