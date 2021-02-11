@@ -2,13 +2,12 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Validator;
 
 /**
  * Update credential request.
  */
-class UpdateCredentialRequest extends FormRequest
+class UpdateCredentialRequest extends StoreCredentialsRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -41,6 +40,11 @@ class UpdateCredentialRequest extends FormRequest
      */
     public function withValidator(Validator $validator): void
     {
+        $validator->after(function (Validator $validator) {
+            if (!is_array($this->input('permissions')) && 'admin' !== $this->input('type')) {
+                $validator->errors()->add('permissions', __('È necessario selezionare tutti i permessi correttamente'));
+            }
+        });
         $validator->after(function (Validator $validator) {
             $data = $validator->getData();
             $validator->setData($data);

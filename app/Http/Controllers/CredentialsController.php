@@ -315,6 +315,7 @@ class CredentialsController extends Controller
                 $validatedData['credential_name'],
                 json_encode(['name' => $validatedData['credential_name'], 'type' => $validatedData['type'], 'siteId' => $permissions])
             );
+
         $oauthCredentials = $this->clientService->getClient($clientJSON['consumer']['id']);
 
         $client = Credential::create([
