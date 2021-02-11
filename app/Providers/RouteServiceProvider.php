@@ -59,7 +59,8 @@ class RouteServiceProvider extends ServiceProvider
             $this->mapStagingRoutes();
         }
 
-        if (!$this->app->environment('production') && config('wai.custom_public_administrations')) {
+        if ((!$this->app->environment('production') && config('wai.custom_public_administrations'))
+            || $this->app->runningUnitTests()) {
             $this->mapCustomPublicAdministration();
         }
     }
