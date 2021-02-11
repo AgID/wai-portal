@@ -2,12 +2,12 @@
 
 namespace App\Console\Commands;
 
-use App\Traits\BuildDatasetForSingleDigitalGatewayAPI;
+use App\Traits\BuildsDatasetForSingleDigitalGatewayAPI;
 use Illuminate\Console\Command;
 
 class SDGBuildStatistics extends Command
 {
-    use BuildDatasetForSingleDigitalGatewayAPI;
+    use BuildsDatasetForSingleDigitalGatewayAPI;
 
     /**
      * Create a new command instance.

@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\PublicAdministration;
 use App\Models\Website;
-use App\Traits\BuildDatasetForSingleDigitalGatewayAPI;
+use App\Traits\BuildsDatasetForSingleDigitalGatewayAPI;
 use App\Traits\GetsLocalizedYamlContent;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Arr;
@@ -14,7 +14,7 @@ use Symfony\Component\Yaml\Yaml;
 class HomeController extends Controller
 {
     use GetsLocalizedYamlContent;
-    use BuildDatasetForSingleDigitalGatewayAPI;
+    use BuildsDatasetForSingleDigitalGatewayAPI;
 
     /**
      * Show the application home.
