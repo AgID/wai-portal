@@ -3,14 +3,13 @@
 namespace App\Services;
 
 use App\Exceptions\ApiGatewayServiceException;
-use App\Exceptions\CommandErrorException;
 use App\Exceptions\InvalidCredentialException;
-use GuzzleHttp\Client as APIClient;
-use GuzzleHttp\Exception\GuzzleException;
+use Illuminate\Http\Client\RequestException;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Redis;
 
 /**
- * Matomo implementation of Analytics Service.
+ * Kong Services Api.
  */
 class KongClientService
 {
@@ -31,13 +30,6 @@ class KongClientService
 
     public function getConsumer(string $idConsumer): ?array
     {
-        $data = [
-            'headers' => [
-                'Accept' => 'application/json',
-                'Content-Type' => 'application/json',
-            ],
-        ];
-
         $consumer = $this->redisCache->get('kong:consumer:' . $idConsumer);
 
         if (null !== $consumer) {
@@ -47,7 +39,12 @@ class KongClientService
             return $consumer;
         }
 
-        $consumer = $this->apiCall($data, 'GET', '/consumers/' . $idConsumer);
+        $headers = [
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+        ];
+
+        $consumer = $this->apiCall($headers, [], 'GET', '/consumers/' . $idConsumer);
 
         $this->redisCache->set('kong:consumer:' . $idConsumer, json_encode($consumer));
 
@@ -56,13 +53,6 @@ class KongClientService
 
     public function getClient(string $idConsumer): ?array
     {
-        $data = [
-            'headers' => [
-                'Accept' => 'application/json',
-                'Content-Type' => 'application/json',
-            ],
-        ];
-
         $client = $this->redisCache->get('kong:client:' . $idConsumer);
 
         if (null !== $client) {
@@ -75,22 +65,19 @@ class KongClientService
             return (array) $client;
         }
 
-        $clients = $this->apiCall($data, 'GET', '/consumers/' . $idConsumer . '/oauth2');
+        $headers = [
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+        ];
+
+        $clients = $this->apiCall($headers, [], 'GET', '/consumers/' . $idConsumer . '/oauth2');
         $clients = $clients['data'];
 
         if (null === $clients && !is_array($clients)) {
             throw new InvalidCredentialException('OAuth2 credentials not found');
         }
 
-        if (count($clients) > 1) {
-            /* Se sono state create più credenziali oauth recupero le più recenti */
-            usort($clients, function ($a, $b) {
-                return $b['created_at'] <=> $a['created_at'];
-            });
-            $client = $clients[0];
-        } else {
-            $client = $clients[0];
-        }
+        $client = $clients[0];
 
         $this->redisCache->set('kong:client:' . $idConsumer, json_encode($client));
 
@@ -110,7 +97,7 @@ class KongClientService
             ],
         ];
 
-        $response = $this->apiCall($data, 'POST', '/consumers');
+        $response = $this->apiCall($data['headers'], $data['json'], 'POST', '/consumers');
 
         $this->redisCache->set('kong:consumer:' . $response['id'], json_encode($response));
 
@@ -119,17 +106,16 @@ class KongClientService
 
     public function makeClient(string $name, string $idConsumer): array
     {
-        $body = [
+        $data = [
             'form_params' => [
                 'name' => $name . '-oauth2',
             ],
             'headers' => [
                 'Accept' => 'application/json',
-                'Content-Type' => 'application/x-www-form-urlencoded',
             ],
         ];
 
-        $response = $this->apiCall($body, 'POST', '/consumers/' . $name . '/oauth2');
+        $response = $this->apiCall($data['headers'], $data['form_params'], 'POST', '/consumers/' . $name . '/oauth2', true);
 
         $this->redisCache->set('kong:client:' . $idConsumer, json_encode($response));
 
@@ -138,18 +124,17 @@ class KongClientService
 
     public function regenerateSecret(string $name, string $idConsumer, string $idClient)
     {
-        $body = [
+        $data = [
             'form_params' => [
                 'name' => $name . '-oauth2',
                 'client_id' => $idClient,
             ],
             'headers' => [
                 'Accept' => 'application/json',
-                'Content-Type' => 'application/x-www-form-urlencoded',
             ],
         ];
 
-        $response = $this->apiCall($body, 'PUT', '/consumers/' . $name . '/oauth2/' . $idClient);
+        $response = $this->apiCall($data['headers'], $data['form_params'], 'PUT', '/consumers/' . $name . '/oauth2/' . $idClient, true);
 
         $this->redisCache->set('kong:client:' . $idConsumer, json_encode($response));
 
@@ -166,7 +151,7 @@ class KongClientService
             ],
         ];
 
-        $consumer = $this->apiCall($data, 'PUT', '/consumers/' . $idConsumer);
+        $consumer = $this->apiCall($data['headers'], $data['json'], 'PUT', '/consumers/' . $idConsumer);
         $this->redisCache->set('kong:consumer:' . $idConsumer, json_encode($consumer));
 
         return $consumer;
@@ -181,26 +166,34 @@ class KongClientService
             ],
         ];
 
-        $consumer = $this->apiCall($data, 'DELETE', '/consumers/' . $idConsumer);
+        $consumer = $this->apiCall($data['headers'], [], 'DELETE', '/consumers/' . $idConsumer);
 
         return true;
     }
 
-    protected function apiCall(array $data, string $method = 'GET', string $path = '/'): ?array
+    protected function apiCall(array $headers = [], array $body = [], string $method = 'GET', string $path = '/', bool $isForm = false): ?array
     {
+        $method = strtolower($method);
+
         try {
-            $client = new APIClient();
-            $res = $client->request($method, $this->serviceBaseUri . $path, $data);
-        } catch (GuzzleException $exception) {
+            if ($isForm) {
+                $res = Http::withHeaders($headers)
+                    ->asForm()
+                    ->{$method}(
+                        $this->serviceBaseUri . $path,
+                        $body
+                    );
+            } else {
+                $res = Http::withHeaders($headers)
+                    ->{$method}(
+                        $this->serviceBaseUri . $path,
+                        $body
+                    );
+            }
+        } catch (RequestException $exception) {
             throw new ApiGatewayServiceException($exception->getMessage());
         }
 
-        $response = json_decode((string) $res->getBody(), true);
-
-        if (!empty($response['result']) && 'error' === $response['result']) {
-            throw new CommandErrorException($response['message']);
-        }
-
-        return $response;
+        return $res->json();
     }
 }
