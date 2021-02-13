@@ -5,9 +5,12 @@ namespace App\Jobs;
 use App\Enums\Logs\JobType;
 use App\Enums\UserStatus;
 use App\Events\Jobs\PurgePendingInvitationsCompleted;
+use App\Exceptions\AnalyticsServiceException;
+use App\Exceptions\CommandErrorException;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -40,7 +43,36 @@ class PurgePendingInvitations implements ShouldQueue
 
         $oldPendingInvitations = $pendingInvitations->mapToGroups(function ($invitedUser) {
             if ($invitedUser->created_at->diffInDays(Carbon::now()) > (int) config('auth.verification.purge')) {
-                $invitedUser->deleteAnalyticsServiceAccount();
+                try {
+                    $invitedUser->deleteAnalyticsServiceAccount();
+                } catch (BindingResolutionException $exception) {
+                    report($exception);
+
+                    return [
+                        'failed' => [
+                            'user' => $invitedUser->uuid,
+                            'reason' => 'Unable to bind to Analytics Service',
+                        ],
+                    ];
+                } catch (AnalyticsServiceException $exception) {
+                    report($exception);
+
+                    return [
+                        'failed' => [
+                            'user' => $invitedUser->uuid,
+                            'reason' => 'Unable to contact the Analytics Service',
+                        ],
+                    ];
+                } catch (CommandErrorException $exception) {
+                    report($exception);
+
+                    return [
+                        'failed' => [
+                            'user' => $invitedUser->uuid,
+                            'reason' => 'Invalid command for Analytics Service',
+                        ],
+                    ];
+                }
                 $invitedUser->forceDelete();
 
                 return [
@@ -59,7 +91,8 @@ class PurgePendingInvitations implements ShouldQueue
 
         event(new PurgePendingInvitationsCompleted(
             optional($oldPendingInvitations->get('purged'))->all() ?? [],
-            optional($oldPendingInvitations->get('pending'))->all() ?? []
+            optional($oldPendingInvitations->get('pending'))->all() ?? [],
+            optional($oldPendingInvitations->get('failed'))->all() ?? []
         ));
     }
 }
