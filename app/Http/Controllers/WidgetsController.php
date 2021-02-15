@@ -6,8 +6,8 @@ use App\Enums\UserPermission;
 use App\Enums\WebsiteStatus;
 use App\Models\PublicAdministration;
 use App\Models\Website;
-use Symfony\Component\Yaml\Yaml;
 use App\Traits\HasRoleAwareUrls;
+use Symfony\Component\Yaml\Yaml;
 
 class WidgetsController extends Controller
 {
@@ -24,10 +24,10 @@ class WidgetsController extends Controller
             ? $publicAdministration
             : current_public_administration();
 
-        if($website->status->is(WebsiteStatus::PENDING)){
+        if ($website->status->is(WebsiteStatus::PENDING)) {
             $redirectUrl = $this->getRoleAwareUrl('websites.show', ['website' => $website], $publicAdministration);
             $name = $website->name;
-            
+
             return redirect()->to($redirectUrl)->withNotification([
                 'title' => __('Errore'),
                 'message' => __("Attiva il sito '$name' prima di accedere all'anteprima dei widget."),
@@ -35,7 +35,7 @@ class WidgetsController extends Controller
                 'icon' => 'it-close-circle',
             ]);
         }
-        
+
         $analyticsId = $website->analytics_id;
         $widgetData = $this->analyticsService->getWidgetMetadata($analyticsId);
         $matomoWidgetUrl = config('analytics-service.widgets_url');
