@@ -18,7 +18,7 @@
         {{ __('aggiungi un sito web') }}
         @endcomponent
         </div>
-        @cannot(UserPermission::MANAGE_WEBSITES)
+        @if ($authUser->cannot(UserPermission::MANAGE_WEBSITES) && $authUser->status->is(UserStatus::PENDING))
             <div class="hide-when-active alert alert-info mt-5" role="alert">
                 {{ __("Nuovi :elements potranno essere aggiunti solo dopo l'attivazione del sito istituzionale.", [
                     'elements' => __('siti')
@@ -27,14 +27,15 @@
                 {!! __("L'attivazione può essere verificata manualmente usando l'icona 'verifica attivazione' :icon.", [
                     'icon' => '<svg class="icon icon-primary icon-sm"><use xlink:href="' . asset('svg/sprite.svg#it-plug') . '"></use></svg>'
                 ]) !!}
-                @unlessenv ('production')
+                @if ((!app()->environment('production') && config('wai.custom_public_administrations', false)))
                     <br><br>
-                    {!! __("In questo ambiente, l'attivazione può essere forzata mediante l'icona 'attivazione forzata' :icon.", [
+                    {!! __(":nb: in questo ambiente, l'attivazione può essere forzata mediante l'icona 'attivazione forzata' :icon.", [
+                        'nb' => '<strong>' . __('Nota bene') . '</strong>',
                         'icon' => '<svg class="icon icon-warning icon-sm"><use xlink:href="' . asset('svg/sprite.svg#it-plug') . '"></use></svg>'
                     ]) !!}
-                @endunless
+                @endif
             </div>
-        @endcannot
+        @endif
     @else
         @include('pages.websites.partials.add_primary', ['customForm' => false])
     @endif

@@ -28,15 +28,26 @@ class PurgePendingInvitationsCompleted
     protected $pending;
 
     /**
+     * The list of invited users for which the purge failed.
+     * The array follows this schema:
+     * array[]
+     *  ['users'].
+     *
+     * @var array the invited users for which the purge failed
+     */
+    protected $failed;
+
+    /**
      * Event constructor.
      *
      * @param array $purged the purged users array
      * @param array $pending the invited users still pending array
      */
-    public function __construct(array $purged, array $pending)
+    public function __construct(array $purged, array $pending, array $failed)
     {
         $this->purged = $purged;
         $this->pending = $pending;
+        $this->failed = $failed;
     }
 
     /**
@@ -57,5 +68,15 @@ class PurgePendingInvitationsCompleted
     public function getPending(): array
     {
         return $this->pending;
+    }
+
+    /**
+     * Get the array of the invited users for which the purge failed.
+     *
+     * @return array the invited users for which the purge failed
+     */
+    public function getFailed(): array
+    {
+        return $this->failed;
     }
 }

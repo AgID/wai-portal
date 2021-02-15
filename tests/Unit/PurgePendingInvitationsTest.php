@@ -54,7 +54,8 @@ class PurgePendingInvitationsTest extends TestCase
 
         Event::assertDispatched(PurgePendingInvitationsCompleted::class, function ($event) use ($user) {
             return in_array(['user' => $user->uuid], $event->getPurged(), true)
-                && empty($event->getPending());
+                && empty($event->getPending())
+                && empty($event->getFailed());
         });
 
         $this->expectException(CommandErrorException::class);
@@ -84,11 +85,42 @@ class PurgePendingInvitationsTest extends TestCase
 
         Event::assertDispatched(PurgePendingInvitationsCompleted::class, function ($event) use ($user) {
             return in_array(['user' => $user->uuid], $event->getPending(), true)
-                && empty($event->getPurged());
+                && empty($event->getPurged())
+                && empty($event->getFailed());
         });
 
         $this->assertTrue($user->hasAnalyticsServiceAccount());
         $this->app->make('analytics-service')->getUserByEmail($user->email);
+
+        $this->assertDatabaseHas('users', [
+            'id' => $user->id,
+        ]);
+
+        Event::assertNotDispatched(ProcessUsersIndex::class);
+    }
+
+    /**
+     * Test job complete with pending invitations for which the purge failed.
+     *
+     * @throws \App\Exceptions\AnalyticsServiceException if unable to connect to the Analytics Service
+     * @throws \App\Exceptions\CommandErrorException if command finishes with error
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException if unable to bind to the service
+     */
+    public function testPurgePendingInvitationsFailed(): void
+    {
+        $user = factory(User::class)->state('invited')->create([
+            'created_at' => Carbon::now()->subDays(1 + (int) config('auth.verification.purge')),
+        ]);
+        // Do not register analytics service account for the user
+
+        $job = new PurgePendingInvitations();
+        $job->handle();
+
+        Event::assertDispatched(PurgePendingInvitationsCompleted::class, function ($event) use ($user) {
+            return in_array(['user' => $user->uuid, 'reason' => 'Invalid command for Analytics Service'], $event->getFailed(), true)
+                && empty($event->getPurged())
+                && empty($event->getPending());
+        });
 
         $this->assertDatabaseHas('users', [
             'id' => $user->id,

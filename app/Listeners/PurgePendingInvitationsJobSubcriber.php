@@ -21,7 +21,7 @@ class PurgePendingInvitationsJobSubcriber implements ShouldQueue
     public function onCompleted(PurgePendingInvitationsCompleted $event): void
     {
         logger()->notice(
-            'Purge pending invitations completed: ' . count($event->getPurged()) . ' invited user/s purged, ' . count($event->getPending()) . ' invited user/s still pending',
+            'Purge pending invitations completed: ' . count($event->getPurged()) . ' invited user/s purged, ' . count($event->getPending()) . ' invited user/s still pending, ' . count($event->getFailed()) . ' invited user/s failed to purge',
             [
                 'event' => EventType::PURGE_PENDING_INVITATIONS_COMPLETED,
             ]
