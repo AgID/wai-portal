@@ -351,7 +351,7 @@
             "SlugInPath": {
                 "in": "path",
                 "required": true,
-                "name": "slug",
+                "name": "website",
                 "schema": {
                     "$ref": "#/components/schemas/SiteSlug"
                 }
@@ -376,25 +376,25 @@
                 "enum": ["site_type_1", "site_type_2", "site_type_3"]
             },
             "AddSiteRequest": {
-                "required": ["name", "url", "type"],
-                "properties": null,
-                "name": {
-                    "description": "Nome del sito",
-                    "type": "string",
-                    "pattern": "^(?!\\s*$).+"
+                "required": ["name", "url", "type", "permissions"],
+                "properties": {
+                    "name": {
+                        "description": "Nome del sito",
+                        "type": "string",
+                        "pattern": "^(?!\\s*$).+"
+                    },
+                    "url": {
+                        "description": "Url del sito",
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "permissions": {
+                        "$ref": "#/components/schemas/WebsiteInfoPermisionObject"
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/SiteType"
+                    }
                 },
-                "url": {
-                    "description": "Url del sito",
-                    "type": "string",
-                    "format": "uri"
-                },
-                "permissions": {
-                    "$ref": "#/components/schemas/WebsiteInfoPermisionObject"
-                },
-                "type": {
-                    "$ref": "#/components/schemas/SiteType"
-                },
-
                 "example": {
                     "name": "WebAnalytics Italia",
                     "url": "https://webanalytics.italia.it",
@@ -444,6 +444,26 @@
                     "slug": "wwwagidgovit"
                 }
             },
+            "UserSuspendObject": {
+                "type": "object",
+                "required": ["result", "user_name", "status"],
+                "properties": {
+                    "result": {
+                        "type": "string"
+                    },
+                    "user_name": {
+                        "type": "string"
+                    },
+                    "status_description": {
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "result": "ok",
+                    "user_name": "Claudio",
+                    "status_description": "SUSPENDED"
+                }
+            },
             "SiteInfoArray": {
                 "type": "array",
                 "items": {
@@ -471,13 +491,8 @@
                 }
             },
             "SiteInfo": {
-                "allOf": [{ "$ref": "#/components/schemas/SingleSite/" }],
+                "allOf": [{ "$ref": "#/components/schemas/SingleSite" }],
                 "type": "object",
-                "required": ["slug"],
-                "properties": null,
-                "slug": {
-                    "$ref": "#/components/schemas/SiteSlug"
-                },
                 "example": {
                     "id": 1,
                     "name": "Agenzia per L'Italia Digitale",
@@ -495,7 +510,6 @@
             "ArchiveWebsite": {
                 "type": "object",
                 "required": ["slug"],
-                "properties": null,
                 "example": {
                     "result": "ok",
                     "id": "wwwagidgovit",
@@ -508,7 +522,6 @@
             "UnarchiveWebsite": {
                 "type": "object",
                 "required": ["slug"],
-                "properties": null,
                 "example": {
                     "result": "ok",
                     "id": "wwwagidgovit",
@@ -549,7 +562,13 @@
             },
             "AddUserResponse": {
                 "type": "object",
-                "required": ["uri"],
+                "required": [
+                    "id",
+                    "firstName",
+                    "lastName",
+                    "codice_fiscale",
+                    "email"
+                ],
                 "properties": {
                     "id": {
                         "type": "integer"
@@ -565,14 +584,14 @@
                     },
                     "email": {
                         "type": "string"
-                    },
-                    "example": {
-                        "id": 1,
-                        "firstName": "Mario",
-                        "lastName": "Rossi",
-                        "codice_fiscale": "RSSMRA80H04F205W",
-                        "email": "mario.rossi@agid.gov.it"
                     }
+                },
+                "example": {
+                    "id": 1,
+                    "firstName": "Mario",
+                    "lastName": "Rossi",
+                    "codice_fiscale": "RSSMRA80H04F205W",
+                    "email": "mario.rossi@agid.gov.it"
                 }
             },
             "UserStatus": {
@@ -609,16 +628,13 @@
                 ],
                 "properties": {
                     "firstName": {
-                        "type": "string",
-                        "pattern": "^(?!\\s*$).+"
+                        "type": "string"
                     },
                     "lastName": {
-                        "type": "string",
-                        "pattern": "^(?!\\s*$).+"
+                        "type": "string"
                     },
                     "email": {
-                        "type": "string",
-                        "pattern": "^(?!\\s*$).+"
+                        "type": "string"
                     },
                     "permissions": {
                         "$ref": "#/components/schemas/UserInfoPermisionObject"
@@ -626,13 +642,16 @@
                     "fiscalNumber": {
                         "$ref": "#/components/schemas/FiscalNumber"
                     }
+                },
+                "example": {
+                    "firstName": "User",
+                    "lastName": "Example",
+                    "email": "user@email.com",
+                    "fiscalNumber": "ZRSGLC89D05H501J",
+                    "permissions": {
+                        "siteId" : ["manage-analytics"]
+                    }
                 }
-            },
-            "example": {
-                "firstName": "User",
-                "lastName": "Example",
-                "email": "user@email.com",
-                "fiscalNumber": "ZRSGLC89D05H501J"
             }
         },
         "securitySchemes": {
