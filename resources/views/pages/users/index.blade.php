@@ -5,7 +5,7 @@
 @section('content')
     @component('layouts.components.box', ['classes' => 'rounded'])
     @include('partials.datatable')
-    @can($authUser->can(UserPermission::MANAGE_USERS))
+    @can(UserPermission::MANAGE_USERS)
         <div class="mt-4 text-center text-sm-left">
         @component('layouts.components.link_button', [
             'icon' => 'it-plus',
