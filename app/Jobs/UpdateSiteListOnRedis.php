@@ -34,7 +34,7 @@ class UpdateSiteListOnRedis implements ShouldQueue
                 per ogni website predere l'id e fare una chiamata a matomo per prendere la lista dei domini
                 145 sito1 sito2
             */
-        Redis::connection(env('CACHE_CONNECTION'))->client()->pipeline(function ($pipe) use ($websiteList) {
+        Redis::connection(config('redis-connections.cache_connection'))->client()->pipeline(function ($pipe) use ($websiteList) {
             foreach ($websiteList as &$website) {
                 $id = $website->analytics_id;
                 $list = $this->analyticsService->getSiteUrlsFromId($id);

@@ -6,4 +6,5 @@ return [
     'ssl_verify' => env('ANALYTICS_API_SSL_VERIFY'),
     'public_url' => env('ANALYTICS_PUBLIC_URL'),
     'public_dashboard' => env('ANALYTICS_PUBLIC_DASHBOARD_ID'),
+    'widgets_url' => env('MATOMO_WIDGETS_URL'),
 ];
