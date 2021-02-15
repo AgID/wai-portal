@@ -16,7 +16,7 @@ class WidgetsController extends Controller
     {
         $analyticsId = $website->analytics_id;
         $widgetData = $this->analyticsService->getWidgetMetadata($analyticsId);
-        $matomoWidgetUrl = env('MATOMO_WIDGETS_URL');
+        $matomoWidgetUrl = config('analytics-service.widgets_url');
         $allowedWidgets = Yaml::parseFile(resource_path('data/widgets.yml'));
         $allowedFqdns = $this->analyticsService->getSiteUrlsFromId($analyticsId);
 
