@@ -3,7 +3,7 @@
 @section('title', 'Anteprima widget')
 
 @section('content')
-    <div class="row" id="widgets-preview-box" data-url="{{$url}}">
+    <div class="row" id="widgets-preview-box" data-url="{{ $widgetsBaseUrl }}">
         <div class="col-lg-12 d-flex">
             @component('layouts.components.box')
                 <div class="card-wrapper card-space">
@@ -25,6 +25,23 @@
                             <code id="widget-code" class="mt-4">
                                 {{ __('Nessun widget selezionato') }}
                             </code>
+                            <div class="it-card-footer">
+                                <div class="alert alert-info" role="alert">
+                                    {{ __('Questo codice è utilizzabile esclusivamente nelle pagine web') }}
+                                    @if (count($allowedFqdns) > 1)
+                                        {{ __('sotto i seguenti domini:') }}
+                                        <ul>
+                                        @foreach ($allowedFqdns as $allowedFqdn)
+                                            <li><code>{{ $allowedFqdn }}</code></li>
+                                        @endforeach
+                                        </ul>
+                                    @else
+                                        {!! __('sotto il dominio :fqdn.', [
+                                            'fqdn' => '<code>' . head($allowedFqdns) . '</code>'
+                                        ]) !!}
+                                    @endif
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
