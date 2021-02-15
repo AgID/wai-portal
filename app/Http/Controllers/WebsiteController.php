@@ -32,7 +32,6 @@ use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
@@ -52,7 +51,7 @@ class WebsiteController extends Controller
 
     public function __construct()
     {
-        $this->redisCache = Redis::connection(env('CACHE_CONNECTION'))->client();
+        $this->redisCache = Redis::connection(config('redis-connections.cache_connection'))->client();
     }
 
     /**
