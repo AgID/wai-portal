@@ -7,18 +7,25 @@ use Symfony\Component\Yaml\Yaml;
 
 class WidgetsController extends Controller
 {
+    public function __construct()
+    {
+        $this->analyticsService = app()->make('analytics-service');
+    }
+
     public function index(Website $website)
     {
         $analyticsId = $website->analytics_id;
-        $widgetData = app()->make('analytics-service')->getWidgetMetadata($analyticsId);
+        $widgetData = $this->analyticsService->getWidgetMetadata($analyticsId);
         $matomoWidgetUrl = env('MATOMO_WIDGETS_URL');
         $allowedWidgets = Yaml::parseFile(resource_path('data/widgets.yml'));
+        $allowedFqdns = $this->analyticsService->getSiteUrlsFromId($analyticsId);
 
         $data = [
             'widgets' => $widgetData,
             'idSite' => $analyticsId,
-            'url' => $matomoWidgetUrl,
+            'widgetsBaseUrl' => $matomoWidgetUrl,
             'allowedWidgets' => $allowedWidgets['allowed_widgets_preview'] ?? [],
+            'allowedFqdns' => $allowedFqdns,
         ];
 
         return view('pages.widgets-preview')->with($data);
