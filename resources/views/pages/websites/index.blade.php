@@ -18,7 +18,7 @@
         {{ __('aggiungi un sito web') }}
         @endcomponent
         </div>
-        @cannot(UserPermission::MANAGE_WEBSITES)
+        @if ($authUser->cannot(UserPermission::MANAGE_WEBSITES) && $authUser->status->is(UserStatus::PENDING))
             <div class="hide-when-active alert alert-info mt-5" role="alert">
                 {{ __("Nuovi :elements potranno essere aggiunti solo dopo l'attivazione del sito istituzionale.", [
                     'elements' => __('siti')
@@ -35,7 +35,7 @@
                     ]) !!}
                 @endif
             </div>
-        @endcannot
+        @endif
     @else
         @include('pages.websites.partials.add_primary', ['customForm' => false])
     @endif

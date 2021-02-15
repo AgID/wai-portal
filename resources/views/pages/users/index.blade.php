@@ -5,7 +5,7 @@
 @section('content')
     @component('layouts.components.box', ['classes' => 'rounded'])
     @include('partials.datatable')
-    @can(UserPermission::MANAGE_USERS)
+    @if ($authUser->can(UserPermission::MANAGE_USERS))
         <div class="mt-4 text-center text-sm-left">
         @component('layouts.components.link_button', [
             'icon' => 'it-plus',
@@ -15,12 +15,12 @@
         {{ __('aggiungi utente') }}
         @endcomponent
         </div>
-    @else
+    @elseif ($authUser->status->is(UserStatus::PENDING))
         <div class="alert alert-info mt-5" role="alert">
             {{ __("Nuovi :elements potranno essere aggiunti solo dopo l'attivazione del sito istituzionale.", [
                 'elements' => __('utenti')
             ]) }}
         </div>
-    @endcan
+    @endif
     @endcomponent
 @endsection
