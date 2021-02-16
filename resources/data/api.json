@@ -131,7 +131,7 @@
             "patch": {
                 "tags": ["Utenti"],
                 "summary": "Sospendi utente",
-                "operationId": "sospendUser",
+                "operationId": "suspendUser",
                 "responses": {
                     "200": {
                         "description": "Utente sospeso",
