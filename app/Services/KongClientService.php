@@ -84,12 +84,12 @@ class KongClientService
         return $client;
     }
 
-    public function makeConsumer(string $username, string $customID): array
+    public function makeConsumer(string $username, string $customId): array
     {
         $data = [
             'json' => [
                 'username' => $username,
-                'custom_id' => $customID,
+                'custom_id' => $customId,
             ],
             'headers' => [
                 'Accept' => 'application/json',
