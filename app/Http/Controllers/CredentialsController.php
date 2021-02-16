@@ -324,40 +324,16 @@ class CredentialsController extends Controller
             'consumer_id' => $clientJSON['consumer']['id'],
         ]);
 
-        return redirect()->route('api-credentials.index')->withModal([
-            'title' => __('La credenziale è stata inserita!'),
-            'icon' => 'it-check-circle',
-            'message' => implode("\n",
-                [
-                    __('Adesso puoi utilizzare la tua nuova credenziale e usare le API con il flusso "Client credentials" OAuth2.') . "\n",
-                    __('<strong>Il tuo client_id è:</strong> ') . $oauthCredentials['client_id'] . "\n",
-                    __('<strong>Il tuo client_secret è:</strong> ') . $oauthCredentials['client_secret'] . "\n",
-                    __('<h3>Attenzione!</h3>') . "\n",
-                    __('Conserva il tuo <strong>client_secret</strong> in un posto sicuro.') . "\n",
-                    __('In caso di smarrimento, può essere rigenerato nella pagina della credenziale.') . "\n",
-                ]
-            ),
-        ]);
+        return redirect()->route('api-credentials.index')
+            ->withModal($this->getModalCredentialStored($oauthCredentials['client_id'], $oauthCredentials['client_secret']));
     }
 
     public function regenerateCredential(Credential $credential)
     {
         $oauthCredentials = $this->clientService->regenerateSecret($credential->client_name, $credential->consumer_id, $credential->client_id);
 
-        return redirect()->route('api-credentials.show', ['credential' => $credential])->withModal([
-            'title' => __('La credenziale è stata inserita!'),
-            'icon' => 'it-check-circle',
-            'message' => implode("\n",
-                [
-                    __('Questa è la nuova credenziale utilizzabile per il flusso "Client credentials" OAuth2.') . "\n",
-                    __('<strong>Il tuo client_id è:</strong> ') . $oauthCredentials['client_id'] . "\n",
-                    __('<strong>Il tuo client_secret è:</strong> ') . $oauthCredentials['client_secret'] . "\n",
-                    __('<h3>Attenzione!</h3>') . "\n",
-                    __('Conserva il tuo <strong>client_secret</strong> in un posto sicuro.') . "\n",
-                    __('In caso di smarrimento, può essere rigenerato nella pagina della credenziale.') . "\n",
-                ]
-            ),
-        ]);
+        return redirect()->route('api-credentials.show', ['credential' => $credential])
+            ->withModal($this->getModalCredentialStored($oauthCredentials['client_id'], $oauthCredentials['client_secret'], true));
     }
 
     /**
@@ -444,6 +420,34 @@ class CredentialsController extends Controller
             'source' => $source . '?&editCredentialPermissions' . ($readonly ? '&readOnly' : ''),
             'caption' => __('elenco dei siti web presenti su :app', ['app' => config('app.name')]),
             'columnsOrder' => [['website_name', 'asc']],
+        ];
+    }
+
+    protected function getModalCredentialStored(string $clientId, string $clientSecret, ?bool $regenerated=false): array
+    {
+        return [
+            'title' => $regenerated
+                ? __('La credenziale è stata rigenerata')
+                : __('La credenziale è stata creata'),
+            'icon' => 'it-check-circle',
+            'message' => implode("\n",
+                [
+                    __('Adesso puoi utilizzare la tua nuova credenziale e usare le API con il flusso "Client credentials" OAuth2.') . "\n",
+                    '<strong>' . __('Il tuo client_id è:') . '</strong> <span class="text-monospace">' . $clientId . '</span>',
+                    '<strong>' . __('Il tuo client_secret è:') . '</strong> <span class="text-monospace">' . $clientSecret . '</span>',
+                ]
+            ),
+            'afterMessage' => implode("\n", [
+                '<div class="alert alert-warning mt-5" role="alert">',
+                '<h4 class="alert-heading">' . __('Attenzione') . '</h4>',
+                __('Prendi nota del tuo :client_secret e conservalo in un luogo sicuro.', [
+                    'client_secret' => '<strong>client_secret</strong>',
+                ]),
+                '<strong>' .  __('Non portà essere più visualizzato dopo la chiusura di questo messaggio.') . '</strong>',
+                '<hr>',
+                '<p class="mb-0">' . __('In caso di smarrimento o compromissione, può essere rigenerato nella pagina di dettaglio della credenziale.') . '</p>'.
+                '</div>',
+            ])
         ];
     }
 }
