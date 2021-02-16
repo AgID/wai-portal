@@ -417,7 +417,7 @@ class CredentialsController extends Controller
                     'searchable' => false,
                 ],
             ],
-            'source' => $source . '?&editCredentialPermissions' . ($readonly ? '&readOnly' : ''),
+            'source' => $source . '?editCredentialPermissions' . ($readonly ? '&readOnly' : ''),
             'caption' => __('elenco dei siti web presenti su :app', ['app' => config('app.name')]),
             'columnsOrder' => [['website_name', 'asc']],
         ];
