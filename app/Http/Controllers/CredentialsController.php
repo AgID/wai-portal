@@ -355,7 +355,7 @@ class CredentialsController extends Controller
             }, $customId->siteId)
             : [];
 
-        $websites = Website::whereIn('id', $sitesIdArray)->get();
+        $websites = Website::whereIn('analytics_id', $sitesIdArray)->get();
 
         return DataTables::of($websites)
             ->setTransformer(new WebsitesPermissionsTransformer())
