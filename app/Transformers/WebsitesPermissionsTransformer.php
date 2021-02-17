@@ -57,34 +57,34 @@ class WebsitesPermissionsTransformer extends TransformerAbstract
                 if ($readOnly) {
                     $data['icons'] = [
                         [
-                            'icon' => $this->getCredentialPermission($website->id, $oldCredentialPermission, 'R') ? 'it-check-circle' : 'it-close-circle',
-                            'color' => $this->getCredentialPermission($website->id, $oldCredentialPermission, 'R') ? 'success' : 'danger',
+                            'icon' => $this->getCredentialPermission($website->analytics_id, $oldCredentialPermission, 'R') ? 'it-check-circle' : 'it-close-circle',
+                            'color' => $this->getCredentialPermission($website->analytics_id, $oldCredentialPermission, 'R') ? 'success' : 'danger',
                             'label' => 'gestione',
                         ],
                         [
-                            'icon' => $this->getCredentialPermission($website->id, $oldCredentialPermission, 'W') ? 'it-check-circle' : 'it-close-circle',
-                            'color' => $this->getCredentialPermission($website->id, $oldCredentialPermission, 'W') ? 'success' : 'danger',
+                            'icon' => $this->getCredentialPermission($website->analytics_id, $oldCredentialPermission, 'W') ? 'it-check-circle' : 'it-close-circle',
+                            'color' => $this->getCredentialPermission($website->analytics_id, $oldCredentialPermission, 'W') ? 'success' : 'danger',
                             'label' => 'lettura',
                         ],
                     ];
                 } else {
                     $data['toggles'] = [
                         [
-                            'name' => 'permissions[' . $website->id . '][]',
+                            'name' => 'permissions[' . $website->analytics_id . '][]',
                             'value' => 'R',
                             'label' => 'lettura',
-                            'checked' => $this->getCredentialPermission($website->id, $oldCredentialPermission, 'R'),
+                            'checked' => $this->getCredentialPermission($website->analytics_id, $oldCredentialPermission, 'R'),
                             'dataAttributes' => [
-                                'entity' => $website->id,
+                                'entity' => $website->analytics_id,
                             ],
                         ],
                         [
-                            'name' => 'permissions[' . $website->id . '][]',
+                            'name' => 'permissions[' . $website->analytics_id . '][]',
                             'value' => 'W',
                             'label' => 'gestione',
-                            'checked' => $this->getCredentialPermission($website->id, $oldCredentialPermission, 'W'),
+                            'checked' => $this->getCredentialPermission($website->analytics_id, $oldCredentialPermission, 'W'),
                             'dataAttributes' => [
-                                'entity' => $website->id,
+                                'entity' => $website->analytics_id,
                             ],
                         ],
                     ];
