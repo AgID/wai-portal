@@ -38,7 +38,7 @@
         "davejamesmiller/laravel-breadcrumbs": "^5.3",
         "davidepastore/codice-fiscale": "^0.7.0",
         "doctrine/dbal": "^2.10",
-        "elasticsearch/elasticsearch": "7.10.*",
+        "elasticsearch/elasticsearch": "7.11.*",
         "ethanhann/redisearch-php": "^1.0",
         "fideloper/proxy": "^4.2",
         "guzzlehttp/guzzle": "^7.0",
