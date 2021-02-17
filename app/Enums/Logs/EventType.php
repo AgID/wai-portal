@@ -230,7 +230,20 @@ class EventType extends Enum implements LocalizedEnum
      */
     public const PURGE_PENDING_INVITATIONS_COMPLETED = 43;
 
+    /**
+     * The environment reset has been completed.
+     */
     public const ENVIRONMENT_RESET_COMPLETED = 44;
+
+    /**
+     * Send to Single Digital Gateway API event.
+     */
+    public const SINGLE_DIGITAL_GATEWAY_API_CALL_REQUEST = 45;
+
+    /**
+     * Send to Single Digital Gateway API event.
+     */
+    public const SINGLE_DIGITAL_GATEWAY_API_CALL_RESPONSE = 46;
 
     /**
      * Mail sent event.

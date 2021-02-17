@@ -1,0 +1,5 @@
+{
+  "description": "Country codes as per Eurostat. See  https://ec.europa.eu/eurostat/statistics-explained/index.php/Glossary:Country_codes",
+  "type": "string",
+  "$schema": "http://json-schema.org/schema#"
+}

@@ -117,6 +117,16 @@
                     <token key="ANALYTICS_API_SSL_VERIFY" value="${ANALYTICS_API_SSL_VERIFY}" />
                     <token key="ANALYTICS_PUBLIC_URL" value="${ANALYTICS_PUBLIC_URL}" />
                     <token key="ANALYTICS_PUBLIC_DASHBOARD_ID" value="${MATOMO_PUBLIC_ROLLUP_ID}" />
+                    <token key="SDG_API_PUBLIC_URL" value="${SDG_API_PUBLIC_URL}" />
+                    <token key="SDG_API_SSL_VERIFY" value="${SDG_API_SSL_VERIFY}" />
+                    <token key="SDG_API_KEY" value="${SDG_API_KEY}" />
+                    <token key="SDG_URLS_FILE_FORMAT" value="${SDG_URLS_FILE_FORMAT}" />
+                    <token key="SDG_COLUMN_INDEX_URL_CSV" value="${SDG_COLUMN_INDEX_URL_CSV}" />
+                    <token key="SDG_COLUMN_SEPARATOR_CSV" value="${SDG_COLUMN_SEPARATOR_CSV}" />
+                    <token key="SDG_URL_ARRAY_PATH_JSON" value="${SDG_COLUMN_SEPARATOR_CSV}" />
+                    <token key="SDG_URL_KEY_JSON" value="${SDG_COLUMN_SEPARATOR_CSV}" />
+                    <token key="SDG_STORAGE_FOLDER" value="${SDG_STORAGE_FOLDER}" />
+                    <token key="SDG_STORAGE_DISK" value="${SDG_STORAGE_DISK}" />
                     <token key="MATOMO_DB_READER" value="${MATOMO_DB_READER}" />
                     <token key="MATOMO_DB_USER" value="${MATOMO_DB_USER}" />
                     <token key="MATOMO_DB_PASSWORD" value="${MATOMO_DB_PASSWORD}" />
@@ -124,6 +134,7 @@
                     <token key="MATOMO_ROOT_PASSWORD" value="${HASHED_MATOMO_ROOT_PASSWORD}" />
                     <token key="MATOMO_ROOT_APIKEY" value="${MATOMO_ROOT_APIKEY}" />
                     <token key="MATOMO_VERSION" value="${MATOMO_VERSION}" />
+                    <token key="MATOMO_CRON_ARCHIVING_ENABLED" value="${MATOMO_CRON_ARCHIVING_ENABLED}" />
                     <token key="MATOMO_WAI_THEME_VERSION" value="${MATOMO_WAI_THEME_VERSION}" />
                     <token key="MATOMO_PLUGIN_USERSMANAGERONLYSUPERUSER_VERSION" value="${MATOMO_PLUGIN_USERSMANAGERONLYSUPERUSER_VERSION}" />
                     <token key="MATOMO_PLUGIN_USERSMANAGERONLYSUPERUSER_ENABLED" value="${MATOMO_PLUGIN_USERSMANAGERONLYSUPERUSER_ENABLED}" />

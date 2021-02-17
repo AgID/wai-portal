@@ -154,6 +154,27 @@ class MatomoService implements AnalyticsServiceContract
     }
 
     /**
+     * Get the id of the site with this url in the Analytics Service.
+     *
+     * @param string $siteUrl the site url of the website
+     *
+     * @throws AnalyticsServiceException if unable to connect the Analytics Service
+     * @throws CommandErrorException if command is unsuccessful
+     *
+     * @return array all the ids of all the sites
+     */
+    public function getSitesIdFromUrl($siteUrl): array
+    {
+        $params = [
+            'method' => 'SitesManager.getSitesIdFromSiteUrl',
+            'token_auth' => $this->tokenAuth,
+            'url' => $siteUrl,
+        ];
+
+        return $this->apiCall($params);
+    }
+
+    /**
      * Change archive status in the Analytics Service.
      *
      * @param string $idSites the Analytics Service website ID
@@ -430,7 +451,6 @@ class MatomoService implements AnalyticsServiceContract
             'idSite' => $idSite,
             'period' => 'range',
             'date' => $from . ',' . now()->format('Y-m-d'),
-            'trigger' => 'archivephp',
             'token_auth' => $this->tokenAuth,
         ];
         $response = $this->apiCall($params);
@@ -456,7 +476,6 @@ class MatomoService implements AnalyticsServiceContract
             'idSite' => $idSite,
             'period' => 'month',
             'date' => 'yesterday',
-            'trigger' => 'archivephp',
             'token_auth' => $this->tokenAuth,
         ];
         $response = $this->apiCall($params);
@@ -482,7 +501,105 @@ class MatomoService implements AnalyticsServiceContract
             'idSite' => $idSite,
             'period' => 'day',
             'date' => 'last' . $days,
-            'trigger' => 'archivephp',
+            'token_auth' => $this->tokenAuth,
+        ];
+
+        return $this->apiCall($params);
+    }
+
+    /**
+     * Get the stats from a specific url.
+     *
+     * @param string $idSite the Analytics Service website ID
+     * @param int $days the requested number of days
+     * @param string $url the url of the site
+     *
+     * @throws CommandErrorException if command is unsuccessful
+     * @throws AnalyticsServiceException if unable to connect the Analytics Service
+     *
+     * @return array the list of days with the number of visits
+     */
+    public function getStatsPageUrl(string $idSite, int $days, string $url): array
+    {
+        $params = [
+            'method' => 'Actions.getPageUrl',
+            'idSite' => $idSite,
+            'period' => 'day',
+            'date' => 'last' . $days,
+            'pageUrl' => $url,
+            'token_auth' => $this->tokenAuth,
+        ];
+
+        return $this->apiCall($params);
+    }
+
+    /**
+     * Get all defined segments.
+     *
+     * @throws CommandErrorException if command is unsuccessful
+     * @throws AnalyticsServiceException if unable to connect the Analytics Service
+     *
+     * @return array the list of days with the number of visits
+     */
+    public function getAllSegments(): array
+    {
+        $params = [
+            'method' => 'SegmentEditor.getAll',
+            'token_auth' => $this->tokenAuth,
+            'filter_limit' => -1,
+        ];
+
+        return $this->apiCall($params);
+    }
+
+    /**
+     * Add segment for a specific definition.
+     *
+     * @param string $idSite the Analytics Service website ID
+     * @param int $days the requested number of days
+     * @param string $segment the definition of the segment
+     * @param string $name the name of the segment
+     *
+     * @throws CommandErrorException if command is unsuccessful
+     * @throws AnalyticsServiceException if unable to connect the Analytics Service
+     *
+     * @return array the list of days with the number of visits
+     */
+    public function addSegment(string $idSite, string $segment, string $name): array
+    {
+        $params = [
+            'method' => 'SegmentEditor.add',
+            'idSite' => $idSite,
+            'name' => $name,
+            'definition' => $segment,
+            'enabledAllUsers' => 1,
+            'autoArchive' => 1,
+            'token_auth' => $this->tokenAuth,
+        ];
+
+        return $this->apiCall($params);
+    }
+
+    /**
+     * Get the country report for a specific segment.
+     *
+     * @param string $idSite the Analytics Service website ID
+     * @param string $range the requested number of days
+     * @param string $segment the segment of the report
+     *
+     * @throws CommandErrorException if command is unsuccessful
+     * @throws AnalyticsServiceException if unable to connect the Analytics Service
+     *
+     * @return array the report with the countries detected for the specific segment
+     */
+    public function getCountriesInSegment(string $idSite, string $range, string $segment): array
+    {
+        $params = [
+            'method' => 'UserCountry.getCountry',
+            'idSite' => $idSite,
+            'period' => 'range',
+            'date' => $range,
+            'segment' => $segment,
             'token_auth' => $this->tokenAuth,
         ];
 
@@ -562,7 +679,7 @@ class MatomoService implements AnalyticsServiceContract
             throw new AnalyticsServiceException($exception->getMessage());
         }
 
-        $response = json_decode(preg_replace('/[^\[]*(\[?{.*}\]?).*/is', '${1}', $res->getBody()), true);
+        $response = json_decode($res->getBody(), true);
 
         if (!empty($response['result']) && 'error' === $response['result']) {
             throw new CommandErrorException($response['message']);

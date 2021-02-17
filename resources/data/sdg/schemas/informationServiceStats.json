@@ -1,0 +1,42 @@
+{
+  "type": "object",
+  "required": [
+    "uniqueId",
+    "referencePeriod",
+    "transferDate",
+    "transferType",
+    "nbEntries",
+    "sources"
+  ],
+  "properties": {
+    "uniqueId": {
+      "description": "Unique ID for feedback submission for a specific reference period collected from the Unique ID web API call.",
+      "type": "string"
+    },
+    "referencePeriod": {
+      "$ref": "referencePeriod.json"
+    },
+    "transferDate": {
+      "description": "Date Time when the web API is called. The format must complies with the RFC 3339 standard. E.g.:2020-12-31T23:59:59.00Z (full-dateTfull-timeZ)",
+      "format": "date-time",
+      "type": "string"
+    },
+    "transferType": {
+      "type": "string",
+      "enum": [
+        "API",
+        "Manual"
+      ]
+    },
+    "nbEntries": {
+      "type": "number"
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "$ref": "source.json"
+      }
+    }
+  },
+  "$schema": "http://json-schema.org/schema#"
+}
