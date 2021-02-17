@@ -22,7 +22,7 @@
         "datatables.net-responsive-dt": "^2.2.7",
         "eslint": "^7.19.0",
         "eslint-loader": "^4.0.2",
-        "eslint-plugin-vue": "^7.5.0",
+        "eslint-plugin-vue": "^7.6.0",
         "iframe-resizer": "^4.3.1",
         "jquery": "^3.5.1",
         "laravel-mix": "^5.0.9",
