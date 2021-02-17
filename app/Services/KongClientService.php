@@ -5,8 +5,8 @@ namespace App\Services;
 use App\Exceptions\ApiGatewayServiceException;
 use App\Exceptions\InvalidCredentialException;
 use Illuminate\Http\Client\RequestException;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Redis;
 
 /**
  * Kong Services Api.
@@ -25,12 +25,11 @@ class KongClientService
     public function __construct()
     {
         $this->serviceBaseUri = config('kong-service.admin_api_url');
-        $this->redisCache = Redis::connection(config('redis-connections.cache_connection'))->client();
     }
 
     public function getConsumer(string $idConsumer): ?array
     {
-        $consumer = $this->redisCache->get('kong:consumer:' . $idConsumer);
+        $consumer = Cache::get('kong:consumer:' . $idConsumer);
 
         if (null !== $consumer) {
             $consumer = json_decode($consumer);
@@ -46,14 +45,14 @@ class KongClientService
 
         $consumer = $this->apiCall($headers, [], 'GET', '/consumers/' . $idConsumer);
 
-        $this->redisCache->set('kong:consumer:' . $idConsumer, json_encode($consumer));
+        Cache::put('kong:consumer:' . $idConsumer, json_encode($consumer));
 
         return $consumer;
     }
 
     public function getClient(string $idConsumer): ?array
     {
-        $client = $this->redisCache->get('kong:client:' . $idConsumer);
+        $client = Cache::get('kong:client:' . $idConsumer);
 
         if (null !== $client) {
             $client = json_decode($client);
@@ -79,7 +78,7 @@ class KongClientService
 
         $client = $clients[0];
 
-        $this->redisCache->set('kong:client:' . $idConsumer, json_encode($client));
+        Cache::put('kong:client:' . $idConsumer, json_encode($client));
 
         return $client;
     }
@@ -99,7 +98,7 @@ class KongClientService
 
         $response = $this->apiCall($data['headers'], $data['json'], 'POST', '/consumers');
 
-        $this->redisCache->set('kong:consumer:' . $response['id'], json_encode($response));
+        Cache::put('kong:consumer:' . $response['id'], json_encode($response));
 
         return $this->makeClient($response['username'], $response['id']);
     }
@@ -117,7 +116,7 @@ class KongClientService
 
         $response = $this->apiCall($data['headers'], $data['form_params'], 'POST', '/consumers/' . $name . '/oauth2', true);
 
-        $this->redisCache->set('kong:client:' . $idConsumer, json_encode($response));
+        Cache::put('kong:client:' . $idConsumer, json_encode($response));
 
         return $response;
     }
@@ -136,7 +135,7 @@ class KongClientService
 
         $response = $this->apiCall($data['headers'], $data['form_params'], 'PUT', '/consumers/' . $name . '/oauth2/' . $idClient, true);
 
-        $this->redisCache->set('kong:client:' . $idConsumer, json_encode($response));
+        Cache::put('kong:client:' . $idConsumer, json_encode($response));
 
         return $response;
     }
@@ -152,7 +151,7 @@ class KongClientService
         ];
 
         $consumer = $this->apiCall($data['headers'], $data['json'], 'PUT', '/consumers/' . $idConsumer);
-        $this->redisCache->set('kong:consumer:' . $idConsumer, json_encode($consumer));
+        Cache::put('kong:consumer:' . $idConsumer, json_encode($consumer));
 
         return $consumer;
     }
