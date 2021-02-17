@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use App\Exceptions\AnalyticsServiceException;
 use App\Exceptions\SDGServiceException;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Support\Facades\Storage;
@@ -12,7 +13,7 @@ use stdClass;
 /**
  * Get the dataset to Single Digital Gateway API for the Statistics on Information Services.
  */
-trait BuildDatasetForSingleDigitalGatewayAPI
+trait BuildsDatasetForSingleDigitalGatewayAPI
 {
     use ParseUrls;
 
@@ -21,26 +22,44 @@ trait BuildDatasetForSingleDigitalGatewayAPI
      *
      * @return object the dataset
      */
-    public function buildDatasetForSDG()
+    public function buildDatasetForSDG(?string $rangePeriod = null)
     {
         $analyticsService = app()->make('analytics-service');
 
-        $days = config('single-digital-gateway-service.last_days');
-        $columnSeparator = config('single-digital-gateway-service.url_column_separator_csv');
-        $columnIndexUrl = config('single-digital-gateway-service.url_column_index_csv');
         $matomoRollupId = config('analytics-service.public_dashboard');
         $cronArchivingEnabled = config('analytics-service.cron_archiving_enabled');
 
-        $arrayUrls = $this->getUrlsFromConfig($columnSeparator, $columnIndexUrl);
+        if (is_string($rangePeriod)) {
+            if (false === strpos($rangePeriod, ',')) {
+                throw new SDGServiceException('Invalid period parameter');
+            }
+            list($startDateString, $endDateString) = explode(',', $rangePeriod);
 
-        date_default_timezone_set('UTC');
+            $startDate = Carbon::createFromFormat('Y-m-d', $startDateString, 'UTC')->startOfDay();
+            $endDate = Carbon::createFromFormat('Y-m-d', $endDateString, 'UTC')->endOfDay();
+
+            if ($startDate->toDateString() !== $startDateString || $endDate->toDateString() !== $endDateString) {
+                throw new SDGServiceException('Invalid date in period parameter');
+            }
+        } else {
+            $startDate = Carbon::now('UTC')->startOfMonth()->subMonth(); // firstDayofPreviousMonth
+            $endDate = Carbon::now('UTC')->startofMonth()->subMonth()->endOfMonth(); // lastDayofPreviousMonth
+
+            $rangePeriod = implode(',', [
+                $startDate->toDateString(),
+                $endDate->toDateString(),
+            ]);
+        }
+
+        $arrayUrls = $this->getUrls();
+
         $referencePeriod = new stdClass();
-        $referencePeriod->startDate = config('analytics-service.start_date', date('Y-m-d\TH:i:s\Z', strtotime('-' . ($days) . ' days')));
-        $referencePeriod->endDate = config('analytics-service.end_date', date('Y-m-d\TH:i:s\Z'));
+        $referencePeriod->startDate = $startDate->toIso8601ZuluString();
+        $referencePeriod->endDate = $endDate->toIso8601ZuluString();
 
         $data = new stdClass();
         $data->referencePeriod = $referencePeriod;
-        $data->transferDate = date('Y-m-d\TH:i:s\Z');
+        $data->transferDate = Carbon::now('UTC')->toIso8601ZuluString();
         $data->transferType = 'API';
         $data->nbEntries = 0;
         $data->sources = [];
@@ -56,6 +75,10 @@ trait BuildDatasetForSingleDigitalGatewayAPI
             ];
 
             foreach ($arrayUrls as $url) {
+                if (!is_string($url)) {
+                    continue;
+                }
+
                 $source = new stdClass();
                 $source->sourceUrl = trim($url);
 
@@ -99,7 +122,7 @@ trait BuildDatasetForSingleDigitalGatewayAPI
 
                 foreach ($sdgDeviceTypes as $sdgDeviceType) {
                     $segmentDefinition = 'pageUrl==' . urlencode($source->sourceUrl) . ';' . static::getDeviceTypeSegmentParameter($sdgDeviceType);
-                    $countryDays = $analyticsService->getCountriesInSegment($siteId, $days, $segmentDefinition);
+                    $countryDays = $analyticsService->getCountriesInSegment($siteId, $rangePeriod, $segmentDefinition);
 
                     foreach ($countryDays as $countryDay) {
                         foreach ($countryDay as $country) {
@@ -129,15 +152,29 @@ trait BuildDatasetForSingleDigitalGatewayAPI
     /**
      * Return an array of URLs to be used for the dataset build.
      *
-     * @param string $separator the separator char for the CSV
-     * @param string $index the index of the column containing the URL
+     * @return array the URLs to be used for the dataset build
+     */
+    protected function getUrls(): array
+    {
+        if ('csv' === strtolower(config('single-digital-gateway-service.urls_file_format', 'json'))) {
+            return $this->getUrlsFromCsv();
+        } else {
+            return $this->getUrlsFromJson();
+        }
+    }
+
+    /**
+     * Return an array of URLs to be used for the dataset build.
      *
      * @throws SDGServiceException if the CSV is not valid or contains invalid values
      *
      * @return array the URLs to be used for the dataset build
      */
-    protected function getUrlsFromConfig(string $separator, int $index): array
+    protected function getUrlsFromCsv(): array
     {
+        $separator = config('single-digital-gateway-service.url_column_separator_csv');
+        $index = config('single-digital-gateway-service.url_column_index_csv');
+
         try {
             $csvContents = file(Storage::disk('persistent')->path('sdg/urls.csv'));
         } catch (Exception $e) {
@@ -155,6 +192,44 @@ trait BuildDatasetForSingleDigitalGatewayAPI
 
             return $rowArray[$index];
         }, $csvContents);
+
+        return $urls;
+    }
+
+    /**
+     * Return an array of URLs to be used for the dataset build.
+     *
+     * @throws SDGServiceException if the JSON is not valid or contains invalid values
+     *
+     * @return array the URLs to be used for the dataset build
+     */
+    protected function getUrlsFromJson(): array
+    {
+        $urlsArrayPath = config('single-digital-gateway-service.url_array_path_json');
+        $urlsKey = config('single-digital-gateway-service.url_key_json');
+
+        try {
+            $jsonContents = Storage::disk('persistent')->get('sdg/urls.json');
+            $urlsArray = json_decode($jsonContents, true, 512, JSON_THROW_ON_ERROR);
+        } catch (Exception $e) {
+            throw new SDGServiceException("Error reading the JSON file populated with SDG URLs.\n" . $e->getMessage());
+        }
+
+        $urlsArrayPathSegments = array_filter(explode('.', $urlsArrayPath));
+
+        foreach ($urlsArrayPathSegments as $urlsArrayPathSegment) {
+            if (!array_key_exists($urlsArrayPathSegment, $urlsArray)) {
+                throw new SDGServiceException('Error during dataset build: JSON file not well formed.');
+            }
+
+            if (!is_array($urlsArray[$urlsArrayPathSegment])) {
+                throw new SDGServiceException('Error during dataset build: JSON file not well formed.');
+            }
+
+            $urlsArray = $urlsArray[$urlsArrayPathSegment];
+        }
+
+        $urls = array_filter(collect($urlsArray)->pluck($urlsKey)->all());
 
         return $urls;
     }
