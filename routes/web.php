@@ -461,6 +461,9 @@ Route::middleware('auth.admin', 'verified:admin.verification.notice')->group(fun
                         ->name('admin.publicAdministration.websites.snippet.javascript');
                 });
             });
+
+            Route::get('/sdg-current-dataset', 'HomeController@showCurrentSDGDataset')
+                ->name('admin.sdg.dataset.show');
         });
 
         Route::get('/user/change-password', 'Auth\SuperAdminAuthController@showPasswordChange')

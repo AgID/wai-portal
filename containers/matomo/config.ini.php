@@ -30,13 +30,20 @@ enable_installer = 0
 enable_plugins_admin = 0
 proxy_uri_header = 1
 enable_general_settings_admin = 0
-browser_archiving_disabled_enforce = 1
-enable_browser_archiving_triggering = 0
+browser_archiving_disabled_enforce = @MATOMO_CRON_ARCHIVING_ENABLED@
+enable_browser_archiving_triggering = @MATOMO_CRON_ARCHIVING_DISABLED@
 default_day = "previous30"
 default_period = "range"
 default_language = "it"
 archiving_custom_ranges[] = previous30
 enable_processing_unique_visitors_range = 1
+
+[Debug]
+;always_archive_data_day=1
+;always_archive_data_period=1
+enable_create_realtime_segments = 0
+allow_adding_segments_for_all_websites = 0
+process_new_segments_from = "last30"
 
 [Plugins]
 Plugins[] = "CorePluginsAdmin"

@@ -202,6 +202,9 @@ MATOMO_ROOT_PASSWORD=Password
 # Matomo super user API Key, put any MD5 hash.
 MATOMO_ROOT_APIKEY=d300edfad46f2723f0df5b5b5877033b
 
+# Matomo cron archiving enabled
+MATOMO_CRON_ARCHIVING_ENABLED=false
+
 # Matomo public dashboard user name
 MATOMO_PUBLIC_USER=viewer
 
@@ -258,6 +261,22 @@ ANALYTICS_API_SSL_VERIFY=false
 
 # The public URL for your Analytics Service.
 ANALYTICS_PUBLIC_URL=https://localhost:9443
+
+
+# Single Digital Gateway Service Endpoint
+# ----------------------
+
+SDG_API_PUBLIC_URL=
+SDG_API_SSL_VERIFY=false
+SDG_API_KEY=
+SDG_STORAGE_FOLDER=sdg
+SDG_STORAGE_DISK=public
+SDG_URLS_FILE_FORMAT=json
+SDG_COLUMN_INDEX_URL_CSV=2
+SDG_COLUMN_SEPARATOR_CSV=;
+SDG_URL_ARRAY_PATH_JSON=path.to.urls.array
+SDG_URL_KEY_JSON=url
+
 
 # Elastic Search Service URLs
 # ---------------------------

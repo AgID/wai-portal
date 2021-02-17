@@ -1,0 +1,30 @@
+{
+  "description": "An object representing the statistical information for one particular source URL. Array of objects because same URL can have several combination of statistics depending on different values of the originating country or type of device.",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": [
+      "nbVisits",
+      "originatingCountry",
+      "deviceType"
+    ],
+    "properties": {
+      "nbVisits": {
+        "type": "integer"
+      },
+      "originatingCountry": {
+        "$ref": "country.json"
+      },
+      "deviceType": {
+        "type": "string",
+        "enum": [
+          "PC",
+          "Tablet",
+          "Smartphone",
+          "Others"
+        ]
+      }
+    }
+  },
+  "$schema": "http://json-schema.org/schema#"
+}
