@@ -392,6 +392,15 @@ class CredentialsController extends Controller
      */
     public function getDatatableWebsitesPermissionsParams(string $source, bool $readonly = false): array
     {
+        $startOrContinueQuryString = "";
+
+        if(!parse_url($source, PHP_URL_QUERY)){
+            $startOrContinueQuryString = "?";
+        }
+        else{
+            $startOrContinueQuryString = "&";
+        }
+
         return [
             'datatableOptions' => [
                 'searching' => [
@@ -417,7 +426,7 @@ class CredentialsController extends Controller
                     'searchable' => false,
                 ],
             ],
-            'source' => $source . '&editCredentialPermissions=1' . ($readonly ? '&readOnly' : ''),
+            'source' => $source . $startOrContinueQuryString .'editCredentialPermissions=1' . ($readonly ? '&readOnly' : ''),
             'caption' => __('elenco dei siti web presenti su :app', ['app' => config('app.name')]),
             'columnsOrder' => [['website_name', 'asc']],
         ];
