@@ -32,10 +32,10 @@ use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Yajra\DataTables\DataTables;
+use Illuminate\Support\Facades\Cache;
 
 /**
  * Website management controller.
@@ -46,13 +46,6 @@ class WebsiteController extends Controller
     use SendsResponse;
     use HasRoleAwareUrls;
     use ManagePublicAdministrationRegistration;
-
-    protected $redisCache;
-
-    public function __construct()
-    {
-        $this->redisCache = Redis::connection(config('redis-connections.cache_connection'))->client();
-    }
 
     /**
      * Display the websites list.
@@ -864,7 +857,7 @@ class WebsiteController extends Controller
         $id = $website->analytics_id;
         $list = app()->make('analytics-service')->getSiteUrlsFromId($id);
 
-        $this->redisCache->set($id, implode(' ', $list));
+        Cache::put($id, implode(' ', $list));
     }
 
     private function getUriWebsiteAPI(Website $website): string
