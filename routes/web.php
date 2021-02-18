@@ -193,8 +193,8 @@ Route::middleware('spid.auth', 'auth', 'verified:verification.notice')->group(fu
         Route::get('/api', 'SwaggerController@index')
         ->name('show.swagger');
 
-        Route::get('/api/configuration', 'SwaggerController@apiConfiguration')
-        ->name('show.swagger.configuration');
+        Route::get('/api/specification', 'SwaggerController@apiSpecification')
+        ->name('show.swagger.specification');
 
         Route::prefix('/api-credentials')->group(function () {
             Route::get('/', 'CredentialsController@index')
