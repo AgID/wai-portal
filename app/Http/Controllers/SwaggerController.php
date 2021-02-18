@@ -41,7 +41,7 @@ class SwaggerController extends Controller
 
         if (!is_file($path) || !is_readable($path)) {
             return response()
-                ->json(['error' => 'configuration file not readable'], 400);
+                ->json(['error' => 'API configuration file not readable'], 500);
         }
 
         $data = json_decode(file_get_contents($path));
