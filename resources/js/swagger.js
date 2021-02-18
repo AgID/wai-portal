@@ -66,7 +66,7 @@ export default (() => {
             };
 
             const ui = SwaggerUIBundle({
-                url: "/api/configuration",
+                url: "/api/specification",
                 dom_id: "#swagger-ui",
                 plugins: [disableTryItOutPlugin, disableAuthorizeButtonPlugin]
             });
