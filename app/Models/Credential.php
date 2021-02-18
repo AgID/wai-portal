@@ -59,6 +59,13 @@ class Credential extends Model
         return $data['client_id'];
     }
 
+    public function getOauthClientIdAttribute(): string
+    {
+        $data = app()->make('kong-client-service')->getClient($this->consumer_id);
+
+        return $data['id'];
+    }
+
     private function customIdArray(string $consumerId): ?array
     {
         $consumer = app()->make('kong-client-service')->getConsumer($consumerId);
