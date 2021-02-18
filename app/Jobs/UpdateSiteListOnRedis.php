@@ -9,7 +9,6 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Redis;
 
 class UpdateSiteListOnRedis implements ShouldQueue
 {
@@ -41,7 +40,7 @@ class UpdateSiteListOnRedis implements ShouldQueue
             $list = $this->analyticsService->getSiteUrlsFromId($id);
 
             $listToString = implode(' ', $list);
-            
+
             Cache::put($id, $listToString);
         }
 
