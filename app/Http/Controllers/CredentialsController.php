@@ -330,6 +330,18 @@ class CredentialsController extends Controller
 
     public function regenerateCredential(Credential $credential)
     {
+        $tokens = $this->clientService->getTokenList();
+
+        if ($tokens && is_array($tokens['data'])) {
+            $tokens = array_filter($tokens['data'], function ($token) use ($credential) {
+                return $token['credential']['id'] === $credential->OauthClientId;
+            });
+
+            foreach ($tokens as &$token) {
+                $this->clientService->invalidateToken($token['id']);
+            }
+        }
+
         $oauthCredentials = $this->clientService->regenerateSecret($credential->client_name, $credential->consumer_id, $credential->client_id);
 
         return redirect()->route('api-credentials.show', ['credential' => $credential])
@@ -392,13 +404,12 @@ class CredentialsController extends Controller
      */
     public function getDatatableWebsitesPermissionsParams(string $source, bool $readonly = false): array
     {
-        $startOrContinueQuryString = "";
+        $startOrContinueQuryString = '';
 
-        if(!parse_url($source, PHP_URL_QUERY)){
-            $startOrContinueQuryString = "?";
-        }
-        else{
-            $startOrContinueQuryString = "&";
+        if (!parse_url($source, PHP_URL_QUERY)) {
+            $startOrContinueQuryString = '?';
+        } else {
+            $startOrContinueQuryString = '&';
         }
 
         return [
@@ -426,20 +437,21 @@ class CredentialsController extends Controller
                     'searchable' => false,
                 ],
             ],
-            'source' => $source . $startOrContinueQuryString .'editCredentialPermissions=1' . ($readonly ? '&readOnly' : ''),
+            'source' => $source . $startOrContinueQuryString . 'editCredentialPermissions=1' . ($readonly ? '&readOnly' : ''),
             'caption' => __('elenco dei siti web presenti su :app', ['app' => config('app.name')]),
             'columnsOrder' => [['website_name', 'asc']],
         ];
     }
 
-    protected function getModalCredentialStored(string $clientId, string $clientSecret, ?bool $regenerated=false): array
+    protected function getModalCredentialStored(string $clientId, string $clientSecret, ?bool $regenerated = false): array
     {
         return [
             'title' => $regenerated
                 ? __('La credenziale è stata rigenerata')
                 : __('La credenziale è stata creata'),
             'icon' => 'it-check-circle',
-            'message' => implode("\n",
+            'message' => implode(
+                "\n",
                 [
                     __('Adesso puoi utilizzare la tua nuova credenziale e usare le API con il flusso "Client credentials" OAuth2.') . "\n",
                     '<strong>' . __('Il tuo client_id è:') . '</strong> <span class="text-monospace">' . $clientId . '</span>',
@@ -452,11 +464,11 @@ class CredentialsController extends Controller
                 __('Prendi nota del tuo :client_secret e conservalo in un luogo sicuro.', [
                     'client_secret' => '<strong>client_secret</strong>',
                 ]),
-                '<strong>' .  __('Non portà essere più visualizzato dopo la chiusura di questo messaggio.') . '</strong>',
+                '<strong>' . __('Non portà essere più visualizzato dopo la chiusura di questo messaggio.') . '</strong>',
                 '<hr>',
-                '<p class="mb-0">' . __('In caso di smarrimento o compromissione, può essere rigenerato nella pagina di dettaglio della credenziale.') . '</p>'.
-                '</div>',
-            ])
+                '<p class="mb-0">' . __('In caso di smarrimento o compromissione, può essere rigenerato nella pagina di dettaglio della credenziale.') . '</p>' .
+                    '</div>',
+            ]),
         ];
     }
 }

@@ -200,42 +200,42 @@ Route::middleware('spid.auth', 'auth', 'verified:verification.notice')->group(fu
             Route::prefix('/api-credentials')->group(function () {
                 Route::get('/', 'CredentialsController@index')
                 ->name('api-credentials.index');
-    
+
                 Route::get('/create', 'CredentialsController@create')
                 ->name('api-credentials.create');
-    
+
                 Route::post('/store', 'CredentialsController@store')
                 ->name('api-credentials.store');
-    
+
                 Route::get('/data', 'CredentialsController@dataJson')
                 ->name('api-credentials.data.json');
-    
+
                 Route::get('/data/permissions/', 'CredentialsController@makeCredentialsWebsitesPermissionsJson')
                 ->name('api-credentials.websites.permissions.make');
-    
+
                 Route::get('/data/permissions/show/{credential}', 'CredentialsController@showDataCredentialsWebsitesPermissionsJson')
                 ->name('api-credentials.websites.permissions');
-    
+
                 Route::get('/{credential}/show', 'CredentialsController@show')
                 ->name('api-credentials.show');
-    
+
                 Route::get('/{credential}/regenerate', 'CredentialsController@regenerateCredential')
                 ->name('api-credentials.regenerate');
-    
+
                 Route::get('/{credential}/show/json', 'CredentialsController@showJson')
                 ->name('api-credentials.show-json');
-    
+
                 Route::get('/{credential}/edit', 'CredentialsController@edit')
                 ->name('api-credentials.edit');
-    
+
                 Route::put('/{credential}', 'CredentialsController@update')
                 ->name('api-credentials.update');
-    
+
                 Route::patch('/{credential}/delete', 'CredentialsController@delete')
                 ->name('api-credentials.delete');
-            }); 
+            });
         });
-        
+
         Route::middleware('authorize.analytics:' . UserPermission::VIEW_LOGS)->group(function () {
             Route::prefix('/logs')->group(function () {
                 Route::get('/', 'Logs\LogController@show')
