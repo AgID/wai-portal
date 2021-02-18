@@ -35,7 +35,7 @@ class SwaggerController extends Controller
         return view('pages.swagger')->with($roleAwareUrls)->with($config);
     }
 
-    public function apiConfiguration()
+    public function apiSpecification()
     {
         $path = resource_path('data/api.json');
 
