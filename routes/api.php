@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('api.authentication')->group(function () {
+Route::middleware('api.auth')->group(function () {
     Route::get('/', function () {
         return response()->json(['test' => getallheaders()], 200);
     });

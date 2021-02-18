@@ -6,7 +6,7 @@ use App\Models\Credential;
 use Closure;
 use Illuminate\Session\Middleware\StartSession;
 
-class ApiAuthentication extends StartSession
+class AuthenticateApi extends StartSession
 {
     /**
      * Check whether the session has a tenant selected for the current request.
@@ -38,11 +38,8 @@ class ApiAuthentication extends StartSession
         }
 
         $credentials = new Credential();
-
         $selectCredential = $credentials->getCredentialFromConsumerId($consumerId);
-
         $publicAdministration = $selectCredential->publicAdministration()->first();
-
         $request->attributes->add(['publicAdministration' => $publicAdministration]);
 
         return $next($request);
@@ -51,9 +48,9 @@ class ApiAuthentication extends StartSession
     protected function jsonError($code)
     {
         return [
-            'title' => 'insufficient permission err. ' . $code,
-            'message' => 'You\'re not allowed to carry out this action',
-            'type' => 'insufficient_permission',
+            'title' => 'insufficient permissions',
+            'status' => 403,
+            'code' => $code,
         ];
     }
 }
