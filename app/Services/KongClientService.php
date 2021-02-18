@@ -170,6 +170,26 @@ class KongClientService
         return true;
     }
 
+    public function getTokenList(): ?array
+    {
+        $headers = [
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+        ];
+
+        return $this->apiCall($headers, [], 'GET', '/oauth2_tokens/');
+    }
+
+    public function invalidateToken(string $tokenId): ?array
+    {
+        $headers = [
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+        ];
+
+        return $this->apiCall($headers, [], 'DELETE', '/oauth2_tokens/' . $tokenId);
+    }
+
     protected function apiCall(array $headers = [], array $body = [], string $method = 'GET', string $path = '/', bool $isForm = false): ?array
     {
         $method = strtolower($method);
