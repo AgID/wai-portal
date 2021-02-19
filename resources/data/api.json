@@ -138,7 +138,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/UserSuspendObject"
+                                    "$ref": "#/components/schemas/UserInfoObject"
                                 }
                             }
                         }
@@ -160,7 +160,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/UserSuspendObject"
+                                    "$ref": "#/components/schemas/UserInfoObject"
                                 }
                             }
                         }
@@ -460,8 +460,12 @@
                 },
                 "example": {
                     "result": "ok",
-                    "user_name": "Claudio",
-                    "status_description": "SUSPENDED"
+                    "id": "4427f41c-de93-4ce7-becc-99902a38799e",
+                    "user_name": "Luisa Test",
+                    "status": "SUSPENDED",
+                    "status_description": "sospeso",
+                    "trashed": false,
+                    "administration": "Agenzia per L'Italia Digitale"
                 }
             },
             "SiteInfoArray": {
@@ -591,7 +595,7 @@
                     "firstName": "Mario",
                     "lastName": "Rossi",
                     "codice_fiscale": "RSSMRA80H04F205W",
-                    "email": "mario.rossi@agid.gov.it"
+                    "email": "public.administration@agid.gov.it"
                 }
             },
             "UserStatus": {
@@ -646,7 +650,7 @@
                 "example": {
                     "firstName": "User",
                     "lastName": "Example",
-                    "email": "user@email.com",
+                    "email": "name@email.com",
                     "fiscalNumber": "ZRSGLC89D05H501J",
                     "permissions": {
                         "siteId" : ["manage-analytics"]
