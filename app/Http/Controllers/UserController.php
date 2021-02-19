@@ -128,8 +128,9 @@ class UserController extends Controller
         ]);
     }
 
-    public function storeJson(StoreUserRequest $request, PublicAdministration $publicAdministration)
+    public function storeJson(StoreUserRequest $request)
     {
+        $publicAdministration = get_public_administration_from_token();
         $data = $this->storeMethod($request, $publicAdministration, true);
 
         if (true === $data['error']) {
@@ -140,7 +141,7 @@ class UserController extends Controller
             ], 400);
         }
 
-        $user = (new UserApiTransformer())->transform($data['user']);
+        $user = (new UserApiTransformer())->transform($data['user'], $publicAdministration);
 
         return response()
             ->json($user, 201)
@@ -189,7 +190,10 @@ class UserController extends Controller
 
     public function showJson(Request $request): JsonResponse
     {
-        $user = (new UserApiTransformer())->transform($this->getUserFromFiscalNumber($request));
+        $publicAdministration = get_public_administration_from_token();
+        $user = $this->getUserFromFiscalNumber($request);
+
+        $user = (new UserApiTransformer())->transform($user, $publicAdministration);
 
         if (!$user) {
             return response()->json([
@@ -273,7 +277,7 @@ class UserController extends Controller
 
         $updateUser = $this->updateMethod($reqUpdate, $publicAdministration, $user);
 
-        $data = (new UserApiTransformer())->transform($updateUser);
+        $data = (new UserApiTransformer())->transform($updateUser, $publicAdministration);
 
         return response()->json($data, 200);
     }
@@ -339,18 +343,30 @@ class UserController extends Controller
     {
         $user = $this->getUserFromFiscalNumber($request);
         $publicAdministration = get_public_administration_from_token();
-        $suspendUser = $this->suspend($request, $publicAdministration, $user);
+        $response = $this->suspend($request, $publicAdministration, $user);
 
-        return response()->json($suspendUser, 200);
+        if ($response instanceof JsonResponse) {
+            return response()->json((new UserApiTransformer())->transform($user, $publicAdministration), 200);
+        } elseif (property_exists('status', $response)) {
+            response()->json(['error' => "The request can't be processed"], $response->status());
+        } else {
+            return response()->json(['error' => 'Bad request'], 400);
+        }
     }
 
     public function reactivateApi(Request $request): JsonResponse
     {
         $user = $this->getUserFromFiscalNumber($request);
         $publicAdministration = get_public_administration_from_token();
-        $reactivateUser = $this->reactivate($publicAdministration, $user);
+        $response = $this->reactivate($publicAdministration, $user);
 
-        return response()->json($reactivateUser, 200);
+        if ($response instanceof JsonResponse) {
+            return response()->json((new UserApiTransformer())->transform($user, $publicAdministration), 200);
+        } elseif (property_exists('status', $response)) {
+            response()->json(['error' => "The request can't be processed"], $response->status());
+        } else {
+            return response()->json(['error' => 'Bad request'], 400);
+        }
     }
 
     /**
@@ -458,8 +474,8 @@ class UserController extends Controller
     public function dataApiJson(): JsonResponse
     {
         $publicAdministration = get_public_administration_from_token();
-        $users = $publicAdministration->users->map(function ($user) {
-            return (new UserApiTransformer())->transform($user);
+        $users = $publicAdministration->users->map(function ($user) use ($publicAdministration) {
+            return (new UserApiTransformer())->transform($user, $publicAdministration);
         });
 
         return response()->json($users, 200);

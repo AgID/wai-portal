@@ -305,7 +305,7 @@ class ApiTest extends TestCase
                 'firstName' => $this->user->name,
                 'lastName' => $this->user->family_name,
                 'codice_fiscale' => $this->user->fiscal_number,
-                'email' => $this->user->email,
+                'email' => $this->publicAdministration->pec,
             ]]);
     }
 
@@ -347,7 +347,7 @@ class ApiTest extends TestCase
                 'firstName' => '',
                 'lastName' => '',
                 'codice_fiscale' => $fiscalNumber,
-                'email' => $email,
+                'email' => $this->publicAdministration->pec,
             ]);
     }
 
@@ -366,7 +366,7 @@ class ApiTest extends TestCase
                 'firstName' => $this->user->name,
                 'lastName' => $this->user->family_name,
                 'codice_fiscale' => $this->user->fiscal_number,
-                'email' => $this->user->email,
+                'email' => $this->publicAdministration->pec,
             ]);
     }
 
@@ -409,7 +409,7 @@ class ApiTest extends TestCase
                 'firstName' => $userToEdit->name,
                 'lastName' => $userToEdit->family_name,
                 'codice_fiscale' => $userToEdit->fiscal_number,
-                'email' => $email,
+                'email' => $this->publicAdministration->pec,
             ]);
     }
 
