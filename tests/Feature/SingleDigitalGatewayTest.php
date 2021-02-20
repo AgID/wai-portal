@@ -39,6 +39,20 @@ class SingleDigitalGatewayTest extends TestCase
     private $websites;
 
     /*
+     * Test env storageDisk.
+     *
+     * @var storage disk used for testing
+     */
+    private $storageDisk;
+
+    /*
+     * Test env storageDirectory.
+     *
+     * @var storage directory used for testing
+     */
+    private $storageDirectory;
+
+    /*
      * Pre-test setup.
      */
     protected function setUp(): void
@@ -74,9 +88,12 @@ class SingleDigitalGatewayTest extends TestCase
             return ['test_url' => $url];
         }, $pageUrls);
 
-        Storage::fake('persistent');
-        Storage::disk('persistent')->put('sdg/urls.csv', implode("\n", $pageUrls));
-        Storage::disk('persistent')->put('sdg/urls.json', json_encode(['test_path' => $jsonArray], JSON_PRETTY_PRINT));
+        $this->storageDisk = config('single-digital-gateway-service.storage_disk');
+        $this->storageDirectory = config('single-digital-gateway-service.storage_directory');
+
+        Storage::fake($this->storageDisk);
+        Storage::disk($this->storageDisk)->put($this->storageDirectory . '/urls.csv', implode("\n", $pageUrls));
+        Storage::disk($this->storageDisk)->put($this->storageDirectory . '/urls.json', json_encode(['test_path' => $jsonArray], JSON_PRETTY_PRINT));
 
         $this->withoutExceptionHandling();
     }
@@ -88,7 +105,7 @@ class SingleDigitalGatewayTest extends TestCase
     {
         $analyticsService = $this->app->make('analytics-service');
 
-        Storage::fake('persistent');
+        Storage::fake($this->storageDisk);
 
         foreach ($this->websites as $websiteId) {
             $analyticsService->deleteSite($websiteId);
@@ -126,7 +143,7 @@ class SingleDigitalGatewayTest extends TestCase
     {
         config(['single-digital-gateway-service.urls_file_format' => 'csv']);
 
-        Storage::disk('persistent')->delete('sdg/urls.csv');
+        Storage::disk($this->storageDisk)->delete($this->storageDirectory . '/urls.csv');
 
         $this->expectException(SDGServiceException::class);
 
@@ -166,7 +183,7 @@ class SingleDigitalGatewayTest extends TestCase
     {
         config(['single-digital-gateway-service.urls_file_format' => 'json']);
 
-        Storage::disk('persistent')->delete('sdg/urls.json');
+        Storage::disk($this->storageDisk)->delete($this->storageDirectory . '/urls.json');
 
         $this->expectException(SDGServiceException::class);
 
