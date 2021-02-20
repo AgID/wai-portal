@@ -174,9 +174,11 @@ trait BuildsDatasetForSingleDigitalGatewayAPI
     {
         $separator = config('single-digital-gateway-service.url_column_separator_csv');
         $index = config('single-digital-gateway-service.url_column_index_csv');
+        $storageDisk = config('single-digital-gateway-service.storage_disk');
+        $storageDirectory = config('single-digital-gateway-service.storage_directory');
 
         try {
-            $csvContents = file(Storage::disk('persistent')->path('sdg/urls.csv'));
+            $csvContents = file(Storage::disk($storageDisk)->path($storageDirectory . '/urls.csv'));
         } catch (Exception $e) {
             throw new SDGServiceException("Error reading the CSV file populated with SDG URLs.\n" . $e->getMessage());
         }
@@ -207,9 +209,11 @@ trait BuildsDatasetForSingleDigitalGatewayAPI
     {
         $urlsArrayPath = config('single-digital-gateway-service.url_array_path_json');
         $urlsKey = config('single-digital-gateway-service.url_key_json');
+        $storageDisk = config('single-digital-gateway-service.storage_disk');
+        $storageDirectory = config('single-digital-gateway-service.storage_directory');
 
         try {
-            $jsonContents = Storage::disk('persistent')->get('sdg/urls.json');
+            $jsonContents = Storage::disk($storageDisk)->get($storageDirectory . '/urls.json');
             $urlsArray = json_decode($jsonContents, true, 512, JSON_THROW_ON_ERROR);
         } catch (Exception $e) {
             throw new SDGServiceException("Error reading the JSON file populated with SDG URLs.\n" . $e->getMessage());
