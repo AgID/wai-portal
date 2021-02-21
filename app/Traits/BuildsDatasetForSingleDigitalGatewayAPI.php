@@ -66,7 +66,7 @@ trait BuildsDatasetForSingleDigitalGatewayAPI
 
         try {
             $allSegments = $analyticsService->getAllSegments();
-            $allSegmentsNames = array_column($allSegments, 'idsegment');
+            $allSegmentsNames = array_column($allSegments, 'name');
             $sdgDeviceTypes = [
                 'PC',
                 'Smartphone',
