@@ -93,6 +93,11 @@ class SingleDigitalGatewayTest extends TestCase
         foreach ($this->websites as $websiteId) {
             $analyticsService->deleteSite($websiteId);
         }
+
+        $segments = $analyticsService->getAllSegments();
+        foreach ($segments as $segment) {
+            $analyticsService->deleteSegment($segment['idsegment']);
+        }
     }
 
     /*
@@ -109,7 +114,15 @@ class SingleDigitalGatewayTest extends TestCase
             ->assertJson([
                 'nbEntries' => count($this->websites),
             ]);
+    }
 
+    /*
+     * Test payload generation from CSV data file.
+     */
+    public function testDatasetBuildCsvWithCronArchivingEnabled(): void
+    {
+        config(['single-digital-gateway-service.urls_file_format' => 'csv']);
+        config(['single-digital-gateway-service.url_column_index_csv' => 0]);
         config(['analytics-service.cron_archiving_enabled' => true]);
 
         $this->actingAs($this->user)
@@ -149,7 +162,16 @@ class SingleDigitalGatewayTest extends TestCase
             ->assertJson([
                 'nbEntries' => count($this->websites),
             ]);
+    }
 
+    /*
+     * Test payload generation from JSON data file.
+     */
+    public function testDatasetBuildJsonWithCronArchivingEnabled(): void
+    {
+        config(['single-digital-gateway-service.urls_file_format' => 'json']);
+        config(['single-digital-gateway-service.url_array_path_json' => 'test_path']);
+        config(['single-digital-gateway-service.url_key_json' => 'test_url']);
         config(['analytics-service.cron_archiving_enabled' => true]);
 
         $this->actingAs($this->user)
