@@ -49,6 +49,18 @@ interface AnalyticsService
     public function getAllSitesId(): array;
 
     /**
+     * Get the id of the site with this url in the Analytics Service.
+     *
+     * @param string $siteUrl the site url of the website
+     *
+     * @throws AnalyticsServiceException if unable to connect the Analytics Service
+     * @throws CommandErrorException if command is unsuccessful
+     *
+     * @return array all the ids of all the sites
+     */
+    public function getSitesIdFromUrl(string $siteUrl): array;
+
+    /**
      * Change archive status in the Analytics Service.
      *
      * @param string $idSites the Analytics Service website ID
@@ -228,6 +240,58 @@ interface AnalyticsService
      * @return array the list of days with the number of visits
      */
     public function getSiteLastDaysVisits(string $idSite, int $days): array;
+
+    /**
+     * Get the stats from a specific url.
+     *
+     * @param string $idSite the Analytics Service website ID
+     * @param int $days the requested number of days
+     * @param string $url the url of the site
+     *
+     * @throws CommandErrorException if command is unsuccessful
+     * @throws AnalyticsServiceException if unable to connect the Analytics Service
+     *
+     * @return array the list of days with the number of visits
+     */
+    public function getStatsPageUrl(string $idSite, int $days, string $url): array;
+
+    /**
+     * Get all defined segments.
+     *
+     * @throws CommandErrorException if command is unsuccessful
+     * @throws AnalyticsServiceException if unable to connect the Analytics Service
+     *
+     * @return array the list of days with the number of visits
+     */
+    public function getAllSegments(): array;
+
+    /**
+     * Add segment for a specific definition.
+     *
+     * @param string $idSite the Analytics Service website ID
+     * @param string $segment the definition of the segment
+     * @param string $name the name of the segment
+     *
+     * @throws CommandErrorException if command is unsuccessful
+     * @throws AnalyticsServiceException if unable to connect the Analytics Service
+     *
+     * @return array the list of days with the number of visits
+     */
+    public function addSegment(string $idSite, string $segment, string $name): void;
+
+    /**
+     * Get the country report for a specific segment.
+     *
+     * @param string $idSite the Analytics Service website ID
+     * @param string $range the requested number of days
+     * @param string $segment the segment of the report
+     *
+     * @throws CommandErrorException if command is unsuccessful
+     * @throws AnalyticsServiceException if unable to connect the Analytics Service
+     *
+     * @return array the report with the countries detected for the specific segment
+     */
+    public function getCountriesInSegment(string $idSite, string $range, string $segment): array;
 
     /**
      * Register a new analytics service report.
