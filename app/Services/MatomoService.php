@@ -163,7 +163,7 @@ class MatomoService implements AnalyticsServiceContract
      *
      * @return array all the ids of all the sites
      */
-    public function getSitesIdFromUrl($siteUrl): array
+    public function getSitesIdFromUrl(string $siteUrl): array
     {
         $params = [
             'method' => 'SitesManager.getSitesIdFromSiteUrl',
@@ -556,16 +556,13 @@ class MatomoService implements AnalyticsServiceContract
      * Add segment for a specific definition.
      *
      * @param string $idSite the Analytics Service website ID
-     * @param int $days the requested number of days
      * @param string $segment the definition of the segment
      * @param string $name the name of the segment
      *
      * @throws CommandErrorException if command is unsuccessful
      * @throws AnalyticsServiceException if unable to connect the Analytics Service
-     *
-     * @return array the list of days with the number of visits
      */
-    public function addSegment(string $idSite, string $segment, string $name): array
+    public function addSegment(string $idSite, string $segment, string $name): void
     {
         $params = [
             'method' => 'SegmentEditor.add',
@@ -577,7 +574,7 @@ class MatomoService implements AnalyticsServiceContract
             'token_auth' => $this->tokenAuth,
         ];
 
-        return $this->apiCall($params);
+        $this->apiCall($params);
     }
 
     /**
