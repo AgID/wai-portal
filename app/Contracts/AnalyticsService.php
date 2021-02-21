@@ -280,6 +280,16 @@ interface AnalyticsService
     public function addSegment(string $idSite, string $segment, string $name): void;
 
     /**
+     * Delete a specified segment.
+     *
+     * @param string $idSegment the segment to be deleted
+     *
+     * @throws CommandErrorException if command is unsuccessful
+     * @throws AnalyticsServiceException if unable to connect the Analytics Service
+     */
+    public function deleteSegment(string $idSegment): void;
+
+    /**
      * Get the country report for a specific segment.
      *
      * @param string $idSite the Analytics Service website ID

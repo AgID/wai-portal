@@ -578,6 +578,25 @@ class MatomoService implements AnalyticsServiceContract
     }
 
     /**
+     * Delete a specified segment.
+     *
+     * @param string $idSegment the segment to be deleted
+     *
+     * @throws CommandErrorException if command is unsuccessful
+     * @throws AnalyticsServiceException if unable to connect the Analytics Service
+     */
+    public function deleteSegment(string $idSegment): void
+    {
+        $params = [
+            'method' => 'SegmentEditor.delete',
+            'idSegment' => $idSegment,
+            'token_auth' => $this->tokenAuth,
+        ];
+
+        $this->apiCall($params);
+    }
+
+    /**
      * Get the country report for a specific segment.
      *
      * @param string $idSite the Analytics Service website ID
