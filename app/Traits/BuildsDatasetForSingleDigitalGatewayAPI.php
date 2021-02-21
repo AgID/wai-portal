@@ -66,7 +66,7 @@ trait BuildsDatasetForSingleDigitalGatewayAPI
 
         try {
             $allSegments = $analyticsService->getAllSegments();
-            $allSegmentsNames = array_column($allSegments, 'idsegment');
+            $allSegmentsNames = array_column($allSegments, 'name');
             $sdgDeviceTypes = [
                 'PC',
                 'Smartphone',
@@ -101,7 +101,7 @@ trait BuildsDatasetForSingleDigitalGatewayAPI
                 $newSegmentsAdded = false;
 
                 foreach ($sdgDeviceTypes as $sdgDeviceType) {
-                    $segmentName = $source->sourceUrl . '___' . $sdgDeviceType;
+                    $segmentName = md5($source->sourceUrl . '+' . $sdgDeviceType);
                     $segmentDefinition = 'pageUrl==' . urlencode($source->sourceUrl) . ';' . static::getDeviceTypeSegmentParameter($sdgDeviceType);
                     $segmentExists = in_array($segmentName, $allSegmentsNames);
 
