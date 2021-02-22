@@ -569,7 +569,7 @@ class MatomoService implements AnalyticsServiceContract
             'idSite' => $idSite,
             'name' => $name,
             'definition' => $segment,
-            'enabledAllUsers' => 1,
+            'enabledAllUsers' => 0,
             'autoArchive' => 1,
             'token_auth' => $this->tokenAuth,
         ];
