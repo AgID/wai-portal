@@ -103,7 +103,7 @@ class ApiTest extends TestCase
             'X-Consumer-Custom-Id' => '"{\"type\":\"admin\",\"siteId\":[]}"',
         ]);
 
-        $this->assertEquals(403, $response->getStatusCode());
+        $this->assertEquals(500, $response->getStatusCode());
     }
 
     public function testApiErrorNoCustomId(): void
@@ -112,7 +112,7 @@ class ApiTest extends TestCase
             'X-Consumer-Id' => 'f8846ee4-031d-4a1b-88d5-08efc0d44eb2',
         ]);
 
-        $this->assertEquals(403, $response->getStatusCode());
+        $this->assertEquals(500, $response->getStatusCode());
     }
 
     /**
