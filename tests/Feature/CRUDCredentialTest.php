@@ -97,6 +97,7 @@ class CRUDCredentialTest extends TestCase
         Bouncer::scope()->to($this->publicAdministration->id);
         $this->user->assign(UserRole::ADMIN);
         $this->user->allow(UserPermission::MANAGE_USERS);
+        $this->user->allow(UserPermission::MANAGE_WEBSITES);
 
         $this->faker = Factory::create();
         $this->faker->addProvider(new Person($this->faker));
@@ -383,6 +384,24 @@ class CRUDCredentialTest extends TestCase
 
             'kong:8001/consumers/' . $this->credential->consumer_id . '/oauth2' => Http::response(['data' => [$oauthData]], 200),
             'kong:8001/consumers/' . rawurlencode($this->credential->client_name) . '/oauth2/RlwewJa40Felwm9inHleluLrzSpNdVMO' => Http::response($oauthData, 200),
+            'kong:8001/oauth2_tokens/' => Http::response([
+                'data' => [
+                    [
+                        'id' => 'fake_token_id',
+                        'credential' => [
+                            'id' => $idOauth
+                        ]
+                    ],
+                    [
+                        'id' => 'fake_token_id2',
+                        'credential' => [
+                            'id' => $idOauth
+                        ]
+                    ]
+                ]
+            ], 200),
+            'kong:8001/oauth2_tokens/fake_token_id'  => Http::response(['data' => true], 200),
+            'kong:8001/oauth2_tokens/fake_token_id2'  => Http::response(['data' => true], 200),
         ]);
 
         $this->actingAs($this->user)
