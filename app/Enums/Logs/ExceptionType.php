@@ -86,7 +86,7 @@ class ExceptionType extends Enum implements LocalizedEnum
     public const SINGLE_DIGITAL_GATEWAY = 14;
 
     /**
-    * API Gateway Service related exception.
-    */
+     * API Gateway Service related exception.
+     */
     public const API_GATEWAY_SERVICE = 15;
 }
