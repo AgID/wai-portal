@@ -659,7 +659,7 @@ class WebsiteController extends Controller
 
     public function websiteList(Request $request): JsonResponse
     {
-        $publicAdministration = PublicAdministration::find($request->id);
+        $publicAdministration = get_public_administration_from_token();
         $websites = $publicAdministration->websites()->get()->toArray();
         $websites = array_map(function ($elem) {
             return $elem['url'];
