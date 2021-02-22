@@ -4,9 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Models\Credential;
 use Closure;
-use Illuminate\Session\Middleware\StartSession;
-
-class AuthenticateApi extends StartSession
+class AuthenticateApi
 {
     /**
      * Check whether the session has a tenant selected for the current request.
@@ -21,19 +19,18 @@ class AuthenticateApi extends StartSession
         $consumerId = $request->header('X-Consumer-Id');
         $customId = $request->header('X-Consumer-Custom-Id');
 
-        if (null === $customId) {
-            return response()->json($this->jsonError(1), 403);
+        if (null === $customId || null === $consumerId ) {
+            return response()->json(["error" => "500 Internal Server Error"], 500);
         }
 
         $customId = json_decode($customId);
-        $credentialType = $credentialSites = '';
+        $credentialType = '';
 
-        if (property_exists($customId, 'type') && property_exists($customId, 'siteId')) {
+        if (property_exists($customId, 'type')) {
             $credentialType = $customId->type;
-            $credentialSites = $customId->siteId;
         }
 
-        if (null === $consumerId || 'admin' !== $credentialType || !is_array($credentialSites)) {
+        if ('admin' !== $credentialType ) {
             return response()->json($this->jsonError(2), 403);
         }
 
