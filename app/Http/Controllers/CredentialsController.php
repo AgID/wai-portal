@@ -332,7 +332,7 @@ class CredentialsController extends Controller
     {
         $tokens = $this->clientService->getTokenList();
 
-        if ($tokens && is_array($tokens['data'])) {
+        if ($tokens && array_key_exists("data", $tokens) && is_array($tokens['data'])) {
             $tokens = array_filter($tokens['data'], function ($token) use ($credential) {
                 return $token['credential']['id'] === $credential->OauthClientId;
             });
