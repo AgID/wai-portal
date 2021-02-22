@@ -157,6 +157,7 @@ class MatomoService implements AnalyticsServiceContract
      * Get the id of the site with this url in the Analytics Service.
      *
      * @param string $siteUrl the site url of the website
+     *
      * @return array all the ids of all the sites
      */
     public function getSitesIdFromUrl(string $siteUrl): array
