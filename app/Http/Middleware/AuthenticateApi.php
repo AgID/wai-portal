@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Models\Credential;
 use Closure;
+
 class AuthenticateApi
 {
     /**
@@ -19,8 +20,8 @@ class AuthenticateApi
         $consumerId = $request->header('X-Consumer-Id');
         $customId = $request->header('X-Consumer-Custom-Id');
 
-        if (null === $customId || null === $consumerId ) {
-            return response()->json(["error" => "500 Internal Server Error"], 500);
+        if (null === $customId || null === $consumerId) {
+            return response()->json(['error' => '500 Internal Server Error'], 500);
         }
 
         $customId = json_decode($customId);
@@ -30,7 +31,7 @@ class AuthenticateApi
             $credentialType = $customId->type;
         }
 
-        if ('admin' !== $credentialType ) {
+        if ('admin' !== $credentialType) {
             return response()->json($this->jsonError(2), 403);
         }
 
