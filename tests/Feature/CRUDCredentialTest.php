@@ -389,19 +389,19 @@ class CRUDCredentialTest extends TestCase
                     [
                         'id' => 'fake_token_id',
                         'credential' => [
-                            'id' => $idOauth
-                        ]
+                            'id' => $idOauth,
+                        ],
                     ],
                     [
                         'id' => 'fake_token_id2',
                         'credential' => [
-                            'id' => $idOauth
-                        ]
-                    ]
-                ]
+                            'id' => $idOauth,
+                        ],
+                    ],
+                ],
             ], 200),
-            'kong:8001/oauth2_tokens/fake_token_id'  => Http::response(['data' => true], 200),
-            'kong:8001/oauth2_tokens/fake_token_id2'  => Http::response(['data' => true], 200),
+            'kong:8001/oauth2_tokens/fake_token_id' => Http::response(['data' => true], 200),
+            'kong:8001/oauth2_tokens/fake_token_id2' => Http::response(['data' => true], 200),
         ]);
 
         $this->actingAs($this->user)
