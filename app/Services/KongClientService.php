@@ -170,7 +170,7 @@ class KongClientService
         return true;
     }
 
-    public function getTokenList(): ?array
+    public function getTokensList(): ?array
     {
         $headers = [
             'Accept' => 'application/json',
