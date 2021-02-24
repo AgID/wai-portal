@@ -220,7 +220,7 @@ class CredentialsController extends Controller
         $permissions = [];
         if (array_key_exists('permissions', $validatedData)) {
             foreach ($validatedData['permissions'] as $credentialId => $permission) {
-                array_push($permissions, ['id' => $credentialId, 'permission' => implode('', $permission)]);
+                array_push($permissions, ['id' => $credentialId, 'permissions' => implode('', $permission)]);
             }
         }
 
@@ -300,7 +300,7 @@ class CredentialsController extends Controller
 
         if (array_key_exists('permissions', $validatedData)) {
             foreach ($validatedData['permissions'] as $credential => $permission) {
-                array_push($permissions, ['id' => $credential, 'permission' => implode('', $permission)]);
+                array_push($permissions, ['id' => $credential, 'permissions' => implode('', $permission)]);
             }
         }
 
