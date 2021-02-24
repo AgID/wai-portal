@@ -37,13 +37,15 @@ default_period = "range"
 default_language = "it"
 archiving_custom_ranges[] = previous30
 enable_processing_unique_visitors_range = 1
+anonymous_user_enable_use_segments_API = 0
+enable_create_realtime_segments = 0
+enable_segment_suggested_values = 0
+adding_segment_requires_access = "admin"
+allow_adding_segments_for_all_websites = 0
 
 [Debug]
 ;always_archive_data_day=1
 ;always_archive_data_period=1
-enable_create_realtime_segments = 0
-allow_adding_segments_for_all_websites = 0
-process_new_segments_from = "last30"
 
 [Plugins]
 Plugins[] = "CorePluginsAdmin"

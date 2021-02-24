@@ -123,8 +123,8 @@
                     <token key="SDG_URLS_FILE_FORMAT" value="${SDG_URLS_FILE_FORMAT}" />
                     <token key="SDG_COLUMN_INDEX_URL_CSV" value="${SDG_COLUMN_INDEX_URL_CSV}" />
                     <token key="SDG_COLUMN_SEPARATOR_CSV" value="${SDG_COLUMN_SEPARATOR_CSV}" />
-                    <token key="SDG_URL_ARRAY_PATH_JSON" value="${SDG_COLUMN_SEPARATOR_CSV}" />
-                    <token key="SDG_URL_KEY_JSON" value="${SDG_COLUMN_SEPARATOR_CSV}" />
+                    <token key="SDG_URL_ARRAY_PATH_JSON" value="${SDG_URL_ARRAY_PATH_JSON}" />
+                    <token key="SDG_URL_KEY_JSON" value="${SDG_URL_KEY_JSON}" />
                     <token key="SDG_STORAGE_DIRECTORY" value="${SDG_STORAGE_DIRECTORY}" />
                     <token key="SDG_STORAGE_DISK" value="${SDG_STORAGE_DISK}" />
                     <token key="MATOMO_DB_READER" value="${MATOMO_DB_READER}" />

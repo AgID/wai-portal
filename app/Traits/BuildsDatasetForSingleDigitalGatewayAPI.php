@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use App\Exceptions\AnalyticsServiceException;
+use App\Exceptions\CommandErrorException;
 use App\Exceptions\SDGServiceException;
 use Carbon\Carbon;
 use Exception;
@@ -122,7 +123,18 @@ trait BuildsDatasetForSingleDigitalGatewayAPI
 
                 foreach ($sdgDeviceTypes as $sdgDeviceType) {
                     $segmentDefinition = 'pageUrl==' . urlencode($source->sourceUrl) . ';' . static::getDeviceTypeSegmentParameter($sdgDeviceType);
-                    $countryDays = $analyticsService->getCountriesInSegment($siteId, $rangePeriod, $segmentDefinition);
+                    try {
+                        $countryDays = $analyticsService->getCountriesInSegment($siteId, $rangePeriod, $segmentDefinition);
+                    } catch (CommandErrorException $exception) {
+                        if ($cronArchivingEnabled) {
+                            // this exception is almost certainly raised because the segment has never been processed since it was created
+                            report(new SDGServiceException("Cron archiving is enabled and the segment {$segmentDefinition} has never been processed since it was created."));
+
+                            continue 2;
+                        }
+
+                        throw new SDGServiceException('Error response from Analytics Service: ' . $exception->getMessage());
+                    }
 
                     foreach ($countryDays as $countryDay) {
                         foreach ($countryDay as $country) {
@@ -144,6 +156,8 @@ trait BuildsDatasetForSingleDigitalGatewayAPI
             throw new SDGServiceException('Unable to bind to the Analytics Service: ' . $exception->getMessage());
         } catch (AnalyticsServiceException $exception) {
             throw new SDGServiceException('Unable to contact to the Analytics Service: ' . $exception->getMessage());
+        } catch (CommandErrorException $exception) {
+            throw new SDGServiceException('Error response from Analytics Service: ' . $exception->getMessage());
         }
 
         return $data;
