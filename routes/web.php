@@ -210,10 +210,7 @@ Route::middleware('spid.auth', 'auth', 'verified:verification.notice')->group(fu
                 Route::get('/data', 'CredentialsController@dataJson')
                 ->name('api-credentials.data.json');
 
-                Route::get('/data/permissions/', 'CredentialsController@makeCredentialsWebsitesPermissionsJson')
-                ->name('api-credentials.websites.permissions.make');
-
-                Route::get('/data/permissions/show/{credential}', 'CredentialsController@showDataCredentialsWebsitesPermissionsJson')
+                Route::get('/data/permissions/{credential?}', 'CredentialsController@dataWebsitesPermissionsJson')
                 ->name('api-credentials.websites.permissions');
 
                 Route::get('/{credential}/show', 'CredentialsController@show')
