@@ -330,7 +330,7 @@ class CredentialsController extends Controller
 
     public function regenerateCredential(Credential $credential)
     {
-        $tokens = $this->clientService->getTokenList();
+        $tokens = $this->clientService->getTokensList();
 
         if ($tokens && array_key_exists('data', $tokens) && is_array($tokens['data'])) {
             $tokens = array_filter($tokens['data'], function ($token) use ($credential) {
