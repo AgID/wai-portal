@@ -29,11 +29,15 @@ class WebsitesPermissionsTransformer extends TransformerAbstract
         return Bouncer::scope()->onceTo($publicAdministration->id, function () use ($website, $websiteUrlLink) {
             $user = request()->route('user');
             $readOnly = request()->has('readOnly');
-            $editCredentialPermissions = request()->has('editCredentialPermissions');
             $oldPermissions = request()->query('oldPermissions');
-            $oldCredentialPermission = request()->query('oldCredentialPermissions');
             $canRead = !is_array($oldPermissions) && optional($user)->can(UserPermission::READ_ANALYTICS, $website);
             $canManage = !is_array($oldPermissions) && optional($user)->can(UserPermission::MANAGE_ANALYTICS, $website);
+
+            $isCredentialPermissionsData = 'api-credentials.websites.permissions' === request()->route()->getName();
+            $credentialPermissions = optional(request()->route('credential'))->permissions;
+            $oldCredentialPermission = request()->query('oldCredentialPermissions');
+            $canReadCredential = !is_array($oldCredentialPermission) && $this->getCredentialPermission($website->analytics_id, $credentialPermissions, 'R');
+            $canWriteCredential = !is_array($oldCredentialPermission) && $this->getCredentialPermission($website->analytics_id, $credentialPermissions, 'W');
 
             $data = [
                 'website_name' => [
@@ -53,18 +57,18 @@ class WebsitesPermissionsTransformer extends TransformerAbstract
                 ],
             ];
 
-            if ($editCredentialPermissions) {
+            if ($isCredentialPermissionsData) {
                 if ($readOnly) {
                     $data['icons'] = [
                         [
-                            'icon' => $this->getCredentialPermission($website->analytics_id, $oldCredentialPermission, 'R') ? 'it-check-circle' : 'it-close-circle',
-                            'color' => $this->getCredentialPermission($website->analytics_id, $oldCredentialPermission, 'R') ? 'success' : 'danger',
-                            'label' => 'gestione',
+                            'icon' => $canReadCredential ? 'it-check-circle' : 'it-close-circle',
+                            'color' => $canReadCredential ? 'success' : 'danger',
+                            'label' => __('lettura'),
                         ],
                         [
-                            'icon' => $this->getCredentialPermission($website->analytics_id, $oldCredentialPermission, 'W') ? 'it-check-circle' : 'it-close-circle',
-                            'color' => $this->getCredentialPermission($website->analytics_id, $oldCredentialPermission, 'W') ? 'success' : 'danger',
-                            'label' => 'lettura',
+                            'icon' => $canWriteCredential ? 'it-check-circle' : 'it-close-circle',
+                            'color' => $canWriteCredential ? 'success' : 'danger',
+                            'label' => __('scrittura'),
                         ],
                     ];
                 } else {
@@ -72,8 +76,8 @@ class WebsitesPermissionsTransformer extends TransformerAbstract
                         [
                             'name' => 'permissions[' . $website->analytics_id . '][]',
                             'value' => 'R',
-                            'label' => 'lettura',
-                            'checked' => $this->getCredentialPermission($website->analytics_id, $oldCredentialPermission, 'R'),
+                            'label' => __('lettura'),
+                            'checked' => in_array('R', $oldCredentialPermission[$website->analytics_id] ?? []) || $canReadCredential,
                             'dataAttributes' => [
                                 'entity' => $website->analytics_id,
                             ],
@@ -81,8 +85,8 @@ class WebsitesPermissionsTransformer extends TransformerAbstract
                         [
                             'name' => 'permissions[' . $website->analytics_id . '][]',
                             'value' => 'W',
-                            'label' => 'gestione',
-                            'checked' => $this->getCredentialPermission($website->analytics_id, $oldCredentialPermission, 'W'),
+                            'label' => __('scrittura'),
+                            'checked' => in_array('W', $oldCredentialPermission[$website->analytics_id] ?? []) || $canWriteCredential,
                             'dataAttributes' => [
                                 'entity' => $website->analytics_id,
                             ],
@@ -131,18 +135,21 @@ class WebsitesPermissionsTransformer extends TransformerAbstract
         });
     }
 
-    protected function getCredentialPermission(int $id, ?array $permissions, string $credential): bool
+    protected function getCredentialPermission(int $websiteId, ?array $credentialPermissions, string $permissionType): bool
     {
-        if (null === $permissions) {
+        if (!is_array($credentialPermissions)) {
             return false;
         }
 
-        $column = array_column($permissions, 'id');
+        $websiteIds = array_column($credentialPermissions, 'id');
+        $websitePermissionIndex = array_search($websiteId, $websiteIds);
 
-        $found_credential = array_search($id, $column);
-        $site = $permissions[$found_credential];
-        $permission = $site['permission'];
+        if (false === $websitePermissionIndex) {
+            return false;
+        }
 
-        return str_contains($permission, $credential);
+        $websitePermissions = $credentialPermissions[$websitePermissionIndex];
+
+        return array_key_exists('permission', $websitePermissions) && str_contains($websitePermissions['permission'], $permissionType);
     }
 }

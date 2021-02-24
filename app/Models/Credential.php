@@ -70,6 +70,6 @@ class Credential extends Model
     {
         $consumer = app()->make('kong-client-service')->getConsumer($consumerId);
 
-        return (array) json_decode($consumer['custom_id']);
+        return json_decode($consumer['custom_id'], true);
     }
 }
