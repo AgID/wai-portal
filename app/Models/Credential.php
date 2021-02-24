@@ -43,7 +43,7 @@ class Credential extends Model
         return $data['type'];
     }
 
-    public function getPermissionAttribute(): array
+    public function getPermissionsAttribute(): array
     {
         $data = $this->customIdArray($this->consumer_id);
 
