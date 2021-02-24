@@ -79,8 +79,8 @@ class CredentialsController extends Controller
         $credentialsStoreUrl = $this->getRoleAwareUrl('api-credentials.store', [], $currentPublicAdministration);
 
         $websitesPermissionsDatatableSource = $this->getRoleAwareUrl(
-            'api-credentials.websites.permissions.make',
-            ['credential' => null],
+            'api-credentials.websites.permissions',
+            ['oldCredentialPermissions' => old('permissions')],
             $currentPublicAdministration
         );
 
@@ -116,7 +116,7 @@ class CredentialsController extends Controller
 
             $websitesPermissionsDatatableSource = $this->getRoleAwareUrl(
                 'api-credentials.websites.permissions',
-                ['credential' => $credential, 'oldCredentialPermissions' => $credential->permission],
+                ['credential' => $credential],
                 $currentPublicAdministration
             );
 
@@ -185,10 +185,10 @@ class CredentialsController extends Controller
         ], $currentPublicAdministration);
 
         $websitesPermissionsDatatableSource = $this->getRoleAwareUrl(
-            'api-credentials.websites.permissions.make',
+            'api-credentials.websites.permissions',
             [
                 'credential' => $credential,
-                'oldCredentialPermissions' => $credential->permission,
+                'oldCredentialPermissions' => old('permissions'),
             ],
             $currentPublicAdministration
         );
@@ -220,7 +220,7 @@ class CredentialsController extends Controller
         $permissions = [];
         if (array_key_exists('permissions', $validatedData)) {
             foreach ($validatedData['permissions'] as $credentialId => $permission) {
-                array_push($permissions, ['id' => $credentialId, 'permission' => implode('', $permission)]);
+                array_push($permissions, ['id' => $credentialId, 'permissions' => implode('', $permission)]);
             }
         }
 
@@ -300,7 +300,7 @@ class CredentialsController extends Controller
 
         if (array_key_exists('permissions', $validatedData)) {
             foreach ($validatedData['permissions'] as $credential => $permission) {
-                array_push($permissions, ['id' => $credential, 'permission' => implode('', $permission)]);
+                array_push($permissions, ['id' => $credential, 'permissions' => implode('', $permission)]);
             }
         }
 
@@ -330,7 +330,7 @@ class CredentialsController extends Controller
 
     public function regenerateCredential(Credential $credential)
     {
-        $tokens = $this->clientService->getTokenList();
+        $tokens = $this->clientService->getTokensList();
 
         if ($tokens && array_key_exists('data', $tokens) && is_array($tokens['data'])) {
             $tokens = array_filter($tokens['data'], function ($token) use ($credential) {
@@ -357,37 +357,9 @@ class CredentialsController extends Controller
      *
      * @return mixed the response in JSON format
      */
-    public function showDataCredentialsWebsitesPermissionsJson(Credential $credential)
+    public function dataWebsitesPermissionsJson(?Credential $credential)
     {
-        $consumer = $this->clientService->getConsumer($credential->consumer_id);
-        $customId = json_decode($consumer['custom_id']); //explode(',', $consumer['custom_id']);
-        $sitesIdArray = is_array($customId->siteId)
-            ? array_map(function ($elem) {
-                return $elem->id;
-            }, $customId->siteId)
-            : [];
-
-        $websites = Website::whereIn('analytics_id', $sitesIdArray)->get();
-
-        return DataTables::of($websites)
-            ->setTransformer(new WebsitesPermissionsTransformer())
-            ->make(true);
-    }
-
-    /**
-     * Show the oauth credential permissions on websites.
-     *
-     * @param Website $websites websites associated with the credential
-     *
-     * @throws \Exception if unable to initialize the datatable
-     *
-     * @return mixed the response in JSON format
-     */
-    public function makeCredentialsWebsitesPermissionsJson(?Credential $credential)
-    {
-        $publicAdministration = current_public_administration();
-
-        $websites = $publicAdministration->websites->all();
+        $websites = current_public_administration()->websites->all();
 
         return DataTables::of($websites)
             ->setTransformer(new WebsitesPermissionsTransformer())
@@ -404,14 +376,6 @@ class CredentialsController extends Controller
      */
     public function getDatatableWebsitesPermissionsParams(string $source, bool $readonly = false): array
     {
-        $startOrContinueQuryString = '';
-
-        if (!parse_url($source, PHP_URL_QUERY)) {
-            $startOrContinueQuryString = '?';
-        } else {
-            $startOrContinueQuryString = '&';
-        }
-
         return [
             'datatableOptions' => [
                 'searching' => [
@@ -437,7 +401,7 @@ class CredentialsController extends Controller
                     'searchable' => false,
                 ],
             ],
-            'source' => $source . $startOrContinueQuryString . 'editCredentialPermissions=1' . ($readonly ? '&readOnly' : ''),
+            'source' => $source . ($readonly ? '?readOnly' : ''),
             'caption' => __('elenco dei siti web presenti su :app', ['app' => config('app.name')]),
             'columnsOrder' => [['website_name', 'asc']],
         ];
