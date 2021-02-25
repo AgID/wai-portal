@@ -26,8 +26,6 @@ trait BuildsDatasetForSingleDigitalGatewayAPI
     public function buildDatasetForSDG(?string $rangePeriod = null)
     {
         $analyticsService = app()->make('analytics-service');
-
-        $matomoRollupId = config('analytics-service.public_dashboard');
         $cronArchivingEnabled = config('analytics-service.cron_archiving_enabled');
 
         if (is_string($rangePeriod)) {
