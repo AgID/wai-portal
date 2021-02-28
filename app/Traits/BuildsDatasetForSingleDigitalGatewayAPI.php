@@ -130,6 +130,10 @@ trait BuildsDatasetForSingleDigitalGatewayAPI
                     }
 
                     foreach ($countries as $country) {
+                        if ('xx' === $country['code']) {
+                            continue;
+                        }
+
                         $deviceCountry = $sdgDeviceType . '_' . $country['code'];
                         $sourceStatistics[$deviceCountry] = [];
                         $sourceStatistics[$deviceCountry]['nbVisits'] = $country['nb_visits'];
