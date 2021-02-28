@@ -137,7 +137,7 @@ trait BuildsDatasetForSingleDigitalGatewayAPI
                         $deviceCountry = $sdgDeviceType . '_' . $country['code'];
                         $sourceStatistics[$deviceCountry] = [];
                         $sourceStatistics[$deviceCountry]['nbVisits'] = $country['nb_visits'];
-                        $sourceStatistics[$deviceCountry]['originatingCountry'] = $country['code'];
+                        $sourceStatistics[$deviceCountry]['originatingCountry'] = $this->getSdgCountryCode($country['code']);
                         $sourceStatistics[$deviceCountry]['deviceType'] = $sdgDeviceType;
                     }
 
