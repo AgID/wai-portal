@@ -130,7 +130,7 @@ trait BuildsDatasetForSingleDigitalGatewayAPI
                     }
 
                     foreach ($countries as $country) {
-                        if ($country['code'] === 'xx') {
+                        if ('xx' === $country['code']) {
                             continue;
                         }
 
