@@ -18,8 +18,10 @@ class SDGBuildStatistics extends Command
     {
         $this->signature = 'sdg:build-statistics
             {--date= : The reference date (in YYYY-MM-DD format) for the month to consider for the statistics data }';
-        $this->description = 'Build and outputs statistics data for the Single Digital Gateway statistics information endpoint.';
-        $this->description .= 'If no --date option is provided, defaults to the previous month.';
+        $this->description = implode(' ', [
+            'Build and outputs statistics data for the Single Digital Gateway statistics information endpoint.',
+            'If no --date option is provided, defaults to the previous month.',
+        ]);
         parent::__construct();
     }
 
@@ -33,6 +35,6 @@ class SDGBuildStatistics extends Command
         $dateOption = $this->option('date');
         $dataset = $this->buildDatasetForSDG($dateOption);
 
-        echo json_encode($dataset, JSON_PRETTY_PRINT) . PHP_EOL;
+        echo json_encode($dataset, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . PHP_EOL;
     }
 }
