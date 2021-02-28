@@ -75,6 +75,15 @@ class SingleDigitalGatewayService
     public function sendStatisticsInformation($dataset): void
     {
         $uniqueId = $this->getUniqueID();
+
+        if (is_string($dataset)) {
+            $dataset = json_decode($dataset);
+
+            if (is_null($dataset)) {
+                throw new SDGServiceException('Invalid statistics data: incorrect JSON format.');
+            }
+        }
+
         $dataset->uniqueId = $uniqueId;
 
         $this->validatePayload($dataset);
