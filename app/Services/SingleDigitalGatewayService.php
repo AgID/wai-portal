@@ -80,12 +80,12 @@ class SingleDigitalGatewayService
         $this->validatePayload($dataset);
 
         $requestDatetime = Carbon::now()->format('Y-m-d_H-i-s');
-        Storage::disk($this->storageDisk)->put($this->storageDirectory . "/requests/req_{$requestDatetime}.json", json_encode($dataset, JSON_PRETTY_PRINT) . PHP_EOL);
+        Storage::disk($this->storageDisk)->put($this->storageDirectory . "/requests/req_{$requestDatetime}.json", json_encode($dataset, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . PHP_EOL);
 
         $response = $this->apiCall('statistics/information-services', 'POST', [], (array) $dataset);
 
         $responseDatetime = Carbon::now()->format('Y-m-d_H-i-s');
-        Storage::disk($this->storageDisk)->put($this->storageDirectory . "/responses/res_{$responseDatetime}.json", json_encode(json_decode($response), JSON_PRETTY_PRINT) . PHP_EOL);
+        Storage::disk($this->storageDisk)->put($this->storageDirectory . "/responses/res_{$responseDatetime}.json", json_encode(json_decode($response), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . PHP_EOL);
     }
 
     /**
