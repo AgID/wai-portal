@@ -16,7 +16,7 @@ class SDGSendStatistics extends Command
     public function __construct()
     {
         $this->signature = 'sdg:send-statistics
-            {--from-file= : The file containing the statistics to be sent (can be speciefed with absolute path or relative to the application root)}';
+            {--from-file= : The file containing the statistics to be sent (can be specified with absolute path or relative to the application root)}';
         $this->description = 'Send a dataset to Single Digital Gateway API for the Statistics on Information Services';
         parent::__construct();
     }
