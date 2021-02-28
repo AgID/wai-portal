@@ -6,6 +6,7 @@ use App\Exceptions\AnalyticsServiceException;
 use App\Exceptions\CommandErrorException;
 use App\Exceptions\SDGServiceException;
 use Carbon\Carbon;
+use Carbon\Exceptions\InvalidFormatException as InvalidDateFormatException;
 use Exception;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Support\Facades\Storage;
@@ -23,31 +24,25 @@ trait BuildsDatasetForSingleDigitalGatewayAPI
      *
      * @return object the dataset
      */
-    public function buildDatasetForSDG(?string $rangePeriod = null)
+    public function buildDatasetForSDG(?string $dateInMonth = null)
     {
         $analyticsService = app()->make('analytics-service');
         $cronArchivingEnabled = config('analytics-service.cron_archiving_enabled');
 
-        if (is_string($rangePeriod)) {
-            if (false === strpos($rangePeriod, ',')) {
-                throw new SDGServiceException('Invalid period parameter');
+        if (is_string($dateInMonth)) {
+            try {
+                $startDate = Carbon::createFromFormat('Y-m-d', $dateInMonth, 'UTC')->startOfMonth();
+            } catch (InvalidDateFormatException $e) {
+                throw new SDGServiceException('Invalid date parameter.');
             }
-            list($startDateString, $endDateString) = explode(',', $rangePeriod);
+            $endDate = $startDate->copy()->endOfMonth();
 
-            $startDate = Carbon::createFromFormat('Y-m-d', $startDateString, 'UTC')->startOfDay();
-            $endDate = Carbon::createFromFormat('Y-m-d', $endDateString, 'UTC')->endOfDay();
-
-            if ($startDate->toDateString() !== $startDateString || $endDate->toDateString() !== $endDateString) {
-                throw new SDGServiceException('Invalid date in period parameter');
+            if ($endDate->isFuture()) {
+                throw new SDGServiceException('End of month for the provided date is in the future.');
             }
         } else {
-            $startDate = Carbon::now('UTC')->startOfMonth()->subMonth(); // firstDayofPreviousMonth
+            $dateInMonth = $startDate = Carbon::now('UTC')->startOfMonth()->subMonth(); // firstDayofPreviousMonth
             $endDate = Carbon::now('UTC')->startofMonth()->subMonth()->endOfMonth(); // lastDayofPreviousMonth
-
-            $rangePeriod = implode(',', [
-                $startDate->toDateString(),
-                $endDate->toDateString(),
-            ]);
         }
 
         $arrayUrls = $this->getUrls();
@@ -122,25 +117,24 @@ trait BuildsDatasetForSingleDigitalGatewayAPI
                 foreach ($sdgDeviceTypes as $sdgDeviceType) {
                     $segmentDefinition = 'pageUrl==' . urlencode($source->sourceUrl) . ';' . static::getDeviceTypeSegmentParameter($sdgDeviceType);
                     try {
-                        $countryDays = $analyticsService->getCountriesInSegment($siteId, $rangePeriod, $segmentDefinition);
+                        $countries = $analyticsService->getCountriesInSegmentInMonth($siteId, $dateInMonth, $segmentDefinition);
                     } catch (CommandErrorException $exception) {
                         if ($cronArchivingEnabled) {
                             // this exception is almost certainly raised because the segment has never been processed since it was created
                             report(new SDGServiceException("Cron archiving is enabled and the segment {$segmentDefinition} has never been processed since it was created."));
 
-                            continue 2;
+                            continue;
                         }
 
                         throw new SDGServiceException('Error response from Analytics Service: ' . $exception->getMessage());
                     }
 
-                    foreach ($countryDays as $countryDay) {
-                        foreach ($countryDay as $country) {
-                            $deviceCountry = $sdgDeviceType . '_' . $country['code'];
-                            $sourceStatistics[$deviceCountry]['nbVisits'] += $country['nb_visits'];
-                            $sourceStatistics[$deviceCountry]['originatingCountry'] = $country['code'];
-                            $sourceStatistics[$deviceCountry]['deviceType'] = $sdgDeviceType;
-                        }
+                    foreach ($countries as $country) {
+                        $deviceCountry = $sdgDeviceType . '_' . $country['code'];
+                        $sourceStatistics[$deviceCountry] = [];
+                        $sourceStatistics[$deviceCountry]['nbVisits'] = $country['nb_visits'];
+                        $sourceStatistics[$deviceCountry]['originatingCountry'] = $country['code'];
+                        $sourceStatistics[$deviceCountry]['deviceType'] = $sdgDeviceType;
                     }
 
                     $source->statistics += array_values($sourceStatistics);
