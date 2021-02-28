@@ -92,7 +92,7 @@ class HomeController extends Controller
      */
     public function showCurrentSDGDataset(Request $request): JsonResponse
     {
-        $dataset = $this->buildDatasetForSDG($request->input('period'));
+        $dataset = $this->buildDatasetForSDG($request->input('date'));
 
         return response()->json($dataset);
     }

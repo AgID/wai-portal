@@ -261,29 +261,24 @@ class SingleDigitalGatewayTest extends TestCase
     }
 
     /*
-     * Test payload generation with a specified period.
+     * Test payload generation with a specified date.
      */
-    public function testDatasetBuildWithPeriod(): void
+    public function testDatasetBuildWithDate(): void
     {
         config(['single-digital-gateway-service.urls_file_format' => 'json']);
         config(['single-digital-gateway-service.url_array_path_json' => 'test_path']);
         config(['single-digital-gateway-service.url_key_json' => 'test_url']);
         config(['analytics-service.cron_archiving_enabled' => false]);
 
-        $randomStartDate = Carbon::today('UTC')->subDays(rand(30, 365))->startOfDay();
-        $randomEndDate = $randomStartDate->clone()->addDays(30)->endOfDay();
-        $randomPeriod = implode(',', [
-            $randomStartDate->toDateString(),
-            $randomEndDate->toDateString(),
-        ]);
+        $randomDate = Carbon::today('UTC')->subDays(rand(60, 365));
 
         $this->actingAs($this->user)
-            ->json('GET', route('admin.sdg.dataset.show') . '?period=' . $randomPeriod)
+            ->json('GET', route('admin.sdg.dataset.show') . '?date=' . $randomDate->toDateString())
             ->assertJson([
                 'nbEntries' => count($this->websites),
                 'referencePeriod' => [
-                    'startDate' => $randomStartDate->toIso8601ZuluString(),
-                    'endDate' => $randomEndDate->toIso8601ZuluString(),
+                    'startDate' => $randomDate->startOfMonth()->toIso8601ZuluString(),
+                    'endDate' => $randomDate->endOfMonth()->toIso8601ZuluString(),
                 ],
             ]);
     }
@@ -291,7 +286,7 @@ class SingleDigitalGatewayTest extends TestCase
     /*
      * Test payload generation failure with an invalid specified period.
      */
-    public function testDatasetBuildFailWithInvalidPeriod(): void
+    public function testDatasetBuildFailWithInvalidDate(): void
     {
         config(['single-digital-gateway-service.urls_file_format' => 'json']);
         config(['single-digital-gateway-service.url_array_path_json' => 'test_path']);
@@ -299,16 +294,16 @@ class SingleDigitalGatewayTest extends TestCase
         config(['analytics-service.cron_archiving_enabled' => false]);
 
         $this->expectException(SDGServiceException::class);
-        $this->expectExceptionMessage('Invalid period parameter');
+        $this->expectExceptionMessage('Invalid date parameter');
 
         $this->actingAs($this->user)
-            ->json('GET', route('admin.sdg.dataset.show') . '?period=not-valid');
+            ->json('GET', route('admin.sdg.dataset.show') . '?date=not-valid');
     }
 
     /*
-     * Test payload generation failure with an invalid date in the specified period.
+     * Test payload generation failure with an invalid date (current month).
      */
-    public function testDatasetBuildFailWithInvalidDateInPeriod(): void
+    public function testDatasetBuildFailWithInvalidDateInMonth(): void
     {
         config(['single-digital-gateway-service.urls_file_format' => 'json']);
         config(['single-digital-gateway-service.url_array_path_json' => 'test_path']);
@@ -316,9 +311,9 @@ class SingleDigitalGatewayTest extends TestCase
         config(['analytics-service.cron_archiving_enabled' => false]);
 
         $this->expectException(SDGServiceException::class);
-        $this->expectExceptionMessage('Invalid date in period parameter');
+        $this->expectExceptionMessage('End of month for the provided date is in the future');
 
         $this->actingAs($this->user)
-            ->json('GET', route('admin.sdg.dataset.show') . '?period=2021-01-01,2021-01-40');
+            ->json('GET', route('admin.sdg.dataset.show') . '?date=' . Carbon::today('UTC')->toDateString());
     }
 }
