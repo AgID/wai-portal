@@ -34,6 +34,7 @@ RUN echo "memory_limit = 512M" >> /opt/bitnami/php/etc/conf.d/wai.ini && \
     echo "html_errors = Off" >> /opt/bitnami/php/etc/conf.d/wai.ini && \
     echo "error_log = /dev/stderr" >> /opt/bitnami/php/etc/conf.d/wai.ini && \
     echo "date.timezone = Europe/Rome" >> /opt/bitnami/php/etc/conf.d/wai.ini && \
+    echo "mysqli.reconnect = On" >> /opt/bitnami/php/etc/conf.d/wai.ini && \
     echo "error_log = /dev/stderr" >> /opt/bitnami/php/etc/php-fpm.d/10-wai-log.conf && \
     echo "user = www-data" >> /opt/bitnami/php/etc/php-fpm.d/99-wai.conf && \
     echo "group = www-data" >> /opt/bitnami/php/etc/php-fpm.d/99-wai.conf && \
