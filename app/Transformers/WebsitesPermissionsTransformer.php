@@ -2,6 +2,7 @@
 
 namespace App\Transformers;
 
+use App\Enums\CredentialPermission;
 use App\Enums\UserPermission;
 use App\Models\Website;
 use League\Fractal\TransformerAbstract;
@@ -36,8 +37,10 @@ class WebsitesPermissionsTransformer extends TransformerAbstract
             $isCredentialPermissionsData = 'api-credentials.websites.permissions' === request()->route()->getName();
             $credentialPermissions = optional(request()->route('credential'))->permissions;
             $oldCredentialPermission = request()->query('oldCredentialPermissions');
-            $canReadCredential = !is_array($oldCredentialPermission) && $this->getCredentialPermission($website->analytics_id, $credentialPermissions, 'R');
-            $canWriteCredential = !is_array($oldCredentialPermission) && $this->getCredentialPermission($website->analytics_id, $credentialPermissions, 'W');
+            $canReadCredential = !is_array($oldCredentialPermission)
+                && $this->getCredentialPermission($website->analytics_id, $credentialPermissions, CredentialPermission::READ);
+            $canWriteCredential = !is_array($oldCredentialPermission)
+                && $this->getCredentialPermission($website->analytics_id, $credentialPermissions, CredentialPermission::WRITE);
 
             $data = [
                 'website_name' => [
@@ -63,30 +66,30 @@ class WebsitesPermissionsTransformer extends TransformerAbstract
                         [
                             'icon' => $canReadCredential ? 'it-check-circle' : 'it-close-circle',
                             'color' => $canReadCredential ? 'success' : 'danger',
-                            'label' => __('lettura'),
+                            'label' => CredentialPermission::getDescription(CredentialPermission::READ),
                         ],
                         [
                             'icon' => $canWriteCredential ? 'it-check-circle' : 'it-close-circle',
                             'color' => $canWriteCredential ? 'success' : 'danger',
-                            'label' => __('scrittura'),
+                            'label' => CredentialPermission::getDescription(CredentialPermission::WRITE),
                         ],
                     ];
                 } else {
                     $data['toggles'] = [
                         [
                             'name' => 'permissions[' . $website->analytics_id . '][]',
-                            'value' => 'R',
-                            'label' => __('lettura'),
-                            'checked' => in_array('R', $oldCredentialPermission[$website->analytics_id] ?? []) || $canReadCredential,
+                            'value' => CredentialPermission::READ,
+                            'label' => CredentialPermission::getDescription(CredentialPermission::READ),
+                            'checked' => in_array(CredentialPermission::READ, $oldCredentialPermission[$website->analytics_id] ?? []) || $canReadCredential,
                             'dataAttributes' => [
                                 'entity' => $website->analytics_id,
                             ],
                         ],
                         [
                             'name' => 'permissions[' . $website->analytics_id . '][]',
-                            'value' => 'W',
-                            'label' => __('scrittura'),
-                            'checked' => in_array('W', $oldCredentialPermission[$website->analytics_id] ?? []) || $canWriteCredential,
+                            'value' => CredentialPermission::WRITE,
+                            'label' => CredentialPermission::getDescription(CredentialPermission::WRITE),
+                            'checked' => in_array(CredentialPermission::WRITE, $oldCredentialPermission[$website->analytics_id] ?? []) || $canWriteCredential,
                             'dataAttributes' => [
                                 'entity' => $website->analytics_id,
                             ],
