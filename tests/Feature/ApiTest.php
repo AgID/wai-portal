@@ -302,11 +302,11 @@ class ApiTest extends TestCase
         $response
             ->assertStatus(200)
             ->assertJson([[
-                'id' => $this->user->id,
+                'id' => $this->user->uuid,
                 'firstName' => $this->user->name,
                 'lastName' => $this->user->family_name,
-                'codice_fiscale' => $this->user->fiscal_number,
-                'email' => $this->publicAdministration->pec,
+                'fiscalNumber' => $this->user->fiscal_number,
+                'email' => $this->user->email,
             ]]);
     }
 
@@ -318,8 +318,8 @@ class ApiTest extends TestCase
                     [
                         'name' => $this->faker->firstName,
                         'surname' => $this->faker->lastName,
-                        'birthDate' => Carbon::createFromDate(rand(1950, 1990), rand(1, 12), rand(1, 30)),
-                        'gender' => rand(0, 1) ? Calculator::CHR_MALE : Calculator::CHR_WOMEN,
+                        'birthDate' => Carbon::createFromDate(rand(1950, 1990), rand(1, 12), rand(1, 28)),
+                        'gender' => rand(0, 1) ? 'F' : 'M',
                         'belfioreCode' => 'H501',
                     ]
                 )
@@ -345,10 +345,10 @@ class ApiTest extends TestCase
             ->assertStatus(201)
             ->assertHeader('Location', $location)
             ->assertJson([
-                'firstName' => '',
-                'lastName' => '',
-                'codice_fiscale' => $fiscalNumber,
-                'email' => $this->publicAdministration->pec,
+                'firstName' => null,
+                'lastName' => null,
+                'fiscalNumber' => $fiscalNumber,
+                'email' => $email,
             ]);
     }
 
@@ -363,11 +363,11 @@ class ApiTest extends TestCase
         $response
             ->assertStatus(200)
             ->assertJson([
-                'id' => $this->user->id,
+                'id' => $this->user->uuid,
                 'firstName' => $this->user->name,
                 'lastName' => $this->user->family_name,
-                'codice_fiscale' => $this->user->fiscal_number,
-                'email' => $this->publicAdministration->pec,
+                'fiscalNumber' => $this->user->fiscal_number,
+                'email' => $this->user->email,
             ]);
     }
 
@@ -387,9 +387,10 @@ class ApiTest extends TestCase
         app()->make('analytics-service')->setWebsiteAccess($userToEdit->uuid, WebsiteAccessType::WRITE, $this->website->analytics_id);
 
         $email = $this->faker->unique()->freeEmail;
+        $updatedEmail = $this->faker->unique()->freeEmail;
 
         $response = $this->json('PATCH', route('api.users.update', ['fn' => $userToEdit->fiscal_number]), [
-            'emailPublicAdministrationUser' => 'new@webanalytics.italia.it',
+            'emailPublicAdministrationUser' => $updatedEmail,
             'email' => $email,
             'permissions' => [
                 $this->website->id => [
@@ -404,13 +405,13 @@ class ApiTest extends TestCase
         ]);
 
         $response
-            /* ->assertStatus(200) */
+            ->assertStatus(200)
             ->assertJson([
-                'id' => $userToEdit->id,
+                'id' => $userToEdit->uuid,
                 'firstName' => $userToEdit->name,
                 'lastName' => $userToEdit->family_name,
-                'codice_fiscale' => $userToEdit->fiscal_number,
-                'email' => $this->publicAdministration->pec,
+                'fiscalNumber' => $userToEdit->fiscal_number,
+                'email' => $updatedEmail,
             ]);
     }
 

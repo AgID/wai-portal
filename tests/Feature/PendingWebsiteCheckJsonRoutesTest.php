@@ -74,7 +74,7 @@ class PendingWebsiteCheckJsonRoutesTest extends TestCase
         $this->user->allow(UserPermission::MANAGE_WEBSITES);
         $this->user->registerAnalyticsServiceAccount();
         $this->user->setWriteAccessForWebsite($this->website);
-        $this->user->syncWebsitesPermissionsToAnalyticsService();
+        $this->user->syncWebsitesPermissionsToAnalyticsService($this->publicAdministration);
 
         Event::fake();
     }
