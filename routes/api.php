@@ -18,19 +18,17 @@ Route::middleware('api.auth')->group(function () {
         return response()->json(['test' => getallheaders()], 200);
     });
     Route::prefix('/users')->group(function () {
-        Route::get('/', 'UserController@dataApiJson')
+        Route::get('/', 'UserController@indexApi')
             ->name('api.users');
-        Route::post('/', 'UserController@storeJson')
+        Route::post('/', 'UserController@storeApi')
             ->name('api.users.store');
-        Route::get('/{fn}', 'UserController@showJson')
+        Route::get('/{fn}', 'UserController@showApi')
             ->name('api.users.show');
         Route::patch('/{fn}', 'UserController@updateApi')
             ->name('api.users.update');
-        Route::delete('/{fn}', 'UserController@deleteApi')
-            ->name('api.users.delete');
-        Route::patch('/{fn}/suspend', 'UserController@suspendApi')
+        Route::patch('/{fn}/suspend', 'UserController@suspend')
             ->name('api.users.suspend');
-        Route::patch('/{fn}/reactivate', 'UserController@reactivateApi')
+        Route::patch('/{fn}/reactivate', 'UserController@reactivate')
             ->name('api.users.reactivate');
     });
     Route::prefix('/sites')->group(function () {

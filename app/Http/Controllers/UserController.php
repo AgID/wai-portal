@@ -20,7 +20,7 @@ use App\Models\PublicAdministration;
 use App\Models\User;
 use App\Traits\HasRoleAwareUrls;
 use App\Traits\SendsResponse;
-use App\Transformers\UserApiTransformer;
+use App\Transformers\UserArrayTransformer;
 use App\Transformers\UserTransformer;
 use App\Transformers\WebsitesPermissionsTransformer;
 use Illuminate\Http\JsonResponse;
@@ -51,8 +51,8 @@ class UserController extends Controller
      */
     public function index(Request $request, PublicAdministration $publicAdministration)
     {
-        $user = $request->user();
-        if ($user->publicAdministrations->isEmpty() && $user->cannot(UserPermission::ACCESS_ADMIN_AREA)) {
+        $authUser = $request->user();
+        if ($authUser->publicAdministrations->isEmpty() && $authUser->cannot(UserPermission::ACCESS_ADMIN_AREA)) {
             $request->session()->reflash();
 
             return redirect()->route('websites.index');
@@ -88,11 +88,29 @@ class UserController extends Controller
     }
 
     /**
+     * Provide the users list.
+     *
+     * @param Request $request the incoming request
+     *
+     * @return JsonResponse the json response
+     */
+    public function indexApi(Request $request): JsonResponse
+    {
+        $publicAdministration = $request->publicAdministrationFromToken;
+        $UserArrayTransformer = new UserArrayTransformer();
+        $users = $publicAdministration->users->map(function ($user) use ($publicAdministration, $UserArrayTransformer) {
+            return $UserArrayTransformer->transform($user, $publicAdministration);
+        });
+
+        return response()->json($users, 200);
+    }
+
+    /**
      * Show the form for creating a new user.
      *
      * @param PublicAdministration $publicAdministration the public administration the new user will belong to
      *
-     * @return \Illuminate\View\View the view
+     * @return View the view
      */
     public function create(PublicAdministration $publicAdministration): View
     {
@@ -106,46 +124,45 @@ class UserController extends Controller
         return view('pages.users.add')->with(compact('userStoreUrl'))->with($websitesPermissionsDatatable);
     }
 
+    /**
+     * Create a new user.
+     *
+     * @param StoreUserRequest $request the incoming request
+     * @param PublicAdministration $publicAdministration the public administration the user will belong to
+     *
+     * @return RedirectResponse the redirect response
+     */
     public function store(StoreUserRequest $request, PublicAdministration $publicAdministration): RedirectResponse
     {
-        $data = $this->storeMethod($request, $publicAdministration, false);
-        $redirectUrl = $data['redirectUri'];
-
-        if (true === $data['error']) {
-            return redirect()->to($redirectUrl)->withModal([
-                'title' => __($data['title']),
-                'icon' => 'it-clock',
-                'message' => __($data['message']),
-                'image' => asset('images/closed.svg'),
-            ]);
-        }
+        $data = $this->storeMethod($request, $publicAdministration);
+        $redirectUrl = $data['redirectUrl'];
 
         return redirect()->to($redirectUrl)->withModal([
-            'title' => __($data['title']),
-            'icon' => 'it-clock',
+            'title' => $data['title'],
+            'icon' => $data['error'] ? 'it-close' : 'it-clock',
             'message' => $data['message'],
-            'image' => asset('images/invitation-email-sent.svg'),
+            'image' => $data['error'] ? asset('images/closed.svg') : asset('images/invitation-email-sent.svg'),
         ]);
     }
 
-    public function storeJson(StoreUserRequest $request)
+    /**
+     * Create a new user.
+     *
+     * @param StoreUserRequest $request the incoming request
+     *
+     * @return JsonResponse the json response
+     */
+    public function storeApi(StoreUserRequest $request): JsonResponse
     {
-        $publicAdministration = get_public_administration_from_token();
-        $data = $this->storeMethod($request, $publicAdministration, true);
+        $data = $this->storeMethod($request, $request->publicAdministrationFromToken);
 
-        if (true === $data['error']) {
-            return response()->json([
-                'title' => $data['title'],
-                'message' => $data['message'],
-                'type' => $data['type'],
-            ], 400);
+        if ($data['error']) {
+            return $this->errorResponse($data['message'], $this->getErrorCode(User::class), 400);
         }
 
-        $user = (new UserApiTransformer())->transform($data['user'], $publicAdministration);
-
-        return response()
-            ->json($user, 201)
-            ->header('Location', $this->getUriUserAPI($data['user']->fiscal_number));
+        return $this->userResponse($data['user'], $request->publicAdministrationFromToken, null, null, 201, [
+            'Location' => $this->getUserApiUri($data['user']->fiscal_number),
+        ]);
     }
 
     /**
@@ -154,7 +171,7 @@ class UserController extends Controller
      * @param PublicAdministration $publicAdministration the public administration the user belongs to
      * @param User $user the user to display
      *
-     * @return \Illuminate\View\View the view
+     * @return View the view
      */
     public function show(PublicAdministration $publicAdministration, User $user): View
     {
@@ -166,17 +183,11 @@ class UserController extends Controller
             'user' => $user,
         ], $publicAdministration);
 
-        $publicAdministration = ($publicAdministration->id ?? false) ? $publicAdministration : current_public_administration();
-        $publicAdministrationUser = $user->publicAdministrationsWithSuspended()->where('public_administration_id', $publicAdministration->id)->first();
-        $userPublicAdministrationStatus = UserStatus::fromValue(intval($publicAdministrationUser->pivot->user_status));
-
         $roleAwareUrls = $this->getRoleAwareUrlArray([
             'userEditUrl' => 'users.edit',
             'userVerificationResendUrl' => 'users.verification.resend',
             'userSuspendUrl' => 'users.suspend',
             'userReactivateUrl' => 'users.reactivate',
-            'userGenerateCredentials' => 'users.generate.credentials',
-            'userSwagger' => 'show.swagger',
         ], [
             'user' => $user,
         ], $publicAdministration);
@@ -190,21 +201,23 @@ class UserController extends Controller
             ->with($websitesPermissionsDatatable);
     }
 
-    public function showJson(Request $request): JsonResponse
+    /**
+     * Retrieve the user details.
+     *
+     * @param Request $request the incoming request
+     *
+     * @return JsonResponse the response
+     */
+    public function showApi(Request $request): JsonResponse
     {
-        $publicAdministration = get_public_administration_from_token();
-        $user = $this->getUserFromFiscalNumber($request);
+        $publicAdministration = $request->publicAdministrationFromToken;
+        $user = User::findNotSuperAdminByFiscalNumber($request->fn);
 
-        $user = (new UserApiTransformer())->transform($user, $publicAdministration);
-
-        if (!$user) {
-            return response()->json([
-                'error' => true,
-                'message' => 'User Not Found',
-            ], 404);
+        if (!$user || !$user->publicAdministrationsWithSuspended->contains($publicAdministration)) {
+            return $this->notFoundResponse(User::class);
         }
 
-        return response()->json($user, 200);
+        return $this->userResponse($user, $publicAdministration);
     }
 
     /**
@@ -214,7 +227,7 @@ class UserController extends Controller
      * @param PublicAdministration $publicAdministration the public administration the user belongs to
      * @param User $user the user to edit
      *
-     * @return \Illuminate\View\View the view
+     * @return View the view
      */
     public function edit(Request $request, PublicAdministration $publicAdministration, User $user): View
     {
@@ -250,38 +263,40 @@ class UserController extends Controller
      * @param PublicAdministration $publicAdministration the public administration the user belongs to
      * @param User $user the user to update
      *
-     * @throws \App\Exceptions\CommandErrorException if command is unsuccessful
-     * @throws \App\Exceptions\AnalyticsServiceAccountException if the Analytics Service account doesn't exist
-     * @throws \App\Exceptions\AnalyticsServiceException if unable to connect the Analytics Service
-     * @throws \App\Exceptions\TenantIdNotSetException if the tenant id is not set in the current session
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException if unable to bind to the service
-     *
-     * @return \Illuminate\Http\RedirectResponse the server redirect response
+     * @return RedirectResponse the redirect response
      */
     public function update(UpdateUserRequest $request, PublicAdministration $publicAdministration, User $user): RedirectResponse
     {
-        $updatedUser = $this->updateMethod($request, $publicAdministration, $user);
+        $data = $this->updateMethod($request, $publicAdministration, $user);
+        $redirectUrl = $data['redirectUrl'];
+        $updatedUser = $data['user'];
 
-        $redirectUrl = $this->getRoleAwareUrl('users.index', [], $publicAdministration);
-
-        return redirect()->to($redirectUrl)->withNotification([
+        return $this->userResponse($updatedUser, $publicAdministration, [
             'title' => __('modifica utente'),
             'message' => __("La modifica dell'utente è andata a buon fine."),
-            'status' => 'success',
-            'icon' => 'it-check-circle',
-        ]);
+        ], $redirectUrl);
     }
 
-    public function updateApi(Request $request, UpdateUserRequest $reqUpdate): JsonResponse
+    /**
+     * Update the user information.
+     *
+     * @param UpdateUserRequest $request the incoming request
+     *
+     * @return JsonResponse the response
+     */
+    public function updateApi(UpdateUserRequest $request): JsonResponse
     {
-        $user = $this->getUserFromFiscalNumber($request);
-        $publicAdministration = get_public_administration_from_token();
+        $user = User::findNotSuperAdminByFiscalNumber($request->fn);
+        $publicAdministration = $request->publicAdministrationFromToken;
 
-        $updateUser = $this->updateMethod($reqUpdate, $publicAdministration, $user);
+        if (!$user || !$user->publicAdministrationsWithSuspended->contains($publicAdministration)) {
+            return $this->notFoundResponse(User::class);
+        }
 
-        $data = (new UserApiTransformer())->transform($updateUser, $publicAdministration);
+        $data = $this->updateMethod($request, $publicAdministration, $user);
+        $updatedUser = $data['user'];
 
-        return response()->json($data, 200);
+        return $this->userResponse($updatedUser, $publicAdministration);
     }
 
     /**
@@ -291,18 +306,10 @@ class UserController extends Controller
      * @param PublicAdministration $publicAdministration the public administration the user belongs to
      * @param User $user the user to delete
      *
-     * @throws \Exception if unable to delete
-     *
      * @return JsonResponse|RedirectResponse the response in json or http redirect format
      */
     public function delete(PublicAdministration $publicAdministration, User $user)
     {
-        $publicAdministrationUser = $user->publicAdministrations()->where('public_administration_id', $publicAdministration->id)->first();
-
-        if (empty($publicAdministrationUser)) {
-            return $this->notModifiedResponse();
-        }
-
         $userPublicAdministrationStatus = $user->getStatusforPublicAdministration($publicAdministration);
 
         try {
@@ -332,45 +339,6 @@ class UserController extends Controller
         return $this->userResponse($user, $publicAdministration);
     }
 
-    public function deleteApi(Request $request): JsonResponse
-    {
-        $user = $this->getUserFromFiscalNumber($request);
-        $publicAdministration = get_public_administration_from_token();
-        $deleteUser = $this->delete($publicAdministration, $user);
-
-        return response()->json($deleteUser, 200);
-    }
-
-    public function suspendApi(Request $request): JsonResponse
-    {
-        $user = $this->getUserFromFiscalNumber($request);
-        $publicAdministration = get_public_administration_from_token();
-        $response = $this->suspend($request, $publicAdministration, $user);
-
-        if ($response instanceof JsonResponse) {
-            return response()->json((new UserApiTransformer())->transform($user, $publicAdministration), 200);
-        } elseif (property_exists('status', $response)) {
-            response()->json(['error' => "The request can't be processed"], $response->status());
-        } else {
-            return response()->json(['error' => 'Bad request'], 400);
-        }
-    }
-
-    public function reactivateApi(Request $request): JsonResponse
-    {
-        $user = $this->getUserFromFiscalNumber($request);
-        $publicAdministration = get_public_administration_from_token();
-        $response = $this->reactivate($publicAdministration, $user);
-
-        if ($response instanceof JsonResponse) {
-            return response()->json((new UserApiTransformer())->transform($user, $publicAdministration), 200);
-        } elseif (property_exists('status', $response)) {
-            response()->json(['error' => "The request can't be processed"], $response->status());
-        } else {
-            return response()->json(['error' => 'Bad request'], 400);
-        }
-    }
-
     /**
      * Suspend an existing user.
      *
@@ -382,7 +350,22 @@ class UserController extends Controller
      */
     public function suspend(Request $request, PublicAdministration $publicAdministration, User $user)
     {
-        $publicAdministration = ($publicAdministration->id ?? false) ? $publicAdministration : current_public_administration();
+        $isApiRequest = $request->is('api/*');
+        $authUser = $request->user();
+
+        if (!$isApiRequest) {
+            $publicAdministration = $authUser->can(UserPermission::ACCESS_ADMIN_AREA)
+                ? $publicAdministration
+                : current_public_administration();
+        } else {
+            $publicAdministration = $request->publicAdministrationFromToken;
+            $user = User::findNotSuperAdminByFiscalNumber($request->fn);
+
+            if (!$user || !$user->publicAdministrationsWithSuspended->contains($publicAdministration)) {
+                return $this->notFoundResponse(User::class);
+            }
+        }
+
         $userPublicAdministrationStatus = $user->getStatusforPublicAdministration($publicAdministration);
 
         if ($userPublicAdministrationStatus->is(UserStatus::SUSPENDED)) {
@@ -390,7 +373,7 @@ class UserController extends Controller
         }
 
         try {
-            if ($user->is($request->user())) {
+            if ($user->is($authUser)) {
                 throw new OperationNotAllowedException('Cannot suspend the current authenticated user.');
             }
 
@@ -403,8 +386,8 @@ class UserController extends Controller
             }
 
             //NOTE: super admin are allowed to suspend the last active administrator of a public administration
-            if (null !== auth()->user() && auth()->user()->cannot(UserPermission::ACCESS_ADMIN_AREA)) {
-                $validator = validator(request()->all())->after([$this, 'validateNotLastActiveAdministrator']);
+            if ($isApiRequest || optional($request->user())->cannot(UserPermission::ACCESS_ADMIN_AREA)) {
+                $validator = validator($request->all())->after([$this, 'validateNotLastActiveAdministrator']);
                 if ($validator->fails()) {
                     throw new OperationNotAllowedException($validator->errors()->first('is_admin'));
                 }
@@ -415,7 +398,10 @@ class UserController extends Controller
             event(new UserSuspended($user, $publicAdministration));
             event(new UserUpdated($user, $publicAdministration));
 
-            return $this->userResponse($user, $publicAdministration);
+            return $this->userResponse($user, $publicAdministration, [
+                'title' => __('sospensione utente'),
+                'message' => __("La sospensione dell'utente è andata a buon fine."),
+            ]);
         } catch (InvalidUserStatusException $exception) {
             report($exception);
             $code = $exception->getCode();
@@ -434,27 +420,45 @@ class UserController extends Controller
     /**
      * Reactivate an existing suspended user.
      *
+     * @param Request $request the incoming request
      * @param PublicAdministration $publicAdministration the public administration the user belong to
      * @param User $user the user to reactivate
      *
      * @return JsonResponse|RedirectResponse the response in json or http redirect format
      */
-    public function reactivate(PublicAdministration $publicAdministration, User $user)
+    public function reactivate(Request $request, PublicAdministration $publicAdministration, User $user)
     {
-        $publicAdministration = ($publicAdministration->id ?? false) ? $publicAdministration : current_public_administration();
+        $isApiRequest = $request->is('api/*');
+        $authUser = $request->user();
+
+        if (!$isApiRequest) {
+            $publicAdministration = $authUser->can(UserPermission::ACCESS_ADMIN_AREA)
+                ? $publicAdministration
+                : current_public_administration();
+        } else {
+            $publicAdministration = $request->publicAdministrationFromToken;
+            $user = User::findNotSuperAdminByFiscalNumber($request->fn);
+
+            if (!$user || !$user->publicAdministrationsWithSuspended->contains($publicAdministration)) {
+                return $this->notFoundResponse(User::class);
+            }
+        }
+
         $userPublicAdministrationStatus = $user->getStatusforPublicAdministration($publicAdministration);
 
         if (!$userPublicAdministrationStatus->is(UserStatus::SUSPENDED)) {
             return $this->notModifiedResponse();
         }
 
-        $updatedStatus = $user->hasVerifiedEmail() ? UserStatus::ACTIVE : UserStatus::INVITED;
-        $publicAdministration->users()->updateExistingPivot($user->id, ['user_status' => $updatedStatus]);
+        $publicAdministration->users()->updateExistingPivot($user->id, ['user_status' => UserStatus::ACTIVE]);
 
         event(new UserReactivated($user, $publicAdministration));
         event(new UserUpdated($user, $publicAdministration));
 
-        return $this->userResponse($user, $publicAdministration);
+        return $this->userResponse($user, $publicAdministration, [
+            'title' => __('riattivazione utente'),
+            'message' => __("La riattivazione dell'utente è andata a buon fine."),
+        ]);
     }
 
     /**
@@ -469,19 +473,13 @@ class UserController extends Controller
      */
     public function dataJson(Request $request, PublicAdministration $publicAdministration)
     {
-        return DataTables::of($this->baseDataJson($request, $publicAdministration))
+        $users = $request->user()->can(UserPermission::ACCESS_ADMIN_AREA)
+            ? $publicAdministration->users()->withTrashed()->get()
+            : optional(current_public_administration())->users ?? collect([]);
+
+        return DataTables::of($users)
             ->setTransformer(new UserTransformer())
             ->make(true);
-    }
-
-    public function dataApiJson(): JsonResponse
-    {
-        $publicAdministration = get_public_administration_from_token();
-        $users = $publicAdministration->users->map(function ($user) use ($publicAdministration) {
-            return (new UserApiTransformer())->transform($user, $publicAdministration);
-        });
-
-        return response()->json($users, 200);
     }
 
     /**
@@ -510,18 +508,19 @@ class UserController extends Controller
      */
     public function validateNotLastActiveAdministrator(Validator $validator): void
     {
-        $publicAdministration = request()->route('publicAdministration', current_public_administration());
-        if (null === $publicAdministration) {
-            $publicAdministration = get_public_administration_from_token();
+        $currentRequest = request();
+
+        if (!$currentRequest->is('api/*')) {
+            $publicAdministration = $currentRequest->user()->can(UserPermission::ACCESS_ADMIN_AREA)
+                ? $currentRequest->route('publicAdministration')
+                : current_public_administration();
+            $user = $currentRequest->route('user');
+        } else {
+            $publicAdministration = $currentRequest->publicAdministrationFromToken;
+            $user = User::findNotSuperAdminByFiscalNumber($currentRequest->fn);
         }
-        $publicAdministrationRoute = request()->route('publicAdministration', $publicAdministration);
-        $user = request()->route('user');
 
-        $user = ('api.users.delete' === request()->route()->getName())
-            ? get_user_from_fiscalnumber()
-            : request()->route('user');
-
-        if ($user->isTheLastActiveAdministratorOf($publicAdministrationRoute)) {
+        if ($user->isTheLastActiveAdministratorOf($publicAdministration)) {
             $validator->errors()->add('is_admin', 'The last administrator cannot be removed or suspended.');
         }
     }
@@ -534,7 +533,7 @@ class UserController extends Controller
      *
      * @return Collection the collection of all the user roles
      */
-    public function getAllRoles(User $user, PublicAdministration $publicAdministration): Collection
+    protected function getAllRoles(User $user, PublicAdministration $publicAdministration): Collection
     {
         $scope = $publicAdministration->id ?? Bouncer::scope()->get();
 
@@ -551,7 +550,7 @@ class UserController extends Controller
      *
      * @return array the datatable parameters
      */
-    public function getDatatableWebsitesPermissionsParams(string $source, bool $readonly = false): array
+    protected function getDatatableWebsitesPermissionsParams(string $source, bool $readonly = false): array
     {
         return [
             'datatableOptions' => [
@@ -585,42 +584,38 @@ class UserController extends Controller
      * @param StoreUserRequest $request the incoming request
      * @param PublicAdministration $publicAdministration the public administration the user will belong to
      *
-     * @throws \Exception if unable to generate user UUID
-     *
-     * @return \Illuminate\Http\RedirectResponse the server redirect response
+     * @return array the data to be used in the response
      */
-    protected function storeMethod(StoreUserRequest $request, PublicAdministration $publicAdministration, bool $jsonResponse): array
+    protected function storeMethod(StoreUserRequest $request, PublicAdministration $publicAdministration): array
     {
-        $authUser = auth()->user();
+        $authUser = $request->user();
         $validatedData = $request->validated();
 
-        if (null !== $authUser) {
-            $currentPublicAdministration = $authUser->can(UserPermission::ACCESS_ADMIN_AREA)
+        if (!$request->is('api/*')) {
+            $publicAdministration = $authUser->can(UserPermission::ACCESS_ADMIN_AREA)
                 ? $publicAdministration
                 : current_public_administration();
-        } else {
-            $currentPublicAdministration = get_public_administration_from_token();
+            $redirectUrl = $this->getRoleAwareUrl('users.index', [], $publicAdministration);
         }
 
-        $redirectUrl = isset($authUser) ? $this->getRoleAwareUrl('users.index', [], $publicAdministration) : null;
         // If existingUser is filled the user is already in the database
         if (isset($validatedData['existingUser']) && isset($validatedData['existingUser']->email)) {
             $user = $validatedData['existingUser'];
-            $userInCurrentPublicAdministration = $user->publicAdministrationsWithSuspended->where('id', $currentPublicAdministration->id)->isNotEmpty();
+            $userInCurrentPublicAdministration = $user->publicAdministrationsWithSuspended->where('id', $publicAdministration->id)->isNotEmpty();
 
             if ($userInCurrentPublicAdministration) {
                 return [
                     'error' => true,
-                    'type' => 'user.exist.in.amministration',
-                    'title' => "Non è possibile inoltrare l'invito",
-                    'message' => "L'utente fa già parte di questa pubblica amministrazione",
-                    'redirectUri' => $redirectUrl,
+                    'type' => 'user.already.exists',
+                    'title' => __("Non è possibile inoltrare l'invito"),
+                    'message' => __("L'utente fa già parte di questa pubblica amministrazione."),
+                    'redirectUri' => $redirectUrl ?? null,
                 ];
             }
 
-            $user_message = implode("\n", [
-                __("Abbiamo inviato un invito all'indirizzo email :email.", ['email' => '<strong>' . e($validatedData['email']) . '</strong>']),
-                "\n" . __("L'invito potrà essere confermato dall'utente al prossimo accesso."),
+            $userMessage = implode("\n", [
+                __("Abbiamo inviato un invito all'indirizzo email :email.", ['email' => '<strong>' . e($validatedData['email']) . '</strong>']) . "\n",
+                __("L'invito potrà essere confermato dall'utente al prossimo accesso."),
             ]);
         } else {
             $user = User::create([
@@ -630,13 +625,11 @@ class UserController extends Controller
                 'status' => UserStatus::INVITED,
             ]);
 
-            $user_message = true === $jsonResponse
-                ? 'test'
-                : implode("\n", [
-                    __("Abbiamo inviato un invito all'indirizzo email :email.", ['email' => '<strong>' . e($validatedData['email']) . '</strong>']),
-                    "\n" . __("L'invito scade dopo :expire giorni e può essere rinnovato.", ['expire' => config('auth.verification.expire')]),
-                    "\n<strong>" . __("Attenzione! Se dopo :purge giorni l'utente non avrà ancora accettato l'invito, sarà rimosso.", ['purge' => config('auth.verification.purge')]) . '</strong>',
-                ]);
+            $userMessage = implode("\n", [
+                __("Abbiamo inviato un invito all'indirizzo email :email.", ['email' => '<strong>' . e($validatedData['email']) . '</strong>']) . "\n",
+                __("L'invito scade dopo :expire giorni e può essere rinnovato.", ['expire' => config('auth.verification.expire')]) . "\n",
+                '<strong>' . __("Attenzione! Se dopo :purge giorni l'utente non avrà ancora accettato l'invito, sarà rimosso.", ['purge' => config('auth.verification.purge')]) . '</strong>',
+            ]);
         }
 
         if (!$user->hasAnalyticsServiceAccount()) {
@@ -644,58 +637,45 @@ class UserController extends Controller
         }
 
         $user->publicAdministrations()->attach(
-            $currentPublicAdministration->id,
+            $publicAdministration->id,
             ['user_email' => $validatedData['email'], 'user_status' => UserStatus::INVITED]
         );
 
-        $this->manageUserPermissions($validatedData, $currentPublicAdministration, $user);
+        $this->manageUserPermissions($validatedData, $publicAdministration, $user);
 
-        isset($authUser) ? event(new UserInvited($user, $authUser, $currentPublicAdministration)) : null;
+        event(new UserInvited($user, $authUser, $publicAdministration));
 
         return [
             'error' => false,
-            'type' => 'user.creation.success',
             'title' => 'Invito inoltrato',
-            'message' => $user_message,
-            'redirectUri' => $redirectUrl,
+            'message' => $userMessage,
+            'redirectUrl' => $redirectUrl ?? null,
             'user' => $user,
         ];
     }
 
-    protected function getUserFromFiscalNumber(Request $request): User
+    /**
+     * Update an existing user.
+     *
+     * @param UpdateUserRequest $request the incoming request
+     * @param PublicAdministration $publicAdministration the public administration the user belongs to
+     * @param User $user the user to update
+     *
+     * @return array the data to be used in the response
+     */
+    protected function updateMethod(UpdateUserRequest $request, PublicAdministration $publicAdministration, User $user): array
     {
-        /* Codice Fiscale */
-        $fn = $request->fn;
-        /* Trova l'utente col codice fiscale */
-        $user = User::findNotSuperAdminByFiscalNumber($fn);
-
-        return $user;
-    }
-
-    protected function updateMethod(UpdateUserRequest $request, PublicAdministration $publicAdministration, User $user)
-    {
+        $authUser = $request->user();
         $validatedData = $request->validated();
-        $authUser = auth()->user();
-        if (isset($authUser)) {
-            $currentPublicAdministration = auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)
+
+        if (!$request->is('api/*')) {
+            $publicAdministration = $authUser->can(UserPermission::ACCESS_ADMIN_AREA)
                 ? $publicAdministration
                 : current_public_administration();
-        } else {
-            $currentPublicAdministration = get_public_administration_from_token();
-        }
-        // Update user information
-        if ($user->email !== $validatedData['email']) {
-            // NOTE: the 'user update' event listener automatically
-            //       sends a new email verification request and
-            //       reset the email verification status
-            $user->email = $validatedData['email'];
-
-            // Update Analytics Service account if needed
-            // NOTE: at this point, user must have an analytics account
-            $user->updateAnalyticsServiceAccountEmail();
+            $redirectUrl = $this->getRoleAwareUrl('users.index', [], $publicAdministration);
         }
 
-        $emailPublicAdministrationUser = $user->getEmailforPublicAdministration($currentPublicAdministration);
+        $emailPublicAdministrationUser = $user->getEmailforPublicAdministration($publicAdministration);
 
         if ($user->status->is(UserStatus::INVITED) && array_key_exists('fiscal_number', $validatedData)) {
             $user->fiscal_number = $validatedData['fiscal_number'];
@@ -705,21 +685,18 @@ class UserController extends Controller
             $user->save();
         }
 
-        $this->manageUserPermissions($validatedData, $currentPublicAdministration, $user);
+        $this->manageUserPermissions($validatedData, $publicAdministration, $user);
 
         if ($emailPublicAdministrationUser !== $validatedData['emailPublicAdministrationUser']) {
-            $user->publicAdministrations()->updateExistingPivot($currentPublicAdministration->id, ['user_email' => $validatedData['emailPublicAdministrationUser']]);
-            event(new UserEmailForPublicAdministrationChanged($user, $currentPublicAdministration, $validatedData['emailPublicAdministrationUser']));
+            $user->publicAdministrations()->updateExistingPivot($publicAdministration->id, ['user_email' => $validatedData['emailPublicAdministrationUser']]);
+
+            event(new UserEmailForPublicAdministrationChanged($user, $publicAdministration, $validatedData['emailPublicAdministrationUser']));
         }
 
-        return $user;
-    }
-
-    protected function baseDataJson(Request $request, PublicAdministration $publicAdministration)
-    {
-        return $request->user()->can(UserPermission::ACCESS_ADMIN_AREA)
-            ? $publicAdministration->users()->withTrashed()->get()
-            : optional(current_public_administration())->users ?? collect([]);
+        return [
+            'redirectUrl' => $redirectUrl ?? null,
+            'user' => $user,
+        ];
     }
 
     /**
@@ -734,7 +711,7 @@ class UserController extends Controller
      * @throws CommandErrorException if command finishes with error
      * @throws TenantIdNotSetException if the tenant id is not set in the current session
      */
-    private function manageUserPermissions(array $validatedData, PublicAdministration $publicAdministration, User $user): void
+    protected function manageUserPermissions(array $validatedData, PublicAdministration $publicAdministration, User $user): void
     {
         Bouncer::scope()->onceTo($publicAdministration->id, function () use ($validatedData, $publicAdministration, $user) {
             $isAdmin = $validatedData['is_admin'] ?? false;
@@ -775,7 +752,14 @@ class UserController extends Controller
         });
     }
 
-    private function getUriUserAPI(string $fn): string
+    /**
+     * Get the URI to retrieve the specified user via API.
+     *
+     * @param string $fn fiscal number of the user
+     *
+     * @return string the URI to retrieve the specified user
+     */
+    protected function getUserApiUri(string $fn): string
     {
         return config('kong-service.api_url') .
             str_replace('/api/', '/portal/', route('api.users.show', ['fn' => $fn], false));
