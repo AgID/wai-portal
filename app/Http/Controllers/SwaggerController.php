@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\UserPermission;
 use App\Models\Credential;
 use App\Models\PublicAdministration;
 use App\Traits\HasRoleAwareUrls;
@@ -13,17 +14,23 @@ class SwaggerController extends Controller
 
     public function index(Request $request, PublicAdministration $publicAdministration)
     {
-        $publicAdministration = ($publicAdministration->id ?? false) ? $publicAdministration : current_public_administration();
-
-        if (null === $publicAdministration) {
+        $user = $request->user();
+        if ($user->publicAdministrations->isEmpty() && $user->cannot(UserPermission::ACCESS_ADMIN_AREA)) {
             return redirect()->route('websites.index');
         }
 
+        $currentPublicAdministration = $user->can(UserPermission::ACCESS_ADMIN_AREA)
+            ? $publicAdministration
+            : current_public_administration();
+
         $roleAwareUrls = $this->getRoleAwareUrlArray([
             'credentials' => 'api-credentials.index',
-        ], [], $publicAdministration);
+        ], [], $currentPublicAdministration);
 
-        $credentials = Credential::all();
+        $credentials = Credential::where('public_administration_id', $currentPublicAdministration->id)->get()
+            ->filter(function ($credential) {
+                return 'admin' === $credential->type;
+            });
         $hasCredentials = 0 !== count($credentials);
 
         $config = [
