@@ -262,6 +262,8 @@ return [
         'WebsiteStatus' => App\Enums\WebsiteStatus::class,
         'WebsiteType' => App\Enums\WebsiteType::class,
         'WebsiteAccessType' => App\Enums\WebsiteAccessType::class,
+        'CredentialPermission' => App\Enums\CredentialPermission::class,
+        'CredentialType' => App\Enums\CredentialType::class,
         'Logger' => Monolog\Logger::class,
         'EventType' => App\Enums\Logs\EventType::class,
         'JobType' => App\Enums\Logs\JobType::class,
