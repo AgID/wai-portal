@@ -34,7 +34,7 @@ class SwaggerController extends Controller
         $hasCredentials = 0 !== count($credentials);
 
         $config = [
-            'production' => app()->environment('production'),
+            'currentEnvironment' => app()->environment(),
             'credentialsList' => $credentials,
             'hascredentials' => $hasCredentials,
         ];
