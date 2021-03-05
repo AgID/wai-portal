@@ -479,7 +479,7 @@ class CRUDAdminUserTest extends TestCase
             ]), [
                 '_token' => 'test',
                 'email' => 'new@webanalytics.italia.it',
-                'emailPublicAdministrationUser' => 'new@webanalytics.italia.it',
+                'emailPublicAdministrationUser' => 'updated@webanalytics.italia.it',
                 'fiscal_number' => $user->fiscal_number,
                 'is_admin' => '1',
                 'permissions' => [
@@ -494,10 +494,9 @@ class CRUDAdminUserTest extends TestCase
         Event::assertDispatched(UserEmailForPublicAdministrationChanged::class, function ($event) {
             $publicAdministration = $event->getPublicAdministration();
             $user = $event->getUser();
-            $publicAdministrationUser = $user->publicAdministrationsWithSuspended()->where('public_administration_id', $publicAdministration->id)->first();
-            $emailPublicAdministrationUser = $publicAdministrationUser->pivot->user_email;
+            $emailPublicAdministrationUser = $user->getEmailforPublicAdministration($publicAdministration);
 
-            return 'new@webanalytics.italia.it' === $emailPublicAdministrationUser;
+            return 'updated@webanalytics.italia.it' === $emailPublicAdministrationUser;
         });
 
         $user->deleteAnalyticsServiceAccount();
@@ -802,8 +801,8 @@ class CRUDAdminUserTest extends TestCase
                 'result' => 'ok',
                 'id' => $user->uuid,
                 'user_name' => e($user->full_name),
-                'status' => UserStatus::getKey(UserStatus::INVITED),
-                'status_description' => UserStatus::getDescription(UserStatus::INVITED),
+                'status' => UserStatus::getKey(UserStatus::ACTIVE),
+                'status_description' => UserStatus::getDescription(UserStatus::ACTIVE),
                 'administration' => $publicAdministration->name,
             ])
             ->assertOk();
@@ -812,7 +811,7 @@ class CRUDAdminUserTest extends TestCase
             $publicAdministrationUser = $event->getUser()->publicAdministrations()->where('public_administration_id', $publicAdministration->id)->first();
             $statusPublicAdministrationUser = UserStatus::fromValue(intval($publicAdministrationUser->pivot->user_status));
 
-            return $statusPublicAdministrationUser->is(UserStatus::INVITED);
+            return $statusPublicAdministrationUser->is(UserStatus::ACTIVE);
         });
     }
 
