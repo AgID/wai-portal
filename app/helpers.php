@@ -21,16 +21,15 @@ if (!function_exists('current_public_administration')) {
         return null;
     }
 }
+
+// to be deleted after calls to this function are replaced by request()->publicAdministrationFromToken
 if (!function_exists('get_public_administration_from_token')) {
     function get_public_administration_from_token(): ?PublicAdministration
     {
-        $ipaCode = request()->get('publicAdministration')['ipa_code'];
-        $publicAdministration = new PublicAdministration();
-        $currentPublicAdministration = $publicAdministration->findByIpaCode($ipaCode);
-
-        return $currentPublicAdministration;
+        return request()->publicAdministrationFromToken;
     }
 }
+
 if (!function_exists('get_user_from_fiscalnumber')) {
     function get_user_from_fiscalnumber(): ?User
     {
@@ -40,6 +39,7 @@ if (!function_exists('get_user_from_fiscalnumber')) {
         return $user;
     }
 }
+
 if (!function_exists('current_user_auth_token')) {
     /**
      * Get the Analytics Service authentication token for the current user.
