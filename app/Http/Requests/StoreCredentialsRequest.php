@@ -2,7 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\CredentialPermission;
+use App\Enums\CredentialType;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
 
 /**
@@ -30,25 +33,45 @@ class StoreCredentialsRequest extends FormRequest
         return [
             'credential_name' => 'required|unique:credentials,client_name|min:3|max:255',
             'type' => 'required',
-            'permissions' => 'array',
+            'permissions' => 'required_if:type,' . CredentialType::ANALYTICS . '|array',
+            'permissions.*' => 'array',
+            'permissions.*.*' => Rule::in([CredentialPermission::WRITE, CredentialPermission::READ]),
         ];
     }
 
     /**
      * Configure the validator instance.
      *
-     * @param Validator $validator the validator reference
+     * @param Validator $validator the validator instance
      */
     public function withValidator(Validator $validator): void
     {
         $validator->after(function (Validator $validator) {
-            if (!is_array($this->input('permissions')) && 'admin' !== $this->input('type')) {
+            if (is_array($this->input('permissions')) && !$this->checkWebsitesAnalyticsIds($this->input('permissions'))) {
                 $validator->errors()->add('permissions', __('È necessario selezionare tutti i permessi correttamente'));
             }
         });
-        $validator->after(function (Validator $validator) {
-            $data = $validator->getData();
-            $validator->setData($data);
-        });
+    }
+
+    /**
+     * Check whether the websitesPermission array contains keys belonging to
+     * websites of the current selected public administration.
+     *
+     * @param array $websitesPermissions The websitesPermissions array
+     *
+     * @return bool true if the provided user permissions contains keys belonging to websites in the current public administration
+     */
+    protected function checkWebsitesAnalyticsIds(array $websitesPermissions): bool
+    {
+        $currentPublicAdministration = $this->is('api/*')
+            ? get_public_administration_from_token()
+            : current_public_administration();
+
+        return empty(
+            array_diff(
+                array_keys($websitesPermissions),
+                request()->route('publicAdministration', $currentPublicAdministration)->websites->pluck('analytics_id')->all()
+            )
+        );
     }
 }
