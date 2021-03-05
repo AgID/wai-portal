@@ -59,6 +59,13 @@ class Credential extends Model
         return $data['client_id'];
     }
 
+    public function getClientSecretAttribute(): string
+    {
+        $data = app()->make('kong-client-service')->getClient($this->consumer_id);
+
+        return $data['client_secret'];
+    }
+
     public function getOauthClientIdAttribute(): string
     {
         $data = app()->make('kong-client-service')->getClient($this->consumer_id);
