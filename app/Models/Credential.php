@@ -26,7 +26,7 @@ class Credential extends Model
         return 'consumer_id';
     }
 
-    public function getCredentialFromConsumerId(string $consumerID): ?Credential
+    public static function getCredentialFromConsumerId(string $consumerID): ?Credential
     {
         return Credential::where('consumer_id', $consumerID)->first();
     }
