@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c112272663fc7ee1d9ad1f21f1e9216d",
+    "content-hash": "44a68befcc775794b7255eaf6e583dd6",
     "packages": [
         {
             "name": "bensampo/laravel-enum",
@@ -4982,7 +4982,7 @@
         },
         {
             "name": "symfony/polyfill-ctype",
-            "version": "v1.22.0",
+            "version": "v1.22.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-ctype.git",
@@ -5041,7 +5041,7 @@
                 "portable"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-ctype/tree/v1.22.0"
+                "source": "https://github.com/symfony/polyfill-ctype/tree/v1.22.1"
             },
             "funding": [
                 {
@@ -6284,16 +6284,16 @@
         },
         {
             "name": "symfony/yaml",
-            "version": "v4.4.19",
+            "version": "v4.4.20",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "17ed9f14c1aa05b1a5cf2e2c5ef2d0be28058ef9"
+                "reference": "29e61305e1c79d25f71060903982ead8f533e267"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/17ed9f14c1aa05b1a5cf2e2c5ef2d0be28058ef9",
-                "reference": "17ed9f14c1aa05b1a5cf2e2c5ef2d0be28058ef9",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/29e61305e1c79d25f71060903982ead8f533e267",
+                "reference": "29e61305e1c79d25f71060903982ead8f533e267",
                 "shasum": ""
             },
             "require": {
@@ -6335,7 +6335,7 @@
             "description": "Loads and dumps YAML files",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/yaml/tree/v4.4.19"
+                "source": "https://github.com/symfony/yaml/tree/v4.4.20"
             },
             "funding": [
                 {
@@ -6351,7 +6351,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-01-27T09:09:26+00:00"
+            "time": "2021-02-22T15:36:50+00:00"
         },
         {
             "name": "tijsverkoyen/css-to-inline-styles",
