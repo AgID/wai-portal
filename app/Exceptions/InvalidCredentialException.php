@@ -35,7 +35,7 @@ class InvalidCredentialException extends Exception
     {
         return redirect()->home()->withNotification([
             'title' => __('credenziale non trovata'),
-            'message' => __('La credenziale selezionata non può essere trovata.'),
+            'message' => __('La credenziale selezionata non è stata trovata.'),
             'status' => 'error',
             'icon' => 'it-close-circle',
         ]);
