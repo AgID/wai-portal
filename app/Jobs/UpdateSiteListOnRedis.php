@@ -35,7 +35,7 @@ class UpdateSiteListOnRedis implements ShouldQueue
             145 sito1 sito2
         */
 
-        foreach ($websiteList as &$website) {
+        foreach ($websiteList as $website) {
             $id = $website->analytics_id;
             $list = $this->analyticsService->getSiteUrlsFromId($id);
 
