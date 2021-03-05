@@ -2,11 +2,11 @@
 
 namespace App\Traits;
 
-use App\Enums\UserStatus;
 use App\Models\Credential;
 use App\Models\PublicAdministration;
 use App\Models\User;
 use App\Models\Website;
+use App\Transformers\UserArrayTransformer;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 
@@ -16,50 +16,62 @@ use Illuminate\Http\RedirectResponse;
 trait SendsResponse
 {
     /**
+     * Error codes to be used in responses.
+     *
+     * @var array the error codes
+     */
+    public $responseErrorCodes = [
+        User::class => 1,
+        Website::class => 2,
+        Credential::class => 3,
+    ];
+
+    /**
      * Returns a success response for the specified user.
      *
      * @param User $user the user
+     * @param PublicAdministration|null $publicAdministration the public administration the user belongs to
+     * @param array|null $notification the notification text to be sent if needed [ignored if the current request expects json]
+     * @param string $redirectUrl the url to redirect to, if needed [ignored if the current request expects json]
+     * @param int|null $code the http code for the response, defaults to 200 [ignored if the current request doesn't expects json]
+     * @param array|null $headers additional http header to send [ignored if the current request doesn't expects json]
      *
      * @return JsonResponse|RedirectResponse the response in json or http redirect format
      */
-    public function userResponse(User $user, ?PublicAdministration $publicAdministration = null)
+    protected function userResponse(User $user, ?PublicAdministration $publicAdministration = null, ?array $notification = [], ?string $redirectUrl = null, ?int $code = 200, ?array $headers = [])
     {
+        $requestExpectsJson = request()->expectsJson();
         $userStatus = $user->status;
-        $userTrashed = $user->trashed() ? $user->trashed() : false;
-        if ($publicAdministration) {
-            if ($user->publicAdministrationsWithSuspended()->where('public_administration_id', $publicAdministration->id)->get()->isNotEmpty()) {
-                $publicAdministrationUser = $user->publicAdministrationsWithSuspended()->where('public_administration_id', $publicAdministration->id)->first();
-                $userStatus = UserStatus::fromValue(intval($publicAdministrationUser->pivot->user_status));
-            } else {
-                $userTrashed = true;
+        $userTrashed = $user->trashed();
+
+        if (!empty($publicAdministration)) {
+            $userStatus = $user->getStatusforPublicAdministration($publicAdministration);
+        }
+
+        if ($requestExpectsJson) {
+            $jsonResponse = (new UserArrayTransformer())->transform($user, $publicAdministration);
+
+            if (!request()->is('api/*')) {
+                $jsonResponse['result'] = 'ok';
+                $jsonResponse['user_name'] = e($user->full_name);
+                $jsonResponse['status'] = $userStatus->key ?? null;
+                $jsonResponse['status_description'] = $userStatus->description ?? null;
+                $jsonResponse['trashed'] = $userTrashed;
+                $jsonResponse['administration'] = $publicAdministration->name ?? null;
             }
         }
 
-        return request()->expectsJson()
-            ? response()->json([
-                'result' => 'ok',
-                'id' => $user->uuid,
-                'user_name' => e($user->full_name),
-                'status' => $userStatus->key,
-                'status_description' => $userStatus->description,
-                'trashed' => $userTrashed,
-                'administration' => $publicAdministration ? $publicAdministration->name : null,
-            ])
-            : back()->withNotification([
-                'title' => __('utente modificato'),
-                'message' => $userTrashed
-                    ? ($publicAdministration
-                        ? __("L'utente :user è stato eliminato da :pa.", ['user' => '<strong>' . e($user->full_name) . '</strong>', 'pa' => '<strong>' . e($publicAdministration->name) . '</strong>'])
-                        : __("L'utente :user è stato eliminato.", ['user' => '<strong>' . e($user->full_name) . '</strong>']))
-                    : implode("\n", [
-                        __("L'utente :user è stato aggiornato.", ['user' => '<strong>' . e($user->full_name) . '</strong>']),
-                        __("Stato dell'utente: :status", [
-                            'status' => '<span class="badge user-status ' . strtolower($userStatus->key) . '">' . strtoupper($userStatus->description) . '</span>.',
-                        ]),
-                    ]),
-                'status' => 'info',
-                'icon' => 'it-info-circle',
-            ]);
+        $redirectResponse = is_null($redirectUrl) ? back() : redirect()->to($redirectUrl);
+        if (!empty($notification)) {
+            $redirectResponse = $redirectResponse->withNotification(array_merge([
+                'status' => 'success',
+                'icon' => 'it-check-circle',
+            ], $notification));
+        }
+
+        return $requestExpectsJson
+            ? response()->json($jsonResponse, $code)->withHeaders($headers)
+            : $redirectResponse->withHeaders($headers);
     }
 
     /**
@@ -69,7 +81,7 @@ trait SendsResponse
      *
      * @return JsonResponse|RedirectResponse the response in json or http redirect format
      */
-    public function websiteResponse(Website $website)
+    protected function websiteResponse(Website $website)
     {
         return request()->expectsJson()
             ? response()->json([
@@ -102,7 +114,7 @@ trait SendsResponse
      *
      * @return JsonResponse|RedirectResponse the response in json or http redirect format
      */
-    public function publicAdministrationResponse(PublicAdministration $publicAdministration)
+    protected function publicAdministrationResponse(PublicAdministration $publicAdministration)
     {
         return request()->expectsJson()
             ? response()->json([
@@ -126,7 +138,7 @@ trait SendsResponse
      *
      * @return JsonResponse|RedirectResponse the response in json or http redirect format
      */
-    public function notModifiedResponse()
+    protected function notModifiedResponse()
     {
         return request()->expectsJson()
             ? response()->json(null, 304)
@@ -145,7 +157,7 @@ trait SendsResponse
      *
      * @return JsonResponse|RedirectResponse the response in json or http redirect format
      */
-    public function credentialResponse(Credential $credential)
+    protected function credentialResponse(Credential $credential)
     {
         return request()->expectsJson()
             ? response()->json([
@@ -171,7 +183,7 @@ trait SendsResponse
      *
      * @return JsonResponse|RedirectResponse the response in json or http redirect format
      */
-    public function errorResponse(string $message, string $code, int $httpStatusCode)
+    protected function errorResponse(string $message, string $code, int $httpStatusCode)
     {
         return request()->expectsJson()
             ? response()->json([
@@ -188,5 +200,29 @@ trait SendsResponse
                 'status' => 'error',
                 'icon' => 'it-close-circle',
             ]);
+    }
+
+    /**
+     * Returns an not found error response.
+     *
+     * @param $model the class name of the model in this response
+     *
+     * @return JsonResponse|RedirectResponse the response in json or http redirect format
+     */
+    protected function notFoundResponse(string $model)
+    {
+        return $this->errorResponse('Resource not found.', $this->getErrorCode($model), 404);
+    }
+
+    /**
+     * Get an error response code for the provided class.
+     *
+     * @param string $class the class name
+     *
+     * @return int the response error code
+     */
+    protected function getErrorCode(string $class): int
+    {
+        return $this->responseErrorCodes[$class] ?? 99;
     }
 }
