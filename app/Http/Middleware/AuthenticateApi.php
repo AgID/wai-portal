@@ -35,10 +35,12 @@ class AuthenticateApi
             return response()->json($this->jsonError(2), 403);
         }
 
-        $credentials = new Credential();
-        $selectCredential = $credentials->getCredentialFromConsumerId($consumerId);
-        $publicAdministration = $selectCredential->publicAdministration()->first();
-        $request->attributes->add(['publicAdministration' => $publicAdministration]);
+        $currentCredential = Credential::getCredentialFromConsumerId($consumerId);
+        $publicAdministration = $currentCredential->publicAdministration->first();
+        $request->merge(['publicAdministrationFromToken' => $publicAdministration]);
+
+        // use english for api responses
+        app()->setLocale('en');
 
         return $next($request);
     }
