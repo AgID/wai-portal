@@ -728,23 +728,22 @@ class WebsiteController extends Controller
      */
     protected function storeMethod(StoreWebsiteRequest $request, PublicAdministration $publicAdministration): array
     {
+        $user = $request->user();
         $validatedData = $request->validated();
-        $user = auth()->user();
-        if (null !== $user) {
-            $currentPublicAdministration = $user->can(UserPermission::ACCESS_ADMIN_AREA)
+
+        if (!$request->is('api/*')) {
+            $publicAdministration = $user->can(UserPermission::ACCESS_ADMIN_AREA)
                 ? $publicAdministration
                 : current_public_administration();
-        } else {
-            $currentPublicAdministration = get_public_administration_from_token();
         }
 
-        $analyticsId = app()->make('analytics-service')->registerSite($validatedData['website_name'], $validatedData['url'], $currentPublicAdministration->name);
+        $analyticsId = app()->make('analytics-service')->registerSite($validatedData['website_name'], $validatedData['url'], $publicAdministration->name);
 
         $website = Website::create([
             'name' => $validatedData['website_name'],
             'url' => $validatedData['url'],
             'type' => (int) $validatedData['type'],
-            'public_administration_id' => $currentPublicAdministration->id,
+            'public_administration_id' => $publicAdministration->id,
             'analytics_id' => $analyticsId,
             'slug' => Str::slug($validatedData['url']),
             'status' => WebsiteStatus::PENDING,
@@ -754,12 +753,12 @@ class WebsiteController extends Controller
             event(new WebsiteAdded($website, $user));
         }
 
-        $currentPublicAdministration->getAdministrators()->map(function ($administrator) use ($website, $currentPublicAdministration) {
+        $publicAdministration->getAdministrators()->map(function ($administrator) use ($website, $publicAdministration) {
             $administrator->setWriteAccessForWebsite($website);
-            $administrator->syncWebsitesPermissionsToAnalyticsService($currentPublicAdministration);
+            $administrator->syncWebsitesPermissionsToAnalyticsService($publicAdministration);
         });
 
-        $this->manageWebsitePermissionsOnNonAdministrators($validatedData, $currentPublicAdministration, $website);
+        $this->manageWebsitePermissionsOnNonAdministrators($validatedData, $publicAdministration, $website);
 
         $this->updateWebsiteListCache($website);
 
@@ -771,14 +770,12 @@ class WebsiteController extends Controller
     protected function updateMethod(UpdateWebsiteRequest $request, PublicAdministration $publicAdministration, Website $website)
     {
         $validatedData = $request->validated();
-
         $user = auth()->user();
-        if (null !== $user) {
-            $currentPublicAdministration = $user->can(UserPermission::ACCESS_ADMIN_AREA)
+
+        if (!$request->is('api/*')) {
+            $publicAdministration = $user->can(UserPermission::ACCESS_ADMIN_AREA)
                 ? $publicAdministration
                 : current_public_administration();
-        } elseif (null !== $request->get('publicAdministration')) {
-            $currentPublicAdministration = get_public_administration_from_token();
         }
 
         if (!$website->type->is(WebsiteType::INSTITUTIONAL)) {
@@ -795,7 +792,7 @@ class WebsiteController extends Controller
             $website->save();
         }
 
-        $this->manageWebsitePermissionsOnNonAdministrators($validatedData, $currentPublicAdministration, $website);
+        $this->manageWebsitePermissionsOnNonAdministrators($validatedData, $publicAdministration, $website);
 
         $this->updateWebsiteListCache($website);
 
