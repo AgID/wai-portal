@@ -31,9 +31,9 @@ class CredentialsController extends Controller
     }
 
     /**
-     * Display the credential list.
+     * Display the credentials list.
      *
-     * @param PublicAdministration $publicAdministration the public administration the websites belong to
+     * @param PublicAdministration $publicAdministration the public administration the credentials belong to
      *
      * @return View the view
      */
@@ -42,8 +42,8 @@ class CredentialsController extends Controller
         $credentialsDatatable = [
             'columns' => [
                 ['data' => 'client_name', 'name' => __('Nome della credenziale'), 'className' => 'text-wrap'],
-                ['data' => 'type', 'name' => __('Tipo Credenziale')],
-                ['data' => 'added_at', 'name' => __('aggiunto il')],
+                ['data' => 'type', 'name' => __('Tipologia credenziale')],
+                ['data' => 'added_at', 'name' => __('aggiunta il')],
                 ['data' => 'icons', 'name' => '', 'orderable' => false],
                 ['data' => 'buttons', 'name' => '', 'orderable' => false],
             ],
@@ -62,16 +62,16 @@ class CredentialsController extends Controller
     }
 
     /**
-     * Create a new Credential.
+     * Show the form for creating a new credential.
      *
      * @param Request $request the request
-     * @param PublicAdministration $publicAdministration the credentials belong to
+     * @param PublicAdministration $publicAdministration the public administration the new credential will belong to
      *
      * @return View the view
      */
     public function create(Request $request, PublicAdministration $publicAdministration): View
     {
-        $user = auth()->user();
+        $user = $request->user();
         $currentPublicAdministration = $user->can(UserPermission::ACCESS_ADMIN_AREA)
             ? $publicAdministration
             : current_public_administration();
@@ -90,92 +90,102 @@ class CredentialsController extends Controller
     }
 
     /**
-     * Display the credential details.
+     * Store the credential.
+     *
+     * @param StoreCredentialsRequest $request the request
+     * @param PublicAdministration $publicAdministration the public administration the new credential will belong to
+     *
+     * @return View|Redirect the view or redirect error
+     */
+    public function store(StoreCredentialsRequest $request, PublicAdministration $publicAdministration)
+    {
+        $validatedData = $request->validated();
+        $permissions = [];
+
+        if (array_key_exists('permissions', $validatedData)) {
+            foreach ($validatedData['permissions'] as $credential => $permission) {
+                array_push($permissions, ['id' => $credential, 'permissions' => implode('', $permission)]);
+            }
+        }
+
+        $user = $request->user();
+
+        $currentPublicAdministration = $user->can(UserPermission::ACCESS_ADMIN_AREA)
+            ? $publicAdministration
+            : current_public_administration();
+
+        $clientJSON = $this->clientService
+            ->makeConsumer(
+                $validatedData['credential_name'],
+                json_encode(['name' => $validatedData['credential_name'], 'type' => $validatedData['type'], 'siteId' => $permissions])
+            );
+
+        $oauthCredentials = $this->clientService->getClient($clientJSON['consumer']['id']);
+
+        $client = Credential::create([
+            'client_name' => $validatedData['credential_name'],
+            'public_administration_id' => $currentPublicAdministration->id,
+            'consumer_id' => $clientJSON['consumer']['id'],
+        ]);
+
+        return redirect()->route('api-credentials.index')
+            ->withModal($this->getModalCredentialStored($oauthCredentials['client_id'], $oauthCredentials['client_secret']));
+    }
+
+    /**
+     * Show the credential details page.
      *
      * @param Request $request the request
      * @param Credential $credential the credential
-     * @param PublicAdministration $publicAdministration the public administration the user belongs to
+     * @param PublicAdministration $publicAdministration the public administration the credential belongs to
      *
      * @return View|Redirect the view or redirect error
      */
     public function show(Request $request, Credential $credential, PublicAdministration $publicAdministration)
     {
-        $user = auth()->user();
-
+        $user = $request->user();
         $currentPublicAdministration = $user->can(UserPermission::ACCESS_ADMIN_AREA)
             ? $publicAdministration
             : current_public_administration();
 
-        if ($currentPublicAdministration->id === $credential->public_administration_id) {
-            $roleAwareUrls = $this->getRoleAwareUrlArray([
-                'credentialEditUrl' => 'api-credentials.edit',
-                'credentialRegenerate' => 'api-credentials.regenerate',
-            ], [
-                'credential' => $credential,
-            ], $currentPublicAdministration);
+        $roleAwareUrls = $this->getRoleAwareUrlArray([
+            'credentialEditUrl' => 'api-credentials.edit',
+            'credentialRegenerate' => 'api-credentials.regenerate',
+        ], [
+            'credential' => $credential,
+        ], $currentPublicAdministration);
 
-            $websitesPermissionsDatatableSource = $this->getRoleAwareUrl(
-                'api-credentials.websites.permissions',
-                ['credential' => $credential],
-                $currentPublicAdministration
-            );
+        $websitesPermissionsDatatableSource = $this->getRoleAwareUrl(
+            'api-credentials.websites.permissions',
+            ['credential' => $credential],
+            $currentPublicAdministration
+        );
 
-            $websitesPermissionsDatatable = $this->getDatatableWebsitesPermissionsParams($websitesPermissionsDatatableSource, true);
+        $websitesPermissionsDatatable = $this->getDatatableWebsitesPermissionsParams($websitesPermissionsDatatableSource, true);
 
-            $credentialData = [
-                'type' => $credential->type,
-            ];
+        $credentialData = [
+            'type' => $credential->type,
+        ];
 
-            return view('pages.credentials.show')
-                ->with(compact('credential'))
-                ->with($credentialData)
-                ->with($websitesPermissionsDatatable)
-                ->with($roleAwareUrls);
-        }
-
-        return redirect()->home()->withNotification([
-            'title' => __('Non è possibile visualizzare questa credenziale'),
-            'message' => "La credenziale appartiene ad un'altra pubblica amministrazione",
-            'status' => 'error',
-            'icon' => 'it-close-circle',
-        ]);
-    }
-
-    public function showJson(Credential $credential, PublicAdministration $publicAdministration)
-    {
-        $user = auth()->user();
-
-        $currentPublicAdministration = $user->can(UserPermission::ACCESS_ADMIN_AREA)
-            ? $publicAdministration
-            : current_public_administration();
-
-        if ($currentPublicAdministration->id === $credential->public_administration_id) {
-            return response()->json([
-                'credential' => [
-                    'client_id' => $credential->client_id,
-                    'client_secret' => '',
-                ],
-            ], 200);
-        }
-
-        return response()->json([
-            'Error' => true,
-            'Message' => "La credenziale appartiene ad un'altra pubblica amministrazione",
-        ], 403);
+        return view('pages.credentials.show')
+            ->with(compact('credential'))
+            ->with($credentialData)
+            ->with($websitesPermissionsDatatable)
+            ->with($roleAwareUrls);
     }
 
     /**
-     * Edit credential view page.
+     * Show the form to edit an existing credential.
      *
      * @param Request $request The request
      * @param Credential $credential The credential
-     * @param PublicAdministration $publicAdministration the public administration the user belongs to
+     * @param PublicAdministration $publicAdministration the public administration the credential belongs to
      *
      * @return View the view
      */
     public function edit(Request $request, Credential $credential, PublicAdministration $publicAdministration): View
     {
-        $user = auth()->user();
+        $user = $request->user();
         $currentPublicAdministration = $user->can(UserPermission::ACCESS_ADMIN_AREA)
             ? $publicAdministration
             : current_public_administration();
@@ -206,7 +216,7 @@ class CredentialsController extends Controller
     }
 
     /**
-     * Update the credentials.
+     * Update the provided credential.
      *
      * @param UpdateCredentialRequest $request The request
      * @param Credential $credential The credential
@@ -224,18 +234,13 @@ class CredentialsController extends Controller
             }
         }
 
-        $credential->fill([
-            'client_name' => $validatedData['credential_name'],
-        ]);
+        $credential->client_name = $validatedData['credential_name'];
         $credential->save();
 
-        $clientJSON = $this->clientService->updateClient(
-            $credential->consumer_id,
-            [
-                'username' => $validatedData['credential_name'],
-                'custom_id' => json_encode(['type' => $validatedData['type'], 'siteId' => $permissions]),
-            ]
-        );
+        $this->clientService->updateClient($credential->consumer_id, [
+            'username' => $validatedData['credential_name'],
+            'custom_id' => json_encode(['type' => $validatedData['type'], 'siteId' => $permissions]),
+        ]);
 
         return redirect()->route('api-credentials.index')->withModal([
             'title' => __('modifica credenziale'),
@@ -249,6 +254,7 @@ class CredentialsController extends Controller
     /**
      * Deletes the credential.
      *
+     * @param Request $request The request
      * @param Credential $credential The credential
      *
      * @return JsonResponse|RedirectResponse the response in json or http redirect format
@@ -293,51 +299,21 @@ class CredentialsController extends Controller
             ->make(true);
     }
 
-    public function store(StoreCredentialsRequest $request, PublicAdministration $publicAdministration)
+    public function regenerateCredential(Request $request, Credential $credential)
     {
-        $validatedData = $request->validated();
-        $permissions = [];
-
-        if (array_key_exists('permissions', $validatedData)) {
-            foreach ($validatedData['permissions'] as $credential => $permission) {
-                array_push($permissions, ['id' => $credential, 'permissions' => implode('', $permission)]);
-            }
-        }
-
-        $user = auth()->user();
-
+        $user = $request->user();
         $currentPublicAdministration = $user->can(UserPermission::ACCESS_ADMIN_AREA)
             ? $publicAdministration
             : current_public_administration();
 
-        $clientJSON = $this->clientService
-            ->makeConsumer(
-                $validatedData['credential_name'],
-                json_encode(['name' => $validatedData['credential_name'], 'type' => $validatedData['type'], 'siteId' => $permissions])
-            );
-
-        $oauthCredentials = $this->clientService->getClient($clientJSON['consumer']['id']);
-
-        $client = Credential::create([
-            'client_name' => $validatedData['credential_name'],
-            'public_administration_id' => $currentPublicAdministration->id,
-            'consumer_id' => $clientJSON['consumer']['id'],
-        ]);
-
-        return redirect()->route('api-credentials.index')
-            ->withModal($this->getModalCredentialStored($oauthCredentials['client_id'], $oauthCredentials['client_secret']));
-    }
-
-    public function regenerateCredential(Credential $credential)
-    {
         $tokens = $this->clientService->getTokensList();
 
         if ($tokens && array_key_exists('data', $tokens) && is_array($tokens['data'])) {
             $tokens = array_filter($tokens['data'], function ($token) use ($credential) {
-                return $token['credential']['id'] === $credential->OauthClientId;
+                return $token['credential']['id'] === $credential->oauth_client_id;
             });
 
-            foreach ($tokens as &$token) {
+            foreach ($tokens as $token) {
                 $this->clientService->invalidateToken($token['id']);
             }
         }
@@ -357,7 +333,7 @@ class CredentialsController extends Controller
      *
      * @return mixed the response in JSON format
      */
-    public function dataWebsitesPermissionsJson(?Credential $credential)
+    public function dataWebsitesPermissionsJson()
     {
         $websites = current_public_administration()->websites->all();
 
