@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Enums\CredentialPermission;
 use App\Enums\UserPermission;
 use App\Enums\UserRole;
 use App\Enums\UserStatus;
@@ -208,7 +209,7 @@ class CRUDCredentialTest extends TestCase
                 'credential_name' => $name,
                 'type' => 'analytics',
                 'permissions' => [
-                    1 => ['R'],
+                    $this->website->analytics_id => [CredentialPermission::READ],
                 ],
             ])
             ->assertSessionDoesntHaveErrors([
@@ -277,7 +278,7 @@ class CRUDCredentialTest extends TestCase
                 'credential_name' => $name,
                 'type' => 'analytics',
                 'permissions' => [
-                    1 => ['R', 'W'],
+                    $this->website->analytics_id => [CredentialPermission::READ, CredentialPermission::WRITE],
                 ],
             ])
             ->assertSessionDoesntHaveErrors([
