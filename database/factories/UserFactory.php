@@ -22,7 +22,7 @@ $factory->define(User::class, function (Faker $faker) {
                     'name' => $faker->firstName,
                     'surname' => $faker->lastName,
                     'birthDate' => Carbon::createFromDate(rand(1950, 1990), rand(1, 12), rand(1, 30)),
-                    'gender' => rand(0, 1) ? Calculator::CHR_MALE : Calculator::CHR_WOMEN,
+                    'gender' => rand(0, 1) ? 'F' : 'M',
                     'belfioreCode' => 'H501',
                 ]
             )
