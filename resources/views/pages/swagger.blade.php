@@ -41,11 +41,7 @@
                 </div>
             </div>
         @endcan
-
-        @if (!$production)
-            <div id="swagger-ui" data-environment={{ $production }}/>
-        @endif
-
+        <div id="swagger-ui" data-environment={{ $currentEnvironment }}></div>
         @endcomponent
     </div>
 </div>

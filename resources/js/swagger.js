@@ -30,11 +30,7 @@ export default (() => {
         const swaggerDiv = document.getElementById("swagger-ui");
 
         if (swaggerDiv) {
-            const production = swaggerDiv.hasAttribute("data-environment")
-                ? swaggerDiv.getAttribute("data-environment")
-                : "false";
-
-            const isProduction = production === "true" ? true : false;
+            const isProduction = "production" === swaggerDiv.dataset.environment;
             const selectCredential = document.getElementById(
                 "select-credential"
             );
