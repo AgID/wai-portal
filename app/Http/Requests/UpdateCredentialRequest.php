@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Validation\Validator;
+use Illuminate\Validation\Rule;
 
 /**
  * Update credential request.
@@ -26,28 +26,16 @@ class UpdateCredentialRequest extends StoreCredentialsRequest
      */
     public function rules(): array
     {
-        return [
-            'credential_name' => 'required|min:3|max:255',
-            'type' => 'required',
-            'permissions' => 'array',
-        ];
-    }
+        $rules = parent::rules();
+        $credential = $this->route('credential');
 
-    /**
-     * Configure the validator instance.
-     *
-     * @param Validator $validator the validator reference
-     */
-    public function withValidator(Validator $validator): void
-    {
-        $validator->after(function (Validator $validator) {
-            if (!is_array($this->input('permissions')) && 'admin' !== $this->input('type')) {
-                $validator->errors()->add('permissions', __('È necessario selezionare tutti i permessi correttamente'));
-            }
-        });
-        $validator->after(function (Validator $validator) {
-            $data = $validator->getData();
-            $validator->setData($data);
-        });
+        $rules['credential_name'] = [
+            'required',
+            'min:3',
+            'max:255',
+            Rule::unique('credentials', 'client_name')->ignore($credential->id),
+        ];
+
+        return $rules;
     }
 }
