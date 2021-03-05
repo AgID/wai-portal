@@ -48,7 +48,7 @@
                 <h3>{{ __('Widget disponibili') }}</h3>
                 <p>{{ __("Seleziona un widget per vederne l'anteprima e ottenere il codice HTML da inserire nel sito web.") }}</p>
                 <div class="row">
-                    @foreach ($widgets as $key => &$widget)
+                    @foreach ($widgets as $key => $widget)
                     @if (is_array($allowedWidgets) && in_array($widget["uniqueId"], $allowedWidgets))
                         <div class="col-md-4">
                             <div class="btn btn-block border rounded mb-4 text-center pointer" id="widget-{{ $key }}"
