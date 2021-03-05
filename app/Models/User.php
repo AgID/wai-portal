@@ -234,9 +234,30 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->publicAdministrations()->wherePivot('user_status', UserStatus::SUSPENDED);
     }
 
+    /**
+     * Get the email address of the user for the specified public administration.
+     *
+     * @param PublicAdministration $publicAdministration the public administration
+     *
+     * @return string the email address for the specified public administration
+     */
     public function getEmailforPublicAdministration(PublicAdministration $publicAdministration): ?string
     {
-        return $this->publicAdministrationsWithSuspended()->where('public_administration_id', $publicAdministration->id)->first()->pivot->user_email;
+        return $this->publicAdministrationsWithSuspended()->where('public_administration_id', $publicAdministration->id)->first()->pivot->user_email ?? null;
+    }
+
+    /**
+     * Get the status of the user for the specified public administration.
+     *
+     * @param PublicAdministration $publicAdministration the public administration
+     *
+     * @return UserStatus the user status for the specified public administration
+     */
+    public function getStatusforPublicAdministration(PublicAdministration $publicAdministration): ?UserStatus
+    {
+        $status = $this->publicAdministrationsWithSuspended()->where('public_administration_id', $publicAdministration->id)->first()->pivot->user_status ?? null;
+
+        return is_numeric($status) ? UserStatus::fromValue(intval($status)) : null;
     }
 
     /**
