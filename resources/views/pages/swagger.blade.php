@@ -8,13 +8,18 @@
         @component('layouts.components.box')
         @can(UserPermission::MANAGE_WEBSITES)
             <div class="row">
+                @unlessenv ('production')
                 <div class="col-md-6 col-12">
                     @if ($hascredentials)
                     <div class="bootstrap-select-wrapper">
-                        <label>{{ __('Seleziona una credenziale da usare per le chiamate API di prova.') }}</label>
+                        <label>
+                            {!! __('Seleziona una credenziale :admin_credential da usare per le chiamate API di prova.', [
+                                'admin_credential' => '<em>' . CredentialType::getDescription(CredentialType::ADMIN) . '</em>'
+                            ]) !!}
+                        </label>
                         <select title="{{ __('Seleziona una credenziale') }}" class="form-select" id="select-credential">
-                            @foreach ($credentialsList as $index => &$credential)
-                                <option value="{{ $credential->consumer_id }}">
+                            @foreach ($credentialsList as $index => $credential)
+                                <option value="{{ $credential->consumer_id }}" data-client-id="{{ $credential->client_id }}" data-client-secret="{{ $credential->client_secret }}">
                                     {{ $credential->client_name }}
                                 </option>
                             @endforeach
@@ -22,22 +27,21 @@
                     </div>
                     @else
                         <p>
-                            {!! __('Se vuoi provare le API è necessario prima aggiungere una :credential.', [
-                                'credential' => '<strong>' . __('credenziale') . '</strong>'
+                            {!! __('Se vuoi provare le API è necessario prima aggiungere una credenziale di tipologia :admin_credential.', [
+                                'admin_credential' => '<strong>' . CredentialType::getDescription(CredentialType::ADMIN) . '</strong>'
                             ]) !!}
                         </p>
                     @endif
                 </div>
-                <div class="col-md-6 col-12">
-                    <div class="text-center text-sm-right">
-                        @component('layouts.components.link_button', [
-                            'link' => $credentials,
-                            'size' => 'lg',
-                            'icon' => 'it-key'
-                        ])
-                        {{ __('Gestione delle credenziali API') }}
-                        @endcomponent
-                    </div>
+                @endunless
+                <div class="col-md-6 col-12 text-right ml-auto">
+                    @component('layouts.components.link_button', [
+                        'link' => $credentials,
+                        'size' => 'lg',
+                        'icon' => 'it-key'
+                    ])
+                    {{ __('Gestione delle credenziali API') }}
+                    @endcomponent
                 </div>
             </div>
         @endcan
