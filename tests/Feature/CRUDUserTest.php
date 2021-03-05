@@ -270,7 +270,7 @@ class CRUDUserTest extends TestCase
             ->put(route('users.update', ['user' => $this->user]), [
                 '_token' => 'test',
                 'email' => 'new@webanalytics.italia.it',
-                'emailPublicAdministrationUser' => 'new@webanalytics.italia.it',
+                'emailPublicAdministrationUser' => 'updated@webanalytics.italia.it',
                 'is_admin' => '1',
                 'permissions' => [
                     $this->website->id => [
@@ -287,7 +287,7 @@ class CRUDUserTest extends TestCase
 
         $this->user->refresh();
         Event::assertDispatched(UserUpdated::class, function ($event) {
-            return 'new@webanalytics.italia.it' === $event->getUser()->email;
+            return 'updated@webanalytics.italia.it' === $event->getUser()->getEmailforPublicAdministration($this->publicAdministration);
         });
 
         $this->user->deleteAnalyticsServiceAccount();
@@ -626,8 +626,8 @@ class CRUDUserTest extends TestCase
                 'result' => 'ok',
                 'id' => $user->uuid,
                 'user_name' => e($user->full_name),
-                'status' => UserStatus::getKey(UserStatus::INVITED),
-                'status_description' => UserStatus::getDescription(UserStatus::INVITED),
+                'status' => UserStatus::getKey(UserStatus::ACTIVE),
+                'status_description' => UserStatus::getDescription(UserStatus::ACTIVE),
                 'administration' => $this->publicAdministration->name,
             ])
             ->assertOk();
@@ -639,7 +639,7 @@ class CRUDUserTest extends TestCase
         Event::assertDispatched(UserUpdated::class, function ($event) {
             $statusPublicAdministrationUser = $event->getUser()->getStatusforPublicAdministration($this->publicAdministration);
 
-            return $statusPublicAdministrationUser->is(UserStatus::INVITED);
+            return $statusPublicAdministrationUser->is(UserStatus::ACTIVE);
         });
     }
 
