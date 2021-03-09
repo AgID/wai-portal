@@ -504,8 +504,7 @@ class CRUDUserTest extends TestCase
         });
 
         Event::assertDispatched(UserUpdated::class, function ($event) {
-            $publicAdministrationUser = $event->getUser()->publicAdministrationsWithSuspended()->where('public_administration_id', $this->publicAdministration->id)->first();
-            $statusPublicAdministrationUser = UserStatus::fromValue(intval($publicAdministrationUser->pivot->user_status));
+            $statusPublicAdministrationUser = $event->getUser()->getStatusforPublicAdministration($this->publicAdministration);
 
             return $statusPublicAdministrationUser->is(UserStatus::SUSPENDED);
         });
@@ -612,8 +611,7 @@ class CRUDUserTest extends TestCase
         });
 
         Event::assertDispatched(UserUpdated::class, function ($event) {
-            $publicAdministrationUser = $event->getUser()->publicAdministrations()->where('public_administration_id', $this->publicAdministration->id)->first();
-            $statusPublicAdministrationUser = UserStatus::fromValue(intval($publicAdministrationUser->pivot->user_status));
+            $statusPublicAdministrationUser = $event->getUser()->getStatusforPublicAdministration($this->publicAdministration);
 
             return $statusPublicAdministrationUser->is(UserStatus::INVITED);
         });

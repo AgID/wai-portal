@@ -25,7 +25,7 @@ class PublicAdministrationsTransformer extends TransformerAbstract
         $authUser = auth()->user();
 
         $statusPublicAdministrationUser = $publicAdministration->pivot
-            ? UserStatus::fromValue(intval($publicAdministration->pivot->user_status))
+            ? $authUser->getStatusforPublicAdministration($publicAdministration)
             : null;
         $emailPublicAdministrationUser = $publicAdministration->pivot
             ? $publicAdministration->pivot->user_email
