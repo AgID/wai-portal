@@ -504,8 +504,7 @@ class CRUDUserTest extends TestCase
         });
 
         Event::assertDispatched(UserUpdated::class, function ($event) {
-            $publicAdministrationUser = $event->getUser()->publicAdministrationsWithSuspended()->where('public_administration_id', $this->publicAdministration->id)->first();
-            $statusPublicAdministrationUser = UserStatus::fromValue(intval($publicAdministrationUser->pivot->user_status));
+            $statusPublicAdministrationUser = $event->getUser()->getStatusforPublicAdministration($this->publicAdministration);
 
             return $statusPublicAdministrationUser->is(UserStatus::SUSPENDED);
         });
@@ -582,6 +581,32 @@ class CRUDUserTest extends TestCase
     }
 
     /**
+     * Test user suspend fail due to user in 'invited' status.
+     */
+    public function testSuspendUserFailInvited(): void
+    {
+        $user = factory(User::class)->create([
+            'status' => UserStatus::INVITED,
+        ]);
+        $this->publicAdministration->users()->sync([$user->id => ['user_status' => UserStatus::INVITED]], false);
+
+        $this->actingAs($this->user)
+            ->withSession([
+                'spid_sessionIndex' => 'fake-session-index',
+                'tenant_id' => $this->publicAdministration->id,
+            ])
+            ->json('patch', route('users.suspend', ['user' => $user]))
+            ->assertStatus(400)
+            ->assertJson([
+                'result' => 'error',
+                'message' => 'invalid operation for current user status',
+            ]);
+
+        Event::assertNotDispatched(UserSuspended::class);
+        Event::assertNotDispatched(UserUpdated::class);
+    }
+
+    /**
      * Test user reactivation successful.
      */
     public function testReactivateUserSuccessful(): void
@@ -612,8 +637,7 @@ class CRUDUserTest extends TestCase
         });
 
         Event::assertDispatched(UserUpdated::class, function ($event) {
-            $publicAdministrationUser = $event->getUser()->publicAdministrations()->where('public_administration_id', $this->publicAdministration->id)->first();
-            $statusPublicAdministrationUser = UserStatus::fromValue(intval($publicAdministrationUser->pivot->user_status));
+            $statusPublicAdministrationUser = $event->getUser()->getStatusforPublicAdministration($this->publicAdministration);
 
             return $statusPublicAdministrationUser->is(UserStatus::INVITED);
         });

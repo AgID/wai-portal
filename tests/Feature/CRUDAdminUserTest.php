@@ -687,8 +687,7 @@ class CRUDAdminUserTest extends TestCase
             ->assertOk();
 
         Event::assertDispatched(UserUpdated::class, function ($event) use ($publicAdministration) {
-            $publicAdministrationUser = $event->getUser()->publicAdministrationsWithSuspended()->where('public_administration_id', $publicAdministration->id)->first();
-            $statusPublicAdministrationUser = UserStatus::fromValue(intval($publicAdministrationUser->pivot->user_status));
+            $statusPublicAdministrationUser = $event->getUser()->getStatusforPublicAdministration($publicAdministration);
 
             return $statusPublicAdministrationUser->is(UserStatus::SUSPENDED);
         });
@@ -750,8 +749,7 @@ class CRUDAdminUserTest extends TestCase
             ->assertOk();
 
         Event::assertDispatched(UserUpdated::class, function ($event) use ($publicAdministration) {
-            $publicAdministrationUser = $event->getUser()->publicAdministrationsWithSuspended()->where('public_administration_id', $publicAdministration->id)->first();
-            $statusPublicAdministrationUser = UserStatus::fromValue(intval($publicAdministrationUser->pivot->user_status));
+            $statusPublicAdministrationUser = $event->getUser()->getStatusforPublicAdministration($publicAdministration);
 
             return $statusPublicAdministrationUser->is(UserStatus::SUSPENDED);
         });
@@ -809,8 +807,7 @@ class CRUDAdminUserTest extends TestCase
             ->assertOk();
 
         Event::assertDispatched(UserUpdated::class, function ($event) use ($publicAdministration) {
-            $publicAdministrationUser = $event->getUser()->publicAdministrations()->where('public_administration_id', $publicAdministration->id)->first();
-            $statusPublicAdministrationUser = UserStatus::fromValue(intval($publicAdministrationUser->pivot->user_status));
+            $statusPublicAdministrationUser = $event->getUser()->getStatusforPublicAdministration($publicAdministration);
 
             return $statusPublicAdministrationUser->is(UserStatus::INVITED);
         });

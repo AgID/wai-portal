@@ -240,6 +240,20 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * Get the status of the user for the specified public administration.
+     *
+     * @param PublicAdministration $publicAdministration the public administration
+     *
+     * @return UserStatus the user status for the specified public administration
+     */
+    public function getStatusforPublicAdministration(PublicAdministration $publicAdministration): ?UserStatus
+    {
+        $status = $this->publicAdministrationsWithSuspended()->where('public_administration_id', $publicAdministration->id)->first()->pivot->user_status ?? null;
+
+        return is_numeric($status) ? UserStatus::fromValue(intval($status)) : null;
+    }
+
+    /**
      * Return calculated password for this User's Analytics Service account.
      *
      * @return string The transformed value
