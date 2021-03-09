@@ -322,7 +322,7 @@ class UserController extends Controller
             return $this->notModifiedResponse();
         }
 
-        $userPublicAdministrationStatus = UserStatus::fromValue(intval($publicAdministrationUser->pivot->user_status));
+        $userPublicAdministrationStatus = $user->getStatusforPublicAdministration($publicAdministration);
 
         try {
             if ($userPublicAdministrationStatus->is(UserStatus::PENDING)) {
@@ -365,7 +365,7 @@ class UserController extends Controller
         $publicAdministration = ($publicAdministration->id ?? false) ? $publicAdministration : current_public_administration();
         $publicAdministrationUser = $user->publicAdministrationsWithSuspended()->where('public_administration_id', $publicAdministration->id)->first();
 
-        $userPublicAdministrationStatus = UserStatus::fromValue(intval($publicAdministrationUser->pivot->user_status));
+        $userPublicAdministrationStatus = $user->getStatusforPublicAdministration($publicAdministration);
 
         if ($userPublicAdministrationStatus->is(UserStatus::SUSPENDED)) {
             return $this->notModifiedResponse();
@@ -378,6 +378,10 @@ class UserController extends Controller
 
             if ($userPublicAdministrationStatus->is(UserStatus::PENDING)) {
                 throw new InvalidUserStatusException('Pending users cannot be suspended.');
+            }
+
+            if ($userPublicAdministrationStatus->is(UserStatus::INVITED)) {
+                throw new InvalidUserStatusException('Invited users cannot be suspended.');
             }
 
             //NOTE: super admin are allowed to suspend the last active administrator of a public administration
@@ -421,7 +425,7 @@ class UserController extends Controller
     {
         $publicAdministration = ($publicAdministration->id ?? false) ? $publicAdministration : current_public_administration();
         $publicAdministrationUser = $user->publicAdministrationsWithSuspended()->where('public_administration_id', $publicAdministration->id)->first();
-        $userPublicAdministrationStatus = UserStatus::fromValue(intval($publicAdministrationUser->pivot->user_status));
+        $userPublicAdministrationStatus = $user->getStatusforPublicAdministration($publicAdministration);
 
         if (!$userPublicAdministrationStatus->is(UserStatus::SUSPENDED)) {
             return $this->notModifiedResponse();

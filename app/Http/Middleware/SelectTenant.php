@@ -20,24 +20,34 @@ class SelectTenant
     public function handle($request, Closure $next)
     {
         $authUser = $request->user();
+        $noRedirectRoutes = [
+            'websites.index',
+            'analytics',
+        ];
 
         if ($authUser && !$authUser->isA(UserRole::SUPER_ADMIN)) {
-            if (empty(session('tenant_id')) && $authUser->publicAdministrationsWithSuspended->isNotEmpty()) {
-                switch ($authUser->publicAdministrationsWithSuspended->count()) {
-                    case 1:
-                        $publicAdministration = $authUser->publicAdministrationsWithSuspended()->first();
-                        $userStatus = UserStatus::fromValue(intval($publicAdministration->pivot->user_status));
-                        if ($userStatus->is(UserStatus::ACTIVE)) {
-                            session()->put('tenant_id', $publicAdministration->id);
-                            Bouncer::scope()->to($publicAdministration->id);
-                            break;
-                        }
-                        // no break
-                    default:
-                        return redirect()->route('publicAdministrations.show');
-                        break;
+            if (empty(session('tenant_id'))) {
+                $publicAdministrationsCount = $authUser->publicAdministrationsWithSuspended->count();
+                if (1 === $publicAdministrationsCount) {
+                    $publicAdministration = $authUser->publicAdministrationsWithSuspended()->first();
+                    $userPublicAdministrationStatus = $user->getStatusforPublicAdministration($publicAdministration);
+
+                    if ($userStatus->is(UserStatus::ACTIVE)) {
+                        session()->put('tenant_id', $publicAdministration->id);
+                        Bouncer::scope()->to($publicAdministration->id);
+
+                        return $next($request);
+                    }
                 }
-            } elseif (!empty(session('tenant_id')) && $authUser->publicAdministrations->where('id', session('tenant_id'))->isEmpty()) {
+
+                if (!$request->routeIs($noRedirectRoutes)) {
+                    return redirect()->route('publicAdministrations.show');
+                }
+
+                return $next($request);
+            }
+
+            if ($authUser->publicAdministrations->where('id', session('tenant_id'))->isEmpty()) {
                 $request->session()->forget('tenant_id');
 
                 return redirect()->route('publicAdministrations.show');

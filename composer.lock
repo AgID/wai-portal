@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c112272663fc7ee1d9ad1f21f1e9216d",
+    "content-hash": "821eb660f9e5b452943dc17ca0e39c9e",
     "packages": [
         {
             "name": "bensampo/laravel-enum",
@@ -250,25 +250,26 @@
         },
         {
             "name": "davidepastore/codice-fiscale",
-            "version": "v0.7.1",
+            "version": "v0.8.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/DavidePastore/codice-fiscale.git",
-                "reference": "17cb3aa4f370097b1e2547fab54ebc9d449cc71a"
+                "reference": "a7d01b9ae83290a72cec911fb06d1c6db222e1ee"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/DavidePastore/codice-fiscale/zipball/17cb3aa4f370097b1e2547fab54ebc9d449cc71a",
-                "reference": "17cb3aa4f370097b1e2547fab54ebc9d449cc71a",
+                "url": "https://api.github.com/repos/DavidePastore/codice-fiscale/zipball/a7d01b9ae83290a72cec911fb06d1c6db222e1ee",
+                "reference": "a7d01b9ae83290a72cec911fb06d1c6db222e1ee",
                 "shasum": ""
             },
             "require": {
                 "ext-intl": "*",
-                "php": "^7.1"
+                "php": "^7.1|^8.0"
             },
             "require-dev": {
                 "phpunit/phpunit": "^7.5 || ^8.5",
-                "scrutinizer/ocular": "~1.1"
+                "scrutinizer/ocular": "~1.1",
+                "squizlabs/php_codesniffer": "3.*"
             },
             "type": "library",
             "autoload": {
@@ -296,9 +297,9 @@
             ],
             "support": {
                 "issues": "https://github.com/DavidePastore/codice-fiscale/issues",
-                "source": "https://github.com/DavidePastore/codice-fiscale/tree/master"
+                "source": "https://github.com/DavidePastore/codice-fiscale/tree/v0.8.0"
             },
-            "time": "2020-05-05T13:16:30+00:00"
+            "time": "2021-01-30T19:37:00+00:00"
         },
         {
             "name": "dnoegel/php-xdg-base-dir",
@@ -4982,7 +4983,7 @@
         },
         {
             "name": "symfony/polyfill-ctype",
-            "version": "v1.22.0",
+            "version": "v1.22.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-ctype.git",
@@ -5041,7 +5042,7 @@
                 "portable"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-ctype/tree/v1.22.0"
+                "source": "https://github.com/symfony/polyfill-ctype/tree/v1.22.1"
             },
             "funding": [
                 {
@@ -6284,16 +6285,16 @@
         },
         {
             "name": "symfony/yaml",
-            "version": "v4.4.19",
+            "version": "v4.4.20",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "17ed9f14c1aa05b1a5cf2e2c5ef2d0be28058ef9"
+                "reference": "29e61305e1c79d25f71060903982ead8f533e267"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/17ed9f14c1aa05b1a5cf2e2c5ef2d0be28058ef9",
-                "reference": "17ed9f14c1aa05b1a5cf2e2c5ef2d0be28058ef9",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/29e61305e1c79d25f71060903982ead8f533e267",
+                "reference": "29e61305e1c79d25f71060903982ead8f533e267",
                 "shasum": ""
             },
             "require": {
@@ -6335,7 +6336,7 @@
             "description": "Loads and dumps YAML files",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/yaml/tree/v4.4.19"
+                "source": "https://github.com/symfony/yaml/tree/v4.4.20"
             },
             "funding": [
                 {
@@ -6351,7 +6352,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-01-27T09:09:26+00:00"
+            "time": "2021-02-22T15:36:50+00:00"
         },
         {
             "name": "tijsverkoyen/css-to-inline-styles",

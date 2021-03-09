@@ -14,7 +14,7 @@ class SDGValidateStatistics extends Command
     public function __construct()
     {
         $this->signature = 'sdg:validate-statistics
-            {statisticsFile : The file containing the statistics to be validated (can be speciefed with absolute path or relative to the application root)}';
+            {statisticsFile : The file containing the statistics to be validated (can be specified with absolute path or relative to the application root)}';
         $this->description = 'Validate statistics data against provided json scheme';
         parent::__construct();
     }
