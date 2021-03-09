@@ -27,8 +27,7 @@ trait SendsResponse
         $userTrashed = $user->trashed() ? $user->trashed() : false;
         if ($publicAdministration) {
             if ($user->publicAdministrationsWithSuspended()->where('public_administration_id', $publicAdministration->id)->get()->isNotEmpty()) {
-                $publicAdministrationUser = $user->publicAdministrationsWithSuspended()->where('public_administration_id', $publicAdministration->id)->first();
-                $userStatus = UserStatus::fromValue(intval($publicAdministrationUser->pivot->user_status));
+                $userStatus = $user->getStatusforPublicAdministration($publicAdministration);
             } else {
                 $userTrashed = true;
             }

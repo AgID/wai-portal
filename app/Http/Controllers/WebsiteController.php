@@ -232,7 +232,7 @@ class WebsiteController extends Controller
         $authUser = auth()->user();
         $publicAdministrationUser = $authUser->publicAdministrations()->where('public_administration_id', $currentPublicAdministration->id)->first();
         if ($publicAdministrationUser) {
-            $userPublicAdministrationStatus = UserStatus::fromValue(intval($publicAdministrationUser->pivot->user_status));
+            $userPublicAdministrationStatus = $user->getStatusforPublicAdministration($publicAdministration);
         }
         $forceActivationButtonVisible = !app()->environment('production') && config('wai.custom_public_administrations', false) && $website->type->is(WebsiteType::INSTITUTIONAL_PLAY);
 
