@@ -32,7 +32,7 @@ class SelectTenant
                     $publicAdministration = $authUser->publicAdministrationsWithSuspended()->first();
                     $userPublicAdministrationStatus = $authUser->getStatusforPublicAdministration($publicAdministration);
 
-                    if ($userStatus->is(UserStatus::ACTIVE)) {
+                    if ($userPublicAdministrationStatus->is(UserStatus::ACTIVE)) {
                         session()->put('tenant_id', $publicAdministration->id);
                         Bouncer::scope()->to($publicAdministration->id);
 
