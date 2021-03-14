@@ -26,9 +26,8 @@ class UserTransformer extends TransformerAbstract
         $authUser = auth()->user();
         $authUserCanAccessAdminArea = $authUser->can(UserPermission::ACCESS_ADMIN_AREA);
 
-        $publicAdministrationUser = $user->publicAdministrationsWithSuspended()->where('public_administration_id', $publicAdministration->id)->first();
         $statusPublicAdministrationUser = $user->getStatusforPublicAdministration($publicAdministration);
-        $emailPublicAdministrationUser = $publicAdministrationUser->pivot->user_email;
+        $emailPublicAdministrationUser = $user->getEmailforPublicAdministration($publicAdministration);
 
         return Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user, $publicAdministration, $authUser, $authUserCanAccessAdminArea, $statusPublicAdministrationUser, $emailPublicAdministrationUser) {
             $data = [

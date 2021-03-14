@@ -494,8 +494,7 @@ class CRUDAdminUserTest extends TestCase
         Event::assertDispatched(UserEmailForPublicAdministrationChanged::class, function ($event) {
             $publicAdministration = $event->getPublicAdministration();
             $user = $event->getUser();
-            $publicAdministrationUser = $user->publicAdministrationsWithSuspended()->where('public_administration_id', $publicAdministration->id)->first();
-            $emailPublicAdministrationUser = $publicAdministrationUser->pivot->user_email;
+            $emailPublicAdministrationUser = $user->getEmailForPublicAdministration($publicAdministration);
 
             return 'new@webanalytics.italia.it' === $emailPublicAdministrationUser;
         });

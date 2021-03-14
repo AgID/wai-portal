@@ -136,8 +136,7 @@ class PublicAdministrationEventsSubscriberTest extends TestCase
             function ($notification, $channels) {
                 $this->assertEquals($channels, ['mail']);
                 $mail = $notification->toMail($this->user)->build();
-                $userEmailAddress = $this->user->publicAdministrations
-                    ->where('id', $this->publicAdministration->id)->first()->pivot->user_email;
+                $userEmailAddress = $this->user->getEmailForPublicAdministration($this->publicAdministration);
                 $this->assertEquals($this->user->uuid, $mail->viewData['user']['uuid']);
                 $this->assertEquals($this->publicAdministration->ipa_code, $mail->viewData['publicAdministration']['ipa_code']);
                 $this->assertEquals($mail->subject, __('Pubblica amministrazione attivata'));
@@ -217,8 +216,7 @@ class PublicAdministrationEventsSubscriberTest extends TestCase
             function ($notification, $channels) {
                 $this->assertEquals($channels, ['mail']);
                 $mail = $notification->toMail($this->user)->build();
-                $userEmailAddress = $this->user->publicAdministrations
-                    ->where('id', $this->publicAdministration->id)->first()->pivot->user_email;
+                $userEmailAddress = $this->user->getEmailForPublicAdministration($this->publicAdministration);
                 $this->assertEquals($this->user->uuid, $mail->viewData['user']['uuid']);
                 $this->assertEquals($this->publicAdministration->ipa_code, $mail->viewData['publicAdministration']['ipa_code']);
                 $this->assertEquals('fakesnippet', $mail->viewData['javascriptSnippet']);
@@ -284,8 +282,7 @@ class PublicAdministrationEventsSubscriberTest extends TestCase
             function ($notification, $channels) {
                 $this->assertEquals($channels, ['mail']);
                 $mail = $notification->toMail($this->user)->build();
-                $userEmailAddress = $this->user->publicAdministrations
-                    ->where('id', $this->publicAdministration->id)->first()->pivot->user_email;
+                $userEmailAddress = $this->user->getEmailForPublicAdministration($this->publicAdministration);
                 $this->assertEquals($this->user->uuid, $mail->viewData['user']['uuid']);
                 $this->assertEquals($this->publicAdministration->ipa_code, $mail->viewData['publicAdministration']['ipa_code']);
                 $this->assertEquals('fakesnippet', $mail->viewData['javascriptSnippet']);
@@ -346,8 +343,7 @@ class PublicAdministrationEventsSubscriberTest extends TestCase
             function ($notification, $channels) {
                 $this->assertEquals($channels, ['mail']);
                 $mail = $notification->toMail($this->user)->build();
-                $userEmailAddress = $this->user->publicAdministrations
-                    ->where('id', $this->publicAdministration->id)->first()->pivot->user_email;
+                $userEmailAddress = $this->user->getEmailForPublicAdministration($this->publicAdministration);
                 $this->assertEquals($this->user->uuid, $mail->viewData['user']['uuid']);
                 $this->assertEquals($this->publicAdministration->ipa_code, $mail->viewData['publicAdministration']['ipa_code']);
                 $this->assertEquals('fakesnippet', $mail->viewData['javascriptSnippet']);
@@ -386,8 +382,7 @@ class PublicAdministrationEventsSubscriberTest extends TestCase
             function ($notification, $channels) {
                 $this->assertEquals($channels, ['mail']);
                 $mail = $notification->toMail($this->user)->build();
-                $userEmailAddress = $this->user->publicAdministrations
-                    ->where('id', $this->publicAdministration->id)->first()->pivot->user_email;
+                $userEmailAddress = $this->user->getEmailForPublicAdministration($this->publicAdministration);
                 $this->assertEquals($this->user->uuid, $mail->viewData['user']['uuid']);
                 $this->assertEquals($this->publicAdministration->ipa_code, $mail->viewData['publicAdministration']->ipa_code);
                 $this->assertEquals($mail->subject, __('Pubblica amministrazione eliminata'));
