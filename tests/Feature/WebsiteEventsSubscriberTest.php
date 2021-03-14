@@ -285,8 +285,7 @@ class WebsiteEventsSubscriberTest extends TestCase
             function ($notification, $channels) {
                 $this->assertEquals($channels, ['mail']);
                 $mail = $notification->toMail($this->user)->build();
-                $userEmailAddress = $this->user->publicAdministrations
-                    ->where('id', $this->publicAdministration->id)->first()->pivot->user_email;
+                $userEmailAddress = $this->user->getEmailForPublicAdministration($this->publicAdministration);
                 $this->assertEquals($this->user->uuid, $mail->viewData['user']['uuid']);
                 $this->assertEquals($this->website->slug, $mail->viewData['website']['slug']);
                 $this->assertEquals('fakesnippet', $mail->viewData['javascriptSnippet']);
@@ -302,8 +301,7 @@ class WebsiteEventsSubscriberTest extends TestCase
             function ($notification, $channels) use ($secondUser) {
                 $this->assertEquals($channels, ['mail']);
                 $mail = $notification->toMail($secondUser)->build();
-                $userEmailAddress = $secondUser->publicAdministrations
-                    ->where('id', $this->publicAdministration->id)->first()->pivot->user_email;
+                $userEmailAddress = $secondUser->getEmailForPublicAdministration($this->publicAdministration);
                 $this->assertEquals($secondUser->uuid, $mail->viewData['user']['uuid']);
                 $this->assertEquals($this->website->slug, $mail->viewData['website']['slug']);
                 $this->assertEquals($mail->subject, __('Nuovo sito web aggiunto'));
@@ -370,8 +368,7 @@ class WebsiteEventsSubscriberTest extends TestCase
             function ($notification, $channels) {
                 $this->assertEquals($channels, ['mail']);
                 $mail = $notification->toMail($this->user)->build();
-                $userEmailAddress = $this->user->publicAdministrations
-                    ->where('id', $this->publicAdministration->id)->first()->pivot->user_email;
+                $userEmailAddress = $this->user->getEmailForPublicAdministration($this->publicAdministration);
                 $this->assertEquals($this->user->uuid, $mail->viewData['user']['uuid']);
                 $this->assertEquals($this->website->slug, $mail->viewData['website']['slug']);
                 $this->assertEquals('fakesnippet', $mail->viewData['javascriptSnippet']);
@@ -823,8 +820,7 @@ class WebsiteEventsSubscriberTest extends TestCase
             function ($notification, $channels) {
                 $this->assertEquals($channels, ['mail']);
                 $mail = $notification->toMail($this->user)->build();
-                $userEmailAddress = $this->user->publicAdministrations
-                    ->where('id', $this->publicAdministration->id)->first()->pivot->user_email;
+                $userEmailAddress = $this->user->getEmailForPublicAdministration($this->publicAdministration);
                 $this->assertEquals($this->user->uuid, $mail->viewData['user']['uuid']);
                 $this->assertEquals($this->website->slug, $mail->viewData['website']->slug);
                 $this->assertEquals($mail->subject, __('[Attenzione] - Sito web eliminato'));

@@ -211,8 +211,8 @@ class WebsiteController extends Controller
     public function show(PublicAdministration $publicAdministration, Website $website): View
     {
         $currentPublicAdministration = auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)
-        ? $publicAdministration
-        : current_public_administration();
+            ? $publicAdministration
+            : current_public_administration();
 
         $usersPermissionsDatatableSourceUrl = $this->getRoleAwareUrl('websites.users.permissions.data.json', [
             'website' => $website,
@@ -227,19 +227,18 @@ class WebsiteController extends Controller
         ], [
             'website' => $website,
         ], $currentPublicAdministration);
+
         $usersPermissionsDatatable = $this->getDatatableUsersPermissionsParams($usersPermissionsDatatableSourceUrl, true);
 
         $authUser = auth()->user();
-        $publicAdministrationUser = $authUser->publicAdministrations()->where('public_administration_id', $currentPublicAdministration->id)->first();
-        if ($publicAdministrationUser) {
-            $userPublicAdministrationStatus = $user->getStatusforPublicAdministration($publicAdministration);
-        }
+        $userPublicAdministrationStatus = $authUser->getStatusforPublicAdministration($publicAdministration);
+
         $forceActivationButtonVisible = !app()->environment('production') && config('wai.custom_public_administrations', false) && $website->type->is(WebsiteType::INSTITUTIONAL_PLAY);
 
         return view('pages.websites.show')->with(compact('website'))->with($roleAwareUrls)
             ->with($usersPermissionsDatatable)
             ->with('forceActivationButtonVisible', $forceActivationButtonVisible)
-            ->with('userPublicAdministrationStatus', $userPublicAdministrationStatus ?? null);
+            ->with('userPublicAdministrationStatus', $userPublicAdministrationStatus);
     }
 
     /**
