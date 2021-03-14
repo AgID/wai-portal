@@ -30,7 +30,7 @@ class SelectTenant
                 $publicAdministrationsCount = $authUser->publicAdministrationsWithSuspended->count();
                 if (1 === $publicAdministrationsCount) {
                     $publicAdministration = $authUser->publicAdministrationsWithSuspended()->first();
-                    $userPublicAdministrationStatus = $user->getStatusforPublicAdministration($publicAdministration);
+                    $userPublicAdministrationStatus = $authUser->getStatusforPublicAdministration($publicAdministration);
 
                     if ($userStatus->is(UserStatus::ACTIVE)) {
                         session()->put('tenant_id', $publicAdministration->id);

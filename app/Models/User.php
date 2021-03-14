@@ -236,7 +236,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function getEmailforPublicAdministration(PublicAdministration $publicAdministration): ?string
     {
-        return $this->publicAdministrationsWithSuspended()->where('public_administration_id', $publicAdministration->id)->first()->pivot->user_email;
+        return $this->publicAdministrationsWithSuspended()->where('public_administration_id', $publicAdministration->id)->first()->pivot->user_email ?? null;
     }
 
     /**
