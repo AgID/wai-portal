@@ -363,8 +363,6 @@ class UserController extends Controller
     public function suspend(Request $request, PublicAdministration $publicAdministration, User $user)
     {
         $publicAdministration = ($publicAdministration->id ?? false) ? $publicAdministration : current_public_administration();
-        $publicAdministrationUser = $user->publicAdministrationsWithSuspended()->where('public_administration_id', $publicAdministration->id)->first();
-
         $userPublicAdministrationStatus = $user->getStatusforPublicAdministration($publicAdministration);
 
         if ($userPublicAdministrationStatus->is(UserStatus::SUSPENDED)) {
@@ -424,7 +422,6 @@ class UserController extends Controller
     public function reactivate(PublicAdministration $publicAdministration, User $user)
     {
         $publicAdministration = ($publicAdministration->id ?? false) ? $publicAdministration : current_public_administration();
-        $publicAdministrationUser = $user->publicAdministrationsWithSuspended()->where('public_administration_id', $publicAdministration->id)->first();
         $userPublicAdministrationStatus = $user->getStatusforPublicAdministration($publicAdministration);
 
         if (!$userPublicAdministrationStatus->is(UserStatus::SUSPENDED)) {
