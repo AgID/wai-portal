@@ -11,9 +11,6 @@ it:
     logo_raster: /images/wai-logo.png
     pill: beta
     highlight:
-      production: |
-        **Web Analytics Italia** è in una fase di beta chiusa.
-        [Cosa significa?](https://webanalytics.italia.it/faq#beta-chiusa)
       public-playground: |
         Questo è l'ambiente **public playground**. Ogni settimana il sistema
         viene automaticamente resettato. [Maggiori
