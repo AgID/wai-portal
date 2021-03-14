@@ -11,7 +11,7 @@ use App\Models\User;
 trait ManageRecipientNotifications
 {
     /**
-     * Get specific email for the administration.
+     * Get specific email for the administration and fallback to the email address used during the registration.
      *
      * @param User $user the recipient of the notification
      * @param PublicAdministration $publicAdministration the public administration that the user belongs to
