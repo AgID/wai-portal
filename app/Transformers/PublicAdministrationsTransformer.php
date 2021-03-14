@@ -23,13 +23,8 @@ class PublicAdministrationsTransformer extends TransformerAbstract
     public function transform(PublicAdministration $publicAdministration): array
     {
         $authUser = auth()->user();
-
-        $statusPublicAdministrationUser = $publicAdministration->pivot
-            ? $authUser->getStatusforPublicAdministration($publicAdministration)
-            : null;
-        $emailPublicAdministrationUser = $publicAdministration->pivot
-            ? $publicAdministration->pivot->user_email
-            : null;
+        $statusPublicAdministrationUser = $authUser->getStatusforPublicAdministration($publicAdministration);
+        $emailPublicAdministrationUser = $authUser->getEmailforPublicAdministration($publicAdministration);
 
         $data = [
             'name' => [
