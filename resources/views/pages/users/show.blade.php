@@ -62,14 +62,14 @@
             @component('layouts.components.box', ['classes' => 'd-flex flex-column justify-content-between'])
             <div class="d-flex justify-content-between align-items-center">
                 <h4 class="text-uppercase m-0">{{ __('stato') }}</h4>
-                <span class="badge px-3 py-2 user-status {{ strtolower($user->status->key) }}">
-                    {{ strtoupper($user->status->description) }}
+                <span class="badge px-3 py-2 user-status {{ strtolower($statusPublicAdministrationUser->key) }}">
+                    {{ strtoupper($statusPublicAdministrationUser->description) }}
                 </span>
             </div>
             <div class="box-section lightgrey-bg-a1 my-4">
-                <p>{{ UserStatus::getLongDescription($user->status) }}</p>
+                <p>{{ UserStatus::getLongDescription($statusPublicAdministrationUser) }}</p>
                 @can(UserPermission::MANAGE_USERS)
-                @if ($user->status->is(UserStatus::INVITED))
+                @if ($statusPublicAdministrationUser->is(UserStatus::INVITED))
                 <h5 class="section-header">{{ __('invito') }}</h5>
                 <p>
                     {{ __("Se l'indirizzo email è corretto puoi inviare un nuovo invito!") }}
@@ -91,7 +91,7 @@
                     ]) }}
                 </p> --}}
                 @endif
-                @if ($user->status->is(UserStatus::ACTIVE) && !$user->is($authUser))
+                @if ($statusPublicAdministrationUser->is(UserStatus::ACTIVE) && !$user->is($authUser))
                 <h5 class="section-header">{{ __('sospensione') }}</h5>
                 <p>
                     {{ __("Se vuoi impedire l'accesso a questo utente puoi sospenderlo.") }}
@@ -100,13 +100,13 @@
                     href="{{ $userSuspendUrl }}"
                     data-type="userSuspendReactivate"
                     data-user-name="{{ $user->name }}"
-                    data-current-status-description="{{ $user->status->description }}"
-                    data-current-status="{{ $user->status->key }}"
+                    data-current-status-description="{{ $statusPublicAdministrationUser->description }}"
+                    data-current-status="{{ $statusPublicAdministrationUser->key }}"
                     aria-disabled="true">
                     {{ ucfirst(__('sospendi')) }}
                 </a>
                 @endif
-                @if ($user->status->is(UserStatus::SUSPENDED))
+                @if ($statusPublicAdministrationUser->is(UserStatus::SUSPENDED))
                 <h5 class="section-header">{{ __('riattivazione') }}</h5>
                 <p>
                     {{ __("Se vuoi di nuovo consentire l'accesso a questo utente puoi riattivarlo.") }}
@@ -115,13 +115,13 @@
                     href="{{ $userReactivateUrl }}"
                     data-type="userSuspendReactivate"
                     data-user-name="{{ $user->name }}"
-                    data-current-status-description="{{ $user->status->description }}"
-                    data-current-status="{{ $user->status->key }}"
+                    data-current-status-description="{{ $statusPublicAdministrationUser->description }}"
+                    data-current-status="{{ $statusPublicAdministrationUser->key }}"
                     aria-disabled="true">
                     {{ ucfirst(__('riattiva')) }}
                 </a>
                 @endif
-                @if ($user->status->is(UserStatus::PENDING))
+                @if ($statusPublicAdministrationUser->is(UserStatus::PENDING))
                 <h5 class="section-header">{{ __('non attivo') }}</h5>
                 <p>
                     {{ __("L'attivazione dell'utente avviene quando il sito istituzionale della PA inizia a tracciare il traffico.") }}
