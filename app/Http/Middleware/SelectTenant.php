@@ -22,12 +22,17 @@ class SelectTenant
         $authUser = $request->user();
         $noRedirectRoutes = [
             'websites.index',
-            'analytics',
         ];
 
         if ($authUser && !$authUser->isA(UserRole::SUPER_ADMIN)) {
             if (empty(session('tenant_id'))) {
                 $publicAdministrationsCount = $authUser->publicAdministrationsWithSuspended->count();
+                if (0 === $publicAdministrationsCount && !$request->routeIs('websites.index')) {
+                    $request->session()->reflash();
+
+                    return redirect()->route('websites.index');
+                }
+
                 if (1 === $publicAdministrationsCount) {
                     $publicAdministration = $authUser->publicAdministrationsWithSuspended()->first();
                     $userPublicAdministrationStatus = $authUser->getStatusforPublicAdministration($publicAdministration);

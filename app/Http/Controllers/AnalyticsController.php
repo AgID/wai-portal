@@ -23,11 +23,6 @@ class AnalyticsController extends Controller
     public function index(Request $request, PublicAdministration $publicAdministration = null)
     {
         $user = $request->user();
-        if ($user->publicAdministrations->isEmpty() && $user->cannot(UserPermission::ACCESS_ADMIN_AREA)) {
-            $request->session()->reflash();
-
-            return redirect()->route('websites.index');
-        }
 
         if ($user->cannot(UserPermission::ACCESS_ADMIN_AREA)) {
             $publicAdministration = current_public_administration();

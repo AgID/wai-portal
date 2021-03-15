@@ -187,6 +187,7 @@ class UserController extends Controller
     {
         $publicAdministration = request()->route('publicAdministration', current_public_administration());
         $emailPublicAdministrationUser = $user->getEmailforPublicAdministration($publicAdministration);
+        $statusPublicAdministrationUser = $user->getStatusforPublicAdministration($publicAdministration);
 
         $websitesPermissionsDatatableSource = $this->getRoleAwareUrl('users.websites.permissions.data.json', [
             'user' => $user,
@@ -203,7 +204,10 @@ class UserController extends Controller
 
         $websitesPermissionsDatatable = $this->getDatatableWebsitesPermissionsParams($websitesPermissionsDatatableSource, true);
 
-        return view('pages.users.show')->with(compact('user', 'allRoles', 'emailPublicAdministrationUser'))->with($roleAwareUrls)->with($websitesPermissionsDatatable);
+        return view('pages.users.show')
+            ->with(compact('user', 'allRoles', 'emailPublicAdministrationUser', 'statusPublicAdministrationUser'))
+            ->with($roleAwareUrls)
+            ->with($websitesPermissionsDatatable);
     }
 
     /**
