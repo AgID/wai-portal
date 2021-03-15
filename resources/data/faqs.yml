@@ -22,23 +22,16 @@ it:
       da parte dei cittadini.
 
   - themes: generale
-    id: beta-chiusa
-    question: Cosa significa che Web analytics Italia è in beta chiusa?
+    id: beta
+    question: Cosa significa che Web analytics Italia è in beta?
     answer: |
       **Web analytics Italia (WAI)** è un progetto relativamente nuovo e nella
       prima fase del suo rilascio potranno essere apportati diversi cambiamenti
       o aggiustamenti in base ai feedback degli utenti.
 
-      In questa prima fase (denominata *beta*) l'accesso è limitato ad una lista
-      di amministrazioni che avranno l'opportunità di sperimentare tutte le
-      funzionalità, individuare eventuali difetti e inviare feedback.
-
-      Se la tua amministrazione non è stata selezionata per entrare nella fase
-      *beta* potrà iniziare a usare **WAI** solo in una seconda fase.
-
-      Se ritieni che la tua amministrazione abbia voglia di mettersi in gioco e
-      sperimentare **WAI** durante la *beta*, puoi fare una richiesta usando i
-      nostri [canali di contatto](/contacts).
+      In questa prima fase (denominata *beta*) le amministrazioni che avranno
+      l'opportunità di sperimentare tutte le funzionalità, individuare eventuali
+      difetti e inviare feedback.
 
   - themes: adesione
     id: come-funziona-adesione
