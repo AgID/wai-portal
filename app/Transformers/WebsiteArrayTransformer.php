@@ -5,7 +5,7 @@ namespace App\Transformers;
 use App\Models\Website;
 use League\Fractal\TransformerAbstract;
 
-class WebsiteApiTransformer extends TransformerAbstract
+class WebsiteArrayTransformer extends TransformerAbstract
 {
     public function transform(Website $website): array
     {

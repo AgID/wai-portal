@@ -81,18 +81,38 @@ trait SendsResponse
      *
      * @return JsonResponse|RedirectResponse the response in json or http redirect format
      */
-    protected function websiteResponse(Website $website)
+    protected function websiteResponse(Website $website, ?array $notification = [], ?string $redirectUrl = null, ?int $code = 200, ?array $headers = [])
     {
-        return request()->expectsJson()
-            ? response()->json([
-                'result' => 'ok',
-                'id' => $website->slug,
-                'website_name' => e($website->name),
-                'status' => $website->status->key,
-                'status_description' => $website->status->description,
-                'trashed' => $website->trashed(),
-            ])
-            : back()->withNotification([
+
+        $requestExpectsJson = request()->expectsJson();
+
+        if ($requestExpectsJson) {
+            $jsonResponse = (new WebsiteArrayTransformer())->transform($website);
+
+            if (!request()->is('api/*')) {
+                $jsonResponse['result'] = 'ok';
+                $jsonResponse['id'] = $website->slug;
+                $jsonResponse['website_name'] = e($website->name);
+                $jsonResponse['status'] = $website->status->key;
+                $jsonResponse['status_description'] = $website->status->description;
+                $jsonResponse['trashed'] = $website->trashed();
+            }
+        }
+
+        $redirectResponse = is_null($redirectUrl) ? back() : redirect()->to($redirectUrl);
+        if (!empty($notification)) {
+            $redirectResponse = $redirectResponse->withNotification(array_merge([
+                'status' => 'success',
+                'icon' => 'it-check-circle',
+            ], $notification));
+        }
+
+        return $requestExpectsJson
+            ? response()->json($jsonResponse, $code)->withHeaders($headers)
+            : $redirectResponse->withHeaders($headers);
+
+        /*
+        : back()->withNotification([
                 'title' => __('sito web modificato'),
                 'message' => $website->trashed()
                     ? __('Il sito web :website è stato eliminato.', ['website' => '<strong>' . e($website->name) . '</strong>'])
@@ -104,7 +124,7 @@ trait SendsResponse
                     ]),
                 'status' => 'info',
                 'icon' => 'it-info-circle',
-            ]);
+            ]); */
     }
 
     /**
