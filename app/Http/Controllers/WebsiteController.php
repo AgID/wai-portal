@@ -165,7 +165,6 @@ class WebsiteController extends Controller
      */
     public function store(StoreWebsiteRequest $request, PublicAdministration $publicAdministration): RedirectResponse
     {
-
         $this->storeMethod($request, $publicAdministration);
 
         $redirectUrl = $this->getRoleAwareUrl('websites.index', [], $publicAdministration);
@@ -180,22 +179,17 @@ class WebsiteController extends Controller
 
     public function storeApi(StoreWebsiteRequest $request): JsonResponse
     {
-        $publicAdministration = get_public_administration_from_token();
+        $publicAdministration = $request->publicAdministrationFromToken;
 
         $response = $this->storeMethod($request, $publicAdministration);
 
         if (is_array($response) && array_key_exists('website', $response)) {
-            $website = (new WebsiteArrayTransformer())->transform($response['website']);
-
-            return response()
-                ->json($website, 201)
-                ->header('Location', $this->getUriWebsiteAPI($response['website']));
+            return $this->websiteResponse($response['website'], null, null, 201, [
+                'Location' => $this->getUriWebsiteAPI($response['website']),
+            ]);
         }
 
-        return response()->json([
-            'Error' => $response,
-            'Message' => 'Il sito non è stato aggiunto',
-        ], 400);
+        return $this->errorResponse('Il sito non è stato aggiunto', $this->getErrorCode(Website::class), 400);
     }
 
     /**
@@ -239,11 +233,16 @@ class WebsiteController extends Controller
             ->with('userPublicAdministrationStatus', $userPublicAdministrationStatus);
     }
 
-    public function showApi(Website $website)
+    /**
+     * Retrieve the website details.
+     *
+     * @param Website $website the website to retrieve
+     *
+     * @return JsonResponse the response
+     */
+    public function showApi(Website $website): JsonResponse
     {
-        $data = (new WebsiteArrayTransformer())->transform($website);
-
-        return response()->json($data, 200);
+        return $this->websiteResponse($website);
     }
 
     /**
@@ -294,14 +293,21 @@ class WebsiteController extends Controller
         ]);
     }
 
-    public function updateApi(UpdateWebsiteRequest $request, Website $website)
+    /**
+     * Update the website information.
+     *
+     * @param UpdateWebsiteRequest $request the incoming request
+     * @param Website $website the website
+     *
+     * @return JsonResponse the response
+     */
+    public function updateApi(UpdateWebsiteRequest $request, Website $website): JsonResponse
     {
-        $publicAdministration = get_public_administration_from_token();
+        $publicAdministration = $request->publicAdministrationFromToken;
 
         $response = $this->updateMethod($request, $publicAdministration, $website);
-        $data = (new WebsiteArrayTransformer())->transform($response);
 
-        return response()->json($data, 200);
+        return $this->websiteResponse($response);
     }
 
     /**
@@ -329,7 +335,10 @@ class WebsiteController extends Controller
 
             $this->updateWebsiteListCache($website);
 
-            return $this->websiteResponse($website);
+            return $this->websiteResponse($website, [
+                'title' => __('cancellazione sito web'),
+                'message' => __('Il sito web :website è stato eliminato', ['website' => $website->name]),
+            ]);
         } catch (AnalyticsServiceException | BindingResolutionException $exception) {
             report($exception);
             $code = $exception->getCode();
@@ -370,7 +379,10 @@ class WebsiteController extends Controller
             app()->make('analytics-service')->changeArchiveStatus($website->analytics_id, WebsiteStatus::ACTIVE);
             $website->restore();
 
-            return $this->websiteResponse($website);
+            return $this->websiteResponse($website, [
+                'title' => __('ripristino sito web'),
+                'message' => __('Il sito web :website è stato ripristinato', ['website' => $website->name]),
+            ]);
         } catch (AnalyticsServiceException | BindingResolutionException $exception) {
             report($exception);
             $code = $exception->getCode();
@@ -403,7 +415,10 @@ class WebsiteController extends Controller
 
                     event(new WebsiteActivated($website));
 
-                    return $this->websiteResponse($website);
+                    return $this->websiteResponse($website, [
+                        'title' => __('attivazione sito web'),
+                        'message' => __('Il sito web :website è stato attivato', ['website' => $website->name]),
+                    ]);
                 }
 
                 return $this->notModifiedResponse();
@@ -445,7 +460,10 @@ class WebsiteController extends Controller
                 $this->activate($website);
                 event(new WebsiteActivated($website));
 
-                return $this->websiteResponse($website);
+                return $this->websiteResponse($website, [
+                    'title' => __('attivazione sito web'),
+                    'message' => __('Il sito web :website è stato attivato', ['website' => $website->name]),
+                ]);
             }
 
             throw new InvalidWebsiteStatusException('Unable to force activation for website ' . $website->info . ' in status ' . $website->status->key . '.');
@@ -469,16 +487,30 @@ class WebsiteController extends Controller
         return $this->errorResponse($message, $code, $httpStatusCode);
     }
 
-    public function forceActivationApi(Website $website)
+    /**
+     * Force website tracking status to active.
+     *
+     * @param Website $website the website to update the status to
+     *
+     * @return JsonResponse the response
+     */
+    public function forceActivationApi(Website $website): JsonResponse
     {
-        $publicAdministration = get_public_administration_from_token();
+        $publicAdministration = $request->publicAdministrationFromToken;
 
         return $this->forceActivation($publicAdministration, $website);
     }
 
-    public function archiveApi(Website $website)
+    /**
+     * Archive website.
+     *
+     * @param Website $website the website to archive
+     *
+     * @return JsonResponse the response
+     */
+    public function archiveApi(Website $website): JsonResponse
     {
-        $publicAdministration = get_public_administration_from_token();
+        $publicAdministration = $request->publicAdministrationFromToken;
 
         return $this->archive($publicAdministration, $website);
     }
@@ -507,7 +539,10 @@ class WebsiteController extends Controller
 
                     event(new WebsiteArchived($website, true));
 
-                    return $this->websiteResponse($website);
+                    return $this->websiteResponse($website, [
+                        'title' => __('archivio sito web'),
+                        'message' => __('Il sito web :website è stato archiviato', ['website' => $website->name]),
+                    ]);
                 }
 
                 throw new InvalidWebsiteStatusException('Unable to archive website ' . $website->info . ' in status ' . $website->status->key . '.');
@@ -563,7 +598,10 @@ class WebsiteController extends Controller
 
                     event(new WebsiteUnarchived($website));
 
-                    return $this->websiteResponse($website);
+                    return $this->websiteResponse($website, [
+                        'title' => __('ripristino sito web'),
+                        'message' => __('Il sito web :website è stato ripristinato', ['website' => $website->name]),
+                    ]);
                 }
 
                 throw new InvalidWebsiteStatusException('Unable to cancel archiving for website ' . $website->info . ' in status ' . $website->status->key . '.');
@@ -595,9 +633,17 @@ class WebsiteController extends Controller
         return $this->errorResponse($message, $code, $httpStatusCode);
     }
 
-    public function unarchiveApi(Website $website)
+    /**
+     * Re-enable an archived website.
+     * Only archived and not primary type websites can be re-enabled.
+     *
+     * @param Website $website the website
+     *
+     * @return JsonResponse the response
+     */
+    public function unarchiveApi(Website $website): JsonResponse
     {
-        $publicAdministration = get_public_administration_from_token();
+        $publicAdministration = $request->publicAdministrationFromToken;
 
         return $this->unarchive($publicAdministration, $website);
     }
@@ -650,14 +696,25 @@ class WebsiteController extends Controller
      */
     public function dataJson(PublicAdministration $publicAdministration)
     {
-        return DataTables::of($this->baseDataJson($publicAdministration))
+        $data = auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)
+            ? $publicAdministration->websites()->withTrashed()->get()
+            : current_public_administration()->websites();
+
+        return DataTables::of($data)
             ->setTransformer(new WebsiteTransformer())
             ->make(true);
     }
 
+    /**
+     * Get the websites data.
+     *
+     * @param Request $request the request
+     *
+     * @return JsonResponse the response
+     */
     public function dataApi(Request $request): JsonResponse
     {
-        $publicAdministration = get_public_administration_from_token();
+        $publicAdministration = $request->publicAdministrationFromToken;
         $websites = $publicAdministration->websites()->get()->map(function ($website) {
             return (new WebsiteArrayTransformer())->transform($website);
         });
@@ -665,9 +722,16 @@ class WebsiteController extends Controller
         return response()->json($websites, 200);
     }
 
+    /**
+     * Get the websites list for the public administration.
+     *
+     * @param Request $request the request
+     *
+     * @return JsonResponse the response
+     */
     public function websiteList(Request $request): JsonResponse
     {
-        $publicAdministration = get_public_administration_from_token();
+        $publicAdministration = $request->publicAdministrationFromToken;
         $websites = $publicAdministration->websites()->get()->toArray();
         $websites = array_map(function ($elem) {
             return $elem['url'];
@@ -774,6 +838,13 @@ class WebsiteController extends Controller
         ];
     }
 
+    /**
+     * Get the websites list for the public administration.
+     *
+     * @param UpdateWebsiteRequest $request the request
+     * @param PublicAdministration $publicAdministration the public administration
+     * @param Website $website the website
+     */
     protected function updateMethod(UpdateWebsiteRequest $request, PublicAdministration $publicAdministration, Website $website)
     {
         $validatedData = $request->validated();
@@ -804,17 +875,6 @@ class WebsiteController extends Controller
         $this->updateWebsiteListCache($website);
 
         return $website;
-    }
-
-    protected function baseDataJson(PublicAdministration $publicAdministration)
-    {
-        $publicAdministrationHelper = current_public_administration();
-
-        $data = auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)
-            ? $publicAdministration->websites()->withTrashed()->get()
-            : $publicAdministrationHelper->websites();
-
-        return $data;
     }
 
     /**
@@ -857,6 +917,13 @@ class WebsiteController extends Controller
         });
     }
 
+    /**
+     * Update the cache for websites list.
+     *
+     * @param Website $website the website
+     *
+     * @return void
+     */
     private function updateWebsiteListCache(Website $website)
     {
         $id = $website->analytics_id;
@@ -865,6 +932,13 @@ class WebsiteController extends Controller
         Cache::put($id, implode(' ', $list));
     }
 
+    /**
+     * Get the uri for website api.
+     *
+     * @param Website $website the website
+     *
+     * @return string the uri
+     */
     private function getUriWebsiteAPI(Website $website): string
     {
         return config('kong-service.api_url') .
