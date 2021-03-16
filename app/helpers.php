@@ -22,14 +22,6 @@ if (!function_exists('current_public_administration')) {
     }
 }
 
-// to be deleted after calls to this function are replaced by request()->publicAdministrationFromToken
-if (!function_exists('get_public_administration_from_token')) {
-    function get_public_administration_from_token(): ?PublicAdministration
-    {
-        return request()->publicAdministrationFromToken;
-    }
-}
-
 if (!function_exists('get_user_from_fiscalnumber')) {
     function get_user_from_fiscalnumber(): ?User
     {
