@@ -64,7 +64,7 @@ class StoreCredentialsRequest extends FormRequest
     protected function checkWebsitesAnalyticsIds(array $websitesPermissions): bool
     {
         $currentPublicAdministration = $this->is('api/*')
-            ? get_public_administration_from_token()
+            ? request()->publicAdministrationFromToken
             : current_public_administration();
 
         return empty(

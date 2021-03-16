@@ -98,7 +98,7 @@ trait HasWebsitePermissions
     {
         if (is_null($publicAdministration)) {
             $publicAdministration = request()->is('api/*')
-                ? get_public_administration_from_token()
+                ? request()->publicAdministrationFromToken
                 : current_public_administration();
         }
 
