@@ -26,7 +26,7 @@ use App\Traits\HasRoleAwareUrls;
 use App\Traits\ManagePublicAdministrationRegistration;
 use App\Traits\SendsResponse;
 use App\Transformers\UsersPermissionsTransformer;
-use App\Transformers\WebsiteApiTransformer;
+use App\Transformers\WebsiteArrayTransformer;
 use App\Transformers\WebsiteTransformer;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Http\JsonResponse;
@@ -155,8 +155,17 @@ class WebsiteController extends Controller
         return view('pages.websites.add')->with(compact('websiteStoreUrl'))->with($usersPermissionsDatatable);
     }
 
+    /**
+     * Show the form for creating a new website.
+     *
+     * @param StoreWebsiteRequest $request the request
+     * @param PublicAdministration $publicAdministration the public administration
+     *
+     * @return RedirectResponse the server redirect response
+     */
     public function store(StoreWebsiteRequest $request, PublicAdministration $publicAdministration): RedirectResponse
     {
+
         $this->storeMethod($request, $publicAdministration);
 
         $redirectUrl = $this->getRoleAwareUrl('websites.index', [], $publicAdministration);
@@ -176,7 +185,7 @@ class WebsiteController extends Controller
         $response = $this->storeMethod($request, $publicAdministration);
 
         if (is_array($response) && array_key_exists('website', $response)) {
-            $website = (new WebsiteApiTransformer())->transform($response['website']);
+            $website = (new WebsiteArrayTransformer())->transform($response['website']);
 
             return response()
                 ->json($website, 201)
@@ -233,7 +242,7 @@ class WebsiteController extends Controller
 
     public function showApi(Website $website)
     {
-        $data = (new WebsiteApiTransformer())->transform($website);
+        $data = (new WebsiteArrayTransformer())->transform($website);
 
         return response()->json($data, 200);
     }
@@ -291,7 +300,7 @@ class WebsiteController extends Controller
         $publicAdministration = get_public_administration_from_token();
 
         $response = $this->updateMethod($request, $publicAdministration, $website);
-        $data = (new WebsiteApiTransformer())->transform($response);
+        $data = (new WebsiteArrayTransformer())->transform($response);
 
         return response()->json($data, 200);
     }
@@ -651,7 +660,7 @@ class WebsiteController extends Controller
     {
         $publicAdministration = get_public_administration_from_token();
         $websites = $publicAdministration->websites()->get()->map(function ($website) {
-            return (new WebsiteApiTransformer())->transform($website);
+            return (new WebsiteArrayTransformer())->transform($website);
         });
 
         return response()->json($websites, 200);
