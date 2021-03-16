@@ -202,7 +202,7 @@ trait InteractsWithRedisIndex
 
     protected function escapeQuery(string $query)
     {
-        return preg_replace('/([\@\!\{\}\(\)\|\-\=\>\*\.])/', '\\\\$1', $query);
+        return preg_replace('/([\@\!\{\}\(\)\|\-\=\>\*\.\:])/', '\\\\$1', $query);
     }
 
     /**
