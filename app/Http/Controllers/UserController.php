@@ -351,6 +351,7 @@ class UserController extends Controller
                 : current_public_administration();
         } else {
             $publicAdministration = $request->publicAdministrationFromToken;
+            $user = $request->user;
         }
 
         $userPublicAdministrationStatus = $user->getStatusforPublicAdministration($publicAdministration);
