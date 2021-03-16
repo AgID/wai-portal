@@ -7,6 +7,7 @@ use App\Models\PublicAdministration;
 use App\Models\User;
 use App\Models\Website;
 use App\Transformers\UserArrayTransformer;
+use App\Transformers\WebsiteArrayTransformer;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 
@@ -83,7 +84,6 @@ trait SendsResponse
      */
     protected function websiteResponse(Website $website, ?array $notification = [], ?string $redirectUrl = null, ?int $code = 200, ?array $headers = [])
     {
-
         $requestExpectsJson = request()->expectsJson();
 
         if ($requestExpectsJson) {
@@ -110,21 +110,6 @@ trait SendsResponse
         return $requestExpectsJson
             ? response()->json($jsonResponse, $code)->withHeaders($headers)
             : $redirectResponse->withHeaders($headers);
-
-        /*
-        : back()->withNotification([
-                'title' => __('sito web modificato'),
-                'message' => $website->trashed()
-                    ? __('Il sito web :website è stato eliminato.', ['website' => '<strong>' . e($website->name) . '</strong>'])
-                    : implode("\n", [
-                        __('Il sito web :website è stato aggiornato.', ['website' => '<strong>' . e($website->name) . '</strong>']),
-                        __('Stato del sito web: :status', [
-                            'status' => '<span class="badge website-status ' . strtolower($website->status->key) . '">' . strtoupper($website->status->description) . '</span>.',
-                        ]),
-                    ]),
-                'status' => 'info',
-                'icon' => 'it-info-circle',
-            ]); */
     }
 
     /**
