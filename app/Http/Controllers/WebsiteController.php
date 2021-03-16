@@ -489,34 +489,6 @@ class WebsiteController extends Controller
     }
 
     /**
-     * Force website tracking status to active.
-     *
-     * @param Website $website the website to update the status to
-     *
-     * @return JsonResponse the response
-     */
-    public function forceActivationApi(Website $website): JsonResponse
-    {
-        $publicAdministration = $request->publicAdministrationFromToken;
-
-        return $this->forceActivation($publicAdministration, $website);
-    }
-
-    /**
-     * Archive website.
-     *
-     * @param Website $website the website to archive
-     *
-     * @return JsonResponse the response
-     */
-    public function archiveApi(Website $website): JsonResponse
-    {
-        $publicAdministration = $request->publicAdministrationFromToken;
-
-        return $this->archive($publicAdministration, $website);
-    }
-
-    /**
      * Archive website request.
      * Only active and not primary type websites can be archived.
      *
@@ -632,21 +604,6 @@ class WebsiteController extends Controller
         }
 
         return $this->errorResponse($message, $code, $httpStatusCode);
-    }
-
-    /**
-     * Re-enable an archived website.
-     * Only archived and not primary type websites can be re-enabled.
-     *
-     * @param Website $website the website
-     *
-     * @return JsonResponse the response
-     */
-    public function unarchiveApi(Website $website): JsonResponse
-    {
-        $publicAdministration = $request->publicAdministrationFromToken;
-
-        return $this->unarchive($publicAdministration, $website);
     }
 
     /**
