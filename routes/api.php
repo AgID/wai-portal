@@ -42,13 +42,13 @@ Route::middleware('api.auth')->group(function () {
             ->name('api.sites.websites');
         Route::patch('/{website}', 'WebsiteController@updateApi')
             ->name('api.sites.update');
-        Route::patch('/{website}/archive', 'WebsiteController@archiveApi')
+        Route::patch('/{website}/archive', 'WebsiteController@archive')
             ->name('api.sites.archive');
-        Route::patch('/{website}/unarchive', 'WebsiteController@unarchiveApi')
+        Route::patch('/{website}/unarchive', 'WebsiteController@unarchive')
             ->name('api.sites.unarchive');
         Route::get('/{website}/check', 'WebsiteController@checkTracking')
             ->name('api.sites.check');
-        Route::get('/{website}/force', 'WebsiteController@forceActivationApi')
+        Route::get('/{website}/force', 'WebsiteController@forceActivation')
             ->name('api.sites.force');
         Route::get('/{website}/js-snippet', 'WebsiteController@showJavascriptSnippet')
             ->name('api.sites.snippet.javascript');
