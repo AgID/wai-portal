@@ -211,11 +211,7 @@ class UserController extends Controller
     public function showApi(Request $request): JsonResponse
     {
         $publicAdministration = $request->publicAdministrationFromToken;
-        $user = User::findNotSuperAdminByFiscalNumber($request->fn);
-
-        if (!$user || !$user->publicAdministrationsWithSuspended->contains($publicAdministration)) {
-            return $this->notFoundResponse(User::class);
-        }
+        $user = $request->user;
 
         return $this->userResponse($user, $publicAdministration);
     }
@@ -286,12 +282,8 @@ class UserController extends Controller
      */
     public function updateApi(UpdateUserRequest $request): JsonResponse
     {
-        $user = User::findNotSuperAdminByFiscalNumber($request->fn);
         $publicAdministration = $request->publicAdministrationFromToken;
-
-        if (!$user || !$user->publicAdministrationsWithSuspended->contains($publicAdministration)) {
-            return $this->notFoundResponse(User::class);
-        }
+        $user = $request->user;
 
         $data = $this->updateMethod($request, $publicAdministration, $user);
         $updatedUser = $data['user'];
@@ -359,11 +351,6 @@ class UserController extends Controller
                 : current_public_administration();
         } else {
             $publicAdministration = $request->publicAdministrationFromToken;
-            $user = User::findNotSuperAdminByFiscalNumber($request->fn);
-
-            if (!$user || !$user->publicAdministrationsWithSuspended->contains($publicAdministration)) {
-                return $this->notFoundResponse(User::class);
-            }
         }
 
         $userPublicAdministrationStatus = $user->getStatusforPublicAdministration($publicAdministration);
@@ -437,11 +424,7 @@ class UserController extends Controller
                 : current_public_administration();
         } else {
             $publicAdministration = $request->publicAdministrationFromToken;
-            $user = User::findNotSuperAdminByFiscalNumber($request->fn);
-
-            if (!$user || !$user->publicAdministrationsWithSuspended->contains($publicAdministration)) {
-                return $this->notFoundResponse(User::class);
-            }
+            $user = $request->user;
         }
 
         $userPublicAdministrationStatus = $user->getStatusforPublicAdministration($publicAdministration);
