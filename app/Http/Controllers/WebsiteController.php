@@ -198,10 +198,15 @@ class WebsiteController extends Controller
      * @param PublicAdministration $publicAdministration the public administration the website belongs to
      * @param Website $website the website to show
      *
-     * @return View the view
+     * @return JsonResponse|View the view
      */
-    public function show(PublicAdministration $publicAdministration, Website $website): View
+    public function show(Request $request, PublicAdministration $publicAdministration, Website $website)
     {
+        $isApiRequest = $request->is('api/*');
+        if ($isApiRequest) {
+            return $this->websiteResponse($website);
+        }
+
         $currentPublicAdministration = auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)
             ? $publicAdministration
             : current_public_administration();
@@ -231,18 +236,6 @@ class WebsiteController extends Controller
             ->with($usersPermissionsDatatable)
             ->with('forceActivationButtonVisible', $forceActivationButtonVisible)
             ->with('userPublicAdministrationStatus', $userPublicAdministrationStatus);
-    }
-
-    /**
-     * Retrieve the website details.
-     *
-     * @param Website $website the website to retrieve
-     *
-     * @return JsonResponse the response
-     */
-    public function showApi(Website $website): JsonResponse
-    {
-        return $this->websiteResponse($website);
     }
 
     /**
@@ -277,37 +270,30 @@ class WebsiteController extends Controller
      * @param PublicAdministration $publicAdministration the public administration the website belongs to
      * @param Website $website the website to update
      *
-     * @return RedirectResponse the server redirect response
+     * @return JsonResponse|RedirectResponse the server redirect response
      */
-    public function update(UpdateWebsiteRequest $request, PublicAdministration $publicAdministration, Website $website): RedirectResponse
+    public function update(UpdateWebsiteRequest $request, PublicAdministration $publicAdministration, Website $website)
     {
-        $this->updateMethod($request, $publicAdministration, $website);
+        $isApiRequest = $request->is('api/*');
+        if ($isApiRequest) {
+            $publicAdministration = $request->publicAdministrationFromToken;
+        }
 
-        $redirectUrl = $this->getRoleAwareUrl('websites.index', [], $publicAdministration);
+        $website = $this->updateMethod($request, $publicAdministration, $website);
+        $redirectUrl = null;
+        $notification = [];
 
-        return redirect()->to($redirectUrl)->withNotification([
-            'title' => __('modifica sito web'),
-            'message' => __('La modifica del sito è andata a buon fine.'),
-            'status' => 'success',
-            'icon' => 'it-check-circle',
-        ]);
-    }
+        if (!$isApiRequest) {
+            $redirectUrl = $this->getRoleAwareUrl('websites.index', [], $publicAdministration);
+            $notification = [
+                'title' => __('modifica sito'),
+                'message' => __('La modifica del sito è andata a buon fine.'),
+                'status' => 'success',
+                'icon' => 'it-check-circle',
+            ];
+        }
 
-    /**
-     * Update the website information.
-     *
-     * @param UpdateWebsiteRequest $request the incoming request
-     * @param Website $website the website
-     *
-     * @return JsonResponse the response
-     */
-    public function updateApi(UpdateWebsiteRequest $request, Website $website): JsonResponse
-    {
-        $publicAdministration = $request->publicAdministrationFromToken;
-
-        $response = $this->updateMethod($request, $publicAdministration, $website);
-
-        return $this->websiteResponse($response);
+        return $this->websiteResponse($website, $notification, $redirectUrl);
     }
 
     /**

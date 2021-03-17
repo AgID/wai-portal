@@ -36,11 +36,11 @@ Route::middleware('api.auth')->group(function () {
             ->name('api.sites.add');
         Route::get('/', 'WebsiteController@dataApi')
             ->name('api.sites.show');
-        Route::get('/{website}', 'WebsiteController@showApi')
+        Route::get('/{website}', 'WebsiteController@show')
             ->name('api.sites.read');
         Route::get('/list/{id}', 'WebsiteController@websiteList')
             ->name('api.sites.websites');
-        Route::patch('/{website}', 'WebsiteController@updateApi')
+        Route::patch('/{website}', 'WebsiteController@update')
             ->name('api.sites.update');
         Route::patch('/{website}/archive', 'WebsiteController@archive')
             ->name('api.sites.archive');
