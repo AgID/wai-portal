@@ -211,7 +211,7 @@ class UserController extends Controller
     public function showApi(Request $request): JsonResponse
     {
         $publicAdministration = $request->publicAdministrationFromToken;
-        $user = $request->user;
+        $user = $request->userFromFiscalNumber;
 
         return $this->userResponse($user, $publicAdministration);
     }
@@ -283,7 +283,7 @@ class UserController extends Controller
     public function updateApi(UpdateUserRequest $request): JsonResponse
     {
         $publicAdministration = $request->publicAdministrationFromToken;
-        $user = $request->user;
+        $user = $request->userFromFiscalNumber;
 
         $data = $this->updateMethod($request, $publicAdministration, $user);
         $updatedUser = $data['user'];
@@ -351,7 +351,7 @@ class UserController extends Controller
                 : current_public_administration();
         } else {
             $publicAdministration = $request->publicAdministrationFromToken;
-            $user = $request->user;
+            $user = $request->userFromFiscalNumber;
         }
 
         $userPublicAdministrationStatus = $user->getStatusforPublicAdministration($publicAdministration);
@@ -425,7 +425,7 @@ class UserController extends Controller
                 : current_public_administration();
         } else {
             $publicAdministration = $request->publicAdministrationFromToken;
-            $user = $request->user;
+            $user = $request->userFromFiscalNumber;
         }
 
         $userPublicAdministrationStatus = $user->getStatusforPublicAdministration($publicAdministration);
