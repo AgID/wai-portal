@@ -49,7 +49,7 @@ class AuthenticateApi
             if (!$user || !$user->publicAdministrationsWithSuspended->contains($publicAdministration)) {
                 return $this->notFoundResponse(User::class);
             }
-            $requestApiParams['user'] = $user;
+            $requestApiParams['userFromFiscalNumber'] = $user;
         }
 
         $request->merge($requestApiParams);
