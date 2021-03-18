@@ -25,7 +25,7 @@ class UpdateUserRequest extends StoreUserRequest
         $rules['emailPublicAdministrationUser'] = 'required|email:rfc,dns|max:75';
 
         $user = ('api.users.update' === $this->route()->getName())
-          ? get_user_from_fiscalnumber()
+          ? $this->userFromFiscalNumber
           : $this->route('user');
 
         if (!$user->status->is(UserStatus::INVITED)) {
