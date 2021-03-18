@@ -22,16 +22,6 @@ if (!function_exists('current_public_administration')) {
     }
 }
 
-if (!function_exists('get_user_from_fiscalnumber')) {
-    function get_user_from_fiscalnumber(): ?User
-    {
-        $fn = request()->route('fn'); //$request->fn;
-        $user = User::findNotSuperAdminByFiscalNumber($fn);
-
-        return $user;
-    }
-}
-
 if (!function_exists('current_user_auth_token')) {
     /**
      * Get the Analytics Service authentication token for the current user.
