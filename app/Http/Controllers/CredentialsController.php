@@ -299,6 +299,14 @@ class CredentialsController extends Controller
             ->make(true);
     }
 
+    /**
+     * Regenerate the credential secret and invalidate all credential's tokens.
+     *
+     * @param Request $request The Request
+     * @param Credential $credential The credential
+     *
+     * @return mixed the response in JSON format
+     */
     public function regenerateCredential(Request $request, Credential $credential)
     {
         $user = $request->user();
@@ -383,6 +391,15 @@ class CredentialsController extends Controller
         ];
     }
 
+    /**
+     * Get the datatable parameters for websites permission with specified source.
+     *
+     * @param string $clientId Credential ID
+     * @param string $clientSecret Credential Secret
+     * @param bool $regenerated wether the credential is new or regenerated
+     *
+     * @return array the datatable parameters
+     */
     protected function getModalCredentialStored(string $clientId, string $clientSecret, ?bool $regenerated = false): array
     {
         return [

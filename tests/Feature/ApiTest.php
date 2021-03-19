@@ -65,8 +65,18 @@ class ApiTest extends TestCase
      */
     private $faker;
 
+    /**
+     * The http client
+     *
+     * @var Client
+     */
     private $client;
 
+    /**
+     * Pre test setup
+     *
+     * @return void
+     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -182,6 +192,11 @@ class ApiTest extends TestCase
             ]);
     }
 
+    /**
+     * Read a website from API, should pass
+     *
+     * @return void
+     */
     public function testWebsiteRead(): void
     {
         $response = $this->json('GET', route('api.sites.read', ['website' => $this->website->slug]), [], [
@@ -201,6 +216,11 @@ class ApiTest extends TestCase
             ]);
     }
 
+    /**
+     * Edit a website, should pass
+     *
+     * @return void
+     */
     public function testWebsiteEdit(): void
     {
         $name = $this->faker->words(5, true);
@@ -271,6 +291,11 @@ class ApiTest extends TestCase
             ->assertStatus(304);
     }
 
+    /**
+     * Get the matomo javascript snippet, should pass
+     *
+     * @return void
+     */
     public function testWebsiteSnippet(): void
     {
         $response = $this->json('GET', route('api.sites.snippet.javascript', ['website' => $this->website]), [], [
@@ -310,6 +335,11 @@ class ApiTest extends TestCase
             ]]);
     }
 
+    /**
+     * Create a new user, should pass
+     *
+     * @return void
+     */
     public function testUserCreate(): void
     {
         $email = $this->faker->unique()->freeEmail;
@@ -352,6 +382,11 @@ class ApiTest extends TestCase
             ]);
     }
 
+    /**
+     * Get a user from the API
+     *
+     * @return void
+     */
     public function testUserRead(): void
     {
         $response = $this->json('GET', route('api.users.show', ['fn' => $this->user->fiscal_number]), [], [
@@ -371,6 +406,11 @@ class ApiTest extends TestCase
             ]);
     }
 
+    /**
+     * Edit a user, should pass
+     *
+     * @return void
+     */
     public function testUserEdit(): void
     {
         $userToEdit = factory(User::class)->make([
@@ -415,6 +455,11 @@ class ApiTest extends TestCase
             ]);
     }
 
+    /**
+     * Suspend a user, should pass
+     *
+     * @return void
+     */
     public function testUserSuspend(): void
     {
         $response = $this->json('GET', route('api.users.suspend', ['fn' => $this->user->fiscal_number]), [], [
