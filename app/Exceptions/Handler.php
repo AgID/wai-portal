@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use App\Enums\Logs\EventType;
 use App\Enums\Logs\ExceptionType;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Exceptions\InvalidSignatureException;
@@ -95,6 +96,10 @@ class Handler extends ExceptionHandler
                 'status' => 'error',
                 'icon' => 'it-close-circle',
             ]);
+        }
+
+        if ($exception instanceof ModelNotFoundException && $request->expectsJson()) {
+            return response()->json(['error' => 'not found'], 404);
         }
 
         return parent::render($request, $exception);
