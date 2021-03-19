@@ -177,6 +177,13 @@ class WebsiteController extends Controller
         ]);
     }
 
+    /**
+     * Show the form for creating a new website.
+     *
+     * @param StoreWebsiteRequest $request the request
+     *
+     * @return JsonResponse the server JSON response
+     */
     public function storeApi(StoreWebsiteRequest $request): JsonResponse
     {
         $publicAdministration = $request->publicAdministrationFromToken;

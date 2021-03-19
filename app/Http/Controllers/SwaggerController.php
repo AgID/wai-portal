@@ -6,13 +6,21 @@ use App\Enums\UserPermission;
 use App\Models\Credential;
 use App\Models\PublicAdministration;
 use App\Traits\HasRoleAwareUrls;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class SwaggerController extends Controller
 {
     use HasRoleAwareUrls;
-
-    public function index(Request $request, PublicAdministration $publicAdministration)
+    /**
+     * Display the Swagger
+     *
+     * @param Request $request The request
+     * @param PublicAdministration $publicAdministration The Public Administration
+     * @return View The view
+     */
+    public function index(Request $request, PublicAdministration $publicAdministration): View
     {
         $user = $request->user();
         if ($user->publicAdministrations->isEmpty() && $user->cannot(UserPermission::ACCESS_ADMIN_AREA)) {
@@ -42,7 +50,12 @@ class SwaggerController extends Controller
         return view('pages.swagger')->with($roleAwareUrls)->with($config);
     }
 
-    public function apiSpecification()
+    /**
+     * Api Swagger Specifications
+     *
+     * @return JsonResponse The JsonResponse
+     */
+    public function apiSpecification(): JsonResponse
     {
         $path = resource_path('data/api.json');
 
