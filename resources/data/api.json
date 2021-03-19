@@ -23,7 +23,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/AddUserRequest"
+                                "$ref": "#/components/schemas/UserCreate"
                             }
                         }
                     }
@@ -47,6 +47,46 @@
                                 }
                             }
                         }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error400"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Dati di autorizzazione non validi",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error401"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Permessi non sufficienti per accedere alla risorsa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error403"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "I dati inviati sono incompleti o invalidi",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error422User"
+                                }
+                            }
+                        }
                     }
                 }
             },
@@ -60,7 +100,30 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/UserInfoArray"
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/UserInfo"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Dati di autorizzazione non validi",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error401"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Permessi non sufficienti per accedere alla risorsa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error403"
                                 }
                             }
                         }
@@ -86,6 +149,36 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "description": "Dati di autorizzazione non validi",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error401"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Permessi non sufficienti per accedere alla risorsa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error403"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "La risorsa non è stata trovata",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error404"
+                                }
+                            }
+                        }
                     }
                 }
             },
@@ -99,7 +192,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/PatchUserRequest"
+                                "$ref": "#/components/schemas/UserInfo"
                             }
                         }
                     }
@@ -114,14 +207,58 @@
                                 }
                             }
                         }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error400"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Dati di autorizzazione non validi",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error401"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Permessi non sufficienti per accedere alla risorsa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error403"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "La risorsa non è stata trovata",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error404"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "I dati inviati sono incompleti o invalidi",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error422User"
+                                }
+                            }
+                        }
                     }
                 }
-            },
-            "delete": {
-                "tags": ["Utenti"],
-                "summary": "Elimina l'utente specificato",
-                "operationId": "deleteUser",
-                "responses": { "204": { "description": "Dati dell'utente" } }
             }
         },
         "/portal/users/{fn}/suspend": {
@@ -139,6 +276,36 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/UserInfo"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Dati di autorizzazione non validi",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error401"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Permessi non sufficienti per accedere alla risorsa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error403"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "La risorsa non è stata trovata",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error404"
                                 }
                             }
                         }
@@ -164,6 +331,36 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "description": "Dati di autorizzazione non validi",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error401"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Permessi non sufficienti per accedere alla risorsa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error403"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "La risorsa non è stata trovata",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error404"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -179,7 +376,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/AddWebsiteRequest"
+                                "$ref": "#/components/schemas/AddWebsiteExample"
                             }
                         }
                     }
@@ -199,7 +396,47 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/WebsiteInfo"
+                                    "$ref": "#/components/schemas/WebsiteResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error400"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Dati di autorizzazione non validi",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error401"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Permessi non sufficienti per accedere alla risorsa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error403"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "I dati inviati sono incompleti o invalidi",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error422Website"
                                 }
                             }
                         }
@@ -216,7 +453,30 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/WebsiteInfoArray"
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/WebsiteResponse"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Dati di autorizzazione non validi",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error401"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Permessi non sufficienti per accedere alla risorsa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error403"
                                 }
                             }
                         }
@@ -236,7 +496,37 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/WebsiteInfo"
+                                    "$ref": "#/components/schemas/WebsiteResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Dati di autorizzazione non validi",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error401"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Permessi non sufficienti per accedere alla risorsa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error403"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "La risorsa non è stata trovata",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error404"
                                 }
                             }
                         }
@@ -253,7 +543,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/AddWebsiteRequest"
+                                "$ref": "#/components/schemas/AddWebsiteExample"
                             }
                         }
                     }
@@ -264,7 +554,57 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/WebsiteInfo"
+                                    "$ref": "#/components/schemas/WebsiteResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error400"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Dati di autorizzazione non validi",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error401"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Permessi non sufficienti per accedere alla risorsa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error403"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "La risorsa non è stata trovata",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error404"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "I dati inviati sono incompleti o invalidi",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error422Website"
                                 }
                             }
                         }
@@ -284,7 +624,47 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/ArchiveWebsite"
+                                    "$ref": "#/components/schemas/WebsiteResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error400"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Dati di autorizzazione non validi",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error401"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Permessi non sufficienti per accedere alla risorsa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error403"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "La risorsa non è stata trovata",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error404"
                                 }
                             }
                         }
@@ -304,7 +684,47 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/UnarchiveWebsite"
+                                    "$ref": "#/components/schemas/WebsiteResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error400"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Dati di autorizzazione non validi",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error401"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Permessi non sufficienti per accedere alla risorsa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error403"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "La risorsa non è stata trovata",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error404"
                                 }
                             }
                         }
@@ -321,6 +741,46 @@
                 "responses": {
                     "304": {
                         "description": "Sito web non attivo"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error400"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Dati di autorizzazione non validi",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error401"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Permessi non sufficienti per accedere alla risorsa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error403"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "La risorsa non è stata trovata",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error404"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -338,6 +798,36 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/JsSnippet"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Dati di autorizzazione non validi",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error401"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Permessi non sufficienti per accedere alla risorsa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error403"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "La risorsa non è stata trovata",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error404"
                                 }
                             }
                         }
@@ -373,12 +863,13 @@
             "WebsiteType": {
                 "type": "string",
                 "description": "Tipologia di sito",
-                "enum": ["site_type_1", "site_type_2", "site_type_3"]
+                "enum": ["INFORMATIONAL", "SERVICE", "MOBILE"]
             },
-            "AddWebsiteRequest": {
-                "required": ["name", "url", "type", "permissions"],
+            "WebsiteObject": {
+                "type": "object",
+                "required": ["website_name", "url", "type"],
                 "properties": {
-                    "name": {
+                    "website_name": {
                         "description": "Nome del sito",
                         "type": "string",
                         "pattern": "^(?!\\s*$).+"
@@ -393,16 +884,39 @@
                     },
                     "type": {
                         "$ref": "#/components/schemas/WebsiteType"
-                    }
-                },
-                "example": {
-                    "name": "WebAnalytics Italia",
-                    "url": "https://webanalytics.italia.it",
-                    "type": "site_type_1",
-                    "permissions": {
-                        "userId": ["MANAGE_ANALYTICS"]
-                    }
+                    },
+                    "example": {}
                 }
+            },
+            "AddWebsiteExample": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/WebsiteObject"
+                    },
+                    {
+                        "example": {
+                            "website_name": "Nome Sito",
+                            "url": "https://url-sito-web.it/",
+                            "type": 2
+                        }
+                    }
+                ]
+            },
+            "WebsiteResponse": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/WebsiteObject"
+                    },
+                    {
+                        "example": {
+                            "id": 1,
+                            "name": "Agenzia per L'Italia Digitale",
+                            "url": "www.agid.gov.it",
+                            "analytics_id": 2,
+                            "slug": "wwwagidgovit"
+                        }
+                    }
+                ]
             },
             "WebsiteInfoPermisionObject": {
                 "type": "object",
@@ -414,121 +928,6 @@
                             "type": "string"
                         }
                     }
-                }
-            },
-            "AddWebsiteResponse": {
-                "type": "object",
-                "required": ["id", "name", "url", "analytics_id", "slug"],
-                "properties": {
-                    "id": {
-                        "type": "integer"
-                    },
-                    "name": {
-                        "type": "string"
-                    },
-                    "url": {
-                        "type": "string"
-                    },
-                    "analytics_id": {
-                        "type": "integer"
-                    },
-                    "slug": {
-                        "type": "string"
-                    }
-                },
-                "example": {
-                    "id": 1,
-                    "name": "Agenzia per L'Italia Digitale",
-                    "url": "www.agid.gov.it",
-                    "analytics_id": 2,
-                    "slug": "wwwagidgovit"
-                }
-            },
-            "UserSuspendObject": {
-                "type": "object",
-                "required": ["result", "user_name", "status"],
-                "properties": {
-                    "result": {
-                        "type": "string"
-                    },
-                    "user_name": {
-                        "type": "string"
-                    },
-                    "status_description": {
-                        "type": "string"
-                    }
-                },
-                "example": {
-                    "result": "ok",
-                    "id": "4427f41c-de93-4ce7-becc-99902a38799e",
-                    "user_name": "Luisa Test",
-                    "status": "SUSPENDED",
-                    "status_description": "sospeso",
-                    "trashed": false,
-                    "administration": "Agenzia per L'Italia Digitale"
-                }
-            },
-            "WebsiteInfoArray": {
-                "type": "array",
-                "items": {
-                    "$ref": "#/components/schemas/AddWebsiteResponse"
-                }
-            },
-            "WebsiteInfo": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "integer"
-                    },
-                    "name": {
-                        "type": "string"
-                    },
-                    "url": {
-                        "type": "string"
-                    },
-                    "analytics_id": {
-                        "type": "integer"
-                    },
-                    "slug": {
-                        "type": "string"
-                    }
-                },
-                "example": {
-                    "id": 1,
-                    "name": "Agenzia per L'Italia Digitale",
-                    "url": "www.agid.gov.it",
-                    "type": 0,
-                    "public_administration_id": 1,
-                    "analytics_id": 2,
-                    "slug": "wwwagidgovit",
-                    "status": 1,
-                    "created_at": "2020-07-21T17:32:28Z",
-                    "updated_at": "2020-07-21T17:32:28Z",
-                    "deleted_at": "2020-07-21T17:32:28Z"
-                }
-            },
-            "ArchiveWebsite": {
-                "type": "object",
-                "required": ["slug"],
-                "example": {
-                    "result": "ok",
-                    "id": "wwwagidgovit",
-                    "website_name": "Agenzia per L'Italia Digitale",
-                    "status": "ARCHIVED",
-                    "status_description": "archiviato",
-                    "trashed": false
-                }
-            },
-            "UnarchiveWebsite": {
-                "type": "object",
-                "required": ["slug"],
-                "example": {
-                    "result": "ok",
-                    "id": "wwwagidgovit",
-                    "website_name": "Agenzia per L'Italia Digitale",
-                    "status": "ACTIVE",
-                    "status_description": "attivo",
-                    "trashed": false
                 }
             },
             "JsSnippet": {
@@ -545,32 +944,6 @@
                 "maxLength": 16,
                 "pattern": "[A-Z0-9]{16}"
             },
-            "AddUserRequest": {
-                "$ref": "#/components/schemas/UserInfo"
-            },
-            "PatchUserRequest": {
-                "type": "object",
-                "required": ["fiscalNumber"],
-                "properties": {
-                    "fiscalNumber": {
-                        "$ref": "#/components/schemas/FiscalNumber"
-                    }
-                },
-                "example": {
-                    "fiscalNumber": "ZRSGLC89D05H501J"
-                }
-            },
-            "UserStatus": {
-                "type": "string",
-                "description": "Stato dell'utente",
-                "enum": ["activated", "not_activated"]
-            },
-            "UserInfoArray": {
-                "type": "array",
-                "items": {
-                    "$ref": "#/components/schemas/UserInfo"
-                }
-            },
             "UserInfoPermissions": {
                 "type": "object",
                 "required": ["siteId"],
@@ -583,15 +956,19 @@
                     }
                 }
             },
+            "UserCreate": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/UserInfo"
+                    },
+                    {
+                        "required": ["email", "permissions", "fiscalNumber"]
+                    }
+                ]
+            },
             "UserInfo": {
                 "type": "object",
-                "required": [
-                    "firstName",
-                    "lastName",
-                    "email",
-                    "fiscalNumber",
-                    "permissions"
-                ],
+                "required": ["email", "permissions"],
                 "properties": {
                     "firstName": {
                         "type": "string"
@@ -615,9 +992,85 @@
                     "email": "name@email.com",
                     "fiscalNumber": "ZRSGLC89D05H501J",
                     "permissions": {
-                        "siteId" : ["manage-analytics"]
+                        "siteId": ["manage-analytics"]
                     }
                 }
+            },
+            "Error400": {
+                "type": "object",
+                "example": {
+                    "result": "error",
+                    "message": "Error Message",
+                    "code": "1"
+                }
+            },
+            "Error401": {
+                "type": "object",
+                "example": {
+                    "error_description": "The access token is invalid or has expired",
+                    "error": "invalid_token"
+                }
+            },
+            "Error403": {
+                "type": "object",
+                "example": {
+                    "title": "insufficient permissions",
+                    "status": 403,
+                    "code": 2
+                }
+            },
+            "Error404": {
+                "type": "object",
+                "example": {
+                    "error_description": "The access token is invalid or has expired",
+                    "error": "invalid_token"
+                }
+            },
+            "Error422": {
+                "type": "object",
+                "example": {
+                    "message": "The given data was invalid."
+                }
+            },
+            "Error422User": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/Error422"
+                    },
+                    {
+                        "example": {
+                            "errors": {
+                                "email": [
+                                    "The email address field is required."
+                                ],
+                                "fiscal_number": [
+                                    "The fiscal code field is required."
+                                ],
+                                "permissions": [
+                                    "The permissions field is required."
+                                ]
+                            }
+                        }
+                    }
+                ]
+            },
+            "Error422Website": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/Error422"
+                    },
+                    {
+                        "example": {
+                            "errors": {
+                                "website_name": [
+                                    "The website name field is required."
+                                ],
+                                "url": ["The URL field is required."],
+                                "type": ["The type field is required."]
+                            }
+                        }
+                    }
+                ]
             }
         },
         "securitySchemes": {
