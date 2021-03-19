@@ -79,6 +79,10 @@ trait SendsResponse
      * Returns a success response for the specified website.
      *
      * @param Website $website the website
+     * @param array $notification the notifications
+     * @param string $redirectUrl The url to redirect the user to
+     * @param int $code The status code
+     * @param array $headers The headers
      *
      * @return JsonResponse|RedirectResponse the response in json or http redirect format
      */

@@ -60,7 +60,13 @@ class AuthenticateApi
         return $next($request);
     }
 
-    protected function jsonError($code)
+    /**
+     * Return a JSON error
+     *
+     * @param int $code The error code
+     * @return void
+     */
+    protected function jsonError(int $code)
     {
         return [
             'title' => 'insufficient permissions',

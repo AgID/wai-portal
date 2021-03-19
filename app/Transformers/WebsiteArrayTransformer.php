@@ -7,6 +7,12 @@ use League\Fractal\TransformerAbstract;
 
 class WebsiteArrayTransformer extends TransformerAbstract
 {
+    /**
+     * Transform website data for API responces
+     *
+     * @param Website $website The website
+     * @return array The responce
+     */
     public function transform(Website $website): array
     {
         return [
