@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Contracts\AnalyticsService;
 use App\Models\Website;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -17,8 +18,16 @@ class UpdateSiteListOnRedis implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
+    /**
+     * Analytics Service
+     *
+     * @var AnalyticsService
+     */
     protected $analyticsService;
 
+    /**
+     * The Construct
+     */
     public function __construct()
     {
         $this->analyticsService = app()->make('analytics-service');

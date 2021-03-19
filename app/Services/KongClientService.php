@@ -20,13 +20,20 @@ class KongClientService
      */
     protected $serviceBaseUri;
 
-    protected $redisCache;
-
+    /**
+     * The construct
+     */
     public function __construct()
     {
         $this->serviceBaseUri = config('kong-service.admin_api_url');
     }
 
+    /**
+     * Return a consumer from its ID
+     *
+     * @param string $idConsumer The consumer ID
+     * @return array|null The consumer
+     */
     public function getConsumer(string $idConsumer): ?array
     {
         $consumer = Cache::get('kong:consumer:' . $idConsumer);
@@ -50,6 +57,12 @@ class KongClientService
         return $consumer;
     }
 
+    /**
+     * Get a Client from the consumer id
+     *
+     * @param string $idConsumer The consumer ID
+     * @return array|null The Client
+     */
     public function getClient(string $idConsumer): ?array
     {
         $client = Cache::get('kong:client:' . $idConsumer);
@@ -82,7 +95,13 @@ class KongClientService
 
         return $client;
     }
-
+    /**
+     * Create a new consumer
+     *
+     * @param string $username The consumer's username
+     * @param string $customId The consumer's custom id 
+     * @return array The new consumer
+     */
     public function makeConsumer(string $username, string $customId): array
     {
         $data = [
@@ -103,6 +122,13 @@ class KongClientService
         return $this->makeClient($response['username'], $response['id']);
     }
 
+    /**
+     * Create a new client
+     *
+     * @param string $name The client name
+     * @param string $idConsumer The consumer id
+     * @return array The client
+     */
     public function makeClient(string $name, string $idConsumer): array
     {
         $data = [
@@ -121,6 +147,14 @@ class KongClientService
         return $response;
     }
 
+    /**
+     * Regenerate a client secret
+     *
+     * @param string $name The client's name
+     * @param string $idConsumer The consumer's id
+     * @param string $idClient The client's id
+     * @return array The client
+     */
     public function regenerateSecret(string $name, string $idConsumer, string $idClient)
     {
         $data = [
@@ -140,6 +174,13 @@ class KongClientService
         return $response;
     }
 
+    /**
+     * Update the client information
+     *
+     * @param string $idConsumer The consumer id
+     * @param array $newData The new client data
+     * @return array The client
+     */
     public function updateClient(string $idConsumer, array $newData): array
     {
         $data = [
@@ -156,6 +197,12 @@ class KongClientService
         return $consumer;
     }
 
+    /**
+     * Delete a consumer
+     *
+     * @param string $idConsumer The consumer id
+     * @return boolean Wether the consumer has been deleted
+     */
     public function deleteConsumer(string $idConsumer): bool
     {
         $data = [
@@ -169,7 +216,12 @@ class KongClientService
 
         return true;
     }
-
+    
+    /**
+     * Get all the tokens beloging to a credential
+     *
+     * @return array|null The tokens or null
+     */
     public function getTokensList(): ?array
     {
         $headers = [
@@ -180,6 +232,12 @@ class KongClientService
         return $this->apiCall($headers, [], 'GET', '/oauth2_tokens/');
     }
 
+    /**
+     * Invalidate a credential's token
+     *
+     * @param string $tokenId The token ID
+     * @return array|null The Tokens or null
+     */
     public function invalidateToken(string $tokenId): ?array
     {
         $headers = [
@@ -190,6 +248,16 @@ class KongClientService
         return $this->apiCall($headers, [], 'DELETE', '/oauth2_tokens/' . $tokenId);
     }
 
+    /**
+     * Api Rest calls to kong
+     *
+     * @param array $headers The headers
+     * @param array $body The body
+     * @param string $method The method
+     * @param string $path The path to form the url
+     * @param boolean $isForm Wheter is a "application/x-www-form-urlencoded" request
+     * @return array|null The data or null
+     */
     protected function apiCall(array $headers = [], array $body = [], string $method = 'GET', string $path = '/', bool $isForm = false): ?array
     {
         $method = strtolower($method);
