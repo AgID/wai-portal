@@ -25,17 +25,32 @@ class Credential extends Model
     {
         return 'consumer_id';
     }
-
+    /**
+     * Get a credential from a consumer ID
+     *
+     * @param string $consumerID The Consumer ID 
+     * @return Credential|null The Credential
+     */
     public static function getCredentialFromConsumerId(string $consumerID): ?Credential
     {
         return Credential::where('consumer_id', $consumerID)->first();
     }
 
+    /**
+     * Credentials belong to one public administration
+     *
+     * @return BelongsTo
+     */
     public function publicAdministration(): BelongsTo
     {
         return $this->belongsTo(PublicAdministration::class);
     }
 
+    /**
+     * Add the type attribute of the credential
+     *
+     * @return string
+     */
     public function getTypeAttribute(): string
     {
         $data = $this->customIdArray($this->consumer_id);
@@ -43,6 +58,11 @@ class Credential extends Model
         return $data['type'];
     }
 
+    /**
+     * Add the permissions attribute of the credential
+     *
+     * @return array
+     */
     public function getPermissionsAttribute(): array
     {
         $data = $this->customIdArray($this->consumer_id);
@@ -52,6 +72,11 @@ class Credential extends Model
             : [];
     }
 
+    /**
+     * Add the Client ID attribute of the credential
+     *
+     * @return string
+     */
     public function getClientIdAttribute(): string
     {
         $data = app()->make('kong-client-service')->getClient($this->consumer_id);
@@ -59,6 +84,11 @@ class Credential extends Model
         return $data['client_id'];
     }
 
+    /**
+     * Add the Client secret attribute of the credential
+     *
+     * @return string
+     */
     public function getClientSecretAttribute(): string
     {
         $data = app()->make('kong-client-service')->getClient($this->consumer_id);
@@ -66,6 +96,11 @@ class Credential extends Model
         return $data['client_secret'];
     }
 
+    /**
+     * Add the Oauth Client ID attribute of the credential
+     *
+     * @return string
+     */
     public function getOauthClientIdAttribute(): string
     {
         $data = app()->make('kong-client-service')->getClient($this->consumer_id);
@@ -73,6 +108,12 @@ class Credential extends Model
         return $data['id'];
     }
 
+    /**
+     * Get credential consumer from kong
+     *
+     * @param string $consumerId the consumer id
+     * @return array|null
+     */
     private function customIdArray(string $consumerId): ?array
     {
         $consumer = app()->make('kong-client-service')->getConsumer($consumerId);
