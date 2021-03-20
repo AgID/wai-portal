@@ -37,6 +37,7 @@ default_period = "range"
 default_language = "it"
 archiving_custom_ranges[] = previous30
 enable_processing_unique_visitors_range = 1
+enable_processing_unique_visitors_multiple_sites = 1
 anonymous_user_enable_use_segments_API = 0
 enable_create_realtime_segments = 0
 enable_segment_suggested_values = 0
