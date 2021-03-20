@@ -19,14 +19,14 @@ class UpdateSiteListOnRedis implements ShouldQueue
     use SerializesModels;
 
     /**
-     * Analytics Service
+     * Analytics Service.
      *
      * @var AnalyticsService
      */
     protected $analyticsService;
 
     /**
-     * The Construct
+     * The Construct.
      */
     public function __construct()
     {
