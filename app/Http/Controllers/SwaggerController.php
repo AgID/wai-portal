@@ -13,11 +13,13 @@ use Illuminate\View\View;
 class SwaggerController extends Controller
 {
     use HasRoleAwareUrls;
+
     /**
-     * Display the Swagger
+     * Display the Swagger.
      *
      * @param Request $request The request
      * @param PublicAdministration $publicAdministration The Public Administration
+     *
      * @return View The view
      */
     public function index(Request $request, PublicAdministration $publicAdministration): View
@@ -51,7 +53,7 @@ class SwaggerController extends Controller
     }
 
     /**
-     * Api Swagger Specifications
+     * Api Swagger Specifications.
      *
      * @return JsonResponse The JsonResponse
      */
