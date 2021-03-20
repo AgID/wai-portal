@@ -66,14 +66,14 @@ class ApiTest extends TestCase
     private $faker;
 
     /**
-     * The http client
+     * The http client.
      *
      * @var Client
      */
     private $client;
 
     /**
-     * Pre test setup
+     * Pre test setup.
      *
      * @return void
      */
@@ -153,11 +153,11 @@ class ApiTest extends TestCase
         $response
             ->assertStatus(200)
             ->assertJson([[
-                'id' => $this->website->id,
                 'name' => $this->website->name,
                 'url' => $this->website->url,
-                'analytics_id' => $this->website->analytics_id,
                 'slug' => $this->website->slug,
+                'status' => $this->website->status->description,
+                'type' => $this->website->type->description,
             ]]);
     }
 
@@ -193,7 +193,7 @@ class ApiTest extends TestCase
     }
 
     /**
-     * Read a website from API, should pass
+     * Read a website from API, should pass.
      *
      * @return void
      */
@@ -208,16 +208,16 @@ class ApiTest extends TestCase
         $response
             ->assertStatus(200)
             ->assertJson([
-                'id' => $this->website->id,
                 'name' => $this->website->name,
                 'url' => $this->website->url,
-                'analytics_id' => $this->website->analytics_id,
                 'slug' => $this->website->slug,
+                'status' => $this->website->status->description,
+                'type' => $this->website->type->description,
             ]);
     }
 
     /**
-     * Edit a website, should pass
+     * Edit a website, should pass.
      *
      * @return void
      */
@@ -255,10 +255,8 @@ class ApiTest extends TestCase
         $response
             ->assertStatus(200)
             ->assertJson([
-                'id' => $websiteToEdit->id,
                 'name' => $newName,
                 'url' => $newDomain,
-                'analytics_id' => $analyticsId,
                 'slug' => $newSlug,
             ]);
     }
@@ -292,7 +290,7 @@ class ApiTest extends TestCase
     }
 
     /**
-     * Get the matomo javascript snippet, should pass
+     * Get the matomo javascript snippet, should pass.
      *
      * @return void
      */
@@ -336,7 +334,7 @@ class ApiTest extends TestCase
     }
 
     /**
-     * Create a new user, should pass
+     * Create a new user, should pass.
      *
      * @return void
      */
@@ -383,7 +381,7 @@ class ApiTest extends TestCase
     }
 
     /**
-     * Get a user from the API
+     * Get a user from the API.
      *
      * @return void
      */
@@ -407,7 +405,7 @@ class ApiTest extends TestCase
     }
 
     /**
-     * Edit a user, should pass
+     * Edit a user, should pass.
      *
      * @return void
      */
@@ -456,7 +454,7 @@ class ApiTest extends TestCase
     }
 
     /**
-     * Suspend a user, should pass
+     * Suspend a user, should pass.
      *
      * @return void
      */
