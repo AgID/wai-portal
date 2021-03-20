@@ -25,10 +25,12 @@ class Credential extends Model
     {
         return 'consumer_id';
     }
+
     /**
-     * Get a credential from a consumer ID
+     * Get a credential from a consumer ID.
      *
-     * @param string $consumerID The Consumer ID 
+     * @param string $consumerID The Consumer ID
+     *
      * @return Credential|null The Credential
      */
     public static function getCredentialFromConsumerId(string $consumerID): ?Credential
@@ -37,7 +39,7 @@ class Credential extends Model
     }
 
     /**
-     * Credentials belong to one public administration
+     * Credentials belong to one public administration.
      *
      * @return BelongsTo
      */
@@ -47,7 +49,7 @@ class Credential extends Model
     }
 
     /**
-     * Add the type attribute of the credential
+     * Add the type attribute of the credential.
      *
      * @return string
      */
@@ -59,7 +61,7 @@ class Credential extends Model
     }
 
     /**
-     * Add the permissions attribute of the credential
+     * Add the permissions attribute of the credential.
      *
      * @return array
      */
@@ -73,7 +75,7 @@ class Credential extends Model
     }
 
     /**
-     * Add the Client ID attribute of the credential
+     * Add the Client ID attribute of the credential.
      *
      * @return string
      */
@@ -85,7 +87,7 @@ class Credential extends Model
     }
 
     /**
-     * Add the Client secret attribute of the credential
+     * Add the Client secret attribute of the credential.
      *
      * @return string
      */
@@ -97,7 +99,7 @@ class Credential extends Model
     }
 
     /**
-     * Add the Oauth Client ID attribute of the credential
+     * Add the Oauth Client ID attribute of the credential.
      *
      * @return string
      */
@@ -109,9 +111,10 @@ class Credential extends Model
     }
 
     /**
-     * Get credential consumer from kong
+     * Get credential consumer from kong.
      *
      * @param string $consumerId the consumer id
+     *
      * @return array|null
      */
     private function customIdArray(string $consumerId): ?array

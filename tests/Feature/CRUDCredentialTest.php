@@ -131,7 +131,7 @@ class CRUDCredentialTest extends TestCase
     }
 
     /**
-     * Create admin type credentials
+     * Create admin type credentials.
      *
      * @return void
      */
@@ -180,7 +180,7 @@ class CRUDCredentialTest extends TestCase
     }
 
     /**
-     * Create Analytics credentials
+     * Create Analytics credentials.
      *
      * @return void
      */
@@ -255,7 +255,7 @@ class CRUDCredentialTest extends TestCase
     }
 
     /**
-     * Update Credentials' name
+     * Update Credentials' name.
      *
      * @return void
      */
@@ -330,7 +330,7 @@ class CRUDCredentialTest extends TestCase
     }
 
     /**
-     * Delete Credentials
+     * Delete Credentials.
      *
      * @return void
      */
@@ -360,7 +360,7 @@ class CRUDCredentialTest extends TestCase
     }
 
     /**
-     * Delete a credential
+     * Delete a credential.
      *
      * @return void
      */
@@ -389,7 +389,7 @@ class CRUDCredentialTest extends TestCase
     }
 
     /**
-     * Regenerate the credentials
+     * Regenerate the credentials.
      *
      * @return void
      */

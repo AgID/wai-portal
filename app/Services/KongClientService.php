@@ -21,7 +21,7 @@ class KongClientService
     protected $serviceBaseUri;
 
     /**
-     * The construct
+     * The construct.
      */
     public function __construct()
     {
@@ -29,9 +29,10 @@ class KongClientService
     }
 
     /**
-     * Return a consumer from its ID
+     * Return a consumer from its ID.
      *
      * @param string $idConsumer The consumer ID
+     *
      * @return array|null The consumer
      */
     public function getConsumer(string $idConsumer): ?array
@@ -58,9 +59,10 @@ class KongClientService
     }
 
     /**
-     * Get a Client from the consumer id
+     * Get a Client from the consumer id.
      *
      * @param string $idConsumer The consumer ID
+     *
      * @return array|null The Client
      */
     public function getClient(string $idConsumer): ?array
@@ -95,11 +97,13 @@ class KongClientService
 
         return $client;
     }
+
     /**
-     * Create a new consumer
+     * Create a new consumer.
      *
      * @param string $username The consumer's username
-     * @param string $customId The consumer's custom id 
+     * @param string $customId The consumer's custom id
+     *
      * @return array The new consumer
      */
     public function makeConsumer(string $username, string $customId): array
@@ -123,10 +127,11 @@ class KongClientService
     }
 
     /**
-     * Create a new client
+     * Create a new client.
      *
      * @param string $name The client name
      * @param string $idConsumer The consumer id
+     *
      * @return array The client
      */
     public function makeClient(string $name, string $idConsumer): array
@@ -148,11 +153,12 @@ class KongClientService
     }
 
     /**
-     * Regenerate a client secret
+     * Regenerate a client secret.
      *
      * @param string $name The client's name
      * @param string $idConsumer The consumer's id
      * @param string $idClient The client's id
+     *
      * @return array The client
      */
     public function regenerateSecret(string $name, string $idConsumer, string $idClient)
@@ -175,10 +181,11 @@ class KongClientService
     }
 
     /**
-     * Update the client information
+     * Update the client information.
      *
      * @param string $idConsumer The consumer id
      * @param array $newData The new client data
+     *
      * @return array The client
      */
     public function updateClient(string $idConsumer, array $newData): array
@@ -198,10 +205,11 @@ class KongClientService
     }
 
     /**
-     * Delete a consumer
+     * Delete a consumer.
      *
      * @param string $idConsumer The consumer id
-     * @return boolean Wether the consumer has been deleted
+     *
+     * @return bool Wether the consumer has been deleted
      */
     public function deleteConsumer(string $idConsumer): bool
     {
@@ -216,9 +224,9 @@ class KongClientService
 
         return true;
     }
-    
+
     /**
-     * Get all the tokens beloging to a credential
+     * Get all the tokens beloging to a credential.
      *
      * @return array|null The tokens or null
      */
@@ -233,9 +241,10 @@ class KongClientService
     }
 
     /**
-     * Invalidate a credential's token
+     * Invalidate a credential's token.
      *
      * @param string $tokenId The token ID
+     *
      * @return array|null The Tokens or null
      */
     public function invalidateToken(string $tokenId): ?array
@@ -249,13 +258,14 @@ class KongClientService
     }
 
     /**
-     * Api Rest calls to kong
+     * Api Rest calls to kong.
      *
      * @param array $headers The headers
      * @param array $body The body
      * @param string $method The method
      * @param string $path The path to form the url
-     * @param boolean $isForm Wheter is a "application/x-www-form-urlencoded" request
+     * @param bool $isForm Wheter is a "application/x-www-form-urlencoded" request
+     *
      * @return array|null The data or null
      */
     protected function apiCall(array $headers = [], array $body = [], string $method = 'GET', string $path = '/', bool $isForm = false): ?array

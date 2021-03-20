@@ -61,9 +61,10 @@ class AuthenticateApi
     }
 
     /**
-     * Return a JSON error
+     * Return a JSON error.
      *
      * @param int $code The error code
+     *
      * @return void
      */
     protected function jsonError(int $code)

@@ -198,8 +198,9 @@ class PublicAdministration extends Model
             return User::whereIs(UserRole::DELEGATED)->get();
         });
     }
+
     /**
-     * One Public Administration has many credentials
+     * One Public Administration has many credentials.
      *
      * @return HasMany
      */
