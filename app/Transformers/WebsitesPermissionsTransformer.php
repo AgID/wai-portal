@@ -139,12 +139,13 @@ class WebsitesPermissionsTransformer extends TransformerAbstract
     }
 
     /**
-     * Get website's credential permissions
+     * Get website's credential permissions.
      *
-     * @param integer $websiteId The website ID
+     * @param int $websiteId The website ID
      * @param array|null $credentialPermissions The Credential permissions
      * @param string $permissionType The permission Type
-     * @return boolean Whether has or doesn't have a permission
+     *
+     * @return bool Whether has or doesn't have a permission
      */
     protected function getCredentialPermission(int $websiteId, ?array $credentialPermissions, string $permissionType): bool
     {

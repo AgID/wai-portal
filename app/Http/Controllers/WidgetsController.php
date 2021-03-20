@@ -15,18 +15,19 @@ class WidgetsController extends Controller
     use HasRoleAwareUrls;
 
     /**
-     * The Construct
+     * The Construct.
      */
     public function __construct()
     {
         $this->analyticsService = app()->make('analytics-service');
     }
-    
+
     /**
-     * Show the aviable widgets
+     * Show the aviable widgets.
      *
      * @param Website $website The website
      * @param PublicAdministration $publicAdministration The PublicAdministration
+     *
      * @return View The view
      */
     public function index(Website $website, PublicAdministration $publicAdministration): View
