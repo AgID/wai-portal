@@ -231,7 +231,7 @@ class WebsiteController extends Controller
         $usersPermissionsDatatable = $this->getDatatableUsersPermissionsParams($usersPermissionsDatatableSourceUrl, true);
 
         $authUser = auth()->user();
-        $userPublicAdministrationStatus = $authUser->getStatusforPublicAdministration($publicAdministration);
+        $userPublicAdministrationStatus = $authUser->getStatusforPublicAdministration($currentPublicAdministration);
 
         $forceActivationButtonVisible = !app()->environment('production') && config('wai.custom_public_administrations', false) && $website->type->is(WebsiteType::INSTITUTIONAL_PLAY);
 
