@@ -135,6 +135,7 @@
                     <token key="MATOMO_ROOT_APIKEY" value="${MATOMO_ROOT_APIKEY}" />
                     <token key="MATOMO_VERSION" value="${MATOMO_VERSION}" />
                     <token key="MATOMO_CRON_ARCHIVING_ENABLED" value="${MATOMO_CRON_ARCHIVING_ENABLED}" />
+                    <token key="MATOMO_PHPREDIS_VERSION" value="${MATOMO_PHPREDIS_VERSION}" />
                     <token key="MATOMO_WAI_THEME_VERSION" value="${MATOMO_WAI_THEME_VERSION}" />
                     <token key="MATOMO_PLUGIN_USERSMANAGERONLYSUPERUSER_VERSION" value="${MATOMO_PLUGIN_USERSMANAGERONLYSUPERUSER_VERSION}" />
                     <token key="MATOMO_PLUGIN_USERSMANAGERONLYSUPERUSER_ENABLED" value="${MATOMO_PLUGIN_USERSMANAGERONLYSUPERUSER_ENABLED}" />
