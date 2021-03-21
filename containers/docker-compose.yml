@@ -94,6 +94,9 @@ services:
     volumes:
       - mariadb-data:/bitnami/mariadb
       - matomo-install:/opt/matomo-install/
+      # uncomment to enable the general query log
+      # - ./mariadb/my_custom.cnf:/opt/bitnami/mariadb/conf/my_custom.cnf:ro
+      - ${APP_LOGS_PATH_HOST}/mariadb:${APP_LOGS_PATH_CONTAINER}/mariadb
     environment:
       - MARIADB_DATABASE=${MARIADB_DATABASE}
       - MARIADB_USER=${MARIADB_USER}
