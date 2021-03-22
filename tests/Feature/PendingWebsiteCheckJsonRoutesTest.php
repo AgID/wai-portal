@@ -105,9 +105,8 @@ class PendingWebsiteCheckJsonRoutesTest extends TestCase
             ])
             ->json('get', route('websites.tracking.check', ['website' => $this->website->slug]));
 
-        $response->assertStatus(304);
-
-        $this->assertEmpty($response->getContent());
+        $response->assertStatus(303);
+        $response->assertExactJson([]);
     }
 
     /**

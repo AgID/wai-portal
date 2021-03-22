@@ -357,7 +357,9 @@ class UserController extends Controller
         $userPublicAdministrationStatus = $user->getStatusforPublicAdministration($publicAdministration);
 
         if ($userPublicAdministrationStatus->is(UserStatus::SUSPENDED)) {
-            return $this->notModifiedResponse();
+            return $this->notModifiedResponse([
+                'Location' => $this->getUserApiUri($user->fiscal_number),
+            ]);
         }
 
         try {
@@ -431,7 +433,9 @@ class UserController extends Controller
         $userPublicAdministrationStatus = $user->getStatusforPublicAdministration($publicAdministration);
 
         if (!$userPublicAdministrationStatus->is(UserStatus::SUSPENDED)) {
-            return $this->notModifiedResponse();
+            return $this->notModifiedResponse([
+                'Location' => $this->getUserApiUri($user->fiscal_number),
+            ]);
         }
 
         $publicAdministration->users()->updateExistingPivot($user->id, ['user_status' => UserStatus::ACTIVE]);
