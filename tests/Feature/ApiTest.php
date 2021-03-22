@@ -286,7 +286,7 @@ class ApiTest extends TestCase
         ]);
 
         $response
-            ->assertStatus(304);
+            ->assertStatus(303);
     }
 
     /**

@@ -316,7 +316,9 @@ class WebsiteController extends Controller
     public function delete(PublicAdministration $publicAdministration, Website $website)
     {
         if ($website->trashed()) {
-            return $this->notModifiedResponse();
+            return $this->notModifiedResponse([
+                'Location' => $this->getWebsiteAPIUri($website),
+            ]);
         }
 
         try {
@@ -365,7 +367,9 @@ class WebsiteController extends Controller
     public function restore(PublicAdministration $publicAdministration, Website $website)
     {
         if (!$website->trashed()) {
-            return $this->notModifiedResponse();
+            return $this->notModifiedResponse([
+                'Location' => $this->getWebsiteAPIUri($website),
+            ]);
         }
 
         try {
@@ -415,7 +419,9 @@ class WebsiteController extends Controller
                     ]);
                 }
 
-                return $this->notModifiedResponse();
+                return $this->notModifiedResponse([
+                    'Location' => $this->getWebsiteAPIUri($website),
+                ]);
             }
 
             throw new InvalidWebsiteStatusException('Unable to check activation for website ' . $website->info . ' in status ' . $website->status->key . '.');
@@ -493,7 +499,9 @@ class WebsiteController extends Controller
     public function archive(PublicAdministration $publicAdministration, Website $website)
     {
         if ($website->status->is(WebsiteStatus::ARCHIVED)) {
-            return $this->notModifiedResponse();
+            return $this->notModifiedResponse([
+                'Location' => $this->getWebsiteAPIUri($website),
+            ]);
         }
 
         try {
@@ -554,7 +562,9 @@ class WebsiteController extends Controller
         try {
             if (!$website->type->is(WebsiteType::INSTITUTIONAL)) {
                 if ($website->status->is(WebsiteStatus::ACTIVE)) {
-                    return $this->notModifiedResponse();
+                    return $this->notModifiedResponse([
+                        'Location' => $this->getWebsiteAPIUri($website),
+                    ]);
                 }
 
                 if ($website->status->is(WebsiteStatus::ARCHIVED)) {
