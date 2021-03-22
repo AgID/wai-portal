@@ -192,7 +192,7 @@ class WebsiteController extends Controller
 
         if (is_array($data) && array_key_exists('website', $data)) {
             return $this->websiteResponse($data['website'], null, null, 201, [
-                'Location' => $this->getUriWebsiteAPI($data['website']),
+                'Location' => $this->getWebsiteAPIUri($data['website']),
             ]);
         }
 
@@ -889,7 +889,7 @@ class WebsiteController extends Controller
      *
      * @return string the uri
      */
-    private function getUriWebsiteAPI(Website $website): string
+    private function getWebsiteAPIUri(Website $website): string
     {
         return config('kong-service.api_url') .
             str_replace('/api/', '/portal/', route('api.sites.read', ['website' => $website], false));
