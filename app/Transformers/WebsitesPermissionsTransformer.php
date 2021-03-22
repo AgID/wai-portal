@@ -41,9 +41,9 @@ class WebsitesPermissionsTransformer extends TransformerAbstract
             if ($isCredentialPermissionsData) {
                 $oldPermissions = $currentRequest->query('oldCredentialPermissions');
                 $credentialPermissions = optional($currentRequest->route('credential'))->permissions;
-                $canRead = !is_array($oldCredentialPermission)
+                $canRead = !is_array($oldPermissions)
                     && $this->hasCredentialPermission($website->analytics_id, CredentialPermission::READ, $credentialPermissions);
-                $canManageOrWrite = !is_array($oldCredentialPermission)
+                $canManageOrWrite = !is_array($oldPermissions)
                     && $this->hasCredentialPermission($website->analytics_id, CredentialPermission::WRITE, $credentialPermissions);
                 $websiteId = $website->analytics_id;
             }
