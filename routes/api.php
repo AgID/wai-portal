@@ -24,7 +24,7 @@ Route::middleware('api.auth')->group(function () {
             ->name('api.users.store');
         Route::get('/{fn}', 'UserController@showApi')
             ->name('api.users.show');
-        Route::patch('/{fn}', 'UserController@updateApi')
+        Route::put('/{fn}', 'UserController@updateApi')
             ->name('api.users.update');
         Route::patch('/{fn}/suspend', 'UserController@suspend')
             ->name('api.users.suspend');
@@ -40,7 +40,7 @@ Route::middleware('api.auth')->group(function () {
             ->name('api.websites.read');
         Route::get('/list/{id}', 'WebsiteController@websiteList')
             ->name('api.websites.websites');
-        Route::patch('/{website}', 'WebsiteController@update')
+        Route::put('/{website}', 'WebsiteController@update')
             ->name('api.websites.update');
         Route::patch('/{website}/archive', 'WebsiteController@archive')
             ->name('api.websites.archive');
