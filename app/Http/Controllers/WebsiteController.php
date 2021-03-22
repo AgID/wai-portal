@@ -190,11 +190,11 @@ class WebsiteController extends Controller
     {
         $publicAdministration = $request->publicAdministrationFromToken;
 
-        $response = $this->storeMethod($request, $publicAdministration);
+        $data = $this->storeMethod($request, $publicAdministration);
 
-        if (is_array($response) && array_key_exists('website', $response)) {
-            return $this->websiteResponse($response['website'], null, null, 201, [
-                'Location' => $this->getUriWebsiteAPI($response['website']),
+        if (is_array($data) && array_key_exists('website', $data)) {
+            return $this->websiteResponse($data['website'], null, null, 201, [
+                'Location' => $this->getUriWebsiteAPI($data['website']),
             ]);
         }
 
