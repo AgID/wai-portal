@@ -909,11 +909,11 @@
                     },
                     {
                         "example": {
-                            "id": 1,
                             "name": "Agenzia per L'Italia Digitale",
                             "url": "www.agid.gov.it",
-                            "analytics_id": 2,
-                            "slug": "wwwagidgovit"
+                            "slug": "wwwagidgovit",
+                            "status": "active",
+                            "type": "institutional website"
                         }
                     }
                 ]
