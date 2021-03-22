@@ -116,9 +116,8 @@ class ArchiveWebsiteJsonRoutesTest extends TestCase
             ])
             ->json('patch', route('websites.archive', ['website' => $this->website->slug]));
 
-        $response->assertStatus(304);
-
-        $this->assertEmpty($response->getContent());
+        $response->assertStatus(303);
+        $response->assertExactJson([]);
 
         Event::assertNotDispatched(WebsiteArchived::class);
         Event::assertNotDispatched(WebsiteUnarchived::class);
@@ -247,9 +246,8 @@ class ArchiveWebsiteJsonRoutesTest extends TestCase
             ])
             ->json('patch', route('websites.unarchive', ['website' => $this->website->slug]));
 
-        $response->assertStatus(304);
-
-        $this->assertEmpty($response->getContent());
+        $response->assertStatus(303);
+        $response->assertExactJson([]);
 
         Event::assertNotDispatched(WebsiteArchived::class);
         Event::assertNotDispatched(WebsiteUnarchived::class);
