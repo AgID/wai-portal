@@ -365,7 +365,7 @@
                 }
             }
         },
-        "/portal/sites": {
+        "/portal/websites": {
             "post": {
                 "tags": ["Siti web"],
                 "summary": "Crea un nuovo sito web",
@@ -484,7 +484,7 @@
                 }
             }
         },
-        "/portal/sites/{website}": {
+        "/portal/websites/{website}": {
             "parameters": [{ "$ref": "#/components/parameters/SlugInPath" }],
             "get": {
                 "tags": ["Siti web"],
@@ -612,7 +612,7 @@
                 }
             }
         },
-        "/portal/sites/{website}/archive": {
+        "/portal/websites/{website}/archive": {
             "parameters": [{ "$ref": "#/components/parameters/SlugInPath" }],
             "patch": {
                 "tags": ["Siti web"],
@@ -672,7 +672,7 @@
                 }
             }
         },
-        "/portal/sites/{website}/unarchive": {
+        "/portal/websites/{website}/unarchive": {
             "parameters": [{ "$ref": "#/components/parameters/SlugInPath" }],
             "patch": {
                 "tags": ["Siti web"],
@@ -732,7 +732,7 @@
                 }
             }
         },
-        "/portal/sites/{website}/check": {
+        "/portal/websites/{website}/check": {
             "parameters": [{ "$ref": "#/components/parameters/SlugInPath" }],
             "get": {
                 "tags": ["Siti web"],
@@ -785,7 +785,7 @@
                 }
             }
         },
-        "/portal/sites/{website}/js-snippet": {
+        "/portal/websites/{website}/js-snippet": {
             "parameters": [{ "$ref": "#/components/parameters/SlugInPath" }],
             "get": {
                 "tags": ["Siti web"],
