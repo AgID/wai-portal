@@ -49,7 +49,7 @@
                         }
                     },
                     "400": {
-                        "description": "Bad Request",
+                        "description": "Richiesta erronea",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -79,7 +79,7 @@
                         }
                     },
                     "422": {
-                        "description": "I dati inviati sono incompleti o invalidi",
+                        "description": "Dati inviati incompleti o invalidi",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -171,7 +171,7 @@
                         }
                     },
                     "404": {
-                        "description": "La risorsa non è stata trovata",
+                        "description": "Risorsa non trovata",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -185,7 +185,7 @@
             "put": {
                 "tags": ["Utenti"],
                 "summary": "Modifica i dati dell'utente specificato",
-                "operationId": "patchUser",
+                "operationId": "updateUser",
                 "requestBody": {
                     "description": "Dati dell'utente da modificare",
                     "required": true,
@@ -209,7 +209,7 @@
                         }
                     },
                     "400": {
-                        "description": "Bad Request",
+                        "description": "Richiesta erronea",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -239,7 +239,7 @@
                         }
                     },
                     "404": {
-                        "description": "La risorsa non è stata trovata",
+                        "description": "Risorsa non trovata",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -249,7 +249,7 @@
                         }
                     },
                     "422": {
-                        "description": "I dati inviati sono incompleti o invalidi",
+                        "description": "Dati inviati incompleti o invalidi",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -280,6 +280,18 @@
                             }
                         }
                     },
+                    "303": {
+                        "description": "Utente già sospeso",
+                        "headers": {
+                            "Location": {
+                                "schema": {
+                                    "type": "string",
+                                    "format": "uri"
+                                },
+                                "description": "Uri del sito web"
+                            }
+                        }
+                    },
                     "401": {
                         "description": "Dati di autorizzazione non validi",
                         "content": {
@@ -301,7 +313,7 @@
                         }
                     },
                     "404": {
-                        "description": "La risorsa non è stata trovata",
+                        "description": "Risorsa non trovata",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -332,6 +344,18 @@
                             }
                         }
                     },
+                    "303": {
+                        "description": "Utente già attivo",
+                        "headers": {
+                            "Location": {
+                                "schema": {
+                                    "type": "string",
+                                    "format": "uri"
+                                },
+                                "description": "Uri del sito web"
+                            }
+                        }
+                    },
                     "401": {
                         "description": "Dati di autorizzazione non validi",
                         "content": {
@@ -353,7 +377,7 @@
                         }
                     },
                     "404": {
-                        "description": "La risorsa non è stata trovata",
+                        "description": "Risorsa non trovata",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -402,7 +426,7 @@
                         }
                     },
                     "400": {
-                        "description": "Bad Request",
+                        "description": "Richiesta erronea",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -432,7 +456,7 @@
                         }
                     },
                     "422": {
-                        "description": "I dati inviati sono incompleti o invalidi",
+                        "description": "Dati inviati incompleti o invalidi",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -445,11 +469,11 @@
             },
             "get": {
                 "tags": ["Siti web"],
-                "summary": "Restituisce l'elenco dei siti associati all'amministrazione",
+                "summary": "Fornisce l'elenco dei siti web",
                 "operationId": "getWebsites",
                 "responses": {
                     "200": {
-                        "description": "Array dei siti",
+                        "description": "Elenco dei siti web",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -522,7 +546,7 @@
                         }
                     },
                     "404": {
-                        "description": "La risorsa non è stata trovata",
+                        "description": "Risorsa non trovata",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -536,7 +560,7 @@
             "put": {
                 "tags": ["Siti web"],
                 "summary": "Modifica un sito web specificato",
-                "operationId": "patchWebsite",
+                "operationId": "updateWebsite",
                 "requestBody": {
                     "description": "Dati del sito web da modificare",
                     "required": true,
@@ -560,7 +584,7 @@
                         }
                     },
                     "400": {
-                        "description": "Bad Request",
+                        "description": "Richiesta erronea",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -590,7 +614,7 @@
                         }
                     },
                     "404": {
-                        "description": "La risorsa non è stata trovata",
+                        "description": "Risorsa non trovata",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -600,7 +624,7 @@
                         }
                     },
                     "422": {
-                        "description": "I dati inviati sono incompleti o invalidi",
+                        "description": "Dati inviati incompleti o invalidi",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -629,8 +653,20 @@
                             }
                         }
                     },
+                    "303": {
+                        "description": "Sito web già attivo",
+                        "headers": {
+                            "Location": {
+                                "schema": {
+                                    "type": "string",
+                                    "format": "uri"
+                                },
+                                "description": "Uri del sito web"
+                            }
+                        }
+                    },
                     "400": {
-                        "description": "Bad Request",
+                        "description": "Richiesta erronea",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -660,7 +696,7 @@
                         }
                     },
                     "404": {
-                        "description": "La risorsa non è stata trovata",
+                        "description": "Risorsa non trovata",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -676,7 +712,7 @@
             "parameters": [{ "$ref": "#/components/parameters/SlugInPath" }],
             "patch": {
                 "tags": ["Siti web"],
-                "summary": "Ripristina il sito web specificato",
+                "summary": "Riattiva il sito web specificato",
                 "operationId": "unarchiveWebsite",
                 "responses": {
                     "200": {
@@ -689,8 +725,20 @@
                             }
                         }
                     },
+                    "303": {
+                        "description": "Sito web già attivo",
+                        "headers": {
+                            "Location": {
+                                "schema": {
+                                    "type": "string",
+                                    "format": "uri"
+                                },
+                                "description": "Uri del sito web"
+                            }
+                        }
+                    },
                     "400": {
-                        "description": "Bad Request",
+                        "description": "Richiesta erronea",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -720,7 +768,7 @@
                         }
                     },
                     "404": {
-                        "description": "La risorsa non è stata trovata",
+                        "description": "Risorsa non trovata",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -739,11 +787,30 @@
                 "summary": "Verifica l'attivazione del sito web specificato",
                 "operationId": "checkWebsite",
                 "responses": {
-                    "304": {
-                        "description": "Sito web non attivo"
+                    "200": {
+                        "description": "Sito web attivato",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/WebsiteInfo"
+                                }
+                            }
+                        }
+                    },
+                    "303": {
+                        "description": "Sito web già attivo",
+                        "headers": {
+                            "Location": {
+                                "schema": {
+                                    "type": "string",
+                                    "format": "uri"
+                                },
+                                "description": "Uri del sito web"
+                            }
+                        }
                     },
                     "400": {
-                        "description": "Bad Request",
+                        "description": "Richiesta erronea",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -773,7 +840,7 @@
                         }
                     },
                     "404": {
-                        "description": "La risorsa non è stata trovata",
+                        "description": "Risorsa non trovata",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -823,7 +890,7 @@
                         }
                     },
                     "404": {
-                        "description": "La risorsa non è stata trovata",
+                        "description": "Risorsa non trovata",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -858,12 +925,17 @@
         "schemas": {
             "WebsiteSlug": {
                 "type": "string",
-                "format": "^\\w+$"
+                "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
             },
             "WebsiteType": {
                 "type": "string",
                 "description": "Tipologia di sito",
-                "enum": ["INFORMATIONAL", "SERVICE", "MOBILE"]
+                "enum": [
+                    "institutional website",
+                    "informational or thematic website",
+                    "services website",
+                    "mobile application"
+                ]
             },
             "WebsiteObject": {
                 "type": "object",
@@ -872,7 +944,7 @@
                     "website_name": {
                         "description": "Nome del sito",
                         "type": "string",
-                        "pattern": "^(?!\\s*$).+"
+                        "pattern": "^(?!\\s).+$"
                     },
                     "url": {
                         "description": "Url del sito",
@@ -931,6 +1003,7 @@
                 }
             },
             "JsSnippet": {
+                "type": "string",
                 "example": {
                     "result": "ok",
                     "id": "wwwagidgovit",
@@ -942,7 +1015,7 @@
                 "type": "string",
                 "minLength": 16,
                 "maxLength": 16,
-                "pattern": "[A-Z0-9]{16}"
+                "pattern": "^[A-Z]{6}\\d{2}[A-Z]\\d{2}[A-Z]\\d{3}[A-Z]$"
             },
             "UserInfoPermissions": {
                 "type": "object",
