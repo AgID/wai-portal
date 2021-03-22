@@ -241,7 +241,7 @@ class ApiTest extends TestCase
         $newSlug = Str::slug($newDomain);
         $newName = $this->faker->words(5, true);
 
-        $response = $this->json('PATCH', route('api.websites.update', ['website' => $websiteToEdit]), [
+        $response = $this->json('PUT', route('api.websites.update', ['website' => $websiteToEdit]), [
             'website_name' => $newName,
             'url' => $newDomain,
             'type' => 3,
@@ -427,7 +427,7 @@ class ApiTest extends TestCase
         $email = $this->faker->unique()->freeEmail;
         $updatedEmail = $this->faker->unique()->freeEmail;
 
-        $response = $this->json('PATCH', route('api.users.update', ['fn' => $userToEdit->fiscal_number]), [
+        $response = $this->json('PUT', route('api.users.update', ['fn' => $userToEdit->fiscal_number]), [
             'emailPublicAdministrationUser' => $updatedEmail,
             'email' => $email,
             'permissions' => [
