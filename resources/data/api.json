@@ -182,7 +182,7 @@
                     }
                 }
             },
-            "patch": {
+            "put": {
                 "tags": ["Utenti"],
                 "summary": "Modifica i dati dell'utente specificato",
                 "operationId": "patchUser",
@@ -533,7 +533,7 @@
                     }
                 }
             },
-            "patch": {
+            "put": {
                 "tags": ["Siti web"],
                 "summary": "Modifica un sito web specificato",
                 "operationId": "patchWebsite",
