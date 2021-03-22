@@ -31,26 +31,26 @@ Route::middleware('api.auth')->group(function () {
         Route::patch('/{fn}/reactivate', 'UserController@reactivate')
             ->name('api.users.reactivate');
     });
-    Route::prefix('/sites')->group(function () {
+    Route::prefix('/websites')->group(function () {
         Route::post('/', 'WebsiteController@storeApi')
-            ->name('api.sites.add');
+            ->name('api.websites.add');
         Route::get('/', 'WebsiteController@dataApi')
-            ->name('api.sites.show');
+            ->name('api.websites.show');
         Route::get('/{website}', 'WebsiteController@show')
-            ->name('api.sites.read');
+            ->name('api.websites.read');
         Route::get('/list/{id}', 'WebsiteController@websiteList')
-            ->name('api.sites.websites');
+            ->name('api.websites.websites');
         Route::patch('/{website}', 'WebsiteController@update')
-            ->name('api.sites.update');
+            ->name('api.websites.update');
         Route::patch('/{website}/archive', 'WebsiteController@archive')
-            ->name('api.sites.archive');
+            ->name('api.websites.archive');
         Route::patch('/{website}/unarchive', 'WebsiteController@unarchive')
-            ->name('api.sites.unarchive');
+            ->name('api.websites.unarchive');
         Route::get('/{website}/check', 'WebsiteController@checkTracking')
-            ->name('api.sites.check');
+            ->name('api.websites.check');
         Route::get('/{website}/force', 'WebsiteController@forceActivation')
-            ->name('api.sites.force');
+            ->name('api.websites.force');
         Route::get('/{website}/js-snippet', 'WebsiteController@showJavascriptSnippet')
-            ->name('api.sites.snippet.javascript');
+            ->name('api.websites.snippet.javascript');
     });
 });
