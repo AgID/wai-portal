@@ -145,13 +145,20 @@ trait SendsResponse
     /**
      * Returns an not modified response.
      *
+     * @param array $headers The headers
+     *
      * @return JsonResponse|RedirectResponse the response in json or http redirect format
      */
-    protected function notModifiedResponse()
+    protected function notModifiedResponse(?array $headers = [])
     {
+        // Note: "Location" header must not be sent to the browser to avoid redirects
+        if (!request()->is('api/*')) {
+            $headers = [];
+        }
+
         return request()->expectsJson()
-            ? response()->json(null, 304)
-            : back()->withNotification([
+            ? response()->json(null, 303)->withHeaders($headers)
+            : back(303)->withNotification([
                 'title' => __('operazione non effettuata'),
                 'message' => __('La richiesta non ha determinato cambiamenti nello stato.'),
                 'status' => 'info',

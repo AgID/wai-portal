@@ -526,7 +526,7 @@ class CRUDUserTest extends TestCase
                 'tenant_id' => $this->publicAdministration->id,
             ])
             ->json('patch', route('users.suspend', ['user' => $user]))
-            ->assertStatus(304);
+            ->assertStatus(303);
 
         Event::assertNotDispatched(UserSuspended::class);
         Event::assertNotDispatched(UserUpdated::class);
@@ -661,7 +661,7 @@ class CRUDUserTest extends TestCase
                 '_token' => 'test',
             ])
             ->json('patch', route('users.reactivate', ['user' => $user]))
-            ->assertStatus(304);
+            ->assertStatus(303);
 
         Event::assertNotDispatched(UserReactivated::class);
         Event::assertNotDispatched(UserUpdated::class);
