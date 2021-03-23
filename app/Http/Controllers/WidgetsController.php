@@ -15,7 +15,7 @@ class WidgetsController extends Controller
     use HasRoleAwareUrls;
 
     /**
-     * The Construct.
+     * Default constructor.
      */
     public function __construct()
     {
@@ -23,7 +23,7 @@ class WidgetsController extends Controller
     }
 
     /**
-     * Show the aviable widgets.
+     * Show the available widgets.
      *
      * @param Website $website The website
      * @param PublicAdministration $publicAdministration The PublicAdministration
