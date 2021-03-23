@@ -199,6 +199,11 @@ class PublicAdministration extends Model
         });
     }
 
+    /**
+     * One Public Administration has many credentials.
+     *
+     * @return HasMany
+     */
     public function credentials()
     {
         return $this->hasMany(Credential::class);

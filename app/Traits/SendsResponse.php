@@ -7,6 +7,7 @@ use App\Models\PublicAdministration;
 use App\Models\User;
 use App\Models\Website;
 use App\Transformers\UserArrayTransformer;
+use App\Transformers\WebsiteArrayTransformer;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 
@@ -78,33 +79,41 @@ trait SendsResponse
      * Returns a success response for the specified website.
      *
      * @param Website $website the website
+     * @param array $notification the notifications
+     * @param string $redirectUrl The url to redirect the user to
+     * @param int $code The status code
+     * @param array $headers The headers
      *
      * @return JsonResponse|RedirectResponse the response in json or http redirect format
      */
-    protected function websiteResponse(Website $website)
+    protected function websiteResponse(Website $website, ?array $notification = [], ?string $redirectUrl = null, ?int $code = 200, ?array $headers = [])
     {
-        return request()->expectsJson()
-            ? response()->json([
-                'result' => 'ok',
-                'id' => $website->slug,
-                'website_name' => e($website->name),
-                'status' => $website->status->key,
-                'status_description' => $website->status->description,
-                'trashed' => $website->trashed(),
-            ])
-            : back()->withNotification([
-                'title' => __('sito web modificato'),
-                'message' => $website->trashed()
-                    ? __('Il sito web :website è stato eliminato.', ['website' => '<strong>' . e($website->name) . '</strong>'])
-                    : implode("\n", [
-                        __('Il sito web :website è stato aggiornato.', ['website' => '<strong>' . e($website->name) . '</strong>']),
-                        __('Stato del sito web: :status', [
-                            'status' => '<span class="badge website-status ' . strtolower($website->status->key) . '">' . strtoupper($website->status->description) . '</span>.',
-                        ]),
-                    ]),
-                'status' => 'info',
-                'icon' => 'it-info-circle',
-            ]);
+        $requestExpectsJson = request()->expectsJson();
+
+        if ($requestExpectsJson) {
+            $jsonResponse = (new WebsiteArrayTransformer())->transform($website);
+
+            if (!request()->is('api/*')) {
+                $jsonResponse['result'] = 'ok';
+                $jsonResponse['id'] = $website->slug;
+                $jsonResponse['website_name'] = e($website->name);
+                $jsonResponse['status'] = $website->status->key;
+                $jsonResponse['status_description'] = $website->status->description;
+                $jsonResponse['trashed'] = $website->trashed();
+            }
+        }
+
+        $redirectResponse = is_null($redirectUrl) ? back() : redirect()->to($redirectUrl);
+        if (!empty($notification)) {
+            $redirectResponse = $redirectResponse->withNotification(array_merge([
+                'status' => 'success',
+                'icon' => 'it-check-circle',
+            ], $notification));
+        }
+
+        return $requestExpectsJson
+            ? response()->json($jsonResponse, $code)->withHeaders($headers)
+            : $redirectResponse->withHeaders($headers);
     }
 
     /**
@@ -136,13 +145,20 @@ trait SendsResponse
     /**
      * Returns an not modified response.
      *
+     * @param array $headers The headers
+     *
      * @return JsonResponse|RedirectResponse the response in json or http redirect format
      */
-    protected function notModifiedResponse()
+    protected function notModifiedResponse(?array $headers = [])
     {
+        // Note: "Location" header must not be sent to the browser to avoid redirects
+        if (!request()->is('api/*')) {
+            $headers = [];
+        }
+
         return request()->expectsJson()
-            ? response()->json(null, 304)
-            : back()->withNotification([
+            ? response()->json(null, 303)->withHeaders($headers)
+            : back(303)->withNotification([
                 'title' => __('operazione non effettuata'),
                 'message' => __('La richiesta non ha determinato cambiamenti nello stato.'),
                 'status' => 'info',

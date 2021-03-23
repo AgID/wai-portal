@@ -130,6 +130,11 @@ class CRUDCredentialTest extends TestCase
             ]);
     }
 
+    /**
+     * Create admin type credentials.
+     *
+     * @return void
+     */
     public function testCreateAdminCredentialSuccessful(): void
     {
         $name = $this->faker->words(5, true);
@@ -174,6 +179,11 @@ class CRUDCredentialTest extends TestCase
             ->assertRedirect(route('api-credentials.index'));
     }
 
+    /**
+     * Create Analytics credentials.
+     *
+     * @return void
+     */
     public function testCreateAnalyticsCredentialSuccessful(): void
     {
         $name = $this->faker->words(5, true);
@@ -244,6 +254,11 @@ class CRUDCredentialTest extends TestCase
             ]);
     }
 
+    /**
+     * Update Credentials' name.
+     *
+     * @return void
+     */
     public function testUpdateCredentialPermissionsAndNameSuccessful(): void
     {
         $name = $this->faker->words(5, true);
@@ -314,6 +329,11 @@ class CRUDCredentialTest extends TestCase
             ]);
     }
 
+    /**
+     * Delete Credentials.
+     *
+     * @return void
+     */
     public function testDeleteAnalyticsCredentialSuccessful(): void
     {
         $credentialToDelete = factory(Credential::class)->create([
@@ -339,6 +359,11 @@ class CRUDCredentialTest extends TestCase
             ->assertRedirect(route('home'));
     }
 
+    /**
+     * Delete a credential.
+     *
+     * @return void
+     */
     public function testDeleteCredentialSuccessful(): void
     {
         $credentialToDelete = factory(Credential::class)->create([
@@ -363,6 +388,11 @@ class CRUDCredentialTest extends TestCase
             ->assertRedirect(route('home'));
     }
 
+    /**
+     * Regenerate the credentials.
+     *
+     * @return void
+     */
     public function testRegenerateCredentialSuccessful(): void
     {
         $idOauth = Uuid::uuid4()->toString();

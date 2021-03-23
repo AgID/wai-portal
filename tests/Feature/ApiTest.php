@@ -65,8 +65,18 @@ class ApiTest extends TestCase
      */
     private $faker;
 
+    /**
+     * The http client.
+     *
+     * @var Client
+     */
     private $client;
 
+    /**
+     * Pre test setup.
+     *
+     * @return void
+     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -100,7 +110,7 @@ class ApiTest extends TestCase
      */
     public function testApiErrorNoConsumerId(): void
     {
-        $response = $this->json('GET', route('api.sites.show'), [], [
+        $response = $this->json('GET', route('api.websites.show'), [], [
             'X-Consumer-Custom-Id' => '"{\"type\":\"admin\",\"siteId\":[]}"',
         ]);
 
@@ -109,7 +119,7 @@ class ApiTest extends TestCase
 
     public function testApiErrorNoCustomId(): void
     {
-        $response = $this->json('GET', route('api.sites.show'), [], [
+        $response = $this->json('GET', route('api.websites.show'), [], [
             'X-Consumer-Id' => 'f8846ee4-031d-4a1b-88d5-08efc0d44eb2',
         ]);
 
@@ -121,7 +131,7 @@ class ApiTest extends TestCase
      */
     public function testApiErrorAnalyticsType(): void
     {
-        $response = $this->json('GET', route('api.sites.show'), [], [
+        $response = $this->json('GET', route('api.websites.show'), [], [
             'X-Consumer-Custom-Id' => '"{\"type\":\"analytics\",\"siteId\":[]}"',
             'X-Consumer-Id' => 'f8846ee4-031d-4a1b-88d5-08efc0d44eb2',
         ]);
@@ -134,7 +144,7 @@ class ApiTest extends TestCase
      */
     public function testWebsiteList(): void
     {
-        $response = $this->json('GET', route('api.sites.show'), [], [
+        $response = $this->json('GET', route('api.websites.show'), [], [
             'X-Consumer-Custom-Id' => '{"type":"admin","siteId":[]}',
             'X-Consumer-Id' => $this->credential->consumer_id,
             'Accept' => 'application/json',
@@ -143,11 +153,11 @@ class ApiTest extends TestCase
         $response
             ->assertStatus(200)
             ->assertJson([[
-                'id' => $this->website->id,
                 'name' => $this->website->name,
                 'url' => $this->website->url,
-                'analytics_id' => $this->website->analytics_id,
                 'slug' => $this->website->slug,
+                'status' => $this->website->status->description,
+                'type' => $this->website->type->description,
             ]]);
     }
 
@@ -160,7 +170,7 @@ class ApiTest extends TestCase
         $slug = Str::slug($domain_name);
         $name = $this->faker->words(5, true);
 
-        $response = $this->json('POST', route('api.sites.add'), [
+        $response = $this->json('POST', route('api.websites.add'), [
             'website_name' => $name,
             'url' => $domain_name,
             'type' => 1,
@@ -170,7 +180,7 @@ class ApiTest extends TestCase
             'Accept' => 'application/json',
         ]);
 
-        $location = config('kong-service.api_url') . str_replace('/api/', '/portal/', route('api.sites.read', ['website' => $slug], false));
+        $location = config('kong-service.api_url') . str_replace('/api/', '/portal/', route('api.websites.read', ['website' => $slug], false));
 
         $response
             ->assertStatus(201)
@@ -182,9 +192,14 @@ class ApiTest extends TestCase
             ]);
     }
 
+    /**
+     * Read a website from API, should pass.
+     *
+     * @return void
+     */
     public function testWebsiteRead(): void
     {
-        $response = $this->json('GET', route('api.sites.read', ['website' => $this->website->slug]), [], [
+        $response = $this->json('GET', route('api.websites.read', ['website' => $this->website->slug]), [], [
             'X-Consumer-Custom-Id' => '{"type":"admin","siteId":[]}',
             'X-Consumer-Id' => $this->credential->consumer_id,
             'Accept' => 'application/json',
@@ -193,14 +208,19 @@ class ApiTest extends TestCase
         $response
             ->assertStatus(200)
             ->assertJson([
-                'id' => $this->website->id,
                 'name' => $this->website->name,
                 'url' => $this->website->url,
-                'analytics_id' => $this->website->analytics_id,
                 'slug' => $this->website->slug,
+                'status' => $this->website->status->description,
+                'type' => $this->website->type->description,
             ]);
     }
 
+    /**
+     * Edit a website, should pass.
+     *
+     * @return void
+     */
     public function testWebsiteEdit(): void
     {
         $name = $this->faker->words(5, true);
@@ -221,7 +241,7 @@ class ApiTest extends TestCase
         $newSlug = Str::slug($newDomain);
         $newName = $this->faker->words(5, true);
 
-        $response = $this->json('PATCH', route('api.sites.update', ['website' => $websiteToEdit]), [
+        $response = $this->json('PUT', route('api.websites.update', ['website' => $websiteToEdit]), [
             'website_name' => $newName,
             'url' => $newDomain,
             'type' => 3,
@@ -235,10 +255,8 @@ class ApiTest extends TestCase
         $response
             ->assertStatus(200)
             ->assertJson([
-                'id' => $websiteToEdit->id,
                 'name' => $newName,
                 'url' => $newDomain,
-                'analytics_id' => $analyticsId,
                 'slug' => $newSlug,
             ]);
     }
@@ -261,19 +279,24 @@ class ApiTest extends TestCase
         ]);
         $websiteCheck->save();
 
-        $response = $this->json('GET', route('api.sites.check', ['website' => $websiteCheck]), [], [
+        $response = $this->json('GET', route('api.websites.check', ['website' => $websiteCheck]), [], [
             'X-Consumer-Custom-Id' => '{"type":"admin","siteId":[]}',
             'X-Consumer-Id' => $this->credential->consumer_id,
             'Accept' => 'application/json',
         ]);
 
         $response
-            ->assertStatus(304);
+            ->assertStatus(303);
     }
 
+    /**
+     * Get the matomo javascript snippet, should pass.
+     *
+     * @return void
+     */
     public function testWebsiteSnippet(): void
     {
-        $response = $this->json('GET', route('api.sites.snippet.javascript', ['website' => $this->website]), [], [
+        $response = $this->json('GET', route('api.websites.snippet.javascript', ['website' => $this->website]), [], [
             'X-Consumer-Custom-Id' => '{"type":"admin","siteId":[]}',
             'X-Consumer-Id' => $this->credential->consumer_id,
             'Accept' => 'application/json',
@@ -310,6 +333,11 @@ class ApiTest extends TestCase
             ]]);
     }
 
+    /**
+     * Create a new user, should pass.
+     *
+     * @return void
+     */
     public function testUserCreate(): void
     {
         $email = $this->faker->unique()->freeEmail;
@@ -352,6 +380,11 @@ class ApiTest extends TestCase
             ]);
     }
 
+    /**
+     * Get a user from the API.
+     *
+     * @return void
+     */
     public function testUserRead(): void
     {
         $response = $this->json('GET', route('api.users.show', ['fn' => $this->user->fiscal_number]), [], [
@@ -371,6 +404,11 @@ class ApiTest extends TestCase
             ]);
     }
 
+    /**
+     * Edit a user, should pass.
+     *
+     * @return void
+     */
     public function testUserEdit(): void
     {
         $userToEdit = factory(User::class)->make([
@@ -389,7 +427,7 @@ class ApiTest extends TestCase
         $email = $this->faker->unique()->freeEmail;
         $updatedEmail = $this->faker->unique()->freeEmail;
 
-        $response = $this->json('PATCH', route('api.users.update', ['fn' => $userToEdit->fiscal_number]), [
+        $response = $this->json('PUT', route('api.users.update', ['fn' => $userToEdit->fiscal_number]), [
             'emailPublicAdministrationUser' => $updatedEmail,
             'email' => $email,
             'permissions' => [
@@ -415,6 +453,11 @@ class ApiTest extends TestCase
             ]);
     }
 
+    /**
+     * Suspend a user, should pass.
+     *
+     * @return void
+     */
     public function testUserSuspend(): void
     {
         $response = $this->json('GET', route('api.users.suspend', ['fn' => $this->user->fiscal_number]), [], [

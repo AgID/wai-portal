@@ -211,11 +211,7 @@ class UserController extends Controller
     public function showApi(Request $request): JsonResponse
     {
         $publicAdministration = $request->publicAdministrationFromToken;
-        $user = User::findNotSuperAdminByFiscalNumber($request->fn);
-
-        if (!$user || !$user->publicAdministrationsWithSuspended->contains($publicAdministration)) {
-            return $this->notFoundResponse(User::class);
-        }
+        $user = $request->userFromFiscalNumber;
 
         return $this->userResponse($user, $publicAdministration);
     }
@@ -286,12 +282,8 @@ class UserController extends Controller
      */
     public function updateApi(UpdateUserRequest $request): JsonResponse
     {
-        $user = User::findNotSuperAdminByFiscalNumber($request->fn);
         $publicAdministration = $request->publicAdministrationFromToken;
-
-        if (!$user || !$user->publicAdministrationsWithSuspended->contains($publicAdministration)) {
-            return $this->notFoundResponse(User::class);
-        }
+        $user = $request->userFromFiscalNumber;
 
         $data = $this->updateMethod($request, $publicAdministration, $user);
         $updatedUser = $data['user'];
@@ -359,17 +351,15 @@ class UserController extends Controller
                 : current_public_administration();
         } else {
             $publicAdministration = $request->publicAdministrationFromToken;
-            $user = User::findNotSuperAdminByFiscalNumber($request->fn);
-
-            if (!$user || !$user->publicAdministrationsWithSuspended->contains($publicAdministration)) {
-                return $this->notFoundResponse(User::class);
-            }
+            $user = $request->userFromFiscalNumber;
         }
 
         $userPublicAdministrationStatus = $user->getStatusforPublicAdministration($publicAdministration);
 
         if ($userPublicAdministrationStatus->is(UserStatus::SUSPENDED)) {
-            return $this->notModifiedResponse();
+            return $this->notModifiedResponse([
+                'Location' => $this->getUserApiUri($user->fiscal_number),
+            ]);
         }
 
         try {
@@ -437,17 +427,15 @@ class UserController extends Controller
                 : current_public_administration();
         } else {
             $publicAdministration = $request->publicAdministrationFromToken;
-            $user = User::findNotSuperAdminByFiscalNumber($request->fn);
-
-            if (!$user || !$user->publicAdministrationsWithSuspended->contains($publicAdministration)) {
-                return $this->notFoundResponse(User::class);
-            }
+            $user = $request->userFromFiscalNumber;
         }
 
         $userPublicAdministrationStatus = $user->getStatusforPublicAdministration($publicAdministration);
 
         if (!$userPublicAdministrationStatus->is(UserStatus::SUSPENDED)) {
-            return $this->notModifiedResponse();
+            return $this->notModifiedResponse([
+                'Location' => $this->getUserApiUri($user->fiscal_number),
+            ]);
         }
 
         $publicAdministration->users()->updateExistingPivot($user->id, ['user_status' => UserStatus::ACTIVE]);

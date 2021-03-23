@@ -7,18 +7,30 @@ use App\Enums\WebsiteStatus;
 use App\Models\PublicAdministration;
 use App\Models\Website;
 use App\Traits\HasRoleAwareUrls;
+use Illuminate\View\View;
 use Symfony\Component\Yaml\Yaml;
 
 class WidgetsController extends Controller
 {
     use HasRoleAwareUrls;
 
+    /**
+     * Default constructor.
+     */
     public function __construct()
     {
         $this->analyticsService = app()->make('analytics-service');
     }
 
-    public function index(Website $website, PublicAdministration $publicAdministration)
+    /**
+     * Show the available widgets.
+     *
+     * @param Website $website The website
+     * @param PublicAdministration $publicAdministration The PublicAdministration
+     *
+     * @return View The view
+     */
+    public function index(Website $website, PublicAdministration $publicAdministration): View
     {
         $publicAdministration = auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)
             ? $publicAdministration

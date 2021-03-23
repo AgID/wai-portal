@@ -24,33 +24,33 @@ Route::middleware('api.auth')->group(function () {
             ->name('api.users.store');
         Route::get('/{fn}', 'UserController@showApi')
             ->name('api.users.show');
-        Route::patch('/{fn}', 'UserController@updateApi')
+        Route::put('/{fn}', 'UserController@updateApi')
             ->name('api.users.update');
         Route::patch('/{fn}/suspend', 'UserController@suspend')
             ->name('api.users.suspend');
         Route::patch('/{fn}/reactivate', 'UserController@reactivate')
             ->name('api.users.reactivate');
     });
-    Route::prefix('/sites')->group(function () {
+    Route::prefix('/websites')->group(function () {
         Route::post('/', 'WebsiteController@storeApi')
-            ->name('api.sites.add');
+            ->name('api.websites.add');
         Route::get('/', 'WebsiteController@dataApi')
-            ->name('api.sites.show');
-        Route::get('/{website}', 'WebsiteController@showApi')
-            ->name('api.sites.read');
+            ->name('api.websites.show');
+        Route::get('/{website}', 'WebsiteController@show')
+            ->name('api.websites.read');
         Route::get('/list/{id}', 'WebsiteController@websiteList')
-            ->name('api.sites.websites');
-        Route::patch('/{website}', 'WebsiteController@updateApi')
-            ->name('api.sites.update');
-        Route::patch('/{website}/archive', 'WebsiteController@archiveApi')
-            ->name('api.sites.archive');
-        Route::patch('/{website}/unarchive', 'WebsiteController@unarchiveApi')
-            ->name('api.sites.unarchive');
+            ->name('api.websites.websites');
+        Route::put('/{website}', 'WebsiteController@update')
+            ->name('api.websites.update');
+        Route::patch('/{website}/archive', 'WebsiteController@archive')
+            ->name('api.websites.archive');
+        Route::patch('/{website}/unarchive', 'WebsiteController@unarchive')
+            ->name('api.websites.unarchive');
         Route::get('/{website}/check', 'WebsiteController@checkTracking')
-            ->name('api.sites.check');
-        Route::get('/{website}/force', 'WebsiteController@forceActivationApi')
-            ->name('api.sites.force');
+            ->name('api.websites.check');
+        Route::get('/{website}/force', 'WebsiteController@forceActivation')
+            ->name('api.websites.force');
         Route::get('/{website}/js-snippet', 'WebsiteController@showJavascriptSnippet')
-            ->name('api.sites.snippet.javascript');
+            ->name('api.websites.snippet.javascript');
     });
 });

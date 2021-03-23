@@ -3,10 +3,14 @@
 namespace App\Http\Middleware;
 
 use App\Models\Credential;
+use App\Models\User;
+use App\Traits\SendsResponse;
 use Closure;
 
 class AuthenticateApi
 {
+    use SendsResponse;
+
     /**
      * Check whether the session has a tenant selected for the current request.
      *
@@ -32,25 +36,29 @@ class AuthenticateApi
         }
 
         if ('admin' !== $credentialType) {
-            return response()->json($this->jsonError(2), 403);
+            return response()->json([
+                'error' => 'insufficient permissions',
+            ], 403);
         }
 
         $currentCredential = Credential::getCredentialFromConsumerId($consumerId);
         $publicAdministration = $currentCredential->publicAdministration->first();
-        $request->merge(['publicAdministrationFromToken' => $publicAdministration]);
+
+        $requestApiParams = ['publicAdministrationFromToken' => $publicAdministration];
+
+        if ($request->fn) {
+            $user = User::findNotSuperAdminByFiscalNumber($request->fn);
+            if (!$user || !$user->publicAdministrationsWithSuspended->contains($publicAdministration)) {
+                return $this->notFoundResponse(User::class);
+            }
+            $requestApiParams['userFromFiscalNumber'] = $user;
+        }
+
+        $request->merge($requestApiParams);
 
         // use english for api responses
         app()->setLocale('en');
 
         return $next($request);
-    }
-
-    protected function jsonError($code)
-    {
-        return [
-            'title' => 'insufficient permissions',
-            'status' => 403,
-            'code' => $code,
-        ];
     }
 }

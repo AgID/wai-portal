@@ -221,7 +221,7 @@ class CRUDAdminUserTest extends TestCase
 
         $this->actingAs($this->user)
             ->json('patch', route('admin.users.suspend', ['user' => $user]))
-            ->assertStatus(304);
+            ->assertStatus(303);
 
         Event::assertNotDispatched(UserSuspended::class);
         Event::assertNotDispatched(UserUpdated::class);
@@ -285,7 +285,7 @@ class CRUDAdminUserTest extends TestCase
 
         $this->actingAs($this->user)
             ->json('patch', route('admin.users.reactivate', ['user' => $user]))
-            ->assertStatus(304);
+            ->assertStatus(303);
 
         Event::assertNotDispatched(UserReactivated::class);
         Event::assertNotDispatched(UserUpdated::class);
@@ -711,7 +711,7 @@ class CRUDAdminUserTest extends TestCase
                 'publicAdministration' => $publicAdministration,
                 'user' => $user,
             ]))
-            ->assertStatus(304);
+            ->assertStatus(303);
 
         Event::assertNotDispatched(UserUpdated::class);
     }
@@ -831,7 +831,7 @@ class CRUDAdminUserTest extends TestCase
                 'publicAdministration' => $publicAdministration,
                 'user' => $user,
             ]))
-            ->assertStatus(304);
+            ->assertStatus(303);
 
         Event::assertNotDispatched(UserUpdated::class);
     }

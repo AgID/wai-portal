@@ -299,7 +299,15 @@ class CredentialsController extends Controller
             ->make(true);
     }
 
-    public function regenerateCredential(Request $request, Credential $credential)
+    /**
+     * Regenerate the credential secret and invalidate all credential's tokens.
+     *
+     * @param Request $request The Request
+     * @param Credential $credential The credential
+     *
+     * @return RedirectResponse the http redirect response
+     */
+    public function regenerateCredential(Request $request, Credential $credential): RedirectResponse
     {
         $user = $request->user();
         $currentPublicAdministration = $user->can(UserPermission::ACCESS_ADMIN_AREA)
@@ -383,6 +391,15 @@ class CredentialsController extends Controller
         ];
     }
 
+    /**
+     * Get the datatable parameters for websites permission with specified source.
+     *
+     * @param string $clientId Credential ID
+     * @param string $clientSecret Credential Secret
+     * @param bool $regenerated wether the credential is new or regenerated
+     *
+     * @return array the datatable parameters
+     */
     protected function getModalCredentialStored(string $clientId, string $clientSecret, ?bool $regenerated = false): array
     {
         return [
