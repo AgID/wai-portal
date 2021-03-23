@@ -49,7 +49,7 @@ class Credential extends Model
     }
 
     /**
-     * Add the type attribute of the credential.
+     * Accessor for the type attribute of the credential.
      *
      * @return string
      */
@@ -61,7 +61,7 @@ class Credential extends Model
     }
 
     /**
-     * Add the permissions attribute of the credential.
+     * Accessor for the permissions attribute of the credential.
      *
      * @return array
      */
@@ -75,7 +75,7 @@ class Credential extends Model
     }
 
     /**
-     * Add the Client ID attribute of the credential.
+     * Accessor for the Client ID attribute of the credential.
      *
      * @return string
      */
@@ -87,7 +87,7 @@ class Credential extends Model
     }
 
     /**
-     * Add the Client secret attribute of the credential.
+     * Accessor for the Client Secret attribute of the credential.
      *
      * @return string
      */
@@ -99,7 +99,7 @@ class Credential extends Model
     }
 
     /**
-     * Add the Oauth Client ID attribute of the credential.
+     * Accessor for the Oauth Client ID attribute of the credential.
      *
      * @return string
      */

@@ -26,7 +26,7 @@ class UpdateSiteListOnRedis implements ShouldQueue
     protected $analyticsService;
 
     /**
-     * The Construct.
+     * Default constructor.
      */
     public function __construct()
     {
