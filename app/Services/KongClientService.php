@@ -21,7 +21,7 @@ class KongClientService
     protected $serviceBaseUri;
 
     /**
-     * The construct.
+     * Default constructor.
      */
     public function __construct()
     {
@@ -161,7 +161,7 @@ class KongClientService
      *
      * @return array The client
      */
-    public function regenerateSecret(string $name, string $idConsumer, string $idClient)
+    public function regenerateSecret(string $name, string $idConsumer, string $idClient): array
     {
         $data = [
             'form_params' => [
@@ -245,16 +245,16 @@ class KongClientService
      *
      * @param string $tokenId The token ID
      *
-     * @return array|null The Tokens or null
+     * @return void
      */
-    public function invalidateToken(string $tokenId): ?array
+    public function invalidateToken(string $tokenId)
     {
         $headers = [
             'Accept' => 'application/json',
             'Content-Type' => 'application/json',
         ];
 
-        return $this->apiCall($headers, [], 'DELETE', '/oauth2_tokens/' . $tokenId);
+        $this->apiCall($headers, [], 'DELETE', '/oauth2_tokens/' . $tokenId);
     }
 
     /**
@@ -264,7 +264,7 @@ class KongClientService
      * @param array $body The body
      * @param string $method The method
      * @param string $path The path to form the url
-     * @param bool $isForm Wheter is a "application/x-www-form-urlencoded" request
+     * @param bool $isForm Wether is a "application/x-www-form-urlencoded" request
      *
      * @return array|null The data or null
      */

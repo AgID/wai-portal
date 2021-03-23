@@ -36,7 +36,9 @@ class AuthenticateApi
         }
 
         if ('admin' !== $credentialType) {
-            return response()->json($this->jsonError(2), 403);
+            return response()->json([
+                'error' => 'insufficient permissions',
+            ], 403);
         }
 
         $currentCredential = Credential::getCredentialFromConsumerId($consumerId);
@@ -58,21 +60,5 @@ class AuthenticateApi
         app()->setLocale('en');
 
         return $next($request);
-    }
-
-    /**
-     * Return a JSON error.
-     *
-     * @param int $code The error code
-     *
-     * @return void
-     */
-    protected function jsonError(int $code)
-    {
-        return [
-            'title' => 'insufficient permissions',
-            'status' => 403,
-            'code' => $code,
-        ];
     }
 }
