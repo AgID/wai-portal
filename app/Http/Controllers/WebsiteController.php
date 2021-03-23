@@ -158,7 +158,7 @@ class WebsiteController extends Controller
     }
 
     /**
-     * Show the form for creating a new website.
+     * Create a new website (portal method).
      *
      * @param StoreWebsiteRequest $request the request
      * @param PublicAdministration $publicAdministration the public administration
@@ -180,7 +180,7 @@ class WebsiteController extends Controller
     }
 
     /**
-     * Show the form for creating a new website.
+     * Create a new website (API method).
      *
      * @param StoreWebsiteRequest $request the request
      *

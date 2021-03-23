@@ -305,9 +305,9 @@ class CredentialsController extends Controller
      * @param Request $request The Request
      * @param Credential $credential The credential
      *
-     * @return mixed the response in JSON format
+     * @return RedirectResponse the http redirect response
      */
-    public function regenerateCredential(Request $request, Credential $credential)
+    public function regenerateCredential(Request $request, Credential $credential): RedirectResponse
     {
         $user = $request->user();
         $currentPublicAdministration = $user->can(UserPermission::ACCESS_ADMIN_AREA)
