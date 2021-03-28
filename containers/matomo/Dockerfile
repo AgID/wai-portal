@@ -23,6 +23,12 @@ RUN curl -fsSL -o matomo.tar.gz \
     && tar -xzf matomo.tar.gz -C /opt/matomo --strip-components=1 \
     && rm matomo.tar.gz
 
+# Missing icon, to be removed after next version update
+RUN if [ "$MATOMO_VERSION" = "3.14.1" ]; then \
+    curl -fsSL -o /opt/matomo/plugins/Morpheus/icons/dist/devices/wearable.png \
+        "https://github.com/matomo-org/matomo-icons/blob/master/dist/devices/wearable.png" \
+;fi
+
 COPY ./config.ini.php /opt/matomo/config/config.ini.php
 COPY ./database/matomo*.sql /opt/matomo-install/
 COPY ./install_matomo_db.sh /opt/matomo-install/install_matomo_db.sh
