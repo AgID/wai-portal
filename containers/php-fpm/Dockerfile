@@ -31,13 +31,13 @@ RUN if [ ${INSTALL_XDEBUG} = true ]; then \
 
 # xdebug conf
 COPY ./xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
-
-RUN apt-get autoremove --purge -y ${BUILD_PACKAGES} && \
-    rm -rf /var/lib/apt/lists/*
     
 # install phpredis
 RUN pecl install redis \
     && echo "extension=redis.so" > /usr/local/etc/php/conf.d/redis.ini
+
+RUN apt-get autoremove --purge -y ${BUILD_PACKAGES} && \
+    rm -rf /var/lib/apt/lists/*
 
 # dusk deps
 ENV PATH "/usr/local/node/bin:$PATH"
