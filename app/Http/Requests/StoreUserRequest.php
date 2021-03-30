@@ -96,14 +96,18 @@ class StoreUserRequest extends FormRequest
      */
     protected function checkWebsitesIds(array $websitesPermissions): bool
     {
-        $currentPublicAdministration = $this->is('api/*')
-            ? $this->publicAdministrationFromToken
-            : current_public_administration();
+        if ($this->is('api/*')) {
+            $currentPublicAdministration = $this->publicAdministrationFromToken;
+            $pluckField = 'slug';
+        } else {
+            $currentPublicAdministration = current_public_administration();
+            $pluckField = 'id';
+        }
 
         return empty(
             array_diff(
                 array_keys($websitesPermissions),
-                request()->route('publicAdministration', $currentPublicAdministration)->websites->pluck('id')->all()
+                request()->route('publicAdministration', $currentPublicAdministration)->websites->pluck($pluckField)->all()
             )
         );
     }
