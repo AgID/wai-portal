@@ -705,6 +705,12 @@ class UserController extends Controller
             $isAdmin = $validatedData['is_admin'] ?? false;
             $websitesPermissions = $validatedData['permissions'] ?? [];
             $publicAdministration->websites->map(function ($website) use ($user, $isAdmin, $websitesPermissions) {
+                if (request()->is('api/*')) {
+                    $websiteKey = $website->slug;
+                } else {
+                    $websiteKey = $website->id;
+                }
+
                 if ($isAdmin) {
                     $user->retract(UserRole::DELEGATED);
                     $user->assign(UserRole::ADMIN);
@@ -714,19 +720,19 @@ class UserController extends Controller
                 } else {
                     $user->retract(UserRole::ADMIN);
                     $user->assign(UserRole::DELEGATED);
-                    if (empty($websitesPermissions[$website->id])) {
+                    if (empty($websitesPermissions[$websiteKey])) {
                         $user->setNoAccessForWebsite($website);
 
                         return $user;
                     }
 
-                    if (in_array(UserPermission::MANAGE_ANALYTICS, $websitesPermissions[$website->id])) {
+                    if (in_array(UserPermission::MANAGE_ANALYTICS, $websitesPermissions[$websiteKey])) {
                         $user->setWriteAccessForWebsite($website);
 
                         return $user;
                     }
 
-                    if (in_array(UserPermission::READ_ANALYTICS, $websitesPermissions[$website->id])) {
+                    if (in_array(UserPermission::READ_ANALYTICS, $websitesPermissions[$websiteKey])) {
                         $user->setViewAccessForWebsite($website);
 
                         return $user;

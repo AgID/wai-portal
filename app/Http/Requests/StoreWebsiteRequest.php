@@ -79,7 +79,15 @@ class StoreWebsiteRequest extends FormRequest
      */
     protected function checkUsersIds(array $usersPermissions): bool
     {
-        return empty(array_diff(array_keys($usersPermissions), request()->route('publicAdministration', current_public_administration())->users->pluck('id')->all()));
+        if ($this->is('api/*')) {
+            $currentPublicAdministration = $this->publicAdministrationFromToken;
+            $pluckField = 'uuid';
+        } else {
+            $currentPublicAdministration = current_public_administration();
+            $pluckField = 'id';
+        }
+
+        return empty(array_diff(array_keys($usersPermissions), request()->route('publicAdministration', $currentPublicAdministration)->users->pluck($pluckField)->all()));
     }
 
     /**
