@@ -353,13 +353,13 @@ class ApiTest extends TestCase
                 )
             ))->calculate();
 
-        $websiteId = $this->website->id;
+        $websiteSlug = $this->website->slug;
 
         $response = $this->json('POST', route('api.users.store'), [
             'email' => $email,
             'fiscal_number' => $fiscalNumber,
             'permissions' => [
-                $websiteId => ['manage-analytics'],
+                $websiteSlug => ['manage-analytics'],
             ],
         ], [
             'X-Consumer-Custom-Id' => '{"type":"admin","siteId":[]}',
@@ -431,7 +431,7 @@ class ApiTest extends TestCase
             'emailPublicAdministrationUser' => $updatedEmail,
             'email' => $email,
             'permissions' => [
-                $this->website->id => [
+                $this->website->slug => [
                     UserPermission::MANAGE_ANALYTICS,
                     UserPermission::READ_ANALYTICS,
                 ],

@@ -853,19 +853,25 @@ class WebsiteController extends Controller
     {
         $usersPermissions = $validatedData['permissions'] ?? [];
         $publicAdministration->getNonAdministrators()->map(function ($user) use ($website, $usersPermissions) {
-            if (empty($usersPermissions[$user->id])) {
+            if (request()->is('api/*')) {
+                $userKey = $user->uuid;
+            } else {
+                $userKey = $user->id;
+            }
+
+            if (empty($usersPermissions[$userKey])) {
                 $user->setNoAccessForWebsite($website);
 
                 return $user;
             }
 
-            if (in_array(UserPermission::MANAGE_ANALYTICS, $usersPermissions[$user->id])) {
+            if (in_array(UserPermission::MANAGE_ANALYTICS, $usersPermissions[$userKey])) {
                 $user->setWriteAccessForWebsite($website);
 
                 return $user;
             }
 
-            if (in_array(UserPermission::READ_ANALYTICS, $usersPermissions[$user->id])) {
+            if (in_array(UserPermission::READ_ANALYTICS, $usersPermissions[$userKey])) {
                 $user->setViewAccessForWebsite($website);
 
                 return $user;
