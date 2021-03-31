@@ -348,6 +348,7 @@ class ApiTest extends TestCase
                 'email' => $user->email,
                 'status' => $status,
                 'permissions' => $websitePermissions,
+                'roles' => $user->allRoleNames,
             ]]);
     }
 
@@ -404,6 +405,7 @@ class ApiTest extends TestCase
                 'permissions' => [
                     $websiteSlug => ['read-analytics', 'manage-analytics'],
                 ],
+                'roles' => $user->allRoleNames,
             ]);
     }
 
@@ -446,6 +448,7 @@ class ApiTest extends TestCase
                 'email' => $user->email,
                 'status' => $status,
                 'permissions' => $websitePermissions,
+                'roles' => $user->allRoleNames,
             ]);
     }
 
@@ -511,6 +514,7 @@ class ApiTest extends TestCase
                 'email' => $updatedEmail,
                 'status' => $status,
                 'permissions' => $websitePermissions,
+                'roles' => $userToEdit->allRoleNames,
             ]);
     }
 

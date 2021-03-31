@@ -54,6 +54,7 @@ class UserArrayTransformer extends TransformerAbstract
             'email' => $email,
             'status' => $status,
             'permissions' => $websitesPermissions,
+            'roles' => $user->allRoleNames,
         ];
     }
 }
