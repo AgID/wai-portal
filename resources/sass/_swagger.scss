@@ -1,4 +1,5 @@
 $titillium: "Titillium Web", geneva, tahoma, sans-serif !important;
+$monospace: "Roboto Mono", monospace !important;
 
 .swagger-ui {
   font-family: $titillium;
@@ -15,7 +16,8 @@ $titillium: "Titillium Web", geneva, tahoma, sans-serif !important;
   option,
   td,
   input,
-  p {
+  p,
+  .model-title {
     font-family: $titillium;
   }
 
@@ -25,5 +27,13 @@ $titillium: "Titillium Web", geneva, tahoma, sans-serif !important;
 
   .auth-wrapper {
     display: none !important;
+  }
+
+  .model-box {
+    span,
+    td,
+    p {
+      font-family: $monospace;
+    }
   }
 }
