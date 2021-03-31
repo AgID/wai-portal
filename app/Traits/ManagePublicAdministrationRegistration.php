@@ -21,7 +21,6 @@ trait ManagePublicAdministrationRegistration
     {
         $analyticsId = app()->make('analytics-service')->registerSite(__('Sito istituzionale'), $url, $publicAdministration->name);
 
-        $publicAdministration->save();
         $website = Website::create([
             'name' => $publicAdministration->name,
             'url' => $url,
