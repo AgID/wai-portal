@@ -33,10 +33,16 @@ trait ManagePublicAdministrationRegistration
         ]);
 
         $publicAdministration->users()->save($user, ['user_email' => $userEmail, 'user_status' => UserStatus::PENDING]);
+
+        // Retract UserRole::REGISTERED role from the pending user in the global scope
+        Bouncer::scope()->onceTo(0, function () use ($user) {
+            $user->retract(UserRole::REGISTERED);
+        });
+
         // This is the first time we know which public administration the
         // current user belongs, so we need to set the tenant id just now.
         session()->put('tenant_id', $publicAdministration->id);
-        $user->roles()->detach();
+
         Bouncer::scope()->to($publicAdministration->id);
         $user->assign(UserRole::REGISTERED);
         if (!$user->hasAnalyticsServiceAccount()) {

@@ -62,8 +62,10 @@ trait ActivatesWebsite
 
             $pendingUser = $publicAdministration->users()->where('user_status', UserStatus::PENDING)->first();
             if ($pendingUser) {
-                // Detach UserRole::REGISTERED role from the pending user in the global scope
-                $pendingUser->roles()->detach();
+                // Retract UserRole::REGISTERED role from the pending user in the global scope
+                Bouncer::scope()->onceTo(0, function () use ($pendingUser) {
+                    $pendingUser->retract(UserRole::REGISTERED);
+                });
 
                 Bouncer::scope()->to($publicAdministration->id);
 
