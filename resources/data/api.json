@@ -1037,6 +1037,10 @@
                 "type": "string",
                 "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
             },
+            "UserUuid": {
+                "type": "string",
+                "pattern": "\\b[0-9a-f]{8}\\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\\b[0-9a-f]{12}\\b"
+            },
             "WebsiteType": {
                 "type": "string",
                 "description": "Tipologia di sito",
@@ -1050,7 +1054,21 @@
             "WebsiteStatus": {
                 "type": "string",
                 "description": "Stato del sito",
-                "enum": ["Pending", "Active", "Archived"]
+                "enum": ["pending", "active", "archived"]
+            },
+            "UserPermission": {
+                "type": "string",
+                "description": "Permessi dell'utente",
+                "enum": [
+                    "access-admin-area",
+                    "manage-users",
+                    "manage-websites",
+                    "view-logs",
+                    "manage-analytics",
+                    "read-analytics",
+                    "no-access",
+                    "do-nothing"
+                ]
             },
             "Website": {
                 "type": "object",
@@ -1103,12 +1121,13 @@
             },
             "WebsiteInfoPermisionsObject": {
                 "type": "object",
-                "required": ["userId"],
+                "required": ["uuid"],
+                "description": "Sostituisci \"uuid\" con lo slug del sito per cui l'utente deve avere i permessi.",
                 "properties": {
-                    "userId": {
+                    "uuid": {
                         "type": "array",
                         "items": {
-                            "type": "string"
+                            "$ref": "#/components/schemas/UserUuid"
                         }
                     }
                 }
@@ -1139,12 +1158,13 @@
             },
             "UserInfoPermissions": {
                 "type": "object",
-                "required": ["siteId"],
+                "required": ["slug"],
+                "description": "Sostituisci \"slug\" con lo slug del sito per cui l'utente deve avere i permessi.",
                 "properties": {
-                    "siteId": {
+                    "slug": {
                         "type": "array",
                         "items": {
-                            "type": "string"
+                            "$ref": "#/components/schemas/UserPermission"
                         }
                     }
                 }
