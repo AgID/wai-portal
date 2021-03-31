@@ -53,7 +53,9 @@ trait SendsResponse
             $jsonResponse = (new UserArrayTransformer())->transform($user, $publicAdministration);
 
             if (!request()->is('api/*')) {
+                $jsonResponse = [];
                 $jsonResponse['result'] = 'ok';
+                $jsonResponse['id'] = $user->uuid;
                 $jsonResponse['user_name'] = e($user->full_name);
                 $jsonResponse['status'] = $userStatus->key ?? null;
                 $jsonResponse['status_description'] = $userStatus->description ?? null;

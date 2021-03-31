@@ -194,6 +194,8 @@ class CRUDAdminUserTest extends TestCase
                 'user_name' => e($user->full_name),
                 'status' => UserStatus::getKey(UserStatus::SUSPENDED),
                 'status_description' => UserStatus::getDescription(UserStatus::SUSPENDED),
+                'trashed' => $user->trashed(),
+                'administration' => null,
             ])
             ->assertOk();
 
