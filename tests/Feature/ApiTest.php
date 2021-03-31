@@ -308,7 +308,7 @@ class ApiTest extends TestCase
                 'result' => 'ok',
                 'id' => $this->website->slug,
                 'name' => $this->website->name,
-                ]);
+            ]);
     }
 
     /**
@@ -322,14 +322,32 @@ class ApiTest extends TestCase
             'Accept' => 'application/json',
         ]);
 
+        $user = $this->user;
+
+        $status = $user->getStatusforPublicAdministration($this->publicAdministration)->description ?? null;
+
+        $websitePermissions = $this->publicAdministration->websites->mapWithKeys(function ($website) use ($user) {
+            $permission = [];
+            if ($user->can(UserPermission::READ_ANALYTICS, $website)) {
+                array_push($permission, UserPermission::READ_ANALYTICS);
+            }
+            if ($user->can(UserPermission::MANAGE_ANALYTICS, $website)) {
+                array_push($permission, UserPermission::MANAGE_ANALYTICS);
+            }
+
+            return [$website->slug => $permission];
+        })->toArray();
+
         $response
             ->assertStatus(200)
             ->assertJson([[
-                'id' => $this->user->uuid,
-                'firstName' => $this->user->name,
-                'lastName' => $this->user->family_name,
-                'fiscalNumber' => $this->user->fiscal_number,
-                'email' => $this->user->email,
+                'uuid' => $user->uuid,
+                'firstName' => $user->name,
+                'lastName' => $user->family_name,
+                'fiscal_number' => $user->fiscal_number,
+                'email' => $user->email,
+                'status' => $status,
+                'permissions' => $websitePermissions,
             ]]);
     }
 
@@ -342,16 +360,16 @@ class ApiTest extends TestCase
     {
         $email = $this->faker->unique()->freeEmail;
         $fiscalNumber = (new Calculator(
-                new Subject(
-                    [
-                        'name' => $this->faker->firstName,
-                        'surname' => $this->faker->lastName,
-                        'birthDate' => Carbon::createFromDate(rand(1950, 1990), rand(1, 12), rand(1, 28)),
-                        'gender' => rand(0, 1) ? 'F' : 'M',
-                        'belfioreCode' => 'H501',
-                    ]
-                )
-            ))->calculate();
+            new Subject(
+                [
+                    'name' => $this->faker->firstName,
+                    'surname' => $this->faker->lastName,
+                    'birthDate' => Carbon::createFromDate(rand(1950, 1990), rand(1, 12), rand(1, 28)),
+                    'gender' => rand(0, 1) ? 'F' : 'M',
+                    'belfioreCode' => 'H501',
+                ]
+            )
+        ))->calculate();
 
         $websiteSlug = $this->website->slug;
 
@@ -369,14 +387,23 @@ class ApiTest extends TestCase
 
         $location = config('kong-service.api_url') . str_replace('/api/', '/portal/', route('api.users.show', ['fn' => $fiscalNumber], false));
 
+        $user = User::findNotSuperAdminByFiscalNumber($fiscalNumber);
+
+        $status = $user->getStatusforPublicAdministration($this->publicAdministration)->description ?? null;
+
         $response
             ->assertStatus(201)
             ->assertHeader('Location', $location)
             ->assertJson([
+                'uuid' => $user->uuid,
                 'firstName' => null,
                 'lastName' => null,
-                'fiscalNumber' => $fiscalNumber,
+                'fiscal_number' => $fiscalNumber,
                 'email' => $email,
+                'status' => $status,
+                'permissions' => [
+                    $websiteSlug => ['read-analytics', 'manage-analytics'],
+                ],
             ]);
     }
 
@@ -393,14 +420,32 @@ class ApiTest extends TestCase
             'Accept' => 'application/json',
         ]);
 
+        $user = $this->user;
+
+        $status = $user->getStatusforPublicAdministration($this->publicAdministration)->description ?? null;
+
+        $websitePermissions = $this->publicAdministration->websites->mapWithKeys(function ($website) use ($user) {
+            $permission = [];
+            if ($user->can(UserPermission::READ_ANALYTICS, $website)) {
+                array_push($permission, UserPermission::READ_ANALYTICS);
+            }
+            if ($user->can(UserPermission::MANAGE_ANALYTICS, $website)) {
+                array_push($permission, UserPermission::MANAGE_ANALYTICS);
+            }
+
+            return [$website->slug => $permission];
+        })->toArray();
+
         $response
             ->assertStatus(200)
             ->assertJson([
-                'id' => $this->user->uuid,
-                'firstName' => $this->user->name,
-                'lastName' => $this->user->family_name,
-                'fiscalNumber' => $this->user->fiscal_number,
-                'email' => $this->user->email,
+                'uuid' => $user->uuid,
+                'firstName' => $user->name,
+                'lastName' => $user->family_name,
+                'fiscal_number' => $user->fiscal_number,
+                'email' => $user->email,
+                'status' => $status,
+                'permissions' => $websitePermissions,
             ]);
     }
 
@@ -442,14 +487,30 @@ class ApiTest extends TestCase
             'Accept' => 'application/json',
         ]);
 
+        $status = $userToEdit->getStatusforPublicAdministration($this->publicAdministration)->description ?? null;
+
+        $websitePermissions = $this->publicAdministration->websites->mapWithKeys(function ($website) use ($userToEdit) {
+            $permission = [];
+            if ($userToEdit->can(UserPermission::READ_ANALYTICS, $website)) {
+                array_push($permission, UserPermission::READ_ANALYTICS);
+            }
+            if ($userToEdit->can(UserPermission::MANAGE_ANALYTICS, $website)) {
+                array_push($permission, UserPermission::MANAGE_ANALYTICS);
+            }
+
+            return [$website->slug => $permission];
+        })->toArray();
+
         $response
             ->assertStatus(200)
             ->assertJson([
-                'id' => $userToEdit->uuid,
+                'uuid' => $userToEdit->uuid,
                 'firstName' => $userToEdit->name,
                 'lastName' => $userToEdit->family_name,
-                'fiscalNumber' => $userToEdit->fiscal_number,
+                'fiscal_number' => $userToEdit->fiscal_number,
                 'email' => $updatedEmail,
+                'status' => $status,
+                'permissions' => $websitePermissions,
             ]);
     }
 
