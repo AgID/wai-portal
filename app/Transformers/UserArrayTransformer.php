@@ -44,13 +44,13 @@ class UserArrayTransformer extends TransformerAbstract
                     return [$website->slug => $permission];
                 });
             });
-        });
+        })->toArray();
 
         return [
             'uuid' => $user->uuid,
             'firstName' => $user->name,
             'lastName' => $user->family_name,
-            'fiscalNumber' => $user->fiscal_number,
+            'fiscal_number' => $user->fiscal_number,
             'email' => $email,
             'status' => $status,
             'permissions' => $websitesPermissions,
