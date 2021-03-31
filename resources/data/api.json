@@ -1070,6 +1070,17 @@
                     "do-nothing"
                 ]
             },
+            "UserRoles": {
+                "type": "string",
+                "description": "Ruolo dell'utente",
+                "enum": [
+                    "super admin",
+                    "administrator",
+                    "delegate",
+                    "registered",
+                    "deleted"
+                ]
+            },
             "Website": {
                 "type": "object",
                 "required": ["website_name", "url", "type"],
@@ -1197,6 +1208,9 @@
                     },
                     "fiscal_number": {
                         "$ref": "#/components/schemas/FiscalNumber"
+                    },
+                    "roles": {
+                        "$ref": "#/components/schemas/UserRoles"
                     }
                 }
             },
@@ -1334,7 +1348,8 @@
                     "fiscal_number": "ZRSGLC89D05H501J",
                     "permissions": {
                         "slug": ["manage-analytics"]
-                    }
+                    },
+                    "roles": "administrator"
                 }
             },
             "Website": {
