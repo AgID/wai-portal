@@ -24,6 +24,11 @@
                         "application/json": {
                             "schema": {
                                 "$ref": "#/components/schemas/UserCreate"
+                            },
+                            "examples": {
+                                "userExample": {
+                                    "$ref": "#/components/examples/User"
+                                }
                             }
                         }
                     }
@@ -44,6 +49,11 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/UserInfo"
+                                },
+                                "examples": {
+                                    "userExample": {
+                                        "$ref": "#/components/examples/User"
+                                    }
                                 }
                             }
                         }
@@ -84,6 +94,11 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error422User"
+                                },
+                                "examples": {
+                                    "userExample": {
+                                        "$ref": "#/components/examples/Error422User"
+                                    }
                                 }
                             }
                         }
@@ -103,6 +118,11 @@
                                     "type": "array",
                                     "items": {
                                         "$ref": "#/components/schemas/UserInfo"
+                                    }
+                                },
+                                "examples": {
+                                    "userExample": {
+                                        "$ref": "#/components/examples/User"
                                     }
                                 }
                             }
@@ -146,6 +166,11 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/UserInfo"
+                                },
+                                "examples": {
+                                    "userExample": {
+                                        "$ref": "#/components/examples/User"
+                                    }
                                 }
                             }
                         }
@@ -193,6 +218,11 @@
                         "application/json": {
                             "schema": {
                                 "$ref": "#/components/schemas/UserInfo"
+                            },
+                            "examples": {
+                                "userExample": {
+                                    "$ref": "#/components/examples/User"
+                                }
                             }
                         }
                     }
@@ -204,6 +234,11 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/UserInfo"
+                                },
+                                "examples": {
+                                    "userExample": {
+                                        "$ref": "#/components/examples/User"
+                                    }
                                 }
                             }
                         }
@@ -254,6 +289,11 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error422User"
+                                },
+                                "examples": {
+                                    "userExample": {
+                                        "$ref": "#/components/examples/Error422User"
+                                    }
                                 }
                             }
                         }
@@ -276,6 +316,11 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/UserInfo"
+                                },
+                                "examples": {
+                                    "userExample": {
+                                        "$ref": "#/components/examples/User"
+                                    }
                                 }
                             }
                         }
@@ -340,6 +385,11 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/UserInfo"
+                                },
+                                "examples": {
+                                    "userExample": {
+                                        "$ref": "#/components/examples/User"
+                                    }
                                 }
                             }
                         }
@@ -400,7 +450,12 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/AddWebsiteExample"
+                                "$ref": "#/components/schemas/Website"
+                            },
+                            "examples": {
+                                "WebsiteExample": {
+                                    "$ref": "#/components/examples/Website"
+                                }
                             }
                         }
                     }
@@ -421,6 +476,11 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/WebsiteResponse"
+                                },
+                                "examples": {
+                                    "WebsiteExample": {
+                                        "$ref": "#/components/examples/WebsiteResponse"
+                                    }
                                 }
                             }
                         }
@@ -461,6 +521,11 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error422Website"
+                                },
+                                "examples": {
+                                    "userExample": {
+                                        "$ref": "#/components/examples/Error422Website"
+                                    }
                                 }
                             }
                         }
@@ -480,6 +545,11 @@
                                     "type": "array",
                                     "items": {
                                         "$ref": "#/components/schemas/WebsiteResponse"
+                                    }
+                                },
+                                "examples": {
+                                    "WebsiteExample": {
+                                        "$ref": "#/components/examples/WebsiteResponse"
                                     }
                                 }
                             }
@@ -521,6 +591,11 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/WebsiteResponse"
+                                },
+                                "examples": {
+                                    "WebsiteExample": {
+                                        "$ref": "#/components/examples/WebsiteResponse"
+                                    }
                                 }
                             }
                         }
@@ -567,7 +642,12 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/AddWebsiteExample"
+                                "$ref": "#/components/schemas/Website"
+                            },
+                            "examples": {
+                                "WebsiteExample": {
+                                    "$ref": "#/components/examples/Website"
+                                }
                             }
                         }
                     }
@@ -579,6 +659,11 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/WebsiteResponse"
+                                },
+                                "examples": {
+                                    "WebsiteExample": {
+                                        "$ref": "#/components/examples/WebsiteResponse"
+                                    }
                                 }
                             }
                         }
@@ -629,6 +714,11 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error422Website"
+                                },
+                                "examples": {
+                                    "userExample": {
+                                        "$ref": "#/components/examples/Error422Website"
+                                    }
                                 }
                             }
                         }
@@ -649,6 +739,11 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/WebsiteResponse"
+                                },
+                                "examples": {
+                                    "WebsiteExample": {
+                                        "$ref": "#/components/examples/WebsiteResponse"
+                                    }
                                 }
                             }
                         }
@@ -721,6 +816,11 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/WebsiteResponse"
+                                },
+                                "examples": {
+                                    "WebsiteExample": {
+                                        "$ref": "#/components/examples/WebsiteResponse"
+                                    }
                                 }
                             }
                         }
@@ -792,7 +892,12 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/WebsiteInfo"
+                                    "$ref": "#/components/schemas/WebsiteResponse"
+                                },
+                                "examples": {
+                                    "WebsiteExample": {
+                                        "$ref": "#/components/examples/WebsiteResponse"
+                                    }
                                 }
                             }
                         }
@@ -865,6 +970,11 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/JsSnippet"
+                                },
+                                "examples": {
+                                    "WebsiteExample": {
+                                        "$ref": "#/components/examples/JsSnippet"
+                                    }
                                 }
                             }
                         }
@@ -937,7 +1047,12 @@
                     "mobile application"
                 ]
             },
-            "WebsiteObject": {
+            "WebsiteStatus": {
+                "type": "string",
+                "description": "Stato del sito",
+                "enum": ["Pending", "Active", "Archived"]
+            },
+            "Website": {
                 "type": "object",
                 "required": ["website_name", "url", "type"],
                 "properties": {
@@ -952,45 +1067,41 @@
                         "format": "uri"
                     },
                     "permissions": {
-                        "$ref": "#/components/schemas/WebsiteInfoPermisionObject"
+                        "$ref": "#/components/schemas/WebsiteInfoPermisionsObject"
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/WebsiteStatus"
                     },
                     "type": {
                         "$ref": "#/components/schemas/WebsiteType"
-                    },
-                    "example": {}
+                    }
                 }
             },
-            "AddWebsiteExample": {
-                "allOf": [
-                    {
-                        "$ref": "#/components/schemas/WebsiteObject"
-                    },
-                    {
-                        "example": {
-                            "website_name": "Nome Sito",
-                            "url": "https://url-sito-web.it/",
-                            "type": 2
-                        }
-                    }
-                ]
-            },
             "WebsiteResponse": {
-                "allOf": [
-                    {
-                        "$ref": "#/components/schemas/WebsiteObject"
+                "type": "object",
+                "properties": {
+                    "website_name": {
+                        "description": "Nome del sito",
+                        "type": "string",
+                        "pattern": "^(?!\\s).+$"
                     },
-                    {
-                        "example": {
-                            "name": "Agenzia per L'Italia Digitale",
-                            "url": "www.agid.gov.it",
-                            "slug": "wwwagidgovit",
-                            "status": "active",
-                            "type": "institutional website"
-                        }
+                    "url": {
+                        "description": "Url del sito",
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "slug": {
+                        "$ref": "#/components/schemas/WebsiteSlug"
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/WebsiteStatus"
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/WebsiteType"
                     }
-                ]
+                }
             },
-            "WebsiteInfoPermisionObject": {
+            "WebsiteInfoPermisionsObject": {
                 "type": "object",
                 "required": ["userId"],
                 "properties": {
@@ -1003,12 +1114,21 @@
                 }
             },
             "JsSnippet": {
-                "type": "string",
-                "example": {
-                    "result": "ok",
-                    "id": "wwwagidgovit",
-                    "name": "Agenzia per L'Italia Digitale",
-                    "javascriptSnippet": "<!-- Matomo -->\n<script type=\"text/javascript\">\n  var _paq = window._paq || [];\n  /* tracker methods like \"setCustomDimension\" should be called before \"trackPageView\" */\n  _paq.push(['trackPageView']);\n  _paq.push(['enableLinkTracking']);\n  (function() {\n    var u=\"https://172.22.0.10/\";\n    _paq.push(['setTrackerUrl', u+'matomo.php']);\n    _paq.push(['setSiteId', '3']);\n    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];\n    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);\n  })();\n</script>\n<!-- End Matomo Code -->"
+                "type": "object",
+                "properties": {
+                    "result": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "$ref": "#/components/schemas/WebsiteSlug"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "javascriptSnippet": {
+                        "description": "Javascript Snippet",
+                        "type": "string"
+                    }
                 }
             },
             "FiscalNumber": {
@@ -1035,7 +1155,7 @@
                         "$ref": "#/components/schemas/UserInfo"
                     },
                     {
-                        "required": ["email", "permissions", "fiscalNumber"]
+                        "required": ["email", "permissions", "fiscal_number"]
                     }
                 ]
             },
@@ -1055,54 +1175,64 @@
                     "permissions": {
                         "$ref": "#/components/schemas/UserInfoPermissions"
                     },
-                    "fiscalNumber": {
+                    "fiscal_number": {
                         "$ref": "#/components/schemas/FiscalNumber"
-                    }
-                },
-                "example": {
-                    "firstName": "User",
-                    "lastName": "Example",
-                    "email": "name@email.com",
-                    "fiscalNumber": "ZRSGLC89D05H501J",
-                    "permissions": {
-                        "siteId": ["manage-analytics"]
                     }
                 }
             },
             "Error400": {
                 "type": "object",
-                "example": {
-                    "result": "error",
-                    "message": "Error Message",
-                    "code": "1"
+                "properties": {
+                    "result": {
+                        "type": "string"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "code": {
+                        "type": "string"
+                    }
                 }
             },
             "Error401": {
                 "type": "object",
-                "example": {
-                    "error_description": "The access token is invalid or has expired",
-                    "error": "invalid_token"
+                "properties": {
+                    "error_description": {
+                        "type": "string"
+                    },
+                    "error": {
+                        "type": "string"
+                    }
                 }
             },
             "Error403": {
                 "type": "object",
-                "example": {
-                    "title": "insufficient permissions",
-                    "status": 403,
-                    "code": 2
+                "properties": {
+                    "title": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "number"
+                    }
                 }
             },
             "Error404": {
                 "type": "object",
-                "example": {
-                    "error_description": "The access token is invalid or has expired",
-                    "error": "invalid_token"
+                "properties": {
+                    "error_description": {
+                        "type": "string"
+                    },
+                    "error": {
+                        "type": "string"
+                    }
                 }
             },
             "Error422": {
                 "type": "object",
-                "example": {
-                    "message": "The given data was invalid."
+                "properties": {
+                    "message": {
+                        "type": "string"
+                    }
                 }
             },
             "Error422User": {
@@ -1111,7 +1241,156 @@
                         "$ref": "#/components/schemas/Error422"
                     },
                     {
-                        "example": {
+                        "properties": {
+                            "errors": {
+                                "type": "object",
+                                "properties": {
+                                    "email": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "fiscal_number": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "permissions": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                ]
+            },
+            "Error422Website": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/Error422"
+                    },
+                    {
+                        "properties": {
+                            "errors": {
+                                "type": "object",
+                                "properties": {
+                                    "website_name": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "url": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        "examples": {
+            "User": {
+                "summary": "Example of User",
+                "value": {
+                    "firstName": "User",
+                    "lastName": "Example",
+                    "email": "name@email.com",
+                    "fiscal_number": "ZRSGLC89D05H501J",
+                    "permissions": {
+                        "slug": ["manage-analytics"]
+                    }
+                }
+            },
+            "Website": {
+                "summary": "Example of Website",
+                "value": {
+                    "website_name": "Nome Sito",
+                    "url": "https://url-sito-web.it/",
+                    "type": 1,
+                    "permissions": {
+                        "aa5f68cf-b3ef-4048-801a-8b6f52f7890f": ["view"]
+                    }
+                }
+            },
+            "WebsiteResponse": {
+                "summary": "Example of Website",
+                "value": {
+                    "name": "Agenzia per L'Italia Digitale",
+                    "url": "www.agid.gov.it",
+                    "slug": "wwwagidgovit",
+                    "status": "active",
+                    "type": "institutional website"
+                }
+            },
+            "JsSnippet": {
+                "summary": "Example of Javascript Snippet for matomo",
+                "value": {
+                    "result": "ok",
+                    "id": "wwwagidgovit",
+                    "name": "Agenzia per L'Italia Digitale",
+                    "javascriptSnippet": "<!-- Matomo -->\n<script type=\"text/javascript\">\n  var _paq = window._paq || [];\n  /* tracker methods like \"setCustomDimension\" should be called before \"trackPageView\" */\n  _paq.push(['trackPageView']);\n  _paq.push(['enableLinkTracking']);\n  (function() {\n    var u=\"https://172.22.0.10/\";\n    _paq.push(['setTrackerUrl', u+'matomo.php']);\n    _paq.push(['setSiteId', '3']);\n    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];\n    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);\n  })();\n</script>\n<!-- End Matomo Code -->"
+                }
+            },
+            "Error400": {
+                "summary": "Example error 400",
+                "value": {
+                    "result": "error",
+                    "message": "Error Message",
+                    "code": "1"
+                }
+            },
+            "Error401": {
+                "summary": "Example error 401",
+                "value": {
+                    "error_description": "The access token is invalid or has expired",
+                    "error": "invalid_token"
+                }
+            },
+            "Error403": {
+                "summary": "Example error 403",
+                "value": {
+                    "title": "insufficient permissions",
+                    "status": 403,
+                    "code": 2
+                }
+            },
+            "Error404": {
+                "summary": "Example error 404",
+                "value": {
+                    "error_description": "The access token is invalid or has expired",
+                    "error": "invalid_token"
+                }
+            },
+            "Error422": {
+                "summary": "Example error 422",
+                "value": {
+                    "message": "The given data was invalid."
+                }
+            },
+            "Error422User": {
+                "summary": "Example error 422 for user requests",
+                "value": {
+                    "allOf": [
+                        {
+                            "$ref": "#/components/examples/Error422"
+                        },
+                        {
                             "errors": {
                                 "email": [
                                     "The email address field is required."
@@ -1124,16 +1403,17 @@
                                 ]
                             }
                         }
-                    }
-                ]
+                    ]
+                }
             },
             "Error422Website": {
-                "allOf": [
-                    {
-                        "$ref": "#/components/schemas/Error422"
-                    },
-                    {
-                        "example": {
+                "summary": "Example error 422 for user requests",
+                "value": {
+                    "allOf": [
+                        {
+                            "$ref": "#/components/examples/Error422"
+                        },
+                        {
                             "errors": {
                                 "website_name": [
                                     "The website name field is required."
@@ -1142,8 +1422,8 @@
                                 "type": ["The type field is required."]
                             }
                         }
-                    }
-                ]
+                    ]
+                }
             }
         },
         "securitySchemes": {
