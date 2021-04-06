@@ -70,12 +70,24 @@ return [
                 'client' => app(ElasticSearchService::class)->getClient(),
                 'options' => [
                     'index' => config('elastic-search.index_name'),
+                    /*
+                     * Index type deprecated from ElasticSearch 6.x and default to _doc in 7.x
+                     * It will be removed in ElasticSearch 8.x
+                     * https://www.elastic.co/guide/en/elasticsearch/reference/current/removal-of-types.html
+                     */
+                    'type' => '_doc',
                     'ignore_error' => config('elastic-search.ignore_exceptions'),
                 ],
             ],
             'formatter' => ElasticsearchFormatter::class,
             'formatter_with' => [
                 'index' => config('elastic-search.index_name'),
+                /*
+                 * Index type deprecated from ElasticSearch 6.x and default to _doc in 7.x
+                 * It will be removed in ElasticSearch 8.x
+                 * https://www.elastic.co/guide/en/elasticsearch/reference/current/removal-of-types.html
+                 */
+                'type' => '_doc',
             ],
         ],
 
