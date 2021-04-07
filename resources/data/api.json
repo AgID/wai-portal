@@ -1414,18 +1414,6 @@
                     }
                 }
             },
-            "Error405": {
-                "type": "object",
-                "required": ["error_description", "error"],
-                "properties": {
-                    "error_description": {
-                        "type": "string"
-                    },
-                    "error": {
-                        "type": "string"
-                    }
-                }
-            },
             "Error422": {
                 "type": "object",
                 "properties": {
