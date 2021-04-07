@@ -17,6 +17,7 @@ APP_VERSION=testing
 APP_DEBUG=true
 APP_CLOSED_BETA_ENABLED=false
 APP_CUSTOM_PUBLIC_ADMINISTRATIONS_ENABLED=true
+APP_API_VERSION=v1
 
 # Reset public playground
 # Value must be between 0 = Sunday and 6 = Saturday
@@ -312,12 +313,16 @@ XDEBUG_REMOTE_HOST=host.docker.internal
 
 # Kong Service
 # ------------
+
 KONG_VERSION=2.2.0
 KONG_ADMIN_API_URL=http://kong:8001
 KONG_API_URL=http://kong:8000
+KONG_API_PORTAL_BASE_PATH=portal
+KONG_API_MATOMO_BASE_PATH=matomo
 
 # Postgres for Kong
 # -----------------
+
 POSTGRES_PASSWORD=
 POSTGRES_USER=
 POSTGRES_DATABASE=

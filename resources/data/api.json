@@ -1,7 +1,7 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "version": "0.0.1",
+        "version": "1.0.0",
         "title": "Web Analytics Italia API",
         "description": "Questa interfaccia API si riferisce alle operazioni che le Pubbliche Amministrazioni possono eseguire in interoperabilità per gestire utenti e siti di WAI.",
         "contact": {
@@ -12,7 +12,7 @@
     },
     "servers": [],
     "paths": {
-        "/portal/users": {
+        "/users": {
             "post": {
                 "tags": ["Utenti"],
                 "summary": "Crea un nuovo utente",
@@ -151,7 +151,7 @@
                 }
             }
         },
-        "/portal/users/{fn}": {
+        "/users/{fn}": {
             "parameters": [
                 { "$ref": "#/components/parameters/FiscalNumberInPath" }
             ],
@@ -301,7 +301,7 @@
                 }
             }
         },
-        "/portal/users/{fn}/suspend": {
+        "/users/{fn}/suspend": {
             "parameters": [
                 { "$ref": "#/components/parameters/FiscalNumberInPath" }
             ],
@@ -370,7 +370,7 @@
                 }
             }
         },
-        "/portal/users/{fn}/reactivate": {
+        "/users/{fn}/reactivate": {
             "parameters": [
                 { "$ref": "#/components/parameters/FiscalNumberInPath" }
             ],
@@ -439,7 +439,7 @@
                 }
             }
         },
-        "/portal/websites": {
+        "/websites": {
             "post": {
                 "tags": ["Siti web"],
                 "summary": "Crea un nuovo sito web",
@@ -578,7 +578,7 @@
                 }
             }
         },
-        "/portal/websites/{website}": {
+        "/websites/{website}": {
             "parameters": [{ "$ref": "#/components/parameters/SlugInPath" }],
             "get": {
                 "tags": ["Siti web"],
@@ -726,7 +726,7 @@
                 }
             }
         },
-        "/portal/websites/{website}/archive": {
+        "/websites/{website}/archive": {
             "parameters": [{ "$ref": "#/components/parameters/SlugInPath" }],
             "patch": {
                 "tags": ["Siti web"],
@@ -803,7 +803,7 @@
                 }
             }
         },
-        "/portal/websites/{website}/unarchive": {
+        "/websites/{website}/unarchive": {
             "parameters": [{ "$ref": "#/components/parameters/SlugInPath" }],
             "patch": {
                 "tags": ["Siti web"],
@@ -880,7 +880,7 @@
                 }
             }
         },
-        "/portal/websites/{website}/check": {
+        "/websites/{website}/check": {
             "parameters": [{ "$ref": "#/components/parameters/SlugInPath" }],
             "get": {
                 "tags": ["Siti web"],
@@ -957,7 +957,7 @@
                 }
             }
         },
-        "/portal/websites/{website}/js-snippet": {
+        "/websites/{website}/js-snippet": {
             "parameters": [{ "$ref": "#/components/parameters/SlugInPath" }],
             "get": {
                 "tags": ["Siti web"],

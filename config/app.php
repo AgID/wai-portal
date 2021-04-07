@@ -29,6 +29,7 @@ return [
     */
 
     'version' => json_decode(file_get_contents(base_path('composer.json')))->version ?? '',
+    'api_version' => env('APP_API_VERSION', 'dev'),
 
     /*
     |--------------------------------------------------------------------------

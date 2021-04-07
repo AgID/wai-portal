@@ -68,11 +68,17 @@ class SwaggerController extends Controller
 
         $data = json_decode(file_get_contents($path));
         $apiUrl = config('kong-service.api_url');
+        $apiVersion = config('app.api_version');
+        $basePath = config('kong-service.portal_base_path');
 
         $data->servers = [
             [
-                'url' => $apiUrl,
-                'description' => 'API Gateway',
+                'url' => implode('/', array_filter([
+                    $apiUrl,
+                    $basePath,
+                    $apiVersion,
+                ])),
+                'description' => 'API Gateway [WAI portal]',
             ],
         ];
 
