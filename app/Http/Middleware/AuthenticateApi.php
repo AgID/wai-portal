@@ -37,7 +37,8 @@ class AuthenticateApi
 
         if ('admin' !== $credentialType) {
             return response()->json([
-                'error' => 'insufficient permissions',
+                'error' => 'forbidden',
+                'error_description' => 'Access to the requested resource is forbidden',
             ], 403);
         }
 
@@ -49,7 +50,10 @@ class AuthenticateApi
         if ($request->fn) {
             $user = User::findNotSuperAdminByFiscalNumber($request->fn);
             if (!$user || !$user->publicAdministrationsWithSuspended->contains($publicAdministration)) {
-                return $this->notFoundResponse(User::class);
+                return response()->json([
+                    'error' => 'not_found',
+                    'error_description' => 'The requested resource cannot be found on this server',
+                ], 404);
             }
             $requestApiParams['userFromFiscalNumber'] = $user;
         }
