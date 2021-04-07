@@ -198,7 +198,7 @@ class WebsiteController extends Controller
             ]);
         }
 
-        return $this->errorResponse('Il sito non è stato aggiunto', $this->getErrorCode(Website::class), 400);
+        return $this->errorResponse('Cannot create the website', $this->getErrorCode(Website::class), 500);
     }
 
     /**
@@ -324,7 +324,7 @@ class WebsiteController extends Controller
 
         try {
             if ($website->type->is(WebsiteType::INSTITUTIONAL)) {
-                throw new OperationNotAllowedException('Delete request not allowed on primary website ' . $website->info . '.');
+                throw new OperationNotAllowedException('Delete request not allowed on primary website ' . $website->info);
             }
 
             app()->make('analytics-service')->changeArchiveStatus($website->analytics_id, WebsiteStatus::ARCHIVED);
@@ -621,17 +621,23 @@ class WebsiteController extends Controller
      *
      * @return JsonResponse the JSON response
      */
-    public function showJavascriptSnippet(PublicAdministration $publicAdministration, Website $website): JsonResponse
+    public function showJavascriptSnippet(Request $request, PublicAdministration $publicAdministration, Website $website): JsonResponse
     {
         try {
             $javascriptSnippet = app()->make('analytics-service')->getJavascriptSnippet($website->analytics_id);
-
-            return response()->json([
-                'result' => 'ok',
-                'id' => $website->slug,
-                'name' => e($website->name),
+            $jsonResponse = [
                 'javascriptSnippet' => trim($javascriptSnippet),
-            ]);
+            ];
+
+            if (!$request->is('api/*')) {
+                $jsonResponse = array_merge($jsonResponse, [
+                    'result' => 'ok',
+                    'id' => $website->slug,
+                    'name' => e($website->name),
+                ]);
+            }
+
+            return response()->json($jsonResponse);
         } catch (AnalyticsServiceException | BindingResolutionException $exception) {
             report($exception);
             $code = $exception->getCode();
