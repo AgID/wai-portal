@@ -1,39 +1,46 @@
-$titillium: "Titillium Web", geneva, tahoma, sans-serif !important;
-$monospace: "Roboto Mono", monospace !important;
+#main {
+  .swagger-ui {
+    font-family: $font-family-sans-serif;
 
-.swagger-ui {
-  font-family: $titillium;
-
-  pre,
-  span,
-  a,
-  div,
-  button,
-  h2,
-  h3,
-  h4,
-  select,
-  option,
-  td,
-  input,
-  p,
-  .model-title {
-    font-family: $titillium;
-  }
-
-  pre {
-    overflow: hidden;
-  }
-
-  .auth-wrapper {
-    display: none !important;
-  }
-
-  .model-box {
+    pre,
     span,
+    a,
+    div,
+    button,
+    h2,
+    h3,
+    h4,
+    select,
+    option,
     td,
-    p {
-      font-family: $monospace;
+    input,
+    p,
+    .model-title {
+      font-family: $font-family-sans-serif;
+    }
+
+    pre {
+      overflow: hidden;
+    }
+
+    .auth-wrapper {
+      display: none !important;
+    }
+
+    .model-box {
+      span,
+      td,
+      p {
+        font-family: $font-family-monospace;
+      }
+    }
+
+    .markdown p,
+    .markdown pre,
+    .renderedMarkdown p,
+    .renderedMarkdown pre {
+      margin: 0;
+      max-width: unset;
     }
   }
 }
