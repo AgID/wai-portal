@@ -543,11 +543,11 @@ class CRUDUserTest extends TestCase
                 'tenant_id' => $this->publicAdministration->id,
             ])
             ->json('patch', route('users.suspend', ['user' => $this->user]))
-            ->assertStatus(403)
+            ->assertStatus(400)
             ->assertJson([
                 'result' => 'error',
-                'message' => 'invalid operation for current user',
-                'code' => 0,
+                'message' => 'Invalid operation for current user',
+                'error_code' => 0,
             ]);
 
         Event::assertNotDispatched(UserSuspended::class);
@@ -573,7 +573,7 @@ class CRUDUserTest extends TestCase
             ->assertStatus(400)
             ->assertJson([
                 'result' => 'error',
-                'message' => 'invalid operation for current user status',
+                'message' => 'Invalid operation for current user status',
             ]);
 
         Event::assertNotDispatched(UserSuspended::class);
@@ -599,7 +599,7 @@ class CRUDUserTest extends TestCase
             ->assertStatus(400)
             ->assertJson([
                 'result' => 'error',
-                'message' => 'invalid operation for current user status',
+                'message' => 'Invalid operation for current user status',
             ]);
 
         Event::assertNotDispatched(UserSuspended::class);
