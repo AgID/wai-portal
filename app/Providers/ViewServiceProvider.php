@@ -92,7 +92,7 @@ class ViewServiceProvider extends ServiceProvider
 
             $view->with('bodyClasses', implode(' ', [
                 'wai',
-                $hasHighlightBar ? 'hasHighlightBar' : '',
+                $hasHighlightBar ? 'has-highlight-bar' : '',
             ]));
         });
     }
