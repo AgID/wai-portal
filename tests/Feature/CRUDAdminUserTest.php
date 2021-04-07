@@ -240,7 +240,7 @@ class CRUDAdminUserTest extends TestCase
             ->assertJson([
                 'result' => 'error',
                 'message' => 'Invalid operation for current user',
-                'code' => 0,
+                'error_code' => 0,
             ]);
 
         Event::assertNotDispatched(UserSuspended::class);
@@ -775,7 +775,7 @@ class CRUDAdminUserTest extends TestCase
             ->assertStatus(400)
             ->assertJson([
                 'result' => 'error',
-                'message' => 'invalid operation for current user status',
+                'message' => 'Invalid operation for current user status',
             ]);
 
         Event::assertNotDispatched(UserUpdated::class);
@@ -889,8 +889,8 @@ class CRUDAdminUserTest extends TestCase
             ->assertStatus(400)
             ->assertJson([
                 'result' => 'error',
-                'message' => 'The last administrator cannot be removed or suspended.',
-                'code' => '0',
+                'message' => 'The last administrator cannot be removed or suspended',
+                'error_code' => '0',
             ]);
 
         Event::assertNotDispatched(UserDeleted::class);
@@ -920,7 +920,7 @@ class CRUDAdminUserTest extends TestCase
             ->assertStatus(400)
             ->assertJson([
                 'result' => 'error',
-                'message' => 'Pending users cannot be deleted.',
+                'message' => 'Pending users cannot be deleted',
             ]);
 
         Event::assertNotDispatched(UserDeleted::class);
