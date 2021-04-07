@@ -39,6 +39,7 @@
                     <token key="LOG_SLACK_USERNAME_EXTRA_CHANNEL" value="${LOG_SLACK_USERNAME_EXTRA_CHANNEL}" />
                     <token key="APP_CLOSED_BETA_ENABLED" value="${APP_CLOSED_BETA_ENABLED}" />
                     <token key="APP_CUSTOM_PUBLIC_ADMINISTRATIONS_ENABLED" value="${APP_CUSTOM_PUBLIC_ADMINISTRATIONS_ENABLED}" />
+                    <token key="APP_API_VERSION" value="${APP_API_VERSION}" />
                     <token key="APP_SUPER_ADMIN_NAME" value="${APP_SUPER_ADMIN_NAME}" />
                     <token key="APP_SUPER_ADMIN_FAMILY_NAME" value="${APP_SUPER_ADMIN_FAMILY_NAME}" />
                     <token key="APP_SUPER_ADMIN_FISCAL_NUMBER" value="${APP_SUPER_ADMIN_FISCAL_NUMBER}" />
@@ -156,6 +157,8 @@
                     <token key="KONG_VERSION" value="${KONG_VERSION}" />
                     <token key="KONG_ADMIN_API_URL" value="${KONG_ADMIN_API_URL}" />
                     <token key="KONG_API_URL" value="${KONG_API_URL}" />
+                    <token key="KONG_API_PORTAL_BASE_PATH" value="${KONG_API_PORTAL_BASE_PATH}" />
+                    <token key="KONG_API_MATOMO_BASE_PATH" value="${KONG_API_MATOMO_BASE_PATH}" />
                     <token key="POSTGRES_PASSWORD" value="${POSTGRES_PASSWORD}" />
                     <token key="POSTGRES_USER" value="${POSTGRES_USER}" />
                     <token key="POSTGRES_DATABASE" value="${POSTGRES_DATABASE}" />
