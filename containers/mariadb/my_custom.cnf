@@ -1,0 +1,4 @@
+[mysqld]
+general-log
+general-log-file=/var/log/mariadb/queries.log
+log-output=file

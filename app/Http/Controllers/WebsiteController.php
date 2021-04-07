@@ -121,6 +121,8 @@ class WebsiteController extends Controller
             'status' => PublicAdministrationStatus::PENDING,
         ]);
 
+        $publicAdministration->save();
+
         $siteUrl = $request->isCustomPublicAdministration ? $request->publicAdministration['url'] : $request->publicAdministration['site'];
         $website = $this->registerPublicAdministration($authUser, $publicAdministration, $siteUrl, $request->isCustomPublicAdministration, $request->input('email'));
 

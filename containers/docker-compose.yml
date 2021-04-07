@@ -27,9 +27,12 @@ services:
         - PHP_VERSION=${PHP_VERSION}
         - INSTALL_XDEBUG=${PHP_FPM_INSTALL_XDEBUG}
         - APP_CODE_PATH_CONTAINER=${APP_CODE_PATH_CONTAINER}
+        # uncomment if queued tracking plugin is enabled in matomo
+        # - MATOMO_PHPREDIS_VERSION=${MATOMO_PHPREDIS_VERSION}
     volumes:
       - ${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}
-      - ${APP_LOGS_PATH_HOST}:${APP_LOGS_PATH_CONTAINER}
+      - ${APP_LOGS_PATH_HOST}/php:${APP_LOGS_PATH_CONTAINER}/php
+      - ${APP_LOGS_PATH_HOST}/matomo:${APP_LOGS_PATH_CONTAINER}/matomo
       - matomo:/opt/matomo/
       # - ./matomo/wai-matomo-theme/dist/WAIMatomoTheme:/opt/matomo/plugins/WAIMatomoTheme
     expose:
@@ -49,7 +52,7 @@ services:
         - APP_CODE_PATH_CONTAINER=${APP_CODE_PATH_CONTAINER}
     volumes:
       - ${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}
-      - ${APP_LOGS_PATH_HOST}:${APP_LOGS_PATH_CONTAINER}
+      - ${APP_LOGS_PATH_HOST}/php:${APP_LOGS_PATH_CONTAINER}/php
     extra_hosts:
       - "dockerhost:${DOCKER_HOST_IP}"
     depends_on:
@@ -72,7 +75,7 @@ services:
         target: ${APP_CODE_PATH_CONTAINER}
         volume:
           nocopy: true
-      - ${APP_LOGS_PATH_HOST}:${APP_LOGS_PATH_CONTAINER}
+      - ${APP_LOGS_PATH_HOST}/nginx:${APP_LOGS_PATH_CONTAINER}/nginx
       - matomo:/opt/matomo/
     ports:
       - "${NGINX_PORTAL_HTTP_PORT}:80"
@@ -92,6 +95,9 @@ services:
     volumes:
       - mariadb-data:/bitnami/mariadb
       - matomo-install:/opt/matomo-install/
+      # uncomment to enable the general query log
+      # - ./mariadb/my_custom.cnf:/opt/bitnami/mariadb/conf/my_custom.cnf:ro
+      - ${APP_LOGS_PATH_HOST}/mariadb:${APP_LOGS_PATH_CONTAINER}/mariadb
     environment:
       - MARIADB_DATABASE=${MARIADB_DATABASE}
       - MARIADB_USER=${MARIADB_USER}

@@ -8,7 +8,9 @@
 
 <div class="container @if (!app()->environment('production') && config('wai.custom_public_administrations', false)) pt-5 @endif ">
 
+    @unless ($hideTitle ?? false)
     <h3>{{ __('Aggiungi il sito istituzionale') }}</h3>
+    @endunless
 
     @if($customForm)
         <p>{{ __('Per iniziare senza usare una pubblica amministrazione esistente crea in questa pagina la tua pubblica amministrazione personalizzata.') }}</p>

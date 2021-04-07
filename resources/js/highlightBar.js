@@ -9,7 +9,7 @@ export default (() => {
     }
 
     const init = () => {
-        const highlightBar = document.getElementById('highlightBar');
+        const highlightBar = document.getElementById('highlight-bar');
 
         highlightBar && window.addEventListener('scroll', throttle(20, () => {
             const parentElement = highlightBar.parentElement;

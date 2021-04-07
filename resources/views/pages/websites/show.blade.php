@@ -121,7 +121,7 @@
             @endcomponent
         </div>
     </div>
-    @if ($authUser->can(UserPermission::MANAGE_WEBSITES) || ( $userPublicAdministrationStatus && $userPublicAdministrationStatus->is(UserStatus::PENDING)))
+    @if ($authUser->can(UserPermission::MANAGE_WEBSITES) || ($userPublicAdministrationStatus && $userPublicAdministrationStatus->is(UserStatus::PENDING)))
     @component('layouts.components.box', ['classes' => 'mt-0 full-width'])
     <div class="javascript-snippet-container blank">
         <div class="collapse-header box-section" id="javascript-snippet-header">

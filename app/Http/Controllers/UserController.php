@@ -339,8 +339,8 @@ class UserController extends Controller
             }
 
             Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user) {
-                $user->abilities()->detach();
-                $user->roles()->detach();
+                $user->disallow($user->abilities->pluck('id'));
+                $user->retract($user->roles->pluck('name'));
             });
 
             $publicAdministration->users()->detach([$user->id]);
