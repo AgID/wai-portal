@@ -39,7 +39,7 @@ class StoreUserRequest extends FormRequest
                 function ($attribute, $value, $fail) {
                     $chk = new FiscalNumberChecker($value);
                     if (!$chk->isFormallyValid()) {
-                        return $fail(__('Il codice fiscale non è formalmente valido.'));
+                        return $fail(__('validation.custom.fiscal_number.invalid_format'));
                     }
                 },
             ],
