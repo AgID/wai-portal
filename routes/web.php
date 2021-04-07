@@ -525,7 +525,8 @@ Route::middleware('auth.admin', 'verified:admin.verification.notice')->group(fun
             ->name('admin.password.change');
     });
 });
-
-Route::fallback(function () {
-    return response()->view('errors.404');
-});
+if (!request()->is('api/*')) {
+    Route::fallback(function () {
+        return response()->view('errors.404');
+    });
+}
