@@ -117,6 +117,9 @@ return [
             'required' => 'Invalid User.',
             'exists' => 'Invalid User.',
         ],
+        'fiscal_number' => [
+            'invalid_format' => 'Invalid fiscal number format.'
+        ],
     ],
 
     /*
@@ -134,7 +137,7 @@ return [
         'name' => 'first name',
         'username' => 'user name',
         'family_name' => 'last name',
-        'fiscal_number' => 'fiscal code',
+        'fiscal_number' => 'fiscal number',
         'is_admin' => 'administrator user',
         'password' => 'password',
         'password_confirmation' => 'confirm password',
