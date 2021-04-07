@@ -32,6 +32,8 @@ class UserArrayTransformer extends TransformerAbstract
 
         $websitesPermissions = $user->publicAdministrations->mapWithKeys(function ($publicAdministration) use ($user, $isAdmin) {
             return Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user, $publicAdministration, $isAdmin) {
+                $user->role = $user->all_role_names;
+
                 return $publicAdministration->websites->mapWithKeys(function ($website) use ($user, $isAdmin) {
                     $permission = [];
                     if ($isAdmin || $user->can(UserPermission::READ_ANALYTICS, $website)) {
@@ -54,7 +56,7 @@ class UserArrayTransformer extends TransformerAbstract
             'email' => $email,
             'status' => $status,
             'permissions' => $websitesPermissions,
-            'roles' => $user->allRoleNames,
+            'role' => $user->role,
         ];
     }
 }
