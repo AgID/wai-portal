@@ -23,7 +23,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/UserCreate"
+                                "$ref": "#/components/schemas/User"
                             },
                             "examples": {
                                 "userExample": {
@@ -64,6 +64,11 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error400"
+                                },
+                                "examples": {
+                                    "Bad Request": {
+                                        "$ref": "#/components/examples/Error400"
+                                    }
                                 }
                             }
                         }
@@ -74,6 +79,11 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error401"
+                                },
+                                "examples": {
+                                    "Unauthorized": {
+                                        "$ref": "#/components/examples/Error401"
+                                    }
                                 }
                             }
                         }
@@ -84,6 +94,11 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error403"
+                                },
+                                "examples": {
+                                    "Forbidden": {
+                                        "$ref": "#/components/examples/Error403"
+                                    }
                                 }
                             }
                         }
@@ -96,7 +111,7 @@
                                     "$ref": "#/components/schemas/Error422User"
                                 },
                                 "examples": {
-                                    "userExample": {
+                                    "Unprocessable Entity (User)": {
                                         "$ref": "#/components/examples/Error422User"
                                     }
                                 }
@@ -134,6 +149,11 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error401"
+                                },
+                                "examples": {
+                                    "Unauthorized": {
+                                        "$ref": "#/components/examples/Error401"
+                                    }
                                 }
                             }
                         }
@@ -144,6 +164,11 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error403"
+                                },
+                                "examples": {
+                                    "Forbidden": {
+                                        "$ref": "#/components/examples/Error403"
+                                    }
                                 }
                             }
                         }
@@ -153,7 +178,7 @@
         },
         "/users/{fn}": {
             "parameters": [
-                { "$ref": "#/components/parameters/FiscalNumberInPath" }
+                { "$ref": "#/components/parameters/FiscalNumber" }
             ],
             "get": {
                 "tags": ["Utenti"],
@@ -181,6 +206,11 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error401"
+                                },
+                                "examples": {
+                                    "Unauthorized": {
+                                        "$ref": "#/components/examples/Error401"
+                                    }
                                 }
                             }
                         }
@@ -191,6 +221,11 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error403"
+                                },
+                                "examples": {
+                                    "Forbidden": {
+                                        "$ref": "#/components/examples/Error403"
+                                    }
                                 }
                             }
                         }
@@ -259,6 +294,11 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error401"
+                                },
+                                "examples": {
+                                    "Unauthorized": {
+                                        "$ref": "#/components/examples/Error401"
+                                    }
                                 }
                             }
                         }
@@ -269,6 +309,11 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error403"
+                                },
+                                "examples": {
+                                    "Forbidden": {
+                                        "$ref": "#/components/examples/Error403"
+                                    }
                                 }
                             }
                         }
@@ -291,7 +336,7 @@
                                     "$ref": "#/components/schemas/Error422User"
                                 },
                                 "examples": {
-                                    "userExample": {
+                                    "Unprocessable Entity (User)": {
                                         "$ref": "#/components/examples/Error422User"
                                     }
                                 }
@@ -303,7 +348,7 @@
         },
         "/users/{fn}/suspend": {
             "parameters": [
-                { "$ref": "#/components/parameters/FiscalNumberInPath" }
+                { "$ref": "#/components/parameters/FiscalNumber" }
             ],
             "patch": {
                 "tags": ["Utenti"],
@@ -343,6 +388,11 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error401"
+                                },
+                                "examples": {
+                                    "Unauthorized": {
+                                        "$ref": "#/components/examples/Error401"
+                                    }
                                 }
                             }
                         }
@@ -353,6 +403,11 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error403"
+                                },
+                                "examples": {
+                                    "Forbidden": {
+                                        "$ref": "#/components/examples/Error403"
+                                    }
                                 }
                             }
                         }
@@ -372,7 +427,7 @@
         },
         "/users/{fn}/reactivate": {
             "parameters": [
-                { "$ref": "#/components/parameters/FiscalNumberInPath" }
+                { "$ref": "#/components/parameters/FiscalNumber" }
             ],
             "patch": {
                 "tags": ["Utenti"],
@@ -412,6 +467,11 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error401"
+                                },
+                                "examples": {
+                                    "Unauthorized": {
+                                        "$ref": "#/components/examples/Error401"
+                                    }
                                 }
                             }
                         }
@@ -422,6 +482,11 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error403"
+                                },
+                                "examples": {
+                                    "Forbidden": {
+                                        "$ref": "#/components/examples/Error403"
+                                    }
                                 }
                             }
                         }
@@ -475,11 +540,11 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/WebsiteResponse"
+                                    "$ref": "#/components/schemas/WebsiteInfo"
                                 },
                                 "examples": {
                                     "WebsiteExample": {
-                                        "$ref": "#/components/examples/WebsiteResponse"
+                                        "$ref": "#/components/examples/WebsiteInfo"
                                     }
                                 }
                             }
@@ -501,6 +566,11 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error401"
+                                },
+                                "examples": {
+                                    "Unauthorized": {
+                                        "$ref": "#/components/examples/Error401"
+                                    }
                                 }
                             }
                         }
@@ -511,6 +581,11 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error403"
+                                },
+                                "examples": {
+                                    "Forbidden": {
+                                        "$ref": "#/components/examples/Error403"
+                                    }
                                 }
                             }
                         }
@@ -523,7 +598,7 @@
                                     "$ref": "#/components/schemas/Error422Website"
                                 },
                                 "examples": {
-                                    "userExample": {
+                                    "Unprocessable Entity (Website)": {
                                         "$ref": "#/components/examples/Error422Website"
                                     }
                                 }
@@ -544,12 +619,12 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "$ref": "#/components/schemas/WebsiteResponse"
+                                        "$ref": "#/components/schemas/WebsiteInfo"
                                     }
                                 },
                                 "examples": {
-                                    "WebsiteExample": {
-                                        "$ref": "#/components/examples/WebsiteResponse"
+                                    "WebsiteInfoExample": {
+                                        "$ref": "#/components/examples/WebsiteInfo"
                                     }
                                 }
                             }
@@ -561,6 +636,11 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error401"
+                                },
+                                "examples": {
+                                    "Unauthorized": {
+                                        "$ref": "#/components/examples/Error401"
+                                    }
                                 }
                             }
                         }
@@ -571,6 +651,11 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error403"
+                                },
+                                "examples": {
+                                    "Forbidden": {
+                                        "$ref": "#/components/examples/Error403"
+                                    }
                                 }
                             }
                         }
@@ -579,7 +664,7 @@
             }
         },
         "/websites/{website}": {
-            "parameters": [{ "$ref": "#/components/parameters/SlugInPath" }],
+            "parameters": [{ "$ref": "#/components/parameters/WebsiteSlug" }],
             "get": {
                 "tags": ["Siti web"],
                 "summary": "Fornisce i dati del sito web specificato",
@@ -590,11 +675,11 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/WebsiteResponse"
+                                    "$ref": "#/components/schemas/WebsiteInfo"
                                 },
                                 "examples": {
-                                    "WebsiteExample": {
-                                        "$ref": "#/components/examples/WebsiteResponse"
+                                    "WebsiteInfoExample": {
+                                        "$ref": "#/components/examples/WebsiteInfo"
                                     }
                                 }
                             }
@@ -606,6 +691,11 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error401"
+                                },
+                                "examples": {
+                                    "Unauthorized": {
+                                        "$ref": "#/components/examples/Error401"
+                                    }
                                 }
                             }
                         }
@@ -616,6 +706,11 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error403"
+                                },
+                                "examples": {
+                                    "Forbidden": {
+                                        "$ref": "#/components/examples/Error403"
+                                    }
                                 }
                             }
                         }
@@ -658,11 +753,11 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/WebsiteResponse"
+                                    "$ref": "#/components/schemas/WebsiteInfo"
                                 },
                                 "examples": {
                                     "WebsiteExample": {
-                                        "$ref": "#/components/examples/WebsiteResponse"
+                                        "$ref": "#/components/examples/WebsiteInfo"
                                     }
                                 }
                             }
@@ -684,6 +779,11 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error401"
+                                },
+                                "examples": {
+                                    "Unauthorized": {
+                                        "$ref": "#/components/examples/Error401"
+                                    }
                                 }
                             }
                         }
@@ -694,6 +794,11 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error403"
+                                },
+                                "examples": {
+                                    "Forbidden": {
+                                        "$ref": "#/components/examples/Error403"
+                                    }
                                 }
                             }
                         }
@@ -716,7 +821,7 @@
                                     "$ref": "#/components/schemas/Error422Website"
                                 },
                                 "examples": {
-                                    "userExample": {
+                                    "Unprocessable Entity (Website)": {
                                         "$ref": "#/components/examples/Error422Website"
                                     }
                                 }
@@ -727,7 +832,7 @@
             }
         },
         "/websites/{website}/archive": {
-            "parameters": [{ "$ref": "#/components/parameters/SlugInPath" }],
+            "parameters": [{ "$ref": "#/components/parameters/WebsiteSlug" }],
             "patch": {
                 "tags": ["Siti web"],
                 "summary": "Archivia il sito web specificato",
@@ -738,11 +843,11 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/WebsiteResponse"
+                                    "$ref": "#/components/schemas/WebsiteInfo"
                                 },
                                 "examples": {
                                     "WebsiteExample": {
-                                        "$ref": "#/components/examples/WebsiteResponse"
+                                        "$ref": "#/components/examples/WebsiteInfo"
                                     }
                                 }
                             }
@@ -776,6 +881,11 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error401"
+                                },
+                                "examples": {
+                                    "Unauthorized": {
+                                        "$ref": "#/components/examples/Error401"
+                                    }
                                 }
                             }
                         }
@@ -786,6 +896,11 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error403"
+                                },
+                                "examples": {
+                                    "Forbidden": {
+                                        "$ref": "#/components/examples/Error403"
+                                    }
                                 }
                             }
                         }
@@ -804,7 +919,7 @@
             }
         },
         "/websites/{website}/unarchive": {
-            "parameters": [{ "$ref": "#/components/parameters/SlugInPath" }],
+            "parameters": [{ "$ref": "#/components/parameters/WebsiteSlug" }],
             "patch": {
                 "tags": ["Siti web"],
                 "summary": "Riattiva il sito web specificato",
@@ -815,11 +930,11 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/WebsiteResponse"
+                                    "$ref": "#/components/schemas/WebsiteInfo"
                                 },
                                 "examples": {
                                     "WebsiteExample": {
-                                        "$ref": "#/components/examples/WebsiteResponse"
+                                        "$ref": "#/components/examples/WebsiteInfo"
                                     }
                                 }
                             }
@@ -853,6 +968,11 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error401"
+                                },
+                                "examples": {
+                                    "Unauthorized": {
+                                        "$ref": "#/components/examples/Error401"
+                                    }
                                 }
                             }
                         }
@@ -863,6 +983,11 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error403"
+                                },
+                                "examples": {
+                                    "Forbidden": {
+                                        "$ref": "#/components/examples/Error403"
+                                    }
                                 }
                             }
                         }
@@ -881,7 +1006,7 @@
             }
         },
         "/websites/{website}/check": {
-            "parameters": [{ "$ref": "#/components/parameters/SlugInPath" }],
+            "parameters": [{ "$ref": "#/components/parameters/WebsiteSlug" }],
             "get": {
                 "tags": ["Siti web"],
                 "summary": "Verifica l'attivazione del sito web specificato",
@@ -892,11 +1017,11 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/WebsiteResponse"
+                                    "$ref": "#/components/schemas/WebsiteInfo"
                                 },
                                 "examples": {
                                     "WebsiteExample": {
-                                        "$ref": "#/components/examples/WebsiteResponse"
+                                        "$ref": "#/components/examples/WebsiteInfo"
                                     }
                                 }
                             }
@@ -930,6 +1055,11 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error401"
+                                },
+                                "examples": {
+                                    "Unauthorized": {
+                                        "$ref": "#/components/examples/Error401"
+                                    }
                                 }
                             }
                         }
@@ -940,6 +1070,11 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error403"
+                                },
+                                "examples": {
+                                    "Forbidden": {
+                                        "$ref": "#/components/examples/Error403"
+                                    }
                                 }
                             }
                         }
@@ -958,7 +1093,7 @@
             }
         },
         "/websites/{website}/js-snippet": {
-            "parameters": [{ "$ref": "#/components/parameters/SlugInPath" }],
+            "parameters": [{ "$ref": "#/components/parameters/WebsiteSlug" }],
             "get": {
                 "tags": ["Siti web"],
                 "summary": "Fornisce lo snippet javascript del sito web specificato",
@@ -985,6 +1120,11 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error401"
+                                },
+                                "examples": {
+                                    "Unauthorized": {
+                                        "$ref": "#/components/examples/Error401"
+                                    }
                                 }
                             }
                         }
@@ -995,6 +1135,11 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Error403"
+                                },
+                                "examples": {
+                                    "Forbidden": {
+                                        "$ref": "#/components/examples/Error403"
+                                    }
                                 }
                             }
                         }
@@ -1015,35 +1160,165 @@
     },
     "components": {
         "parameters": {
-            "SlugInPath": {
+            "WebsiteSlug": {
                 "in": "path",
                 "required": true,
                 "name": "website",
+                "description": "Slug del sito web",
                 "schema": {
                     "$ref": "#/components/schemas/WebsiteSlug"
                 }
             },
-            "FiscalNumberInPath": {
+            "FiscalNumber": {
                 "in": "path",
                 "required": true,
                 "name": "fn",
+                "description": "Codice fiscale dell'utente",
                 "schema": {
                     "$ref": "#/components/schemas/FiscalNumber"
                 }
             }
         },
         "schemas": {
+            "User": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/UserBase"
+                    },
+                    {
+                        "properties": {
+                            "is_admin": {
+                                "type": "boolean",
+                                "description": "Specifica se il nuovo utente dovrà essere un admin (se omesso vale `falso`)"
+                            }
+                        }
+                    }
+                ]
+            },
+            "UserInfo": {
+                "allOf": [
+                    {
+                        "required": ["first_name", "family_name", "role"],
+                        "properties": {
+                            "first_name": {
+                                "type": "string",
+                                "description": "Nome dell'utente"
+                            },
+                            "family_name": {
+                                "type": "string",
+                                "description": "Cognome dell'utente"
+                            }
+                        }
+                    },
+                    {
+                        "$ref": "#/components/schemas/UserBase"
+                    },
+                    {
+                        "properties": {
+                            "role": {
+                                "$ref": "#/components/schemas/UserRole"
+                            }
+                        }
+                    }
+                ]
+            },
+            "UserBase": {
+                "type": "object",
+                "required": ["email", "fiscal_number", "permissions"],
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "pattern": "email",
+                        "description": "Indirizzo email dell'utente"
+                    },
+                    "fiscal_number": {
+                        "$ref": "#/components/schemas/FiscalNumber"
+                    },
+                    "permissions": {
+                        "$ref": "#/components/schemas/WebsitePermissions"
+                    }
+                }
+            },
+            "FiscalNumber": {
+                "type": "string",
+                "pattern": "^[A-Z]{6}\\d{2}[A-Z]\\d{2}[A-Z]\\d{3}[A-Z]$",
+                "description": "Codice fiscale dell'utente"
+            },
+            "UserRole": {
+                "type": "string",
+                "description": "Ruolo dell'utente",
+                "enum": [
+                    "administrator",
+                    "delegate"
+                ]
+            },
+            "WebsitePermissions": {
+                "type": "object",
+                "description": "Elenco dei permessi per ciascun sito web. La chiave della coppia sito/permessi deve essere uno slug di un sito web esistente.",
+                "propertyNames": {
+                    "$ref": "#/components/schemas/WebsiteSlug"
+                },
+                "additionalProperties": {
+                    "type": "array",
+                    "description": "Elenco dei permessi dell'utente per il sito web",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "manage-analytics",
+                            "read-analytics"
+                        ]
+                    }
+                }
+            },
+            "WebsiteInfo": {
+                "allOf": [
+                    {
+                        "required": ["slug", "status"],
+                        "properties": {
+                            "slug": {
+                                "$ref": "#/components/schemas/WebsiteSlug"
+                            },
+                            "status": {
+                                "$ref": "#/components/schemas/WebsiteStatus"
+                            }
+                        }
+                    },
+                    {
+                        "$ref": "#/components/schemas/Website"
+                    }
+                ]
+            },
+            "Website": {
+                "type": "object",
+                "required": ["name", "url", "type", "permissions"],
+                "description": "Sito web",
+                "properties": {
+                    "name": {
+                        "description": "Nome del sito web",
+                        "type": "string",
+                        "pattern": "^(?!\\s).+$"
+                    },
+                    "url": {
+                        "description": "Url del sito web",
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/WebsiteType"
+                    },
+                    "permissions": {
+                        "$ref": "#/components/schemas/UserPermissions"
+                    }
+                }
+            },
             "WebsiteSlug": {
                 "type": "string",
-                "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
-            },
-            "UserUuid": {
-                "type": "string",
-                "pattern": "\\b[0-9a-f]{8}\\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\\b[0-9a-f]{12}\\b"
+                "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+                "description": "Slug del sito web"
             },
             "WebsiteType": {
                 "type": "string",
-                "description": "Tipologia di sito",
+                "description": "Tipologia del sito web",
                 "enum": [
                     "institutional website",
                     "informational or thematic website",
@@ -1056,180 +1331,56 @@
                 "description": "Stato del sito",
                 "enum": ["pending", "active", "archived"]
             },
-            "UserPermission": {
-                "type": "string",
-                "description": "Permessi dell'utente",
-                "enum": [
-                    "access-admin-area",
-                    "manage-users",
-                    "manage-websites",
-                    "view-logs",
-                    "manage-analytics",
-                    "read-analytics",
-                    "no-access",
-                    "do-nothing"
-                ]
-            },
-            "UserRoles": {
-                "type": "string",
-                "description": "Ruolo dell'utente",
-                "enum": [
-                    "super admin",
-                    "administrator",
-                    "delegate",
-                    "registered",
-                    "deleted"
-                ]
-            },
-            "Website": {
+            "UserPermissions": {
                 "type": "object",
-                "required": ["website_name", "url", "type"],
-                "properties": {
-                    "website_name": {
-                        "description": "Nome del sito",
+                "description": "Elenco dei permessi di ciascun utente. La chiave della coppia utente/permessi deve essere il codice fiscale di un utente esistente.",
+                "propertyNames": {
+                    "$ref": "#/components/schemas/FiscalNumber"
+                },
+                "additionalProperties": {
+                    "type": "array",
+                    "description": "Elenco dei permessi dell'utente sul sito web",
+                    "items": {
                         "type": "string",
-                        "pattern": "^(?!\\s).+$"
-                    },
-                    "url": {
-                        "description": "Url del sito",
-                        "type": "string",
-                        "format": "uri"
-                    },
-                    "permissions": {
-                        "$ref": "#/components/schemas/WebsiteInfoPermisionsObject"
-                    },
-                    "status": {
-                        "$ref": "#/components/schemas/WebsiteStatus"
-                    },
-                    "type": {
-                        "$ref": "#/components/schemas/WebsiteType"
-                    }
-                }
-            },
-            "WebsiteResponse": {
-                "type": "object",
-                "properties": {
-                    "website_name": {
-                        "description": "Nome del sito",
-                        "type": "string",
-                        "pattern": "^(?!\\s).+$"
-                    },
-                    "url": {
-                        "description": "Url del sito",
-                        "type": "string",
-                        "format": "uri"
-                    },
-                    "slug": {
-                        "$ref": "#/components/schemas/WebsiteSlug"
-                    },
-                    "status": {
-                        "$ref": "#/components/schemas/WebsiteStatus"
-                    },
-                    "type": {
-                        "$ref": "#/components/schemas/WebsiteType"
-                    }
-                }
-            },
-            "WebsiteInfoPermisionsObject": {
-                "type": "object",
-                "required": ["uuid"],
-                "description": "Sostituisci \"uuid\" con lo slug del sito per cui l'utente deve avere i permessi.",
-                "properties": {
-                    "uuid": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/UserUuid"
-                        }
+                        "enum": [
+                            "manage-analytics",
+                            "read-analytics"
+                        ]
                     }
                 }
             },
             "JsSnippet": {
                 "type": "object",
-                "properties": {
-                    "result": {
-                        "type": "string"
-                    },
-                    "id": {
-                        "$ref": "#/components/schemas/WebsiteSlug"
-                    },
-                    "name": {
-                        "type": "string"
-                    },
-                    "javascriptSnippet": {
-                        "description": "Javascript Snippet",
-                        "type": "string"
-                    }
-                }
-            },
-            "FiscalNumber": {
-                "type": "string",
-                "minLength": 16,
-                "maxLength": 16,
-                "pattern": "^[A-Z]{6}\\d{2}[A-Z]\\d{2}[A-Z]\\d{3}[A-Z]$"
-            },
-            "UserInfoPermissions": {
-                "type": "object",
-                "required": ["slug"],
-                "description": "Sostituisci \"slug\" con lo slug del sito per cui l'utente deve avere i permessi.",
+                "required": ["slug", "javascriptSnippet"],
+                "description": "Informazioni per il tracciamento del sito web",
                 "properties": {
                     "slug": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/UserPermission"
-                        }
-                    }
-                }
-            },
-            "UserCreate": {
-                "allOf": [
-                    {
-                        "$ref": "#/components/schemas/UserInfo"
+                        "$ref": "#/components/schemas/WebsiteSlug"
                     },
-                    {
-                        "required": ["email", "permissions", "fiscal_number"]
-                    }
-                ]
-            },
-            "UserInfo": {
-                "type": "object",
-                "required": ["email", "permissions"],
-                "properties": {
-                    "firstName": {
+                    "javascriptSnippet": {
+                        "description": "Codice javascript per il tracciamento delle visite",
                         "type": "string"
-                    },
-                    "lastName": {
-                        "type": "string"
-                    },
-                    "email": {
-                        "type": "string"
-                    },
-                    "permissions": {
-                        "$ref": "#/components/schemas/UserInfoPermissions"
-                    },
-                    "fiscal_number": {
-                        "$ref": "#/components/schemas/FiscalNumber"
-                    },
-                    "roles": {
-                        "$ref": "#/components/schemas/UserRoles"
                     }
                 }
             },
             "Error400": {
                 "type": "object",
+                "required": ["error_description", "error"],
                 "properties": {
-                    "result": {
+                    "error_description": {
                         "type": "string"
                     },
-                    "message": {
+                    "error": {
                         "type": "string"
                     },
-                    "code": {
+                    "error_code": {
                         "type": "string"
                     }
                 }
             },
             "Error401": {
                 "type": "object",
+                "required": ["error_description", "error"],
                 "properties": {
                     "error_description": {
                         "type": "string"
@@ -1241,17 +1392,31 @@
             },
             "Error403": {
                 "type": "object",
+                "required": ["error_description", "error"],
                 "properties": {
-                    "title": {
+                    "error_description": {
                         "type": "string"
                     },
-                    "status": {
+                    "error": {
                         "type": "number"
                     }
                 }
             },
             "Error404": {
                 "type": "object",
+                "required": ["error_description", "error"],
+                "properties": {
+                    "error_description": {
+                        "type": "string"
+                    },
+                    "error": {
+                        "type": "string"
+                    }
+                }
+            },
+            "Error405": {
+                "type": "object",
+                "required": ["error_description", "error"],
                 "properties": {
                     "error_description": {
                         "type": "string"
@@ -1313,7 +1478,7 @@
                             "errors": {
                                 "type": "object",
                                 "properties": {
-                                    "website_name": {
+                                    "name": {
                                         "type": "array",
                                         "items": {
                                             "type": "string"
@@ -1340,31 +1505,28 @@
         },
         "examples": {
             "User": {
-                "summary": "Example of User",
+                "summary": "User",
                 "value": {
-                    "firstName": "User",
-                    "lastName": "Example",
                     "email": "name@email.com",
-                    "fiscal_number": "ZRSGLC89D05H501J",
+                    "fiscal_number": "VMGHNY33L47D490P",
                     "permissions": {
-                        "slug": ["manage-analytics"]
-                    },
-                    "roles": "administrator"
-                }
-            },
-            "Website": {
-                "summary": "Example of Website",
-                "value": {
-                    "website_name": "Nome Sito",
-                    "url": "https://url-sito-web.it/",
-                    "type": 1,
-                    "permissions": {
-                        "aa5f68cf-b3ef-4048-801a-8b6f52f7890f": ["view"]
+                        "website-slug": ["manage-analytics"]
                     }
                 }
             },
-            "WebsiteResponse": {
-                "summary": "Example of Website",
+            "Website": {
+                "summary": "Website",
+                "value": {
+                    "name": "Nome Sito",
+                    "url": "https://url-sito-web.it/",
+                    "type": 1,
+                    "permissions": {
+                        "VMGHNY33L47D490P": ["read-analytics"]
+                    }
+                }
+            },
+            "WebsiteInfo": {
+                "summary": "Website",
                 "value": {
                     "name": "Agenzia per L'Italia Digitale",
                     "url": "www.agid.gov.it",
@@ -1374,7 +1536,7 @@
                 }
             },
             "JsSnippet": {
-                "summary": "Example of Javascript Snippet for matomo",
+                "summary": "Javascript Snippet for matomo",
                 "value": {
                     "result": "ok",
                     "id": "wwwagidgovit",
@@ -1383,43 +1545,42 @@
                 }
             },
             "Error400": {
-                "summary": "Example error 400",
+                "summary": "Bad Request",
                 "value": {
-                    "result": "error",
-                    "message": "Error Message",
-                    "code": "1"
+                    "error_description": "error",
+                    "error": "bad_request",
+                    "error_code": "1"
                 }
             },
             "Error401": {
-                "summary": "Example error 401",
+                "summary": "Unauthorized",
                 "value": {
                     "error_description": "The access token is invalid or has expired",
                     "error": "invalid_token"
                 }
             },
             "Error403": {
-                "summary": "Example error 403",
+                "summary": "Forbidden",
                 "value": {
-                    "title": "insufficient permissions",
-                    "status": 403,
-                    "code": 2
+                    "error_description": "Access to the requested resource is forbidden",
+                    "error": "forbidden"
                 }
             },
             "Error404": {
-                "summary": "Example error 404",
+                "summary": "Not Found",
                 "value": {
-                    "error_description": "The access token is invalid or has expired",
-                    "error": "invalid_token"
+                    "error_description": "The requested resource cannot be found on this server",
+                    "error": "not_found"
                 }
             },
             "Error422": {
-                "summary": "Example error 422",
+                "summary": "Unprocessable Entity",
                 "value": {
                     "message": "The given data was invalid."
                 }
             },
             "Error422User": {
-                "summary": "Example error 422 for user requests",
+                "summary": "Unprocessable Entity (User)",
                 "value": {
                     "allOf": [
                         {
@@ -1442,7 +1603,7 @@
                 }
             },
             "Error422Website": {
-                "summary": "Example error 422 for user requests",
+                "summary": "Unprocessable Entity (Website)",
                 "value": {
                     "allOf": [
                         {
@@ -1450,7 +1611,7 @@
                         },
                         {
                             "errors": {
-                                "website_name": [
+                                "name": [
                                     "The website name field is required."
                                 ],
                                 "url": ["The URL field is required."],
