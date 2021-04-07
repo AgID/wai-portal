@@ -117,6 +117,9 @@ return [
             'required' => 'Utente non valido.',
             'exists' => 'Utente non valido.',
         ],
+        'fiscal_number' => [
+            'invalid_format' => 'Codice fiscale formalmente non valido.'
+        ],
     ],
 
     /*
