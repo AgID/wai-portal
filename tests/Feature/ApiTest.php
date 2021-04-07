@@ -304,10 +304,8 @@ class ApiTest extends TestCase
 
         $response
             ->assertStatus(200)
-            ->assertJson([
-                'result' => 'ok',
-                'id' => $this->website->slug,
-                'name' => $this->website->name,
+            ->assertJsonStructure([
+                'javascriptSnippet',
             ]);
     }
 
@@ -341,14 +339,13 @@ class ApiTest extends TestCase
         $response
             ->assertStatus(200)
             ->assertJson([[
-                'uuid' => $user->uuid,
-                'firstName' => $user->name,
-                'lastName' => $user->family_name,
+                'first_name' => $user->name,
+                'family_name' => $user->family_name,
                 'fiscal_number' => $user->fiscal_number,
                 'email' => $user->email,
                 'status' => $status,
                 'permissions' => $websitePermissions,
-                'roles' => $user->allRoleNames,
+                'role' => $user->all_role_names,
             ]]);
     }
 
@@ -391,21 +388,23 @@ class ApiTest extends TestCase
         $user = User::findNotSuperAdminByFiscalNumber($fiscalNumber);
 
         $status = $user->getStatusforPublicAdministration($this->publicAdministration)->description ?? null;
+        $role = Bouncer::scope()->onceTo($this->publicAdministration->id, function () use ($user) {
+            return $user->all_role_names;
+        });
 
         $response
             ->assertStatus(201)
             ->assertHeader('Location', $location)
             ->assertJson([
-                'uuid' => $user->uuid,
-                'firstName' => null,
-                'lastName' => null,
+                'first_name' => null,
+                'family_name' => null,
                 'fiscal_number' => $fiscalNumber,
                 'email' => $email,
                 'status' => $status,
                 'permissions' => [
                     $websiteSlug => ['read-analytics', 'manage-analytics'],
                 ],
-                'roles' => $user->allRoleNames,
+                'role' => $role,
             ]);
     }
 
@@ -441,14 +440,13 @@ class ApiTest extends TestCase
         $response
             ->assertStatus(200)
             ->assertJson([
-                'uuid' => $user->uuid,
-                'firstName' => $user->name,
-                'lastName' => $user->family_name,
+                'first_name' => $user->name,
+                'family_name' => $user->family_name,
                 'fiscal_number' => $user->fiscal_number,
                 'email' => $user->email,
                 'status' => $status,
                 'permissions' => $websitePermissions,
-                'roles' => $user->allRoleNames,
+                'role' => $user->all_role_names,
             ]);
     }
 
@@ -491,6 +489,9 @@ class ApiTest extends TestCase
         ]);
 
         $status = $userToEdit->getStatusforPublicAdministration($this->publicAdministration)->description ?? null;
+        $role = Bouncer::scope()->onceTo($this->publicAdministration->id, function () use ($userToEdit) {
+            return $userToEdit->all_role_names;
+        });
 
         $websitePermissions = $this->publicAdministration->websites->mapWithKeys(function ($website) use ($userToEdit) {
             $permission = [];
@@ -507,14 +508,13 @@ class ApiTest extends TestCase
         $response
             ->assertStatus(200)
             ->assertJson([
-                'uuid' => $userToEdit->uuid,
-                'firstName' => $userToEdit->name,
-                'lastName' => $userToEdit->family_name,
+                'first_name' => $userToEdit->name,
+                'family_name' => $userToEdit->family_name,
                 'fiscal_number' => $userToEdit->fiscal_number,
                 'email' => $updatedEmail,
                 'status' => $status,
                 'permissions' => $websitePermissions,
-                'roles' => $userToEdit->allRoleNames,
+                'role' => $role,
             ]);
     }
 
