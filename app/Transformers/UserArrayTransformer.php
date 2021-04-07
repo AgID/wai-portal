@@ -49,9 +49,8 @@ class UserArrayTransformer extends TransformerAbstract
         })->toArray();
 
         return [
-            'uuid' => $user->uuid,
-            'firstName' => $user->name,
-            'lastName' => $user->family_name,
+            'first_name' => $user->name,
+            'family_name' => $user->family_name,
             'fiscal_number' => $user->fiscal_number,
             'email' => $email,
             'status' => $status,

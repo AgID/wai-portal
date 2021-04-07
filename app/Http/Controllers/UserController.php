@@ -157,7 +157,7 @@ class UserController extends Controller
         $data = $this->storeMethod($request, $request->publicAdministrationFromToken);
 
         if ($data['error']) {
-            return $this->errorResponse($data['message'], $this->getErrorCode(User::class), 400);
+            return $this->errorResponse($data['error_description'], $this->getErrorCode(User::class), 400);
         }
 
         return $this->userResponse($data['user'], $request->publicAdministrationFromToken, null, null, 201, [
@@ -306,7 +306,7 @@ class UserController extends Controller
 
         try {
             if ($userPublicAdministrationStatus->is(UserStatus::PENDING)) {
-                throw new OperationNotAllowedException('Pending users cannot be deleted.');
+                throw new OperationNotAllowedException('Pending users cannot be deleted');
             }
 
             $validator = validator(request()->all())->after([$this, 'validateNotLastActiveAdministrator']);
@@ -395,13 +395,13 @@ class UserController extends Controller
         } catch (InvalidUserStatusException $exception) {
             report($exception);
             $code = $exception->getCode();
-            $message = 'invalid operation for current user status';
+            $message = 'Invalid operation for current user status';
             $httpStatusCode = 400;
         } catch (OperationNotAllowedException $exception) {
             report($exception);
             $code = $exception->getCode();
-            $message = 'invalid operation for current user';
-            $httpStatusCode = 403;
+            $message = 'Invalid operation for current user';
+            $httpStatusCode = 400;
         }
 
         return $this->errorResponse($message, $code, $httpStatusCode);
@@ -509,7 +509,7 @@ class UserController extends Controller
         }
 
         if ($user->isTheLastActiveAdministratorOf($publicAdministration)) {
-            $validator->errors()->add('is_admin', 'The last administrator cannot be removed or suspended.');
+            $validator->errors()->add('is_admin', 'The last administrator cannot be removed or suspended');
         }
     }
 
@@ -594,7 +594,7 @@ class UserController extends Controller
             if ($userInCurrentPublicAdministration) {
                 return [
                     'error' => true,
-                    'type' => 'user.already.exists',
+                    'error_description' => 'User already exists in the current public administration',
                     'title' => __("Non è possibile inoltrare l'invito"),
                     'message' => __("L'utente fa già parte di questa pubblica amministrazione."),
                     'redirectUri' => $redirectUrl ?? null,

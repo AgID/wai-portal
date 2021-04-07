@@ -28,6 +28,16 @@ trait SendsResponse
     ];
 
     /**
+     * Error names to be used in responses.
+     *
+     * @var array the error names
+     */
+    public $responseErrorNames = [
+        400 => 'bad_request',
+        500 => 'internal_server_error',
+    ];
+
+    /**
      * Returns a success response for the specified user.
      *
      * @param User $user the user
@@ -203,33 +213,44 @@ trait SendsResponse
      */
     protected function errorResponse(string $message, string $code, int $httpStatusCode)
     {
-        return request()->expectsJson()
-            ? response()->json([
-                'result' => 'error',
-                'message' => $message,
-                'code' => $code,
-            ], $httpStatusCode)
-            : back()->withNotification([
-                'title' => __('errore del server'),
-                'message' => implode("\n", [
-                    __('Si è verificato un errore relativamente alla tua richiesta.'),
-                    __('Puoi riprovare più tardi o :contact_support.', ['contact_support' => '<a href="' . route('contacts') . '">' . __('contattare il supporto tecnico') . '</a>']),
-                ]),
-                'status' => 'error',
-                'icon' => 'it-close-circle',
-            ]);
+        $requestExpectsJson = request()->expectsJson();
+
+        if ($requestExpectsJson) {
+            $jsonResponse['error'] = $this->getErrorName($httpStatusCode);
+            $jsonResponse['error_description'] = $message;
+            $jsonResponse['error_code'] = $code;
+
+            if (!request()->is('api/*')) {
+                $jsonResponse['result'] = 'error';
+                $jsonResponse['message'] = $message;
+            }
+        }
+
+        $redirectResponse = back()->withNotification([
+            'title' => __('errore del server'),
+            'message' => implode("\n", [
+                __('Si è verificato un errore relativamente alla tua richiesta.'),
+                __('Puoi riprovare più tardi o :contact_support.', ['contact_support' => '<a href="' . route('contacts') . '">' . __('contattare il supporto tecnico') . '</a>']),
+            ]),
+            'status' => 'error',
+            'icon' => 'it-close-circle',
+        ]);
+
+        return $requestExpectsJson
+            ? response()->json($jsonResponse, $httpStatusCode)
+            : $redirectResponse;
     }
 
     /**
-     * Returns an not found error response.
+     * Get an error response name for the provided http staus code.
      *
-     * @param $model the class name of the model in this response
+     * @param int $httpStatusCode the http status code
      *
-     * @return JsonResponse|RedirectResponse the response in json or http redirect format
+     * @return string the response error name
      */
-    protected function notFoundResponse(string $model)
+    protected function getErrorName(int $httpStatusCode): string
     {
-        return $this->errorResponse('Resource not found.', $this->getErrorCode($model), 404);
+        return $this->responseErrorNames[$httpStatusCode] ?? 'generic_error';
     }
 
     /**
