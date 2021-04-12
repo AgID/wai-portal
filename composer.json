@@ -35,8 +35,8 @@
     "require": {
         "php": "^7.4",
         "bensampo/laravel-enum": "^1.25",
-        "davejamesmiller/laravel-breadcrumbs": "^5.3",
         "davidepastore/codice-fiscale": "^0.8.0",
+        "diglactic/laravel-breadcrumbs": "^6.1",
         "doctrine/dbal": "^2.10",
         "elasticsearch/elasticsearch": "7.12.*",
         "ethanhann/redisearch-php": "^1.0",

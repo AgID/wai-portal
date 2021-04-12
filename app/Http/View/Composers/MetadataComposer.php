@@ -4,7 +4,7 @@ namespace App\Http\View\Composers;
 
 use App\Support\Markdown;
 use App\Traits\GetsLocalizedYamlContent;
-use DaveJamesMiller\Breadcrumbs\Facades\Breadcrumbs;
+use Diglactic\Breadcrumbs\Breadcrumbs;
 use Illuminate\Http\Request;
 use Illuminate\Session\Store;
 use Illuminate\View\View;
