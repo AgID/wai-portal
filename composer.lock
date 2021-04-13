@@ -1581,20 +1581,20 @@
         },
         {
             "name": "italia/spid-laravel",
-            "version": "v1.2.2-beta",
+            "version": "v1.2.3-beta",
             "source": {
                 "type": "git",
                 "url": "https://github.com/italia/spid-laravel.git",
-                "reference": "df0e133aed93eb5bd53cb0505d039ba71656e1ba"
+                "reference": "15131905b635dc26049e49f29acfaebd89585199"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/italia/spid-laravel/zipball/df0e133aed93eb5bd53cb0505d039ba71656e1ba",
-                "reference": "df0e133aed93eb5bd53cb0505d039ba71656e1ba",
+                "url": "https://api.github.com/repos/italia/spid-laravel/zipball/15131905b635dc26049e49f29acfaebd89585199",
+                "reference": "15131905b635dc26049e49f29acfaebd89585199",
                 "shasum": ""
             },
             "require": {
-                "cweagans/composer-patches": "^1.6",
+                "cweagans/composer-patches": "^1.7",
                 "illuminate/config": ">=6.0",
                 "illuminate/support": ">=6.0",
                 "nesbot/carbon": "^2.46",
@@ -1646,9 +1646,9 @@
             ],
             "support": {
                 "issues": "https://github.com/italia/spid-laravel/issues",
-                "source": "https://github.com/italia/spid-laravel/tree/v1.2.2-beta"
+                "source": "https://github.com/italia/spid-laravel/tree/v1.2.3-beta"
             },
-            "time": "2021-03-13T17:15:30+00:00"
+            "time": "2021-04-07T10:07:53+00:00"
         },
         {
             "name": "justinrainbow/json-schema",
@@ -3668,16 +3668,16 @@
         },
         {
             "name": "robrichards/xmlseclibs",
-            "version": "3.1.0",
+            "version": "3.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/robrichards/xmlseclibs.git",
-                "reference": "8d8e56ca7914440a8c60caff1a865e7dff1d9a5a"
+                "reference": "f8f19e58f26cdb42c54b214ff8a820760292f8df"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/robrichards/xmlseclibs/zipball/8d8e56ca7914440a8c60caff1a865e7dff1d9a5a",
-                "reference": "8d8e56ca7914440a8c60caff1a865e7dff1d9a5a",
+                "url": "https://api.github.com/repos/robrichards/xmlseclibs/zipball/f8f19e58f26cdb42c54b214ff8a820760292f8df",
+                "reference": "f8f19e58f26cdb42c54b214ff8a820760292f8df",
                 "shasum": ""
             },
             "require": {
@@ -3704,9 +3704,9 @@
             ],
             "support": {
                 "issues": "https://github.com/robrichards/xmlseclibs/issues",
-                "source": "https://github.com/robrichards/xmlseclibs/tree/3.1.0"
+                "source": "https://github.com/robrichards/xmlseclibs/tree/3.1.1"
             },
-            "time": "2020-04-22T17:19:51+00:00"
+            "time": "2020-09-05T13:00:25+00:00"
         },
         {
             "name": "silber/bouncer",
