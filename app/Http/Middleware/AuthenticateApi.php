@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Models\Credential;
 use App\Models\User;
+use App\Models\Website;
 use App\Traits\SendsResponse;
 use Closure;
 
@@ -56,6 +57,17 @@ class AuthenticateApi
                 ], 404);
             }
             $requestApiParams['userFromFiscalNumber'] = $user;
+        }
+
+        if ($request->website && $request->website instanceof Website) {
+            $website = $request->website;
+
+            if ($website->publicAdministration->id !== $publicAdministration->id) {
+                return response()->json([
+                    'error' => 'not_found',
+                    'error_description' => 'The requested resource cannot be found on this server',
+                ], 404);
+            }
         }
 
         $request->merge($requestApiParams);
