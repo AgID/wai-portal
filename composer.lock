@@ -240,22 +240,25 @@
         },
         {
             "name": "diglactic/laravel-breadcrumbs",
-            "version": "v6.1.0",
+            "version": "v6.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/diglactic/laravel-breadcrumbs.git",
-                "reference": "027178500b57295290d9930f113f81df1a7188cb"
+                "reference": "8f73674f9c5403625154768f8e123a620fc2d7a5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/diglactic/laravel-breadcrumbs/zipball/027178500b57295290d9930f113f81df1a7188cb",
-                "reference": "027178500b57295290d9930f113f81df1a7188cb",
+                "url": "https://api.github.com/repos/diglactic/laravel-breadcrumbs/zipball/8f73674f9c5403625154768f8e123a620fc2d7a5",
+                "reference": "8f73674f9c5403625154768f8e123a620fc2d7a5",
                 "shasum": ""
             },
             "require": {
                 "facade/ignition-contracts": "^1.0",
                 "laravel/framework": "^6.0 || ^7.0 || ^8.0",
                 "php": "^7.2 || ^8.0"
+            },
+            "conflict": {
+                "davejamesmiller/laravel-breadcrumbs": "*"
             },
             "require-dev": {
                 "orchestra/testbench": "^4.10 || ^5.9 || ^6.4",
@@ -305,9 +308,9 @@
             ],
             "support": {
                 "issues": "https://github.com/diglactic/laravel-breadcrumbs/issues",
-                "source": "https://github.com/diglactic/laravel-breadcrumbs/tree/v6.1.0"
+                "source": "https://github.com/diglactic/laravel-breadcrumbs/tree/v6.1.1"
             },
-            "time": "2021-01-25T18:38:42+00:00"
+            "time": "2021-04-12T18:06:07+00:00"
         },
         {
             "name": "doctrine/cache",
