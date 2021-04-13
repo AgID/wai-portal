@@ -30,8 +30,8 @@ class UserArrayTransformer extends TransformerAbstract
 
         $isAdmin = $user->isAn(UserRole::ADMIN);
 
-        $websitesPermissions = $user->publicAdministrations->mapWithKeys(function ($publicAdministration) use ($user, $isAdmin) {
-            return Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user, $publicAdministration, $isAdmin) {
+        $websitesPermissions = null !== $publicAdministration
+            ? Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user, $publicAdministration, $isAdmin) {
                 $user->role = $user->all_role_names;
 
                 return $publicAdministration->websites->mapWithKeys(function ($website) use ($user, $isAdmin) {
@@ -45,8 +45,8 @@ class UserArrayTransformer extends TransformerAbstract
 
                     return [$website->slug => $permission];
                 });
-            });
-        })->toArray();
+            })->toArray()
+            : [];
 
         return [
             'first_name' => $user->name,
