@@ -150,6 +150,21 @@ class ApiTest extends TestCase
             'Accept' => 'application/json',
         ]);
 
+        $publicAdministration = $this->website->publicAdministration;
+        $usersPermissions = Bouncer::scope()->onceTo($publicAdministration->id, function () use ($publicAdministration) {
+            return $publicAdministration->users->mapWithKeys(function ($user) {
+                $permission = [];
+                if ($user->can(UserPermission::READ_ANALYTICS, $this->website)) {
+                    array_push($permission, UserPermission::READ_ANALYTICS);
+                }
+                if ($user->can(UserPermission::MANAGE_ANALYTICS, $this->website)) {
+                    array_push($permission, UserPermission::MANAGE_ANALYTICS);
+                }
+
+                return [$user->fiscal_number => $permission];
+            });
+        })->toArray();
+
         $response
             ->assertStatus(200)
             ->assertJson([[
@@ -158,6 +173,7 @@ class ApiTest extends TestCase
                 'slug' => $this->website->slug,
                 'status' => $this->website->status->description,
                 'type' => $this->website->type->description,
+                'permissions' => $usersPermissions,
             ]]);
     }
 
