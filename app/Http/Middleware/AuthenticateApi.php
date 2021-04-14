@@ -50,6 +50,7 @@ class AuthenticateApi
 
         if ($request->fn) {
             $user = User::findNotSuperAdminByFiscalNumber($request->fn);
+
             if (!$user || !$user->publicAdministrationsWithSuspended->contains($publicAdministration)) {
                 return response()->json([
                     'error' => 'not_found',
@@ -59,15 +60,12 @@ class AuthenticateApi
             $requestApiParams['userFromFiscalNumber'] = $user;
         }
 
-        if ($request->website && $request->website instanceof Website) {
-            $website = $request->website;
-
-            if ($website->publicAdministration->id !== $publicAdministration->id) {
-                return response()->json([
-                    'error' => 'not_found',
-                    'error_description' => 'The requested resource cannot be found on this server',
-                ], 404);
-            }
+        if ($request->website instanceof Website
+            && $request->website->publicAdministration->id !== $publicAdministration->id) {
+            return response()->json([
+                'error' => 'not_found',
+                'error_description' => 'The requested resource cannot be found on this server',
+            ], 404);
         }
 
         $request->merge($requestApiParams);
