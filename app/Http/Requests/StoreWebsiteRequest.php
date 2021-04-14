@@ -55,7 +55,7 @@ class StoreWebsiteRequest extends FormRequest
     public function withValidator(Validator $validator): void
     {
         $validator->after(function (Validator $validator) {
-            if (is_array($this->input('permissions')) && !$this->checkUsersIds($this->input('permissions'))) {
+            if (is_array($this->input('permissions')) && !$this->checkUsers($this->input('permissions'))) {
                 $validator->errors()->add('permissions', __('È necessario selezionare tutti i permessi correttamente'));
             }
         });
@@ -77,11 +77,11 @@ class StoreWebsiteRequest extends FormRequest
      *
      * @return bool true if the provided user permissions contains keys belonging to users in the current public administration, false otherwise
      */
-    protected function checkUsersIds(array $usersPermissions): bool
+    protected function checkUsers(array $usersPermissions): bool
     {
         if ($this->is('api/*')) {
             $currentPublicAdministration = $this->publicAdministrationFromToken;
-            $pluckField = 'uuid';
+            $pluckField = 'fiscal_number';
         } else {
             $currentPublicAdministration = current_public_administration();
             $pluckField = 'id';
