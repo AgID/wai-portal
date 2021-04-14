@@ -3,7 +3,6 @@
 namespace App\Transformers;
 
 use App\Enums\UserPermission;
-use App\Enums\UserRole;
 use App\Models\PublicAdministration;
 use App\Models\User;
 use League\Fractal\TransformerAbstract;
@@ -28,18 +27,16 @@ class UserArrayTransformer extends TransformerAbstract
             ? $user->status
             : $user->getStatusforPublicAdministration($publicAdministration)->description ?? null;
 
-        $isAdmin = $user->isAn(UserRole::ADMIN);
-
         $websitesPermissions = null !== $publicAdministration
-            ? Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user, $publicAdministration, $isAdmin) {
+            ? Bouncer::scope()->onceTo($publicAdministration->id, function () use ($user, $publicAdministration) {
                 $user->role = $user->all_role_names;
 
-                return $publicAdministration->websites->mapWithKeys(function ($website) use ($user, $isAdmin) {
+                return $publicAdministration->websites->mapWithKeys(function ($website) use ($user) {
                     $permission = [];
-                    if ($isAdmin || $user->can(UserPermission::READ_ANALYTICS, $website)) {
+                    if ($user->can(UserPermission::READ_ANALYTICS, $website)) {
                         array_push($permission, UserPermission::READ_ANALYTICS);
                     }
-                    if ($isAdmin || $user->can(UserPermission::MANAGE_ANALYTICS, $website)) {
+                    if ($user->can(UserPermission::MANAGE_ANALYTICS, $website)) {
                         array_push($permission, UserPermission::MANAGE_ANALYTICS);
                     }
 
