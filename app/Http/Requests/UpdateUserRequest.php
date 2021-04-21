@@ -64,7 +64,7 @@ class UpdateUserRequest extends StoreUserRequest
 
         $validator->after(function (Validator $validator) use ($user, $publicAdministration) {
             if ($user->isTheLastActiveAdministratorOf($publicAdministration) && !$this->input('is_admin')) {
-                $validator->errors()->add('is_admin', __('Deve restare almeno un utente amministratore per ogni PA.'));
+                $validator->errors()->add('is_admin', __('validation.errors.last_admin'));
             }
         });
 
