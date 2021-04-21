@@ -47,6 +47,8 @@ allow_adding_segments_for_all_websites = 0
 [Debug]
 ;always_archive_data_day=1
 ;always_archive_data_period=1
+;archiving_profile = 1
+;archive_profiling_log = /var/log/matomo/archive_profiling.log
 
 [Plugins]
 Plugins[] = "CorePluginsAdmin"
