@@ -186,4 +186,10 @@ return [
         'end_time' => 'orario di fine',
         'credential_name' => 'nome della credenziale',
     ],
+    'errors' => [
+        'last_admin' => 'Deve restare almeno un utente amministratore per ogni PA.',
+        'last_website_enabled' =>'Non è possibile disabiltare l\'utente :user perché questo è l\'unico sito per il quale è abilitato.',
+        'permissions' => 'È necessario selezionare tutti i permessi correttamente',
+        'url_public_administration' => 'L\'indirizzo inserito appartiene a un\'altra pubblica amministrazione.'
+    ]
 ];

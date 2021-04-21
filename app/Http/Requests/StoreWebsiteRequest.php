@@ -56,14 +56,14 @@ class StoreWebsiteRequest extends FormRequest
     {
         $validator->after(function (Validator $validator) {
             if (is_array($this->input('permissions')) && !$this->checkUsers($this->input('permissions'))) {
-                $validator->errors()->add('permissions', __('È necessario selezionare tutti i permessi correttamente'));
+                $validator->errors()->add('permissions', __('validation.errors.permissions'));
             }
         });
         $validator->after(function (Validator $validator) {
             if (filled($this->input('url'))) {
                 $host = parse_url($this->input('url'), PHP_URL_HOST);
                 if ($host && !$this->checkIsNotPrimary($host)) {
-                    $validator->errors()->add('url', __("L'indirizzo inserito appartiene a un'altra pubblica amministrazione."));
+                    $validator->errors()->add('url', __('validation.errors.url_public_administration'));
                 }
             }
         });
