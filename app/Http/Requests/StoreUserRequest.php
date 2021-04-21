@@ -81,7 +81,7 @@ class StoreUserRequest extends FormRequest
 
         $validator->after(function (Validator $validator) {
             if (is_array($this->input('permissions')) && !$this->checkWebsitesIds($this->input('permissions'))) {
-                $validator->errors()->add('permissions', __('È necessario selezionare tutti i permessi correttamente'));
+                $validator->errors()->add('permissions', __('validation.errors.permissions'));
             }
         });
     }
