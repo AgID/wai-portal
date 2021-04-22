@@ -862,7 +862,7 @@ class WebsiteController extends Controller
         $usersPermissions = $validatedData['permissions'] ?? [];
         $publicAdministration->getNonAdministrators()->map(function ($user) use ($website, $usersPermissions) {
             if (request()->is('api/*')) {
-                $userKey = $user->uuid;
+                $userKey = $user->fiscal_number;
             } else {
                 $userKey = $user->id;
             }
