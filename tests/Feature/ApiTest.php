@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Enums\UserPermission;
+use App\Enums\UserRole;
 use App\Enums\UserStatus;
 use App\Enums\WebsiteAccessType;
 use App\Enums\WebsiteStatus;
@@ -36,6 +37,13 @@ class ApiTest extends TestCase
      * @var User the user
      */
     protected $user;
+
+    /**
+     * The non admin user.
+     *
+     * @var User the user
+     */
+    protected $userNonAdministrator;
 
     /**
      * The Kong credential.
@@ -88,7 +96,19 @@ class ApiTest extends TestCase
             ->create();
 
         $this->user = factory(User::class)->state('active')->create();
-        $this->publicAdministration->users()->sync([$this->user->id => ['user_email' => $this->user->email, 'user_status' => UserStatus::ACTIVE]]);
+        $this->userNonAdministrator = factory(User::class)->create([
+            'status' => UserStatus::INVITED,
+        ]);
+
+        Bouncer::scope()->onceTo($this->publicAdministration->id, function () {
+            $this->userNonAdministrator->assign(UserRole::DELEGATED);
+        });
+
+        $this->publicAdministration->users()->sync([
+            $this->user->id => ['user_email' => $this->user->email, 'user_status' => UserStatus::ACTIVE],
+            $this->userNonAdministrator->id => ['user_email' => $this->userNonAdministrator->email, 'user_status' => UserStatus::INVITED],
+        ],
+        false);
 
         $this->website = factory(Website::class)->create([
             'public_administration_id' => $this->publicAdministration->id,
@@ -100,9 +120,10 @@ class ApiTest extends TestCase
             'public_administration_id' => $this->publicAdministration->id,
         ]);
 
-        $this->faker = Factory::create();
-
         Bouncer::dontCache();
+        $this->userNonAdministrator->registerAnalyticsServiceAccount();
+
+        $this->faker = Factory::create();
     }
 
     /**
@@ -190,6 +211,9 @@ class ApiTest extends TestCase
             'website_name' => $name,
             'url' => $domain_name,
             'type' => 1,
+            'permissions' => [
+                $this->userNonAdministrator->fiscal_number => [UserPermission::READ_ANALYTICS],
+            ],
         ], [
             'X-Consumer-Custom-Id' => '{"type":"admin","siteId":[]}',
             'X-Consumer-Id' => $this->credential->consumer_id,
@@ -205,6 +229,10 @@ class ApiTest extends TestCase
                 'name' => $name,
                 'url' => $domain_name,
                 'slug' => $slug,
+                'permissions' => [
+                    $this->user->fiscal_number => [],
+                    $this->userNonAdministrator->fiscal_number => [],
+                ],
             ]);
     }
 
@@ -221,6 +249,21 @@ class ApiTest extends TestCase
             'Accept' => 'application/json',
         ]);
 
+        $publicAdministration = $this->website->publicAdministration;
+        $usersPermissions = Bouncer::scope()->onceTo($publicAdministration->id, function () use ($publicAdministration) {
+            return $publicAdministration->users->mapWithKeys(function ($user) {
+                $permission = [];
+                if ($user->can(UserPermission::READ_ANALYTICS, $this->website)) {
+                    array_push($permission, UserPermission::READ_ANALYTICS);
+                }
+                if ($user->can(UserPermission::MANAGE_ANALYTICS, $this->website)) {
+                    array_push($permission, UserPermission::MANAGE_ANALYTICS);
+                }
+
+                return [$user->fiscal_number => $permission];
+            });
+        })->toArray();
+
         $response
             ->assertStatus(200)
             ->assertJson([
@@ -229,6 +272,7 @@ class ApiTest extends TestCase
                 'slug' => $this->website->slug,
                 'status' => $this->website->status->description,
                 'type' => $this->website->type->description,
+                'permissions' => $usersPermissions,
             ]);
     }
 
@@ -262,6 +306,12 @@ class ApiTest extends TestCase
             'url' => $newDomain,
             'type' => 3,
             'slug' => $newSlug,
+            'permissions' => [
+                $this->userNonAdministrator->fiscal_number => [
+                    UserPermission::READ_ANALYTICS,
+                    UserPermission::MANAGE_ANALYTICS,
+                ],
+            ],
         ], [
             'X-Consumer-Custom-Id' => '{"type":"admin","siteId":[]}',
             'X-Consumer-Id' => $this->credential->consumer_id,
@@ -274,6 +324,10 @@ class ApiTest extends TestCase
                 'name' => $newName,
                 'url' => $newDomain,
                 'slug' => $newSlug,
+                'permissions' => [
+                    $this->user->fiscal_number => [],
+                    $this->userNonAdministrator->fiscal_number => [],
+                ],
             ]);
     }
 
@@ -391,7 +445,7 @@ class ApiTest extends TestCase
             'email' => $email,
             'fiscal_number' => $fiscalNumber,
             'permissions' => [
-                $websiteSlug => ['manage-analytics'],
+                $websiteSlug => [UserPermission::MANAGE_ANALYTICS],
             ],
         ], [
             'X-Consumer-Custom-Id' => '{"type":"admin","siteId":[]}',
@@ -418,7 +472,7 @@ class ApiTest extends TestCase
                 'email' => $email,
                 'status' => $status,
                 'permissions' => [
-                    $websiteSlug => ['read-analytics', 'manage-analytics'],
+                    $websiteSlug => [UserPermission::READ_ANALYTICS, UserPermission::MANAGE_ANALYTICS],
                 ],
                 'role' => $role,
             ]);
