@@ -151,6 +151,7 @@
                         </div>
                     </div>
                     @endforeach
+                    <script>widgets_domain = "{{ config('analytics-service.public_url') }}"</script>
                 </div>
             </div>
         </div>
