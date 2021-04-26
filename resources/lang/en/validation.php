@@ -187,10 +187,10 @@ return [
         'credential_name' => 'credentials name',
     ],
     'errors' => [
-        'last_admin' => 'At least one administrator must be present per Public Administration',
-        'last_website_enabled' => 'The user :user can\'t be disabled as this is its last website enabled.',    
-        'permissions' => 'All the permissions must be correctly selected',
-        'url_public_administration' => 'The given url belongs to another public administration',
+        'last_admin' => 'At least one administrator must be present for each public administration.',
+        'last_website_enabled' => "The user :user can't be removed because this is the last website for which it is enabled.",
+        'permissions' => 'All the permissions must be selected correctly.',
+        'url_public_administration' => 'The url entered belongs to another public administration.',
     ]
 
 ];
