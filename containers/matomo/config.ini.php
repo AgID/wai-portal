@@ -32,6 +32,7 @@ proxy_uri_header = 1
 enable_general_settings_admin = 0
 browser_archiving_disabled_enforce = @MATOMO_CRON_ARCHIVING_ENABLED@
 enable_browser_archiving_triggering = @MATOMO_CRON_ARCHIVING_DISABLED@
+archiving_range_force_on_browser_request = @MATOMO_CRON_ARCHIVING_DISABLED@
 default_day = "previous30"
 default_period = "range"
 default_language = "it"
@@ -43,6 +44,8 @@ enable_create_realtime_segments = 0
 enable_segment_suggested_values = 0
 adding_segment_requires_access = "admin"
 allow_adding_segments_for_all_websites = 0
+process_new_segments_from = "segment_creation_time"
+archiving_ranking_query_row_limit = 0
 
 [Debug]
 ;always_archive_data_day=1
