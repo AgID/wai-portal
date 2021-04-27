@@ -29,7 +29,7 @@ window.axios.interceptors.response.use(
     error => {
         if (axios.isCancel(error)) {
             // request deduped
-        } else if (401 === error.response.status) {
+        } else if (401 === error.response?.status) {
             Notification.showNotification(I18n.t('sessione scaduta'), [
                 I18n.t('La sessione è scaduta a causa di inattività sulla pagina.'),
                 ' <a href="#" onclick="location.reload(true);return false;">',
