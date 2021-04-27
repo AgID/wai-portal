@@ -163,7 +163,7 @@ services:
 
 # ipa-redisearch
   ipa-redisearch:
-    image: webanalyticsitalia/wai-ipa-redisearch:5.0.9-stable
+    image: webanalyticsitalia/wai-ipa-redisearch:5.0.12-stable
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
     networks:
