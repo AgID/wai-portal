@@ -63,6 +63,7 @@
             </div>
         </div>
         @endforeach
+        <script>widgets_domain = "{{ config('analytics-service.public_url') }}"</script>
     </div>
     @else
     <div class="d-flex justify-content-center pb-5">
