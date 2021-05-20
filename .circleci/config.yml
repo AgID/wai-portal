@@ -61,7 +61,7 @@ commands:
           command: |
             wget https://get.symfony.com/cli/installer -O - | bash
             sudo mv /home/circleci/.symfony/bin/symfony /usr/local/bin/symfony
-            symfony check:security
+            # symfony check:security
 
   install_node_packages:
     description: Ensure all javascript dependencies are installed
