@@ -25,7 +25,7 @@ import HighlightBar from './highlightBar';
 import Trackers from './trackers';
 
 
-$(document).ready(() => {
+$(() => {
     Forms.init();
     SearchIpa.init();
     Notification.init();
