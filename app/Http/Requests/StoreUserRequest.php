@@ -68,7 +68,7 @@ class StoreUserRequest extends FormRequest
                     })->first();
 
                 if (!is_null($user)) {
-                    if ($user->fiscal_number === $this->input('fiscal_number')) {
+                    if (0 === strcasecmp($user->fiscal_number, $this->input('fiscal_number'))) {
                         $data = $validator->getData();
                         $data['existingUser'] = $user;
                         $validator->setData($data);
