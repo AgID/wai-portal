@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+/*
 Route::prefix(config('app.api_version'))->group(function () {
     Route::middleware('api.auth')->group(function () {
         Route::get('/', function () {
@@ -56,3 +57,4 @@ Route::prefix(config('app.api_version'))->group(function () {
         });
     });
 });
+*/
