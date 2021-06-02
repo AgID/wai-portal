@@ -256,3 +256,8 @@ services:
       - "8081:8081"
     networks:
       - backend
+
+  selenium:
+    image: selenium/standalone-chrome
+    networks:
+      - backend

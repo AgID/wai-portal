@@ -493,6 +493,9 @@
         <!-- Execute phpunit to run unit tests -->
         <echo msg="Running unit tests [PHPUnit]..."/>
         <exec command="docker-compose exec -u www-data php-fpm vendor/phpunit/phpunit/phpunit" dir="containers" passthru="true" checkreturn="true"/>
+        <!-- Start Selenium -->
+        <echo msg="Starting Selenium..."/>
+        <exec command="docker-compose up -d selenium" dir="containers" passthru="true" checkreturn="true"/>
         <!-- Install lighthouse -->
         <exec command="docker-compose exec -u www-data php-fpm lhci --version" dir="containers" returnProperty="checkLighthouse"/>
         <if>
@@ -512,6 +515,8 @@
         </delete>
         <delete dir="tests/Browser/lighthouse/.lighthouseci" quiet="true"/>
         <exec command="docker-compose exec -u www-data php-fpm php artisan dusk" dir="containers" passthru="true" checkreturn="true"/>
+        <echo msg="Stopping Selenium..."/>
+        <exec command="docker-compose stop selenium" dir="containers" passthru="true" checkreturn="true"/>
         <!-- Restore the Users/Websites indexes after tests -->
         <if>
             <equals arg1="${env.APP_ENV}" arg2="local"/>

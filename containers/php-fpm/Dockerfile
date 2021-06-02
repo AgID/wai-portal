@@ -49,11 +49,6 @@ RUN if [ "env-${ENV}" = "env-local" ] || [ "env-${ENV}" = "env-testing" ]; then 
     && apt-get -y -f --no-install-recommends install \
     && dpkg -i --force-depends google-chrome-${CHROME_BROWSER_CHANNEL}_current_amd64.deb \
     && rm google-chrome-${CHROME_BROWSER_CHANNEL}_current_amd64.deb \
-    && chrome_driver_version=`wget -qO- http://chromedriver.storage.googleapis.com/LATEST_RELEASE_"$chrome_version"` \
-    && wget https://chromedriver.storage.googleapis.com/"$chrome_driver_version"/chromedriver_linux64.zip \
-    && unzip -q chromedriver_linux64.zip \
-    && mv chromedriver /usr/local/bin/ \
-    && rm chromedriver_linux64.zip \
     && wget -O node-build.zip https://github.com/nodenv/node-build/archive/master.zip \
     && unzip node-build.zip \
     && node-build-master/install.sh \
