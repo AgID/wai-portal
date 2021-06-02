@@ -7,6 +7,7 @@ RUN apk --update add curl patch && rm /var/cache/apk/*
 RUN mkdir -p /opt/matomo
 ARG MATOMO_VERSION
 ARG MATOMO_WAI_THEME_VERSION
+ARG MATOMO_PLUGIN_RESTRICTANONYMOUSACCESS_VERSION
 ARG MATOMO_PLUGIN_SUPERUSERONLYRESTRICTIONS_VERSION
 ARG MATOMO_PLUGIN_DISABLESITETRACKING_VERSION
 ARG MATOMO_PLUGIN_QUEUEDTRACKING_VERSION
@@ -55,7 +56,22 @@ RUN if [ -n "$MATOMO_PLUGIN_SUPERUSERONLYRESTRICTIONS_VERSION" ]; then \
     && sed -i -E -e 's/(@MATOMO_PLUGINS@)/Plugins[] = "SuperUserOnlyRestrictions"\n\1/g' /opt/matomo/config/config.ini.php \
     && sed -i -E -e 's/(@MATOMO_PLUGINS_INSTALLED@)/PluginsInstalled[] = "SuperUserOnlyRestrictions"\n\1/g' /opt/matomo/config/config.ini.php \
     && sed -i -E -e 's/(@MATOMO_MORE_CONFIG@)/[SuperUserOnlyRestrictions]\n\1/g' /opt/matomo/config/config.ini.php \
-    && sed -i -E -e 's/(@MATOMO_MORE_CONFIG@)/super_user_only_restrictions_enabled = @MATOMO_PLUGIN_SUPERUSERONLYRESTRICTIONS_ENABLED@\n\1/g' /opt/matomo/config/config.ini.php \
+    && sed -i -E -e 's/(@MATOMO_MORE_CONFIG@)/super_user_only_restrictions_enabled = @MATOMO_PLUGIN_SUPERUSERONLYRESTRICTIONS_ENABLED@\n\n\1/g' /opt/matomo/config/config.ini.php \
+;fi
+
+RUN if [ -n "$MATOMO_PLUGIN_RESTRICTANONYMOUSACCESS_VERSION" ]; then \
+    curl -fsSL -o RestrictAnonymousAccess.zip \
+        "https://github.com/AgID/wai-matomo-plugin-RestrictAnonymousAccess/archive/${MATOMO_PLUGIN_RESTRICTANONYMOUSACCESS_VERSION}.zip" \
+    && unzip RestrictAnonymousAccess.zip -d /opt/matomo/plugins \
+    && mv /opt/matomo/plugins/wai-matomo-plugin-RestrictAnonymousAccess-${MATOMO_PLUGIN_RESTRICTANONYMOUSACCESS_VERSION} /opt/matomo/plugins/RestrictAnonymousAccess \
+    && rm -rf RestrictAnonymousAccess.zip \
+    && sed -i -E -e 's/(@MATOMO_PLUGINS@)/Plugins[] = "RestrictAnonymousAccess"\n\1/g' /opt/matomo/config/config.ini.php \
+    && sed -i -E -e 's/(@MATOMO_PLUGINS_INSTALLED@)/PluginsInstalled[] = "RestrictAnonymousAccess"\n\1/g' /opt/matomo/config/config.ini.php \
+    && sed -i -E -e 's/(@MATOMO_MORE_CONFIG@)/[RestrictAnonymousAccess]\n\1/g' /opt/matomo/config/config.ini.php \
+    && sed -i -E -e 's/(@MATOMO_MORE_CONFIG@)/allowed_requests[] = "module=Widgetize"\n\1/g' /opt/matomo/config/config.ini.php \
+    && sed -i -E -e 's/(@MATOMO_MORE_CONFIG@)/allowed_requests[] = "module=API\&method=API.getMatomoVersion"\n\1/g' /opt/matomo/config/config.ini.php \
+    && sed -i -E -e 's/(@MATOMO_MORE_CONFIG@)/allowed_requests[] = "module=API\&method=UsersManager.getTokenAuth"\n\1/g' /opt/matomo/config/config.ini.php \
+    && sed -i -E -e 's/(@MATOMO_MORE_CONFIG@)/allowed_referrers[] = "module=Widgetize\&action=iframe\&widget=1"\n\n\1/g' /opt/matomo/config/config.ini.php \
 ;fi
 
 RUN if [ -n "$MATOMO_PLUGIN_DISABLESITETRACKING_VERSION" ]; then \
