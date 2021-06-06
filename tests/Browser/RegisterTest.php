@@ -44,8 +44,9 @@ class RegisterTest extends DuskTestCase
             $browser->visit($signedUrl)
                     ->assertPathIs('/websites')
                     ->visit('/user/verify')
-                    ->waitForText("L'indirizzo email")
-                    ->assertSee('è già stato verificato');
+                    ->waitForText('Le statistiche dei siti web')
+                    ->assertPresent('.notification-in-page')
+                    ->assertSourceHas('è già stato verificato');
         });
     }
 }
