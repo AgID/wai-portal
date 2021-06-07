@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f74a2ae916f657a3523021c900018723",
+    "content-hash": "a1e397f24e8f9d91666a2ed5a2f2b162",
     "packages": [
         {
             "name": "bensampo/laravel-enum",
@@ -240,16 +240,16 @@
         },
         {
             "name": "diglactic/laravel-breadcrumbs",
-            "version": "v6.1.1",
+            "version": "v7.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/diglactic/laravel-breadcrumbs.git",
-                "reference": "8f73674f9c5403625154768f8e123a620fc2d7a5"
+                "reference": "994808137d69672473f7f4df9b96d731c7e2ed74"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/diglactic/laravel-breadcrumbs/zipball/8f73674f9c5403625154768f8e123a620fc2d7a5",
-                "reference": "8f73674f9c5403625154768f8e123a620fc2d7a5",
+                "url": "https://api.github.com/repos/diglactic/laravel-breadcrumbs/zipball/994808137d69672473f7f4df9b96d731c7e2ed74",
+                "reference": "994808137d69672473f7f4df9b96d731c7e2ed74",
                 "shasum": ""
             },
             "require": {
@@ -280,10 +280,7 @@
             "autoload": {
                 "psr-4": {
                     "Diglactic\\Breadcrumbs\\": "src/"
-                },
-                "files": [
-                    "src/deprecated.php"
-                ]
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -308,9 +305,9 @@
             ],
             "support": {
                 "issues": "https://github.com/diglactic/laravel-breadcrumbs/issues",
-                "source": "https://github.com/diglactic/laravel-breadcrumbs/tree/v6.1.1"
+                "source": "https://github.com/diglactic/laravel-breadcrumbs/tree/v7.0.0"
             },
-            "time": "2021-04-12T18:06:07+00:00"
+            "time": "2021-05-23T16:43:52+00:00"
         },
         {
             "name": "doctrine/cache",
