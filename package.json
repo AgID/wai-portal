@@ -38,6 +38,6 @@
         "stylelint-webpack-plugin": "^2.1.1",
         "throttle-debounce": "^3.0.1",
         "upper-case-first": "^2.0.2",
-        "vue-template-compiler": "^2.6.13"
+        "vue-template-compiler": "^2.6.14"
     }
 }
