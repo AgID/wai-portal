@@ -45,8 +45,9 @@ class RegisterTest extends DuskTestCase
                     ->assertPathIs('/websites')
                     ->visit('/user/verify')
                     ->waitForText('Le statistiche dei siti web')
-                    ->assertPresent('.notification-in-page')
-                    ->assertSourceHas('è già stato verificato');
+                    ->assertPathIs('/');
+            // ->assertPresent('.notification-in-page')
+                    // ->assertSourceHas('è già stato verificato');
         });
     }
 }
