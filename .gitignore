@@ -23,7 +23,7 @@ clover.xml
 
 # related to local development
 TODO
-.php_cs.cache
+.php-cs-fixer.cache
 .idea
 .DS_Store
 .phpunit.result.cache

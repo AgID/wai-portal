@@ -59,8 +59,7 @@ abstract class DuskTestCase extends BaseTestCase
      */
     public static function prepare()
     {
-        static::useChromedriver('/usr/local/bin/chromedriver');
-        static::startChromeDriver();
+        // static::startChromeDriver();
     }
 
     /**
@@ -99,17 +98,14 @@ abstract class DuskTestCase extends BaseTestCase
     {
         $options = (new ChromeOptions())->addArguments([
             '--headless',
-            '--no-sandbox',
             '--disable-gpu',
-            '--allow-running-insecure-content',
-            '--remote-debugging-port=9222',
+            '--window-size=1920,1080',
         ]);
 
         return RemoteWebDriver::create(
-            'http://localhost:9515', DesiredCapabilities::chrome()
+            'http://selenium:4444/wd/hub', DesiredCapabilities::chrome()
                 ->setCapability(ChromeOptions::CAPABILITY, $options)
                 ->setCapability('acceptInsecureCerts', true)
-                ->setCapability('acceptSslCerts', true)
         );
     }
 }
