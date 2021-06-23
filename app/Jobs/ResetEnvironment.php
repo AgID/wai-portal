@@ -22,7 +22,7 @@ class ResetEnvironment implements ShouldQueue
 
     protected $commands = [
         [
-            'command' => 'migrate:fresh ',
+            'command' => 'migrate:fresh',
         ],
         [
             'command' => 'app:init-permissions',
@@ -39,9 +39,9 @@ class ResetEnvironment implements ShouldQueue
         [
             'command' => 'config:clear',
         ],
-        [
-            'command' => 'config:cache',
-        ],
+        // [
+        //     'command' => 'config:cache',
+        // ],
         [
             'command' => 'clear-compiled',
         ],
