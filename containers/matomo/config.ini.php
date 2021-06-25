@@ -19,7 +19,11 @@ trusted_hosts[] = "@MATOMO_WAI_URL@:9443"
 enable_trusted_host_check = 1
 force_ssl = 1
 enable_update_users_email = 0
-emails_enabled = 0
+emails_enabled = 1
+enable_update_users_email = 0
+noreply_email_address = "noreply@webanalytics.italia.it"
+noreply_email_name = "Web Analytics Italia"
+enable_tracking_failures_notification = 0
 assume_secure_protocol = 1
 enable_update_communication = 0
 enable_auto_update = 0
@@ -46,6 +50,11 @@ adding_segment_requires_access = "admin"
 allow_adding_segments_for_all_websites = 0
 process_new_segments_from = "segment_creation_time"
 archiving_ranking_query_row_limit = 0
+
+[mail]
+transport = smtp
+port = 1025
+host = mailhog
 
 [Debug]
 ;always_archive_data_day=1
@@ -90,7 +99,7 @@ Plugins[] = "SitesManager"
 Plugins[] = "Installation"
 Plugins[] = "CoreUpdater"
 Plugins[] = "CoreConsole"
-;Plugins[] = "ScheduledReports"
+Plugins[] = "ScheduledReports"
 Plugins[] = "UserCountryMap"
 Plugins[] = "Live"
 Plugins[] = "CustomVariables"
@@ -150,7 +159,7 @@ PluginsInstalled[] = "VisitorInterest"
 PluginsInstalled[] = "TwoFactorAuth"
 PluginsInstalled[] = "CoreUpdater"
 PluginsInstalled[] = "CoreConsole"
-;PluginsInstalled[] = "ScheduledReports"
+PluginsInstalled[] = "ScheduledReports"
 PluginsInstalled[] = "UserCountryMap"
 PluginsInstalled[] = "Live"
 PluginsInstalled[] = "CustomVariables"
