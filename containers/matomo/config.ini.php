@@ -20,7 +20,6 @@ enable_trusted_host_check = 1
 force_ssl = 1
 enable_update_users_email = 0
 emails_enabled = 1
-enable_update_users_email = 0
 noreply_email_address = "noreply@webanalytics.italia.it"
 noreply_email_name = "Web Analytics Italia"
 enable_tracking_failures_notification = 0
