@@ -1,7 +1,7 @@
 {
     "name": "italia/wai-portal",
     "description": "Web Analytics Italia",
-    "version": "1.6.5-beta",
+    "version": "1.6.6-beta",
     "keywords": ["analytics", "italia"],
     "license": "AGPL-3.0-or-later",
     "type": "project",

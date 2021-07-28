@@ -82,6 +82,9 @@ class SingleDigitalGatewayService
             if (is_null($dataset)) {
                 throw new SDGServiceException('Invalid statistics data: incorrect JSON format.');
             }
+        } else {
+            // convert associative arrays to objects
+            $dataset = json_decode(json_encode($dataset, JSON_UNESCAPED_SLASHES));
         }
 
         $dataset->uniqueId = $uniqueId;
