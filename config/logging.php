@@ -140,6 +140,12 @@ return [
             ],
         ],
 
+        'sdg_api' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/sdg.log'),
+            'level' => 'debug',
+        ],
+
         'syslog' => [
             'driver' => 'syslog',
             'level' => 'debug',
