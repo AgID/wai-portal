@@ -142,7 +142,7 @@ return [
 
         'sdg_api' => [
             'driver' => 'single',
-            'path' => storage_path('logs/sdg.log'),
+            'path' => storage_path('persistent/sdg/logs/sdg.log'),
             'level' => 'debug',
         ],
 
