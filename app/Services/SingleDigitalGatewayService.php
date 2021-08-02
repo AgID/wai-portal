@@ -147,7 +147,7 @@ class SingleDigitalGatewayService
             $options = [
                 'query' => $params,
                 'headers' => [
-                    'X-API-Key' => $this->apiKey,
+                    'x-api-key' => $this->apiKey,
                 ],
                 'verify' => $this->SSLVerify,
                 'json' => $body,
