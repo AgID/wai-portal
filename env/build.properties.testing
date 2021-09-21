@@ -267,10 +267,10 @@ ANALYTICS_API_BASE_URL=https://nginx:9443
 ANALYTICS_API_SSL_VERIFY=false
 
 # The public URL for your Analytics Service.
-ANALYTICS_PUBLIC_URL=https://localhost:9443
+ANALYTICS_PUBLIC_URL=https://nginx:9443
 
 # Analytics widgets iframe url
-ANALYTICS_WIDGETS_URL=https://localhost:9443
+ANALYTICS_WIDGETS_URL=https://nginx:9443
 
 # Single Digital Gateway Service Endpoint
 # ----------------------
