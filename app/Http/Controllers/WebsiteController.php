@@ -334,7 +334,7 @@ class WebsiteController extends Controller
             $website->delete();
 
             return $this->websiteResponse($website);
-        } catch (AnalyticsServiceException | BindingResolutionException $exception) {
+        } catch (AnalyticsServiceException|BindingResolutionException $exception) {
             report($exception);
             $code = $exception->getCode();
             $message = 'Internal Server Error';
@@ -375,7 +375,7 @@ class WebsiteController extends Controller
             $website->restore();
 
             return $this->websiteResponse($website);
-        } catch (AnalyticsServiceException | BindingResolutionException $exception) {
+        } catch (AnalyticsServiceException|BindingResolutionException $exception) {
             report($exception);
             $code = $exception->getCode();
             $message = 'Internal Server Error';
@@ -414,7 +414,7 @@ class WebsiteController extends Controller
             }
 
             throw new InvalidWebsiteStatusException('Unable to check activation for website ' . $website->info . ' in status ' . $website->status->key . '.');
-        } catch (AnalyticsServiceException | BindingResolutionException $exception) {
+        } catch (AnalyticsServiceException|BindingResolutionException $exception) {
             report($exception);
             $code = $exception->getCode();
             $message = 'Internal Server Error';
@@ -453,7 +453,7 @@ class WebsiteController extends Controller
             }
 
             throw new InvalidWebsiteStatusException('Unable to force activation for website ' . $website->info . ' in status ' . $website->status->key . '.');
-        } catch (AnalyticsServiceException | BindingResolutionException $exception) {
+        } catch (AnalyticsServiceException|BindingResolutionException $exception) {
             report($exception);
             $code = $exception->getCode();
             $message = 'Internal Server Error';
@@ -504,7 +504,7 @@ class WebsiteController extends Controller
             }
 
             throw new OperationNotAllowedException('Archive request not allowed on primary website ' . $website->info . '.');
-        } catch (AnalyticsServiceException | BindingResolutionException $exception) {
+        } catch (AnalyticsServiceException|BindingResolutionException $exception) {
             report($exception);
             $code = $exception->getCode();
             $message = 'Internal Server Error';
@@ -560,7 +560,7 @@ class WebsiteController extends Controller
             }
 
             throw new OperationNotAllowedException('Cancel archiving request not allowed on primary website ' . $website->info . '.');
-        } catch (AnalyticsServiceException | BindingResolutionException $exception) {
+        } catch (AnalyticsServiceException|BindingResolutionException $exception) {
             report($exception);
             $code = $exception->getCode();
             $message = 'Internal Server Error';
@@ -607,7 +607,7 @@ class WebsiteController extends Controller
                 'name' => e($website->name),
                 'javascriptSnippet' => trim($javascriptSnippet),
             ]);
-        } catch (AnalyticsServiceException | BindingResolutionException $exception) {
+        } catch (AnalyticsServiceException|BindingResolutionException $exception) {
             report($exception);
             $code = $exception->getCode();
             $message = 'Internal Server Error';
