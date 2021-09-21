@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-
 // Web Analytics Italia
 Breadcrumbs::for('home', function ($trail) {
     $trail->push(config('app.name'), route('home'));
