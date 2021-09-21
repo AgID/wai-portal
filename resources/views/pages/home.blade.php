@@ -139,7 +139,7 @@
                                         src=""
                                         class="auto-resizeable invisible"
                                         sandbox="allow-same-origin allow-scripts"
-                                        data-src="{{ config('analytics-service.public_url') }}/{{ $widget['url'] }}&idSite={{ config('analytics-service.public_dashboard') }}&show_footer_icons=0&show_related_reports=0&language={{ $locale }}"
+                                        data-src="{{ config('analytics-service.widgets_url') }}/{{ $widget['url'] }}&idSite={{ config('analytics-service.public_dashboard') }}&show_footer_icons=0&show_related_reports=0&language={{ $locale }}"
                                         frameborder="0"
                                         width="100%"
                                         height="350"
@@ -151,7 +151,7 @@
                         </div>
                     </div>
                     @endforeach
-                    <script>widgets_domain = "{{ config('analytics-service.public_url') }}"</script>
+                    <script>widgets_domain = "{{ config('analytics-service.widgets_url') }}"</script>
                 </div>
             </div>
         </div>
