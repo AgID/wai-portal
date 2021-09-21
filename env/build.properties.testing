@@ -255,9 +255,6 @@ MATOMO_PUBLIC_ROLLUP_ID=
 # for matomo tracking ingestion
 MATOMO_INGESTION_HOSTNAME=
 
-# Matomo widgets iframe url
-MATOMO_WIDGETS_URL=https://localhost:9443
-
 # Analytics Service URLs
 # ----------------------
 
@@ -271,6 +268,9 @@ ANALYTICS_API_SSL_VERIFY=false
 
 # The public URL for your Analytics Service.
 ANALYTICS_PUBLIC_URL=https://localhost:9443
+
+# Analytics widgets iframe url
+ANALYTICS_WIDGETS_URL=https://localhost:9443
 
 # Single Digital Gateway Service Endpoint
 # ----------------------
