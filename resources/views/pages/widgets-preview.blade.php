@@ -3,7 +3,7 @@
 @section('title', 'Anteprima widget')
 
 @section('content')
-    <div class="row" id="widgets-preview-box" data-url="{{ $widgetsBaseUrl }}">
+    <div class="row" id="widgets-preview-box" data-url="{{ $widgetsDomain }}{{ $widgetsBaseUrl }}">
         <div class="col-lg-12 d-flex">
             @component('layouts.components.box')
                 <div class="card-wrapper card-space">

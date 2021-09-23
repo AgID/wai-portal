@@ -7,5 +7,6 @@ return [
     'public_url' => env('ANALYTICS_PUBLIC_URL'),
     'public_dashboard' => env('ANALYTICS_PUBLIC_DASHBOARD_ID'),
     'cron_archiving_enabled' => env('ANALYTICS_CRON_ARCHIVING_ENABLED'),
-    'widgets_url' => env('ANALYTICS_WIDGETS_URL'),
+    'widgets_domain' => env('ANALYTICS_WIDGETS_DOMAIN'),
+    'widgets_base_url' => env('ANALYTICS_WIDGETS_BASE_URL'),
 ];
