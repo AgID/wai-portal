@@ -270,8 +270,8 @@ ANALYTICS_API_SSL_VERIFY=false
 # The public URL for your Analytics Service.
 ANALYTICS_PUBLIC_URL=https://localhost:9443
 
-# Analytics widgets domain
-ANALYTICS_WIDGETS_DOMAIN=https://localhost:9443
+# Analytics API domain
+ANALYTICS_API_DOMAIN=https://localhost:9443
 
 # Analytics widgets base url
 ANALYTICS_WIDGETS_BASE_URL=/
