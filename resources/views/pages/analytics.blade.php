@@ -63,7 +63,10 @@
             </div>
         </div>
         @endforeach
-        <script>api_domain = "{{ config('analytics-service.api_domain') }}"</script>
+        <script>
+            api_public_domain = "{{ config('analytics-service.api_public_domain') }}"
+            api_public_path = "{{ config('analytics-service.api_public_path') }}"
+        </script>
     </div>
     @else
     <div class="d-flex justify-content-center pb-5">

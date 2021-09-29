@@ -269,8 +269,11 @@ ANALYTICS_API_SSL_VERIFY=false
 # The public URL for your Analytics Service.
 ANALYTICS_PUBLIC_URL=https://nginx:9443
 
-# Analytics API domain
-ANALYTICS_API_DOMAIN=https://nginx:9443
+# Analytics API public domain
+ANALYTICS_API_PUBLIC_DOMAIN=https://nginx:9443
+
+# Analytics API public path
+ANALYTICS_API_PUBLIC_PATH=/
 
 # Analytics widgets base url
 ANALYTICS_WIDGETS_BASE_URL=/

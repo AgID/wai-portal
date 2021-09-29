@@ -6,8 +6,9 @@ export default (() => {
     const analyticsWidgets = [...document.querySelectorAll('iframe.auto-resizeable')];
 
     const areWidgetsAvailable = () => {
-        const apiDomain = window.api_domain;
-        return axios.get(`${apiDomain}/matomo/index.php?module=API&method=API.getMatomoVersion&timestamp=${new Date().getTime()}`)
+        const apiPublicDomain = window.api_public_domain;
+        const apiPublicPath = window.api_public_path;
+        return axios.get(`${apiPublicDomain}/${apiPublicPath}index.php?module=API&method=API.getMatomoVersion&timestamp=${new Date().getTime()}`)
             .then(() => true)
             .catch(() => false);
     }
