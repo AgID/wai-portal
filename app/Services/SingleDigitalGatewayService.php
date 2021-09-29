@@ -7,6 +7,9 @@ use App\Exceptions\SDGServiceException;
 use Carbon\Carbon;
 use GuzzleHttp\Client as APIClient;
 use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\HandlerStack;
+use GuzzleLogMiddleware\LogMiddleware;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use JsonSchema\Validator as JsonValidator;
 
@@ -132,12 +135,19 @@ class SingleDigitalGatewayService
      */
     protected function apiCall(string $path, string $method = 'GET', array $params = [], array $body = null)
     {
+        $apiLogger = Log::channel('sdg_api');
+        $stack = HandlerStack::create();
+        $stack->push(new LogMiddleware($apiLogger));
+
         try {
-            $client = new APIClient(['base_uri' => $this->serviceBaseUri]);
+            $client = new APIClient([
+                'base_uri' => $this->serviceBaseUri,
+                'handler' => $stack,
+            ]);
             $options = [
                 'query' => $params,
                 'headers' => [
-                    'X-API-Key' => $this->apiKey,
+                    'x-api-key' => $this->apiKey,
                 ],
                 'verify' => $this->SSLVerify,
                 'json' => $body,
