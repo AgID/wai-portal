@@ -51,7 +51,7 @@
                             class="auto-resizeable  invisible"
                             sandbox="allow-same-origin allow-scripts"
                             src=""
-                            data-src="{{ config('analytics-service.api_domain') }}{{ config('analytics-service.widgets_base_url') }}/{{ $widget['url'] }}&token_auth={{ $publicAdministration->token_auth }}&idSite={{ $publicAdministration->rollup_id }}&show_related_reports=0&language={{ $locale }}"
+                            data-src="{{ config('analytics-service.api_public_domain') }}{{ config('analytics-service.widgets_base_url') }}/{{ $widget['url'] }}&token_auth={{ $publicAdministration->token_auth }}&idSite={{ $publicAdministration->rollup_id }}&show_related_reports=0&language={{ $locale }}"
                             frameborder="0"
                             width="100%"
                             height="350"

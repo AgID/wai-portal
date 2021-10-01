@@ -50,7 +50,7 @@ class WidgetsController extends Controller
 
         $analyticsId = $website->analytics_id;
         $widgetData = $this->analyticsService->getWidgetMetadata($analyticsId);
-        $apiDomain = config('analytics-service.api_domain');
+        $apiPublicDomain = config('analytics-service.api_public_domain');
         $widgetsBaseUrl = config('analytics-service.widgets_base_url');
         $allowedWidgets = Yaml::parseFile(resource_path('data/widgets.yml'));
         $allowedFqdns = $this->analyticsService->getSiteUrlsFromId($analyticsId);
@@ -58,7 +58,7 @@ class WidgetsController extends Controller
         $data = [
             'widgets' => $widgetData,
             'idSite' => $analyticsId,
-            'apiDomain' => $apiDomain,
+            'apiPublicDomain' => $apiPublicDomain,
             'widgetsBaseUrl' => $widgetsBaseUrl,
             'allowedWidgets' => $allowedWidgets['allowed_widgets_preview'] ?? [],
             'allowedFqdns' => $allowedFqdns,
