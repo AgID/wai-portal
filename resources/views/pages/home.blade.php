@@ -152,8 +152,8 @@
                     </div>
                     @endforeach
                     <script>
-                        api_public_domain = "{{ config('analytics-service.api_public_domain') }}"
-                        api_public_path = "{{ config('analytics-service.api_public_path') }}"
+                        api_public_domain = "{{ config('analytics-service.api_public_domain') }}";
+                        api_public_path = "{{ config('analytics-service.api_public_path') }}" || '';
                     </script>
                 </div>
             </div>

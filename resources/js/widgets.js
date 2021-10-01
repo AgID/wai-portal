@@ -8,7 +8,7 @@ export default (() => {
     const areWidgetsAvailable = () => {
         const apiPublicDomain = window.api_public_domain;
         const apiPublicPath = window.api_public_path;
-        return axios.get(`${apiPublicDomain}/${apiPublicPath}index.php?module=API&method=API.getMatomoVersion&timestamp=${new Date().getTime()}`)
+        return axios.get(`${apiPublicDomain}${apiPublicPath}/index.php?module=API&method=API.getMatomoVersion&timestamp=${new Date().getTime()}`)
             .then(() => true)
             .catch(() => false);
     }
