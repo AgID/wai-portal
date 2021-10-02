@@ -682,6 +682,7 @@ class MatomoService implements AnalyticsServiceContract
             'filter_limit' => '-1',
             'deep' => '1',
             'idSite' => $idSite,
+            'token_auth' => $this->tokenAuth,
         ];
 
         return $this->apiCall($params);
