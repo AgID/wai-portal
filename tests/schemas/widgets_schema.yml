@@ -9,7 +9,9 @@ required:
     length: { min: 1 }
     contents: "tag:widget"
   allowed_widgets_preview:
-    type: "//arr"
-    length: { min: 1 }
-    contents: "//str"
-
+    type: "//map"
+    values:
+      type: "//rec"
+      required:
+        options:
+          type: "//any"
