@@ -1,79 +1,82 @@
 export default (() => {
-    const subTitle1 = document.getElementById("widget-subtitle-1");
-    const subTitle2 = document.getElementById("widget-subtitle-2");
-    const previewBlock = document.getElementById("widget-preview");
-    const snippetBlock = document.getElementById("widget-code");
-    const box = document.getElementById("widgets-preview-box");
-
-    const widgetList = [
-        ...document.querySelectorAll('div[data-type="widget-select"]')
-    ];
-
     const init = () => {
+        const previewBlock = document.getElementById('widget-preview');
+        const snippetBlock = document.getElementById('widget-code');
+        const box = document.getElementById('widgets-preview-box');
+        const widgetList = [
+            ...document.querySelectorAll('[data-type=widget-select]')
+        ];
+
         widgetList.map(widget => {
-            widget.addEventListener("click", e => {
-                const dataJson = e.currentTarget.firstElementChild.innerHTML;
-                const idSite = e.currentTarget.firstElementChild.getAttribute(
-                    "site"
-                );
-                const matomoUrl = box.getAttribute("data-url");
+            widget.addEventListener('click', e => {
+                const widgetData = e.currentTarget.dataset;
+                const widgetMetadata = widgetData.widgetMetadata;
+                const widgetOptions = JSON.parse(widgetData.widgetOptions);
+                const idSite = widgetData.idSite;
+                const baseUrl = box.dataset.url;
                 const iframeUrl = generateWidgetUrl(
-                    dataJson,
+                    widgetMetadata,
+                    widgetOptions,
                     idSite,
-                    matomoUrl
+                    baseUrl
                 );
-                const frame = document.createElement("IFRAME");
+                const frame = document.createElement('iframe');
 
-                frame.setAttribute("width", "100%");
-                frame.setAttribute("height", "350");
-                frame.setAttribute("src", "");
-                frame.src = decodeURIComponent(iframeUrl);
-                frame.setAttribute("scrolling", "yes");
-                frame.setAttribute("frameborder", "0");
-                frame.setAttribute("marginheight", "0");
-                frame.setAttribute("marginwidth", "0");
+                frame.setAttribute('width', '100%');
+                frame.setAttribute('height', '350');
+                frame.setAttribute('src', decodeURIComponent(iframeUrl));
+                frame.setAttribute('scrolling', 'yes');
+                frame.setAttribute('frameborder', '0');
+                frame.setAttribute('marginheight', '0');
+                frame.setAttribute('marginwidth', '0');
 
-                previewBlock.innerHTML = "";
+                previewBlock.innerHTML = '';
                 previewBlock.appendChild(frame);
 
                 snippetBlock.textContent = frame.outerHTML.replace(
                     /&amp;/g,
-                    "&"
+                    '&'
                 );
 
                 box.scrollIntoView({
-                    behavior: "smooth",
-                    block: "start",
-                    inline: "nearest"
+                    behavior: 'smooth',
+                    block: 'start',
+                    inline: 'nearest'
                 });
             });
         });
     };
 
-    const generateWidgetUrl = (data, idSite, baseUrl) => {
-        let parseData = {};
+    const generateWidgetUrl = (widgetMetadata, widgetOptions, idSite, baseUrl) => {
+        const widgetTitles = [...document.querySelectorAll('.widget-title')];
+        let data = {};
 
         try {
-            parseData = JSON.parse(data);
-            subTitle1.innerHTML = parseData.name;
-            subTitle2.innerHTML = parseData.name;
+            data = JSON.parse(widgetMetadata);
+            widgetTitles.map(widgetTitle => {
+                widgetTitle.textContent = data.name;
+            });
         } catch (error) {
-            console.log("Error in parsing JSON", error);
+            console.log('Error in parsing JSON', error);
         }
 
-        let url = new URLSearchParams(baseUrl + "/index.php?module=Widgetize");
+        let url = new URLSearchParams(baseUrl + '/index.php?module=Widgetize');
 
-        url.append("action", "iframe");
-        if (parseData.parameters?.containerId)
-            url.append("containerId", parseData.parameters.containerId);
-        url.append("disableLink", "0");
-        url.append("widget", "1");
-        url.append("moduleToWidgetize", parseData.module);
-        url.append("actionToWidgetize", parseData.action);
-        url.append("idSite", idSite);
-        url.append("period", "day");
-        url.append("date", "yesterday");
-        url.append("disableLink", "1");
+        url.append('action', 'iframe');
+        if (data.parameters?.containerId)
+            url.append('containerId', data.parameters.containerId);
+        url.append('disableLink', '0');
+        url.append('widget', '1');
+        url.append('moduleToWidgetize', data.module);
+        url.append('actionToWidgetize', data.action);
+        url.append('idSite', idSite);
+        url.append('period', 'day');
+        url.append('date', 'yesterday');
+        url.append('disableLink', '1');
+
+        Object.keys(widgetOptions).map((name) => {
+            url.append(name, widgetOptions[name]);
+        });
 
         return url;
     };
