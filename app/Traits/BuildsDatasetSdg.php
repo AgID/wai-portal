@@ -15,7 +15,7 @@ use stdClass;
 /**
  * Get the dataset to Single Digital Gateway API for the Statistics on Information Services.
  */
-trait BuildsDatasetForSingleDigitalGatewayAPI
+trait BuildsDatasetSdg
 {
     use ParseUrls;
 
