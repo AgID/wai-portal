@@ -1,7 +1,7 @@
 {
     "name": "italia/wai-portal",
     "description": "Web Analytics Italia",
-    "version": "1.6.8-beta",
+    "version": "1.7.0-beta",
     "keywords": ["analytics", "italia"],
     "license": "AGPL-3.0-or-later",
     "type": "project",
@@ -38,7 +38,7 @@
         "davidepastore/codice-fiscale": "^0.8.0",
         "diglactic/laravel-breadcrumbs": "^7.0",
         "doctrine/dbal": "^2.10",
-        "elasticsearch/elasticsearch": "7.13.*",
+        "elasticsearch/elasticsearch": "7.15.*",
         "ethanhann/redisearch-php": "^1.0",
         "fideloper/proxy": "^4.2",
         "gmponos/guzzle_logger": "^2.0",

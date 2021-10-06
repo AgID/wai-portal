@@ -15,7 +15,7 @@ use stdClass;
 /**
  * Get the dataset to Single Digital Gateway API for the Statistics on Information Services.
  */
-trait BuildsDatasetForSingleDigitalGatewayAPI
+trait BuildsDatasetSdg
 {
     use ParseUrls;
 
@@ -60,7 +60,7 @@ trait BuildsDatasetForSingleDigitalGatewayAPI
 
         try {
             $allSegments = $analyticsService->getAllSegments();
-            $allSegmentsNames = array_column($allSegments, 'name');
+            $allSegmentsNames = array_column($allSegments, 'idsegment', 'name');
             $sdgDeviceTypes = [
                 'PC',
                 'Smartphone',
@@ -95,13 +95,16 @@ trait BuildsDatasetForSingleDigitalGatewayAPI
                 $newSegmentsAdded = false;
 
                 foreach ($sdgDeviceTypes as $sdgDeviceType) {
-                    $segmentName = md5($source->sourceUrl . '+' . $sdgDeviceType);
+                    $segmentName = 'SDG-' . md5($source->sourceUrl . '+' . $sdgDeviceType);
                     $segmentDefinition = 'pageUrl==' . urlencode($source->sourceUrl) . ';' . static::getDeviceTypeSegmentParameter($sdgDeviceType);
-                    $segmentExists = in_array($segmentName, $allSegmentsNames);
+                    $segmentExists = isset($allSegmentsNames[$segmentName]);
 
                     if (!$segmentExists) {
                         $analyticsService->addSegment($siteId, $segmentDefinition, $segmentName);
                         $newSegmentsAdded = true;
+                    } else {
+                        // Leave only unprocessed segments in the $allSegmentsNames array
+                        unset($allSegmentsNames[$segmentName]);
                     }
                 }
 
@@ -145,6 +148,15 @@ trait BuildsDatasetForSingleDigitalGatewayAPI
                 }
 
                 array_push($data->sources, $source);
+            }
+
+            foreach ($allSegmentsNames as $segmentsName => $segmentId) {
+                if (0 === strpos($segmentName, 'SDG-')) {
+                    report(new SDGServiceException("Segment '{$segmentsName}' is no longer used in the SDG scope and therefore is going to be deleted."));
+
+                    // Delete unused segments to avoid waste of time during the archiving process
+                    $analyticsService->deleteSegment($segmentId);
+                }
             }
 
             $data->nbEntries = count($data->sources);
