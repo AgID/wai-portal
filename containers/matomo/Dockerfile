@@ -72,6 +72,7 @@ RUN if [ -n "$MATOMO_PLUGIN_RESTRICTANONYMOUSACCESS_VERSION" ]; then \
     && sed -i -E -e 's/(@MATOMO_MORE_CONFIG@)/[RestrictAnonymousAccess]\n\1/g' /opt/matomo/config/config.ini.php \
     && sed -i -E -e 's/(@MATOMO_MORE_CONFIG@)/allowed_requests[] = "module=Widgetize"\n\1/g' /opt/matomo/config/config.ini.php \
     && sed -i -E -e 's/(@MATOMO_MORE_CONFIG@)/allowed_requests[] = "module=API\&method=API.getMatomoVersion"\n\1/g' /opt/matomo/config/config.ini.php \
+    && sed -i -E -e 's/(@MATOMO_MORE_CONFIG@)/allowed_requests[] = "module=API\&method=VisitsSummary.getVisits\&period=range\&date=previous30"\n\1/g' /opt/matomo/config/config.ini.php \
     && sed -i -E -e 's/(@MATOMO_MORE_CONFIG@)/allowed_requests[] = "module=API\&method=UsersManager.getTokenAuth"\n\1/g' /opt/matomo/config/config.ini.php \
     && sed -i -E -e 's/(@MATOMO_MORE_CONFIG@)/allowed_referrers[] = "module=Widgetize\&action=iframe\&widget=1"\n\n\1/g' /opt/matomo/config/config.ini.php \
 ;fi

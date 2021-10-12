@@ -154,6 +154,7 @@
                     <script>
                         api_public_domain = "{{ config('analytics-service.api_public_domain') }}";
                         api_public_path = "{{ config('analytics-service.api_public_path') }}" || '';
+                        dashboard_id = "{{ config('analytics-service.public_dashboard') }}";
                     </script>
                 </div>
             </div>
