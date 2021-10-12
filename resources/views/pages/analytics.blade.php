@@ -66,6 +66,7 @@
         <script>
             api_public_domain = "{{ config('analytics-service.api_public_domain') }}";
             api_public_path = "{{ config('analytics-service.api_public_path') }}" || '';
+            dashboard_id = "{{ $publicAdministration->rollup_id }}";
         </script>
     </div>
     @else
