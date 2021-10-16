@@ -7695,16 +7695,16 @@
         },
         {
             "name": "laravel/dusk",
-            "version": "v6.18.1",
+            "version": "v6.19.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/dusk.git",
-                "reference": "c99116b354a93faf9e75aeeeadc73445df705570"
+                "reference": "b55a5720d256f3d71da7fb559a9f5b330a895cd4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/dusk/zipball/c99116b354a93faf9e75aeeeadc73445df705570",
-                "reference": "c99116b354a93faf9e75aeeeadc73445df705570",
+                "url": "https://api.github.com/repos/laravel/dusk/zipball/b55a5720d256f3d71da7fb559a9f5b330a895cd4",
+                "reference": "b55a5720d256f3d71da7fb559a9f5b330a895cd4",
                 "shasum": ""
             },
             "require": {
@@ -7762,9 +7762,9 @@
             ],
             "support": {
                 "issues": "https://github.com/laravel/dusk/issues",
-                "source": "https://github.com/laravel/dusk/tree/v6.18.1"
+                "source": "https://github.com/laravel/dusk/tree/v6.19.0"
             },
-            "time": "2021-09-07T14:28:13+00:00"
+            "time": "2021-10-11T15:25:08+00:00"
         },
         {
             "name": "maximebf/debugbar",
