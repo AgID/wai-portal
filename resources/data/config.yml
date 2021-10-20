@@ -43,6 +43,12 @@ it:
         - name: FAQ
           route: faq
 
+        # - name: API
+        #   route: show.swagger
+        #   requires:
+        #       auth: true
+        #       publicAdministration: true
+
     slim_header_links:
       - name: Piano triennale
         url: https://pianotriennale-ict.italia.it
@@ -65,6 +71,13 @@ it:
           route: how-to-join
         - name: Domande frequenti
           route: faq
+
+        # - name: API
+        #   route: show.swagger
+        #   requires:
+        #       auth: true
+        #       publicAdministration: true
+
         # - name: Open data
         #   route: open-data
         - name: Guida utente
