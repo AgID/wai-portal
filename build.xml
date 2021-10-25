@@ -78,6 +78,7 @@
                     <token key="MARIADB_PASSWORD" value="${MARIADB_PASSWORD}" />
                     <token key="MARIADB_ROOT_PASSWORD" value="${MARIADB_ROOT_PASSWORD}" />
                     <token key="CACHE_CONNECTION" value="${CACHE_CONNECTION}" />
+                    <token key="CSP_CONNECTION" value="${CSP_CONNECTION}" />
                     <token key="SESSION_CONNECTION" value="${SESSION_CONNECTION}" />
                     <token key="SESSION_SECURE_COOKIE" value="${SESSION_SECURE_COOKIE}" />
                     <token key="SESSION_ENCRYPT" value="${SESSION_ENCRYPT}" />

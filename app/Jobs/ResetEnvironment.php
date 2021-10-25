@@ -64,6 +64,7 @@ class ResetEnvironment implements ShouldQueue
             );
 
             Redis::connection(env('CACHE_CONNECTION'))->client()->flushdb();
+            Redis::connection(env('CSP_CONNECTION'))->client()->flushdb();
             Redis::connection(env('SESSION_CONNECTION'))->client()->flushdb();
             Redis::connection(env('QUEUE_REDIS_CONNECTION'))->client()->flushdb();
 

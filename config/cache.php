@@ -76,6 +76,11 @@ return [
             'connection' => env('CACHE_CONNECTION', 'cache'),
         ],
 
+        'csp' => [
+            'driver' => 'redis',
+            'connection' => env('CSP_CONNECTION', 'csp'),
+        ],
+
         'dynamodb' => [
             'driver' => 'dynamodb',
             'key' => env('AWS_ACCESS_KEY_ID'),

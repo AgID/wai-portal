@@ -92,6 +92,13 @@ return [
             'cluster' => env('REDIS_CLUSTER', 'predis'),
         ],
 
+        'csp' => [
+            'host' => env('REDIS_HOST', '127.0.0.1'),
+            'password' => env('REDIS_PASSWORD', null),
+            'port' => env('REDIS_PORT', 6379),
+            'database' => env('REDIS_CSP_DB', 4),
+        ],
+
         'queue' => [
             'host' => env('REDIS_HOST', '127.0.0.1'),
             'password' => env('REDIS_PASSWORD', null),
