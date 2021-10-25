@@ -49,7 +49,6 @@ class UpdateSiteListOnRedis implements ShouldQueue
 
             $listToString = implode(' ', $list);
 
-
             Cache::store('csp')->put($id, $listToString);
         }
 
