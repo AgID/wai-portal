@@ -39,10 +39,9 @@ class UpdateSiteListOnRedis implements ShouldQueue
     public function handle(): void
     {
         $websiteList = Website::all();
-        /*
-            per ogni website predere l'id e fare una chiamata a matomo per prendere la lista dei domini
-            145 sito1 sito2
-        */
+
+        $prefix = Cache::getPrefix();
+        Cache::setPrefix(null);
 
         foreach ($websiteList as $website) {
             $id = $website->analytics_id;
@@ -50,11 +49,14 @@ class UpdateSiteListOnRedis implements ShouldQueue
 
             $listToString = implode(' ', $list);
 
-            Cache::put($id, $listToString);
+
+            Cache::store('csp')->put($id, $listToString);
         }
 
-        logger()->notice(
-            'Caching websites for public administrations'
+        Cache::setPrefix($prefix);
+
+        logger()->info(
+            'Websites URLs cache refreshed'
         );
     }
 }
