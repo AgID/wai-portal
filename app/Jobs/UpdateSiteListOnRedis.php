@@ -40,15 +40,13 @@ class UpdateSiteListOnRedis implements ShouldQueue
     {
         $websiteList = Website::all();
 
-        Cache::store('csp')->setPrefix(null);
-
         foreach ($websiteList as $website) {
             $id = $website->analytics_id;
             $list = $this->analyticsService->getSiteUrlsFromId($id);
 
             $listToString = implode(' ', $list);
 
-            Cache::store('csp')->put($id, $listToString);
+            Cache::store('csp')->connection()->set($id, $listToString);
         }
 
         logger()->info(
