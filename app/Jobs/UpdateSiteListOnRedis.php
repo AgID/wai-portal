@@ -40,8 +40,7 @@ class UpdateSiteListOnRedis implements ShouldQueue
     {
         $websiteList = Website::all();
 
-        $prefix = Cache::getPrefix();
-        Cache::setPrefix(null);
+        Cache::store('csp')->setPrefix(null);
 
         foreach ($websiteList as $website) {
             $id = $website->analytics_id;
@@ -51,8 +50,6 @@ class UpdateSiteListOnRedis implements ShouldQueue
 
             Cache::store('csp')->put($id, $listToString);
         }
-
-        Cache::setPrefix($prefix);
 
         logger()->info(
             'Websites URLs cache refreshed'
