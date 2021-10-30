@@ -7,6 +7,7 @@ use App\Enums\WebsiteStatus;
 use App\Models\PublicAdministration;
 use App\Models\Website;
 use App\Traits\HasRoleAwareUrls;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 use Symfony\Component\Yaml\Yaml;
 
@@ -28,9 +29,9 @@ class WidgetsController extends Controller
      * @param Website $website The website
      * @param PublicAdministration $publicAdministration The PublicAdministration
      *
-     * @return View The view
+     * @return View|RedirectResponse The view or a redirect response
      */
-    public function index(Website $website, PublicAdministration $publicAdministration): View
+    public function index(Website $website, PublicAdministration $publicAdministration)
     {
         $publicAdministration = auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)
             ? $publicAdministration
@@ -38,12 +39,13 @@ class WidgetsController extends Controller
 
         if ($website->status->is(WebsiteStatus::PENDING)) {
             $redirectUrl = $this->getRoleAwareUrl('websites.show', ['website' => $website], $publicAdministration);
-            $name = $website->name;
 
             return redirect()->to($redirectUrl)->withNotification([
-                'title' => __('Errore'),
-                'message' => __("Attiva il sito '$name' prima di accedere all'anteprima dei widget."),
-                'status' => 'error',
+                'title' => __('sito non attivo'),
+                'message' => __("Attiva il sito <b>:site</b> prima di accedere all'anteprima dei widget.", [
+                    'site' => $website->name,
+                ]),
+                'status' => 'warning',
                 'icon' => 'it-close-circle',
             ]);
         }

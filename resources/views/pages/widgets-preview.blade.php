@@ -41,9 +41,11 @@
                                         ]) !!}
                                     @endif
                                     <br><br>
-                                    {!! __("È possibile modificare i parametri in URL secondo le proprie esigenze,
+                                    {{ __("I dati visualizzati si riferiscono al mese precedente.") }}
+                                    <br><br>
+                                    {{ __("È possibile modificare i parametri in URL secondo le proprie esigenze,
                                         tuttavia si consiglia di mantentere l'impostazione predefinita per garantire
-                                        la disponibilità dei dati.") !!}
+                                        la disponibilità dei dati.") }}
                                 </div>
                             </div>
                         </div>
