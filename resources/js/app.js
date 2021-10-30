@@ -14,14 +14,14 @@ import WebsiteArchiveUnarchive from './buttons/websiteArchiveUnarchive';
 import UserSuspendReactivate from './buttons/userSuspendReactivate';
 import UserDelete from './buttons/userDelete';
 import WebsiteDeleteRestore from './buttons/websiteDeleteRestore';
-import credentialDelete from './buttons/credentialDelete';
+import CredentialDelete from './buttons/credentialDelete';
 import UserVerificationResend from './buttons/userVerificationResend';
 import GetJavascriptSnippet from './getJavascriptSnippet';
 import SearchIpa from './searchIpa';
 import Notification from './notification';
 import PublicAdministrationSelector from './publicAdministrationSelector';
 import FaqSelector from './faqSelector';
-import WidgetResizer from './widgets';
+import Widgets from './widgets';
 import HighlightBar from './highlightBar';
 import Trackers from './trackers';
 import Swagger from './swagger'
@@ -38,7 +38,7 @@ $(() => {
     UserVerificationResend.init();
     PublicAdministrationSelector.init();
     FaqSelector.init();
-    WidgetResizer.init();
+    Widgets.init();
     HighlightBar.init();
     Trackers.init();
     Swagger.init();
@@ -52,7 +52,7 @@ $(() => {
         () => credentialPermissionsToggles.init(),
         () => WebsiteArchiveUnarchive.init(),
         () => WebsiteDeleteRestore.init(),
-        () => credentialDelete.init(),
+        () => CredentialDelete.init(),
         () => UserSuspendReactivate.init(),
         () => UserDelete.init(),
         () => UserSelectTenant.init(),
