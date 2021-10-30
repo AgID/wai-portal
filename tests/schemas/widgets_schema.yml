@@ -13,5 +13,7 @@ required:
     values:
       type: "//rec"
       required:
-        options:
+        params:
           type: "//any"
+      optional:
+        height: "//int"
