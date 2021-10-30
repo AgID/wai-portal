@@ -43,7 +43,7 @@ class WidgetsController extends Controller
             return redirect()->to($redirectUrl)->withNotification([
                 'title' => __('sito non attivo'),
                 'message' => __("Attiva il sito <b>:site</b> prima di accedere all'anteprima dei widget.", [
-                    'site' => $website->name
+                    'site' => $website->name,
                 ]),
                 'status' => 'warning',
                 'icon' => 'it-close-circle',
