@@ -125,11 +125,11 @@
     @component('layouts.components.box', ['classes' => 'mt-0 full-width'])
     <div class="javascript-snippet-container blank">
         <div class="collapse-header box-section" id="javascript-snippet-header">
-            <button class="px-0" data-toggle="collapse" data-target="#javascript-snippet-collapse" aria-expanded="false" aria-controls="javascript-snippet-collapse">
+            <button class="px-0" data-toggle="collapse" data-target="#javascript-snippet-collapse" aria-expanded="true" aria-controls="javascript-snippet-collapse">
                 <h4 class="text-uppercase m-0 text-black">{{ __('codice di tracciamento javascript') }}</h4>
             </button>
         </div>
-        <div id="javascript-snippet-collapse" class="collapse" role="tabpanel" aria-labelledby="javascript-snippet-header">
+        <div id="javascript-snippet-collapse" class="collapse show" role="tabpanel" aria-labelledby="javascript-snippet-header">
             <div class="box-section lightgrey-bg-a1 my-4 mx-0 px-5">
                 <div class="collapse-body">
                     <div id="javascript-snippet" class="lightgrey-bg-a1" data-href="{{ $javascriptSnippetUrl }}">
@@ -216,7 +216,7 @@
         <div>
             <h4>{{__('Widgets')}}</h4>
             <p>
-                {{ __('Puoi visitare la pagina dei ')}} 
+                {{ __('Puoi visitare la pagina dei ')}}
                 <strong> {{ __("Widgets")}} </strong>
                 {{ __('che contiene la lista, l\'anteprima e il codice html dei widget da copiare e inserire nel sito dell\'amministrazione') }}
             </p>
@@ -230,7 +230,7 @@
         </div>
         @endcomponent
     @endif
-    
+
     @can(UserPermission::MANAGE_WEBSITES)
     @component('layouts.components.box', ['classes' => 'mt-0'])
     <h4 class="text-uppercase mb-5">{{ __('Permessi degli utenti') }}</h4>

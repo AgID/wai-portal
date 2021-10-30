@@ -23,7 +23,7 @@ export default (() => {
                 const frame = document.createElement('iframe');
 
                 frame.setAttribute('width', '100%');
-                frame.setAttribute('height', '350');
+                frame.setAttribute('height', widgetOptions.height || '350');
                 frame.setAttribute('src', decodeURIComponent(iframeUrl));
                 frame.setAttribute('scrolling', 'yes');
                 frame.setAttribute('frameborder', '0');
@@ -63,19 +63,20 @@ export default (() => {
         let url = new URLSearchParams(baseUrl + '/index.php?module=Widgetize');
 
         url.append('action', 'iframe');
-        if (data.parameters?.containerId)
-            url.append('containerId', data.parameters.containerId);
-        url.append('disableLink', '0');
         url.append('widget', '1');
         url.append('moduleToWidgetize', data.module);
         url.append('actionToWidgetize', data.action);
         url.append('idSite', idSite);
-        url.append('period', 'day');
-        url.append('date', 'yesterday');
+        url.append('period', 'month');
+        url.append('date', '-1month');
         url.append('disableLink', '1');
 
-        Object.keys(widgetOptions).map((name) => {
-            url.append(name, widgetOptions[name]);
+        Object.keys(data.parameters)
+            .filter(param => param != 'action' && param != 'module')
+            .map(param => url.append(param, data.parameters[param]));
+
+        widgetOptions.params && Object.keys(widgetOptions.params).map(name => {
+            url.append(name, widgetOptions.params[name]);
         });
 
         return url;

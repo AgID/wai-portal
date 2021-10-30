@@ -40,6 +40,10 @@
                                             'fqdn' => '<code>' . head($allowedFqdns) . '</code>'
                                         ]) !!}
                                     @endif
+                                    <br><br>
+                                    {!! __("È possibile modificare i parametri in URL secondo le proprie esigenze,
+                                        tuttavia si consiglia di mantentere l'impostazione predefinita per garantire
+                                        la disponibilità dei dati.") !!}
                                 </div>
                             </div>
                         </div>
@@ -53,7 +57,7 @@
                         <div class="col-md-4 mb-3">
                             <button type="button" class="btn btn-block rounded btn-outline-primary" id="widget-{{ $id }}"
                                 data-type="widget-select" data-attribute="back-to-top" data-id-site="{{ $idSite }}"
-                                data-widget-metadata='{{ json_encode($widgets[$id]) }}' data-widget-options='{{ json_encode($widget['options'] ?? []) }}'>
+                                data-widget-metadata='{{ json_encode($widgets[$id]) }}' data-widget-options='{{ json_encode($widget ?? []) }}'>
                                 {{ $widgets[$id]['name'] }}
                             </button>
                         </div>
