@@ -7,6 +7,7 @@ use App\Enums\WebsiteStatus;
 use App\Models\PublicAdministration;
 use App\Models\Website;
 use App\Traits\HasRoleAwareUrls;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 use Symfony\Component\Yaml\Yaml;
 
@@ -28,9 +29,9 @@ class WidgetsController extends Controller
      * @param Website $website The website
      * @param PublicAdministration $publicAdministration The PublicAdministration
      *
-     * @return View The view
+     * @return View|RedirectResponse The view or a redirect response
      */
-    public function index(Website $website, PublicAdministration $publicAdministration): View
+    public function index(Website $website, PublicAdministration $publicAdministration)
     {
         $publicAdministration = auth()->user()->can(UserPermission::ACCESS_ADMIN_AREA)
             ? $publicAdministration
