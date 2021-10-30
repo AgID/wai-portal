@@ -63,8 +63,6 @@ export default (() => {
         let url = new URLSearchParams(baseUrl + '/index.php?module=Widgetize');
 
         url.append('action', 'iframe');
-        if (data.parameters?.containerId)
-            url.append('containerId', data.parameters.containerId);
         url.append('widget', '1');
         url.append('moduleToWidgetize', data.module);
         url.append('actionToWidgetize', data.action);
@@ -73,7 +71,11 @@ export default (() => {
         url.append('date', '-1month');
         url.append('disableLink', '1');
 
-        widgetOptions.params && Object.keys(widgetOptions.params).map((name) => {
+        Object.keys(data.parameters)
+            .filter(param => param != 'action' && param != 'module')
+            .map(param => url.append(param, data.parameters[param]));
+
+        widgetOptions.params && Object.keys(widgetOptions.params).map(name => {
             url.append(name, widgetOptions.params[name]);
         });
 
