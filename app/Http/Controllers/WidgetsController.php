@@ -39,12 +39,13 @@ class WidgetsController extends Controller
 
         if ($website->status->is(WebsiteStatus::PENDING)) {
             $redirectUrl = $this->getRoleAwareUrl('websites.show', ['website' => $website], $publicAdministration);
-            $name = $website->name;
 
             return redirect()->to($redirectUrl)->withNotification([
-                'title' => __('Errore'),
-                'message' => __("Attiva il sito '$name' prima di accedere all'anteprima dei widget."),
-                'status' => 'error',
+                'title' => __('sito non attivo'),
+                'message' => __("Attiva il sito <b>:site</b> prima di accedere all'anteprima dei widget.", [
+                    'site' => $website->name
+                ]),
+                'status' => 'warning',
                 'icon' => 'it-close-circle',
             ]);
         }
