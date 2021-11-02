@@ -28,9 +28,9 @@ export default (() => {
 
     const getLastPrevious30Range = () => {
         const dayBeforeYesterday = new Date();
-        dayBeforeYesterday.setDate((new Date()).getDate() - 2);
+        dayBeforeYesterday.setTime((new Date()).getTime() - (2*24*60*60*1000)); // days*hours*minutes*seconds*millis
         const thirtyDaysBeforeYesterday = new Date();
-        thirtyDaysBeforeYesterday.setDate(dayBeforeYesterday.getDate() - 29);
+        thirtyDaysBeforeYesterday.setTime(dayBeforeYesterday.getTime() - (29*24*60*60*1000)); // days*hours*minutes*seconds*millis
         return `${thirtyDaysBeforeYesterday.toISOString().split('T')[0]},${dayBeforeYesterday.toISOString().split('T')[0]}`;
     }
 
