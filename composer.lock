@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d34980cc0862ed3854e74f5d344654b2",
+    "content-hash": "962d8c2855d4a9cdf9300efe4d95cda4",
     "packages": [
         {
             "name": "bensampo/laravel-enum",
@@ -1792,16 +1792,16 @@
         },
         {
             "name": "italia/spid-laravel",
-            "version": "v1.2.4-beta",
+            "version": "v1.2.5-beta",
             "source": {
                 "type": "git",
                 "url": "https://github.com/italia/spid-laravel.git",
-                "reference": "3643cc93f66fc0859c7203408327f45a0ee17ba3"
+                "reference": "accf71efce8bacc69d71b2d6abb2c1d7f2bdfa19"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/italia/spid-laravel/zipball/3643cc93f66fc0859c7203408327f45a0ee17ba3",
-                "reference": "3643cc93f66fc0859c7203408327f45a0ee17ba3",
+                "url": "https://api.github.com/repos/italia/spid-laravel/zipball/accf71efce8bacc69d71b2d6abb2c1d7f2bdfa19",
+                "reference": "accf71efce8bacc69d71b2d6abb2c1d7f2bdfa19",
                 "shasum": ""
             },
             "require": {
@@ -1857,9 +1857,9 @@
             ],
             "support": {
                 "issues": "https://github.com/italia/spid-laravel/issues",
-                "source": "https://github.com/italia/spid-laravel/tree/v1.2.4-beta"
+                "source": "https://github.com/italia/spid-laravel/tree/v1.2.5-beta"
             },
-            "time": "2021-06-30T09:08:01+00:00"
+            "time": "2021-11-17T15:15:44+00:00"
         },
         {
             "name": "justinrainbow/json-schema",
