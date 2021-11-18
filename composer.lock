@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "962d8c2855d4a9cdf9300efe4d95cda4",
+    "content-hash": "71f96cebd11da1a8193472121bab2984",
     "packages": [
         {
             "name": "bensampo/laravel-enum",
@@ -2129,16 +2129,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v7.30.4",
+            "version": "v7.30.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "9dd38140dc2924daa1a020a3d7a45f9ceff03df3"
+                "reference": "afb0c034072a03a5ab1872fbdea54f8befd873c3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/9dd38140dc2924daa1a020a3d7a45f9ceff03df3",
-                "reference": "9dd38140dc2924daa1a020a3d7a45f9ceff03df3",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/afb0c034072a03a5ab1872fbdea54f8befd873c3",
+                "reference": "afb0c034072a03a5ab1872fbdea54f8befd873c3",
                 "shasum": ""
             },
             "require": {
@@ -2287,7 +2287,7 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2021-01-21T14:10:48+00:00"
+            "time": "2021-11-17T15:00:14+00:00"
         },
         {
             "name": "laravel/tinker",
