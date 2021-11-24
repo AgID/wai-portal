@@ -44,9 +44,11 @@ class UpdateSiteListOnRedis implements ShouldQueue
             $id = $website->analytics_id;
             $list = $this->analyticsService->getSiteUrlsFromId($id);
 
-            $listToString = implode(' ', $list);
+            $hostList = array_map(function ($url) { return parse_url($url, PHP_URL_HOST); }, $list);
 
-            Cache::store('csp')->connection()->set($id, $listToString);
+            $hostListToString = implode(' ', $hostList);
+
+            Cache::store('csp')->connection()->set($id, $hostListToString);
         }
 
         logger()->info(
