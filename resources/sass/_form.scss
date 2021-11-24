@@ -12,7 +12,7 @@
     text-indent: -2rem;
     padding-left: 2rem;
 
-    [type=checkbox] {
+    [type="checkbox"] {
       & + label::after {
         margin: 4px 5px;
       }
@@ -58,7 +58,7 @@
   &.is-invalid {
     & ~ .invalid-feedback {
       display: block;
-      margin: -1.75rem 0 0.5rem 0;
+      margin: -1.75rem 0 0.5rem;
     }
   }
 }
@@ -209,10 +209,10 @@
 }
 
 // Fiscal number
-input[name=fiscal_number] {
+input[name="fiscal_number"] {
   text-transform: uppercase;
 }
 
 input[type="search"]::-webkit-search-cancel-button {
-  -webkit-appearance: none;
+  -webkit-appearance: none; /* stylelint-disable-line property-no-vendor-prefix */
 }

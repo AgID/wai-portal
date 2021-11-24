@@ -1,4 +1,4 @@
-@use 'sass:map';
+@use "sass:map";
 
 .page-bulk-container {
   @extend .container;
@@ -25,11 +25,11 @@
   }
 
   @include media-breakpoint-up(xl) {
-    max-width: map.get($container-max-widths, 'lg');
+    max-width: map.get($container-max-widths, "lg");
     padding: 4em 5em;
 
     &.wide-layout {
-      max-width: map.get($container-max-widths, 'xl');
+      max-width: map.get($container-max-widths, "xl");
     }
   }
 }
@@ -65,7 +65,7 @@
     left: 0;
 
     .graphic-container {
-      @include graphic-widths();
+      @include graphic-widths;
     }
   }
 
@@ -75,7 +75,7 @@
     right: 0;
 
     .graphic-container {
-      @include graphic-widths();
+      @include graphic-widths;
     }
   }
 
@@ -84,10 +84,10 @@
     top: 96px;
     right: 140px;
 
-    @include v-bars-right-position();
+    @include v-bars-right-position;
 
     .graphic-container {
-      @include graphic-widths();
+      @include graphic-widths;
     }
   }
 }

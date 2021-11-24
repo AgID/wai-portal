@@ -1,7 +1,9 @@
+@use "sass:color";
+
 .home-content {
   .card {
     .card-title.big-heading::after {
-      content: '';
+      content: "";
       border-bottom: 4px solid $primary;
       width: 32px;
       margin-top: 4px;
@@ -43,12 +45,12 @@
       color: $primary;
 
       @include hover {
-        color: darken($primary, 10%);
+        color: color.adjust($primary, $lightness: -10%);
       }
 
       &.disabled,
       &:disabled {
-        color: darken($primary, 10%);
+        color: color.adjust($primary, $lightness: -10%);
       }
     }
   }
@@ -114,7 +116,7 @@
       }
 
       &:hover {
-        background: darken($primary-a10, 10%);
+        background: color.adjust($primary-a10, $lightness: -10%);
         text-decoration: none;
       }
     }
