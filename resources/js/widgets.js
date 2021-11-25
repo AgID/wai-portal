@@ -5,17 +5,17 @@ const iframeResizer = require('iframe-resizer').iframeResize;
 export default (() => {
     const analyticsWidgets = [...document.querySelectorAll('iframe.auto-resizeable')];
     const apiPublicDomain = window.api_public_domain;
-    const apiPublicPath = window.api_public_path;
+    const widgetsBaseUrl = window.widgets_base_url;
 
     const areWidgetsAvailable = () => {
-        return axios.get(`${apiPublicDomain}${apiPublicPath}/index.php?module=API&method=API.getMatomoVersion&timestamp=${new Date().getTime()}`)
+        return axios.get(`${apiPublicDomain}${widgetsBaseUrl}/index.php?module=API&method=API.getMatomoVersion&timestamp=${new Date().getTime()}`)
             .then(() => true)
             .catch(() => false);
     }
 
     const areReportsArchived = () => {
         const dashboardId = window.dashboard_id;
-        return axios.get(`${apiPublicDomain}${apiPublicPath}/index.php?module=API&method=VisitsSummary.getVisits&idSite=${dashboardId}&period=range&date=previous30&format=JSON&timestamp=${new Date().getTime()}`)
+        return axios.get(`${apiPublicDomain}${widgetsBaseUrl}/index.php?module=API&method=VisitsSummary.getVisits&idSite=${dashboardId}&period=range&date=previous30&format=JSON&timestamp=${new Date().getTime()}`)
             .then((response) => 0 ==! response.data.value)
             .catch(() => false);
     }
