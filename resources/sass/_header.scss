@@ -1,3 +1,5 @@
+@use "sass:color";
+
 .it-header-wrapper {
   background: radial-gradient(at top, $header-center-bg-color 50%, $header-center-bg-secondary-color 70%);
 
@@ -169,7 +171,7 @@
                 position: relative;
 
                 &::after {
-                  content: '';
+                  content: "";
                   position: absolute;
                   z-index: 1;
                   top: 1.2rem;
@@ -230,7 +232,7 @@
   .it-header-slim-wrapper {
     padding: 6px 18px;
     background: none;
-    border-bottom: 1px solid rgba($header-slim-text-color, 0.2);
+    border-bottom: 1px solid color.change($header-slim-text-color, $alpha: 0.2);
 
     @include media-breakpoint-up(lg) {
       padding: 0;
@@ -259,7 +261,7 @@
       @include media-breakpoint-up(lg) {
         ul.link-list {
           li.delimiter {
-            border-right: 1px solid rgba($header-slim-text-color, 0.2);
+            border-right: 1px solid color.change($header-slim-text-color, $alpha: 0.2);
           }
         }
       }

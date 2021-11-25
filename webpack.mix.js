@@ -1,5 +1,5 @@
 const mix = require('laravel-mix');
-require('laravel-mix-eslint-config');
+require('laravel-mix-eslint')
 require('laravel-mix-stylelint');
 
 /*
@@ -24,22 +24,20 @@ mix.autoload({
 });
 
 mix.js('resources/js/app.js', 'public/js')
-    .stylelint({ files: ['**/*.s?(a|c)ss']})
-    .eslint({
-        enforce: 'pre',
-        test: /\.js$/,
-        exclude: ['node_modules', 'containers'],
-        loader: 'eslint-loader',
-        options: {
-            fix: false,
-            cache: false,
-        }
+    .stylelint({
+        files: ['**/*.s?(a|c)ss'],
+        syntax: null,
     })
-    .sass('resources/sass/app.scss', 'public/css')
-    .sass('resources/sass/datatables.scss', 'public/css');
-    // Do not use automatic vendor extraction in this version.
-    // See https://github.com/JeffreyWay/laravel-mix/issues/1914
-    // .extract();
+    .eslint({
+        exclude: ['node_modules', 'containers'],
+    })
+    .sass('resources/sass/app.scss', 'public/css', {
+        sassOptions: {
+          quietDeps: true,
+        },
+    })
+    .sass('resources/sass/datatables.scss', 'public/css')
+    .extract();
 
 mix.copyDirectory('resources/images', 'public/images');
 mix.copyDirectory('node_modules/bootstrap-italia/dist/fonts', 'public/fonts');

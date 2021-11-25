@@ -35,6 +35,7 @@
       }
     }
 
+    /* stylelint-disable selector-class-pattern */
     .markdown p,
     .markdown pre,
     .renderedMarkdown p,
@@ -42,5 +43,6 @@
       margin: 0;
       max-width: unset;
     }
+    /* stylelint-enable selector-class-pattern */
   }
 }
