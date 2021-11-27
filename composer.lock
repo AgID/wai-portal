@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "32f90ebcd6be6683fef75d19ad22be6f",
+    "content-hash": "9ce14fbe39acff43c7437042eaaffe21",
     "packages": [
         {
             "name": "bensampo/laravel-enum",
@@ -3985,16 +3985,16 @@
         },
         {
             "name": "silber/bouncer",
-            "version": "v1.0.0-rc.10",
+            "version": "v1.0.0-rc.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/JosephSilber/bouncer.git",
-                "reference": "429262a84414569be2fad1fad417f05d752c075b"
+                "reference": "36ebbe26ebe2efc275c024eb33f3c63f6d112d6a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/JosephSilber/bouncer/zipball/429262a84414569be2fad1fad417f05d752c075b",
-                "reference": "429262a84414569be2fad1fad417f05d752c075b",
+                "url": "https://api.github.com/repos/JosephSilber/bouncer/zipball/36ebbe26ebe2efc275c024eb33f3c63f6d112d6a",
+                "reference": "36ebbe26ebe2efc275c024eb33f3c63f6d112d6a",
                 "shasum": ""
             },
             "require": {
@@ -4054,9 +4054,9 @@
             ],
             "support": {
                 "issues": "https://github.com/JosephSilber/bouncer/issues",
-                "source": "https://github.com/JosephSilber/bouncer/tree/v1.0.0-rc.10"
+                "source": "https://github.com/JosephSilber/bouncer/tree/v1.0.0-rc.11"
             },
-            "time": "2020-12-08T15:31:20+00:00"
+            "time": "2021-11-25T14:20:18+00:00"
         },
         {
             "name": "spatie/laravel-webhook-client",
