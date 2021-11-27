@@ -50,7 +50,7 @@
         "laravel/ui": "^2.0",
         "league/commonmark": "^1.4",
         "predis/predis": "^1.1",
-        "silber/bouncer": "v1.0.0-rc.10",
+        "silber/bouncer": "v1.0.0-rc.11",
         "spatie/laravel-webhook-client": "^2.3",
         "symfony/yaml": "^4.0",
         "yajra/laravel-datatables-fractal": "^1.0",
