@@ -11,5 +11,5 @@ module.exports = {
     "globals": {
         "axios": "readonly"
     },
-    "parser": "babel-eslint"
+    "parser": "@babel/eslint-parser"
 };

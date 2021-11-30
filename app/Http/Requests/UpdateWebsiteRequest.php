@@ -72,7 +72,9 @@ class UpdateWebsiteRequest extends StoreWebsiteRequest
      */
     protected function checkLastWebsiteForUsers(Website $website, ?array $permissions): Collection
     {
-        return $website->getEnabledNonAdministratorUsers()->whereNotInStrict('id', $permissions ?? [])->filter(function ($user) {
+        $userIdsInPermissions = array_keys($permissions ?? []);
+
+        return $website->getEnabledNonAdministratorUsers()->whereNotInStrict('id', $userIdsInPermissions)->filter(function ($user) {
             return 1 === $user->abilities->where('name', UserPermission::READ_ANALYTICS)->groupBy('entity_id')->count();
         });
     }
