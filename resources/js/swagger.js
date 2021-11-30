@@ -1,13 +1,13 @@
-import SwaggerUIBundle from "swagger-ui";
 import Notification from './notification';
 import I18n from './i18n';
-import "swagger-ui/dist/swagger-ui.css";
 
 export default (() => {
-    const init = () => {
+    const init = async () => {
         const swaggerDiv = document.getElementById("swagger-ui");
 
         if (swaggerDiv) {
+            const { default: SwaggerUIBundle } = await import(/* webpackChunkName: "swagger" */ './swaggerImports');
+
             const isProduction = "production" === swaggerDiv.dataset.environment;
             const selectCredential = document.getElementById(
                 "select-credential"
