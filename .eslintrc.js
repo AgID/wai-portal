@@ -11,5 +11,8 @@ module.exports = {
     "globals": {
         "axios": "readonly"
     },
-    "parser": "@babel/eslint-parser"
+    "parser": "@babel/eslint-parser",
+    "parserOptions": {
+        "requireConfigFile": false,
+    }
 };
