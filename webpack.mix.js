@@ -15,7 +15,7 @@ require('laravel-mix-stylelint');
 
 mix.webpackConfig({
     output: {
-        chunkFilename: 'js/chunks/[name].js',
+        chunkFilename: 'js/chunks/[name].[chunkhash].js',
     }
 });
 
