@@ -37,7 +37,15 @@ mix.js('resources/js/app.js', 'public/js')
         },
     })
     .sass('resources/sass/datatables.scss', 'public/css')
-    .extract();
+    .extract([
+        'jquery',
+        'upper-case-first',
+        'axios',
+        'axios-extensions',
+        'bootstrap-italia',
+        'throttle-debounce',
+        'iframe-resizer'
+    ]);
 
 mix.copyDirectory('resources/images', 'public/images');
 mix.copyDirectory('node_modules/bootstrap-italia/dist/fonts', 'public/fonts');
