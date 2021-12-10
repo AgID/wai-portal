@@ -28,7 +28,7 @@
         "laravel-mix": "^6.0.39",
         "laravel-mix-eslint": "^0.2.0",
         "laravel-mix-eslint-config": "^0.1.7",
-        "laravel-mix-stylelint": "^0.2.0",
+        "laravel-mix-stylelint": "^1.0.0",
         "popper.js": "^1.16.1",
         "postcss": "^8.4.4",
         "resolve-url-loader": "^4.0.0",
