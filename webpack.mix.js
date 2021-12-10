@@ -26,7 +26,6 @@ mix.autoload({
 mix.js('resources/js/app.js', 'public/js')
     .stylelint({
         files: ['**/*.s?(a|c)ss'],
-        syntax: null,
     })
     .eslint({
         exclude: ['node_modules', 'containers'],
