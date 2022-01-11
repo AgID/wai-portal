@@ -103,7 +103,11 @@
         "bin-dir": "bin",
         "preferred-install": "dist",
         "sort-packages": true,
-        "optimize-autoloader": true
+        "optimize-autoloader": true,
+        "allow-plugins": {
+            "cweagans/composer-patches": true,
+            "symfony/thanks": true
+        }
     },
     "minimum-stability": "beta",
     "prefer-stable": true
