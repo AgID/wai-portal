@@ -110,7 +110,7 @@ class WebsitesPermissionsTransformer extends TransformerAbstract
                             : UserPermission::getDescription(UserPermission::MANAGE_ANALYTICS),
                         'checked' => in_array($isCredentialPermissionsData
                             ? CredentialPermission::WRITE
-                            : UserPermission::MANAGE_ANALYTICS, $oldCredentialPermission[$websiteId] ?? []) || $canManageOrWrite,
+                            : UserPermission::MANAGE_ANALYTICS, $oldPermissions[$websiteId] ?? []) || $canManageOrWrite,
                         'dataAttributes' => [
                             'entity' => $websiteId,
                         ],
