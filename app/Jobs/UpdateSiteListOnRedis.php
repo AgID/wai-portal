@@ -39,7 +39,7 @@ class UpdateSiteListOnRedis implements ShouldQueue
     public function handle(): void
     {
         $websiteList = Website::all();
-        $defaultHostList = "api.webanalytics.italia.it webanalytics.italia.it www.webanalytics.italia.it";
+        $defaultHostList = 'api.webanalytics.italia.it webanalytics.italia.it www.webanalytics.italia.it';
 
         foreach ($websiteList as $website) {
             $id = $website->analytics_id;
