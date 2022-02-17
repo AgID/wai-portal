@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8577635ca38339469cff2cfbdef1df27",
+    "content-hash": "6f4f3fd6072843830b945f6f69a6e3b1",
     "packages": [
         {
             "name": "bensampo/laravel-enum",
@@ -3980,29 +3980,29 @@
         },
         {
             "name": "silber/bouncer",
-            "version": "v1.0.0-rc.11",
+            "version": "v1.0.0-rc.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/JosephSilber/bouncer.git",
-                "reference": "36ebbe26ebe2efc275c024eb33f3c63f6d112d6a"
+                "reference": "f7d544e82c9c498aae34cfa2cc3a865cef9f106c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/JosephSilber/bouncer/zipball/36ebbe26ebe2efc275c024eb33f3c63f6d112d6a",
-                "reference": "36ebbe26ebe2efc275c024eb33f3c63f6d112d6a",
+                "url": "https://api.github.com/repos/JosephSilber/bouncer/zipball/f7d544e82c9c498aae34cfa2cc3a865cef9f106c",
+                "reference": "f7d544e82c9c498aae34cfa2cc3a865cef9f106c",
                 "shasum": ""
             },
             "require": {
-                "illuminate/auth": "^6.0|^7.0|^8.0",
-                "illuminate/cache": "^6.0|^7.0|^8.0",
-                "illuminate/container": "^6.0|^7.0|^8.0",
-                "illuminate/contracts": "^6.0|^7.0|^8.0",
-                "illuminate/database": "^6.0|^7.0|^8.0",
+                "illuminate/auth": "^6.0|^7.0|^8.0|^9.0",
+                "illuminate/cache": "^6.0|^7.0|^8.0|^9.0",
+                "illuminate/container": "^6.0|^7.0|^8.0|^9.0",
+                "illuminate/contracts": "^6.0|^7.0|^8.0|^9.0",
+                "illuminate/database": "^6.0|^7.0|^8.0|^9.0",
                 "php": "^7.2|^8.0"
             },
             "require-dev": {
-                "illuminate/console": "^6.0|^7.0|^8.0",
-                "illuminate/events": "^6.0|^7.0|^8.0",
+                "illuminate/console": "^6.0|^7.0|^8.0|^9.0",
+                "illuminate/events": "^6.0|^7.0|^8.0|^9.0",
                 "larapack/dd": "^1.1",
                 "mockery/mockery": "^1.3.3",
                 "phpunit/phpunit": "^8.0|^9.0"
@@ -4049,9 +4049,9 @@
             ],
             "support": {
                 "issues": "https://github.com/JosephSilber/bouncer/issues",
-                "source": "https://github.com/JosephSilber/bouncer/tree/v1.0.0-rc.11"
+                "source": "https://github.com/JosephSilber/bouncer/tree/v1.0.0-rc.12"
             },
-            "time": "2021-11-25T14:20:18+00:00"
+            "time": "2022-02-08T18:23:07+00:00"
         },
         {
             "name": "spatie/laravel-webhook-client",
