@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6f4f3fd6072843830b945f6f69a6e3b1",
+    "content-hash": "a8046ba5ba922a5a991908755ade15fc",
     "packages": [
         {
             "name": "bensampo/laravel-enum",
@@ -2824,16 +2824,16 @@
         },
         {
             "name": "nesbot/carbon",
-            "version": "2.56.0",
+            "version": "2.57.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/briannesbitt/Carbon.git",
-                "reference": "626ec8cbb724cd3c3400c3ed8f730545b744e3f4"
+                "reference": "4a54375c21eea4811dbd1149fe6b246517554e78"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/626ec8cbb724cd3c3400c3ed8f730545b744e3f4",
-                "reference": "626ec8cbb724cd3c3400c3ed8f730545b744e3f4",
+                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/4a54375c21eea4811dbd1149fe6b246517554e78",
+                "reference": "4a54375c21eea4811dbd1149fe6b246517554e78",
                 "shasum": ""
             },
             "require": {
@@ -2916,7 +2916,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-01-21T17:08:38+00:00"
+            "time": "2022-02-13T18:13:33+00:00"
         },
         {
             "name": "nikic/php-parser",
@@ -3980,16 +3980,16 @@
         },
         {
             "name": "silber/bouncer",
-            "version": "v1.0.0-rc.12",
+            "version": "v1.0.0-rc.13",
             "source": {
                 "type": "git",
                 "url": "https://github.com/JosephSilber/bouncer.git",
-                "reference": "f7d544e82c9c498aae34cfa2cc3a865cef9f106c"
+                "reference": "ea1b7961b16b9556dfdf0a02522ed9f7b2cb1907"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/JosephSilber/bouncer/zipball/f7d544e82c9c498aae34cfa2cc3a865cef9f106c",
-                "reference": "f7d544e82c9c498aae34cfa2cc3a865cef9f106c",
+                "url": "https://api.github.com/repos/JosephSilber/bouncer/zipball/ea1b7961b16b9556dfdf0a02522ed9f7b2cb1907",
+                "reference": "ea1b7961b16b9556dfdf0a02522ed9f7b2cb1907",
                 "shasum": ""
             },
             "require": {
@@ -4049,9 +4049,9 @@
             ],
             "support": {
                 "issues": "https://github.com/JosephSilber/bouncer/issues",
-                "source": "https://github.com/JosephSilber/bouncer/tree/v1.0.0-rc.12"
+                "source": "https://github.com/JosephSilber/bouncer/tree/v1.0.0-rc.13"
             },
-            "time": "2022-02-08T18:23:07+00:00"
+            "time": "2022-02-21T13:39:05+00:00"
         },
         {
             "name": "spatie/laravel-webhook-client",
