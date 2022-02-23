@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a8046ba5ba922a5a991908755ade15fc",
+    "content-hash": "a9ef18044cefd7298c09bf93c28b1815",
     "packages": [
         {
             "name": "bensampo/laravel-enum",
@@ -3980,7 +3980,7 @@
         },
         {
             "name": "silber/bouncer",
-            "version": "v1.0.0-rc.13",
+            "version": "v1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/JosephSilber/bouncer.git",
@@ -4049,7 +4049,7 @@
             ],
             "support": {
                 "issues": "https://github.com/JosephSilber/bouncer/issues",
-                "source": "https://github.com/JosephSilber/bouncer/tree/v1.0.0-rc.13"
+                "source": "https://github.com/JosephSilber/bouncer/tree/v1.0.0"
             },
             "time": "2022-02-21T13:39:05+00:00"
         },
