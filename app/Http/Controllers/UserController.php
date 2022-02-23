@@ -755,8 +755,7 @@ class UserController extends Controller
      */
     protected function getUserApiUri(string $fn): string
     {
-        return 'to-be-implemented';
-        // return config('kong-service.api_url') .
-        //     str_replace('/api/', '/portal/', route('api.users.show', ['fn' => $fn], false));
+        return config('kong-service.api_url') .
+            str_replace('/api/', '/portal/', route('api.users.show', ['fn' => $fn], false));
     }
 }
