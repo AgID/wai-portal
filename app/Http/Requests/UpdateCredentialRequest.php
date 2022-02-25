@@ -29,6 +29,7 @@ class UpdateCredentialRequest extends StoreCredentialsRequest
         $rules = parent::rules();
         $credential = $this->route('credential');
 
+        unset($rules['type']);
         $rules['credential_name'] = [
             'required',
             'min:3',
