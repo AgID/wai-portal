@@ -114,8 +114,14 @@ return [
     ],
 
     CredentialType::class => [
-        CredentialType::ADMIN => 'amministrativa',
-        CredentialType::ANALYTICS => 'analytics',
+        CredentialType::ADMIN => [
+            'short' => 'amministrativa',
+            'long' => 'La credenziale amministrativa ha gli stessi permessi di un account con ruolo di amministatore e può essere usata per gestire tutti i siti web e tutti gli utenti.',
+        ],
+        CredentialType::ANALYTICS => [
+            'short' => 'analytics',
+            'long' => 'La credenziale analytics può essere usata soltanto per interrogare i report statistici secondo i permessi impostati.',
+        ],
     ],
 
     CredentialPermission::class => [
