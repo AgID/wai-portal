@@ -1,6 +1,9 @@
 export default (() => {
+    const credentialTypes = window.credentialTypes;
+    const credentialPermissions = window.credentialPermissions;
+
     const initTogglesCredentials = () => {
-        const adminSelect = document.getElementById("type");
+        const adminSelect = document.getElementById('type');
         const permissionsToggles = [
             ...document.querySelectorAll(
                 `input[type="checkbox"][name^="permissions"]:not([disabled])`
@@ -8,40 +11,25 @@ export default (() => {
         ];
 
         permissionsToggles.map(toggle => {
-            toggle.addEventListener("change", event => {
-                if (!event.currentTarget.checked) {
-                    adminSelect && (adminSelect.value = "analytics");
+            toggle.addEventListener('change', event => {
+                if (credentialPermissions.read === event.currentTarget.value && !event.currentTarget.checked) {
+                    document.getElementById(`permissions[${event.currentTarget.dataset.entity}][]-${credentialPermissions.write}`).checked = false;
                 }
-
-                if (
-                    "R" === event.currentTarget.value &&
-                    !event.currentTarget.checked
-                ) {
-                    document.getElementById(
-                        `permissions[${event.currentTarget.dataset.entity}][]-W`
-                    ).checked = false;
-                }
-                if (
-                    "W" === event.currentTarget.value &&
-                    event.currentTarget.checked
-                ) {
-                    document.getElementById(
-                        `permissions[${event.currentTarget.dataset.entity}][]-R`
-                    ).checked = true;
+                if (credentialPermissions.write === event.currentTarget.value && event.currentTarget.checked) {
+                    document.getElementById(`permissions[${event.currentTarget.dataset.entity}][]-${credentialPermissions.read}`).checked = true;
                 }
             });
         });
 
-        adminSelect &&
-            adminSelect.addEventListener("change", event => {
-                permissionsToggles.map(toggle => {
-                    const isAdminCredentials = event.target.value === "admin";
-                    toggle.disabled = isAdminCredentials;
-                    isAdminCredentials
-                        ? toggle.setAttribute("checked", true)
-                        : toggle.removeAttribute("checked");
-                });
+        adminSelect && adminSelect.addEventListener('change', event => {
+            permissionsToggles.map(toggle => {
+                const isAdminCredentials = (event.target.value === credentialTypes.admin);
+                toggle.disabled = isAdminCredentials;
+                isAdminCredentials
+                    ? toggle.setAttribute('checked', true)
+                    : toggle.removeAttribute('checked');
             });
+        });
     };
 
     const init = () => {
