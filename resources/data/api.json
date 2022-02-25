@@ -3,7 +3,7 @@
     "info": {
         "version": "1.0.0",
         "title": "Web Analytics Italia API",
-        "description": "Questa interfaccia API si riferisce alle operazioni che le Pubbliche Amministrazioni possono eseguire in interoperabilità per gestire utenti e siti di WAI.",
+        "description": "Questa interfaccia API si riferisce alle operazioni che le Pubbliche Amministrazioni possono eseguire in interoperabilità per gestire utenti e siti di WAI con credenziali amministrative.",
         "contact": {
             "name": "AGID - Web Analytics Italia",
             "url": "https://webanalytics.italia.it/contacts",
