@@ -179,30 +179,6 @@ trait SendsResponse
     }
 
     /**
-     * Returns a success response for the specified credential.
-     *
-     * @param Credential $credential the credential
-     *
-     * @return JsonResponse|RedirectResponse the response in json or http redirect format
-     */
-    protected function credentialResponse(Credential $credential)
-    {
-        return request()->expectsJson()
-            ? response()->json([
-                'result' => 'ok',
-                'id' => $credential->consumer_id,
-                'credential_name' => e($credential->client_name),
-                'status' => 200,
-            ])
-            : back()->withNotification([
-                'title' => __('credenziale modificata'),
-                'message' => __('Il sito web :website è stato eliminato.', ['website' => '<strong>' . e($credential->client_name) . '</strong>']),
-                'status' => 'info',
-                'icon' => 'it-info-circle',
-            ]);
-    }
-
-    /**
      * Returns an error response with the specified parameters.
      *
      * @param string $message the error message

@@ -2,14 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\UserPermission;
+use App\Enums\CredentialType;
 use App\Exceptions\InvalidCredentialException;
 use App\Http\Requests\StoreCredentialsRequest;
 use App\Http\Requests\UpdateCredentialRequest;
 use App\Models\Credential;
-use App\Models\PublicAdministration;
-use App\Models\Website;
-use App\Traits\HasRoleAwareUrls;
+use App\Traits\HasWebsiteDatatable;
 use App\Traits\SendsResponse;
 use App\Transformers\CredentialsTransformer;
 use App\Transformers\WebsitesPermissionsTransformer;
@@ -20,7 +18,7 @@ use Yajra\DataTables\DataTables;
 
 class CredentialsController extends Controller
 {
-    use HasRoleAwareUrls;
+    use HasWebsiteDatatable;
     use SendsResponse;
 
     protected $clientService;
@@ -33,11 +31,9 @@ class CredentialsController extends Controller
     /**
      * Display the credentials list.
      *
-     * @param PublicAdministration $publicAdministration the public administration the credentials belong to
-     *
      * @return View the view
      */
-    public function index(Request $request, PublicAdministration $publicAdministration)
+    public function index(Request $request)
     {
         $credentialsDatatable = [
             'columns' => [
@@ -47,17 +43,15 @@ class CredentialsController extends Controller
                 ['data' => 'icons', 'name' => '', 'orderable' => false],
                 ['data' => 'buttons', 'name' => '', 'orderable' => false],
             ],
-            'source' => $this->getRoleAwareUrl('api-credentials.data.json', [], $publicAdministration),
+            'source' => route('api-credentials.data.json'),
             'caption' => __('elenco delle credenziali presenti su :app', ['app' => config('app.name')]),
             'columnsOrder' => [['added_at', 'asc'], ['client_name', 'asc']],
         ];
 
-        $roleAwareUrls = $this->getRoleAwareUrlArray([
-            'newCredentialUrl' => 'api-credentials.create',
-        ], [], $publicAdministration);
+        $newCredentialUrl = route('api-credentials.create');
 
         return view('pages.credentials.index')
-            ->with($roleAwareUrls)
+            ->with(compact('newCredentialUrl'))
             ->with($credentialsDatatable);
     }
 
@@ -65,24 +59,16 @@ class CredentialsController extends Controller
      * Show the form for creating a new credential.
      *
      * @param Request $request the request
-     * @param PublicAdministration $publicAdministration the public administration the new credential will belong to
      *
      * @return View the view
      */
-    public function create(Request $request, PublicAdministration $publicAdministration): View
+    public function create(Request $request): View
     {
-        $user = $request->user();
-        $currentPublicAdministration = $user->can(UserPermission::ACCESS_ADMIN_AREA)
-            ? $publicAdministration
-            : current_public_administration();
+        $credentialsStoreUrl = route('api-credentials.store');
 
-        $credentialsStoreUrl = $this->getRoleAwareUrl('api-credentials.store', [], $currentPublicAdministration);
-
-        $websitesPermissionsDatatableSource = $this->getRoleAwareUrl(
-            'api-credentials.websites.permissions',
-            ['oldCredentialPermissions' => old('permissions')],
-            $currentPublicAdministration
-        );
+        $websitesPermissionsDatatableSource = route('api-credentials.websites.permissions', [
+            'oldCredentialPermissions' => old('permissions'),
+        ]);
 
         $websitesPermissionsDatatable = $this->getDatatableWebsitesPermissionsParams($websitesPermissionsDatatableSource);
 
@@ -93,26 +79,19 @@ class CredentialsController extends Controller
      * Store the credential.
      *
      * @param StoreCredentialsRequest $request the request
-     * @param PublicAdministration $publicAdministration the public administration the new credential will belong to
      *
      * @return View|Redirect the view or redirect error
      */
-    public function store(StoreCredentialsRequest $request, PublicAdministration $publicAdministration)
+    public function store(StoreCredentialsRequest $request)
     {
         $validatedData = $request->validated();
         $permissions = [];
 
-        if (array_key_exists('permissions', $validatedData)) {
+        if (CredentialType::ANALYTICS === $validatedData['type']) {
             foreach ($validatedData['permissions'] as $credential => $permission) {
                 array_push($permissions, ['id' => $credential, 'permissions' => implode('', $permission)]);
             }
         }
-
-        $user = $request->user();
-
-        $currentPublicAdministration = $user->can(UserPermission::ACCESS_ADMIN_AREA)
-            ? $publicAdministration
-            : current_public_administration();
 
         $clientJSON = $this->clientService
             ->makeConsumer(
@@ -124,7 +103,7 @@ class CredentialsController extends Controller
 
         $client = Credential::create([
             'client_name' => $validatedData['credential_name'],
-            'public_administration_id' => $currentPublicAdministration->id,
+            'public_administration_id' => current_public_administration()->id,
             'consumer_id' => $clientJSON['consumer']['id'],
         ]);
 
@@ -137,29 +116,21 @@ class CredentialsController extends Controller
      *
      * @param Request $request the request
      * @param Credential $credential the credential
-     * @param PublicAdministration $publicAdministration the public administration the credential belongs to
      *
      * @return View|Redirect the view or redirect error
      */
-    public function show(Request $request, Credential $credential, PublicAdministration $publicAdministration)
+    public function show(Request $request, Credential $credential)
     {
-        $user = $request->user();
-        $currentPublicAdministration = $user->can(UserPermission::ACCESS_ADMIN_AREA)
-            ? $publicAdministration
-            : current_public_administration();
-
-        $roleAwareUrls = $this->getRoleAwareUrlArray([
-            'credentialEditUrl' => 'api-credentials.edit',
-            'credentialRegenerate' => 'api-credentials.regenerate',
-        ], [
-            'credential' => $credential,
-        ], $currentPublicAdministration);
-
-        $websitesPermissionsDatatableSource = $this->getRoleAwareUrl(
-            'api-credentials.websites.permissions',
-            ['credential' => $credential],
-            $currentPublicAdministration
+        $credentialEditUrl = route('api-credentials.edit',
+            ['credential' => $credential]
         );
+        $credentialRegenerateUrl = route('api-credentials.regenerate',
+            ['credential' => $credential]
+        );
+
+        $websitesPermissionsDatatableSource = route('api-credentials.websites.permissions', [
+            'credential' => $credential,
+        ]);
 
         $websitesPermissionsDatatable = $this->getDatatableWebsitesPermissionsParams($websitesPermissionsDatatableSource, true);
 
@@ -168,10 +139,9 @@ class CredentialsController extends Controller
         ];
 
         return view('pages.credentials.show')
-            ->with(compact('credential'))
+            ->with(compact('credential', 'credentialEditUrl', 'credentialRegenerateUrl'))
             ->with($credentialData)
-            ->with($websitesPermissionsDatatable)
-            ->with($roleAwareUrls);
+            ->with($websitesPermissionsDatatable);
     }
 
     /**
@@ -179,29 +149,16 @@ class CredentialsController extends Controller
      *
      * @param Request $request The request
      * @param Credential $credential The credential
-     * @param PublicAdministration $publicAdministration the public administration the credential belongs to
      *
      * @return View the view
      */
-    public function edit(Request $request, Credential $credential, PublicAdministration $publicAdministration): View
+    public function edit(Request $request, Credential $credential): View
     {
-        $user = $request->user();
-        $currentPublicAdministration = $user->can(UserPermission::ACCESS_ADMIN_AREA)
-            ? $publicAdministration
-            : current_public_administration();
-
-        $updateUrl = $this->getRoleAwareUrl('api-credentials.update', [
+        $updateUrl = route('api-credentials.update', ['credential' => $credential]);
+        $websitesPermissionsDatatableSource = route('api-credentials.websites.permissions', [
             'credential' => $credential,
-        ], $currentPublicAdministration);
-
-        $websitesPermissionsDatatableSource = $this->getRoleAwareUrl(
-            'api-credentials.websites.permissions',
-            [
-                'credential' => $credential,
-                'oldCredentialPermissions' => old('permissions'),
-            ],
-            $currentPublicAdministration
-        );
+            'oldCredentialPermissions' => old('permissions'),
+        ]);
 
         $credentialData = [
             'type' => $credential->type,
@@ -226,8 +183,8 @@ class CredentialsController extends Controller
     public function update(UpdateCredentialRequest $request, Credential $credential): RedirectResponse
     {
         $validatedData = $request->validated();
-
         $permissions = [];
+
         if (array_key_exists('permissions', $validatedData)) {
             foreach ($validatedData['permissions'] as $credentialId => $permission) {
                 array_push($permissions, ['id' => $credentialId, 'permissions' => implode('', $permission)]);
@@ -237,17 +194,21 @@ class CredentialsController extends Controller
         $credential->client_name = $validatedData['credential_name'];
         $credential->save();
 
-        $this->clientService->updateClient($credential->consumer_id, [
-            'username' => $validatedData['credential_name'],
-            'custom_id' => json_encode(['type' => $validatedData['type'], 'siteId' => $permissions]),
-        ]);
+        if ($credential->type->is(CredentialType::ANALYTICS)) {
+            $clientData = [
+                'username' => $validatedData['credential_name'],
+                'custom_id' => json_encode(['type' => $credential->type->value, 'siteId' => $permissions]),
+            ];
+            $this->clientService->updateClient($credential->consumer_id, $clientData);
+        }
 
-        return redirect()->route('api-credentials.index')->withModal([
+        return redirect()->route('api-credentials.index')->withNotification([
             'title' => __('modifica credenziale'),
-            'icon' => 'it-check-circle',
             'message' => __('La modifica della credenziale :credential è andata a buon fine.', [
                 'credential' => '<strong>' . $validatedData['credential_name'] . '</strong>',
             ]),
+            'status' => 'success',
+            'icon' => 'it-check-circle',
         ]);
     }
 
@@ -265,7 +226,12 @@ class CredentialsController extends Controller
             $this->clientService->deleteConsumer($credential->consumer_id);
             $credential->delete();
 
-            return $this->credentialResponse($credential);
+            return back()->withNotification([
+                'title' => __('credenziale eliminata'),
+                'message' => __('La credenziale :credential è stata eliminata.', ['credential' => '<strong>' . e($credential->client_name) . '</strong>']),
+                'status' => 'success',
+                'icon' => 'it-check-circle',
+            ]);
         } catch (InvalidCredentialException $exception) {
             report($exception);
             $code = $exception->getCode();
@@ -279,20 +245,13 @@ class CredentialsController extends Controller
     /**
      * Get the Credentials data.
      *
-     * @param PublicAdministration $publicAdministration the Public Administration to filter credentials or null to use current one
-     *
      * @throws \Exception if unable to initialize the datatable
      *
      * @return mixed the response in JSON format
      */
-    public function dataJson(PublicAdministration $publicAdministration)
+    public function dataJson()
     {
-        $user = auth()->user();
-        $currentPublicAdministration = $user->can(UserPermission::ACCESS_ADMIN_AREA)
-            ? $publicAdministration
-            : current_public_administration();
-
-        $data = $currentPublicAdministration->credentials()->get();
+        $data = current_public_administration()->credentials()->get();
 
         return DataTables::of($data)
             ->setTransformer(new CredentialsTransformer())
@@ -309,11 +268,6 @@ class CredentialsController extends Controller
      */
     public function regenerateCredential(Request $request, Credential $credential): RedirectResponse
     {
-        $user = $request->user();
-        $currentPublicAdministration = $user->can(UserPermission::ACCESS_ADMIN_AREA)
-            ? $publicAdministration
-            : current_public_administration();
-
         $tokens = $this->clientService->getTokensList();
 
         if ($tokens && array_key_exists('data', $tokens) && is_array($tokens['data'])) {
@@ -335,60 +289,19 @@ class CredentialsController extends Controller
     /**
      * Show the oauth credential permissions on websites.
      *
-     * @param Website $websites websites associated with the credential
+     * @param Credential $credential The credential
      *
      * @throws \Exception if unable to initialize the datatable
      *
      * @return mixed the response in JSON format
      */
-    public function dataWebsitesPermissionsJson()
+    public function dataWebsitesPermissionsJson(Credential $credential)
     {
         $websites = current_public_administration()->websites->all();
 
         return DataTables::of($websites)
             ->setTransformer(new WebsitesPermissionsTransformer())
             ->make(true);
-    }
-
-    /**
-     * Get the datatable parameters for websites permission with specified source.
-     *
-     * @param string $source the source paramater for the websites permission datatable
-     * @param bool $readonly wether the datatable is readonly
-     *
-     * @return array the datatable parameters
-     */
-    public function getDatatableWebsitesPermissionsParams(string $source, bool $readonly = false): array
-    {
-        return [
-            'datatableOptions' => [
-                'searching' => [
-                    'label' => __('cerca tra i siti web'),
-                ],
-                'columnFilters' => [
-                    'type' => [
-                        'filterLabel' => __('tipologia'),
-                    ],
-                    'status' => [
-                        'filterLabel' => __('stato'),
-                    ],
-                ],
-            ],
-            'columns' => [
-                ['data' => 'website_name', 'name' => __('nome del sito'), 'className' => 'text-wrap'],
-                ['data' => 'type', 'name' => __('tipologia')],
-                ['data' => 'status', 'name' => __('stato')],
-                [
-                    'data' => ($readonly ? 'icons' : 'toggles'),
-                    'name' => __('permessi della credenziale'),
-                    'orderable' => false,
-                    'searchable' => false,
-                ],
-            ],
-            'source' => $source . ($readonly ? '?readOnly' : ''),
-            'caption' => __('elenco dei siti web presenti su :app', ['app' => config('app.name')]),
-            'columnsOrder' => [['website_name', 'asc']],
-        ];
     }
 
     /**
@@ -407,8 +320,7 @@ class CredentialsController extends Controller
                 ? __('La credenziale è stata rigenerata')
                 : __('La credenziale è stata creata'),
             'icon' => 'it-check-circle',
-            'message' => implode(
-                "\n",
+            'message' => implode("\n",
                 [
                     __('Adesso puoi utilizzare la tua nuova credenziale e usare le API con il flusso "Client credentials" OAuth2.') . "\n",
                     '<strong>' . __('Il tuo client_id è:') . '</strong> <span class="text-monospace">' . $clientId . '</span>',
@@ -423,8 +335,8 @@ class CredentialsController extends Controller
                 ]),
                 '<strong>' . __('Non portà essere più visualizzato dopo la chiusura di questo messaggio.') . '</strong>',
                 '<hr>',
-                '<p class="mb-0">' . __('In caso di smarrimento o compromissione, può essere rigenerato nella pagina di dettaglio della credenziale.') . '</p>' .
-                    '</div>',
+                '<p class="mb-0">' . __('In caso di smarrimento o compromissione, può essere rigenerato nella pagina di dettaglio della credenziale.') . '</p>',
+                '</div>',
             ]),
         ];
     }
