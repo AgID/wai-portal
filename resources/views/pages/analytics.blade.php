@@ -64,8 +64,8 @@
         </div>
         @endforeach
         <script>
-            api_public_domain = "{{ config('analytics-service.api_public_domain') }}";
-            widgets_base_url = "{{ config('analytics-service.widgets_base_url') }}";
+            api_public_domain = "{{ $apiPublicDomain }}";
+            widgets_base_url = "{{ $widgetsBaseUrl }}";
             dashboard_id = "{{ $publicAdministration->rollup_id }}";
         </script>
     </div>
