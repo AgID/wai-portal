@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\CredentialType;
 use BenSampo\Enum\Traits\CastsEnums;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -14,6 +15,15 @@ class Credential extends Model
         'public_administration_id',
         'client_name',
         'consumer_id',
+    ];
+
+    /**
+     * The attributes that should be cast to enums classes.
+     *
+     * @var array enum casted attributes
+     */
+    protected $enumCasts = [
+        'type' => CredentialType::class,
     ];
 
     /**

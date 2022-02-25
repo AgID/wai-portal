@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\CredentialType;
 use App\Enums\UserPermission;
 use App\Models\Credential;
 use App\Models\PublicAdministration;
@@ -39,7 +40,7 @@ class SwaggerController extends Controller
 
         $credentials = Credential::where('public_administration_id', $currentPublicAdministration->id)->get()
             ->filter(function ($credential) {
-                return 'admin' === $credential->type;
+                return $credential->type->is(CredentialType::ADMIN);
             });
         $hasCredentials = 0 !== count($credentials);
 

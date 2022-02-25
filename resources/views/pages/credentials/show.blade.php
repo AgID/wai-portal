@@ -72,21 +72,19 @@
                     <h5 class="section-header mb-4">{{ __('ruolo') }}</h5>
                     <div class="row">
                         <div class="col-md-4 d-flex align-items-center">
-                            <span class="badge user-role {{ $type }}">{{$type === "admin" ? __("Amministratore") : __("Analytics")}}</span>
+                            <span class="badge user-role {{ strtolower($type->key) }}">
+                                {{ strtoupper($type->description) }}
+                            </span>
                         </div>
                         <div class="col-md-8">
                             <p class="mb-0">
                                 <svg class="icon"><use xlink:href="{{ asset('svg/sprite.svg#it-info-circle') }}"></use></svg>
-                                {{
-                                $type === "admin"
-                                    ? __('L\'amministratore può gestire i siti web abilitati e tutti gli utenti')
-                                    : __('Credenziale Analytics')
-                                }}
+                                {{ CredentialType::getLongDescription($type->value) }}
                             </p>
                         </div>
                     </div>
                 </div>
-                @if ($type !== "admin")  
+                @if ($type->isNot(CredentialType::ADMIN))
                     @include('partials.datatable')
                 @endif
             </div>
