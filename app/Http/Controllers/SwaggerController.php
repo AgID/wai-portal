@@ -75,7 +75,7 @@ class SwaggerController extends Controller
 
         $data->servers = [
             [
-                'url' => implode('/', array_filter([
+                'url' => implode('', array_filter([
                     $apiUrl,
                     $basePath,
                     $apiVersion,
