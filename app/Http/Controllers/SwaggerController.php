@@ -10,6 +10,7 @@ use App\Traits\HasRoleAwareUrls;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Symfony\Component\Yaml\Yaml;
 
 class SwaggerController extends Controller
 {
@@ -60,14 +61,14 @@ class SwaggerController extends Controller
      */
     public function apiSpecification(): JsonResponse
     {
-        $path = resource_path('data/api.json');
+        $path = resource_path('data/api.yml');
 
         if (!is_file($path) || !is_readable($path)) {
             return response()
                 ->json(['error' => 'API configuration file not readable'], 500);
         }
 
-        $data = json_decode(file_get_contents($path));
+        $data = Yaml::parseFile($path, Yaml::PARSE_OBJECT_FOR_MAP);
         $apiUrl = config('kong-service.api_url');
         $apiVersion = config('app.api_version');
         $basePath = config('kong-service.portal_base_path');
