@@ -89,7 +89,7 @@ class SwaggerController extends Controller
             ->oAuth
             ->flows
             ->clientCredentials
-            ->tokenUrl = $apiUrl . '/portal/oauth2/token';
+            ->tokenUrl = $apiUrl . '/oauth2/token';
 
         return response()
             ->json($data, 200);
