@@ -38,6 +38,7 @@ class WebsiteArrayTransformer extends TransformerAbstract
         return [
             'name' => $website->name,
             'url' => $website->url,
+            'analyticsId' => $website->analytics_id,
             'slug' => $website->slug,
             'status' => WebsiteStatus::fromValue($website->status)->description,
             'type' => WebsiteType::fromValue($website->type)->description,

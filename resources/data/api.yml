@@ -829,6 +829,7 @@ components:
       required:
         - website_name
         - url
+        - analyticsId
         - type
         - permissions
       description: Sito web
@@ -841,6 +842,9 @@ components:
           description: Url del sito web
           type: string
           format: uri
+        analyticsId:
+          description: Id del sito web per API analytics
+          type: integer
         type:
           $ref: '#/components/schemas/WebsiteType'
         permissions:
@@ -997,6 +1001,7 @@ components:
       value:
         website_name: Agenzia per L'Italia Digitale
         url: www.agid.gov.it
+        analyticsId: 123
         slug: wwwagidgovit
         status: active
         type: institutional website
@@ -1054,7 +1059,7 @@ components:
               email:
                 - The email address field is required.
               fiscal_number:
-                - The fiscal code field is required.
+                - The fiscal number field is required.
               permissions:
                 - The permissions field is required.
     Error422Website:

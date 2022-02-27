@@ -112,6 +112,7 @@ trait SendsResponse
                 $jsonResponse['status'] = $website->status->key;
                 $jsonResponse['status_description'] = $website->status->description;
                 $jsonResponse['trashed'] = $website->trashed();
+                unset($jsonResponse['analyticsId']);
             }
         }
 
