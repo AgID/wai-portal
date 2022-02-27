@@ -211,8 +211,7 @@ class WebsiteController extends Controller
      */
     public function show(Request $request, PublicAdministration $publicAdministration, Website $website)
     {
-        $isApiRequest = $request->is('api/*');
-        if ($isApiRequest) {
+        if ($request->is('api/*')) {
             return $this->websiteResponse($website);
         }
 
