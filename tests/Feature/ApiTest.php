@@ -81,6 +81,20 @@ class ApiTest extends TestCase
     private $client;
 
     /**
+     * Configured API url.
+     *
+     * @var string
+     */
+    private $apiUrl;
+
+    /**
+     * Configured API bast path.
+     *
+     * @var string
+     */
+    private $apiBasePath;
+
+    /**
      * Pre test setup.
      *
      * @return void
@@ -124,6 +138,9 @@ class ApiTest extends TestCase
         $this->userNonAdministrator->registerAnalyticsServiceAccount();
 
         $this->faker = Factory::create();
+
+        $this->apiUrl = config('kong-service.api_url');
+        $this->apiBasePath = config('kong-service.portal_base_path');
     }
 
     /**
@@ -220,7 +237,7 @@ class ApiTest extends TestCase
             'Accept' => 'application/json',
         ]);
 
-        $location = config('kong-service.api_url') . str_replace('/api/', '/portal/', route('api.websites.read', ['website' => $slug], false));
+        $location = $this->apiUrl . str_replace('/api/', $this->apiBasePath, route('api.websites.read', ['website' => $slug], false));
 
         $response
             ->assertStatus(201)
@@ -453,7 +470,7 @@ class ApiTest extends TestCase
             'Accept' => 'application/json',
         ]);
 
-        $location = config('kong-service.api_url') . str_replace('/api/', '/portal/', route('api.users.show', ['fn' => $fiscalNumber], false));
+        $location = $this->apiUrl . str_replace('/api/', $this->apiBasePath, route('api.users.show', ['fn' => $fiscalNumber], false));
 
         $user = User::findNotSuperAdminByFiscalNumber($fiscalNumber);
 
