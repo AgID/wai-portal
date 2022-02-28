@@ -83,7 +83,7 @@ class UserEventsSubscriber implements ShouldQueue
             $publicAdministration->sendUserInvitedNotificationToAdministrators($user);
         }
         logger()->notice(
-            'New user invited: ' . $user->uuid . ' by ' . ($invitedBy->uuid ?? false) ? $invitedBy->uuid : $invitedBy,
+            'New user invited: ' . $user->uuid . ' by ' . (($invitedBy->uuid ?? false) ? $invitedBy->uuid : $invitedBy),
             $context
         );
     }
