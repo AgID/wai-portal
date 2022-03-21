@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a9ef18044cefd7298c09bf93c28b1815",
+    "content-hash": "34189dcbbc3e115f0735f40397475b91",
     "packages": [
         {
             "name": "bensampo/laravel-enum",
@@ -191,16 +191,16 @@
         },
         {
             "name": "davidepastore/codice-fiscale",
-            "version": "v0.8.0",
+            "version": "v0.9.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/DavidePastore/codice-fiscale.git",
-                "reference": "a7d01b9ae83290a72cec911fb06d1c6db222e1ee"
+                "reference": "41b89eae21f9bdd7a1af86f71b9124a2b22f5e55"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/DavidePastore/codice-fiscale/zipball/a7d01b9ae83290a72cec911fb06d1c6db222e1ee",
-                "reference": "a7d01b9ae83290a72cec911fb06d1c6db222e1ee",
+                "url": "https://api.github.com/repos/DavidePastore/codice-fiscale/zipball/41b89eae21f9bdd7a1af86f71b9124a2b22f5e55",
+                "reference": "41b89eae21f9bdd7a1af86f71b9124a2b22f5e55",
                 "shasum": ""
             },
             "require": {
@@ -238,9 +238,9 @@
             ],
             "support": {
                 "issues": "https://github.com/DavidePastore/codice-fiscale/issues",
-                "source": "https://github.com/DavidePastore/codice-fiscale/tree/v0.8.0"
+                "source": "https://github.com/DavidePastore/codice-fiscale/tree/v0.9.0"
             },
-            "time": "2021-01-30T19:37:00+00:00"
+            "time": "2022-03-19T19:38:04+00:00"
         },
         {
             "name": "diglactic/laravel-breadcrumbs",
