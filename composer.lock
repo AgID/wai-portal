@@ -4065,16 +4065,16 @@
         },
         {
             "name": "spatie/laravel-webhook-client",
-            "version": "2.7.5",
+            "version": "2.7.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-webhook-client.git",
-                "reference": "aa6864027c9ca5c184f8a9d974c68dbe8b66b337"
+                "reference": "37c1bd4b78f770a9d5ec57bda3c9c81ab70eb804"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-webhook-client/zipball/aa6864027c9ca5c184f8a9d974c68dbe8b66b337",
-                "reference": "aa6864027c9ca5c184f8a9d974c68dbe8b66b337",
+                "url": "https://api.github.com/repos/spatie/laravel-webhook-client/zipball/37c1bd4b78f770a9d5ec57bda3c9c81ab70eb804",
+                "reference": "37c1bd4b78f770a9d5ec57bda3c9c81ab70eb804",
                 "shasum": ""
             },
             "require": {
@@ -4120,7 +4120,7 @@
             ],
             "support": {
                 "issues": "https://github.com/spatie/laravel-webhook-client/issues",
-                "source": "https://github.com/spatie/laravel-webhook-client/tree/2.7.5"
+                "source": "https://github.com/spatie/laravel-webhook-client/tree/2.7.7"
             },
             "funding": [
                 {
@@ -4128,7 +4128,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2021-01-08T09:22:21+00:00"
+            "time": "2022-04-07T22:52:51+00:00"
         },
         {
             "name": "swiftmailer/swiftmailer",
