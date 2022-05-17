@@ -57,14 +57,14 @@ class WebsiteEventsSubscriber implements ShouldQueue
         }
 
         if (!$website->type->is(WebsiteType::INSTITUTIONAL)) {
-            //Notify the registering user
+            // Notify the registering user
             $user->sendWebsiteAddedNotification($website);
         }
 
-        //Notify public administration administrators
+        // Notify public administration administrators
         $website->publicAdministration->sendWebsiteAddedNotificationToAdministrators($website, $user);
 
-        //Update Redisearch websites index
+        // Update Redisearch websites index
         $this->updateWebsitesIndex($website);
 
         logger()->notice(
@@ -84,11 +84,11 @@ class WebsiteEventsSubscriber implements ShouldQueue
 
         $publicAdministration = $website->publicAdministration;
 
-        //Notify public administration administrators
+        // Notify public administration administrators
         $publicAdministration->sendWebsiteActivatedNotificationToAdministrators($website);
 
         if ($publicAdministration->rtd_mail) {
-            //Notify RTD
+            // Notify RTD
             $publicAdministration->sendWebsiteActivatedNotificationToRTD($website);
         }
 
@@ -107,7 +107,7 @@ class WebsiteEventsSubscriber implements ShouldQueue
             report($exception);
         }
 
-        //NOTE: primary websites are added to roll up report
+        // NOTE: primary websites are added to roll up report
         //      by "public administration activated" event handler
         if (!$website->type->is(WebsiteType::INSTITUTIONAL)) {
             try {
@@ -127,7 +127,7 @@ class WebsiteEventsSubscriber implements ShouldQueue
     {
         $website = $event->getWebsite();
 
-        //Update Redisearch websites index
+        // Update Redisearch websites index
         $this->updateWebsitesIndex($website);
 
         logger()->notice('Website ' . $website->info . ' updated',
@@ -167,7 +167,7 @@ class WebsiteEventsSubscriber implements ShouldQueue
     {
         $website = $event->getWebsite();
 
-        //Notify public administration administrators
+        // Notify public administration administrators
         $website->publicAdministration->sendWebsiteUrlChangedNotificationToAdministrators($website);
 
         logger()->notice(
@@ -189,7 +189,7 @@ class WebsiteEventsSubscriber implements ShouldQueue
     {
         $website = $event->getWebsite();
 
-        //Notify public administration administrators
+        // Notify public administration administrators
         $website->publicAdministration->sendWebsiteArchivingNotificationToAdministrators($website, $event->getDaysLeft());
 
         logger()->notice(
@@ -213,7 +213,7 @@ class WebsiteEventsSubscriber implements ShouldQueue
         $manual = $event->isManual();
         $reason = $manual ? 'manually' : 'due to inactivity';
 
-        //Notify public administration administrators
+        // Notify public administration administrators
         $website->publicAdministration->sendWebsiteArchivedNotificationToAdministrators($website, $manual);
 
         logger()->notice(
@@ -235,7 +235,7 @@ class WebsiteEventsSubscriber implements ShouldQueue
     {
         $website = $event->getWebsite();
 
-        //Notify public administration administrators
+        // Notify public administration administrators
         $website->publicAdministration->sendWebsiteUnarchivedNotificationToAdministrators($website);
 
         logger()->notice(
@@ -257,7 +257,7 @@ class WebsiteEventsSubscriber implements ShouldQueue
     {
         $website = $event->getWebsite();
 
-        //Notify public administration administrators
+        // Notify public administration administrators
         $website->publicAdministration->sendWebsitePurgingNotificationToAdministrators($website);
 
         logger()->notice(
@@ -282,15 +282,15 @@ class WebsiteEventsSubscriber implements ShouldQueue
         $websiteInfo = '"' . e($website->name) . '" [' . $website->slug . ']';
         $publicAdministration = json_decode($event->getPublicAdministrationJson());
 
-        //NOTE: for primary websites use PublicAdministrationPurged
+        // NOTE: for primary websites use PublicAdministrationPurged
         //      event to notify administrators
         if (WebsiteType::INSTITUTIONAL !== $website->type) {
-            //Notify public administration administrators
+            // Notify public administration administrators
             $publicAdministration = PublicAdministration::findByIpaCode($publicAdministration->ipa_code);
             $publicAdministration->sendWebsitePurgedNotificationToAdministrators($website);
         }
 
-        //NOTE: toJson: relationship attributes are snake_case
+        // NOTE: toJson: relationship attributes are snake_case
         logger()->notice(
             'Website ' . $websiteInfo . ' purged',
             [
@@ -346,7 +346,7 @@ class WebsiteEventsSubscriber implements ShouldQueue
     {
         $website = $event->getWebsite();
 
-        //Notify public administration administrators
+        // Notify public administration administrators
         $website->publicAdministration->sendPrimaryWebsiteNotTrackingNotificationToAdministrators();
 
         logger()->notice(

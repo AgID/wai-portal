@@ -34,13 +34,13 @@ trait HasAnalyticsDashboard
     public function registerRollUp(): void
     {
         $analyticsService = app()->make('analytics-service');
-        //NOTE: if RollUp reporting plugin doesn't exists, we allow a CommandException to be thrown
+        // NOTE: if RollUp reporting plugin doesn't exists, we allow a CommandException to be thrown
         //      to break public administration dashboard user/permissions management
         $rollUpId = $analyticsService->registerRollUp($this->name, Arr::pluck($this->websites->all(), 'analytics_id'));
         $this->registerAccount($analyticsService);
         $analyticsService->setWebsiteAccess($this->ipa_code, WebsiteAccessType::VIEW, $rollUpId);
 
-        //NOTE: RollUp reporting expects user has at least "view" access on every website included in the report
+        // NOTE: RollUp reporting expects user has at least "view" access on every website included in the report
         $analyticsService->setWebsiteAccess($this->ipa_code, WebsiteAccessType::VIEW, $this->websites()
             ->where('type', WebsiteType::INSTITUTIONAL)
             ->orWhere('type', WebsiteType::INSTITUTIONAL_PLAY)
@@ -61,16 +61,16 @@ trait HasAnalyticsDashboard
     public function addToRollUp(Website $website): void
     {
         if (empty($this->rollup_id)) {
-            //NOTE: return immediately since the public administration
+            // NOTE: return immediately since the public administration
             //      doesn't have a RollUp report (no plugin installed)
             return;
         }
 
         $analyticsService = app()->make('analytics-service');
-        //NOTE: RollUp reporting requires complete websites IDs list on update
+        // NOTE: RollUp reporting requires complete websites IDs list on update
         $analyticsService->updateRollUp($this->rollup_id, Arr::pluck($this->websites->all(), 'analytics_id'));
 
-        //NOTE: RollUp reporting expects user has at least "view" access on every website included in the report
+        // NOTE: RollUp reporting expects user has at least "view" access on every website included in the report
         $analyticsService->setWebsiteAccess($this->ipa_code, WebsiteAccessType::VIEW, $website->analytics_id);
     }
 

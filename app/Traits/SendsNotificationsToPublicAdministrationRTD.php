@@ -19,7 +19,7 @@ trait SendsNotificationsToPublicAdministrationRTD
     {
         $registeringUser = $this->users()->first();
 
-        //NOTE: don't send notification to RTD
+        // NOTE: don't send notification to RTD
         //      if he/she is the PA registering user
         if (($registeringUser->email !== $this->rtd_mail) && $this->sendNotificationOnCurrentEnvironment()) {
             $this->notify(new RTDPublicAdministrationRegisteredEmail($registeringUser));

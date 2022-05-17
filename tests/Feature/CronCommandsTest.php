@@ -1,20 +1,20 @@
 <?php
 
-//NOTE: all the tests have been commented because the cron controller routes are disabled
+// NOTE: all the tests have been commented because the cron controller routes are disabled
 
-//namespace Tests\Feature;
+// namespace Tests\Feature;
 //
-//use App\Jobs\MonitorWebsitesTracking;
-//use App\Jobs\ProcessPendingWebsites;
-//use App\Jobs\ProcessPublicAdministrationsUpdateFromIpa;
-//use Illuminate\Support\Facades\Queue;
-//use Tests\TestCase;
+// use App\Jobs\MonitorWebsitesTracking;
+// use App\Jobs\ProcessPendingWebsites;
+// use App\Jobs\ProcessPublicAdministrationsUpdateFromIpa;
+// use Illuminate\Support\Facades\Queue;
+// use Tests\TestCase;
 //
-///**
+// /**
 // * CronJobs controller tests.
 // */
-//class CronCommandsTest extends TestCase
-//{
+// class CronCommandsTest extends TestCase
+// {
 //    /**
 //     * Setup the test environment.
 //     */
@@ -101,4 +101,4 @@
 //        $response->assertForbidden();
 //        Queue::assertNotPushed(MonitorWebsitesTracking::class);
 //    }
-//}
+// }
