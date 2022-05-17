@@ -1349,23 +1349,24 @@
         },
         {
             "name": "gmponos/guzzle_logger",
-            "version": "v2.0.0",
+            "version": "v2.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/gmponos/guzzle-log-middleware.git",
-                "reference": "7a42976d27f58860584df7284fa01749baf71ec7"
+                "reference": "8784459b18f332beb49363a4d71399e784d8c298"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/gmponos/guzzle-log-middleware/zipball/7a42976d27f58860584df7284fa01749baf71ec7",
-                "reference": "7a42976d27f58860584df7284fa01749baf71ec7",
+                "url": "https://api.github.com/repos/gmponos/guzzle-log-middleware/zipball/8784459b18f332beb49363a4d71399e784d8c298",
+                "reference": "8784459b18f332beb49363a4d71399e784d8c298",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
                 "guzzlehttp/guzzle": "^6.1 || ^7.0.1",
-                "php": "^7.2",
-                "psr/log": "^1.1"
+                "guzzlehttp/psr7": "^1.7 || ^2.0",
+                "php": "^7.2 || ^8.0",
+                "psr/log": "^1.1 || ^2.0 || ^3.0"
             },
             "require-dev": {
                 "phpstan/phpstan": "~0.12.32",
@@ -1408,7 +1409,7 @@
             ],
             "support": {
                 "issues": "https://github.com/gmponos/guzzle-log-middleware/issues",
-                "source": "https://github.com/gmponos/guzzle-log-middleware/tree/master"
+                "source": "https://github.com/gmponos/guzzle-log-middleware/tree/v2.2.0"
             },
             "funding": [
                 {
@@ -1416,7 +1417,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2020-07-05T12:27:03+00:00"
+            "time": "2022-04-04T08:50:42+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
