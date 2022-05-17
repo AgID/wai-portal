@@ -21,7 +21,7 @@ class UpdateClosedBetaWhitelist extends ProcessWebhookJob
      */
     public const CLOSED_BETA_WHITELIST_KEY = 'closed-beta-whitelist';
 
-    //NOTE: DON'T USE $webhookCall field because it's not initialized!
+    // NOTE: DON'T USE $webhookCall field because it's not initialized!
 
     /**
      * Whitelisted ipa codes array.
@@ -41,7 +41,7 @@ class UpdateClosedBetaWhitelist extends ProcessWebhookJob
      */
     public function __construct(?WebhookCall $webhookCall = null)
     {
-        //NOTE: no parent constructor call since
+        // NOTE: no parent constructor call since
         //      database persistence is not wanted
         //      and no migration has been scheduled
         $this->payload = $webhookCall->payload ?? null;

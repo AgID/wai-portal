@@ -43,7 +43,7 @@ class UserEventsSubscriber implements ShouldQueue
     {
         $this->updateUsersIndex($event->user);
 
-        //NOTE: user isn't connected to any Public Administration yet
+        // NOTE: user isn't connected to any Public Administration yet
         logger()->notice(
             'New user registered: ' . $event->user->uuid,
             [
@@ -79,7 +79,7 @@ class UserEventsSubscriber implements ShouldQueue
                 // Notify the user only if is already confirmed otherwise is notified by classic invitation
                 $user->sendPublicAdministrationInvitedNotification($publicAdministration);
             }
-            //Notify public administration administrators
+            // Notify public administration administrators
             $publicAdministration->sendUserInvitedNotificationToAdministrators($user);
         }
         logger()->notice(
@@ -114,10 +114,10 @@ class UserEventsSubscriber implements ShouldQueue
         $user = $event->getUser();
         $publicAdministration = $event->getPublicAdministration();
 
-        //Notify user
+        // Notify user
         $user->sendActivatedNotification($publicAdministration);
 
-        //Notify public administration administrators
+        // Notify public administration administrators
         $publicAdministration->sendUserActivatedNotificationToAdministrators($user);
 
         logger()->notice(
@@ -139,7 +139,7 @@ class UserEventsSubscriber implements ShouldQueue
     {
         $user = $event->getUser();
 
-        //Update Redisearch websites index
+        // Update Redisearch websites index
         $this->updateUsersIndex($user);
 
         if (!$event->isOnlyLastAccessDirty()) {
@@ -220,7 +220,7 @@ class UserEventsSubscriber implements ShouldQueue
         $website = $event->getWebsite();
         $accessType = $event->getAccessType();
 
-        //Notify public administration administrators (currently disabled - TODO: verify if really needed)
+        // Notify public administration administrators (currently disabled - TODO: verify if really needed)
         // $website->publicAdministration->sendWebsiteAccessChangedNotificationToAdministrators($user);
 
         logger()->notice(
@@ -279,10 +279,10 @@ class UserEventsSubscriber implements ShouldQueue
     {
         $user = $event->getUser();
         $publicAdministration = $event->getPublicAdministration();
-        //Notify user
+        // Notify user
         $user->sendSuspendedNotification($publicAdministration);
 
-        //Notify public administration administrators
+        // Notify public administration administrators
         $user->publicAdministrationsWithSuspended()->each(function (PublicAdministration $publicAdministration) use ($user) {
             $publicAdministration->sendUserSuspendedNotificationToAdministrators($user);
         });
@@ -307,10 +307,10 @@ class UserEventsSubscriber implements ShouldQueue
         $user = $event->getUser();
         $publicAdministration = $event->getPublicAdministration();
 
-        //Notify user
+        // Notify user
         $user->sendReactivatedNotification($publicAdministration);
 
-        //Notify public administration administrators
+        // Notify public administration administrators
         $user->publicAdministrations()->each(function (PublicAdministration $publicAdministration) use ($user) {
             $publicAdministration->sendUserReactivatedNotificationToAdministrators($user);
         });
@@ -371,7 +371,7 @@ class UserEventsSubscriber implements ShouldQueue
     {
         $user = $event->user;
 
-        //Notify user
+        // Notify user
         $user->sendPasswordChangedNotification();
 
         logger()->notice('Password successfully changed for user ' . $user->uuid,

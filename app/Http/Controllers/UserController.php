@@ -375,7 +375,7 @@ class UserController extends Controller
                 throw new InvalidUserStatusException('Invited users cannot be suspended.');
             }
 
-            //NOTE: super admin are allowed to suspend the last active administrator of a public administration
+            // NOTE: super admin are allowed to suspend the last active administrator of a public administration
             if ($isApiRequest || optional($request->user())->cannot(UserPermission::ACCESS_ADMIN_AREA)) {
                 $validator = validator($request->all())->after([$this, 'validateNotLastActiveAdministrator']);
                 if ($validator->fails()) {

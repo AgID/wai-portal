@@ -57,7 +57,7 @@ class MonitorWebsitesTracking implements ShouldQueue
                 // Check:
                 // - visits the last 24 hours
                 // - website created at least 'archive_expire' days before
-                //NOTE: Matomo report contains information for all the requested days, regardless of when the website was created
+                // NOTE: Matomo report contains information for all the requested days, regardless of when the website was created
                 if (0 === $analyticsService->getLiveVisits($website->analytics_id, 1440) && Carbon::now()->subDays($intervalArchive)->greaterThanOrEqualTo($website->created_at)) {
                     $visits = $analyticsService->getSiteLastDaysVisits($website->analytics_id, $intervalArchive);
 

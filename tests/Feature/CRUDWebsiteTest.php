@@ -830,7 +830,7 @@ class CRUDWebsiteTest extends TestCase
             return $event->getWebsite()->slug === Str::slug('www.example.local');
         });
 
-        //NOTE: rebind real analytics service.
+        // NOTE: rebind real analytics service.
         //      To be removed when full tests refactoring is completed
         $this->app->bind('analytics-service', function () {
             return new MatomoService();
