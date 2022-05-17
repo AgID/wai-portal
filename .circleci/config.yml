@@ -127,7 +127,8 @@ jobs:
       - security
       - install_node_packages
       - save_all_caches
-      - setup_remote_docker
+      - setup_remote_docker:
+          version: 20.10.12
       # build
       - run:
           name: Run build task
