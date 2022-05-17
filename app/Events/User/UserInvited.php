@@ -33,9 +33,9 @@ class UserInvited extends AbstractUserEvent
     /**
      * Get the user issuing the invitation.
      *
-     * @return User the user issuing the invitation
+     * @return User|string the user issuing the invitation
      */
-    public function getInvitedBy(): User
+    public function getInvitedBy()
     {
         return $this->invitedBy ?? '[API request]';
     }

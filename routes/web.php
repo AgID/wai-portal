@@ -190,7 +190,6 @@ Route::middleware('spid.auth', 'auth', 'verified:verification.notice')->group(fu
         Route::get('/analytics', 'AnalyticsController@index')
         ->name('analytics');
 
-        /*
         Route::get('/api', 'SwaggerController@index')
         ->name('show.swagger');
 
@@ -232,10 +231,7 @@ Route::middleware('spid.auth', 'auth', 'verified:verification.notice')->group(fu
                 Route::patch('/{credential}/delete', 'CredentialsController@delete')
                 ->name('api-credentials.delete');
             });
-
         });
-
-        */
 
         Route::middleware('authorize.analytics:' . UserPermission::VIEW_LOGS)->group(function () {
             Route::prefix('/logs')->group(function () {

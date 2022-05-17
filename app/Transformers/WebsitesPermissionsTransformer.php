@@ -146,6 +146,6 @@ class WebsitesPermissionsTransformer extends TransformerAbstract
 
         $websitePermissions = $credentialPermissions[$websitePermissionIndex];
 
-        return array_key_exists('permission', $websitePermissions) && str_contains($websitePermissions['permission'], $permissionType);
+        return array_key_exists('permissions', $websitePermissions) && str_contains($websitePermissions['permissions'], $permissionType);
     }
 }

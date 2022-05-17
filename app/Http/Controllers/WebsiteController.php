@@ -211,8 +211,7 @@ class WebsiteController extends Controller
      */
     public function show(Request $request, PublicAdministration $publicAdministration, Website $website)
     {
-        $isApiRequest = $request->is('api/*');
-        if ($isApiRequest) {
+        if ($request->is('api/*')) {
             return $this->websiteResponse($website);
         }
 
@@ -915,8 +914,9 @@ class WebsiteController extends Controller
      */
     private function getWebsiteAPIUri(Website $website): string
     {
-        return 'to-be-implemented';
-        // return config('kong-service.api_url') .
-            // str_replace('/api/', '/portal/', route('api.websites.read', ['website' => $website], false));
+        $apiUrl = config('kong-service.api_url');
+        $apiBasePath = config('kong-service.portal_base_path');
+
+        return $apiUrl . str_replace('/api/', $apiBasePath, route('api.websites.read', ['website' => $website], false));
     }
 }

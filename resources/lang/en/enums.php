@@ -114,8 +114,14 @@ return [
     ],
 
     CredentialType::class => [
-        CredentialType::ADMIN => 'admin',
-        CredentialType::ANALYTICS => 'analytics',
+        CredentialType::ADMIN => [
+            'short' => 'amministrativa',
+            'long' => 'The administrative credential has the same permissions as an account with an administrator role and can be used to manage all websites and all users.',
+        ],
+        CredentialType::ANALYTICS => [
+            'short' => 'analytics',
+            'long' => 'The analytics credential can only be used to query statistical reports according to the permissions set.',
+        ],
     ],
 
     CredentialPermission::class => [

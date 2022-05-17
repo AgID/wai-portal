@@ -2,7 +2,6 @@
 
 namespace App\Transformers;
 
-use App\Enums\CredentialType;
 use App\Enums\UserPermission;
 use App\Models\Credential;
 use League\Fractal\TransformerAbstract;
@@ -32,7 +31,7 @@ class CredentialsTransformer extends TransformerAbstract
                 ]),
                 'raw' => e($credential->client_name),
             ],
-            'type' => CredentialType::getDescription($credential->type),
+            'type' => $credential->type->description,
             'added_at' => $credential->created_at->format('d/m/Y'),
             'icons' => [],
             'buttons' => [],

@@ -32,7 +32,10 @@ class StoreCredentialsRequest extends FormRequest
     {
         return [
             'credential_name' => 'required|unique:credentials,client_name|min:3|max:255',
-            'type' => 'required',
+            'type' => [
+                'required',
+                Rule::in([CredentialType::ADMIN, CredentialType::ANALYTICS]),
+            ],
             'permissions' => 'required_if:type,' . CredentialType::ANALYTICS . '|array',
             'permissions.*' => 'array',
             'permissions.*.*' => Rule::in([CredentialPermission::WRITE, CredentialPermission::READ]),

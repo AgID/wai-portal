@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Enums\CredentialType;
 use App\Models\Credential;
 use App\Models\User;
 use App\Models\Website;
@@ -36,7 +37,7 @@ class AuthenticateApi
             $credentialType = $customId->type;
         }
 
-        if ('admin' !== $credentialType) {
+        if (CredentialType::ADMIN !== $credentialType) {
             return response()->json([
                 'error' => 'forbidden',
                 'error_description' => 'Access to the requested resource is forbidden',

@@ -11,21 +11,21 @@
                 <div class="form-row">
                     <div class="form-group col-md-6">
                         <input
-                        type="text"
-                        class="form-control-plaintext"
-                        id="name"
-                        value="{{ $credential->client_name ?? __('Non ancora disponibile') }}"
-                        readonly
+                            type="text"
+                            class="form-control-plaintext"
+                            id="name"
+                            value="{{ $credential->client_name ?? __('Non ancora disponibile') }}"
+                            readonly
                         >
                         <label for="name">{{ __('Nome') }}</label>
                     </div>
                     <div class="form-group col-md-6">
                         <input
-                        type="text"
-                        class="form-control-plaintext"
-                        id="id"
-                        value="{{ $credential->client_id ?? __('Non ancora disponibile') }}"
-                        readonly
+                            type="text"
+                            class="form-control-plaintext"
+                            id="id"
+                            value="{{ $credential->client_id ?? __('Non ancora disponibile') }}"
+                            readonly
                         >
                         <label for="id">{{ __('client_id') }}</label>
                     </div>
@@ -33,20 +33,30 @@
                 <div class="row">
                     <div class="col-md-6">
                         <p>
-                            {{__('Il ')}}
-                            <strong>{{__('client_secret ')}} </strong>
-                            {{__('necessario al flusso')}} 
-                            <strong>{{__('OAuth2 ')}}</strong> 
-                            {{__('ti è stato fornito durante la creazione della credenziale.')}}
+                            {!! __('Il :client_secret necessario al flusso :oauth2 ti è stato fornito durante la creazione della credenziale.', [
+                                'client_secret' => '<strong>client_secret</strong>',
+                                'oauth2' => '<strong>OAuth2</strong>'
+                            ]) !!}
                         </p>
                     </div>
                     <div class="col-md-6">
-                        <p>{{__('Se necessario poi rigenerare il tuo client_id e client_secret')}}</p>
+                        <p>
+                            {!! __('In caso di necessità puoi rigenerare il tuo :client_secret.', [
+                                'client_secret' => '<strong>client_secret</strong>',
+                            ]) !!}
+                        </p>
+                        <div class="alert alert-warning rounded" role="alert">
+                            <small>
+                                {!! __('Con la rigenerazione del :client_secret tutti i token emessi saranno invalidati.', [
+                                    'client_secret' => '<strong>client_secret</strong>',
+                                ]) !!}
+                            </small>
+                        </div>
                         @component('layouts.components.link_button', [
-                            'link' => $credentialRegenerate,
+                            'link' => $credentialRegenerateUrl,
                             'size' => 'lg',
                         ])
-                        {{ ucfirst(__('Rigenera la credenziale')) }}
+                        {{ ucfirst(__('rigenera la credenziale')) }}
                         @endcomponent
                     </div>
                 </div>
@@ -66,27 +76,25 @@
 <div class="row">
     <div class="col-lg-12 d-flex">
         @component('layouts.components.box')
-            <h4 class="text-uppercase m-2">{{ __('PERMESSI SUI SITI WEB') }}</h4>
+            <h4 class="text-uppercase m-2">{{ __('permessi sui siti web') }}</h4>
             <div>
                 <div class="box-section lightgrey-bg-a1 my-4 py-5">
-                    <h5 class="section-header mb-4">{{ __('ruolo') }}</h5>
+                    <h5 class="section-header mb-4">{{ __('tipologia') }}</h5>
                     <div class="row">
                         <div class="col-md-4 d-flex align-items-center">
-                            <span class="badge user-role {{ $type }}">{{$type === "admin" ? __("Amministratore") : __("Analytics")}}</span>
+                            <span class="badge user-role {{ strtolower($type->key) }}">
+                                {{ strtoupper($type->description) }}
+                            </span>
                         </div>
                         <div class="col-md-8">
                             <p class="mb-0">
                                 <svg class="icon"><use xlink:href="{{ asset('svg/sprite.svg#it-info-circle') }}"></use></svg>
-                                {{
-                                $type === "admin"
-                                    ? __('L\'amministratore può gestire i siti web abilitati e tutti gli utenti')
-                                    : __('Credenziale Analytics')
-                                }}
+                                {{ CredentialType::getLongDescription($type->value) }}
                             </p>
                         </div>
                     </div>
                 </div>
-                @if ($type !== "admin")  
+                @if ($type->isNot(CredentialType::ADMIN))
                     @include('partials.datatable')
                 @endif
             </div>
@@ -99,7 +107,7 @@
                 {{ ucfirst(__('modifica')) }}
                 @endcomponent
                 </div>
-         @endcomponent
+        @endcomponent
     </div>
 </div>
 @endsection

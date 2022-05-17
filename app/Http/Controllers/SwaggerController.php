@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\CredentialType;
 use App\Enums\UserPermission;
 use App\Models\Credential;
 use App\Models\PublicAdministration;
@@ -9,6 +10,7 @@ use App\Traits\HasRoleAwareUrls;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Symfony\Component\Yaml\Yaml;
 
 class SwaggerController extends Controller
 {
@@ -39,7 +41,7 @@ class SwaggerController extends Controller
 
         $credentials = Credential::where('public_administration_id', $currentPublicAdministration->id)->get()
             ->filter(function ($credential) {
-                return 'admin' === $credential->type;
+                return $credential->type->is(CredentialType::ADMIN);
             });
         $hasCredentials = 0 !== count($credentials);
 
@@ -59,21 +61,21 @@ class SwaggerController extends Controller
      */
     public function apiSpecification(): JsonResponse
     {
-        $path = resource_path('data/api.json');
+        $path = resource_path('data/api.yml');
 
         if (!is_file($path) || !is_readable($path)) {
             return response()
                 ->json(['error' => 'API configuration file not readable'], 500);
         }
 
-        $data = json_decode(file_get_contents($path));
+        $data = Yaml::parseFile($path, Yaml::PARSE_OBJECT_FOR_MAP);
         $apiUrl = config('kong-service.api_url');
         $apiVersion = config('app.api_version');
         $basePath = config('kong-service.portal_base_path');
 
         $data->servers = [
             [
-                'url' => implode('/', array_filter([
+                'url' => implode('', array_filter([
                     $apiUrl,
                     $basePath,
                     $apiVersion,
@@ -87,7 +89,7 @@ class SwaggerController extends Controller
             ->oAuth
             ->flows
             ->clientCredentials
-            ->tokenUrl = $apiUrl . '/portal/oauth2/token';
+            ->tokenUrl = $apiUrl . '/oauth2/token';
 
         return response()
             ->json($data, 200);

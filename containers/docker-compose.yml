@@ -288,6 +288,8 @@ services:
       context: ./kong
       args:
         - KONG_VERSION=${KONG_VERSION}
+        - KONG_API_PORTAL_BASE_PATH=${KONG_API_PORTAL_BASE_PATH}
+        - KONG_API_MATOMO_BASE_PATH=${KONG_API_MATOMO_BASE_PATH}
     depends_on:
       - postgres
     environment:

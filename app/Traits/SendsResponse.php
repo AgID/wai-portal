@@ -112,6 +112,7 @@ trait SendsResponse
                 $jsonResponse['status'] = $website->status->key;
                 $jsonResponse['status_description'] = $website->status->description;
                 $jsonResponse['trashed'] = $website->trashed();
+                unset($jsonResponse['analyticsId']);
             }
         }
 
@@ -173,30 +174,6 @@ trait SendsResponse
             : back(303)->withNotification([
                 'title' => __('operazione non effettuata'),
                 'message' => __('La richiesta non ha determinato cambiamenti nello stato.'),
-                'status' => 'info',
-                'icon' => 'it-info-circle',
-            ]);
-    }
-
-    /**
-     * Returns a success response for the specified credential.
-     *
-     * @param Credential $credential the credential
-     *
-     * @return JsonResponse|RedirectResponse the response in json or http redirect format
-     */
-    protected function credentialResponse(Credential $credential)
-    {
-        return request()->expectsJson()
-            ? response()->json([
-                'result' => 'ok',
-                'id' => $credential->consumer_id,
-                'credential_name' => e($credential->client_name),
-                'status' => 200,
-            ])
-            : back()->withNotification([
-                'title' => __('credenziale modificata'),
-                'message' => __('Il sito web :website è stato eliminato.', ['website' => '<strong>' . e($credential->client_name) . '</strong>']),
                 'status' => 'info',
                 'icon' => 'it-info-circle',
             ]);
