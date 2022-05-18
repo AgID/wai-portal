@@ -9,7 +9,7 @@
             <p class="lead font-weight-bold text-secondary text-serif">
                 {{ __('Questo set di dati mostra la maniera in cui i cittadini interagiscono online con i siti web della tua pubblica amministrazione.') }}
                 <br>
-                <small class="font-italic">{{ __('I dati analytics mostrati si riferiscono agli ultimi 30 giorni (oggi escluso).') }}</small>
+                <small class="font-italic">{{ __('I dati analytics mostrati si riferiscono al mese solare precedente).') }}</small>
             </p>
         </div>
         <div class="col-md-6">

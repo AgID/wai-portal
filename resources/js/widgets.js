@@ -15,7 +15,7 @@ export default (() => {
 
     const areReportsArchived = () => {
         const dashboardId = window.dashboard_id;
-        return axios.get(`${apiPublicDomain}${widgetsBaseUrl}/index.php?module=API&method=VisitsSummary.getVisits&idSite=${dashboardId}&period=range&date=previous30&format=JSON&timestamp=${new Date().getTime()}`)
+        return axios.get(`${apiPublicDomain}${widgetsBaseUrl}/index.php?module=API&method=VisitsSummary.getVisits&idSite=${dashboardId}&period=month&date=-1month&format=JSON&timestamp=${new Date().getTime()}`)
             .then((response) => 0 ==! response.data.value)
             .catch(() => false);
     }
@@ -26,14 +26,6 @@ export default (() => {
         iframeResizer({ heightCalculationMethod: 'grow' }, iframe);
     }
 
-    const getLastPrevious30Range = () => {
-        const dayBeforeYesterday = new Date();
-        dayBeforeYesterday.setTime((new Date()).getTime() - (2*24*60*60*1000)); // days*hours*minutes*seconds*millis
-        const thirtyDaysBeforeYesterday = new Date();
-        thirtyDaysBeforeYesterday.setTime(dayBeforeYesterday.getTime() - (29*24*60*60*1000)); // days*hours*minutes*seconds*millis
-        return `${thirtyDaysBeforeYesterday.toISOString().split('T')[0]},${dayBeforeYesterday.toISOString().split('T')[0]}`;
-    }
-
     const init = async () => {
         await areWidgetsAvailable()
             ? analyticsWidgets.map(async widget => {
@@ -42,7 +34,7 @@ export default (() => {
                 });
                 widget.src = await areReportsArchived()
                     ? widget.dataset.src
-                    : widget.dataset.src.replace('previous30', getLastPrevious30Range);
+                    : widget.dataset.src.replace('-1month', '-2month');
             })
             : analyticsWidgets.map(widget => {
                 document.getElementById('spinner-' + widget.id).remove()
