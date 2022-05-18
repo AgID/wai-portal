@@ -148,6 +148,7 @@ class MatomoService implements AnalyticsServiceContract
         $params = [
             'method' => 'SitesManager.getAllSitesId',
             'token_auth' => $this->tokenAuth,
+            'filter_limit' => '-1',
         ];
 
         return $this->apiCall($params);
@@ -380,6 +381,7 @@ class MatomoService implements AnalyticsServiceContract
         $params = [
             'method' => 'UsersManager.getUsersLogin',
             'token_auth' => $this->tokenAuth,
+            'filter_limit' => '-1',
         ];
 
         return $this->apiCall($params);
@@ -564,7 +566,7 @@ class MatomoService implements AnalyticsServiceContract
         $params = [
             'method' => 'SegmentEditor.getAll',
             'token_auth' => $this->tokenAuth,
-            'filter_limit' => -1,
+            'filter_limit' => '-1',
         ];
 
         return $this->apiCall($params);
@@ -635,6 +637,7 @@ class MatomoService implements AnalyticsServiceContract
             'date' => $date,
             'segment' => $segment,
             'token_auth' => $this->tokenAuth,
+            'filter_limit' => '-1',
         ];
 
         return $this->apiCall($params);
