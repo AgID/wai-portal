@@ -464,6 +464,7 @@ class MatomoService implements AnalyticsServiceContract
      *
      * @return int the total reported website visits
      */
+    // TODO: Needs rework to verify that the requested range is available
     public function getSiteTotalVisitsFrom(string $idSite, string $from): int
     {
         $params = [
@@ -514,6 +515,7 @@ class MatomoService implements AnalyticsServiceContract
      *
      * @return array the list of days with the number of visits
      */
+    // TODO: Needs rework to verify the validity of the date parameter format
     public function getSiteLastDaysVisits(string $idSite, int $days): array
     {
         $params = [
