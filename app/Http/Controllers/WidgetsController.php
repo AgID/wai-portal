@@ -16,6 +16,13 @@ class WidgetsController extends Controller
     use HasRoleAwareUrls;
 
     /**
+     * Analytics Service.
+     *
+     * @var AnalyticsService
+     */
+    protected $analyticsService;
+
+    /**
      * Default constructor.
      */
     public function __construct()
