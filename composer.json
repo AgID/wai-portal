@@ -1,7 +1,7 @@
 {
     "name": "italia/wai-portal",
     "description": "Web Analytics Italia",
-    "version": "2.3.3-beta",
+    "version": "2.4.0-beta",
     "keywords": ["analytics", "italia"],
     "license": "AGPL-3.0-or-later",
     "type": "project",
@@ -35,7 +35,7 @@
     "require": {
         "php": "^7.4",
         "bensampo/laravel-enum": "^1.25",
-        "davidepastore/codice-fiscale": "^0.8.0",
+        "davidepastore/codice-fiscale": "^0.9.0",
         "diglactic/laravel-breadcrumbs": "^7.0",
         "doctrine/dbal": "^2.10",
         "elasticsearch/elasticsearch": "7.16.*",
@@ -50,7 +50,7 @@
         "laravel/ui": "^2.0",
         "league/commonmark": "^1.4",
         "predis/predis": "^1.1",
-        "silber/bouncer": "v1.0.0-rc.11",
+        "silber/bouncer": "v1.0.0",
         "spatie/laravel-webhook-client": "^2.3",
         "symfony/yaml": "^4.0",
         "yajra/laravel-datatables-fractal": "^1.0",

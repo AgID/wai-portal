@@ -1,0 +1,26 @@
+diff --git a/plugins/CoreHome/angularjs/common/services/periods.js b/plugins/CoreHome/angularjs/common/services/periods.js
+index 95f6f0c3dd..346f962979 100644
+--- a/plugins/CoreHome/angularjs/common/services/periods.js
++++ b/plugins/CoreHome/angularjs/common/services/periods.js
+@@ -336,6 +336,10 @@
+             return yesterday;
+         }
+ 
++        if (strDate === '-1month') {
++            return getFirstDayPreviousMonth();
++        }
++
+         try {
+             return $.datepicker.parseDate('yy-mm-dd', strDate);
+         } catch (err) {
+@@ -361,4 +365,9 @@
+         date.setMilliseconds(0);
+         return date;
+     }
++
++    function getFirstDayPreviousMonth() {
++        const today = getToday();
++        return new Date(today.getFullYear(), today.getMonth() - 1, 1);
++    }
+ })();
+\ No newline at end of file

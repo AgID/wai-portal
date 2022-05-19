@@ -45,11 +45,11 @@ class LogFilteringRequest extends FormRequest
             'start_time' => 'sometimes|required|date_format:H:i',
             'end_date' => 'required_with:end_time|date_format:d/m/Y|after_or_equal:start_date',
             'end_time' => 'sometimes|required|date_format:H:i',
-            //NOTE: can't force public administration existence
+            // NOTE: can't force public administration existence
             //      since Public Administration purge force delete it
             //      See: ProcessPendingWebsites:handle()
             'ipa_code' => 'sometimes|required|max:25',
-            //NOTE: can't force website existence
+            // NOTE: can't force website existence
             //      since Website purge force delete it
             //      See: ProcessPendingWebsites:handle()
             'website_id' => 'sometimes|required|max:50',

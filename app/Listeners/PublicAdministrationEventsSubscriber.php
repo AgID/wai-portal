@@ -36,11 +36,11 @@ class PublicAdministrationEventsSubscriber implements ShouldQueue
         $publicAdministration = $event->getPublicAdministration();
         $user = $event->getUser();
 
-        //Notify registering user
+        // Notify registering user
         $user->sendPublicAdministrationRegisteredNotification($publicAdministration);
 
         if ($publicAdministration->rtd_mail) {
-            //Notify RTD
+            // Notify RTD
             $publicAdministration->sendPublicAdministrationRegisteredNotificationToRTD();
         }
 
@@ -64,14 +64,14 @@ class PublicAdministrationEventsSubscriber implements ShouldQueue
         $publicAdministration = $event->getPublicAdministration();
 
         try {
-            //NOTE: if RollUp Reporting plugin isn't installed on remote Analytics Service,
+            // NOTE: if RollUp Reporting plugin isn't installed on remote Analytics Service,
             //      a CommandErrorException is expected to be thrown
             $publicAdministration->registerRollUp();
         } catch (Exception $exception) {
             report($exception);
         }
 
-        //Notify user (this user is also the only public administration administrator)
+        // Notify user (this user is also the only public administration administrator)
         $user = $publicAdministration->users()->first();
         $user->sendPublicAdministrationActivatedNotification($publicAdministration);
 
@@ -111,7 +111,7 @@ class PublicAdministrationEventsSubscriber implements ShouldQueue
         $publicAdministration = $event->getPublicAdministration();
 
         if (Arr::has($event->getUpdates(), 'rtd_mail')) {
-            //Notify new RTD
+            // Notify new RTD
             $publicAdministration->sendPublicAdministrationUpdatedRTD();
         }
 
@@ -151,7 +151,7 @@ class PublicAdministrationEventsSubscriber implements ShouldQueue
      */
     public function onPrimaryWebsiteUpdated(PublicAdministrationPrimaryWebsiteUpdated $event): void
     {
-        //TODO: decidere come gestire i cambiamenti del sito istituzionale su IPA
+        // TODO: decidere come gestire i cambiamenti del sito istituzionale su IPA
         $publicAdministration = $event->getPublicAdministration();
         logger()->warning(
             'Public Administration ' . $publicAdministration->info . ' primary website was changed in IPA index [' . e($event->getNewURL()) . '].',

@@ -148,6 +148,7 @@ class MatomoService implements AnalyticsServiceContract
         $params = [
             'method' => 'SitesManager.getAllSitesId',
             'token_auth' => $this->tokenAuth,
+            'filter_limit' => '-1',
         ];
 
         return $this->apiCall($params);
@@ -380,6 +381,7 @@ class MatomoService implements AnalyticsServiceContract
         $params = [
             'method' => 'UsersManager.getUsersLogin',
             'token_auth' => $this->tokenAuth,
+            'filter_limit' => '-1',
         ];
 
         return $this->apiCall($params);
@@ -462,6 +464,7 @@ class MatomoService implements AnalyticsServiceContract
      *
      * @return int the total reported website visits
      */
+    // TODO: Needs rework to verify that the requested range is available
     public function getSiteTotalVisitsFrom(string $idSite, string $from): int
     {
         $params = [
@@ -512,6 +515,7 @@ class MatomoService implements AnalyticsServiceContract
      *
      * @return array the list of days with the number of visits
      */
+    // TODO: Needs rework to verify the validity of the date parameter format
     public function getSiteLastDaysVisits(string $idSite, int $days): array
     {
         $params = [
@@ -564,7 +568,7 @@ class MatomoService implements AnalyticsServiceContract
         $params = [
             'method' => 'SegmentEditor.getAll',
             'token_auth' => $this->tokenAuth,
-            'filter_limit' => -1,
+            'filter_limit' => '-1',
         ];
 
         return $this->apiCall($params);
@@ -635,6 +639,7 @@ class MatomoService implements AnalyticsServiceContract
             'date' => $date,
             'segment' => $segment,
             'token_auth' => $this->tokenAuth,
+            'filter_limit' => '-1',
         ];
 
         return $this->apiCall($params);

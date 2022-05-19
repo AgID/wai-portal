@@ -5,7 +5,7 @@
 @section('content')
 <div class="text-serif">
     @markdown(__("Per aderire a :app e attivare le statistiche di uno o più
-    siti di una PA è necessario che un referente di un'amministrazione presente
+    siti di una PA è necessario che un referente di un'amministrazione elencata
     su [IndicePA](https://www.indicepa.gov.it/) avvii la procedura di
     registrazione del sito istituzionale, accedendo alla piattaforma tramite una
     identità [SPID](https://www.spid.gov.it/).", ['app' => config('app.name')]))

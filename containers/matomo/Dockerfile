@@ -37,7 +37,7 @@ COPY ./database/matomo*.sql /opt/matomo-install/
 COPY ./install_matomo_db.sh /opt/matomo-install/install_matomo_db.sh
 COPY ./install_plugins_db.sh /opt/matomo-install/install_plugins_db.sh
 COPY ./plugins-sql/* /opt/matomo-install/plugins/
-# COPY ./patches/* /opt/matomo-install/patches/
+COPY ./patches/* /opt/matomo-install/patches/
 
 RUN curl -fsSL -o DBIP-City.mmdb.gz \
         "https://download.db-ip.com/free/dbip-city-lite-`date +%Y-%m`.mmdb.gz" \
@@ -72,7 +72,7 @@ RUN if [ -n "$MATOMO_PLUGIN_RESTRICTANONYMOUSACCESS_VERSION" ]; then \
     && sed -i -E -e 's/(@MATOMO_MORE_CONFIG@)/[RestrictAnonymousAccess]\n\1/g' /opt/matomo/config/config.ini.php \
     && sed -i -E -e 's/(@MATOMO_MORE_CONFIG@)/allowed_requests[] = "module=Widgetize"\n\1/g' /opt/matomo/config/config.ini.php \
     && sed -i -E -e 's/(@MATOMO_MORE_CONFIG@)/allowed_requests[] = "module=API\&method=API.getMatomoVersion"\n\1/g' /opt/matomo/config/config.ini.php \
-    && sed -i -E -e 's/(@MATOMO_MORE_CONFIG@)/allowed_requests[] = "module=API\&method=VisitsSummary.getVisits\&period=range\&date=previous30"\n\1/g' /opt/matomo/config/config.ini.php \
+    && sed -i -E -e 's/(@MATOMO_MORE_CONFIG@)/allowed_requests[] = "module=API\&method=VisitsSummary.getVisits\&period=month\&date=-1month"\n\1/g' /opt/matomo/config/config.ini.php \
     && sed -i -E -e 's/(@MATOMO_MORE_CONFIG@)/allowed_requests[] = "module=API\&method=UsersManager.getTokenAuth"\n\1/g' /opt/matomo/config/config.ini.php \
     && sed -i -E -e 's/(@MATOMO_MORE_CONFIG@)/allowed_referrers[] = "module=Widgetize\&action=iframe\&widget=1"\n\n\1/g' /opt/matomo/config/config.ini.php \
 ;fi
@@ -226,4 +226,4 @@ RUN sed -i -e s/@MATOMO_VERSION@/${MATOMO_VERSION}/g /opt/matomo-install/install
     sed -i -e s#@MATOMO_ROOT_PASSWORD@#${MATOMO_ROOT_PASSWORD}#g /opt/matomo-install/install_matomo_db.sh && \
     sed -i -e s/@MATOMO_ROOT_APIKEY@/${MATOMO_ROOT_APIKEY}/g /opt/matomo-install/install_matomo_db.sh
 
-# RUN find -P /opt/matomo-install/patches -name *.diff -exec sh -c 'patch -p1 -d /opt/matomo/ < {}' \;
+RUN find -P /opt/matomo-install/patches -name *.patch -exec sh -c 'patch -p1 -d /opt/matomo/ < {}' \;

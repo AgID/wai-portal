@@ -68,7 +68,7 @@ trait ActivatesWebsite
                 $pendingUser->retract(UserRole::REGISTERED);
                 $pendingUser->assign(UserRole::ADMIN);
 
-                //NOTE: don't use HasWebsitePermissions since this trait is shared with batch jobs
+                // NOTE: don't use HasWebsitePermissions since this trait is shared with batch jobs
                 Bouncer::allow($pendingUser)->to(UserPermission::READ_ANALYTICS, $website);
                 Bouncer::allow($pendingUser)->to(UserPermission::MANAGE_ANALYTICS, $website);
                 Bouncer::disallow($pendingUser)->to(UserPermission::NO_ACCESS, $website);
