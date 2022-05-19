@@ -37,7 +37,7 @@ COPY ./database/matomo*.sql /opt/matomo-install/
 COPY ./install_matomo_db.sh /opt/matomo-install/install_matomo_db.sh
 COPY ./install_plugins_db.sh /opt/matomo-install/install_plugins_db.sh
 COPY ./plugins-sql/* /opt/matomo-install/plugins/
-# COPY ./patches/* /opt/matomo-install/patches/
+COPY ./patches/* /opt/matomo-install/patches/
 
 RUN curl -fsSL -o DBIP-City.mmdb.gz \
         "https://download.db-ip.com/free/dbip-city-lite-`date +%Y-%m`.mmdb.gz" \
@@ -226,4 +226,4 @@ RUN sed -i -e s/@MATOMO_VERSION@/${MATOMO_VERSION}/g /opt/matomo-install/install
     sed -i -e s#@MATOMO_ROOT_PASSWORD@#${MATOMO_ROOT_PASSWORD}#g /opt/matomo-install/install_matomo_db.sh && \
     sed -i -e s/@MATOMO_ROOT_APIKEY@/${MATOMO_ROOT_APIKEY}/g /opt/matomo-install/install_matomo_db.sh
 
-# RUN find -P /opt/matomo-install/patches -name *.diff -exec sh -c 'patch -p1 -d /opt/matomo/ < {}' \;
+RUN find -P /opt/matomo-install/patches -name *.patch -exec sh -c 'patch -p1 -d /opt/matomo/ < {}' \;
