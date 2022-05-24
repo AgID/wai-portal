@@ -19,18 +19,25 @@ use JsonSchema\Validator as JsonValidator;
 class SingleDigitalGatewayService
 {
     /**
-     * Local service URL.
+     * Base service URL.
      *
-     * @var string the local URL
+     * @var string the base service URL
      */
     protected $serviceBaseUri;
 
     /**
-     * Public service URL.
+     * Unique ID endpoint.
      *
-     * @var string the public URL
+     * @var string the unique ID endpoint
      */
-    protected $servicePublicUrl;
+    protected $serviceUniqueIdEndpoint;
+
+    /**
+     * Stats IS endpoint.
+     *
+     * @var string the stats IS endpoint
+     */
+    protected $serviceStatsIsEndpoint;
 
     /**
      * SSL verification flag.
@@ -52,6 +59,8 @@ class SingleDigitalGatewayService
     public function __construct()
     {
         $this->serviceBaseUri = config('single-digital-gateway-service.api_public_url');
+        $this->serviceUniqueIdEndpoint = config('single-digital-gateway-service.api_uniqueid_endpoint');
+        $this->serviceStatsIsEndpoint = config('single-digital-gateway-service.api_stats_is_endpoint');
         $this->SSLVerify = config('single-digital-gateway-service.ssl_verify');
         $this->apiKey = config('single-digital-gateway-service.api_key');
         $this->storageDisk = config('single-digital-gateway-service.storage_disk');
@@ -65,7 +74,7 @@ class SingleDigitalGatewayService
      */
     public function getUniqueID(): string
     {
-        return $this->apiCall('unique-id');
+        return $this->apiCall($this->serviceUniqueIdEndpoint);
     }
 
     /**
@@ -97,7 +106,7 @@ class SingleDigitalGatewayService
         $requestDatetime = Carbon::now()->format('Y-m-d_H-i-s');
         Storage::disk($this->storageDisk)->put($this->storageDirectory . "/requests/req_{$requestDatetime}.json", json_encode($dataset, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . PHP_EOL);
 
-        $response = $this->apiCall('statistics/information-services', 'POST', [], (array) $dataset);
+        $response = $this->apiCall($this->serviceStatsIsEndpoint, 'POST', [], (array) $dataset);
 
         $responseDatetime = Carbon::now()->format('Y-m-d_H-i-s');
         Storage::disk($this->storageDisk)->put($this->storageDirectory . "/responses/res_{$responseDatetime}.json", json_encode(json_decode($response), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . PHP_EOL);

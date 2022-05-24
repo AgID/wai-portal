@@ -142,9 +142,9 @@ class PendingWebsiteCheckJsonRoutesTest extends TestCase
     }
 
     /**
-     * Test fail request due to missing website.
+     * Test request with missing website into Analytics Service not activated.
      */
-    public function testCheckWebsiteFailedRoute(): void
+    public function testCheckMissingWebsiteNotActiveRoute(): void
     {
         do {
             $website = factory(Website::class)->make([
@@ -164,9 +164,7 @@ class PendingWebsiteCheckJsonRoutesTest extends TestCase
             ])
             ->json('get', route('websites.tracking.check', ['website' => $website->slug]));
 
-        $response->assertJson([
-            'result' => 'error',
-            'message' => 'Bad Request',
-        ]);
+        $response->assertStatus(303);
+        $response->assertExactJson([]);
     }
 }

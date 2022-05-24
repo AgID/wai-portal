@@ -428,6 +428,48 @@ class MatomoService implements AnalyticsServiceContract
     }
 
     /**
+     * Check wether there is some tracking data for a given website.
+     *
+     * @param string $idSite the Analytics Service website ID
+     *
+     * @throws CommandErrorException if command is unsuccessful
+     * @throws AnalyticsServiceException if unable to connect the Analytics Service
+     *
+     * @return bool wether the site has collected any visits
+     */
+    public function isActive(string $idSite): bool
+    {
+        $params = [
+            'method' => 'WaiCustom.isActive',
+            'idSite' => $idSite,
+            'token_auth' => $this->tokenAuth,
+        ];
+
+        return $this->apiCall($params)['value'];
+    }
+
+    /**
+     * Get settings for a specified website.
+     *
+     * @param string $idSite the Analytics Service website ID
+     *
+     * @throws CommandErrorException if command is unsuccessful
+     * @throws AnalyticsServiceException if unable to connect the Analytics Service
+     *
+     * @return array the settings for the website
+     */
+    public function getSiteSettings(string $idSite): array
+    {
+        $params = [
+            'method' => 'SitesManager.getSiteSettings',
+            'idSite' => $idSite,
+            'token_auth' => $this->tokenAuth,
+        ];
+
+        return $this->apiCall($params);
+    }
+
+    /**
      * @param string $idSite the Analytics Service website ID
      * @param int $minutes the minutes period
      *
@@ -450,33 +492,6 @@ class MatomoService implements AnalyticsServiceContract
         }
 
         return 0;
-    }
-
-    /**
-     * Get total number of visits for a specified site
-     * registered in the Analytics Service.
-     *
-     * @param string $idSite the Analytics Service website ID
-     * @param string $from the date range
-     *
-     * @throws CommandErrorException if command is unsuccessful
-     * @throws AnalyticsServiceException if unable to connect the Analytics Service
-     *
-     * @return int the total reported website visits
-     */
-    // TODO: Needs rework to verify that the requested range is available
-    public function getSiteTotalVisitsFrom(string $idSite, string $from): int
-    {
-        $params = [
-            'method' => 'VisitsSummary.get',
-            'idSite' => $idSite,
-            'period' => 'range',
-            'date' => $from . ',' . now()->format('Y-m-d'),
-            'token_auth' => $this->tokenAuth,
-        ];
-        $response = $this->apiCall($params);
-
-        return $response['nb_visits'] ?? 0;
     }
 
     /**

@@ -8,6 +8,7 @@ RUN mkdir -p /opt/matomo
 ARG MATOMO_VERSION
 ARG MATOMO_WAI_THEME_VERSION
 ARG MATOMO_PLUGIN_RESTRICTANONYMOUSACCESS_VERSION
+ARG MATOMO_PLUGIN_WAICUSTOM_VERSION
 ARG MATOMO_PLUGIN_SUPERUSERONLYRESTRICTIONS_VERSION
 ARG MATOMO_PLUGIN_UPDATEEXPOSEDFQDNLIST_VERSION
 ARG MATOMO_PLUGIN_DISABLESITETRACKING_VERSION
@@ -48,6 +49,16 @@ RUN curl -fsSL -o WAIMatomoTheme.tar.gz \
         "https://github.com/agid/wai-matomo-theme/releases/download/${MATOMO_WAI_THEME_VERSION}/wai-matomo-theme_${MATOMO_WAI_THEME_VERSION}_auto_activate.tar.gz" \
     && tar -xf WAIMatomoTheme.tar.gz -C /opt/matomo/plugins \
     && rm -rf WAIMatomoTheme.tar.gz
+
+RUN if [ -n "$MATOMO_PLUGIN_WAICUSTOM_VERSION" ]; then \
+    curl -fsSL -o WaiCustom.zip \
+        "https://github.com/AgID/wai-matomo-plugin-WaiCustom/archive/${MATOMO_PLUGIN_WAICUSTOM_VERSION}.zip" \
+    && unzip WaiCustom.zip -d /opt/matomo/plugins \
+    && mv /opt/matomo/plugins/wai-matomo-plugin-WaiCustom-${MATOMO_PLUGIN_WAICUSTOM_VERSION} /opt/matomo/plugins/WaiCustom \
+    && rm -rf WaiCustom.zip \
+    && sed -i -E -e 's/(@MATOMO_PLUGINS@)/Plugins[] = "WaiCustom"\n\1/g' /opt/matomo/config/config.ini.php \
+    && sed -i -E -e 's/(@MATOMO_PLUGINS_INSTALLED@)/PluginsInstalled[] = "WaiCustom"\n\1/g' /opt/matomo/config/config.ini.php \
+;fi
 
 RUN if [ -n "$MATOMO_PLUGIN_SUPERUSERONLYRESTRICTIONS_VERSION" ]; then \
     curl -fsSL -o SuperUserOnlyRestrictions.zip \
