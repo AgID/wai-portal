@@ -191,6 +191,8 @@ interface AnalyticsService
     public function setWebsiteAccess(string $userLogin, int $access, string $idSites): void;
 
     /**
+     * Check wether there is some tracking data for a given website.
+     *
      * @param string $idSite the Analytics Service website ID
      *
      * @throws CommandErrorException if command is unsuccessful
@@ -199,6 +201,18 @@ interface AnalyticsService
      * @return bool wether the site has collected any visits
      */
     public function isActive(string $idSite): bool;
+
+    /**
+     * Get settings for a specified website.
+     *
+     * @param string $idSite the Analytics Service website ID
+     *
+     * @throws CommandErrorException if command is unsuccessful
+     * @throws AnalyticsServiceException if unable to connect the Analytics Service
+     *
+     * @return array the settings for the website
+     */
+    public function getSiteSettings(string $idSite): array
 
     /**
      * @param string $idSite the Analytics Service website ID
