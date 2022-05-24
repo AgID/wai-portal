@@ -3,6 +3,8 @@
 return [
     'api_key' => env('SDG_API_KEY'),
     'api_public_url' => env('SDG_API_PUBLIC_URL'),
+    'api_uniqueid_endpoint' => env('SDG_API_UNIQUEID_ENDPOINT'),
+    'api_stats_is_endpoint' => env('SDG_API_STATS_IS_ENDPOINT'),
     'ssl_verify' => env('SDG_API_SSL_VERIFY'),
     'storage_directory' => env('SDG_STORAGE_DIRECTORY', 'sdg'),
     'storage_disk' => env('SDG_STORAGE_DISK', 'persistent'),
