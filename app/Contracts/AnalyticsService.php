@@ -192,6 +192,16 @@ interface AnalyticsService
 
     /**
      * @param string $idSite the Analytics Service website ID
+     *
+     * @throws CommandErrorException if command is unsuccessful
+     * @throws AnalyticsServiceException if unable to connect the Analytics Service
+     *
+     * @return bool wether the site has collected any visits
+     */
+    public function isActive(string $idSite): bool;
+
+    /**
+     * @param string $idSite the Analytics Service website ID
      * @param int $minutes the minutes period
      *
      * @throws CommandErrorException if command is unsuccessful
@@ -200,20 +210,6 @@ interface AnalyticsService
      * @return int the live number of website visits
      */
     public function getLiveVisits(string $idSite, int $minutes): int;
-
-    /**
-     * Get total number of visits for a specified site
-     * registered in the Analytics Service.
-     *
-     * @param string $idSite the Analytics Service website ID
-     * @param string $from the date range
-     *
-     * @throws CommandErrorException if command is unsuccessful
-     * @throws AnalyticsServiceException if unable to connect the Analytics Service
-     *
-     * @return int the total reported website visits
-     */
-    public function getSiteTotalVisitsFrom(string $idSite, string $from): int;
 
     /**
      * Get the number of visits for a specified site
