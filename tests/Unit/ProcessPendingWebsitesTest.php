@@ -267,9 +267,9 @@ class ProcessPendingWebsitesTest extends TestCase
     }
 
     /**
-     * Test job complete with failed website due to missing website into Analytics Service.
+     * Test job complete with missing website into Analytics Service not activated.
      */
-    public function testMissingAnalyticsWebsiteFail(): void
+    public function testMissingAnalyticsWebsite(): void
     {
         $user = factory(User::class)->state('pending')->create();
         $publicAdministration = factory(PublicAdministration::class)->create();
@@ -283,7 +283,7 @@ class ProcessPendingWebsitesTest extends TestCase
         $job->handle();
 
         Event::assertDispatched(PendingWebsitesCheckCompleted::class, function ($event) use ($website) {
-            return in_array(['website' => $website->slug, 'reason' => 'Invalid command for Analytics Service'], $event->getFailed(), true)
+            return empty($event->getFailed())
                 && empty($event->getPurged())
                 && empty($event->getPurging())
                 && empty($event->getActivated());
