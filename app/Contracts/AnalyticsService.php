@@ -212,7 +212,7 @@ interface AnalyticsService
      *
      * @return array the settings for the website
      */
-    public function getSiteSettings(string $idSite): array
+    public function getSiteSettings(string $idSite): array;
 
     /**
      * @param string $idSite the Analytics Service website ID
