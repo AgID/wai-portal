@@ -34,10 +34,7 @@ trait ActivatesWebsite
     {
         $analyticsService = app()->make('analytics-service');
 
-        $liveVisits = $analyticsService->getLiveVisits($website->analytics_id, 60);
-        $totalVisits = $analyticsService->getSiteTotalVisitsFrom($website->analytics_id, $website->created_at->format('Y-m-d'));
-
-        return $liveVisits > 0 || $totalVisits > 0;
+        return $analyticsService->isActive($website->analytics_id);
     }
 
     /**
