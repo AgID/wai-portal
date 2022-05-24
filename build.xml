@@ -120,6 +120,8 @@
                     <token key="ANALYTICS_PUBLIC_URL" value="${ANALYTICS_PUBLIC_URL}" />
                     <token key="ANALYTICS_PUBLIC_DASHBOARD_ID" value="${MATOMO_PUBLIC_ROLLUP_ID}" />
                     <token key="SDG_API_PUBLIC_URL" value="${SDG_API_PUBLIC_URL}" />
+                    <token key="SDG_API_UNIQUEID_ENDPOINT" value="${SDG_API_UNIQUEID_ENDPOINT}" />
+                    <token key="SDG_API_STATS_IS_ENDPOINT" value="${SDG_API_STATS_IS_ENDPOINT}" />
                     <token key="SDG_API_SSL_VERIFY" value="${SDG_API_SSL_VERIFY}" />
                     <token key="SDG_API_KEY" value="${SDG_API_KEY}" />
                     <token key="SDG_URLS_FILE_FORMAT" value="${SDG_URLS_FILE_FORMAT}" />
