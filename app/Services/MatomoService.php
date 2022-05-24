@@ -458,7 +458,8 @@ class MatomoService implements AnalyticsServiceContract
      *
      * @return array the settings for the website
      */
-    public function getSiteSettings(string $idSite): array {
+    public function getSiteSettings(string $idSite): array
+    {
         $params = [
             'method' => 'SitesManager.getSiteSettings',
             'idSite' => $idSite,
