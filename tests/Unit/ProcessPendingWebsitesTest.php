@@ -282,7 +282,7 @@ class ProcessPendingWebsitesTest extends TestCase
         $job = new ProcessPendingWebsites();
         $job->handle();
 
-        Event::assertDispatched(PendingWebsitesCheckCompleted::class, function ($event) use ($website) {
+        Event::assertDispatched(PendingWebsitesCheckCompleted::class, function ($event) {
             return empty($event->getFailed())
                 && empty($event->getPurged())
                 && empty($event->getPurging())
