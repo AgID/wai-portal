@@ -312,7 +312,7 @@ class LogsVisualizationTest extends TestCase
 
         $response = $this->actingAs($this->user)
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
                 'tenant_id' => $this->firstPublicAdministration->id,
             ])
             ->json('GET', route('logs.data'), [

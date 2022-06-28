@@ -119,7 +119,7 @@ class CRUDCredentialTest extends TestCase
     {
         $this->actingAs($this->user)
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
                 'spid_user' => $this->spidUser,
             ])
@@ -161,7 +161,7 @@ class CRUDCredentialTest extends TestCase
 
         $this->actingAs($this->user)
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
                 'spid_user' => $this->spidUser,
                 '_token' => 'test',
@@ -210,7 +210,7 @@ class CRUDCredentialTest extends TestCase
 
         $this->actingAs($this->user)
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
                 'spid_user' => $this->spidUser,
                 '_token' => 'test',
@@ -237,7 +237,7 @@ class CRUDCredentialTest extends TestCase
     {
         $this->actingAs($this->user)
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
                 'spid_user' => $this->spidUser,
                 '_token' => 'test',
@@ -284,7 +284,7 @@ class CRUDCredentialTest extends TestCase
 
         $this->actingAs($this->user)
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
                 'spid_user' => $this->spidUser,
                 '_token' => 'test',
@@ -313,7 +313,7 @@ class CRUDCredentialTest extends TestCase
     {
         $this->actingAs($this->user)
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
                 'spid_user' => $this->spidUser,
                 '_token' => 'test',
@@ -349,7 +349,7 @@ class CRUDCredentialTest extends TestCase
 
         $this->actingAs($this->user)
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
                 'spid_user' => $this->spidUser,
                 '_token' => 'test',
@@ -379,7 +379,7 @@ class CRUDCredentialTest extends TestCase
 
         $this->actingAs($this->user)
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
                 'spid_user' => $this->spidUser,
                 '_token' => 'test',
@@ -437,7 +437,7 @@ class CRUDCredentialTest extends TestCase
 
         $this->actingAs($this->user)
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
                 'spid_user' => $this->spidUser,
                 '_token' => 'test',

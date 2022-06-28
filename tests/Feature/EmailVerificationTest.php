@@ -73,7 +73,7 @@ class EmailVerificationTest extends TestCase
         );
         $this->actingAs($this->user)
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
                 'spid_user' => $this->spidUser,
             ])
             ->get($signedUrl)
@@ -104,7 +104,7 @@ class EmailVerificationTest extends TestCase
         $this->expectException(AuthorizationException::class);
         $this->actingAs($this->user)
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
                 'spid_user' => $this->spidUser,
             ])
             ->get($signedUrl)
@@ -129,7 +129,7 @@ class EmailVerificationTest extends TestCase
         $this->expectException(InvalidSignatureException::class);
         $this->actingAs($this->user)
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
                 'spid_user' => $this->spidUser,
             ])
             ->get($signedUrl)
@@ -161,7 +161,7 @@ class EmailVerificationTest extends TestCase
         $this->expectException(ExpiredInvitationException::class);
         $this->actingAs($this->user)
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
                 'spid_user' => $this->spidUser,
             ])
             ->get($signedUrl)
@@ -193,7 +193,7 @@ class EmailVerificationTest extends TestCase
         $this->expectException(ExpiredVerificationException::class);
         $this->actingAs($this->user)
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
                 'spid_user' => $this->spidUser,
             ])
             ->get($signedUrl)

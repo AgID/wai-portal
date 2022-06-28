@@ -61,7 +61,7 @@ class AnalyticsDashboardTest extends TestCase
         ]);
         $this->actingAs($user)
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
             ])
             ->get(route('analytics'))
             ->assertRedirect(route('websites.index'));
@@ -74,7 +74,7 @@ class AnalyticsDashboardTest extends TestCase
     {
         $this->actingAs($this->user)
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
             ])
             ->get(route('analytics'))
@@ -97,7 +97,7 @@ class AnalyticsDashboardTest extends TestCase
 
         $this->actingAs($this->user)
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
             ])
             ->get(route('analytics'))
