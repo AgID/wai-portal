@@ -246,6 +246,11 @@ class EventType extends Enum implements LocalizedEnum
     public const SINGLE_DIGITAL_GATEWAY_API_CALL_RESPONSE = 46;
 
     /**
+     * Purge orphaned entities completed event.
+     */
+    public const PURGE_ORPHANED_ENTITIES_COMPLETED = 47;
+
+    /**
      * Mail sent event.
      */
     public const MAIL_SENT = 99;

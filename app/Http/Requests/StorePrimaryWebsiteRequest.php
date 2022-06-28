@@ -119,10 +119,10 @@ class StorePrimaryWebsiteRequest extends FormRequest
                 }
 
                 if (!($this->input('skip_rtd_validation') && app()->environment('testing'))) {
-                    if (($publicAdministration['rtd_name'] ?? null) !== $this->input('rtd_name')) {
+                    if (trim($publicAdministration['rtd_name'] ?? '') != $this->input('rtd_name')) {
                         $validator->errors()->add('rtd_name', __('Il nominativo RTD immesso non corrisponde a quello presente su IndicePA.'));
                     }
-                    if (($publicAdministration['rtd_mail'] ?? null) !== $this->input('rtd_mail')) {
+                    if (trim($publicAdministration['rtd_mail'] ?? '') != $this->input('rtd_mail')) {
                         $validator->errors()->add('rtd_mail', __("L'indirizzo email RTD immesso non corrisponde a quello presente su IndicePA."));
                     }
                 }

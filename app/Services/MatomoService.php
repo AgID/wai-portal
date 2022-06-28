@@ -449,6 +449,27 @@ class MatomoService implements AnalyticsServiceContract
     }
 
     /**
+     * Get informations of a specified website.
+     *
+     * @param string $idSite the Analytics Service website ID
+     *
+     * @throws CommandErrorException if command is unsuccessful
+     * @throws AnalyticsServiceException if unable to connect the Analytics Service
+     *
+     * @return array the informations of the website
+     */
+    public function getSiteFromId(string $idSite): array
+    {
+        $params = [
+            'method' => 'SitesManager.getSiteFromId',
+            'idSite' => $idSite,
+            'token_auth' => $this->tokenAuth,
+        ];
+
+        return $this->apiCall($params)[0];
+    }
+
+    /**
      * Get settings for a specified website.
      *
      * @param string $idSite the Analytics Service website ID

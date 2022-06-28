@@ -5,6 +5,7 @@ namespace App\Console;
 use App\Jobs\MonitorWebsitesTracking;
 use App\Jobs\ProcessPendingWebsites;
 use App\Jobs\ProcessPublicAdministrationsUpdateFromIpa;
+use App\Jobs\PurgeOrphanedEntities;
 use App\Jobs\PurgePendingInvitations;
 use App\Jobs\ResetEnvironment;
 use App\Jobs\UpdateSiteListOnRedis;
@@ -31,6 +32,7 @@ class Kernel extends ConsoleKernel
         $schedule->job(new UpdateSiteListOnRedis())->hourly()->onOneServer();
         // $publicPlaygroundResetTime = config('wai.reset_public_playground_hour', 23) . ':' . config('wai.reset_public_playground_minute', 30);
         // $schedule->job(new ResetEnvironment())->weekly()->days(config('wai.reset_public_playground_day', 0))->at($publicPlaygroundResetTime)->onOneServer()->environments(['public-playground']);
+        $schedule->job(new PurgeOrphanedEntities())->hourly()->onOneServer();
     }
 
     /**

@@ -108,7 +108,7 @@ class CRUDUserTest extends TestCase
     {
         $this->actingAs($this->user)
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
                 'spid_user' => $this->spidUser,
             ])
@@ -133,7 +133,7 @@ class CRUDUserTest extends TestCase
 
         $this->actingAs($this->user)
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
                 'spid_user' => $this->spidUser,
                 '_token' => 'test',
@@ -182,7 +182,7 @@ class CRUDUserTest extends TestCase
 
         $this->actingAs($this->user)
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
                 'spid_user' => $this->spidUser,
                 '_token' => 'test',
@@ -225,7 +225,7 @@ class CRUDUserTest extends TestCase
 
         $this->actingAs($this->user)
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
                 'spid_user' => $this->spidUser,
                 '_token' => 'test',
@@ -262,7 +262,7 @@ class CRUDUserTest extends TestCase
 
         $this->actingAs($this->user)
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
                 'spid_user' => $this->spidUser,
                 '_token' => 'test',
@@ -311,7 +311,7 @@ class CRUDUserTest extends TestCase
 
         $this->actingAs($this->user)
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
                 'spid_user' => $this->spidUser,
                 '_token' => 'test',
@@ -360,7 +360,7 @@ class CRUDUserTest extends TestCase
 
         $this->actingAs($this->user)
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
                 'spid_user' => $this->spidUser,
                 '_token' => 'test',
@@ -409,7 +409,7 @@ class CRUDUserTest extends TestCase
 
         $this->actingAs($this->user)
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
                 'spid_user' => $this->spidUser,
                 '_token' => 'test',
@@ -450,7 +450,7 @@ class CRUDUserTest extends TestCase
     {
         $this->actingAs($this->user)
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
                 'spid_user' => $this->spidUser,
                 '_token' => 'test',
@@ -485,7 +485,7 @@ class CRUDUserTest extends TestCase
 
         $this->actingAs($this->user)
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
             ])
             ->json('patch', route('users.suspend', ['user' => $user]))
@@ -522,7 +522,7 @@ class CRUDUserTest extends TestCase
 
         $this->actingAs($this->user)
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
             ])
             ->json('patch', route('users.suspend', ['user' => $user]))
@@ -539,7 +539,7 @@ class CRUDUserTest extends TestCase
     {
         $this->actingAs($this->user)
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
             ])
             ->json('patch', route('users.suspend', ['user' => $this->user]))
@@ -566,7 +566,7 @@ class CRUDUserTest extends TestCase
 
         $this->actingAs($this->user)
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
             ])
             ->json('patch', route('users.suspend', ['user' => $user]))
@@ -592,7 +592,7 @@ class CRUDUserTest extends TestCase
 
         $this->actingAs($this->user)
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
             ])
             ->json('patch', route('users.suspend', ['user' => $user]))
@@ -618,7 +618,7 @@ class CRUDUserTest extends TestCase
 
         $this->actingAs($this->user)
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
             ])
             ->json('patch', route('users.reactivate', ['user' => $user]))
@@ -655,7 +655,7 @@ class CRUDUserTest extends TestCase
 
         $this->actingAs($this->user)
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
                 'spid_user' => $this->spidUser,
                 '_token' => 'test',

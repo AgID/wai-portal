@@ -3,6 +3,7 @@ import I18n from './i18n';
 const iframeResizer = require('iframe-resizer').iframeResize;
 
 export default (() => {
+    const widgetsInPage = window.widgets_in_page;
     const analyticsWidgets = [...document.querySelectorAll('iframe.auto-resizeable')];
     const apiPublicDomain = window.api_public_domain;
     const widgetsBaseUrl = window.widgets_base_url;
@@ -15,7 +16,8 @@ export default (() => {
 
     const areReportsArchived = () => {
         const dashboardId = window.dashboard_id;
-        return axios.get(`${apiPublicDomain}${widgetsBaseUrl}/index.php?module=API&method=VisitsSummary.getVisits&idSite=${dashboardId}&period=month&date=-1month&format=JSON&timestamp=${new Date().getTime()}`)
+        const publicAdministrationTokenAuth = window.public_administration_token_auth;
+        return axios.get(`${apiPublicDomain}${widgetsBaseUrl}/index.php?module=API&method=VisitsSummary.getVisits&idSite=${dashboardId}&period=month&date=-1month&format=JSON&timestamp=${new Date().getTime()}${publicAdministrationTokenAuth ? '&token_auth=' + publicAdministrationTokenAuth : ''}`)
             .then((response) => 0 ==! response.data.value)
             .catch(() => false);
     }
@@ -27,6 +29,10 @@ export default (() => {
     }
 
     const init = async () => {
+        if (!widgetsInPage) {
+            return;
+        }
+
         await areWidgetsAvailable()
             ? analyticsWidgets.map(async widget => {
                 widget.addEventListener('load', event => {

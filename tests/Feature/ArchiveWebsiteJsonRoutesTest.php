@@ -111,7 +111,7 @@ class ArchiveWebsiteJsonRoutesTest extends TestCase
 
         $response = $this->actingAs($this->user, 'web')
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
             ])
             ->json('patch', route('websites.archive', ['website' => $this->website->slug]));
@@ -130,7 +130,7 @@ class ArchiveWebsiteJsonRoutesTest extends TestCase
     {
         $response = $this->actingAs($this->user, 'web')
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
             ])
             ->json('patch', route('websites.archive', ['website' => $this->website->slug]));
@@ -161,7 +161,7 @@ class ArchiveWebsiteJsonRoutesTest extends TestCase
 
         $response = $this->actingAs($this->user, 'web')
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
             ])
             ->json('patch', route('websites.archive', ['website' => $this->website->slug]));
@@ -187,7 +187,7 @@ class ArchiveWebsiteJsonRoutesTest extends TestCase
 
         $response = $this->actingAs($this->user, 'web')
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
             ])
             ->json('patch', route('websites.archive', ['website' => $this->website->slug]));
@@ -217,7 +217,7 @@ class ArchiveWebsiteJsonRoutesTest extends TestCase
 //
 //        $response = $this->actingAs($this->user)
 //            ->withSession([
-//                'spid_sessionIndex' => 'fake-session-index',
+//                'spid_sessionId' => 'fake-session-index',
 //                'tenant_id' => $this->publicAdministration->id,
 //            ])
 //            ->json('patch', route('websites.archive', ['website' => $website->slug]));
@@ -241,7 +241,7 @@ class ArchiveWebsiteJsonRoutesTest extends TestCase
 
         $response = $this->actingAs($this->user, 'web')
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
             ])
             ->json('patch', route('websites.unarchive', ['website' => $this->website->slug]));
@@ -263,7 +263,7 @@ class ArchiveWebsiteJsonRoutesTest extends TestCase
 
         $response = $this->actingAs($this->user, 'web')
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
             ])
             ->json('patch', route('websites.unarchive', ['website' => $this->website->slug]));
@@ -294,7 +294,7 @@ class ArchiveWebsiteJsonRoutesTest extends TestCase
 
         $response = $this->actingAs($this->user, 'web')
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
             ])
             ->json('patch', route('websites.unarchive', ['website' => $this->website->slug]));
@@ -320,7 +320,7 @@ class ArchiveWebsiteJsonRoutesTest extends TestCase
 
         $response = $this->actingAs($this->user, 'web')
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
             ])
             ->json('patch', route('websites.unarchive', ['website' => $this->website->slug]));
@@ -350,7 +350,7 @@ class ArchiveWebsiteJsonRoutesTest extends TestCase
 //
 //        $response = $this->actingAs($this->user)
 //            ->withSession([
-//                'spid_sessionIndex' => 'fake-session-index',
+//                'spid_sessionId' => 'fake-session-index',
 //                'tenant_id' => $this->publicAdministration->id,
 //            ])
 //            ->json('patch', route('websites.unarchive', ['website' => $website->slug]));

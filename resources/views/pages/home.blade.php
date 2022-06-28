@@ -152,6 +152,7 @@
                     </div>
                     @endforeach
                     <script>
+                        widgets_in_page = true;
                         api_public_domain = "{{ config('analytics-service.api_public_domain') }}";
                         widgets_base_url = "{{ config('analytics-service.widgets_base_url') }}";
                         dashboard_id = "{{ config('analytics-service.public_dashboard') }}";
