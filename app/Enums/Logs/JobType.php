@@ -64,4 +64,9 @@ class JobType extends Enum implements LocalizedEnum
      * Send a dataset to Single Digital Gateway API.
      */
     public const SEND_DATA_SDG_API = 10;
+
+    /**
+     * Purge orphaned entities.
+     */
+    public const PURGE_ORPHANED_ENTITIES = 11;
 }
