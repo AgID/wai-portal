@@ -35,7 +35,7 @@ class ProfileTest extends TestCase
         $user = factory(User::class)->create();
         $this->actingAs($user)
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
             ])
             ->patch(route('user.profile.update'), [
                 'name' => $user->name,
@@ -61,7 +61,7 @@ class ProfileTest extends TestCase
         $user = factory(User::class)->create();
         $this->actingAs($user)
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
             ])
             ->from(route('user.profile.edit'))
             ->patch(route('user.profile.update'), [

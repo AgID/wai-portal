@@ -118,7 +118,7 @@ class InviteUserTest extends TestCase
     {
         $this->actingAs($this->user)
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
                 'spid_user' => $this->spidUser,
             ])
@@ -142,7 +142,7 @@ class InviteUserTest extends TestCase
 
         $this->actingAs($this->user)
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
                 'spid_user' => $this->spidUser,
                 '_token' => 'test',
@@ -189,7 +189,7 @@ class InviteUserTest extends TestCase
 
         $this->actingAs($this->user)
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
                 'spid_user' => $this->spidUser,
                 '_token' => 'test',
@@ -229,7 +229,7 @@ class InviteUserTest extends TestCase
 
         $this->actingAs($this->secondUser)
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
                 'spid_user' => $this->spidUser,
             ])
             ->from(route('websites.index'))
@@ -274,7 +274,7 @@ class InviteUserTest extends TestCase
         ], false);
         $this->actingAs($this->secondUser)
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
                 'spid_user' => $this->spidUser,
             ])
             ->json('POST', route('publicAdministration.acceptInvitation', [

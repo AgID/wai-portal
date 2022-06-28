@@ -138,7 +138,7 @@ class CRUDWebsiteTest extends TestCase
     {
         $this->actingAs($this->user)
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
             ])
             ->json('GET', route('websites.data.json'))
@@ -164,7 +164,7 @@ class CRUDWebsiteTest extends TestCase
         $alternativeEmail = $this->faker->unique()->freeEmail;
         $this->actingAs($user)
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
                 'spid_user' => $this->spidUser,
             ])
             ->from(route('websites.index'))
@@ -207,7 +207,7 @@ class CRUDWebsiteTest extends TestCase
         ]);
         $this->actingAs($user)
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
                 'spid_user' => $this->spidUser,
             ])
             ->from(route('websites.index'))
@@ -249,7 +249,7 @@ class CRUDWebsiteTest extends TestCase
         $alternativeEmail = $this->faker->unique()->freeEmail;
         $this->actingAs($user)
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
                 'spid_user' => $this->spidUser,
             ])
             ->from(route('websites.create.primary.custom'))
@@ -294,7 +294,7 @@ class CRUDWebsiteTest extends TestCase
         ]);
         $this->actingAs($user)
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
                 'spid_user' => $this->spidUser,
             ])
             ->from(route('websites.create.primary.custom'))
@@ -358,7 +358,7 @@ class CRUDWebsiteTest extends TestCase
 
         $this->actingAs($user)
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
                 'spid_user' => $spidUser,
                 'tenant_id' => $customPublicAdministration->id,
             ])
@@ -402,7 +402,7 @@ class CRUDWebsiteTest extends TestCase
 
         $this->actingAs($this->user)
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
                 'spid_user' => $this->spidUser,
             ])
@@ -456,7 +456,7 @@ class CRUDWebsiteTest extends TestCase
     {
         $this->actingAs($this->user)
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
                 'spid_user' => $this->spidUser,
             ])
@@ -512,7 +512,7 @@ class CRUDWebsiteTest extends TestCase
 
         $this->actingAs($this->user)
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
                 'spid_user' => $this->spidUser,
             ])
@@ -570,7 +570,7 @@ class CRUDWebsiteTest extends TestCase
 
         $this->actingAs($this->user)
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
                 'spid_user' => $this->spidUser,
             ])
@@ -608,7 +608,7 @@ class CRUDWebsiteTest extends TestCase
 
         $this->actingAs($this->user)
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
                 'spid_user' => $this->spidUser,
             ])
@@ -658,7 +658,7 @@ class CRUDWebsiteTest extends TestCase
 
         $this->actingAs($this->user)
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
                 'spid_user' => $this->spidUser,
             ])
@@ -711,7 +711,7 @@ class CRUDWebsiteTest extends TestCase
 
         $this->actingAs($this->user)
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
                 'spid_user' => $this->spidUser,
             ])
@@ -801,7 +801,7 @@ class CRUDWebsiteTest extends TestCase
 
         $this->actingAs($user)
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
                 'spid_user' => $this->spidUser,
             ])
             ->from(route('websites.index'))
@@ -862,7 +862,7 @@ class CRUDWebsiteTest extends TestCase
         ]);
         $this->actingAs($user)
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
                 'spid_user' => $this->spidUser,
             ])
             ->from(route('websites.index'))

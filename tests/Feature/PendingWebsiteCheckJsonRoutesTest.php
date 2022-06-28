@@ -100,7 +100,7 @@ class PendingWebsiteCheckJsonRoutesTest extends TestCase
     {
         $response = $this->actingAs($this->user, 'web')
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
             ])
             ->json('get', route('websites.tracking.check', ['website' => $this->website->slug]));
@@ -127,7 +127,7 @@ class PendingWebsiteCheckJsonRoutesTest extends TestCase
 
         $response = $this->actingAs($this->user)
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
             ])
             ->json('get', route('websites.tracking.check', ['website' => $this->website->slug]));
@@ -159,7 +159,7 @@ class PendingWebsiteCheckJsonRoutesTest extends TestCase
 
         $response = $this->actingAs($this->user)
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
                 'tenant_id' => $this->publicAdministration->id,
             ])
             ->json('get', route('websites.tracking.check', ['website' => $website->slug]));

@@ -163,7 +163,7 @@ class SearchWebsiteIndexRouteTest extends TestCase
     {
         $response = $this->actingAs($this->firstUser, 'web')
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
                 'tenant_id' => $this->firstPublicAdministration->id,
             ])
             ->json('GET', route('logs.websites.search'), [
@@ -197,7 +197,7 @@ class SearchWebsiteIndexRouteTest extends TestCase
     {
         $response = $this->actingAs($this->secondUser, 'web')
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
                 'tenant_id' => $this->secondPublicAdministration->id,
             ])
             ->json('GET', route('logs.websites.search'), [
@@ -262,7 +262,7 @@ class SearchWebsiteIndexRouteTest extends TestCase
     {
         $response = $this->actingAs($this->firstUser, 'web')
             ->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
                 'tenant_id' => $this->firstPublicAdministration->id,
             ])
             ->json('GET', route('logs.websites.search'), [

@@ -24,6 +24,6 @@ Route::get('/_test/_inject_spid_session', function () {
         'fiscalNumber' => ['FSCLNB17A01H501X'],
         'email' => ['mail@example.com'],
     ]);
-    session(['spid_sessionIndex' => 'fake-session-index']);
+    session(['spid_sessionId' => 'fake-session-index']);
     session(['spid_user' => $SPIDUser]);
 });

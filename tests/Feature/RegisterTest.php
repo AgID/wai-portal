@@ -37,7 +37,7 @@ class RegisterTest extends TestCase
         ]);
 
         $this->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
                 'spid_user' => $spidUser,
             ])
             ->post(route('auth.register'), [
@@ -61,7 +61,7 @@ class RegisterTest extends TestCase
     public function testRegistrationFailValidation(): void
     {
         $this->withSession([
-                'spid_sessionIndex' => 'fake-session-index',
+                'spid_sessionId' => 'fake-session-index',
             ])
             ->post(route('auth.register'))
             ->assertSessionHasErrors([
