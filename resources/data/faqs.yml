@@ -191,9 +191,9 @@ it:
     id: gdpr
     question: Il progetto è aderente alla normativa GDPR?
     answer: |
-      Si, il progetto WAI è pienamente aderente alla normativa GDPR (General
-      Data Protection Regulation). Maggiori informazioni sono disponibili nella
-      pagina dedicata alla [privacy](/privacy).
+      Il progetto WAI non raccoglie dati personali, ad eccezione dell'indirizzo
+      IP per il quale è prevista l'anonimizzazione. Maggiori informazioni sono
+      disponibili nella pagina dedicata alla [privacy](/privacy).
 
   - themes: privacy
     id: anonimizzazione

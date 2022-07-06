@@ -236,7 +236,7 @@
                 </li>
                 <li>
                     <p class="lead mw-100">
-                        {{ __('avere la proprietà, il controllo completo dei dati e la piena aderenza al GDPR') }}
+                        {{ __('avere la proprietà e il completo controllo dei dati raccolti') }}
                     </p>
                 </li>
                 <li>
