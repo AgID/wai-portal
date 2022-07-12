@@ -917,6 +917,6 @@ class WebsiteController extends Controller
     {
         return 'to-be-implemented';
         // return config('kong-service.api_url') .
-            // str_replace('/api/', '/portal/', route('api.websites.read', ['website' => $website], false));
+        // str_replace('/api/', '/portal/', route('api.websites.read', ['website' => $website], false));
     }
 }

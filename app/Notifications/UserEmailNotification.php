@@ -53,6 +53,6 @@ abstract class UserEmailNotification extends EmailNotification
             $this->recipientEmail = $this->getUserEmailForPublicAdministration($notifiable, $this->publicAdministration);
         }
 
-        return $this->buildEmail($notifiable)->to($this->recipientEmail, ($notifiable->full_name !== $notifiable->email ? $notifiable->full_name : null));
+        return $this->buildEmail($notifiable)->to($this->recipientEmail, $notifiable->full_name !== $notifiable->email ? $notifiable->full_name : null);
     }
 }
