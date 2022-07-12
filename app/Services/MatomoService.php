@@ -730,7 +730,7 @@ class MatomoService implements AnalyticsServiceContract
     }
 
     /**
-     * Update an existing analytics service report.
+     * Update an existing analytics service rollup.
      * NOTE: the given Analytics Service websites IDs list will replace
      *       the current one.
      *

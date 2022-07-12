@@ -6,6 +6,7 @@
 </ul>
 @endif
 
+@unless(config('wai.disable_new_websites'))
 <div class="container @if (!app()->environment('production') && config('wai.custom_public_administrations', false)) pt-5 @endif ">
 
     @unless ($hideTitle ?? false)
@@ -264,3 +265,8 @@
         @endunless
     </form>
 </div>
+@else
+<div class="alert alert-info my-3" role="alert">
+    {{ __('Al momento non è possibile aggiungere nuovi siti web a :app.', ['app' => config('app.name')]) }}
+</div>
+@endunless

@@ -107,6 +107,10 @@ class WebsiteController extends Controller
      */
     public function storePrimary(StorePrimaryWebsiteRequest $request): RedirectResponse
     {
+        if (config('wai.disable_new_websites')) {
+            return redirect()->route('websites.index');
+        }
+
         $authUser = $request->user();
 
         $publicAdministration = PublicAdministration::make([
@@ -167,6 +171,15 @@ class WebsiteController extends Controller
      */
     public function store(StoreWebsiteRequest $request, PublicAdministration $publicAdministration): RedirectResponse
     {
+        if (config('wai.disable_new_websites')) {
+            return redirect()->route('websites.index')->withModal([
+                'title' => __('Il sito non è stato inserito'),
+                'message' => __('Al momento non è possibile aggiungere nuovi siti web a :app.', ['app' => config('app.name')]),
+                'status' => 'error',
+                'icon' => 'it-close-circle',
+            ]);
+        }
+
         $this->storeMethod($request, $publicAdministration);
 
         $redirectUrl = $this->getRoleAwareUrl('websites.index', [], $publicAdministration);
@@ -188,6 +201,10 @@ class WebsiteController extends Controller
      */
     public function storeApi(StoreWebsiteRequest $request): JsonResponse
     {
+        if (config('wai.disable_new_websites')) {
+            return $this->errorResponse('Creation of websites is temporarily disabled', $this->getErrorCode(Website::class), 503);
+        }
+
         $publicAdministration = $request->publicAdministrationFromToken;
 
         $data = $this->storeMethod($request, $publicAdministration);
