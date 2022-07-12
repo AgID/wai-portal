@@ -26,7 +26,7 @@ trait ManageClosedBetaWhitelist
             ($this->payload['repository']['full_name'] ?? config('webhook-client.configs.0.repository.full_name')) .
             '/' . (Str::afterLast($payload['ref'], '/') ?? config('webhook-client.configs.0.repository.branch')) .
             '/' . config('webhook-client.configs.0.repository.file_name'),
-            );
+        );
 
         $content = $response->getBody()->getContents();
 

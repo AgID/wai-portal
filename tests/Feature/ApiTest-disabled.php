@@ -108,7 +108,7 @@ class ApiTest extends TestCase
             $this->user->id => ['user_email' => $this->user->email, 'user_status' => UserStatus::ACTIVE],
             $this->userNonAdministrator->id => ['user_email' => $this->userNonAdministrator->email, 'user_status' => UserStatus::INVITED],
         ],
-        false);
+            false);
 
         $this->website = factory(Website::class)->create([
             'public_administration_id' => $this->publicAdministration->id,
