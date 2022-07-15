@@ -6,6 +6,7 @@ use App\Enums\Logs\JobType;
 use App\Enums\PublicAdministrationStatus;
 use App\Enums\UserStatus;
 use App\Enums\WebsiteStatus;
+use App\Enums\WebsiteType;
 use App\Events\Jobs\PendingWebsitesCheckCompleted;
 use App\Events\PublicAdministration\PublicAdministrationPurged;
 use App\Events\Website\WebsiteActivated;
@@ -13,6 +14,7 @@ use App\Events\Website\WebsitePurged;
 use App\Events\Website\WebsitePurging;
 use App\Exceptions\AnalyticsServiceException;
 use App\Exceptions\CommandErrorException;
+use App\Models\PublicAdministration;
 use App\Models\Website;
 use App\Traits\ActivatesWebsite;
 use App\Traits\ManageRecipientNotifications;
@@ -20,6 +22,7 @@ use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
@@ -159,6 +162,54 @@ class ProcessPendingWebsites implements ShouldQueue
                 ],
             ];
         });
+
+        // Fix active public administrations with null rollup_id
+        PublicAdministration::whereNull('rollup_id')->get()->each(function ($publicAdministration) use ($pendingWebsites, $websites) {
+            if ($publicAdministration->status->is(PublicAdministrationStatus::ACTIVE)) {
+                $primaryWebsite = $publicAdministration->websites()->where('type', WebsiteType::INSTITUTIONAL)->first();
+                if (is_null($primaryWebsite) || $pendingWebsites->contains($primaryWebsite)) {
+                    // Do not try to re-activate publicAdministrations processed in this job instance
+                    // since the activation process may still be in the queue
+                    return;
+                }
+                if ($this->hasActivated($primaryWebsite)) {
+                    // Change public administration status to PENDING, in order to retry activation
+                    $publicAdministration->status = PublicAdministrationStatus::PENDING;
+                    $publicAdministration->save();
+
+                    $this->activate($primaryWebsite);
+
+                    $activatedWebsites = $websites->get('activated') ?? collect([]);
+                    $activatedWebsites->concat([
+                        'website' => $primaryWebsite->slug,
+                        'reason' => 'Re-activated public administration with null rollup',
+                    ]);
+
+                    $websites->merge(['activated' => $activatedWebsites]);
+                }
+            }
+        });
+
+        // Fix pending public administrations with institutional active website
+        $activeWebsitesInPendingPublicAdministration = Website::where('type', WebsiteType::INSTITUTIONAL)
+            ->where('status', WebsiteStatus::ACTIVE)->whereHas('publicAdministration', function (Builder $query) {
+                $query->where('status', PublicAdministrationStatus::PENDING);
+            })->get()->each(function ($activeWebsiteInPendingPublicAdministration) use ($pendingWebsites, $websites) {
+                if ($pendingWebsites->contains($activeWebsiteInPendingPublicAdministration)) {
+                    // Do not try to re-activate publicAdministrations processed in this job instance
+                    // since the activation process may still be in the queue
+                    return;
+                }
+
+                $this->activate($activeWebsiteInPendingPublicAdministration);
+
+                $activatedWebsites = $websites->get('activated') ?? collect([]);
+                $activatedWebsites->concat([
+                'website' => $activeWebsiteInPendingPublicAdministration->slug,
+            ]);
+
+                $websites->merge(['activated' => $activatedWebsites]);
+            });
 
         event(new PendingWebsitesCheckCompleted(
             empty($websites->get('activated')) ? [] : $websites->get('activated')->all(),

@@ -11,6 +11,17 @@
                     <h1 class="mb-0">{{ __('Le statistiche dei siti web') }}</h1>
                     <span class="payoff">{{ __('della pubblica amministrazione italiana') }}</span>
                 </div>
+                @if (config('wai.disable_new_websites'))
+                <div class="callout border-white mt-5">
+                    <div class="callout-title bg-primary border border-white rounded text-white py-1"><svg class="icon icon-white"><use xlink:href="/svg/sprite.svg#it-info-circle"></use></svg>Avviso importante</div>
+                    <p class="text-white">
+                       {{ __('La piattaforma è al momento in fase di potenzionamento.') }}
+                    </p>
+                    <p class="text-white">
+                        {{ __("Tutte le funzionalità restano disponibili ad eccezione dell'aggiunta di nuovi siti web.") }}
+                     </p>
+                </div>
+                @endif
             </div>
             <div class="col-lg-6 d-flex justify-content-center align-items-center">
                 <img class="img-fluid mt-auto" alt="" src="{{ asset('images/home-laptop.png') }}">
@@ -236,7 +247,7 @@
                 </li>
                 <li>
                     <p class="lead mw-100">
-                        {{ __('avere la proprietà, il controllo completo dei dati e la piena aderenza al GDPR') }}
+                        {{ __('avere la proprietà e il completo controllo dei dati raccolti') }}
                     </p>
                 </li>
                 <li>

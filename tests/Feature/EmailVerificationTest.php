@@ -137,7 +137,7 @@ class EmailVerificationTest extends TestCase
             ->assertViewHas(
                 'userMessage',
                 __('Il link che hai usato non è valido oppure è scaduto.'),
-                );
+            );
 
         Event::assertNotDispatched(UserInvitationLinkExpired::class);
     }

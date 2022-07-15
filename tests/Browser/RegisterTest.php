@@ -47,7 +47,7 @@ class RegisterTest extends DuskTestCase
                     ->waitForText('Le statistiche dei siti web')
                     ->assertPathIs('/');
             // ->assertPresent('.notification-in-page')
-                    // ->assertSourceHas('è già stato verificato');
+            // ->assertSourceHas('è già stato verificato');
         });
     }
 }

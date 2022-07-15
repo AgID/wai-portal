@@ -13,7 +13,7 @@ ENV DEBIAN_FRONTEND noninteractive
 
 # install php required extensions
 ARG BUILD_PACKAGES="autoconf build-essential wget"
-ARG PACKAGES="unzip"
+ARG PACKAGES="unzip patch"
 ARG MATOMO_PHPREDIS_VERSION
 RUN apt-get update && apt-get install -y ${BUILD_PACKAGES} ${PACKAGES} && \
     wget https://pecl.php.net/get/redis-${MATOMO_PHPREDIS_VERSION}.tgz && \

@@ -9,6 +9,7 @@ use App\Listeners\CheckWebsitesMonitoringJobEventsSubscriber;
 use App\Listeners\EnvironmentResetJobSubscriber;
 use App\Listeners\LogSentMessage;
 use App\Listeners\PublicAdministrationEventsSubscriber;
+use App\Listeners\PurgeOrphanedEntitiesJobEventsSubscriber;
 use App\Listeners\PurgePendingInvitationsJobSubcriber;
 use App\Listeners\SendInvitationNotification;
 use App\Listeners\SPIDEventSubscriber;
@@ -69,6 +70,7 @@ class EventServiceProvider extends ServiceProvider
         UserUpdatesSubscriber::class,
         WebsiteUpdatesSubscriber::class,
         UpdateClosedBetaWhitelistJobSubscriber::class,
+        PurgeOrphanedEntitiesJobEventsSubscriber::class,
         PurgePendingInvitationsJobSubcriber::class,
         EnvironmentResetJobSubscriber::class,
     ];
