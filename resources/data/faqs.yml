@@ -25,13 +25,12 @@ it:
     id: beta
     question: Cosa significa che Web analytics Italia è in beta?
     answer: |
-      **Web analytics Italia (WAI)** è un progetto relativamente nuovo e nella
-      prima fase del suo rilascio potranno essere apportati diversi cambiamenti
-      o aggiustamenti in base ai feedback degli utenti.
+      **Web analytics Italia (WAI)** è un progetto relativamente nuovo e
+      potranno essere apportati diversi cambiamenti o aggiustamenti in base ai
+      feedback degli utenti.
 
-      In questa prima fase (denominata *beta*) le amministrazioni che avranno
-      l'opportunità di sperimentare tutte le funzionalità, individuare eventuali
-      difetti e inviare feedback.
+      In fase di beta, il servizio è erogato seguendo un livello *"best effort"*
+      e senza garanzia di continuità temporale.
 
   - themes: adesione
     id: come-funziona-adesione
@@ -71,21 +70,6 @@ it:
 
       Il codice sorgente di Matomo è disponibile in un [repository
       pubblico](https://github.com/matomo-org/matomo).
-
-  - themes: generale
-    id: fase-sperimentazione
-    question: |
-      Quando verrà avviata e quanto durerà la fase di sperimentazione iniziale
-      del progetto? Che impegno è richiesto alle istituzioni che verranno
-      coinvolte?
-    answer: |
-      La fase di sperimentazione sarà avviata entro la prima metà del 2020. Alle
-      PA coinvolte nella fase beta sarà richiesto di fornire feedback e
-      suggerimenti per il miglioramento della piattaforma.
-
-      L'effort per l'abilitazione del tracciamento sui propri siti web è
-      paragonabile a quello per l'aggiunta di qualunque altro strumento simile
-      (ad esempio Google Analytics).
 
   - themes: generale
     id: gratuita-piattaforma
@@ -174,19 +158,6 @@ it:
       I dati statistici raccolti da WAI vengono memorizzati su server dedicati e
       ad uso esclusivo della pubblica amministrazione, localizzati in Italia.
 
-  - themes: personalizzazione
-    id: migrazione-dati-da-matomo
-    question: |
-      Se già utilizzo Matomo in modalità self hosted posso migrare i dati del
-      miei siti dalla mia infrastruttura a Web analytics Italia?
-    answer: |
-      Si, è necessaria una copia del database per migrare i dati da
-      un'infrastruttura Matomo *self-hosted* dell'amministrazione a WAI.
-
-      La fattibilità è subordinata all'analisi, caso per caso, delle
-      caratteristiche dei dati (struttura e quantità) in termini di
-      compatibilità con la piattaforma WAI.
-
   - themes: privacy
     id: gdpr
     question: Il progetto è aderente alla normativa GDPR?
@@ -220,7 +191,7 @@ it:
     question: La piattaforma Web Analytics Italia è sicura?
     answer: |
       L'infrastruttura e il portale di front-end di WAI sono entrambi sviluppati
-      secondo i più  recenti standard di sicurezza informatica nonché secondo le
+      secondo i più recenti standard di sicurezza informatica nonché secondo le
       linee guida per la sicurezza ICT nelle pubbliche amministrazioni.
 
       I collegamenti al codice sorgente sono disponibili nella pagina dei
@@ -244,8 +215,8 @@ it:
       scegli la prima opzione.
 
       Se il sito contiene servizi e procedure completamente o parzialmente
-      interattive/transattive, scegli sito di servizi. **Nota bene** che nel caso
-      in cui il servizio consta di un modulo (pdf, doc, etc.) da scaricare
+      interattive/transattive, scegli sito di servizi. **Nota bene** che nel
+      caso in cui il servizio consta di un modulo (pdf, doc, etc.) da scaricare
       (e inviare per email o pec o consegnare a mano o per raccomandata) non fa
       parte di questa categoria, ma della categoria sito tematico informativo.
 
@@ -283,10 +254,7 @@ it:
     id: tracciamento-interdominio
     question: Posso effettuare un tracciamento interdominio?
     answer: |
-      Si, in WAI è possibile richiedere il tracciamento interdominio di due o
-      più siti dell'amministrazione.
-
-      *Questa funzionalità non sarà disponibile durante la fase beta*.
+      No, al momento questa funzionalità non è disponibile.
 
   - themes: adesione
     id: analytics-mobile
@@ -298,8 +266,12 @@ it:
   - themes: generale
     id: public-playground
     question: |
-      Cos'è l'ambiente "public playground"?
+      Esiste un ambiente di test in cui poter provare le funzionalità di Web
+      Analytics Italia?
     answer: |
+      Si possono testare le funzionalità e l'integrazione di Web Analytics
+      Italia null'ambiente Public Playground.
+
       Si tratta di un'istanza parallela di Web Analytics Italia con la quale è
       possibile effettuare in tutta sicurezza qualunque prova senza paura di
       sbagliare.
@@ -309,5 +281,205 @@ it:
 
       [Vai all'ambiente public playground](https://play.webanalytics.italia.it/).
 
+  - themes: privacy
+    id: consenso-utente
+    question: |
+      È possibile raccogliere dati con WAI senza prima chiedere il consenso
+      dell'utente?
+    answer: |
+      Il consenso dell'utente è regolamentato dal GDPR. Sul tema rinviamo alle
+      [Linee guida cookie e altri strumenti di tracciamento](https://www.garanteprivacy.it/web/guest/home/docweb/-/docweb-display/docweb/9677876)
+      pubblicate dal Garante per la protezione dei dati personali e alla
+      relativa [Scheda di sintesi](https://www.garanteprivacy.it/garante/document?ID=9679270).
+      Ricordiamo che sulla piattaforma Web Analytics Italia:
 
+      - i cookie creati dallo script di tracciamento di Matomo sono cookie di
+        prima parte;
+      - è attiva la modalità di rendere anonimo l'indirizzo IP dell'utente;
+      - non è prevista alcuna attività di profilazione.
+
+  - themes: adesione
+    id: utente-su-diverse-pa
+    question: |
+      Un singolo utente (stessa identità SPID) può svolgere il ruolo di
+      amministratore (o delegato) in due o più pubbliche amministrazioni?
+    answer: |
+      Sì, Web Analytics Italia consente a un singolo utente SPID di svolgere
+      ruolo di amministratore (o delegato) in diverse pubbliche amministrazioni.
+
+  - themes: adesione
+    id: mail-verifica-non-ricevuta
+    question: |
+      Che fare se non si riceve il messaggio di conferma dell'indirizzo email?
+    answer: |
+      È sufficiente rifare l'accesso con SPID e, dopo aver verificato la
+      correttezza dell'indirizzo email inserito, cliccare su "Invia una nuova
+      mail di verifica".
+
+      Se l'indirizzo email inserito risulta errato è possibile modificarlo dalla
+      stessa pagina.
+
+  - themes: personalizzazione
+    id: esclusione-ip-aziendale
+    question: |
+      Posso escludere l'indirizzo IP della rete aziendale dal tracciamento dei
+      dati?
+    answer: |
+      Per escludere l'indirizzo IP della rete aziendale dal tracciamento dei
+      dati è necessario inviare una richiesta, completa di tutti i dettagli,
+      all'indirizzo [wai@agid.gov.it](mailto:wai@agid.gov.it).
+
+  - themes: gestione-siti adesione
+    id: attivazione-sito
+    question: |
+      Cosa fare dopo l'inserimento del codice di tracciamento di Web Analytics
+      Italia all'interno del sito?
+    answer: |
+      Dopo l'inserimento del codice di tracciamento, è possibile cliccare
+      sull'icona “verifica attivazione”, posizionato accanto all'etichetta “In
+      attesa”. L'attivazione sarà istantanea se il codice di tracciamento è
+      stato inserito correttamente.
+
+      In alternativa, si potrà attendere che il sistema aggiorni automaticamente
+      lo stato del sito su Web Analytics Italia.
+
+      *L'attivazione va a buon fine solo se il codice di tracciamento è inserito
+      nel sito web corrispondente al dominio impostato in WAI. Le visite
+      provenienti da altri domini vengono ignorate.*
+
+      Se dopo l'inserimento del codice di tracciamento, il sito dovesse
+      risultare ancora in attesa, scrivere all'indirizzo
+      [wai@agid.gov.it](mailto:wai@agid.gov.it) indicando l'amministrazione di
+      appartenenza e l'URL del sito per il quale si attende conferma
+      dell'attivazione.
+
+  - themes: gestione-siti
+    id: registrazione-fallita
+    question: |
+      Cosa fare se la registrazione del sito sembra non andare a buon fine?
+    answer: |
+      Se la registrazione del sito non viene completata dalla piattaforma,
+      segnalare l'anomalia scrivendo a [wai@agid.gov.it](mailto:wai@agid.gov.it)
+      e indicando Pubblica Amministrazione di appartenenza e URL del sito.
+
+  - themes: gestione-siti
+    id: codice-tracciamento
+    question: |
+      Dove è possibile trovare il codice di tracciamento da integrare nel sito?
+    answer: |
+      Se il codice di tracciamento non è stato ricevuto per mail, può essere
+      recuperato e all'interno del sito, nella dashboard, cliccando sul tasto
+      "dettagli" in corrispondenza del sito di interesse.
+
+  - themes: adesione
+    id: dati-ipa-non-corrispondenti
+    question: |
+      Cosa fare se, in fase di adesione, l'indirizzo del sito istituzionale,
+      visualizzato e proveniente da IndicePA, non corrisponde all'indirizzo
+      effettivo?
+    answer: |
+     Per allineare le informazioni tra IndicePA e WAI
+      - accedere al portale IndicePA;
+      - aggiornare i dati su IndicePA;
+      - attendere 24 ore prima di riprovare l'adesione a Web Analytics Italia.
+
+      Se dopo 24 ore i dati del sito istituzionale non risultano ancora
+      aggiornati, sarà necessario chiedere supporto scrivendo a
+      [wai@agid.gov.it](mailto:wai@agid.gov.it), specificando tutti i dettagli.
+
+  - themes: adesione gestione-siti
+    id: protocollo-https
+    question: |
+      È necessario modificare l'indirizzo del sito istituzionale inserendo il
+      protocollo https?
+    answer: |
+      Gli indirizzi web dei siti istituzionali sono registrati in IndicePA senza
+      il relativo protocollo (http o https). Anche se l'uso del protocollo https
+      è ormai uno standard base di sicurezza, WAI assegna, all'indirizzo privo
+      di protocollo, il prefisso http:// per garantire anche ai siti che non
+      usano ancora https la possibilità di tracciare le visite.
+
+      Il tracciamento funziona correttamente anche se il protocollo visualizzato
+      è http mentre quello effettivo è https, quindi non è necessario apportare
+      alcuna modifica.
+
+      *È possibile che in futuro tutti gli URL siano modificati sostituendo il
+      protocollo http con https, consentendo così solo ai siti che rispettano le
+      misure base di sicurezza di tracciare le visite con Web Analytics Italia.*
+
+  - themes: gestione-siti
+    id: modifica-url-sito
+    question: |
+      È possibile modificare l'URL di un sito?
+    answer: |
+      È possibile modificare autonomamente solo l'indirizzo degli ulteriori siti
+      aggiunti, ma non del sito istituzionale (corrispondente ai dati presenti
+      su IndicePA).
+
+      Se fosse necessario modificare l'indirizzo di un sito istituzionale, dopo
+      aver verificato che sia già stato corretto su IndicePA, basterà inviare
+      una richiesta dettagliata scrivendo a
+      [wai@agid.gov.it](mailto:wai@agid.gov.it).
+
+      *Si ricorda che, per ciascun sito, le visite sono effettivamente tracciate
+      solo se provengono dall'indirizzo web impostato in Web Analytics Italia.*
+
+  - themes: gestione-siti generale
+    id: importazione-da-google-analytics
+    question: |
+      È possibile importare su Web Analytics Italia i dati di Google Analytics?
+    answer: |
+      Non è possibile importare i dati da Google Analytics, tuttavia si possono
+      mantenere attivi entrambi i tracciamenti.
+
+  - themes: generale
+    id: report-via-email
+    question: |
+      Posso programmare l'invio di report via mail?
+    answer: |
+      Sì, questa funzionalità è accessibile raggiungendo la dashboard di uno
+      specifico sito web, poi selezionando l'icona impostazioni (a forma di
+      ingranaggio) nella barra in alto e infine usando la voce di menu "Report
+      Email".
+
+  - themes: generale
+    id: widgets
+    question: |
+      Dove è possibile trovare il codice per integrare i widget con le
+      statistiche nel proprio sito?
+    answer: |
+      È possibile prelevare il codice per l'integrazione dei widget nel proprio
+      sito dalla pagina "dettagli" accessibile mediante il corrispondente
+      bottone nella pagina dei siti web.
+
+      *Il codice funziona solo nelle pagine dello stesso sito web le cui
+      statistiche sono mostrate nei widget.*
+
+  - themes: generale
+    id: widgets-non-funzionanti
+    question: |
+      I widget integrati nel sito non funzionano correttamente, perché?
+    answer: |
+      I widget funzionano solo su siti web che supportano il protocollo sicuro
+      https. Qualora si presentassero problemi su un sito che già lo supporta, è
+      necessario segnalarci l'URL della pagina in cui è integrato il widget
+      scrivendo a [wai@agid.gov.it](mailto:wai@agid.gov.it), in modo da poter
+      compiere delle verifiche approfondite.
+
+  - themes: gestione-siti adesione
+    id: siteid-numerico
+    question: |
+      Il plugin per CMS (o libreria software) mi chiede un parametro "siteId" di
+      tipo numerico, mentre quello presente nel codice di tracciamento è
+      alfanumerico: come posso procedere?
+    answer: |
+      Sebbene il parametro "siteId" sia generalmente di tipo numerico, questo
+      non è un requisito di Matomo. Web Analytics Italia usa infatti "siteId"
+      alfanumerici.
+
+      Se il plugin per CMS (o libreria software) che si sta usando non permette
+      in alcun modo l'inserimento di una stringa come valore del parametro
+      "siteId", è possibile scrivere a
+      [wai@agid.gov.it](mailto:wai@agid.gov.it), specificando l'URL del sito da
+      tracciare già inserito in WAI, per chiedere un "siteId" di tipo numerico.
 
