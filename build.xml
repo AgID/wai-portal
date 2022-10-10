@@ -386,7 +386,7 @@
         </if>
         <!-- Set files ownership -->
         <echo msg="Setting files ownership..."/>
-        <exec command="docker-compose exec php-fpm chown -R www-data:www-data storage database .env" dir="containers" checkreturn="true"/>
+        <exec command="docker-compose exec php-fpm chown -R www-data:www-data /var/www/html" dir="containers" checkreturn="true"/>
         <exec command="docker-compose exec php-fpm chown -R www-data:www-data /opt/matomo" dir="containers" checkreturn="true"/>
         <exec command="docker-compose exec php-fpm chown -R www-data:www-data /var/log/php" dir="containers" checkreturn="true"/>
         <exec command="docker-compose exec php-fpm chown -R www-data:www-data /var/log/matomo" dir="containers" checkreturn="true"/>
