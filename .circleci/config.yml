@@ -60,8 +60,8 @@ commands:
           name: Run security-checker
           command: |
             wget https://get.symfony.com/cli/installer -O - | bash
-            sudo mv /home/circleci/.symfony/bin/symfony /usr/local/bin/symfony
-            # symfony check:security
+            sudo mv /home/circleci/.symfony5/bin/symfony /usr/local/bin/symfony
+            symfony check:security
 
   install_node_packages:
     description: Ensure all javascript dependencies are installed
