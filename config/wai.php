@@ -102,7 +102,7 @@ return [
      |
      */
 
-    'disable_new_websites' => env('APP_DISABLE_NEW_WEBSITES', false),
+    'app_suspended' => env('APP_SUSPENDED', false),
 
     /*
      |--------------------------------------------------------------------------
