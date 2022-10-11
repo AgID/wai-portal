@@ -11,16 +11,13 @@
                     <h1 class="mb-0">{{ __('Le statistiche dei siti web') }}</h1>
                     <span class="payoff">{{ __('della pubblica amministrazione italiana') }}</span>
                 </div>
-                @if (config('wai.disable_new_websites'))
-                <div class="callout border-white mt-5">
-                    <div class="callout-title bg-primary border border-white rounded text-white py-1"><svg class="icon icon-white"><use xlink:href="/svg/sprite.svg#it-info-circle"></use></svg>Avviso importante</div>
-                    <p class="text-white">
-                       {{ __('La piattaforma è al momento in fase di potenzionamento.') }}
-                    </p>
-                    <p class="text-white">
-                        {{ __("Tutte le funzionalità restano disponibili ad eccezione dell'aggiunta di nuovi siti web.") }}
-                     </p>
-                </div>
+                @if (config('wai.app_suspended'))
+                <a href="#comunicazione-potenziamento" role="button" class="btn btn-lg btn-icon btn-analogue mt-5">
+                    <span>Comunicazione importante</span>
+                    <svg class="icon icon-black" aria-label="Attenzione">
+                        <use xlink:href="{{ asset('svg/sprite.svg#it-arrow-down-triangle') }}">
+                    </svg>
+                </a>
                 @endif
             </div>
             <div class="col-lg-6 d-flex justify-content-center align-items-center">
@@ -172,64 +169,7 @@
             </div>
         </div>
     </div>
-    {{-- <div class="py-5">
-        <div class="container py-3">
-            <h3 class="text-center">{{ __('Come iniziare a tracciare il traffico') }}</h3>
-            <div class="d-flex justify-content-center pb-5">
-                <p class="text-serif text-center">
-                    {!! __('Il progetto :app si trova attualmente in fase di :phase (:phase-description).', ['app' => config('app.name'), 'phase' => '<em>' . __('closed-beta') . '</em>', 'phase-description' => __('versione beta chiusa limitata ad un panel ristretto di amministrazioni')]) !!}
-                </p>
-            </div>
-            <div class="row">
-                <div class="col-lg-6 p-4 p-lg-5 border-bottom border-lg-bottom-0 border-lg-right d-flex flex-column justify-content-between">
-                    <div>
-                        <h5 class="section-header long-dash">{{ __('amministrazioni pilota') }}</h5>
-                        <p class="text-serif mb-5">
-                            {{ __('Se vuoi che la tua amministrazioni sia tra le prime ad utilizzare la piattaforma contattaci per aderire alla fase sperimentale.') }}
-                        </p>
-                    </div>
-                    <div>
-                        @component('layouts.components.link_button', [
-                            'link' => route('contacts'),
-                            'type' => 'outline-primary',
-                        ])
-                        {{ __('contattaci') }}
-                        @endcomponent
-                    </div>
-                </div>
-                <div class="col-lg-6 p-4 p-lg-5 d-flex flex-column justify-content-between">
-                    <div>
-                        <h5 class="section-header long-dash">{{ __('accesso alla piattaforma') }}</h5>
-                        <p class="text-serif">
-                            @guest
-                            {{ __('Accedi con le tue credenziali SPID e registra la tua PA su :app.', ['app' => config('app.name')]) }}
-                            <br>
-                            <a href="{{ route('faq') }}">{{ __('Maggiori informazioni.') }}</a>
-                            @else
-                            {{ __("Hai già effettuato l'accesso a :app.", ['app' => config('app.name')]) }}
-                            <br>
-                            {!! __('Consulta i dati analytics e prendi :data_driven_decisions per la tua PA.', ['data_driven_decisions' => '<em>' . __('decisioni basate sui dati') . '</em>']) !!}
-                            @endguest
-                        </p>
-                    </div>
-                    @guest
-                    <p>{!! __("Usa il bottone 'Entra con SPID' che trovi :back-to-top a destra nella pagina.", ['back-to-top' => '<a href="#" data-attribute="back-to-top">' . __('in alto') . '</a>']) !!}</p>
-                    @else
-                    <div>
-                    @component('layouts.components.link_button', [
-                        'link' => route('analytics'),
-                        'type' => 'outline-primary',
-                        'icon' => 'it-arrow-right',
-                        'iconColor' => 'primary',
-                    ])
-                    {{ __('vai agli analytics') }}
-                    @endcomponent
-                    </div>
-                    @endguest
-                </div>
-            </div>
-        </div>
-    </div> --}}
+    @unless (config('wai.app_suspended'))
     <div class="container py-3">
         <div class="row">
             @component('layouts.components.box', ['classes' => 'p-5 up-xs-shadow'])
@@ -261,6 +201,56 @@
             @endcomponent
         </div>
     </div>
+    @else
+    <div id="comunicazione-potenziamento" class="container py-3">
+        <div class="row">
+            @component('layouts.components.box', ['classes' => 'p-5 up-xs-shadow'])
+            <h2 class="text-center mb-5">{{ __('Potenziamento di :app', ['app' => config('app.name')]) }}</h2>
+            <div class="col-8 offset-2">
+                <p>
+                    <span class="font-weight-semibold">A partire da gennaio 2023 AGID rilascerà una nuova versione di
+                    Web Analytics Italia che consentirà alle amministrazioni di monitorare regolarmente i propri
+                    siti web.</span>
+                </p>
+                <p>
+                    <span class="font-weight-semibold">La piattaforma Web Analytics Italia, gestita da AGID, ha registrato
+                    negli ultimi 3 mesi un incremento esponenziale di nuove adesioni da parte di centinaia di amministrazioni:
+                    </span>a fine settembre 2022 risultano registrate a WAI 2.397 PA, per un totale di 3.578 siti web attivi.
+                </p>
+                <p>
+                    <span class="font-weight-semibold">Questa crescente attenzione al monitoraggio dei servizi on line</span>
+                    è un segnale estremamente positivo, che denota una forte interesse da parte degli enti di voler migliorare
+                    costantemente la qualità dei propri servizi digitali. D'altra parte <span class="font-weight-semibold">
+                    impone urgentemente un significativo potenziamento della piattaforma</span>, tutt'ora in versione beta,
+                    per far fronte ad un aumento delle adesioni pari al 203%. AGID sta quindi lavorando in questi mesi per
+                    potenziare adeguatamente WAI, al fine di far fronte all'ingente mole di dati che vengono quotidianamente
+                    ricevuti e elaborati.
+                </p>
+                <p>
+                    <span class="font-weight-semibold">Al momento, alcuni indicatori/widget presenti nella dashboard di
+                    back office di WAI, potrebbero non funzionare correttamente e quindi non mostrare gli analytics. I
+                    dati vengono comunque acquisiti e conservati dalla piattaforma. Saranno fruibili non appena verrà
+                    potenziata l'infrastruttura.</span>
+                </p>
+                <p>
+                    <span class="font-weight-semibold">Nel frattempo viene sospesa la possibilità di effettuare nuove
+                    adesioni alla piattaforma da parte delle PA, nonché la possibilità di aggiungere nuovi siti.</span>
+                </p>
+                <p>
+                    Le PA che hanno già aderito alla piattaforma o che intendono attivare un sistema di analytics
+                    possono utilizzare, in via transitoria, <span class="font-weight-semibold">altre soluzioni open
+                    source e installarle direttamente sui loro server web</span>, ad esempio Matomo
+                    <span class="font-italic">on-premises</span>.
+                </p>
+                <p>
+                    Ci scusiamo per l'inconveniente e vi diamo appuntamento a gennaio 2023 per l’attivazione di nuove PA e
+                    il monitoraggio di nuovi siti.
+                </p>
+            </div>
+            @endcomponent
+        </div>
+    </div>
+    @endunless
     <div class="bg-primary py-5 position-relative">
         <div class="container text-center text-white py-3">
             <img alt="{{ config('app.name') }} - logo" class="icon icon-xl" src="{{ asset(config('site.logo')) }}">

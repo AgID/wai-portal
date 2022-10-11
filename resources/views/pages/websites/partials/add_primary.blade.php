@@ -6,7 +6,7 @@
 </ul>
 @endif
 
-@unless(config('wai.disable_new_websites'))
+@unless(config('wai.app_suspended'))
 <div class="container @if (!app()->environment('production') && config('wai.custom_public_administrations', false)) pt-5 @endif ">
 
     @unless ($hideTitle ?? false)
