@@ -38,7 +38,7 @@
                     <token key="LOG_SLACK_WEBHOOK_URL_EXTRA_CHANNEL" value="${LOG_SLACK_WEBHOOK_URL_EXTRA_CHANNEL}" />
                     <token key="LOG_SLACK_USERNAME_EXTRA_CHANNEL" value="${LOG_SLACK_USERNAME_EXTRA_CHANNEL}" />
                     <token key="APP_CLOSED_BETA_ENABLED" value="${APP_CLOSED_BETA_ENABLED}" />
-                    <token key="APP_DISABLE_NEW_WEBSITES" value="${APP_DISABLE_NEW_WEBSITES}" />
+                    <token key="APP_SUSPENDED" value="${APP_SUSPENDED}" />
                     <token key="APP_CUSTOM_PUBLIC_ADMINISTRATIONS_ENABLED" value="${APP_CUSTOM_PUBLIC_ADMINISTRATIONS_ENABLED}" />
                     <token key="APP_API_VERSION" value="${APP_API_VERSION}" />
                     <token key="APP_SUPER_ADMIN_NAME" value="${APP_SUPER_ADMIN_NAME}" />
