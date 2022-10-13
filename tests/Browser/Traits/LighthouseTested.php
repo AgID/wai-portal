@@ -17,7 +17,7 @@ trait LighthouseTested
     public function lighthouseTest()
     {
         $pageUrl = config('app.url') . $this->url();
-        $reportPath = base_path('tests/Browser/lighthouse') . '/' . 'report-' . Str::slug($pageUrl);
+        $reportPath = base_path('tests/Browser/lighthouse') . '/report-' . Str::slug($pageUrl);
 
         if (file_exists($reportPath)) {
             return;

@@ -1,13 +1,6 @@
 version: 2.1
 
 commands:
-  install_system_dependencies:
-    description: Install dependencies needed for the tests to run
-    steps:
-      - run:
-          name: Install pcntl php extension
-          command: sudo docker-php-ext-install pcntl
-
   restore_all_caches:
     description: Restore php and javascript dependencies
     steps:
@@ -60,8 +53,8 @@ commands:
           name: Run security-checker
           command: |
             wget https://get.symfony.com/cli/installer -O - | bash
-            sudo mv /home/circleci/.symfony/bin/symfony /usr/local/bin/symfony
-            # symfony check:security
+            sudo mv /home/circleci/.symfony5/bin/symfony /usr/local/bin/symfony
+            symfony check:security
 
   install_node_packages:
     description: Ensure all javascript dependencies are installed
@@ -122,11 +115,10 @@ commands:
 jobs:
   build_and_test:
     docker:
-      - image: circleci/php:7.4.12-cli
+      - image: cimg/php:7.4
     environment:
       APP_ENV: "testing"
     steps:
-      - install_system_dependencies
       - checkout
       - restore_all_caches
       - composer
@@ -135,7 +127,8 @@ jobs:
       - security
       - install_node_packages
       - save_all_caches
-      - setup_remote_docker
+      - setup_remote_docker:
+          version: 20.10.12
       # build
       - run:
           name: Run build task

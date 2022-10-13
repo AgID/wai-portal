@@ -107,7 +107,7 @@ class WebsiteController extends Controller
      */
     public function storePrimary(StorePrimaryWebsiteRequest $request): RedirectResponse
     {
-        if (config('wai.disable_new_websites')) {
+        if (config('wai.app_suspended')) {
             return redirect()->route('websites.index');
         }
 
@@ -171,7 +171,7 @@ class WebsiteController extends Controller
      */
     public function store(StoreWebsiteRequest $request, PublicAdministration $publicAdministration): RedirectResponse
     {
-        if (config('wai.disable_new_websites')) {
+        if (config('wai.app_suspended')) {
             return redirect()->route('websites.index')->withModal([
                 'title' => __('Il sito non è stato inserito'),
                 'message' => __('Al momento non è possibile aggiungere nuovi siti web a :app.', ['app' => config('app.name')]),
@@ -201,7 +201,7 @@ class WebsiteController extends Controller
      */
     public function storeApi(StoreWebsiteRequest $request): JsonResponse
     {
-        if (config('wai.disable_new_websites')) {
+        if (config('wai.app_suspended')) {
             return $this->errorResponse('Creation of websites is temporarily disabled', $this->getErrorCode(Website::class), 503);
         }
 

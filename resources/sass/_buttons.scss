@@ -24,4 +24,8 @@ a[role="button"] {
       opacity: 0.1;
     }
   }
+
+  &.btn-analogue {
+    @extend .analogue-2-bg-a3;
+  }
 }
