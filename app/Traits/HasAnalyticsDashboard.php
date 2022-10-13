@@ -85,7 +85,7 @@ trait HasAnalyticsDashboard
     protected function registerAccount(AnalyticsService $analyticsService): void
     {
         $hashedAnalyticsPassword = md5(Str::random(rand(32, 48)) . config('app.salt'));
-        $analyticsService->registerUser($this->ipa_code, $hashedAnalyticsPassword, Str::slug($this->ipa_code) . '@' . 'webanalyticsitalia.local');
+        $analyticsService->registerUser($this->ipa_code, $hashedAnalyticsPassword, Str::slug($this->ipa_code) . '@webanalyticsitalia.local');
         $this->token_auth = $analyticsService->getUserAuthToken($this->ipa_code, md5($hashedAnalyticsPassword));
         $this->save();
     }

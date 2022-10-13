@@ -85,7 +85,7 @@ class HasAnalyticsDashboardTest extends TestCase
                 $mock->shouldReceive('registerUser')
                     ->withArgs(function ($login, $password, $email) {
                         return $this->publicAdministration->ipa_code === $login
-                            && (Str::slug($this->publicAdministration->ipa_code) . '@' . 'webanalyticsitalia.local') === $email;
+                            && (Str::slug($this->publicAdministration->ipa_code) . '@webanalyticsitalia.local') === $email;
                     })
                     ->once();
 
