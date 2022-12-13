@@ -28,6 +28,7 @@
                 <replacetokens>
                     <token key="ENV" value="${env.APP_ENV}"/>
                     <token key="PHP_VERSION" value="${PHP_VERSION}"/>
+                    <token key="XDEBUG_VERSION" value="${XDEBUG_VERSION}"/>
                     <token key="APP_CODE_PATH_CONTAINER" value="${APP_CODE_PATH_CONTAINER}"/>
                     <token key="APP_DEBUG" value="${APP_DEBUG}" />
                     <token key="APP_SALT" value="${APP_SALT}" />

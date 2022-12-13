@@ -23,15 +23,16 @@ RUN if [ -n "${MATOMO_PHPREDIS_VERSION}" ]; then \
 
 # xdebug
 ARG INSTALL_XDEBUG=false
+ARG XDEBUG_VERSION
 RUN if [ ${INSTALL_XDEBUG} = true ]; then \
     pecl channel-update pecl.php.net && \
-    pecl install xdebug && \
+    pecl install xdebug-${XDEBUG_VERSION} && \
     docker-php-ext-enable xdebug \
 ;fi
 
 # xdebug conf
 COPY ./xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
-    
+
 # install phpredis
 RUN pecl install redis \
     && echo "extension=redis.so" > /usr/local/etc/php/conf.d/redis.ini
