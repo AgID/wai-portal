@@ -18,7 +18,7 @@ class GitHubSignatureValidator implements SignatureValidator
             return false;
         }
 
-        $signature = Str::after($signature, 'sha1=');
+        $signature = Str::after($signature, 'sha256=');
 
         $signingSecret = $config->signingSecret;
 
@@ -26,7 +26,7 @@ class GitHubSignatureValidator implements SignatureValidator
             throw WebhookFailed::signingSecretNotSet();
         }
 
-        $computedSignature = hash_hmac('sha1', $request->getContent(), $signingSecret);
+        $computedSignature = hash_hmac('sha256', $request->getContent(), $signingSecret);
 
         return hash_equals($signature, $computedSignature);
     }
