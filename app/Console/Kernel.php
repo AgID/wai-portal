@@ -33,6 +33,7 @@ class Kernel extends ConsoleKernel
         // $publicPlaygroundResetTime = config('wai.reset_public_playground_hour', 23) . ':' . config('wai.reset_public_playground_minute', 30);
         // $schedule->job(new ResetEnvironment())->weekly()->days(config('wai.reset_public_playground_day', 0))->at($publicPlaygroundResetTime)->onOneServer()->environments(['public-playground']);
         $schedule->job(new PurgeOrphanedEntities())->hourly()->onOneServer();
+        $schedule->command('bouncer:clean')->daily();
     }
 
     /**
