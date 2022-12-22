@@ -7,7 +7,7 @@ LABEL maintainer="Davide Porrovecchio <davide.porrovecchio@agid.gov.it>"
 ENV DEBIAN_FRONTEND noninteractive
 
 # php required extensions
-ARG PACKAGES="libfaketime procps libjpeg62-turbo libpng16-16 libfreetype6 unzip"
+ARG PACKAGES="libfaketime procps libjpeg62-turbo libpng16-16 libfreetype6 libzip4 unzip"
 ARG BUILD_PACKAGES="autoconf build-essential wget libicu-dev libpng-dev libfreetype6-dev libjpeg62-turbo-dev libzip-dev"
 ARG MATOMO_PHPREDIS_VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends ${BUILD_PACKAGES} ${PACKAGES} && \
