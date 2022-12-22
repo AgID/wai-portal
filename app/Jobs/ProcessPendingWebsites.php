@@ -15,6 +15,7 @@ use App\Events\Website\WebsitePurging;
 use App\Exceptions\AnalyticsServiceException;
 use App\Exceptions\CommandErrorException;
 use App\Models\PublicAdministration;
+use App\Models\User;
 use App\Models\Website;
 use App\Traits\ActivatesWebsite;
 use App\Traits\ManageRecipientNotifications;
@@ -190,6 +191,12 @@ class ProcessPendingWebsites implements ShouldQueue
             }
         });
 
+        // Fix unactivated users
+        User::where('status', UserStatus::PENDING)->has('activePublicAdministrations')->get()->each(function ($unactivatedUser) {
+            $unactivatedUser->status = UserStatus::ACTIVE;
+            $unactivatedUser->save();
+        });
+
         // Fix pending public administrations with institutional active website
         $activeWebsitesInPendingPublicAdministration = Website::where('type', WebsiteType::INSTITUTIONAL)
             ->where('status', WebsiteStatus::ACTIVE)->whereHas('publicAdministration', function (Builder $query) {
@@ -205,8 +212,8 @@ class ProcessPendingWebsites implements ShouldQueue
 
                 $activatedWebsites = $websites->get('activated') ?? collect([]);
                 $activatedWebsites->concat([
-                'website' => $activeWebsiteInPendingPublicAdministration->slug,
-            ]);
+                    'website' => $activeWebsiteInPendingPublicAdministration->slug,
+                ]);
 
                 $websites->merge(['activated' => $activatedWebsites]);
             });
