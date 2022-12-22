@@ -38,7 +38,7 @@
                                 id="public_administration_name" name="public_administration_name"
                                 @unless ($customForm) data-search="searchIpa" data-source="{{ route('ipa.search') }}" @endunless
                                 value="{{ old('public_administration_name') }}"
-                                maxlength="255" aria-describedby="pa_name-input-help" aria-required="true" required >
+                                maxlength="255" aria-describedby="pa_name-input-help" aria-required="true" required>
 
                             @unless ($customForm)
                                 <ul class="autocomplete-list"></ul>
