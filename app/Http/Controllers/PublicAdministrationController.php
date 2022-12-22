@@ -130,6 +130,13 @@ class PublicAdministrationController extends Controller
         if ($authUser->invitedPublicAdministrations->where('id', $publicAdministration->id)->isNotEmpty()) {
             $authUser->publicAdministrations()->updateExistingPivot($publicAdministration->id, ['user_status' => UserStatus::ACTIVE]);
 
+            // If the invited user was PENDING in another public administration then update the status here
+            // as it was not updated in the mail verification step
+            if ($authUser->status->isNot(UserStatus::ACTIVE)) {
+                $authUser->status = UserStatus::ACTIVE;
+                $authUser->save();
+            }
+
             return $this->publicAdministrationResponse($publicAdministration);
         }
 
