@@ -16,6 +16,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+      - name: Prepare files
+        if: success()
+        run: cp ${{ github.workspace }}/containers/queue-worker/supervisord.conf ${{ github.workspace }}
       - name: Build image
         if: success()
         run: docker build --no-cache --rm -f ${{ github.workspace }}/Dockerfile.portal --build-arg PHP_VERSION=$PHP_VERSION -t $ORGANIZATION/$IMAGE_NAME:$IMAGE_TAG ${{ github.workspace }}
