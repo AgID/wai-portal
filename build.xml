@@ -687,10 +687,12 @@
                 <fail message="No image tag specified, run bin/phing build-portal-image -DPORTAL_IMAGE_TAG=tag"/>
             </then>
         </if>
+        <copy file="containers/queue-worker/supervisord.conf" tofile="supervisord.conf" overwrite="true"/>
         <exec command="docker build --no-cache --rm -f Dockerfile.portal
             --build-arg PHP_VERSION=${PHP_VERSION}
             -t webanalyticsitalia/wai-portal:${PORTAL_IMAGE_TAG} ."
             passthru="true" checkreturn="true"/>
+        <delete file="supervisord.conf" quiet="true"/>
     </target>
 
     <!-- Target: build matomo image -->
