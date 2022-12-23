@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Traits\HasRoleAwareUrls;
 use App\Traits\SendsResponse;
 use App\Transformers\PublicAdministrationsTransformer;
+use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
@@ -141,7 +142,7 @@ class PublicAdministrationController extends Controller
      *
      * @param PublicAdministration $publicAdministration the Public Administration to filter websites or null to use current one
      *
-     * @throws \Exception if unable to initialize the datatable
+     * @throws Exception if unable to initialize the datatable
      *
      * @return mixed the response in JSON format
      */

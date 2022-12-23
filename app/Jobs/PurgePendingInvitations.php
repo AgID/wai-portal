@@ -9,6 +9,7 @@ use App\Exceptions\AnalyticsServiceException;
 use App\Exceptions\CommandErrorException;
 use App\Models\User;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -26,7 +27,7 @@ class PurgePendingInvitations implements ShouldQueue
     /**
      * Execute the job.
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return void
      */

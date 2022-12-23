@@ -14,7 +14,7 @@ class RedirectIfAuthenticated
      * Handle an incoming request.
      *
      * @param \Illuminate\Http\Request $request the request
-     * @param \Closure $next the next closure
+     * @param Closure $next the next closure
      *
      * @return mixed
      */

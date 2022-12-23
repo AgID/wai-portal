@@ -23,6 +23,7 @@ use App\Traits\SendsResponse;
 use App\Transformers\UserArrayTransformer;
 use App\Transformers\UserTransformer;
 use App\Transformers\WebsitesPermissionsTransformer;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -455,7 +456,7 @@ class UserController extends Controller
      * @param Request $request the incoming request
      * @param PublicAdministration $publicAdministration the public administration the user belongs to
      *
-     * @throws \Exception if unable to initialize the datatable
+     * @throws Exception if unable to initialize the datatable
      *
      * @return mixed the response in JSON format
      */
@@ -476,7 +477,7 @@ class UserController extends Controller
      * @param PublicAdministration $publicAdministration the public administration the user belongs to
      * @param User $user the user to initialize permissions or null for default
      *
-     * @throws \Exception if unable to initialize the datatable
+     * @throws Exception if unable to initialize the datatable
      *
      * @return mixed the response in JSON format
      */

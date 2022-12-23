@@ -20,7 +20,7 @@ class ValidateSignature
      * Handle an incoming request.
      *
      * @param \Illuminate\Http\Request $request the request
-     * @param \Closure $next the next closure
+     * @param Closure $next the next closure
      *
      * @throws \App\Exceptions\ExpiredInvitationException if invitation link is expired
      * @throws \App\Exceptions\ExpiredVerificationException if verification link is expired

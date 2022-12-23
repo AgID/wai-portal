@@ -3,10 +3,12 @@
 namespace Tests\Browser;
 
 use App\Models\User;
+use Exception;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Dusk\Browser;
 use Tests\Browser\Pages\AdminDashboard;
 use Tests\DuskTestCase;
+use Throwable;
 
 class SuperAdminUserTest extends DuskTestCase
 {
@@ -22,8 +24,8 @@ class SuperAdminUserTest extends DuskTestCase
     /**
      * A basic browser test example.
      *
-     * @throws \Exception
-     * @throws \Throwable
+     * @throws Exception
+     * @throws Throwable
      *
      * @return void
      */
