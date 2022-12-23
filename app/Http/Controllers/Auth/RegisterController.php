@@ -8,6 +8,7 @@ use App\Events\User\UserLogin;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Traits\GetsLocalizedYamlContent;
+use Exception;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -39,7 +40,7 @@ class RegisterController extends Controller
      *
      * @param Request $request the incoming request
      *
-     * @throws \Exception if unable to generate user UUID
+     * @throws Exception if unable to generate user UUID
      *
      * @return \Illuminate\Http\RedirectResponse the server redirect response
      */

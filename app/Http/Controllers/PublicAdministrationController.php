@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Traits\HasRoleAwareUrls;
 use App\Traits\SendsResponse;
 use App\Transformers\PublicAdministrationsTransformer;
+use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
@@ -130,6 +131,13 @@ class PublicAdministrationController extends Controller
         if ($authUser->invitedPublicAdministrations->where('id', $publicAdministration->id)->isNotEmpty()) {
             $authUser->publicAdministrations()->updateExistingPivot($publicAdministration->id, ['user_status' => UserStatus::ACTIVE]);
 
+            // If the invited user was PENDING in another public administration then update the status here
+            // as it was not updated in the mail verification step
+            if ($authUser->status->isNot(UserStatus::ACTIVE)) {
+                $authUser->status = UserStatus::ACTIVE;
+                $authUser->save();
+            }
+
             return $this->publicAdministrationResponse($publicAdministration);
         }
 
@@ -141,7 +149,7 @@ class PublicAdministrationController extends Controller
      *
      * @param PublicAdministration $publicAdministration the Public Administration to filter websites or null to use current one
      *
-     * @throws \Exception if unable to initialize the datatable
+     * @throws Exception if unable to initialize the datatable
      *
      * @return mixed the response in JSON format
      */

@@ -24,10 +24,19 @@ FROM bitnami/php-fpm:${PHP_VERSION}-prod
 
 LABEL maintainer="Davide Porrovecchio <davide.porrovecchio@agid.gov.it>"
 
+RUN apt-get update && apt-get install -y --no-install-recommends supervisor && \
+    rm -rf /var/lib/apt/lists/*
+
+COPY ./supervisord.conf /etc/supervisord.conf
+RUN sed -i -e s#@APP_CODE_PATH_CONTAINER@#/var/www/html#g /etc/supervisord.conf
+
 RUN echo "expose_php = false" >> /opt/bitnami/php/etc/conf.d/wai.ini && \
     echo "html_errors = false" >> /opt/bitnami/php/etc/conf.d/wai.ini && \
     echo "error_log = /dev/stderr" >> /opt/bitnami/php/etc/conf.d/wai.ini && \
     echo "date.timezone = Europe/Rome" >> /opt/bitnami/php/etc/conf.d/wai.ini && \
+    echo "file_uploads = Off" >> /opt/bitnami/php/etc/conf.d/wai.ini && \
+    echo "allow_url_fopen = Off" >> /opt/bitnami/php/etc/conf.d/wai.ini && \
+    echo "session.use_strict_mode = 1" >> /opt/bitnami/php/etc/conf.d/wai.ini && \
     echo "error_log = /dev/stderr" >> /opt/bitnami/php/etc/php-fpm.d/10-wai-log.conf && \
     echo "user = www-data" >> /opt/bitnami/php/etc/php-fpm.d/99-wai.conf && \
     echo "group = www-data" >> /opt/bitnami/php/etc/php-fpm.d/99-wai.conf && \

@@ -7,7 +7,7 @@ LABEL maintainer="Davide Porrovecchio <davide.porrovecchio@agid.gov.it>"
 ENV DEBIAN_FRONTEND noninteractive
 
 # php required extensions
-ARG PACKAGES="libfaketime procps libjpeg62-turbo libpng16-16 libfreetype6 unzip"
+ARG PACKAGES="libfaketime procps libjpeg62-turbo libpng16-16 libfreetype6 libzip4 unzip"
 ARG BUILD_PACKAGES="autoconf build-essential wget libicu-dev libpng-dev libfreetype6-dev libjpeg62-turbo-dev libzip-dev"
 ARG MATOMO_PHPREDIS_VERSION
 RUN apt-get update && apt-get install -y --no-install-recommends ${BUILD_PACKAGES} ${PACKAGES} && \
@@ -23,15 +23,16 @@ RUN if [ -n "${MATOMO_PHPREDIS_VERSION}" ]; then \
 
 # xdebug
 ARG INSTALL_XDEBUG=false
+ARG XDEBUG_VERSION
 RUN if [ ${INSTALL_XDEBUG} = true ]; then \
     pecl channel-update pecl.php.net && \
-    pecl install xdebug && \
+    pecl install xdebug-${XDEBUG_VERSION} && \
     docker-php-ext-enable xdebug \
 ;fi
 
 # xdebug conf
 COPY ./xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
-    
+
 # install phpredis
 RUN pecl install redis \
     && echo "extension=redis.so" > /usr/local/etc/php/conf.d/redis.ini

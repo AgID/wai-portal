@@ -6,6 +6,7 @@ use App\Models\PasswordResetToken;
 use App\Models\PublicAdministration;
 use App\Models\User;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
 use Tests\TestCase;
@@ -49,7 +50,7 @@ class UserTest extends TestCase
      * Test user soft delete and restore routine.
      * Not used anymore.
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function testUserSoftDeleteAndRestore(): void
     {

@@ -28,6 +28,7 @@ use App\Traits\SendsResponse;
 use App\Transformers\UsersPermissionsTransformer;
 use App\Transformers\WebsiteArrayTransformer;
 use App\Transformers\WebsiteTransformer;
+use Exception;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -675,7 +676,7 @@ class WebsiteController extends Controller
      *
      * @param PublicAdministration $publicAdministration the Public Administration to filter websites or null to use current one
      *
-     * @throws \Exception if unable to initialize the datatable
+     * @throws Exception if unable to initialize the datatable
      *
      * @return mixed the response in JSON format
      */
@@ -731,7 +732,7 @@ class WebsiteController extends Controller
      * @param PublicAdministration $publicAdministration the public administration the website belongs to
      * @param Website $website the website to use for permissions initialization
      *
-     * @throws \Exception if unable to initialize the datatable
+     * @throws Exception if unable to initialize the datatable
      *
      * @return mixed the response in JSON format
      */

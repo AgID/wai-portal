@@ -37,6 +37,7 @@ use App\Notifications\UserWebsiteUrlChangedEmail;
 use App\Notifications\WebsiteAddedEmail;
 use App\Services\MatomoService;
 use App\Traits\InteractsWithRedisIndex;
+use Exception;
 use Faker\Factory;
 use Faker\Generator;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -173,13 +174,13 @@ class WebsiteEventsSubscriberTest extends TestCase
                         WebsiteAccessType::VIEW,
                         $this->website->analytics_id,
                     ])
-                    ->andThrow(\Exception::class, 'Public rollup exception testing');
+                    ->andThrow(Exception::class, 'Public rollup exception testing');
                 $mock->shouldReceive('updateRollUp')
                     ->withArgs([
                         $this->publicAdministration->rollup_id,
                         [$this->website->analytics_id],
                     ])
-                    ->andThrow(\Exception::class, 'Public administration rollup exception reporting');
+                    ->andThrow(Exception::class, 'Public administration rollup exception reporting');
                 $mock->shouldNotReceive('setWebsiteAccess');
             });
         });

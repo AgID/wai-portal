@@ -2,19 +2,21 @@
 
 namespace Tests\Browser;
 
+use Exception;
 use Laravel\Dusk\Browser;
 use Tests\Browser\Pages\Faqs;
 use Tests\Browser\Pages\Home;
 use Tests\Browser\Pages\HowToJoin;
 use Tests\DuskTestCase;
+use Throwable;
 
 class AnonymousVisitTest extends DuskTestCase
 {
     /**
      * A basic browser test example.
      *
-     * @throws \Exception
-     * @throws \Throwable
+     * @throws Exception
+     * @throws Throwable
      *
      * @return void
      */

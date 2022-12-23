@@ -28,7 +28,7 @@ class ScopeBouncer
      * Set the proper Bouncer scope for the incoming request.
      *
      * @param \Illuminate\Http\Request $request
-     * @param \Closure $next
+     * @param Closure $next
      *
      * @return mixed
      */

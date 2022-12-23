@@ -13,6 +13,7 @@ use App\Traits\HasRoleAwareUrls;
 use App\Traits\SendsResponse;
 use App\Transformers\CredentialsTransformer;
 use App\Transformers\WebsitesPermissionsTransformer;
+use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -281,7 +282,7 @@ class CredentialsController extends Controller
      *
      * @param PublicAdministration $publicAdministration the Public Administration to filter credentials or null to use current one
      *
-     * @throws \Exception if unable to initialize the datatable
+     * @throws Exception if unable to initialize the datatable
      *
      * @return mixed the response in JSON format
      */
@@ -337,7 +338,7 @@ class CredentialsController extends Controller
      *
      * @param Website $websites websites associated with the credential
      *
-     * @throws \Exception if unable to initialize the datatable
+     * @throws Exception if unable to initialize the datatable
      *
      * @return mixed the response in JSON format
      */

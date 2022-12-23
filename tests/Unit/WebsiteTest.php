@@ -5,6 +5,7 @@ namespace Tests\Unit;
 use App\Enums\WebsiteStatus;
 use App\Models\PublicAdministration;
 use App\Models\Website;
+use Exception;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 use Tests\TestCase;
@@ -89,7 +90,7 @@ class WebsiteTest extends TestCase
     /**
      * Test website soft delete and restore routine.
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function testWebsiteSoftDeleteAndRestore(): void
     {

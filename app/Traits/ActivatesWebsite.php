@@ -11,6 +11,7 @@ use App\Enums\WebsiteStatus;
 use App\Events\PublicAdministration\PublicAdministrationActivated;
 use App\Events\User\UserActivated;
 use App\Events\User\UserWebsiteAccessChanged;
+use App\Exceptions\CommandErrorException;
 use App\Models\Website;
 use Silber\Bouncer\BouncerFacade as Bouncer;
 
@@ -48,6 +49,8 @@ trait ActivatesWebsite
      */
     public function activate(Website $website): void
     {
+        $analyticsService = app()->make('analytics-service');
+
         $publicAdministration = $website->publicAdministration;
 
         $website->status = WebsiteStatus::ACTIVE;
@@ -71,12 +74,24 @@ trait ActivatesWebsite
                 Bouncer::disallow($pendingUser)->to(UserPermission::NO_ACCESS, $website);
                 Bouncer::refreshFor($pendingUser);
 
-                app()->make('analytics-service')->setWebsiteAccess($pendingUser->uuid, WebsiteAccessType::WRITE, $website->analytics_id);
+                // Ensure the user exists in the analytics service
+                try {
+                    $analyticsService->getUserByEmail($pendingUser->email);
+                } catch (CommandErrorException $exception) {
+                    // User doesn't exists (?), create account
+                    $analyticsService->registerUser($pendingUser->uuid, $pendingUser->analytics_password, $pendingUser->email);
+                }
+
+                $analyticsService->setWebsiteAccess($pendingUser->uuid, WebsiteAccessType::WRITE, $website->analytics_id);
 
                 event(new UserWebsiteAccessChanged($pendingUser, $website, WebsiteAccessType::WRITE()));
 
-                $pendingUser->status = UserStatus::ACTIVE;
-                $pendingUser->save();
+                // The user could be already ACTIVE if accepted an invitation in another public administration
+                if ($pendingUser->status->isNot(UserStatus::ACTIVE)) {
+                    $pendingUser->status = UserStatus::ACTIVE;
+                    $pendingUser->save();
+                }
+
                 $publicAdministration->users()->updateExistingPivot($pendingUser->id, ['user_status' => UserStatus::ACTIVE]);
 
                 event(new UserActivated($pendingUser, $publicAdministration));

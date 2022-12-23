@@ -10,7 +10,7 @@ class EnsurePasswordIsNotExpired
      * Handle an incoming request.
      *
      * @param \Illuminate\Http\Request $request
-     * @param \Closure $next
+     * @param Closure $next
      *
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */

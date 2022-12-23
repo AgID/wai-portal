@@ -70,7 +70,7 @@
                     <div class="it-list-wrapper">
                         <ul class="it-list">
                             <li>
-                                <a href="http://github.com/agid/wai-portal" rel="noopener noreferrer" target="_blank">
+                                <a href="https://github.com/agid/wai-portal" rel="noopener noreferrer" target="_blank">
                                     <div class="it-rounded-icon">
                                         <svg class="icon">
                                             <use xlink:href="{{ asset('svg/sprite.svg#it-github') }}"></use>
@@ -87,7 +87,7 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="http://github.com/agid/wai-infrastructure" rel="noopener noreferrer" target="_blank">
+                                <a href="https://github.com/agid/wai-infrastructure" rel="noopener noreferrer" target="_blank">
                                     <div class="it-rounded-icon">
                                         <svg class="icon">
                                             <use xlink:href="{{ asset('svg/sprite.svg#it-github') }}"></use>

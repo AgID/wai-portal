@@ -25,6 +25,7 @@ use App\Notifications\RTDPublicAdministrationRegisteredEmail;
 use App\Notifications\SuperAdminPublicAdministrationNotFoundInIpaEmail;
 use App\Services\MatomoService;
 use App\Traits\ManageRecipientNotifications;
+use Exception;
 use Faker\Factory;
 use Faker\Generator;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -154,7 +155,7 @@ class PublicAdministrationEventsSubscriberTest extends TestCase
         $this->app->bind('analytics-service', function () {
             return $this->partialMock(MatomoService::class, function ($mock) {
                 $mock->shouldReceive('registerRollUp')
-                    ->andThrow(\Exception::class, 'Public administration roll-up exception testing');
+                    ->andThrow(Exception::class, 'Public administration roll-up exception testing');
             });
         });
 

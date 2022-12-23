@@ -42,7 +42,7 @@ class ClosedBetaWebhookTest extends TestCase
                 'full_name' => 'owner/repo',
             ],
         ];
-        $this->signature = 'sha1=' . hash_hmac('sha1', json_encode($this->content), $secret);
+        $this->signature = 'sha256=' . hash_hmac('sha256', json_encode($this->content), $secret);
 
         Config::set('wai.closed_beta', false);
         Config::set('app.url', 'https://nginx');
@@ -88,7 +88,7 @@ class ClosedBetaWebhookTest extends TestCase
         $client = (new Client(['base_uri' => config('app.url')]));
         $response = $client->request('POST', route('webhook-client-closed-beta-whitelist', [], false), [
             'headers' => [
-                'X-Hub-Signature' => 'sha1=' . hash_hmac('sha1', '- fake content', 'secret'),
+                'X-Hub-Signature-256' => 'sha256=' . hash_hmac('sha256', '- fake content', 'secret'),
                 'X-GitHub-Event' => 'push',
             ],
             'body' => json_encode($this->content),
@@ -111,7 +111,7 @@ class ClosedBetaWebhookTest extends TestCase
         $client = (new Client(['base_uri' => config('app.url')]));
         $response = $client->request('POST', route('webhook-client-closed-beta-whitelist', [], false), [
             'headers' => [
-                'X-Hub-Signature' => $this->signature,
+                'X-Hub-Signature-256' => $this->signature,
                 'X-GitHub-Event' => 'push',
             ],
             'body' => json_encode($this->content),
@@ -136,7 +136,7 @@ class ClosedBetaWebhookTest extends TestCase
         $client = (new Client(['base_uri' => config('app.url')]));
         $response = $client->request('POST', route('webhook-client-closed-beta-whitelist', [], false), [
             'headers' => [
-                'X-Hub-Signature' => $this->signature,
+                'X-Hub-Signature-256' => $this->signature,
                 'X-GitHub-Event' => 'push',
             ],
             'body' => json_encode($this->content),
@@ -161,7 +161,7 @@ class ClosedBetaWebhookTest extends TestCase
         $client = (new Client(['base_uri' => config('app.url')]));
         $response = $client->request('POST', route('webhook-client-closed-beta-whitelist', [], false), [
             'headers' => [
-                'X-Hub-Signature' => $this->signature,
+                'X-Hub-Signature-256' => $this->signature,
                 'X-GitHub-Event' => 'invalid-event',
             ],
             'body' => json_encode($this->content),
@@ -186,7 +186,7 @@ class ClosedBetaWebhookTest extends TestCase
         $client = (new Client(['base_uri' => config('app.url')]));
         $response = $client->request('POST', route('webhook-client-closed-beta-whitelist', [], false), [
             'headers' => [
-                'X-Hub-Signature' => $this->signature,
+                'X-Hub-Signature-256' => $this->signature,
                 'X-GitHub-Event' => 'push',
             ],
             'body' => json_encode($this->content),

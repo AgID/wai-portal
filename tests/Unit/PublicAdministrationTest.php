@@ -5,6 +5,7 @@ namespace Tests\Unit;
 use App\Models\PublicAdministration;
 use App\Models\User;
 use App\Models\Website;
+use Exception;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 use Tests\TestCase;
@@ -50,7 +51,7 @@ class PublicAdministrationTest extends TestCase
     /**
      * Test public administration soft delete and restore routine.
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function testUserSoftDeleteAndRestore(): void
     {

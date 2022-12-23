@@ -31,6 +31,7 @@ storage/logs/*
 !.eslintrc.js
 !.node-version
 !.stylelintrc.js
+!supervisord.conf
 
 # Ignore local files
 **/.DS_Store
