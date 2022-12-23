@@ -2,17 +2,19 @@
 
 namespace Tests\Browser;
 
+use Exception;
 use Laravel\Dusk\Browser;
 use Tests\Browser\Pages\Home;
 use Tests\DuskTestCase;
+use Throwable;
 
 class RegisterTest extends DuskTestCase
 {
     /**
      * A basic browser test example.
      *
-     * @throws \Exception
-     * @throws \Throwable
+     * @throws Exception
+     * @throws Throwable
      *
      * @return void
      */

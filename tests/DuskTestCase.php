@@ -5,6 +5,7 @@ namespace Tests;
 use App\Enums\UserRole;
 use App\Models\User;
 use Carbon\Carbon;
+use Exception;
 use Facebook\WebDriver\Chrome\ChromeOptions;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
@@ -13,6 +14,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\URL;
 use Laravel\Dusk\Browser;
 use Laravel\Dusk\TestCase as BaseTestCase;
+use Throwable;
 
 abstract class DuskTestCase extends BaseTestCase
 {
@@ -38,8 +40,8 @@ abstract class DuskTestCase extends BaseTestCase
     /**
      * Inject a SPID session.
      *
-     * @throws \Exception
-     * @throws \Throwable
+     * @throws Exception
+     * @throws Throwable
      *
      * @return void
      */
@@ -67,8 +69,8 @@ abstract class DuskTestCase extends BaseTestCase
      *
      * @param int $userId
      *
-     * @throws \Exception
-     * @throws \Throwable
+     * @throws Exception
+     * @throws Throwable
      *
      * @return string
      */

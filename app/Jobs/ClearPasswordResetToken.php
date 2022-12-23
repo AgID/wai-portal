@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Enums\Logs\JobType;
 use App\Models\PasswordResetToken;
+use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -32,7 +33,7 @@ class ClearPasswordResetToken implements ShouldQueue
     /**
      * Execute the job.
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return void
      */

@@ -13,7 +13,7 @@ class CronAuthenticate
      * Handle an incoming request.
      *
      * @param \Illuminate\Http\Request $request the incoming request
-     * @param \Closure $next the next closure
+     * @param Closure $next the next closure
      *
      * @return mixed the next closure or a JSON response if handling fails
      */

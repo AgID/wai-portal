@@ -12,6 +12,7 @@ use App\Models\User;
 use App\Traits\SendsResponse;
 use App\Transformers\SuperAdminUserTransformer;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -78,7 +79,7 @@ class SuperAdminUserController extends Controller
      *
      * @param Request $request the incoming request
      *
-     * @throws \Exception if unable to generate user UUID
+     * @throws Exception if unable to generate user UUID
      *
      * @return RedirectResponse the server redirect response
      */
@@ -254,7 +255,7 @@ class SuperAdminUserController extends Controller
     /**
      * Get the super admin users data.
      *
-     * @throws \Exception if unable to initialize the datatable
+     * @throws Exception if unable to initialize the datatable
      *
      * @return mixed the response in JSON format
      */
