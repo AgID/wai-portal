@@ -19,6 +19,8 @@ ARG APP_CODE_PATH_CONTAINER
 COPY supervisord.conf /etc/supervisord.conf
 RUN sed -i -e s#@APP_CODE_PATH_CONTAINER@#${APP_CODE_PATH_CONTAINER}#g /etc/supervisord.conf
 
+ENV QUEUE_WORKER_PROCS 2
+
 # cron scheduler
 COPY ./cron-laravel-scheduler /
 RUN sed -i -e s#@APP_CODE_PATH_CONTAINER@#${APP_CODE_PATH_CONTAINER}#g /cron-laravel-scheduler
