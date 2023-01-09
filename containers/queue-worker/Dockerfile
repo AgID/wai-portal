@@ -20,6 +20,8 @@ COPY supervisord.conf /etc/supervisord.conf
 RUN sed -i -e s#@APP_CODE_PATH_CONTAINER@#${APP_CODE_PATH_CONTAINER}#g /etc/supervisord.conf
 
 ENV QUEUE_WORKER_PROCS 2
+# set QUEUE_WORKER_ARGS env var as an empty string
+ENV QUEUE_WORKER_ARGS ${1:+1}
 
 # cron scheduler
 COPY ./cron-laravel-scheduler /
