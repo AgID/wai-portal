@@ -14,31 +14,31 @@ jobs:
     environment: PublicPlayground
     runs-on: ubuntu-latest
     steps:
-      - name: Workflow disabled
+      - name: Set release image tag
+        run: echo "RELEASE_TAG=$(echo ${{ github.ref }} | cut -c11-)" >> $GITHUB_ENV
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Prepare files
+        if: success()
+        run: cp ${{ github.workspace }}/containers/queue-worker/supervisord.conf ${{ github.workspace }}
+      - name: Build image
+        if: success()
+        run: docker build --no-cache --rm -f ${{ github.workspace }}/Dockerfile.portal --build-arg PHP_VERSION=$PHP_VERSION -t $ORGANIZATION/$IMAGE_NAME:$IMAGE_TAG ${{ github.workspace }}
+      - name: Apply release tag
+        if: success()
+        run: docker tag $ORGANIZATION/$IMAGE_NAME:$IMAGE_TAG $ORGANIZATION/$IMAGE_NAME:$RELEASE_TAG
+      - name: Push image
+        if: success()
         run: |
-            echo "Workflow disabled"
-      # - name: Set release image tag
-      #   run: echo "RELEASE_TAG=$(echo ${{ github.ref }} | cut -c11-)" >> $GITHUB_ENV
-      # - name: Checkout code
-      #   uses: actions/checkout@v2
-      # - name: Prepare files
-      #   if: success()
-      #   run: cp ${{ github.workspace }}/containers/queue-worker/supervisord.conf ${{ github.workspace }}
-      # - name: Build image
-      #   if: success()
-      #   run: docker build --no-cache --rm -f ${{ github.workspace }}/Dockerfile.portal --build-arg PHP_VERSION=$PHP_VERSION -t $ORGANIZATION/$IMAGE_NAME:$IMAGE_TAG ${{ github.workspace }}
-      # - name: Apply release tag
-      #   if: success()
-      #   run: docker tag $ORGANIZATION/$IMAGE_NAME:$IMAGE_TAG $ORGANIZATION/$IMAGE_NAME:$RELEASE_TAG
-      # - name: Push image
-      #   if: success()
-      #   run: |
-      #     echo ${{ secrets.DOCKER_HUB_TOKEN }} | docker login --username ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
-      #     docker push $ORGANIZATION/$IMAGE_NAME:$RELEASE_TAG
-      #     docker push $ORGANIZATION/$IMAGE_NAME:$IMAGE_TAG
-      # - name: Docker logout
-      #   if: always()
-      #   run: docker logout
+          echo ${{ secrets.DOCKER_HUB_TOKEN }} | docker login --username ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
+          docker push $ORGANIZATION/$IMAGE_NAME:$RELEASE_TAG
+          docker push $ORGANIZATION/$IMAGE_NAME:$IMAGE_TAG
+      - name: Docker logout
+        if: always()
+        run: docker logout
+      - name: Deploy to public playground environment disabled
+        run: |
+            echo "Deploy to public playground environment disabled"
       # - name: Get portal container index in its deployment
       #   if: success()
       #   run: |
