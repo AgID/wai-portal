@@ -30,6 +30,7 @@ class Kernel extends ConsoleKernel
         // $schedule->job(new MonitorWebsitesTracking())->daily()->onOneServer(); // DisableTracking plugin is currently not working properly
         // $schedule->job(new PurgePendingInvitations())->dailyAt('03:30')->onOneServer();
         $schedule->job(new UpdateSiteListOnRedis())->hourly()->onOneServer();
+        // public playground environment disabled
         // $publicPlaygroundResetTime = config('wai.reset_public_playground_hour', 23) . ':' . config('wai.reset_public_playground_minute', 30);
         // $schedule->job(new ResetEnvironment())->weekly()->days(config('wai.reset_public_playground_day', 0))->at($publicPlaygroundResetTime)->onOneServer()->environments(['public-playground']);
         $schedule->job(new PurgeOrphanedEntities())->hourly()->onOneServer();

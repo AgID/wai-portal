@@ -41,7 +41,7 @@ required:
                   optional:
                     requires:
                       type: "//rec"
-                      required: 
+                      required:
                         auth: "//bool"
                         publicAdministration: "//bool"
           slim_header_links:
@@ -79,7 +79,7 @@ required:
                     url: "//str"
                     requires:
                       type: "//rec"
-                      required: 
+                      required:
                         auth: "//bool"
                         publicAdministration: "//bool"
               secondary:
@@ -101,7 +101,8 @@ required:
           highlight:
             type: "//rec"
             required:
-              public-playground: "//str"
+              # Note: public playground environment disabled
+              # public-playground: "//str"
               staging: "//str"
               local: "//str"
             optional:

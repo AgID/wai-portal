@@ -138,6 +138,7 @@
                 </div>
             </div>
             <div class="col-md-5 text-serif d-flex flex-column justify-content-start">
+                {{-- Note: public playground environment disabled
                 @env('public-playground')
                 <div class="callout callout-highlight danger">
                     <div class="callout-title">
@@ -149,6 +150,7 @@
                     </p>
                 </div>
                 @endenv
+                --}}
                 @unless ($customForm)
                 <div id="primary_website_missing" class="callout callout-highlight danger d-none">
                     <div class="callout-title">
@@ -213,11 +215,14 @@
                             'onboarding' => '<i>onboarding</i>',
                             'app' => config('app.name'),
                         ]) !!}
+                        {{-- Note: public playground environment disabled
                         @unlessenv ('public-playground')
+                        --}}
                         <br><br>
                         {!! __('Quando il recapito del/la :rtd sarà disponibile invieremo un messaggio per informarlo/a.', [
                             'rtd' => '<strong>' . __('Responsabile ufficio per la transizione al digitale') . '</strong>'
                         ]) !!}
+                        {{--
                         @else
                         <br><br>
                         {!! __(':nb: in questo ambiente (public playground) NON sarà inviata alcuna mail al/la :rtd.', [
@@ -225,6 +230,7 @@
                             'rtd' => '<strong>' . __('Responsabile ufficio per la transizione al digitale') . '</strong>'
                         ]) !!}
                         @endenv
+                        --}}
                     </p>
                 </div>
                 @endunless
