@@ -139,8 +139,9 @@ return [
      | Day: sundays = 0, mondays = 1, tuesdays = 2, wednesdays = 3, thursdays = 4, fridays = 5, saturdays = 6
      */
 
-    'reset_public_playground_day_verbose' => env('RESET_PUBLIC_PLAYGROUND_DAY_VERBOSE', 'sunday'),
-    'reset_public_playground_day' => env('RESET_PUBLIC_PLAYGROUND_DAY', 0),
-    'reset_public_playground_hour' => env('RESET_PUBLIC_PLAYGROUND_HOUR', 23),
-    'reset_public_playground_minute' => env('RESET_PUBLIC_PLAYGROUND_MINUTE', 30),
+    // Note: public playground environment disabled
+    // 'reset_public_playground_day_verbose' => env('RESET_PUBLIC_PLAYGROUND_DAY_VERBOSE', 'sunday'),
+    // 'reset_public_playground_day' => env('RESET_PUBLIC_PLAYGROUND_DAY', 0),
+    // 'reset_public_playground_hour' => env('RESET_PUBLIC_PLAYGROUND_HOUR', 23),
+    // 'reset_public_playground_minute' => env('RESET_PUBLIC_PLAYGROUND_MINUTE', 30),
 ];

@@ -11,10 +11,11 @@ it:
     logo_raster: /images/wai-logo.png
     pill: beta
     highlight:
-      public-playground: |
-        Questo è l'ambiente **public playground**. Ogni settimana il sistema
-        viene automaticamente resettato. [Maggiori
-        informazioni](https://play.webanalytics.italia.it/faq#public-playground).
+      # Note: public playground environment disabled
+      # public-playground: |
+      #   Questo è l'ambiente **public playground**. Ogni settimana il sistema
+      #   viene automaticamente resettato. [Maggiori
+      #   informazioni](https://play.webanalytics.italia.it/faq#public-playground).
       staging: |
         Questo è l'ambiente di **staging**. L'istanza potrebbe essere resettata
         senza preavviso.
