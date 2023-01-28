@@ -263,23 +263,24 @@ it:
       Si, in WAI è possibile tracciare anche le visite e il comportamento degli
       utenti di una app mobile.
 
-  - themes: generale
-    id: public-playground
-    question: |
-      Esiste un ambiente di test in cui poter provare le funzionalità di Web
-      Analytics Italia?
-    answer: |
-      Si possono testare le funzionalità e l'integrazione di Web Analytics
-      Italia null'ambiente Public Playground.
+  # Note: public playground environment disabled
+  # - themes: generale
+  #   id: public-playground
+  #   question: |
+  #     Esiste un ambiente di test in cui poter provare le funzionalità di Web
+  #     Analytics Italia?
+  #   answer: |
+  #     Si possono testare le funzionalità e l'integrazione di Web Analytics
+  #     Italia null'ambiente Public Playground.
 
-      Si tratta di un'istanza parallela di Web Analytics Italia con la quale è
-      possibile effettuare in tutta sicurezza qualunque prova senza paura di
-      sbagliare.
+  #     Si tratta di un'istanza parallela di Web Analytics Italia con la quale è
+  #     possibile effettuare in tutta sicurezza qualunque prova senza paura di
+  #     sbagliare.
 
-      Tutti i dati memorizzati in questa istanza sono automaticamente resettati
-      ogni settimana.
+  #     Tutti i dati memorizzati in questa istanza sono automaticamente resettati
+  #     ogni settimana.
 
-      [Vai all'ambiente public playground](https://play.webanalytics.italia.it/).
+  #     [Vai all'ambiente public playground](https://play.webanalytics.italia.it/).
 
   - themes: privacy
     id: consenso-utente
