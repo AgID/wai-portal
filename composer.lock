@@ -191,16 +191,16 @@
         },
         {
             "name": "davidepastore/codice-fiscale",
-            "version": "v0.9.0",
+            "version": "v0.9.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/DavidePastore/codice-fiscale.git",
-                "reference": "41b89eae21f9bdd7a1af86f71b9124a2b22f5e55"
+                "reference": "6579ccec9ec81415b68e2c2e4b9f4ee8f4f41342"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/DavidePastore/codice-fiscale/zipball/41b89eae21f9bdd7a1af86f71b9124a2b22f5e55",
-                "reference": "41b89eae21f9bdd7a1af86f71b9124a2b22f5e55",
+                "url": "https://api.github.com/repos/DavidePastore/codice-fiscale/zipball/6579ccec9ec81415b68e2c2e4b9f4ee8f4f41342",
+                "reference": "6579ccec9ec81415b68e2c2e4b9f4ee8f4f41342",
                 "shasum": ""
             },
             "require": {
@@ -238,9 +238,9 @@
             ],
             "support": {
                 "issues": "https://github.com/DavidePastore/codice-fiscale/issues",
-                "source": "https://github.com/DavidePastore/codice-fiscale/tree/v0.9.0"
+                "source": "https://github.com/DavidePastore/codice-fiscale/tree/v0.9.1"
             },
-            "time": "2022-03-19T19:38:04+00:00"
+            "time": "2023-01-30T00:38:36+00:00"
         },
         {
             "name": "diglactic/laravel-breadcrumbs",
