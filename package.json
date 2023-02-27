@@ -37,7 +37,7 @@
         "stylelint": "^14.16.1",
         "stylelint-config-standard-scss": "^6.1.0",
         "stylelint-webpack-plugin": "^4.0.0",
-        "swagger-ui": "^4.15.5",
+        "swagger-ui": "^4.16.1",
         "throttle-debounce": "^5.0.0",
         "upper-case-first": "^2.0.2"
     }
