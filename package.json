@@ -14,7 +14,7 @@
         "@babel/plugin-syntax-dynamic-import": "^7.8.3",
         "axios": "^0.27",
         "axios-extensions": "^3.1.6",
-        "bootstrap-italia": "^1.4.3",
+        "bootstrap-italia": "^2.3.7",
         "cross-env": "^7.0.3",
         "datatables.net": "^1.13.3",
         "datatables.net-dt": "^1.13.3",
