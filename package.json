@@ -18,7 +18,7 @@
         "cross-env": "^7.0.3",
         "datatables.net": "^1.13.3",
         "datatables.net-dt": "^1.13.4",
-        "datatables.net-responsive": "^2.4.0",
+        "datatables.net-responsive": "^2.4.1",
         "datatables.net-responsive-dt": "^2.4.1",
         "eslint": "^8.40.0",
         "eslint-plugin-vue": "^9.9.0",
