@@ -33,7 +33,7 @@
         "postcss": "^8.4.21",
         "resolve-url-loader": "^5.0.0",
         "sass": "^1.62.1",
-        "sass-loader": "^13.2.0",
+        "sass-loader": "^13.2.2",
         "stylelint": "^14.16.1",
         "stylelint-config-standard-scss": "^6.1.0",
         "stylelint-webpack-plugin": "^4.1.0",
