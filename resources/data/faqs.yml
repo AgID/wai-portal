@@ -59,7 +59,8 @@ it:
           parti (non disponibile in fase beta).
 
       Tutte le componenti software sono ospitate su una piattaforma scalabile e
-      ridondata costruita sulla base dei servizi forniti da SPC Cloud - Lotto 1.
+      ridondata costruita sulla base dei servizi forniti dall'Accordo Quadro
+      Public Cloud IaaS e PaaS.
 
   - themes: generale
     id: cos-e-matomo
@@ -155,8 +156,9 @@ it:
     id: dove-sono-memorizzati-i-dati
     question: Dove vengono memorizzati i dati raccolti?
     answer: |
-      I dati statistici raccolti da WAI vengono memorizzati su server dedicati e
-      ad uso esclusivo della pubblica amministrazione, localizzati in Italia.
+      I dati statistici raccolti da WAI vengono memorizzati su servizi di
+      storage, nell'ambito dell'Accordo Quadro Public Clound Iaas e PaaS,
+      localizzati in Italia.
 
   - themes: privacy
     id: gdpr
