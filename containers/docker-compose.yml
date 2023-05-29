@@ -11,6 +11,8 @@ volumes:
     driver: local
   matomo-install:
     driver: local
+  matomo-logs:
+    driver: local
   mariadb-data:
     driver: local
   elasticsearch-data:
@@ -35,7 +37,7 @@ services:
     volumes:
       - ${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}
       - ${APP_LOGS_PATH_HOST}/php:${APP_LOGS_PATH_CONTAINER}/php
-      - ${APP_LOGS_PATH_HOST}/matomo:${APP_LOGS_PATH_CONTAINER}/matomo
+      - matomo-logs:${APP_LOGS_PATH_CONTAINER}/matomo
       - matomo:/opt/matomo/
       # - ./matomo/wai-matomo-theme/dist/WAIMatomoTheme:/opt/matomo/plugins/WAIMatomoTheme
     expose:
@@ -162,6 +164,15 @@ services:
     volumes:
       - matomo:/opt/matomo/
       - matomo-install:/opt/matomo-install/
+    networks:
+      - backend
+
+# matomo-logs
+  matomo-logs:
+    image: alpine
+    command: sh -c "touch ${APP_LOGS_PATH_CONTAINER}/matomo/matomo.log; tail -f ${APP_LOGS_PATH_CONTAINER}/matomo/matomo.log"
+    volumes:
+      - matomo-logs:${APP_LOGS_PATH_CONTAINER}/matomo
     networks:
       - backend
 

@@ -363,7 +363,7 @@
                 <exec command="docker-compose up -d --build nginx mariadb redis ipa-redisearch elasticsearch php-fpm matomo" dir="containers" passthru="true" checkreturn="true"/>
             </then>
             <else>
-                <exec command="docker-compose up -d --build nginx mariadb redis ipa-redisearch mailhog php-fpm matomo queue-worker elasticsearch spid-testenv" dir="containers" passthru="true" checkreturn="true"/>
+                <exec command="docker-compose up -d --build nginx mariadb redis ipa-redisearch mailhog php-fpm matomo matomo-logs queue-worker elasticsearch spid-testenv" dir="containers" passthru="true" checkreturn="true"/>
                 <if>
                     <or>
                         <equals arg1="${REDIS_INDEXES_USE_SENTINELS}" arg2="true"/>
@@ -576,7 +576,7 @@
             <available file="containers" type="dir" property="ignored"/>
             <then>
                 <echo msg="Starting Docker containers..."/>
-                <exec command="docker-compose up -d nginx mariadb redis ipa-redisearch mailhog php-fpm queue-worker elasticsearch spid-testenv" dir="containers" passthru="true" checkreturn="true"/>
+                <exec command="docker-compose up -d nginx mariadb redis ipa-redisearch mailhog php-fpm matomo-logs queue-worker elasticsearch spid-testenv" dir="containers" passthru="true" checkreturn="true"/>
                 <echo msg="Web Analytics Italia up and running!"/>
             </then>
         </if>

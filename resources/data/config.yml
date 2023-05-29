@@ -51,9 +51,6 @@ it:
         #       publicAdministration: true
 
     slim_header_links:
-      - name: Piano triennale
-        url: https://pianotriennale-ict.italia.it
-        class: delimiter
       - name: Developers
         url: https://developers.italia.it/
       - name: Designers
@@ -61,8 +58,6 @@ it:
         class: delimiter
       - name: Forum
         url: https://forum.italia.it/
-      - name: Docs
-        url: https://docs.italia.it/
       - name: GitHub
         url: https://github.com/italia/
 
