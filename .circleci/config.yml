@@ -29,8 +29,7 @@ commands:
       - run:
           name: Run php-cs-fixer (future mode)
           command: |
-            PHP_CS_FIXER_FUTURE_MODE=1
-            bin/php-cs-fixer fix --diff --dry-run --verbose
+            PHP_CS_FIXER_FUTURE_MODE=1 bin/php-cs-fixer fix --diff --dry-run --verbose
 
   yaml-validation:
     description: Ensure yaml configuration files are valid

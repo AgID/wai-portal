@@ -587,7 +587,7 @@ class UserController extends Controller
             $redirectUrl = $this->getRoleAwareUrl('users.index', [], $publicAdministration);
         }
 
-        // If existingUser is filled the user is already in the database
+        // If existingUser is filled, the user is already in the database
         if (isset($validatedData['existingUser']) && isset($validatedData['existingUser']->email)) {
             $user = $validatedData['existingUser'];
             $userInCurrentPublicAdministration = $user->publicAdministrationsWithSuspended->where('id', $publicAdministration->id)->isNotEmpty();
@@ -598,7 +598,7 @@ class UserController extends Controller
                     'error_description' => 'User already exists in the current public administration',
                     'title' => __("Non è possibile inoltrare l'invito"),
                     'message' => __("L'utente fa già parte di questa pubblica amministrazione."),
-                    'redirectUri' => $redirectUrl ?? null,
+                    'redirectUrl' => $redirectUrl ?? null,
                 ];
             }
 
