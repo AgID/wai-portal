@@ -36,7 +36,7 @@
         "php": "^7.4",
         "bensampo/laravel-enum": "^1.25",
         "davidepastore/codice-fiscale": "^0.9.0",
-        "diglactic/laravel-breadcrumbs": "^7.0",
+        "diglactic/laravel-breadcrumbs": "^8.1",
         "doctrine/dbal": "^2.10",
         "elasticsearch/elasticsearch": "7.16.*",
         "ethanhann/redisearch-php": "^1.0",

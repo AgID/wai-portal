@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "955295c4634fafcc1b0ddce9108053e7",
+    "content-hash": "2ee4c82fea52cd64364d7f68a768d439",
     "packages": [
         {
             "name": "bensampo/laravel-enum",
@@ -244,30 +244,30 @@
         },
         {
             "name": "diglactic/laravel-breadcrumbs",
-            "version": "v7.2.0",
+            "version": "v8.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/diglactic/laravel-breadcrumbs.git",
-                "reference": "309ec597d047b763d1df3c5113a3932cc771500f"
+                "reference": "f72a78eb3e26aea507d7888a65f15e5790864e21"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/diglactic/laravel-breadcrumbs/zipball/309ec597d047b763d1df3c5113a3932cc771500f",
-                "reference": "309ec597d047b763d1df3c5113a3932cc771500f",
+                "url": "https://api.github.com/repos/diglactic/laravel-breadcrumbs/zipball/f72a78eb3e26aea507d7888a65f15e5790864e21",
+                "reference": "f72a78eb3e26aea507d7888a65f15e5790864e21",
                 "shasum": ""
             },
             "require": {
                 "facade/ignition-contracts": "^1.0",
-                "laravel/framework": "^6.0 || ^7.0 || ^8.0 || ^9.0",
+                "laravel/framework": "^6.0 || ^7.0 || ^8.0 || ^9.0 || ^10.0",
                 "php": "^7.2 || ^8.0"
             },
             "conflict": {
                 "davejamesmiller/laravel-breadcrumbs": "*"
             },
             "require-dev": {
-                "orchestra/testbench": "^4.10 || ^5.9 || ^6.4 || ^7.0",
+                "orchestra/testbench": "^4.0 || ^5.0 || ^6.0 || ^7.0 || ^8.0",
                 "php-coveralls/php-coveralls": "^2.4",
-                "phpunit/phpunit": "^8.5 || ^9.4",
+                "phpunit/phpunit": "^8.5 || ^9.5",
                 "spatie/phpunit-snapshot-assertions": "^2.2 || ^4.2"
             },
             "type": "library",
@@ -309,9 +309,9 @@
             ],
             "support": {
                 "issues": "https://github.com/diglactic/laravel-breadcrumbs/issues",
-                "source": "https://github.com/diglactic/laravel-breadcrumbs/tree/v7.2.0"
+                "source": "https://github.com/diglactic/laravel-breadcrumbs/tree/v8.1.1"
             },
-            "time": "2022-05-03T05:40:37+00:00"
+            "time": "2023-04-17T23:24:15+00:00"
         },
         {
             "name": "doctrine/cache",
