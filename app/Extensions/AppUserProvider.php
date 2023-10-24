@@ -25,9 +25,9 @@ class AppUserProvider extends EloquentUserProvider
      */
     public function retrieveByCredentials(array $credentials): ?Authenticatable
     {
-        if (empty($credentials) ||
-           (1 === count($credentials) &&
-            array_key_exists('password', $credentials))) {
+        if (empty($credentials)
+           || (1 === count($credentials)
+            && array_key_exists('password', $credentials))) {
             return null;
         }
         // First we will add each credential element to the query as a where clause.

@@ -25,7 +25,7 @@ class UserPublicAdministrationChangedEmail extends UserEmailNotification
      * @param string $recipientEmail the email address to use for thins notification
      * @param string $updatedEmail the updated email address
      */
-    public function __construct(PublicAdministration $publicAdministration = null, string $recipientEmail = null, string $updatedEmail)
+    public function __construct(?PublicAdministration $publicAdministration = null, ?string $recipientEmail = null, string $updatedEmail)
     {
         parent::__construct($publicAdministration, $recipientEmail);
         $this->updatedEmail = $updatedEmail;

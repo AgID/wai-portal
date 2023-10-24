@@ -173,7 +173,7 @@ interface AnalyticsService
      *
      * @return RedirectResponse the Analytics service dashboard
      */
-    public function loginAndRedirectUser(string $userLogin, string $hashedPassword, string $idSite = null): RedirectResponse;
+    public function loginAndRedirectUser(string $userLogin, string $hashedPassword, ?string $idSite = null): RedirectResponse;
 
     /**
      * Set permissions for a specified user and specified websites

@@ -142,7 +142,7 @@ class SingleDigitalGatewayService
      *
      * @throws SDGServiceException
      */
-    protected function apiCall(string $path, string $method = 'GET', array $params = [], array $body = null)
+    protected function apiCall(string $path, string $method = 'GET', array $params = [], ?array $body = null)
     {
         $apiLogger = Log::channel('sdg_api');
         $stack = HandlerStack::create();

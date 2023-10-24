@@ -16,7 +16,7 @@ class AnalyticsServiceController extends Controller
      *
      * @return RedirectResponse the server redirect response
      */
-    public function login(string $websiteAnalyticsId = null): RedirectResponse
+    public function login(?string $websiteAnalyticsId = null): RedirectResponse
     {
         $user = auth()->user();
         if (!$user->hasAnalyticsServiceAccount()) {

@@ -396,7 +396,7 @@ class MatomoService implements AnalyticsServiceContract
      *
      * @return RedirectResponse the Analytics service dashboard
      */
-    public function loginAndRedirectUser(string $userLogin, string $hashedPassword, string $idSite = null): RedirectResponse
+    public function loginAndRedirectUser(string $userLogin, string $hashedPassword, ?string $idSite = null): RedirectResponse
     {
         return redirect($this->servicePublicUrl . '/index.php?module=Login&action=logme&login=' . $userLogin . '&password=' . $hashedPassword . '&idSite=' . $idSite);
     }

@@ -26,7 +26,8 @@ $rules = [
     'phpdoc_align' => ['align' => 'left'],
     'phpdoc_no_empty_return' => false,
     'phpdoc_order' => true,
-    'global_namespace_import' => ['import_classes' => true]
+    'global_namespace_import' => ['import_classes' => true],
+    'nullable_type_declaration_for_default_null_value' => ['use_nullable_type_declaration' => true]
 ];
 
 $finder = Finder::create()

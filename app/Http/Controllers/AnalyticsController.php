@@ -20,7 +20,7 @@ class AnalyticsController extends Controller
      *
      * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
      */
-    public function index(Request $request, PublicAdministration $publicAdministration = null)
+    public function index(Request $request, ?PublicAdministration $publicAdministration = null)
     {
         $user = $request->user();
 

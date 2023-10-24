@@ -22,7 +22,7 @@ trait SqliteForeignKeyHotfix
                     }
 
                     return new class($this) extends SQLiteBuilder {
-                        protected function createBlueprint($table, Closure $callback = null)
+                        protected function createBlueprint($table, ?Closure $callback = null)
                         {
                             return new class($table, $callback) extends Blueprint {
                                 public function dropForeign($index)
