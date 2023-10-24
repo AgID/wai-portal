@@ -203,33 +203,33 @@ class ArchiveWebsiteJsonRoutesTest extends TestCase
         Event::assertNotDispatched(WebsiteUnarchived::class);
     }
 
-//    to be uncommented after the resolution of https://github.com/matomo-org/matomo/issues/8697
-//    /**
-//     * Test website archive failed due to error in Analytics Service call.
-//     */
-//    public function testArchiveWebsiteFailedRoute(): void
-//    {
-//        $website = factory(Website::class)->create([
-//            'public_administration_id' => $this->publicAdministration->id,
-//            'type' => WebsiteType::INFORMATIONAL,
-//            'status' => WebsiteStatus::ACTIVE,
-//        ]);
-//
-//        $response = $this->actingAs($this->user)
-//            ->withSession([
-//                'spid_sessionId' => 'fake-session-index',
-//                'tenant_id' => $this->publicAdministration->id,
-//            ])
-//            ->json('patch', route('websites.archive', ['website' => $website->slug]));
-//
-//        $response->assertJson([
-//            'result' => 'error',
-//            'message' => 'Bad Request',
-//        ]);
-//
-//        Event::assertNotDispatched(WebsiteArchived::class);
-//        Event::assertNotDispatched(WebsiteUnarchived::class);
-//    }
+    //    to be uncommented after the resolution of https://github.com/matomo-org/matomo/issues/8697
+    //    /**
+    //     * Test website archive failed due to error in Analytics Service call.
+    //     */
+    //    public function testArchiveWebsiteFailedRoute(): void
+    //    {
+    //        $website = factory(Website::class)->create([
+    //            'public_administration_id' => $this->publicAdministration->id,
+    //            'type' => WebsiteType::INFORMATIONAL,
+    //            'status' => WebsiteStatus::ACTIVE,
+    //        ]);
+    //
+    //        $response = $this->actingAs($this->user)
+    //            ->withSession([
+    //                'spid_sessionId' => 'fake-session-index',
+    //                'tenant_id' => $this->publicAdministration->id,
+    //            ])
+    //            ->json('patch', route('websites.archive', ['website' => $website->slug]));
+    //
+    //        $response->assertJson([
+    //            'result' => 'error',
+    //            'message' => 'Bad Request',
+    //        ]);
+    //
+    //        Event::assertNotDispatched(WebsiteArchived::class);
+    //        Event::assertNotDispatched(WebsiteUnarchived::class);
+    //    }
 
     /**
      * Test website re-enable status not modified response.
@@ -336,31 +336,31 @@ class ArchiveWebsiteJsonRoutesTest extends TestCase
         Event::assertNotDispatched(WebsiteUnarchived::class);
     }
 
-//    to be uncommented after the resolution of https://github.com/matomo-org/matomo/issues/8697
-//    /**
-//     * Test website archive failed due to error in Analytics Service call.
-//     */
-//    public function testUnarchiveWebsiteFailedRoute(): void
-//    {
-//        $website = factory(Website::class)->create([
-//            'public_administration_id' => $this->publicAdministration->id,
-//            'status' => WebsiteStatus::ARCHIVED,
-//            'type' => WebsiteType::INFORMATIONAL,
-//        ]);
-//
-//        $response = $this->actingAs($this->user)
-//            ->withSession([
-//                'spid_sessionId' => 'fake-session-index',
-//                'tenant_id' => $this->publicAdministration->id,
-//            ])
-//            ->json('patch', route('websites.unarchive', ['website' => $website->slug]));
-//
-//        $response->assertJson([
-//            'result' => 'error',
-//            'message' => 'Bad Request',
-//        ]);
-//
-//        Event::assertNotDispatched(WebsiteArchived::class);
-//        Event::assertNotDispatched(WebsiteUnarchived::class);
-//    }
+    //    to be uncommented after the resolution of https://github.com/matomo-org/matomo/issues/8697
+    //    /**
+    //     * Test website archive failed due to error in Analytics Service call.
+    //     */
+    //    public function testUnarchiveWebsiteFailedRoute(): void
+    //    {
+    //        $website = factory(Website::class)->create([
+    //            'public_administration_id' => $this->publicAdministration->id,
+    //            'status' => WebsiteStatus::ARCHIVED,
+    //            'type' => WebsiteType::INFORMATIONAL,
+    //        ]);
+    //
+    //        $response = $this->actingAs($this->user)
+    //            ->withSession([
+    //                'spid_sessionId' => 'fake-session-index',
+    //                'tenant_id' => $this->publicAdministration->id,
+    //            ])
+    //            ->json('patch', route('websites.unarchive', ['website' => $website->slug]));
+    //
+    //        $response->assertJson([
+    //            'result' => 'error',
+    //            'message' => 'Bad Request',
+    //        ]);
+    //
+    //        Event::assertNotDispatched(WebsiteArchived::class);
+    //        Event::assertNotDispatched(WebsiteUnarchived::class);
+    //    }
 }
