@@ -17,7 +17,7 @@
         "bootstrap-italia": "^1.4.3",
         "cross-env": "^7.0.3",
         "datatables.net": "^1.13.6",
-        "datatables.net-dt": "^1.13.4",
+        "datatables.net-dt": "^1.13.6",
         "datatables.net-responsive": "^2.5.0",
         "datatables.net-responsive-dt": "^2.4.1",
         "eslint": "^8.42.0",
